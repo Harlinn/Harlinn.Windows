@@ -28,6 +28,168 @@ namespace Harlinn::ODBC
     class DataReader;
     struct ParameterDescription;
 
+    template<typename CharT, size_t maxSize>
+        requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+    class FixedDBString : public Harlinn::Common::Core::FixedString<CharT, maxSize>
+    {
+        
+    public:
+        using Base = Harlinn::Common::Core::FixedString<CharT, maxSize>;
+    private:
+        using Base::size_;
+    public:
+        constexpr FixedDBString( ) noexcept = default;
+
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, CharT>
+        FixedDBString& operator = ( const T& str )
+        {
+            Base::Assign( str.data( ), str.size( ) );
+            return *this;
+        }
+
+        SQLLEN* Indicator( )
+        {
+            auto* ptr = &size_;
+            return reinterpret_cast< SQLLEN* >( ptr );
+        }
+
+        [[nodiscard]] constexpr bool IsNull( ) const
+        {
+            return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
+        }
+    };
+
+    template<size_t maxSize>
+    using FixedDBWideString = FixedDBString<wchar_t, maxSize>;
+    template<size_t maxSize>
+    using FixedDBAnsiString = FixedDBString<char, maxSize>;
+
+
+    template<size_t maxSize>
+    class FixedDBBinary : public Harlinn::Common::Core::FixedBinary<maxSize>
+    {
+    public:
+        using Base = Harlinn::Common::Core::FixedBinary<maxSize>;
+    private:
+        using Base::size_;
+    public:
+        SQLLEN* Indicator( )
+        {
+            auto* ptr = &size_;
+            return reinterpret_cast< SQLLEN* >( ptr );
+        }
+
+        [[nodiscard]] constexpr bool IsNull( ) const
+        {
+            return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
+        }
+    };
+
+    namespace Internal
+    {
+        template <typename T>
+        class DBValue
+        {
+        public:
+            using value_type = T;
+        private:
+            mutable SQLLEN indicator_ = SQL_NULL_DATA;
+            mutable T value_ = {};
+        public:
+            constexpr DBValue( ) = default;
+
+            explicit DBValue(const value_type& value) noexcept
+                : indicator_(0), value_( value )
+            { }
+
+            constexpr void reset( ) noexcept
+            {
+                indicator_ = SQL_NULL_DATA;
+                value_ = {};
+            }
+
+            constexpr DBValue& operator=( nullptr_t ) noexcept
+            {
+                reset( );
+                return *this;
+            }
+
+            constexpr DBValue& operator = ( const value_type& value ) noexcept
+            {
+                indicator_ = 0;
+                value_ = value;
+                return *this;
+            }
+
+            [[nodiscard]] 
+            SQLLEN* Indicator( ) const noexcept
+            {
+                return &indicator_;
+            }
+            [[nodiscard]]
+            const T* data( ) const noexcept
+            {
+                return &value_;
+            }
+            [[nodiscard]]
+            T* data( ) noexcept
+            {
+                return &value_;
+            }
+
+
+            [[nodiscard]] 
+            constexpr bool IsNull( ) const noexcept
+            {
+                return indicator_ == SQL_NULL_DATA;
+            }
+
+            [[nodiscard]]
+            bool has_value( ) const noexcept
+            {
+                return indicator_ != SQL_NULL_DATA;
+            }
+
+            [[nodiscard]]
+            const value_type& value( ) const noexcept
+            {
+                if ( has_value( ) )
+                {
+                    return value_;
+                }
+                throw std::bad_optional_access{};
+            }
+        };
+    }
+
+    using DBBoolean = Internal::DBValue<bool>;
+    using DBSByte = Internal::DBValue<SByte>;
+    using DBByte = Internal::DBValue<Byte>;
+    using DBInt16 = Internal::DBValue<Int16>;
+    using DBUInt16 = Internal::DBValue<UInt16>;
+    using DBInt32 = Internal::DBValue<Int32>;
+    using DBUInt32 = Internal::DBValue<UInt32>;
+    using DBInt64 = Internal::DBValue<Int64>;
+    using DBUInt64 = Internal::DBValue<UInt64>;
+
+    template<typename T>
+        requires std::is_enum_v<T>
+    using DBEnum = Internal::DBValue<T>;
+
+    using DBSingle = Internal::DBValue<float>;
+    using DBDouble = Internal::DBValue<double>;
+    using DBDateTime = Internal::DBValue<DateTime>;
+    using DBTimeSpan = Internal::DBValue<TimeSpan>;
+    using DBGuid = Internal::DBValue<Guid>;
+    using DBCurrency = Internal::DBValue<Currency>;
+    using DBWideString = Internal::DBValue<WideString>;
+    using DBBinary = Internal::DBValue<Binary>;
+
+
+
+
     namespace MsSql
     {
         constexpr const char SQLODBC_PRODUCT_NAME_FULL_VER_ANSI[ ] = "Microsoft ODBC Driver 11 for SQL Server";
@@ -2141,6 +2303,23 @@ namespace Harlinn::ODBC
         {
             return BindColumn( columnNumber, NativeType::TimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
+
+        template<size_t maxSize>
+        Result BindBinary( SQLUSMALLINT columnNumber, FixedDBBinary<maxSize>* targetAddress ) const
+        {
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress->data( ), maxSize, targetAddress->Indicator( ) );
+        }
+        template<size_t maxSize>
+        Result BindWideString( SQLUSMALLINT columnNumber, FixedDBWideString<maxSize>* targetAddress ) const
+        {
+            return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), ( maxSize + 1 )* sizeof( wchar_t ), targetAddress->Indicator( ) );
+        }
+        template<size_t maxSize>
+        Result BindAnsiString( SQLUSMALLINT columnNumber, FixedDBAnsiString<maxSize>* targetAddress ) const
+        {
+            return BindColumn( columnNumber, NativeType::Char, targetAddress->data( ), maxSize + 1, targetAddress->Indicator( ) );
+        }
+
     public:
         /// <summary>
         /// Gets the value of the specified column as a std::optional&lt;bool&gt;.
@@ -2295,7 +2474,7 @@ namespace Harlinn::ODBC
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const;
+        inline std::optional<Binary> GetNullableBinary( SQLUSMALLINT columnNumber ) const;
 
         /// <summary>
         /// Gets the value of the specified column as a std::optional&lt;Guid&gt;.
@@ -2536,7 +2715,7 @@ namespace Harlinn::ODBC
         /// The implementation throws an exception if the column value is NULL.
         /// </remarks>
         [[nodiscard]]
-        inline std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const;
+        inline Binary GetBinary( SQLUSMALLINT columnNumber ) const;
         /// <summary>
         /// Gets the value of the specified column as a Guid.
         /// </summary>
@@ -2701,6 +2880,23 @@ namespace Harlinn::ODBC
             return BindColumn( columnNumber, NativeType::TypeTimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
 
+        template<size_t maxSize>
+        Result BindBinaryColumn( SQLUSMALLINT columnNumber, FixedDBBinary<maxSize>* targetAddress ) const
+        {
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress->data(), maxSize, targetAddress->Indicator() );
+        }
+        template<size_t maxSize>
+        Result BindWideStringColumn( SQLUSMALLINT columnNumber, FixedDBWideString<maxSize>* targetAddress ) const
+        {
+            return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), (maxSize + 1) * sizeof(wchar_t), targetAddress->Indicator( ) );
+        }
+        template<size_t maxSize>
+        Result BindAnsiStringColumn( SQLUSMALLINT columnNumber, FixedDBAnsiString<maxSize>* targetAddress ) const
+        {
+            return BindColumn( columnNumber, NativeType::Char, targetAddress->data( ), maxSize + 1, targetAddress->Indicator( ) );
+        }
+
+
 
         Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, NativeType valueType, SqlType parameterType, SQLULEN columnSize, SQLSMALLINT decimalDigits, SQLPOINTER parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
         {
@@ -2819,11 +3015,28 @@ namespace Harlinn::ODBC
             return rc;
         }
 
+        template<size_t maxSize>
+        Result BindVarCharParameter( SQLUSMALLINT parameterNumber, FixedDBAnsiString<maxSize>& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::VarChar, maxSize + 1, 0, parameterValue.data( ), parameterValue.size( ), parameterValue.Indicator( ) );
+            return rc;
+        }
+
         Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, wchar_t* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             return rc;
         }
+
+        template<size_t maxSize>
+        Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, FixedDBWideString<maxSize>& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, maxSize + 1, 0, parameterValue.data(), parameterValue.size(), parameterValue.Indicator() );
+            return rc;
+        }
+
+
+
         Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, 0, 0, const_cast<wchar_t*>(parameterValue.data()), parameterValue.size(), lengthOrIndicator );
@@ -2834,9 +3047,16 @@ namespace Harlinn::ODBC
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             return rc;
         }
-        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, const std::vector<Byte>& parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, std::vector<Byte>& parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, 0, 0, const_cast<Byte*>(parameterValue.data()), parameterValue.size(), lengthOrIndicator );
+            return rc;
+        }
+
+        template<size_t maxSize>
+        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, FixedDBBinary<maxSize>& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, maxSize, 0, parameterValue.data( ), parameterValue.size( ), parameterValue.Indicator() );
             return rc;
         }
 
@@ -4024,7 +4244,7 @@ namespace Harlinn::ODBC
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const
+        std::optional<Binary> GetNullableBinary( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
             constexpr size_t BufferSize = 8192;
@@ -4036,13 +4256,13 @@ namespace Harlinn::ODBC
             }
             if ( indicator == 0 )
             {
-                return std::vector<Byte>( );
+                return Binary( );
             }
             if ( indicator != SQL_NO_TOTAL )
             {
                 if ( indicator > BufferSize )
                 {
-                    std::vector<Byte> result;
+                    Binary result;
                     result.resize( indicator );
                     memcpy_s( result.data( ), indicator, buffer, BufferSize );
                     auto ptr = result.data( ) + BufferSize;
@@ -4052,19 +4272,19 @@ namespace Harlinn::ODBC
                 }
                 else
                 {
-                    std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                    Binary result( buffer, buffer + static_cast< size_t >( indicator ) );
                     return result;
                 }
             }
             else
             {
-                std::vector<Byte> result( buffer, buffer + sizeof( buffer ) );
+                Binary result( buffer, buffer + sizeof( buffer ) );
                 for ( ;;)
                 {
                     auto rc = GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
 
                     size_t byteCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) : indicator;
-                    result.insert( result.end( ), buffer, buffer + byteCount );
+                    result.Append( buffer, byteCount );
                     if ( rc == Result::Success )
                     {
                         break;
@@ -4629,7 +4849,7 @@ namespace Harlinn::ODBC
         /// The implementation throws an exception if the column value is NULL.
         /// </remarks>
         [[nodiscard]]
-        std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const
+        Binary GetBinary( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
             constexpr size_t BufferSize = 8192;
@@ -4641,13 +4861,13 @@ namespace Harlinn::ODBC
             }
             if ( indicator == 0 )
             {
-                return std::vector<Byte>( );
+                return Binary( );
             }
             if ( indicator != SQL_NO_TOTAL )
             {
                 if ( indicator > BufferSize )
                 {
-                    std::vector<Byte> result;
+                    Binary result;
                     result.resize( indicator );
                     memcpy_s( result.data( ), indicator, buffer, BufferSize );
                     auto ptr = result.data( ) + BufferSize;
@@ -4657,19 +4877,19 @@ namespace Harlinn::ODBC
                 }
                 else
                 {
-                    std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                    Binary result( buffer, buffer + static_cast< size_t >( indicator ) );
                     return result;
                 }
             }
             else
             {
-                std::vector<Byte> result( buffer, buffer + sizeof( buffer ) );
+                Binary result( buffer, buffer + sizeof( buffer ) );
                 for ( ;;)
                 {
                     auto rc = GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
 
                     size_t byteCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) : indicator;
-                    result.insert( result.end( ), buffer, buffer + byteCount );
+                    result.Append( buffer, byteCount );
                     if ( rc == Result::Success )
                     {
                         break;
@@ -6083,7 +6303,7 @@ namespace Harlinn::ODBC
     }
 
     [[nodiscard]]
-    inline std::optional<std::vector<Byte>> DataReader::GetNullableBinary( SQLUSMALLINT columnNumber ) const
+    inline std::optional<Binary> DataReader::GetNullableBinary( SQLUSMALLINT columnNumber ) const
     {
         return statement_->GetNullableBinary( columnNumber );
     }
@@ -6231,7 +6451,7 @@ namespace Harlinn::ODBC
     }
 
     [[nodiscard]]
-    inline std::vector<Byte> DataReader::GetBinary( SQLUSMALLINT columnNumber ) const
+    inline Binary DataReader::GetBinary( SQLUSMALLINT columnNumber ) const
     {
         return statement_->GetBinary( columnNumber );
     }

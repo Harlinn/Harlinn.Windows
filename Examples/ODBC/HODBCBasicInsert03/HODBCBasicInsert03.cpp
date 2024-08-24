@@ -63,7 +63,7 @@ public:
     static constexpr wchar_t lastUpdatedSql_[ ] = L"SELECT [Id], [OptimisticLockField], [Tracker], [TrackNumber], [Timestamp] FROM [dbo].[TrackViewEx]";
 
 
-    TrackDataReader( const Statement* statement )
+    TrackDataReader( const ODBC::Statement* statement )
         : Base( statement )
     {
         BindGuid( ID_ID, &track_.id_ );
@@ -264,7 +264,7 @@ public:
 
     static constexpr wchar_t sql_[] = L"SELECT [Id], [OptimisticLockField], [Track], [Timestamp], [Flags], [Status], [Latitude], [Longitude], [Speed], [Course], [Heading] FROM [dbo].[TrackValues]";
 
-    TrackValueDataReader( const Statement* statement )
+    TrackValueDataReader( const ODBC::Statement* statement )
         : Base( statement )
     {
         BindGuid( ID_ID, &trackValue_.id_);

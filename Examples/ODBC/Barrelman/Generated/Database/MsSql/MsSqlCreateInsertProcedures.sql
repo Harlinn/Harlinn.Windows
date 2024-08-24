@@ -3616,10 +3616,6 @@ CREATE OR ALTER PROCEDURE [AisTransceiverConfigurationInsert]
   @ExcludeSendAisA [nvarchar](max),
   @EnableSendBaseStationAlarms [bit],
   @AisWebConfig [nvarchar](127),
-  @EnableBaseStation600 [bit],
-  @BaseStation600IPAddress [nvarchar](127),
-  @BaseStation600Port [int],
-  @EsdInputCount [int],
   @StoreReceivedSentences [bit],
   @StoreSentMessages [bit],
   @StoreUnsentMessages [bit]
@@ -3636,8 +3632,8 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [AisTransceiverConfiguration]([Id], [RowVersion], [AisTransceiver], [Timestamp], [UserName], [Password], [Latitude], [Longitude], [AisProviderLoginURL], [ComPort], [BaudRate], [FilterByArea], [UpperLeftCornerLatitude], [UpperLeftCornerLongitude], [BottomRightCornerLatitude], [BottomRightCornerLongitude], [AisProviderIPAddress], [AisProviderPort], [UseLogin], [AisProviderLoginPort], [CanSendAISMessage], [TextMessageHeader], [Urls], [UdpPort], [ConnectionType], [EnableRefreshAidToNavigationIn30sec], [EnableAidToNavigationFromFile], [AidToNavigationHeader], [SendingMMSI], [SourceUpdateRate], [EnableRefreshStayingStillTargetIn30sec], [ExcludeSendAisBaseStation], [ExcludeSendAisA], [EnableSendBaseStationAlarms], [AisWebConfig], [EnableBaseStation600], [BaseStation600IPAddress], [BaseStation600Port], [EsdInputCount], [StoreReceivedSentences], [StoreSentMessages], [StoreUnsentMessages])
-          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @UserName, @Password, @Latitude, @Longitude, @AisProviderLoginURL, @ComPort, @BaudRate, @FilterByArea, @UpperLeftCornerLatitude, @UpperLeftCornerLongitude, @BottomRightCornerLatitude, @BottomRightCornerLongitude, @AisProviderIPAddress, @AisProviderPort, @UseLogin, @AisProviderLoginPort, @CanSendAISMessage, @TextMessageHeader, @Urls, @UdpPort, @ConnectionType, @EnableRefreshAidToNavigationIn30sec, @EnableAidToNavigationFromFile, @AidToNavigationHeader, @SendingMMSI, @SourceUpdateRate, @EnableRefreshStayingStillTargetIn30sec, @ExcludeSendAisBaseStation, @ExcludeSendAisA, @EnableSendBaseStationAlarms, @AisWebConfig, @EnableBaseStation600, @BaseStation600IPAddress, @BaseStation600Port, @EsdInputCount, @StoreReceivedSentences, @StoreSentMessages, @StoreUnsentMessages);
+      INSERT INTO [AisTransceiverConfiguration]([Id], [RowVersion], [AisTransceiver], [Timestamp], [UserName], [Password], [Latitude], [Longitude], [AisProviderLoginURL], [ComPort], [BaudRate], [FilterByArea], [UpperLeftCornerLatitude], [UpperLeftCornerLongitude], [BottomRightCornerLatitude], [BottomRightCornerLongitude], [AisProviderIPAddress], [AisProviderPort], [UseLogin], [AisProviderLoginPort], [CanSendAISMessage], [TextMessageHeader], [Urls], [UdpPort], [ConnectionType], [EnableRefreshAidToNavigationIn30sec], [EnableAidToNavigationFromFile], [AidToNavigationHeader], [SendingMMSI], [SourceUpdateRate], [EnableRefreshStayingStillTargetIn30sec], [ExcludeSendAisBaseStation], [ExcludeSendAisA], [EnableSendBaseStationAlarms], [AisWebConfig], [StoreReceivedSentences], [StoreSentMessages], [StoreUnsentMessages])
+          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @UserName, @Password, @Latitude, @Longitude, @AisProviderLoginURL, @ComPort, @BaudRate, @FilterByArea, @UpperLeftCornerLatitude, @UpperLeftCornerLongitude, @BottomRightCornerLatitude, @BottomRightCornerLongitude, @AisProviderIPAddress, @AisProviderPort, @UseLogin, @AisProviderLoginPort, @CanSendAISMessage, @TextMessageHeader, @Urls, @UdpPort, @ConnectionType, @EnableRefreshAidToNavigationIn30sec, @EnableAidToNavigationFromFile, @AidToNavigationHeader, @SendingMMSI, @SourceUpdateRate, @EnableRefreshStayingStillTargetIn30sec, @ExcludeSendAisBaseStation, @ExcludeSendAisA, @EnableSendBaseStationAlarms, @AisWebConfig, @StoreReceivedSentences, @StoreSentMessages, @StoreUnsentMessages);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3704,10 +3700,6 @@ INSTEAD OF INSERT AS
         [ExcludeSendAisA],
         [EnableSendBaseStationAlarms],
         [AisWebConfig],
-        [EnableBaseStation600],
-        [BaseStation600IPAddress],
-        [BaseStation600Port],
-        [EsdInputCount],
         [StoreReceivedSentences],
         [StoreSentMessages],
         [StoreUnsentMessages]
@@ -3748,10 +3740,6 @@ INSTEAD OF INSERT AS
     DECLARE @ExcludeSendAisA [nvarchar](max)
     DECLARE @EnableSendBaseStationAlarms [bit]
     DECLARE @AisWebConfig [nvarchar](127)
-    DECLARE @EnableBaseStation600 [bit]
-    DECLARE @BaseStation600IPAddress [nvarchar](127)
-    DECLARE @BaseStation600Port [int]
-    DECLARE @EsdInputCount [int]
     DECLARE @StoreReceivedSentences [bit]
     DECLARE @StoreSentMessages [bit]
     DECLARE @StoreUnsentMessages [bit]
@@ -3791,16 +3779,12 @@ INSTEAD OF INSERT AS
         @ExcludeSendAisA,
         @EnableSendBaseStationAlarms,
         @AisWebConfig,
-        @EnableBaseStation600,
-        @BaseStation600IPAddress,
-        @BaseStation600Port,
-        @EsdInputCount,
         @StoreReceivedSentences,
         @StoreSentMessages,
         @StoreUnsentMessages
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverConfigurationInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@UserName,@Password,@Latitude,@Longitude,@AisProviderLoginURL,@ComPort,@BaudRate,@FilterByArea,@UpperLeftCornerLatitude,@UpperLeftCornerLongitude,@BottomRightCornerLatitude,@BottomRightCornerLongitude,@AisProviderIPAddress,@AisProviderPort,@UseLogin,@AisProviderLoginPort,@CanSendAISMessage,@TextMessageHeader,@Urls,@UdpPort,@ConnectionType,@EnableRefreshAidToNavigationIn30sec,@EnableAidToNavigationFromFile,@AidToNavigationHeader,@SendingMMSI,@SourceUpdateRate,@EnableRefreshStayingStillTargetIn30sec,@ExcludeSendAisBaseStation,@ExcludeSendAisA,@EnableSendBaseStationAlarms,@AisWebConfig,@EnableBaseStation600,@BaseStation600IPAddress,@BaseStation600Port,@EsdInputCount,@StoreReceivedSentences,@StoreSentMessages,@StoreUnsentMessages
+        EXEC [AisTransceiverConfigurationInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@UserName,@Password,@Latitude,@Longitude,@AisProviderLoginURL,@ComPort,@BaudRate,@FilterByArea,@UpperLeftCornerLatitude,@UpperLeftCornerLongitude,@BottomRightCornerLatitude,@BottomRightCornerLongitude,@AisProviderIPAddress,@AisProviderPort,@UseLogin,@AisProviderLoginPort,@CanSendAISMessage,@TextMessageHeader,@Urls,@UdpPort,@ConnectionType,@EnableRefreshAidToNavigationIn30sec,@EnableAidToNavigationFromFile,@AidToNavigationHeader,@SendingMMSI,@SourceUpdateRate,@EnableRefreshStayingStillTargetIn30sec,@ExcludeSendAisBaseStation,@ExcludeSendAisA,@EnableSendBaseStationAlarms,@AisWebConfig,@StoreReceivedSentences,@StoreSentMessages,@StoreUnsentMessages
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -3837,10 +3821,6 @@ INSTEAD OF INSERT AS
             @ExcludeSendAisA,
             @EnableSendBaseStationAlarms,
             @AisWebConfig,
-            @EnableBaseStation600,
-            @BaseStation600IPAddress,
-            @BaseStation600Port,
-            @EsdInputCount,
             @StoreReceivedSentences,
             @StoreSentMessages,
             @StoreUnsentMessages

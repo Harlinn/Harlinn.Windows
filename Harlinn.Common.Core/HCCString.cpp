@@ -84,7 +84,15 @@ namespace Harlinn::Common::Core
     }
 #endif
 
-    
+    namespace Internal
+    {
+        void ThrowFixedStringArgumentToLong( size_t size, size_t maxSize )
+        {
+            auto message = Format( L"Argument string is to long:{}, maximum length is {}.", size, maxSize );
+            Exception exc( message );
+            throw exc;
+        }
+    }
 
     WideString ToWideString( bool value )
     {

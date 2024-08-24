@@ -228,6 +228,24 @@ namespace Harlinn::ODBC::Tool
         return classInfo.Name( );
     }
 
+    WideString SqlServerHelper::GetShortName( const ClassInfo& classInfo )
+    {
+        WideString result;
+        auto name = classInfo.Name( ).FirstToUpper();
+        auto length = name.Length( );
+        const auto* ptr = name.c_str( );
+
+        for ( size_t i = 0; i < length; i++ )
+        {
+            if ( iswupper( ptr[ i ] ) )
+            {
+                result += ptr[ i ];
+            }
+        }
+        return result;
+    }
+
+
     WideString SqlServerHelper::GetViewName( const ClassInfo& classInfo )
     {
         return classInfo.Name( ) + L"View";

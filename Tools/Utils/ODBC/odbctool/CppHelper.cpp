@@ -81,47 +81,47 @@ namespace Harlinn::ODBC::Tool
         {
             case MemberInfoType::Boolean:
             {
-                result = L"bool";
+                result = member.Nullable()? L"DBBoolean ": L"bool";
             }
             break;
             case MemberInfoType::SByte:
             {
-                result = L"SByte";
+                result = member.Nullable( ) ? L"DBSByte" : L"SByte";
             }
             break;
             case MemberInfoType::Byte:
             {
-                result = L"Byte";
+                result = member.Nullable( ) ? L"DBByte" : L"Byte";
             }
             break;
             case MemberInfoType::Int16:
             {
-                result = L"Int16";
+                result = member.Nullable( ) ? L"DBInt16" : L"Int16";
             }
             break;
             case MemberInfoType::UInt16:
             {
-                result = L"UInt16";
+                result = member.Nullable( ) ? L"DBUInt16" : L"UInt16";
             }
             break;
             case MemberInfoType::Int32:
             {
-                result = L"Int32";
+                result = member.Nullable( ) ? L"DBInt32" : L"Int32";
             }
             break;
             case MemberInfoType::UInt32:
             {
-                result = L"UInt32";
+                result = member.Nullable( ) ? L"DBUInt32" : L"UInt32";
             }
             break;
             case MemberInfoType::Int64:
             {
-                result = L"Int64";
+                result = member.Nullable( ) ? L"DBInt64" : L"Int64";
             }
             break;
             case MemberInfoType::UInt64:
             {
-                result = L"UInt64";
+                result = member.Nullable( ) ? L"DBUInt64" : L"UInt64";
             }
             break;
             case MemberInfoType::Enum:
@@ -130,63 +130,86 @@ namespace Harlinn::ODBC::Tool
                 auto enumType = enumMemberInfo.EnumType( );
                 if ( enumType )
                 {
-                    result = Format(L"Data::{}",enumType->Name( ));
+                    if ( member.Nullable( ) )
+                    {
+                        result = Format( L"DBEnum<Data::{}>", enumType->Name( ) );
+                    }
+                    else
+                    {
+                        result = Format( L"Data::{}", enumType->Name( ) );
+                    }
                 }
             }
             break;
             case MemberInfoType::Single:
             {
-                result = L"float";
+                result = member.Nullable( ) ? L"DBSingle" : L"float";
             }
             break;
             case MemberInfoType::Double:
             {
-                result = L"double";
+                result = member.Nullable( ) ? L"DBDouble" : L"double";
             }
             break;
             case MemberInfoType::Currency:
             {
-                result = L"Currency";
+                result = member.Nullable( ) ? L"DBCurrency" : L"Currency";
             }
             break;
             case MemberInfoType::DateTime:
             {
-                result = L"DateTime";
+                result = member.Nullable( ) ? L"DBDateTime" : L"DateTime";
             }
             break;
             case MemberInfoType::TimeSpan:
             {
-                result = L"TimeSpan";
+                result = member.Nullable( ) ? L"DBTimeSpan" : L"TimeSpan";
             }
             break;
             case MemberInfoType::Guid:
             {
-                result = L"Guid";
+                result = member.Nullable( ) ? L"DBGuid" : L"Guid";
             }
             break;
             case MemberInfoType::String:
             {
-                result = L"WideString";
+                if ( IsBindable( member ) )
+                {
+                    const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( member );
+                    result = Format( L"FixedDBWideString<{}>", stringMemberInfo.Size( ) );
+                }
+                else
+                {
+                    result = member.Nullable( ) ? L"DBWideString" : L"WideString";
+                }
             }
             break;
             case MemberInfoType::Binary:
             {
-                result = L"std::vector<Byte>";
+                if ( IsBindable( member ) )
+                {
+                    const auto& binaryMemberInfo = static_cast< const StringMemberInfo& >( member );
+                    result = Format( L"FixedDBBinary<{}>", binaryMemberInfo.Size( ) );
+                }
+                else
+                {
+                    result = member.Nullable( ) ? L"DBBinary" : L"Binary";
+                }
             }
             break;
             case MemberInfoType::RowVersion:
             {
-                result = L"Int64";
+                result = member.Nullable( ) ? L"DBInt64" : L"Int64";
             }
             break;
             case MemberInfoType::Reference:
             {
-                result = L"Guid";
+                result = member.Nullable( ) ? L"DBGuid" : L"Guid";
             }
             break;
             case MemberInfoType::TimeSeries:
             {
-                result = L"Guid";
+                result = member.Nullable( ) ? L"DBGuid" : L"Guid";
             }
             break;
         }
@@ -324,54 +347,66 @@ namespace Harlinn::ODBC::Tool
     WideString CppHelper::GetInputArgumentType( const MemberInfo& member )
     {
         WideString result;
-        auto memberInfoType = member.Type( );
-        switch ( memberInfoType )
+        if ( member.Nullable( ) )
         {
-            case MemberInfoType::Currency:
+            result = Format(L"const {}&", GetBaseType( member ));
+        }
+        else
+        {
+            auto memberInfoType = member.Type( );
+            switch ( memberInfoType )
             {
-                result = L"const Currency&";
+                case MemberInfoType::Currency:
+                {
+                    result = L"const Currency&";
+                }
+                break;
+                case MemberInfoType::DateTime:
+                {
+                    result = L"const DateTime&";
+                }
+                break;
+                case MemberInfoType::TimeSpan:
+                {
+                    result = L"const TimeSpan&";
+                }
+                break;
+                case MemberInfoType::Guid:
+                {
+                    result = L"const Guid&";
+                }
+                break;
+                case MemberInfoType::String:
+                {
+                    result = L"const WideString&";
+                }
+                break;
+                case MemberInfoType::Binary:
+                {
+                    result = L"const Binary&";
+                }
+                break;
+                case MemberInfoType::Reference:
+                {
+                    result = L"const Guid&";
+                }
+                break;
+                case MemberInfoType::RowVersion:
+                {
+                    result = L"Int64&";
+                }
+                break;
+                case MemberInfoType::TimeSeries:
+                {
+                    result = L"const Guid&";
+                }
+                break;
+                default:
+                {
+                    result = GetBaseType( member );
+                }
+                break;
             }
-            break;
-            case MemberInfoType::DateTime:
-            {
-                result = L"const DateTime&";
-            }
-            break;
-            case MemberInfoType::TimeSpan:
-            {
-                result = L"const TimeSpan&";
-            }
-            break;
-            case MemberInfoType::Guid:
-            {
-                result = L"const Guid&";
-            }
-            break;
-            case MemberInfoType::String:
-            {
-                result = L"const WideString&";
-            }
-            break;
-            case MemberInfoType::Binary:
-            {
-                result = L"const std::vector<Byte>&";
-            }
-            break;
-            case MemberInfoType::Reference:
-            {
-                result = L"const Guid&";
-            }
-            break;
-            case MemberInfoType::TimeSeries:
-            {
-                result = L"const Guid&";
-            }
-            break;
-            default:
-            {
-                result = GetBaseType( member );
-            }
-            break;
         }
         return result;
     }
@@ -497,58 +532,16 @@ namespace Harlinn::ODBC::Tool
 
     WideString CppHelper::GetMemberFieldType( const MemberInfo& member )
     {
-        WideString result;
-        auto memberInfoType = member.Type( );
-        switch ( memberInfoType )
-        {
-            case MemberInfoType::String:
-            {
-                if ( IsBindable( member ) )
-                {
-                    const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( member );
-                    result = Format( L"std::array<wchar_t,{}>", stringMemberInfo.Size( ) + 1 );
-                }
-                else
-                {
-                    if ( member.Nullable( ) )
-                    {
-                        result = L"std::optional<WideString>";
-                    }
-                    else
-                    {
-                        result = L"WideString";
-                    }
-                }
-            }
-            break;
-            case MemberInfoType::Binary:
-            {
-                if(IsBindable( member ))
-                { 
-                    const auto& binaryMemberInfo = static_cast< const BinaryMemberInfo& >( member );
-                    result = Format(L"std::array<Byte,{}>", binaryMemberInfo.Size() );
-                }
-                else
-                {
-                    if ( member.Nullable( ) )
-                    {
-                        result = L"std::optional<std::vector<Byte>>";
-                    }
-                    else
-                    {
-                        result = L"std::vector<Byte>";
-                    }
-                }
-            }
-            break;
-            default:
-            {
-                result = GetBaseType( member );
-            }
-            break;
-        }
+        WideString result = GetBaseType( member );
         return result;
     }
+
+    WideString CppHelper::GetDataMemberFieldType( const MemberInfo& member )
+    {
+        WideString result = GetBaseType( member );
+        return result;
+    }
+
 
     WideString CppHelper::GetMemberFieldName( const MemberInfo& member )
     {
@@ -563,56 +556,16 @@ namespace Harlinn::ODBC::Tool
     {
         WideString result;
         auto memberInfoType = member.Type( );
-        switch ( memberInfoType )
+        auto baseType = GetBaseType( member );
+        if ( member.Nullable( ) == false && ( memberInfoType <= MemberInfoType::Double || memberInfoType == MemberInfoType::RowVersion ))
         {
-            case MemberInfoType::String:
-            {
-                if ( IsBindable( member ) )
-                {
-                    result = L"std::wstring_view";
-                }
-                else
-                {
-                    if ( member.Nullable( ) )
-                    {
-                        result = L"const std::optional<WideString>&";
-                    }
-                    else
-                    {
-                        result = L"const WideString&";
-                    }
-                }
-            }
-            break;
-            case MemberInfoType::Binary:
-            {
-                if ( IsBindable( member ) )
-                {
-                    result = Format( L"std::span<Byte>");
-                }
-                else
-                {
-                    if ( member.Nullable( ) )
-                    {
-                        result = L"const std::optional<std::vector<Byte>>&";
-                    }
-                    else
-                    {
-                        result = L"const std::vector<Byte>&";
-                    }
-                }
-            }
-            break;
-            default:
-            {
-                result = GetBaseType( member );
-                if ( member.Nullable( ) )
-                {
-                    result = Format( L"std::optional<{}>", result );
-                }
-            }
-            break;
+            result = baseType;
         }
+        else
+        {
+            result = Format( L"const {}&", baseType );
+        }
+
         return result;
     }
     WideString CppHelper::GetMemberSetterName( const MemberInfo& member )
@@ -646,14 +599,10 @@ namespace Harlinn::ODBC::Tool
 
     bool CppHelper::RequiresIndicator( const MemberInfo& member )
     {
-        if ( member.Nullable( ) )
-        {
-            return true;
-        }
         auto memberType = member.Type( );
         if ( memberType == MemberInfoType::String || memberType == MemberInfoType::Binary )
         {
-            return true;
+            return IsBindable( member ) == false;
         }
         return false;
     }
@@ -662,7 +611,14 @@ namespace Harlinn::ODBC::Tool
         auto memberType = member.Type( );
         if ( memberType == MemberInfoType::String || memberType == MemberInfoType::Binary )
         {
-            return Format( L"{}LengthOrNullIndicator_", member.Name( ).FirstToLower( ) );
+            if ( member.Nullable( ) )
+            {
+                return Format( L"{}LengthOrNullIndicator_", member.Name( ).FirstToLower( ) );
+            }
+            else
+            {
+                return Format( L"{}Length_", member.Name( ).FirstToLower( ) );
+            }
         }
 
         return Format( L"{}NullIndicator_", member.Name( ).FirstToLower( ) );
@@ -671,13 +627,9 @@ namespace Harlinn::ODBC::Tool
     bool CppHelper::MemberFieldRequiresDefaultValue( const MemberInfo& member )
     {
         auto memberType = member.Type( );
-        if ( memberType <= MemberInfoType::Double || memberType == MemberInfoType::RowVersion )
+        if ( member.Nullable() == false && ( memberType <= MemberInfoType::Double || memberType == MemberInfoType::RowVersion ) )
         {
             return true;
-        }
-        if ( memberType == MemberInfoType::String || memberType == MemberInfoType::Binary )
-        {
-            return IsBindable( member );
         }
         return false;
     }
@@ -686,5 +638,11 @@ namespace Harlinn::ODBC::Tool
     {
         return Format( L"{}ColumnData", classInfo.Name( ).FirstToUpper( ) );
     }
+
+    WideString CppHelper::GetDataType( const ClassInfo& classInfo )
+    {
+        return Format( L"{}Data", classInfo.Name( ).FirstToUpper( ) );
+    }
+
 
 }

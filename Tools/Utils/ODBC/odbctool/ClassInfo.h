@@ -27,6 +27,7 @@ namespace Harlinn::ODBC::Tool
     {
         std::weak_ptr<ModelInfo> owner_;
         WideString name_;
+        mutable WideString shortName_;
         int id_ = 0;
         bool abstract_ = false;
         ODBC::Guid guid_;
@@ -61,6 +62,8 @@ namespace Harlinn::ODBC::Tool
         {
             return name_;
         }
+
+        const WideString& ShortName( ) const;
 
         int Id( ) const
         {
@@ -212,14 +215,15 @@ namespace Harlinn::ODBC::Tool
 
         std::vector<std::shared_ptr<ClassInfo>> BaseClasses( ) const;
         std::vector<std::shared_ptr<ClassInfo>> BaseClassesAndSelf( ) const;
-
+        std::vector<std::shared_ptr<ClassInfo>> AllDerivedClasses( ) const;
+        std::vector<std::shared_ptr<ClassInfo>> AllDerivedClassesAndSelf( ) const;
         void Load( const XmlElement& classElement );
         void AfterLoad( );
         void AddDerivedClassesToClassList( std::vector<std::shared_ptr<ClassInfo>>& classList ) const;
     private:
         void LoadMembers( const XmlElement& membersElement );
         void AddDerivedClass( const std::shared_ptr<ClassInfo>& derivedClass );
-
+        
 
 
 

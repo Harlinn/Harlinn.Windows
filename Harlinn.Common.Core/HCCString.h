@@ -939,9 +939,13 @@ namespace Harlinn::Common::Core
             }
         }
 
-        BasicString( Data* data ) noexcept
+        BasicString( Data* data, bool addRef = true ) noexcept
             : data_( data )
         {
+            if ( addRef && data )
+            {
+                data->AddRef( );
+            }
         }
     public:
         constexpr BasicString( ) noexcept
@@ -1380,7 +1384,7 @@ namespace Harlinn::Common::Core
 
 
         template<SimpleSpanLike SpanT>
-            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
         BasicString& operator = ( const SpanT& string )
         {
             Assign( string.data(), string.size() );
@@ -4761,6 +4765,271 @@ namespace Harlinn::Common::Core
             }
         }
     }
+
+    namespace Internal
+    {
+        HCC_EXPORT void ThrowFixedStringArgumentToLong( size_t size, size_t maxSize );
+        template<size_t maxSize>
+        inline size_t CheckFixedStringSize( size_t size )
+        {
+            if( size > maxSize )
+            {
+                ThrowFixedStringArgumentToLong( size, maxSize );
+            }
+            return size;
+        }
+    }
+
+
+
+    template<typename CharT, size_t maxSize>
+        requires std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t>
+    class FixedString
+    {
+    public:
+        using value_type = CharT;
+        
+        using CharType = CharT;
+        static constexpr size_t MaxSize = maxSize;
+        using ArrayType = std::array<CharType, MaxSize + 1>;
+
+        using size_type = typename ArrayType::size_type;
+        
+        using difference_type = typename ArrayType::difference_type;
+        using pointer = typename ArrayType::pointer;
+        using const_pointer = typename ArrayType::const_pointer;
+        using reference = typename ArrayType::reference;
+        using const_reference = typename ArrayType::const_reference;
+        using iterator = typename ArrayType::iterator;
+        using const_iterator = typename ArrayType::const_iterator;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+        using StringType = std::conditional_t<std::is_same_v<wchar_t, CharType>, WideString, AnsiString>;
+        using StringViewType = std::conditional_t<std::is_same_v<wchar_t, CharType>, std::wstring_view, std::string_view>;
+    protected:
+        size_t size_ = 0;
+    private:
+        ArrayType data_ = {};
+        static size_t CheckSize( size_t size )
+        {
+            return Internal::CheckFixedStringSize<MaxSize>( size );
+        }
+    public:
+        constexpr FixedString( ) noexcept = default;
+
+        explicit FixedString( const CharType* str, size_t size )
+            : size_( CheckSize( size ) )
+        {
+            MemCopy( data_.data( ), str, size );
+            data_[ size_ ] = static_cast< CharType >( 0 );
+        }
+
+        explicit FixedString( const CharType* str )
+            : size_( CheckSize( LengthOf( str ) ) )
+        {
+            MemCopy( data_.data( ), str, size_ );
+            data_[ size_ ] = static_cast< CharType >( 0 );
+        }
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, CharType>
+        explicit FixedString( const T& str )
+            : size_( CheckSize( str.size( ) ) )
+        {
+            MemCopy( data_.data( ), str.data( ), size_ );
+        }
+
+        void Assign( const CharType* str, size_type length )
+        {
+            size_ = CheckSize( length );
+            MemCopy( data_.data( ), str, length );
+            data_[ size_ ] = static_cast< CharType >( 0 );
+        }
+
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, CharType>
+        FixedString& operator = ( const T& str )
+        {
+            Assign( str.data( ), str.size( ) );
+            return *this;
+        }
+
+        FixedString& operator = ( const CharType* str )
+        {
+            size_ = CheckSize( LengthOf(str) );
+            MemCopy( data_.data( ), str.data( ), size_ );
+            data_[ size_ ] = static_cast< CharType >( 0 );
+            return *this;
+        }
+
+        [[nodiscard]] constexpr size_type size( ) const noexcept
+        {
+            return size_ <= MaxSize ? size_ : 0;
+        }
+        [[nodiscard]] constexpr size_type length( ) const noexcept
+        {
+            return size_ <= MaxSize ? size_ : 0;
+        }
+        [[nodiscard]] constexpr size_type Length( ) const noexcept
+        {
+            return size_ <= MaxSize ? size_ : 0;
+        }
+
+        [[nodiscard]] constexpr bool empty( ) const noexcept
+        {
+            return size( ) == 0;
+        }
+
+        [[nodiscard]] iterator begin( ) noexcept
+        {
+            return data_.begin( );
+        }
+        [[nodiscard]] const_iterator begin( ) const noexcept
+        {
+            return data_.begin( );
+        }
+
+        [[nodiscard]] iterator end( ) noexcept
+        {
+            return data_.begin( ) + size( );
+        }
+        [[nodiscard]] const_iterator end( ) const noexcept
+        {
+            return data_.begin( ) + size( );
+        }
+
+        [[nodiscard]] reverse_iterator rbegin( ) noexcept
+        {
+            return reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] const_reverse_iterator rbegin( ) const noexcept
+        {
+            return const_reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] reverse_iterator rend( ) noexcept
+        {
+            return reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] const_reverse_iterator rend( ) const noexcept
+        {
+            return const_reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] const_iterator cbegin( ) const noexcept
+        {
+            return begin( );
+        }
+
+        [[nodiscard]] const_iterator cend( ) const noexcept
+        {
+            return end( );
+        }
+
+        [[nodiscard]] const_reverse_iterator crbegin( ) const noexcept
+        {
+            return rbegin( );
+        }
+
+        [[nodiscard]] const_reverse_iterator crend( ) const noexcept
+        {
+            return rend( );
+        }
+
+
+        [[nodiscard]] constexpr const CharType* c_str( ) const noexcept
+        {
+            if constexpr ( std::is_same_v<CharType, char> )
+            {
+                return size_ ? data_.data( ) : "";
+            }
+            else
+            {
+                return size_ ? data_.data( ) : L"";
+            }
+        }
+
+        [[nodiscard]] constexpr const CharType* data( ) const noexcept
+        {
+            return data_.data( );
+        }
+        [[nodiscard]] constexpr CharType* data( ) noexcept
+        {
+            return data_.data( );
+        }
+
+        [[nodiscard]] constexpr reference at( size_type index ) noexcept
+        {
+            return data_.at( index );
+        }
+        [[nodiscard]] constexpr const_reference at( size_type index ) const noexcept
+        {
+            return data_.at( index );
+        }
+
+        [[nodiscard]] constexpr reference operator[]( size_type index ) noexcept
+        {
+            return data_[ index ];
+        }
+        [[nodiscard]] constexpr const_reference operator[]( size_type index ) const noexcept
+        {
+            return data_[ index ];
+        }
+        
+        [[nodiscard]] constexpr reference front( ) noexcept
+        {
+            return data_[ 0 ];
+        }
+
+        [[nodiscard]] constexpr const_reference front( ) const noexcept
+        {
+            return data_[ 0 ];
+        }
+
+        [[nodiscard]] constexpr reference back( ) noexcept
+        {
+            return data_[ size( ) - 1 ];
+        }
+
+        [[nodiscard]] constexpr const_reference back( ) const noexcept
+        {
+            return data_[ size( ) - 1 ];
+        }
+
+        
+
+
+        [[nodiscard]] StringType ToString( ) const
+        {
+            if ( size_ )
+            {
+                return StringType( data_.data( ), size_ );
+            }
+            return {};
+        }
+
+        [[nodiscard]] StringViewType ToStringView( ) const
+        {
+            if ( size_ )
+            {
+                return StringViewType( data_.data( ), size_ );
+            }
+            return {};
+        }
+
+
+    };
+
+    template<size_t maxSize>
+    using FixedWideString = FixedString<wchar_t, maxSize>;
+    template<size_t maxSize>
+    using FixedAnsiString = FixedString<char, maxSize>;
+
+
 
     template<WideStringLike StringT>
     inline void ToWideString( const char* source, size_t length, StringT& dest )

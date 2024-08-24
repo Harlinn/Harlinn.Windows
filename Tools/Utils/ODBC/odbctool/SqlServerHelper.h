@@ -30,6 +30,7 @@ namespace Harlinn::ODBC::Tool
         static WideString GetColumnType( const MemberInfo& member );
 
         static WideString GetTableName( const ClassInfo& classInfo );
+        static WideString GetShortName( const ClassInfo& classInfo );
 
         static WideString GetViewName( const ClassInfo& classInfo );
 

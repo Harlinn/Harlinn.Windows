@@ -18,6 +18,34 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    const WideString& ClassInfo::ShortName( ) const
+    {
+        if ( shortName_.length( ) == 0 )
+        {
+            WideString shortName;
+            auto name = Name( ).FirstToUpper( );
+            auto length = name.Length( );
+            const auto* ptr = name.c_str( );
+
+            for ( size_t i = 0; i < length; i++ )
+            {
+                if ( iswupper( ptr[ i ] ) || iswdigit( ptr[ i ] ) )
+                {
+                    shortName += ptr[ i ];
+                    for ( ; i < length; i++ )
+                    {
+                        if ( iswupper( ptr[ i ] ) == 0 )
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            shortName_ = shortName;
+        }
+        return shortName_;
+    }
+
     std::vector<std::shared_ptr<ClassInfo>> ClassInfo::BaseClasses( ) const
     {
         std::vector<std::shared_ptr<ClassInfo>> result;
@@ -40,6 +68,21 @@ namespace Harlinn::ODBC::Tool
         return result;
     }
 
+    std::vector<std::shared_ptr<ClassInfo>> ClassInfo::AllDerivedClasses( ) const
+    {
+        std::vector<std::shared_ptr<ClassInfo>> result;
+        AddDerivedClassesToClassList( result );
+        return result;
+    }
+    std::vector<std::shared_ptr<ClassInfo>> ClassInfo::AllDerivedClassesAndSelf( ) const
+    {
+        std::vector<std::shared_ptr<ClassInfo>> result;
+        result.emplace_back( std::const_pointer_cast< ClassInfo >( shared_from_this() ) );
+        AddDerivedClassesToClassList( result );
+        return result;
+    }
+
+
     void ClassInfo::Load( const XmlElement& classElement )
     {
         
@@ -56,6 +99,10 @@ namespace Harlinn::ODBC::Tool
         if ( classElement.HasAttribute( L"displayname" ) )
         {
             displayName_ = classElement.Read<WideString>( L"displayname" );
+        }
+        if ( classElement.HasAttribute( L"shortname" ) )
+        {
+            shortName_ = classElement.Read<WideString>( L"shortname" );
         }
         if ( classElement.HasAttribute( L"description" ) )
         {

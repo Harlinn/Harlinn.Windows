@@ -494,10 +494,6 @@ AS
   [AisTransceiverConfiguration].[ExcludeSendAisA],
   [AisTransceiverConfiguration].[EnableSendBaseStationAlarms],
   [AisTransceiverConfiguration].[AisWebConfig],
-  [AisTransceiverConfiguration].[EnableBaseStation600],
-  [AisTransceiverConfiguration].[BaseStation600IPAddress],
-  [AisTransceiverConfiguration].[BaseStation600Port],
-  [AisTransceiverConfiguration].[EsdInputCount],
   [AisTransceiverConfiguration].[StoreReceivedSentences],
   [AisTransceiverConfiguration].[StoreSentMessages],
   [AisTransceiverConfiguration].[StoreUnsentMessages]

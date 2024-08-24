@@ -504,7 +504,7 @@
       <int32 name="RadioStatus"/>
     </members>
   </class>
-  <class name="AisBinaryAcknowledgeMessage" base="AisMessage">
+  <class name="AisBinaryAcknowledgeMessage" base="AisMessage" shortname="ABAC">
     <members>
       <int32 name="Spare"/>
       <int32 name="SequenceNumber1"/>
@@ -824,10 +824,6 @@
       <string name="ExcludeSendAisA" size="unlimited"/>
       <boolean name="EnableSendBaseStationAlarms"/>
       <string name="AisWebConfig" size="127"/>
-      <boolean name="EnableBaseStation600"/>
-      <string name="BaseStation600IPAddress" size="127"/>
-      <int32 name="BaseStation600Port"/>
-      <int32 name="EsdInputCount"/>
       <boolean name="StoreReceivedSentences"/>
       <boolean name="StoreSentMessages"/>
       <boolean name="StoreUnsentMessages"/>
@@ -988,11 +984,11 @@
       <double name="ZoomSpeed" nullable="true"/>
     </members>
   </class>
-  <class name="CameraCommandReleasePTZOwnership" base="CameraCommand" displayname="Camera Command">
+  <class name="CameraCommandReleasePTZOwnership" base="CameraCommand" displayname="Camera Command" shortname="CRLP">
     <members>
     </members>
   </class>
-  <class name="CameraCommandRequestPTZOwnership" base="CameraCommand" displayname="Camera Command">
+  <class name="CameraCommandRequestPTZOwnership" base="CameraCommand" displayname="Camera Command" shortname="CRQP">
     <members>
     </members>
   </class>
@@ -1017,12 +1013,12 @@
       <boolean name="Enabled"/>
     </members>
   </class>
-  <class name="CameraCommandSetWasher" base="CameraCommand" displayname="Camera Command">
+  <class name="CameraCommandSetWasher" base="CameraCommand" displayname="Camera Command" shortname="CWA">
     <members>
       <boolean name="Enabled"/>
     </members>
   </class>
-  <class name="CameraCommandSetWiper" base="CameraCommand" displayname="Camera Command">
+  <class name="CameraCommandSetWiper" base="CameraCommand" displayname="Camera Command" shortname="CWI">
     <members>
       <boolean name="Enabled"/>
     </members>
@@ -1375,14 +1371,14 @@
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
-  <class name="RadioType" base="DeviceType" displayname="Device Type">
+  <class name="RadioType" base="DeviceType" displayname="Device Type" shortname="RAT">
     <members>
       <string name="Name" size="127" description="A name that uniquely identifies this `RadioType`"/>
       <collection name="Radios" type="Radio" member="Type"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
-  <class name="RadomeType" base="DeviceType" displayname="Device Type">
+  <class name="RadomeType" base="DeviceType" displayname="Device Type" shortname="ROT">
     <members>
       <string name="Name" size="127" description="A name that uniquely identifies this `RadomeType`"/>
       <collection name="Radomes" type="Radome" member="Type"/>
@@ -1708,7 +1704,7 @@
     </members>
     <index name="Type" fields="Type"/>
   </class>
-  <class name="Radio" base="Device">
+  <class name="Radio" base="Device" shortname="RDI">
     <members>
       <reference name="Type" type="RadioType"/>
       <collection name="Commands" type="RadioCommand" member="Radio"/>
@@ -1717,7 +1713,7 @@
     </members>
     <index name="Type" fields="Type"/>
   </class>
-  <class name="Radome" base="Device" description="A Radome device.">
+  <class name="Radome" base="Device" description="A Radome device." shortname="RDO">
     <members>
       <reference name="Type" type="RadomeType"/>
       <reference name="Radar" type="Radar"/>
@@ -1854,7 +1850,7 @@
     <index name="Name" fields="Name" unique="true"/>
     <index name="Type" fields="Type"/>
   </class>
-  <class name="Vessel" base="TrackableItem">
+  <class name="Vessel" base="TrackableItem" shortname="VSL">
     <members>
       <string name="Name" size="127"/>
       <reference name="Type" type="VesselType"/>
@@ -2407,12 +2403,12 @@
       <binary name="Value" size="unlimited"/>
     </members>
   </class>
-  <class name="BooleanProperty" base="Property">
+  <class name="BooleanProperty" base="Property" shortname="BOP">
     <members>
       <boolean name="Value"/>
     </members>
   </class>
-  <class name="ByteProperty" base="Property">
+  <class name="ByteProperty" base="Property" shortname="BYP">
     <members>
       <byte name="Value"/>
     </members>
@@ -2458,12 +2454,12 @@
       <sbyte name="Value"/>
     </members>
   </class>
-  <class name="SingleProperty" base="Property">
+  <class name="SingleProperty" base="Property" shortname="SIP">
     <members>
       <single name="Value"/>
     </members>
   </class>
-  <class name="StringProperty" base="Property">
+  <class name="StringProperty" base="Property" shortname="STP">
     <members>
       <string name="Value" size="100"/>
     </members>
@@ -2478,13 +2474,13 @@
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="BooleanTimeseriesProperty" base="TimeseriesProperty">
+  <class name="BooleanTimeseriesProperty" base="TimeseriesProperty" shortname="BOTP">
     <members>
       <reference name="Timeseries" type="BooleanTimeseries"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="ByteTimeseriesProperty" base="TimeseriesProperty">
+  <class name="ByteTimeseriesProperty" base="TimeseriesProperty" shortname="BYTP">
     <members>
       <reference name="Timeseries" type="ByteTimeseries"/>
     </members>
@@ -2496,7 +2492,7 @@
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="DoubleTimeseriesProperty" base="TimeseriesProperty">
+  <class name="DoubleTimeseriesProperty" base="TimeseriesProperty" shortname="DOTP">
     <members>
       <reference name="Timeseries" type="DoubleTimeseries"/>
     </members>
@@ -2532,19 +2528,19 @@
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="SByteTimeseriesProperty" base="TimeseriesProperty">
+  <class name="SByteTimeseriesProperty" base="TimeseriesProperty" shortname="SBTP">
     <members>
       <reference name="Timeseries" type="SByteTimeseries"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="SingleTimeseriesProperty" base="TimeseriesProperty">
+  <class name="SingleTimeseriesProperty" base="TimeseriesProperty" shortname="SITP">
     <members>
       <reference name="Timeseries" type="SingleTimeseries"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="StringTimeseriesProperty" base="TimeseriesProperty">
+  <class name="StringTimeseriesProperty" base="TimeseriesProperty" shortname="STTP">
     <members>
       <reference name="Timeseries" type="StringTimeseries"/>
     </members>
@@ -2610,12 +2606,12 @@
       <binary name="DefaultValue" size="unlimited"/>
     </members>
   </class>
-  <class name="BooleanPropertyDefinition" base="PropertyDefinition">
+  <class name="BooleanPropertyDefinition" base="PropertyDefinition" shortname="BOPD">
     <members>
       <boolean name="DefaultValue"/>
     </members>
   </class>
-  <class name="BytePropertyDefinition" base="PropertyDefinition">
+  <class name="BytePropertyDefinition" base="PropertyDefinition" shortname="BYPD">
     <members>
       <byte name="DefaultValue"/>
       <byte name="MinValue"/>
@@ -2670,21 +2666,21 @@
     <index name="DefaultValue" fields="DefaultValue"/>
     <index name="ReferencedElementType" fields="ReferencedElementType"/>
   </class>
-  <class name="SBytePropertyDefinition" base="PropertyDefinition">
+  <class name="SBytePropertyDefinition" base="PropertyDefinition" shortname="SBPD">
     <members>
       <sbyte name="DefaultValue"/>
       <sbyte name="MinValue"/>
       <sbyte name="MaxValue"/>
     </members>
   </class>
-  <class name="SinglePropertyDefinition" base="PropertyDefinition">
+  <class name="SinglePropertyDefinition" base="PropertyDefinition" shortname="SIPD">
     <members>
       <single name="DefaultValue"/>
       <single name="MinValue"/>
       <single name="MaxValue"/>
     </members>
   </class>
-  <class name="StringPropertyDefinition" base="PropertyDefinition">
+  <class name="StringPropertyDefinition" base="PropertyDefinition" shortname="STPD">
     <members>
       <string name="DefaultValue" size="100"/>
       <string name="Pattern" size="100"/>
@@ -2698,11 +2694,11 @@
     <members>
     </members>
   </class>
-  <class name="BooleanTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
+  <class name="BooleanTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="BOTPD">
     <members>
     </members>
   </class>
-  <class name="ByteTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
+  <class name="ByteTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="BYTPD">
     <members>
       <byte name="MinValue"/>
       <byte name="MaxValue"/>
@@ -2714,7 +2710,7 @@
       <string name="MaxValue" size="100"/>
     </members>
   </class>
-  <class name="DoubleTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
+  <class name="DoubleTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="DOTPD">
     <members>
       <double name="MinValue"/>
       <double name="MaxValue"/>
@@ -2748,19 +2744,19 @@
     </members>
     <index name="ReferencedElementType" fields="ReferencedElementType"/>
   </class>
-  <class name="SByteTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
+  <class name="SByteTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="SBTPD">
     <members>
       <sbyte name="MinValue"/>
       <sbyte name="MaxValue"/>
     </members>
   </class>
-  <class name="SingleTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
+  <class name="SingleTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="SITPD">
     <members>
       <single name="MinValue"/>
       <single name="MaxValue"/>
     </members>
   </class>
-  <class name="StringTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
+  <class name="StringTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="STTPD">
     <members>
       <string name="Pattern" size="100"/>
     </members>
@@ -3173,7 +3169,7 @@
       <collection name="Properties" type="BinaryTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
-  <class name="BooleanTimeseries" base="Timeseries">
+  <class name="BooleanTimeseries" base="Timeseries" shortname="BOTS">
     <members>
       <collection name="Values" type="BooleanTimeseriesValue" member="Timeseries"/>
       <collection name="Properties" type="BooleanTimeseriesProperty" member="Timeseries"/>
@@ -3245,7 +3241,7 @@
       <reference name="Service" type="MediaService"/>
     </members>
   </class>
-  <class name="ByteTimeseries" base="Timeseries">
+  <class name="ByteTimeseries" base="Timeseries" shortname="BYTS">
     <members>
       <collection name="Values" type="ByteTimeseriesValue" member="Timeseries"/>
       <collection name="Properties" type="ByteTimeseriesProperty" member="Timeseries"/>
@@ -3263,17 +3259,17 @@
       <collection name="Properties" type="DoubleTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
-  <class name="GNSSAltitudeTimeseries" base="DoubleTimeseries" displayname="Altitude">
+  <class name="GNSSAltitudeTimeseries" base="DoubleTimeseries" displayname="Altitude" shortname="GATS">
     <members>
       <reference name="GNSSDevice" type="GNSSDevice"/>
     </members>
   </class>
-  <class name="GNSSLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude">
+  <class name="GNSSLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude" shortname="GLATS">
     <members>
       <reference name="GNSSDevice" type="GNSSDevice"/>
     </members>
   </class>
-  <class name="GNSSLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude">
+  <class name="GNSSLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude" shortname="GLOTS">
     <members>
       <reference name="GNSSDevice" type="GNSSDevice"/>
     </members>
@@ -3320,12 +3316,12 @@
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
-  <class name="RadarLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude">
+  <class name="RadarLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude" shortname="RLATS">
     <members>
       <reference name="Radar" type="Radar"/>
     </members>
   </class>
-  <class name="RadarLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude">
+  <class name="RadarLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude" shortname="RLOTS">
     <members>
       <reference name="Radar" type="Radar"/>
     </members>
@@ -3340,7 +3336,7 @@
       <reference name="Radome" type="Radome"/>
     </members>
   </class>
-  <class name="RadomeTemperatureTimeseries" base="DoubleTimeseries" displayname="Radome Temperature" description="Tracks the Temperature of a Radome.">
+  <class name="RadomeTemperatureTimeseries" base="DoubleTimeseries" displayname="Radome Temperature" description="Tracks the Temperature of a Radome." shortname="RTETS">
     <members>
       <reference name="Radome" type="Radome"/>
     </members>
@@ -3350,12 +3346,12 @@
       <reference name="Vessel" type="Vessel"/>
     </members>
   </class>
-  <class name="ViewLatitudeTimeseries" base="DoubleTimeseries">
+  <class name="ViewLatitudeTimeseries" base="DoubleTimeseries" shortname="VLATS">
     <members>
       <reference name="View" type="View"/>
     </members>
   </class>
-  <class name="ViewLongitudeTimeseries" base="DoubleTimeseries">
+  <class name="ViewLongitudeTimeseries" base="DoubleTimeseries" shortname="VLOTS">
     <members>
       <reference name="View" type="View"/>
     </members>
@@ -3461,7 +3457,7 @@
       <reference name="Radar" type="Radar"/>
     </members>
   </class>
-  <class name="RadarPulseTimeseries" base="Int32Timeseries" displayname="Radar Pulse">
+  <class name="RadarPulseTimeseries" base="Int32Timeseries" displayname="Radar Pulse" shortname="RAPTS">
     <members>
       <reference name="Radar" type="Radar"/>
     </members>
@@ -3491,7 +3487,7 @@
       <reference name="Radar" type="Radar"/>
     </members>
   </class>
-  <class name="RadarTuningTimeseries" base="Int32Timeseries" displayname="Blank Tuning">
+  <class name="RadarTuningTimeseries" base="Int32Timeseries" displayname="Blank Tuning" shortname="RATUTS">
     <members>
       <reference name="Radar" type="Radar"/>
     </members>
@@ -3529,13 +3525,13 @@
       <collection name="Properties" type="SByteTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
-  <class name="SingleTimeseries" base="Timeseries">
+  <class name="SingleTimeseries" base="Timeseries" shortname="SITS">
     <members>
       <collection name="Values" type="SingleTimeseriesValue" member="Timeseries"/>
       <collection name="Properties" type="SingleTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
-  <class name="StringTimeseries" base="Timeseries">
+  <class name="StringTimeseries" base="Timeseries" shortname="STTS">
     <members>
       <collection name="Values" type="StringTimeseriesValue" member="Timeseries"/>
       <collection name="Properties" type="StringTimeseriesProperty" member="Timeseries"/>

@@ -1494,7 +1494,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        StgMedium( StgMedium&& other )
+        StgMedium( StgMedium&& other ) noexcept
             : data( other.data )
         {
             other.data = nullptr;
@@ -1513,10 +1513,10 @@ namespace Harlinn::Common::Core
             }
         }
 
-        StgMedium& operator = ( StgMedium&& other )
+        StgMedium& operator = ( StgMedium&& other ) noexcept
         {
-            data = other.data;
-            other.data = nullptr;
+            std::swap(data, other.data);
+            return *this;
         }
 
         StgMedium& operator = ( STGMEDIUM* theData )
@@ -1531,6 +1531,7 @@ namespace Harlinn::Common::Core
                 }
                 data = theData;
             }
+            return *this;
         }
 
         STGMEDIUM* Data( ) const
@@ -5380,7 +5381,7 @@ namespace Harlinn::Common::Core
         };
         Data* data;
 
-        void Clear( )
+        void Clear( ) noexcept
         {
             if ( data )
             {
@@ -5417,7 +5418,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        ConnectData( ConnectData&& other )
+        ConnectData( ConnectData&& other ) noexcept
             : data( other.data )
         {
             other.data = nullptr;
@@ -5443,7 +5444,7 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        ConnectData& operator = ( ConnectData&& other )
+        ConnectData& operator = ( ConnectData&& other ) noexcept
         {
             if ( data != other.data )
             {
@@ -5454,7 +5455,7 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        operator bool( ) const
+        operator bool( ) const noexcept
         {
             return data != nullptr;
         }

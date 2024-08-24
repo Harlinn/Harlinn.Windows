@@ -1773,10 +1773,6 @@ CREATE OR ALTER PROCEDURE [AisTransceiverConfigurationUpdate]
   @ExcludeSendAisA [nvarchar](max),
   @EnableSendBaseStationAlarms [bit],
   @AisWebConfig [nvarchar](127),
-  @EnableBaseStation600 [bit],
-  @BaseStation600IPAddress [nvarchar](127),
-  @BaseStation600Port [int],
-  @EsdInputCount [int],
   @StoreReceivedSentences [bit],
   @StoreSentMessages [bit],
   @StoreUnsentMessages [bit]
@@ -1792,7 +1788,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [AisTransceiverConfiguration] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[UserName] = @UserName,[Password] = @Password,[Latitude] = @Latitude,[Longitude] = @Longitude,[AisProviderLoginURL] = @AisProviderLoginURL,[ComPort] = @ComPort,[BaudRate] = @BaudRate,[FilterByArea] = @FilterByArea,[UpperLeftCornerLatitude] = @UpperLeftCornerLatitude,[UpperLeftCornerLongitude] = @UpperLeftCornerLongitude,[BottomRightCornerLatitude] = @BottomRightCornerLatitude,[BottomRightCornerLongitude] = @BottomRightCornerLongitude,[AisProviderIPAddress] = @AisProviderIPAddress,[AisProviderPort] = @AisProviderPort,[UseLogin] = @UseLogin,[AisProviderLoginPort] = @AisProviderLoginPort,[CanSendAISMessage] = @CanSendAISMessage,[TextMessageHeader] = @TextMessageHeader,[Urls] = @Urls,[UdpPort] = @UdpPort,[ConnectionType] = @ConnectionType,[EnableRefreshAidToNavigationIn30sec] = @EnableRefreshAidToNavigationIn30sec,[EnableAidToNavigationFromFile] = @EnableAidToNavigationFromFile,[AidToNavigationHeader] = @AidToNavigationHeader,[SendingMMSI] = @SendingMMSI,[SourceUpdateRate] = @SourceUpdateRate,[EnableRefreshStayingStillTargetIn30sec] = @EnableRefreshStayingStillTargetIn30sec,[ExcludeSendAisBaseStation] = @ExcludeSendAisBaseStation,[ExcludeSendAisA] = @ExcludeSendAisA,[EnableSendBaseStationAlarms] = @EnableSendBaseStationAlarms,[AisWebConfig] = @AisWebConfig,[EnableBaseStation600] = @EnableBaseStation600,[BaseStation600IPAddress] = @BaseStation600IPAddress,[BaseStation600Port] = @BaseStation600Port,[EsdInputCount] = @EsdInputCount,[StoreReceivedSentences] = @StoreReceivedSentences,[StoreSentMessages] = @StoreSentMessages,[StoreUnsentMessages] = @StoreUnsentMessages
+      UPDATE [AisTransceiverConfiguration] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[UserName] = @UserName,[Password] = @Password,[Latitude] = @Latitude,[Longitude] = @Longitude,[AisProviderLoginURL] = @AisProviderLoginURL,[ComPort] = @ComPort,[BaudRate] = @BaudRate,[FilterByArea] = @FilterByArea,[UpperLeftCornerLatitude] = @UpperLeftCornerLatitude,[UpperLeftCornerLongitude] = @UpperLeftCornerLongitude,[BottomRightCornerLatitude] = @BottomRightCornerLatitude,[BottomRightCornerLongitude] = @BottomRightCornerLongitude,[AisProviderIPAddress] = @AisProviderIPAddress,[AisProviderPort] = @AisProviderPort,[UseLogin] = @UseLogin,[AisProviderLoginPort] = @AisProviderLoginPort,[CanSendAISMessage] = @CanSendAISMessage,[TextMessageHeader] = @TextMessageHeader,[Urls] = @Urls,[UdpPort] = @UdpPort,[ConnectionType] = @ConnectionType,[EnableRefreshAidToNavigationIn30sec] = @EnableRefreshAidToNavigationIn30sec,[EnableAidToNavigationFromFile] = @EnableAidToNavigationFromFile,[AidToNavigationHeader] = @AidToNavigationHeader,[SendingMMSI] = @SendingMMSI,[SourceUpdateRate] = @SourceUpdateRate,[EnableRefreshStayingStillTargetIn30sec] = @EnableRefreshStayingStillTargetIn30sec,[ExcludeSendAisBaseStation] = @ExcludeSendAisBaseStation,[ExcludeSendAisA] = @ExcludeSendAisA,[EnableSendBaseStationAlarms] = @EnableSendBaseStationAlarms,[AisWebConfig] = @AisWebConfig,[StoreReceivedSentences] = @StoreReceivedSentences,[StoreSentMessages] = @StoreSentMessages,[StoreUnsentMessages] = @StoreUnsentMessages
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;

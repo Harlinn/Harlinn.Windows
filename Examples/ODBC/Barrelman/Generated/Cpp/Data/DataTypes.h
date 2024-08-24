@@ -4,7 +4,7 @@
 
 #include "Data/Enums.h"
 #include <HODBC.h>
-#include <HCCBinaryWriter.h>
+#include <HCCData.h>
 
 
 namespace Barrelman::Data
@@ -12,6 +12,10 @@ namespace Barrelman::Data
     using namespace Harlinn;
     using namespace Harlinn::ODBC;
     using namespace Harlinn::Common::Core;
+
+template<typename ObjectT, typename KeyT>
+    requires std::is_enum_v<ObjectT>
+using BaseData = Harlinn::Common::Core::Data::BaseData<ObjectT, KeyT>;
 
     class BaseColumnData
     {
@@ -26,33 +30,11 @@ namespace Barrelman::Data
         {
             throw Exception( L"Bounds exceeded." );
         }
-        template<size_t N>
-        static void Assign( const WideString& str, std::array<wchar_t, N>& destination, SQLLEN& lengthOrNullIndicator )
-        {
-            auto strLength = str.Length( );
-            if ( strLength > N - 1 )
-            {
-                ThrowBoundsExceededException( );
-            }
-            wmemcpy_s( destination.data( ), N, str.data( ), strLength );
-            lengthOrNullIndicator = static_cast< SQLLEN >( strLength );
-        }
         static void Assign( const WideString& str, WideString& destination, SQLLEN& lengthOrNullIndicator )
         {
             auto strLength = str.Length( );
             destination = str;
             lengthOrNullIndicator = static_cast< SQLLEN >( strLength );
-        }
-        template<size_t N>
-        static void Assign( const std::vector<Byte>& data, std::array<Byte, N>& destination, SQLLEN& lengthOrNullIndicator )
-        {
-            auto dataLength = data.size( );
-            if ( dataLength > N )
-            {
-                ThrowBoundsExceededException( );
-            }
-            memcpy_s( destination.data( ), N, data.data( ), dataLength );
-            lengthOrNullIndicator = static_cast< SQLLEN >( dataLength );
         }
         static void Assign( const std::vector<Byte>& data, std::vector<Byte>& destination, SQLLEN& lengthOrNullIndicator )
         {
@@ -60,82 +42,149 @@ namespace Barrelman::Data
             destination = data;
             lengthOrNullIndicator = static_cast< SQLLEN >( dataLength );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, bool* value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, bool& value )
         {
-            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( value ), lengthOrNullIndicator );
+            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( &value ), nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, SByte * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBBoolean& value )
         {
-            statement.BindSByteColumn( fieldId, value, lengthOrNullIndicator );
+            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( value.data() ), value.Indicator() );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Byte * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, SByte& value )
         {
-            statement.BindByteColumn( fieldId, value, lengthOrNullIndicator );
+            statement.BindSByteColumn( fieldId, &value, nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Int16 * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBSByte& value )
         {
-            statement.BindInt16Column( fieldId, value, lengthOrNullIndicator );
+            statement.BindSByteColumn( fieldId, value.data( ), value.Indicator( ) );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, UInt16 * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Byte& value )
         {
-            statement.BindUInt16Column( fieldId, value, lengthOrNullIndicator );
+            statement.BindByteColumn( fieldId, &value, nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Int32 * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBByte& value )
         {
-            statement.BindInt32Column( fieldId, value, lengthOrNullIndicator );
+            statement.BindByteColumn( fieldId, value.data(), value.Indicator( ) );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, UInt32 * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Int16& value )
         {
-            statement.BindUInt32Column( fieldId, value, lengthOrNullIndicator );
+            statement.BindInt16Column( fieldId, &value, nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Int64 * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBInt16& value )
         {
-            statement.BindInt64Column( fieldId, value, lengthOrNullIndicator );
+            statement.BindInt16Column( fieldId, value.data(), value.Indicator( ) );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, UInt64 * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, UInt16& value )
         {
-            statement.BindUInt64Column( fieldId, value, lengthOrNullIndicator );
+            statement.BindUInt16Column( fieldId, &value, nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, float* value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBUInt16& value )
         {
-            statement.BindSingleColumn( fieldId, value, lengthOrNullIndicator );
+            statement.BindUInt16Column( fieldId, value.data( ), value.Indicator( ) );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, double* value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Int32& value )
         {
-            statement.BindDoubleColumn( fieldId, value, lengthOrNullIndicator );
+            statement.BindInt32Column( fieldId, &value, nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Currency * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBInt32& value )
         {
-            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value ), lengthOrNullIndicator );
+            statement.BindInt32Column( fieldId, value.data( ), value.Indicator( ) );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, DateTime * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, UInt32& value )
         {
-            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value ), lengthOrNullIndicator );
+            statement.BindUInt32Column( fieldId, &value, nullptr );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, TimeSpan * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBUInt32& value )
         {
-            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value ), lengthOrNullIndicator );
+            statement.BindUInt32Column( fieldId, value.data( ), value.Indicator( ) );
         }
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Guid * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Int64& value )
         {
-            statement.BindGuidColumn( fieldId, value, lengthOrNullIndicator );
+            statement.BindInt64Column( fieldId, &value, nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBInt64& value )
+        {
+            statement.BindInt64Column( fieldId, value.data( ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, UInt64& value )
+        {
+            statement.BindUInt64Column( fieldId, &value, nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBUInt64& value )
+        {
+            statement.BindUInt64Column( fieldId, value.data( ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, float& value )
+        {
+            statement.BindSingleColumn( fieldId, &value, nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBSingle& value )
+        {
+            statement.BindSingleColumn( fieldId, value.data( ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, double& value )
+        {
+            statement.BindDoubleColumn( fieldId, &value, nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBDouble& value )
+        {
+            statement.BindDoubleColumn( fieldId, value.data( ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Currency& value )
+        {
+            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( &value ), nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBCurrency& value )
+        {
+            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value.data() ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DateTime& value )
+        {
+            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( &value ), nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBDateTime& value )
+        {
+            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value.data() ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, TimeSpan& value )
+        {
+            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( &value ), nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBTimeSpan& value )
+        {
+            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value.data() ), value.Indicator( ) );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Guid& value )
+        {
+            statement.BindGuidColumn( fieldId, &value, nullptr );
+        }
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBGuid& value )
+        {
+            statement.BindGuidColumn( fieldId, value.data( ), value.Indicator( ) );
         }
         template<typename T>
             requires std::is_enum_v<T>
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, T * value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, T& value )
         {
             using IntegerType = std::underlying_type_t<T>;
-            Bind( statement, fieldId, reinterpret_cast< IntegerType* >( value ), lengthOrNullIndicator );
+            statement.BindColumn( fieldId, NativeType::Int32, &value, sizeof( IntegerType ), nullptr );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, DBEnum<T>& value )
+        {
+            using IntegerType = std::underlying_type_t<T>;
+            statement.BindColumn( fieldId, NativeType::Int32, value.data( ), sizeof( IntegerType ), value.Indicator( ) );
         }
         template<size_t N>
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, std::array<wchar_t, N>*value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, FixedDBWideString<N>& value )
         {
-            statement.BindColumn( fieldId, NativeType::WideChar, value->data( ), static_cast< SQLLEN >( N * sizeof( wchar_t ) ), lengthOrNullIndicator );
+            statement.BindColumn( fieldId, NativeType::WideChar, value.data( ), static_cast< SQLLEN >( N * sizeof( wchar_t ) ), value.Indicator( ) );
         }
         template<size_t N>
-        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, std::array<Byte, N>*value, SQLLEN * lengthOrNullIndicator = nullptr )
+        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, FixedDBBinary<N>& value )
         {
-            statement.BindColumn( fieldId, NativeType::Binary, value->data( ), static_cast< SQLLEN >( N ), lengthOrNullIndicator );
+            statement.BindColumn( fieldId, NativeType::Binary, value.data( ), static_cast< SQLLEN >( N ), value.Indicator( ) );
         }
         template<IO::StreamWriter StreamT, typename T>
             requires std::is_same_v<Currency, T> || std::is_same_v<DateTime, T> || std::is_same_v<TimeSpan, T> || std::is_same_v<Guid, T> || std::is_floating_point_v<T> || std::is_integral_v<T> || std::is_enum_v<T>
@@ -229,8 +278,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -248,7 +296,7 @@ namespace Barrelman::Data
             return Kind::AircraftType;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -260,27 +308,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -288,7 +332,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -324,7 +368,7 @@ namespace Barrelman::Data
             return Kind::AisMessage;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -336,11 +380,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid AisTransceiver( ) const
+        const Guid& AisTransceiver( ) const
         {
             return aisTransceiver_;
         }
@@ -348,7 +392,7 @@ namespace Barrelman::Data
         {
             aisTransceiver_ = aisTransceiver;
         }
-        DateTime ReceivedTimestamp( ) const
+        const DateTime& ReceivedTimestamp( ) const
         {
             return receivedTimestamp_;
         }
@@ -372,7 +416,7 @@ namespace Barrelman::Data
         {
             repeat_ = repeat;
         }
-        Guid Mmsi( ) const
+        const Guid& Mmsi( ) const
         {
             return mmsi_;
         }
@@ -382,13 +426,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, &aisTransceiver_);
-            Bind(statement, RECEIVEDTIMESTAMP_FIELD_ID, &receivedTimestamp_);
-            Bind(statement, MESSAGESEQUENCENUMBER_FIELD_ID, &messageSequenceNumber_);
-            Bind(statement, REPEAT_FIELD_ID, &repeat_);
-            Bind(statement, MMSI_FIELD_ID, &mmsi_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, RECEIVEDTIMESTAMP_FIELD_ID, receivedTimestamp_);
+            Bind(statement, MESSAGESEQUENCENUMBER_FIELD_ID, messageSequenceNumber_);
+            Bind(statement, REPEAT_FIELD_ID, repeat_);
+            Bind(statement, MMSI_FIELD_ID, mmsi_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -409,8 +453,7 @@ namespace Barrelman::Data
     class AidToNavigationReportMessageColumnData : public AisMessageColumnData
     {
         Data::NavigationalAidType navigationalAidType_ = Data::NavigationalAidType::NotSpecified;
-        std::array<wchar_t,101> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> name_;
         Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
@@ -426,8 +469,7 @@ namespace Barrelman::Data
         bool virtualAid_ = false;
         bool assigned_ = false;
         Int32 spare_ = 0;
-        std::array<wchar_t,101> nameExtension_ = {};
-        SQLLEN nameExtensionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> nameExtension_;
     public:
         using Base = AisMessageColumnData;
 
@@ -468,17 +510,13 @@ namespace Barrelman::Data
         {
             navigationalAidType_ = navigationalAidType;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<100>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         Data::PositionAccuracy PositionAccuracy( ) const
         {
@@ -600,40 +638,36 @@ namespace Barrelman::Data
         {
             spare_ = spare;
         }
-        std::wstring_view NameExtension( ) const
+        const FixedDBWideString<100>& NameExtension( ) const
         {
-            if(nameExtensionLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(nameExtension_.data(),static_cast<size_t>( nameExtensionLengthOrNullIndicator_ ));
-            }
-            return {};
+            return nameExtension_;
         }
         void SetNameExtension( const WideString& nameExtension )
         {
-            Assign(nameExtension, nameExtension_, nameExtensionLengthOrNullIndicator_);
+            nameExtension_ = nameExtension;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAVIGATIONALAIDTYPE_FIELD_ID, &navigationalAidType_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, DIMENSIONTOBOW_FIELD_ID, &dimensionToBow_);
-            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, &dimensionToStern_);
-            Bind(statement, DIMENSIONTOPORT_FIELD_ID, &dimensionToPort_);
-            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, &dimensionToStarboard_);
-            Bind(statement, POSITIONFIXTYPE_FIELD_ID, &positionFixType_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, OFFPOSITION_FIELD_ID, &offPosition_);
-            Bind(statement, REGIONALRESERVED_FIELD_ID, &regionalReserved_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, VIRTUALAID_FIELD_ID, &virtualAid_);
-            Bind(statement, ASSIGNED_FIELD_ID, &assigned_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, NAMEEXTENSION_FIELD_ID, &nameExtension_, &nameExtensionLengthOrNullIndicator_);
+            Bind(statement, NAVIGATIONALAIDTYPE_FIELD_ID, navigationalAidType_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, DIMENSIONTOBOW_FIELD_ID, dimensionToBow_);
+            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, dimensionToStern_);
+            Bind(statement, DIMENSIONTOPORT_FIELD_ID, dimensionToPort_);
+            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, dimensionToStarboard_);
+            Bind(statement, POSITIONFIXTYPE_FIELD_ID, positionFixType_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, OFFPOSITION_FIELD_ID, offPosition_);
+            Bind(statement, REGIONALRESERVED_FIELD_ID, regionalReserved_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, VIRTUALAID_FIELD_ID, virtualAid_);
+            Bind(statement, ASSIGNED_FIELD_ID, assigned_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, NAMEEXTENSION_FIELD_ID, nameExtension_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -641,7 +675,7 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, navigationalAidType_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, positionAccuracy_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
@@ -657,7 +691,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, virtualAid_);
             WriteColumnValue( destination, assigned_);
             WriteColumnValue( destination, spare_);
-            WriteColumnValue( destination, nameExtension_, nameExtensionLengthOrNullIndicator_);
+            WriteColumnValue( destination, nameExtension_);
         }
     };
 
@@ -669,8 +703,7 @@ namespace Barrelman::Data
         Guid destinationMmsi_;
         bool retransmitFlag_ = false;
         Int32 spare_ = 0;
-        std::array<wchar_t,101> text_ = {};
-        SQLLEN textLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> text_;
     public:
         using Base = AisMessageColumnData;
 
@@ -698,7 +731,7 @@ namespace Barrelman::Data
         {
             sequenceNumber_ = sequenceNumber;
         }
-        Guid DestinationMmsi( ) const
+        const Guid& DestinationMmsi( ) const
         {
             return destinationMmsi_;
         }
@@ -722,27 +755,23 @@ namespace Barrelman::Data
         {
             spare_ = spare;
         }
-        std::wstring_view Text( ) const
+        const FixedDBWideString<100>& Text( ) const
         {
-            if(textLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(text_.data(),static_cast<size_t>( textLengthOrNullIndicator_ ));
-            }
-            return {};
+            return text_;
         }
         void SetText( const WideString& text )
         {
-            Assign(text, text_, textLengthOrNullIndicator_);
+            text_ = text;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SEQUENCENUMBER_FIELD_ID, &sequenceNumber_);
-            Bind(statement, DESTINATIONMMSI_FIELD_ID, &destinationMmsi_);
-            Bind(statement, RETRANSMITFLAG_FIELD_ID, &retransmitFlag_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, TEXT_FIELD_ID, &text_, &textLengthOrNullIndicator_);
+            Bind(statement, SEQUENCENUMBER_FIELD_ID, sequenceNumber_);
+            Bind(statement, DESTINATIONMMSI_FIELD_ID, destinationMmsi_);
+            Bind(statement, RETRANSMITFLAG_FIELD_ID, retransmitFlag_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, TEXT_FIELD_ID, text_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -753,7 +782,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, destinationMmsi_);
             WriteColumnValue( destination, retransmitFlag_);
             WriteColumnValue( destination, spare_);
-            WriteColumnValue( destination, text_, textLengthOrNullIndicator_);
+            WriteColumnValue( destination, text_);
         }
     };
 
@@ -791,7 +820,7 @@ namespace Barrelman::Data
             return Kind::AisBaseStationReportMessage;
         }
 
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -859,14 +888,14 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, POSITIONFIXTYPE_FIELD_ID, &positionFixType_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, POSITIONFIXTYPE_FIELD_ID, positionFixType_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, RADIOSTATUS_FIELD_ID, radioStatus_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -936,7 +965,7 @@ namespace Barrelman::Data
         {
             sequenceNumber1_ = sequenceNumber1;
         }
-        Guid Mmsi1( ) const
+        const Guid& Mmsi1( ) const
         {
             return mmsi1_;
         }
@@ -952,7 +981,7 @@ namespace Barrelman::Data
         {
             sequenceNumber2_ = sequenceNumber2;
         }
-        Guid Mmsi2( ) const
+        const Guid& Mmsi2( ) const
         {
             return mmsi2_;
         }
@@ -968,7 +997,7 @@ namespace Barrelman::Data
         {
             sequenceNumber3_ = sequenceNumber3;
         }
-        Guid Mmsi3( ) const
+        const Guid& Mmsi3( ) const
         {
             return mmsi3_;
         }
@@ -984,7 +1013,7 @@ namespace Barrelman::Data
         {
             sequenceNumber4_ = sequenceNumber4;
         }
-        Guid Mmsi4( ) const
+        const Guid& Mmsi4( ) const
         {
             return mmsi4_;
         }
@@ -996,15 +1025,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, SEQUENCENUMBER1_FIELD_ID, &sequenceNumber1_);
-            Bind(statement, MMSI1_FIELD_ID, &mmsi1_);
-            Bind(statement, SEQUENCENUMBER2_FIELD_ID, &sequenceNumber2_);
-            Bind(statement, MMSI2_FIELD_ID, &mmsi2_);
-            Bind(statement, SEQUENCENUMBER3_FIELD_ID, &sequenceNumber3_);
-            Bind(statement, MMSI3_FIELD_ID, &mmsi3_);
-            Bind(statement, SEQUENCENUMBER4_FIELD_ID, &sequenceNumber4_);
-            Bind(statement, MMSI4_FIELD_ID, &mmsi4_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, SEQUENCENUMBER1_FIELD_ID, sequenceNumber1_);
+            Bind(statement, MMSI1_FIELD_ID, mmsi1_);
+            Bind(statement, SEQUENCENUMBER2_FIELD_ID, sequenceNumber2_);
+            Bind(statement, MMSI2_FIELD_ID, mmsi2_);
+            Bind(statement, SEQUENCENUMBER3_FIELD_ID, sequenceNumber3_);
+            Bind(statement, MMSI3_FIELD_ID, mmsi3_);
+            Bind(statement, SEQUENCENUMBER4_FIELD_ID, sequenceNumber4_);
+            Bind(statement, MMSI4_FIELD_ID, mmsi4_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -1034,7 +1063,7 @@ namespace Barrelman::Data
         Int32 designatedAreaCode_ = 0;
         Int32 functionalId_ = 0;
         WideString data_;
-        SQLLEN dataLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
         using Base = AisMessageColumnData;
 
@@ -1064,7 +1093,7 @@ namespace Barrelman::Data
         {
             sequenceNumber_ = sequenceNumber;
         }
-        Guid DestinationMmsi( ) const
+        const Guid& DestinationMmsi( ) const
         {
             return destinationMmsi_;
         }
@@ -1110,18 +1139,18 @@ namespace Barrelman::Data
         }
         void SetData( const WideString& data )
         {
-            Assign(data, data_, dataLengthOrNullIndicator_);
+            data_ = data;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SEQUENCENUMBER_FIELD_ID, &sequenceNumber_);
-            Bind(statement, DESTINATIONMMSI_FIELD_ID, &destinationMmsi_);
-            Bind(statement, RETRANSMITFLAG_FIELD_ID, &retransmitFlag_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, DESIGNATEDAREACODE_FIELD_ID, &designatedAreaCode_);
-            Bind(statement, FUNCTIONALID_FIELD_ID, &functionalId_);
+            Bind(statement, SEQUENCENUMBER_FIELD_ID, sequenceNumber_);
+            Bind(statement, DESTINATIONMMSI_FIELD_ID, destinationMmsi_);
+            Bind(statement, RETRANSMITFLAG_FIELD_ID, retransmitFlag_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, DESIGNATEDAREACODE_FIELD_ID, designatedAreaCode_);
+            Bind(statement, FUNCTIONALID_FIELD_ID, functionalId_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -1140,7 +1169,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, spare_);
             WriteColumnValue( destination, designatedAreaCode_);
             WriteColumnValue( destination, functionalId_);
-            WriteColumnValue( destination, data_, dataLengthOrNullIndicator_);
+            WriteColumnValue( destination, data_);
         }
     };
 
@@ -1152,7 +1181,7 @@ namespace Barrelman::Data
         Int32 designatedAreaCode_ = 0;
         Int32 functionalId_ = 0;
         WideString data_;
-        SQLLEN dataLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
         using Base = AisMessageColumnData;
 
@@ -1201,15 +1230,15 @@ namespace Barrelman::Data
         }
         void SetData( const WideString& data )
         {
-            Assign(data, data_, dataLengthOrNullIndicator_);
+            data_ = data;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, DESIGNATEDAREACODE_FIELD_ID, &designatedAreaCode_);
-            Bind(statement, FUNCTIONALID_FIELD_ID, &functionalId_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, DESIGNATEDAREACODE_FIELD_ID, designatedAreaCode_);
+            Bind(statement, FUNCTIONALID_FIELD_ID, functionalId_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -1225,7 +1254,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, spare_);
             WriteColumnValue( destination, designatedAreaCode_);
             WriteColumnValue( destination, functionalId_);
-            WriteColumnValue( destination, data_, dataLengthOrNullIndicator_);
+            WriteColumnValue( destination, data_);
         }
     };
 
@@ -1421,23 +1450,23 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, OFFSET1_FIELD_ID, &offset1_);
-            Bind(statement, RESERVEDSLOTS1_FIELD_ID, &reservedSlots1_);
-            Bind(statement, TIMEOUT1_FIELD_ID, &timeout1_);
-            Bind(statement, INCREMENT1_FIELD_ID, &increment1_);
-            Bind(statement, OFFSET2_FIELD_ID, &offset2_);
-            Bind(statement, RESERVEDSLOTS2_FIELD_ID, &reservedSlots2_);
-            Bind(statement, TIMEOUT2_FIELD_ID, &timeout2_);
-            Bind(statement, INCREMENT2_FIELD_ID, &increment2_);
-            Bind(statement, OFFSET3_FIELD_ID, &offset3_);
-            Bind(statement, RESERVEDSLOTS3_FIELD_ID, &reservedSlots3_);
-            Bind(statement, TIMEOUT3_FIELD_ID, &timeout3_);
-            Bind(statement, INCREMENT3_FIELD_ID, &increment3_);
-            Bind(statement, OFFSET4_FIELD_ID, &offset4_);
-            Bind(statement, RESERVEDSLOTS4_FIELD_ID, &reservedSlots4_);
-            Bind(statement, TIMEOUT4_FIELD_ID, &timeout4_);
-            Bind(statement, INCREMENT4_FIELD_ID, &increment4_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, OFFSET1_FIELD_ID, offset1_);
+            Bind(statement, RESERVEDSLOTS1_FIELD_ID, reservedSlots1_);
+            Bind(statement, TIMEOUT1_FIELD_ID, timeout1_);
+            Bind(statement, INCREMENT1_FIELD_ID, increment1_);
+            Bind(statement, OFFSET2_FIELD_ID, offset2_);
+            Bind(statement, RESERVEDSLOTS2_FIELD_ID, reservedSlots2_);
+            Bind(statement, TIMEOUT2_FIELD_ID, timeout2_);
+            Bind(statement, INCREMENT2_FIELD_ID, increment2_);
+            Bind(statement, OFFSET3_FIELD_ID, offset3_);
+            Bind(statement, RESERVEDSLOTS3_FIELD_ID, reservedSlots3_);
+            Bind(statement, TIMEOUT3_FIELD_ID, timeout3_);
+            Bind(statement, INCREMENT3_FIELD_ID, increment3_);
+            Bind(statement, OFFSET4_FIELD_ID, offset4_);
+            Bind(statement, RESERVEDSLOTS4_FIELD_ID, reservedSlots4_);
+            Bind(statement, TIMEOUT4_FIELD_ID, timeout4_);
+            Bind(statement, INCREMENT4_FIELD_ID, increment4_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -1474,8 +1503,7 @@ namespace Barrelman::Data
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
-        Int32 trueHeading_ = 0;
-        SQLLEN trueHeadingNullIndicator_ = SQL_NULL_DATA;
+        DBInt32 trueHeading_;
         Int32 timestamp_ = 0;
         Int32 regionalReserved_ = 0;
         Guid name_;
@@ -1571,19 +1599,11 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        std::optional<Int32> TrueHeading( ) const
+        const DBInt32& TrueHeading( ) const
         {
-            if(trueHeadingNullIndicator_ != SQL_NULL_DATA)
-            {
-                return trueHeading_;
-            }
-            return {};
+            return trueHeading_;
         }
-        bool IsTrueHeadingNull( ) const
-        {
-            return trueHeadingNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTrueHeading( Int32 trueHeading )
+        void SetTrueHeading( const DBInt32& trueHeading )
         {
             trueHeading_ = trueHeading;
         }
@@ -1603,7 +1623,7 @@ namespace Barrelman::Data
         {
             regionalReserved_ = regionalReserved;
         }
-        Guid Name( ) const
+        const Guid& Name( ) const
         {
             return name_;
         }
@@ -1695,26 +1715,26 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RESERVED_FIELD_ID, &reserved_);
-            Bind(statement, SPEEDOVERGROUND_FIELD_ID, &speedOverGround_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, COURSEOVERGROUND_FIELD_ID, &courseOverGround_);
-            Bind(statement, TRUEHEADING_FIELD_ID, &trueHeading_, &trueHeadingNullIndicator_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, REGIONALRESERVED_FIELD_ID, &regionalReserved_);
-            Bind(statement, NAME_FIELD_ID, &name_);
-            Bind(statement, SHIPTYPE_FIELD_ID, &shipType_);
-            Bind(statement, DIMENSIONTOBOW_FIELD_ID, &dimensionToBow_);
-            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, &dimensionToStern_);
-            Bind(statement, DIMENSIONTOPORT_FIELD_ID, &dimensionToPort_);
-            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, &dimensionToStarboard_);
-            Bind(statement, POSITIONFIXTYPE_FIELD_ID, &positionFixType_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, DATATERMINALREADY_FIELD_ID, &dataTerminalReady_);
-            Bind(statement, ASSIGNED_FIELD_ID, &assigned_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
+            Bind(statement, RESERVED_FIELD_ID, reserved_);
+            Bind(statement, SPEEDOVERGROUND_FIELD_ID, speedOverGround_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, COURSEOVERGROUND_FIELD_ID, courseOverGround_);
+            Bind(statement, TRUEHEADING_FIELD_ID, trueHeading_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, REGIONALRESERVED_FIELD_ID, regionalReserved_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, SHIPTYPE_FIELD_ID, shipType_);
+            Bind(statement, DIMENSIONTOBOW_FIELD_ID, dimensionToBow_);
+            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, dimensionToStern_);
+            Bind(statement, DIMENSIONTOPORT_FIELD_ID, dimensionToPort_);
+            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, dimensionToStarboard_);
+            Bind(statement, POSITIONFIXTYPE_FIELD_ID, positionFixType_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, DATATERMINALREADY_FIELD_ID, dataTerminalReady_);
+            Bind(statement, ASSIGNED_FIELD_ID, assigned_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -1727,7 +1747,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, courseOverGround_);
-            WriteColumnValue( destination, trueHeading_, trueHeadingNullIndicator_);
+            WriteColumnValue( destination, trueHeading_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, regionalReserved_);
             WriteColumnValue( destination, name_);
@@ -1751,15 +1771,11 @@ namespace Barrelman::Data
         Guid interrogatedMmsi_;
         Data::AisMessageType firstMessageType_ = Data::AisMessageType::PositionReportClassA;
         Int32 firstSlotOffset_ = 0;
-        Data::AisMessageType secondMessageType_ = Data::AisMessageType::PositionReportClassA;
-        SQLLEN secondMessageTypeNullIndicator_ = SQL_NULL_DATA;
-        Int32 secondSlotOffset_ = 0;
-        SQLLEN secondSlotOffsetNullIndicator_ = SQL_NULL_DATA;
+        DBEnum<Data::AisMessageType> secondMessageType_;
+        DBInt32 secondSlotOffset_;
         Guid secondStationInterrogationMmsi_;
-        Data::AisMessageType secondStationFirstMessageType_ = Data::AisMessageType::PositionReportClassA;
-        SQLLEN secondStationFirstMessageTypeNullIndicator_ = SQL_NULL_DATA;
-        Int32 secondStationFirstSlotOffset_ = 0;
-        SQLLEN secondStationFirstSlotOffsetNullIndicator_ = SQL_NULL_DATA;
+        DBEnum<Data::AisMessageType> secondStationFirstMessageType_;
+        DBInt32 secondStationFirstSlotOffset_;
     public:
         using Base = AisMessageColumnData;
 
@@ -1782,7 +1798,7 @@ namespace Barrelman::Data
             return Kind::AisInterrogationMessage;
         }
 
-        Guid InterrogatedMmsi( ) const
+        const Guid& InterrogatedMmsi( ) const
         {
             return interrogatedMmsi_;
         }
@@ -1806,39 +1822,23 @@ namespace Barrelman::Data
         {
             firstSlotOffset_ = firstSlotOffset;
         }
-        std::optional<Data::AisMessageType> SecondMessageType( ) const
+        const DBEnum<Data::AisMessageType>& SecondMessageType( ) const
         {
-            if(secondMessageTypeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return secondMessageType_;
-            }
-            return {};
+            return secondMessageType_;
         }
-        bool IsSecondMessageTypeNull( ) const
-        {
-            return secondMessageTypeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetSecondMessageType( Data::AisMessageType secondMessageType )
+        void SetSecondMessageType( const DBEnum<Data::AisMessageType>& secondMessageType )
         {
             secondMessageType_ = secondMessageType;
         }
-        std::optional<Int32> SecondSlotOffset( ) const
+        const DBInt32& SecondSlotOffset( ) const
         {
-            if(secondSlotOffsetNullIndicator_ != SQL_NULL_DATA)
-            {
-                return secondSlotOffset_;
-            }
-            return {};
+            return secondSlotOffset_;
         }
-        bool IsSecondSlotOffsetNull( ) const
-        {
-            return secondSlotOffsetNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetSecondSlotOffset( Int32 secondSlotOffset )
+        void SetSecondSlotOffset( const DBInt32& secondSlotOffset )
         {
             secondSlotOffset_ = secondSlotOffset;
         }
-        Guid SecondStationInterrogationMmsi( ) const
+        const Guid& SecondStationInterrogationMmsi( ) const
         {
             return secondStationInterrogationMmsi_;
         }
@@ -1846,35 +1846,19 @@ namespace Barrelman::Data
         {
             secondStationInterrogationMmsi_ = secondStationInterrogationMmsi;
         }
-        std::optional<Data::AisMessageType> SecondStationFirstMessageType( ) const
+        const DBEnum<Data::AisMessageType>& SecondStationFirstMessageType( ) const
         {
-            if(secondStationFirstMessageTypeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return secondStationFirstMessageType_;
-            }
-            return {};
+            return secondStationFirstMessageType_;
         }
-        bool IsSecondStationFirstMessageTypeNull( ) const
-        {
-            return secondStationFirstMessageTypeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetSecondStationFirstMessageType( Data::AisMessageType secondStationFirstMessageType )
+        void SetSecondStationFirstMessageType( const DBEnum<Data::AisMessageType>& secondStationFirstMessageType )
         {
             secondStationFirstMessageType_ = secondStationFirstMessageType;
         }
-        std::optional<Int32> SecondStationFirstSlotOffset( ) const
+        const DBInt32& SecondStationFirstSlotOffset( ) const
         {
-            if(secondStationFirstSlotOffsetNullIndicator_ != SQL_NULL_DATA)
-            {
-                return secondStationFirstSlotOffset_;
-            }
-            return {};
+            return secondStationFirstSlotOffset_;
         }
-        bool IsSecondStationFirstSlotOffsetNull( ) const
-        {
-            return secondStationFirstSlotOffsetNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetSecondStationFirstSlotOffset( Int32 secondStationFirstSlotOffset )
+        void SetSecondStationFirstSlotOffset( const DBInt32& secondStationFirstSlotOffset )
         {
             secondStationFirstSlotOffset_ = secondStationFirstSlotOffset;
         }
@@ -1882,14 +1866,14 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, INTERROGATEDMMSI_FIELD_ID, &interrogatedMmsi_);
-            Bind(statement, FIRSTMESSAGETYPE_FIELD_ID, &firstMessageType_);
-            Bind(statement, FIRSTSLOTOFFSET_FIELD_ID, &firstSlotOffset_);
-            Bind(statement, SECONDMESSAGETYPE_FIELD_ID, &secondMessageType_, &secondMessageTypeNullIndicator_);
-            Bind(statement, SECONDSLOTOFFSET_FIELD_ID, &secondSlotOffset_, &secondSlotOffsetNullIndicator_);
-            Bind(statement, SECONDSTATIONINTERROGATIONMMSI_FIELD_ID, &secondStationInterrogationMmsi_);
-            Bind(statement, SECONDSTATIONFIRSTMESSAGETYPE_FIELD_ID, &secondStationFirstMessageType_, &secondStationFirstMessageTypeNullIndicator_);
-            Bind(statement, SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID, &secondStationFirstSlotOffset_, &secondStationFirstSlotOffsetNullIndicator_);
+            Bind(statement, INTERROGATEDMMSI_FIELD_ID, interrogatedMmsi_);
+            Bind(statement, FIRSTMESSAGETYPE_FIELD_ID, firstMessageType_);
+            Bind(statement, FIRSTSLOTOFFSET_FIELD_ID, firstSlotOffset_);
+            Bind(statement, SECONDMESSAGETYPE_FIELD_ID, secondMessageType_);
+            Bind(statement, SECONDSLOTOFFSET_FIELD_ID, secondSlotOffset_);
+            Bind(statement, SECONDSTATIONINTERROGATIONMMSI_FIELD_ID, secondStationInterrogationMmsi_);
+            Bind(statement, SECONDSTATIONFIRSTMESSAGETYPE_FIELD_ID, secondStationFirstMessageType_);
+            Bind(statement, SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID, secondStationFirstSlotOffset_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -1899,11 +1883,11 @@ namespace Barrelman::Data
             WriteColumnValue( destination, interrogatedMmsi_);
             WriteColumnValue( destination, firstMessageType_);
             WriteColumnValue( destination, firstSlotOffset_);
-            WriteColumnValue( destination, secondMessageType_, secondMessageTypeNullIndicator_);
-            WriteColumnValue( destination, secondSlotOffset_, secondSlotOffsetNullIndicator_);
+            WriteColumnValue( destination, secondMessageType_);
+            WriteColumnValue( destination, secondSlotOffset_);
             WriteColumnValue( destination, secondStationInterrogationMmsi_);
-            WriteColumnValue( destination, secondStationFirstMessageType_, secondStationFirstMessageTypeNullIndicator_);
-            WriteColumnValue( destination, secondStationFirstSlotOffset_, secondStationFirstSlotOffsetNullIndicator_);
+            WriteColumnValue( destination, secondStationFirstMessageType_);
+            WriteColumnValue( destination, secondStationFirstSlotOffset_);
         }
     };
 
@@ -1912,15 +1896,13 @@ namespace Barrelman::Data
     class AisPositionReportClassAMessageBaseColumnData : public AisMessageColumnData
     {
         Data::NavigationStatus navigationStatus_ = Data::NavigationStatus::UnderWayUsingEngine;
-        Int32 rateOfTurn_ = 0;
-        SQLLEN rateOfTurnNullIndicator_ = SQL_NULL_DATA;
+        DBInt32 rateOfTurn_;
         double speedOverGround_ = 0.0;
         Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
-        Int32 trueHeading_ = 0;
-        SQLLEN trueHeadingNullIndicator_ = SQL_NULL_DATA;
+        DBInt32 trueHeading_;
         Int32 timestamp_ = 0;
         Data::ManeuverIndicator maneuverIndicator_ = Data::ManeuverIndicator::NotAvailable;
         Int32 spare_ = 0;
@@ -1961,19 +1943,11 @@ namespace Barrelman::Data
         {
             navigationStatus_ = navigationStatus;
         }
-        std::optional<Int32> RateOfTurn( ) const
+        const DBInt32& RateOfTurn( ) const
         {
-            if(rateOfTurnNullIndicator_ != SQL_NULL_DATA)
-            {
-                return rateOfTurn_;
-            }
-            return {};
+            return rateOfTurn_;
         }
-        bool IsRateOfTurnNull( ) const
-        {
-            return rateOfTurnNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetRateOfTurn( Int32 rateOfTurn )
+        void SetRateOfTurn( const DBInt32& rateOfTurn )
         {
             rateOfTurn_ = rateOfTurn;
         }
@@ -2017,19 +1991,11 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        std::optional<Int32> TrueHeading( ) const
+        const DBInt32& TrueHeading( ) const
         {
-            if(trueHeadingNullIndicator_ != SQL_NULL_DATA)
-            {
-                return trueHeading_;
-            }
-            return {};
+            return trueHeading_;
         }
-        bool IsTrueHeadingNull( ) const
-        {
-            return trueHeadingNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTrueHeading( Int32 trueHeading )
+        void SetTrueHeading( const DBInt32& trueHeading )
         {
             trueHeading_ = trueHeading;
         }
@@ -2077,19 +2043,19 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAVIGATIONSTATUS_FIELD_ID, &navigationStatus_);
-            Bind(statement, RATEOFTURN_FIELD_ID, &rateOfTurn_, &rateOfTurnNullIndicator_);
-            Bind(statement, SPEEDOVERGROUND_FIELD_ID, &speedOverGround_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, COURSEOVERGROUND_FIELD_ID, &courseOverGround_);
-            Bind(statement, TRUEHEADING_FIELD_ID, &trueHeading_, &trueHeadingNullIndicator_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, MANEUVERINDICATOR_FIELD_ID, &maneuverIndicator_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
+            Bind(statement, NAVIGATIONSTATUS_FIELD_ID, navigationStatus_);
+            Bind(statement, RATEOFTURN_FIELD_ID, rateOfTurn_);
+            Bind(statement, SPEEDOVERGROUND_FIELD_ID, speedOverGround_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, COURSEOVERGROUND_FIELD_ID, courseOverGround_);
+            Bind(statement, TRUEHEADING_FIELD_ID, trueHeading_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, MANEUVERINDICATOR_FIELD_ID, maneuverIndicator_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, RADIOSTATUS_FIELD_ID, radioStatus_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -2097,13 +2063,13 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, navigationStatus_);
-            WriteColumnValue( destination, rateOfTurn_, rateOfTurnNullIndicator_);
+            WriteColumnValue( destination, rateOfTurn_);
             WriteColumnValue( destination, speedOverGround_);
             WriteColumnValue( destination, positionAccuracy_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, courseOverGround_);
-            WriteColumnValue( destination, trueHeading_, trueHeadingNullIndicator_);
+            WriteColumnValue( destination, trueHeading_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, maneuverIndicator_);
             WriteColumnValue( destination, spare_);
@@ -2296,15 +2262,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, NAVIGATIONSTATUS_FIELD_ID, &navigationStatus_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, SPEEDOVERGROUND_FIELD_ID, &speedOverGround_);
-            Bind(statement, COURSEOVERGROUND_FIELD_ID, &courseOverGround_);
-            Bind(statement, GNSSPOSITIONSTATUS_FIELD_ID, &gnssPositionStatus_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, NAVIGATIONSTATUS_FIELD_ID, navigationStatus_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, SPEEDOVERGROUND_FIELD_ID, speedOverGround_);
+            Bind(statement, COURSEOVERGROUND_FIELD_ID, courseOverGround_);
+            Bind(statement, GNSSPOSITIONSTATUS_FIELD_ID, gnssPositionStatus_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -2375,7 +2341,7 @@ namespace Barrelman::Data
         {
             sequenceNumber1_ = sequenceNumber1;
         }
-        Guid Mmsi1( ) const
+        const Guid& Mmsi1( ) const
         {
             return mmsi1_;
         }
@@ -2391,7 +2357,7 @@ namespace Barrelman::Data
         {
             sequenceNumber2_ = sequenceNumber2;
         }
-        Guid Mmsi2( ) const
+        const Guid& Mmsi2( ) const
         {
             return mmsi2_;
         }
@@ -2407,7 +2373,7 @@ namespace Barrelman::Data
         {
             sequenceNumber3_ = sequenceNumber3;
         }
-        Guid Mmsi3( ) const
+        const Guid& Mmsi3( ) const
         {
             return mmsi3_;
         }
@@ -2423,7 +2389,7 @@ namespace Barrelman::Data
         {
             sequenceNumber4_ = sequenceNumber4;
         }
-        Guid Mmsi4( ) const
+        const Guid& Mmsi4( ) const
         {
             return mmsi4_;
         }
@@ -2435,15 +2401,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, SEQUENCENUMBER1_FIELD_ID, &sequenceNumber1_);
-            Bind(statement, MMSI1_FIELD_ID, &mmsi1_);
-            Bind(statement, SEQUENCENUMBER2_FIELD_ID, &sequenceNumber2_);
-            Bind(statement, MMSI2_FIELD_ID, &mmsi2_);
-            Bind(statement, SEQUENCENUMBER3_FIELD_ID, &sequenceNumber3_);
-            Bind(statement, MMSI3_FIELD_ID, &mmsi3_);
-            Bind(statement, SEQUENCENUMBER4_FIELD_ID, &sequenceNumber4_);
-            Bind(statement, MMSI4_FIELD_ID, &mmsi4_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, SEQUENCENUMBER1_FIELD_ID, sequenceNumber1_);
+            Bind(statement, MMSI1_FIELD_ID, mmsi1_);
+            Bind(statement, SEQUENCENUMBER2_FIELD_ID, sequenceNumber2_);
+            Bind(statement, MMSI2_FIELD_ID, mmsi2_);
+            Bind(statement, SEQUENCENUMBER3_FIELD_ID, sequenceNumber3_);
+            Bind(statement, MMSI3_FIELD_ID, mmsi3_);
+            Bind(statement, SEQUENCENUMBER4_FIELD_ID, sequenceNumber4_);
+            Bind(statement, MMSI4_FIELD_ID, mmsi4_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -2472,8 +2438,7 @@ namespace Barrelman::Data
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
-        Int32 trueHeading_ = 0;
-        SQLLEN trueHeadingNullIndicator_ = SQL_NULL_DATA;
+        DBInt32 trueHeading_;
         Int32 timestamp_ = 0;
         Int32 regionalReserved_ = 0;
         bool isCsUnit_ = false;
@@ -2563,19 +2528,11 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        std::optional<Int32> TrueHeading( ) const
+        const DBInt32& TrueHeading( ) const
         {
-            if(trueHeadingNullIndicator_ != SQL_NULL_DATA)
-            {
-                return trueHeading_;
-            }
-            return {};
+            return trueHeading_;
         }
-        bool IsTrueHeadingNull( ) const
-        {
-            return trueHeadingNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTrueHeading( Int32 trueHeading )
+        void SetTrueHeading( const DBInt32& trueHeading )
         {
             trueHeading_ = trueHeading;
         }
@@ -2663,23 +2620,23 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RESERVED_FIELD_ID, &reserved_);
-            Bind(statement, SPEEDOVERGROUND_FIELD_ID, &speedOverGround_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, COURSEOVERGROUND_FIELD_ID, &courseOverGround_);
-            Bind(statement, TRUEHEADING_FIELD_ID, &trueHeading_, &trueHeadingNullIndicator_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, REGIONALRESERVED_FIELD_ID, &regionalReserved_);
-            Bind(statement, ISCSUNIT_FIELD_ID, &isCsUnit_);
-            Bind(statement, HASDISPLAY_FIELD_ID, &hasDisplay_);
-            Bind(statement, HASDSCCAPABILITY_FIELD_ID, &hasDscCapability_);
-            Bind(statement, BAND_FIELD_ID, &band_);
-            Bind(statement, CANACCEPTMESSAGE22_FIELD_ID, &canAcceptMessage22_);
-            Bind(statement, ASSIGNED_FIELD_ID, &assigned_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
+            Bind(statement, RESERVED_FIELD_ID, reserved_);
+            Bind(statement, SPEEDOVERGROUND_FIELD_ID, speedOverGround_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, COURSEOVERGROUND_FIELD_ID, courseOverGround_);
+            Bind(statement, TRUEHEADING_FIELD_ID, trueHeading_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, REGIONALRESERVED_FIELD_ID, regionalReserved_);
+            Bind(statement, ISCSUNIT_FIELD_ID, isCsUnit_);
+            Bind(statement, HASDISPLAY_FIELD_ID, hasDisplay_);
+            Bind(statement, HASDSCCAPABILITY_FIELD_ID, hasDscCapability_);
+            Bind(statement, BAND_FIELD_ID, band_);
+            Bind(statement, CANACCEPTMESSAGE22_FIELD_ID, canAcceptMessage22_);
+            Bind(statement, ASSIGNED_FIELD_ID, assigned_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, RADIOSTATUS_FIELD_ID, radioStatus_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -2692,7 +2649,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, courseOverGround_);
-            WriteColumnValue( destination, trueHeading_, trueHeadingNullIndicator_);
+            WriteColumnValue( destination, trueHeading_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, regionalReserved_);
             WriteColumnValue( destination, isCsUnit_);
@@ -2858,19 +2815,19 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ALTITUDE_FIELD_ID, &altitude_);
-            Bind(statement, SPEEDOVERGROUND_FIELD_ID, &speedOverGround_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, COURSEOVERGROUND_FIELD_ID, &courseOverGround_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, RESERVED_FIELD_ID, &reserved_);
-            Bind(statement, DATATERMINALREADY_FIELD_ID, &dataTerminalReady_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, ASSIGNED_FIELD_ID, &assigned_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
+            Bind(statement, ALTITUDE_FIELD_ID, altitude_);
+            Bind(statement, SPEEDOVERGROUND_FIELD_ID, speedOverGround_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, COURSEOVERGROUND_FIELD_ID, courseOverGround_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, RESERVED_FIELD_ID, reserved_);
+            Bind(statement, DATATERMINALREADY_FIELD_ID, dataTerminalReady_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, ASSIGNED_FIELD_ID, assigned_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, RADIOSTATUS_FIELD_ID, radioStatus_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -2907,11 +2864,9 @@ namespace Barrelman::Data
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
         Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
-        DateTime estimatedTimeOfArrival_;
-        SQLLEN estimatedTimeOfArrivalNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime estimatedTimeOfArrival_;
         double draught_ = 0.0;
-        std::array<wchar_t,101> destination_ = {};
-        SQLLEN destinationLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> destination_;
         bool dataTerminalReady_ = false;
         Int32 spare_ = 0;
     public:
@@ -2951,7 +2906,7 @@ namespace Barrelman::Data
         {
             aisVersion_ = aisVersion;
         }
-        Guid ImoNumber( ) const
+        const Guid& ImoNumber( ) const
         {
             return imoNumber_;
         }
@@ -2959,7 +2914,7 @@ namespace Barrelman::Data
         {
             imoNumber_ = imoNumber;
         }
-        Guid Callsign( ) const
+        const Guid& Callsign( ) const
         {
             return callsign_;
         }
@@ -2967,7 +2922,7 @@ namespace Barrelman::Data
         {
             callsign_ = callsign;
         }
-        Guid ShipName( ) const
+        const Guid& ShipName( ) const
         {
             return shipName_;
         }
@@ -3023,19 +2978,11 @@ namespace Barrelman::Data
         {
             positionFixType_ = positionFixType;
         }
-        std::optional<DateTime> EstimatedTimeOfArrival( ) const
+        const DBDateTime& EstimatedTimeOfArrival( ) const
         {
-            if(estimatedTimeOfArrivalNullIndicator_ != SQL_NULL_DATA)
-            {
-                return estimatedTimeOfArrival_;
-            }
-            return {};
+            return estimatedTimeOfArrival_;
         }
-        bool IsEstimatedTimeOfArrivalNull( ) const
-        {
-            return estimatedTimeOfArrivalNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEstimatedTimeOfArrival( const DateTime& estimatedTimeOfArrival )
+        void SetEstimatedTimeOfArrival( const DBDateTime& estimatedTimeOfArrival )
         {
             estimatedTimeOfArrival_ = estimatedTimeOfArrival;
         }
@@ -3047,17 +2994,13 @@ namespace Barrelman::Data
         {
             draught_ = draught;
         }
-        std::wstring_view Destination( ) const
+        const FixedDBWideString<100>& Destination( ) const
         {
-            if(destinationLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(destination_.data(),static_cast<size_t>( destinationLengthOrNullIndicator_ ));
-            }
-            return {};
+            return destination_;
         }
         void SetDestination( const WideString& destination )
         {
-            Assign(destination, destination_, destinationLengthOrNullIndicator_);
+            destination_ = destination;
         }
         bool DataTerminalReady( ) const
         {
@@ -3079,21 +3022,21 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, AISVERSION_FIELD_ID, &aisVersion_);
-            Bind(statement, IMONUMBER_FIELD_ID, &imoNumber_);
-            Bind(statement, CALLSIGN_FIELD_ID, &callsign_);
-            Bind(statement, SHIPNAME_FIELD_ID, &shipName_);
-            Bind(statement, SHIPTYPE_FIELD_ID, &shipType_);
-            Bind(statement, DIMENSIONTOBOW_FIELD_ID, &dimensionToBow_);
-            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, &dimensionToStern_);
-            Bind(statement, DIMENSIONTOPORT_FIELD_ID, &dimensionToPort_);
-            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, &dimensionToStarboard_);
-            Bind(statement, POSITIONFIXTYPE_FIELD_ID, &positionFixType_);
-            Bind(statement, ESTIMATEDTIMEOFARRIVAL_FIELD_ID, &estimatedTimeOfArrival_, &estimatedTimeOfArrivalNullIndicator_);
-            Bind(statement, DRAUGHT_FIELD_ID, &draught_);
-            Bind(statement, DESTINATION_FIELD_ID, &destination_, &destinationLengthOrNullIndicator_);
-            Bind(statement, DATATERMINALREADY_FIELD_ID, &dataTerminalReady_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
+            Bind(statement, AISVERSION_FIELD_ID, aisVersion_);
+            Bind(statement, IMONUMBER_FIELD_ID, imoNumber_);
+            Bind(statement, CALLSIGN_FIELD_ID, callsign_);
+            Bind(statement, SHIPNAME_FIELD_ID, shipName_);
+            Bind(statement, SHIPTYPE_FIELD_ID, shipType_);
+            Bind(statement, DIMENSIONTOBOW_FIELD_ID, dimensionToBow_);
+            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, dimensionToStern_);
+            Bind(statement, DIMENSIONTOPORT_FIELD_ID, dimensionToPort_);
+            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, dimensionToStarboard_);
+            Bind(statement, POSITIONFIXTYPE_FIELD_ID, positionFixType_);
+            Bind(statement, ESTIMATEDTIMEOFARRIVAL_FIELD_ID, estimatedTimeOfArrival_);
+            Bind(statement, DRAUGHT_FIELD_ID, draught_);
+            Bind(statement, DESTINATION_FIELD_ID, destination_);
+            Bind(statement, DATATERMINALREADY_FIELD_ID, dataTerminalReady_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3110,9 +3053,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, dimensionToPort_);
             WriteColumnValue( destination, dimensionToStarboard_);
             WriteColumnValue( destination, positionFixType_);
-            WriteColumnValue( destination, estimatedTimeOfArrival_, estimatedTimeOfArrivalNullIndicator_);
+            WriteColumnValue( destination, estimatedTimeOfArrival_);
             WriteColumnValue( destination, draught_);
-            WriteColumnValue( destination, destination_, destinationLengthOrNullIndicator_);
+            WriteColumnValue( destination, destination_);
             WriteColumnValue( destination, dataTerminalReady_);
             WriteColumnValue( destination, spare_);
         }
@@ -3150,7 +3093,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, PARTNUMBER_FIELD_ID, &partNumber_);
+            Bind(statement, PARTNUMBER_FIELD_ID, partNumber_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3183,7 +3126,7 @@ namespace Barrelman::Data
             return Kind::AisStaticDataReportPartAMessage;
         }
 
-        Guid ShipName( ) const
+        const Guid& ShipName( ) const
         {
             return shipName_;
         }
@@ -3203,8 +3146,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SHIPNAME_FIELD_ID, &shipName_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
+            Bind(statement, SHIPNAME_FIELD_ID, shipName_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3221,8 +3164,7 @@ namespace Barrelman::Data
     class AisStaticDataReportPartBMessageColumnData : public AisStaticDataReportMessageColumnData
     {
         Data::ShipType shipType_ = Data::ShipType::NotAvailable;
-        std::array<wchar_t,101> vendorId_ = {};
-        SQLLEN vendorIdLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> vendorId_;
         Int32 unitModelCode_ = 0;
         Int32 serialNumber_ = 0;
         Guid callsign_;
@@ -3267,17 +3209,13 @@ namespace Barrelman::Data
         {
             shipType_ = shipType;
         }
-        std::wstring_view VendorId( ) const
+        const FixedDBWideString<100>& VendorId( ) const
         {
-            if(vendorIdLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(vendorId_.data(),static_cast<size_t>( vendorIdLengthOrNullIndicator_ ));
-            }
-            return {};
+            return vendorId_;
         }
         void SetVendorId( const WideString& vendorId )
         {
-            Assign(vendorId, vendorId_, vendorIdLengthOrNullIndicator_);
+            vendorId_ = vendorId;
         }
         Int32 UnitModelCode( ) const
         {
@@ -3295,7 +3233,7 @@ namespace Barrelman::Data
         {
             serialNumber_ = serialNumber;
         }
-        Guid Callsign( ) const
+        const Guid& Callsign( ) const
         {
             return callsign_;
         }
@@ -3335,7 +3273,7 @@ namespace Barrelman::Data
         {
             dimensionToStarboard_ = dimensionToStarboard;
         }
-        Guid MothershipMmsi( ) const
+        const Guid& MothershipMmsi( ) const
         {
             return mothershipMmsi_;
         }
@@ -3363,18 +3301,18 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SHIPTYPE_FIELD_ID, &shipType_);
-            Bind(statement, VENDORID_FIELD_ID, &vendorId_, &vendorIdLengthOrNullIndicator_);
-            Bind(statement, UNITMODELCODE_FIELD_ID, &unitModelCode_);
-            Bind(statement, SERIALNUMBER_FIELD_ID, &serialNumber_);
-            Bind(statement, CALLSIGN_FIELD_ID, &callsign_);
-            Bind(statement, DIMENSIONTOBOW_FIELD_ID, &dimensionToBow_);
-            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, &dimensionToStern_);
-            Bind(statement, DIMENSIONTOPORT_FIELD_ID, &dimensionToPort_);
-            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, &dimensionToStarboard_);
-            Bind(statement, MOTHERSHIPMMSI_FIELD_ID, &mothershipMmsi_);
-            Bind(statement, POSITIONFIXTYPE_FIELD_ID, &positionFixType_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
+            Bind(statement, SHIPTYPE_FIELD_ID, shipType_);
+            Bind(statement, VENDORID_FIELD_ID, vendorId_);
+            Bind(statement, UNITMODELCODE_FIELD_ID, unitModelCode_);
+            Bind(statement, SERIALNUMBER_FIELD_ID, serialNumber_);
+            Bind(statement, CALLSIGN_FIELD_ID, callsign_);
+            Bind(statement, DIMENSIONTOBOW_FIELD_ID, dimensionToBow_);
+            Bind(statement, DIMENSIONTOSTERN_FIELD_ID, dimensionToStern_);
+            Bind(statement, DIMENSIONTOPORT_FIELD_ID, dimensionToPort_);
+            Bind(statement, DIMENSIONTOSTARBOARD_FIELD_ID, dimensionToStarboard_);
+            Bind(statement, MOTHERSHIPMMSI_FIELD_ID, mothershipMmsi_);
+            Bind(statement, POSITIONFIXTYPE_FIELD_ID, positionFixType_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3382,7 +3320,7 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, shipType_);
-            WriteColumnValue( destination, vendorId_, vendorIdLengthOrNullIndicator_);
+            WriteColumnValue( destination, vendorId_);
             WriteColumnValue( destination, unitModelCode_);
             WriteColumnValue( destination, serialNumber_);
             WriteColumnValue( destination, callsign_);
@@ -3448,9 +3386,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SPARE1_FIELD_ID, &spare1_);
-            Bind(statement, DESTINATIONMMSI_FIELD_ID, &destinationMmsi_);
-            Bind(statement, SPARE2_FIELD_ID, &spare2_);
+            Bind(statement, SPARE1_FIELD_ID, spare1_);
+            Bind(statement, DESTINATIONMMSI_FIELD_ID, destinationMmsi_);
+            Bind(statement, SPARE2_FIELD_ID, spare2_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3497,7 +3435,7 @@ namespace Barrelman::Data
             return Kind::AisUtcAndDateResponseMessage;
         }
 
-        DateTime Datetime( ) const
+        const DateTime& Datetime( ) const
         {
             return datetime_;
         }
@@ -3565,14 +3503,14 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DATETIME_FIELD_ID, &datetime_);
-            Bind(statement, POSITIONACCURACY_FIELD_ID, &positionAccuracy_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, POSITIONFIXTYPE_FIELD_ID, &positionFixType_);
-            Bind(statement, SPARE_FIELD_ID, &spare_);
-            Bind(statement, RAIM_FIELD_ID, &raim_);
-            Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
+            Bind(statement, DATETIME_FIELD_ID, datetime_);
+            Bind(statement, POSITIONACCURACY_FIELD_ID, positionAccuracy_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, POSITIONFIXTYPE_FIELD_ID, positionFixType_);
+            Bind(statement, SPARE_FIELD_ID, spare_);
+            Bind(statement, RAIM_FIELD_ID, raim_);
+            Bind(statement, RADIOSTATUS_FIELD_ID, radioStatus_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3622,7 +3560,7 @@ namespace Barrelman::Data
             return Kind::AisTransceiverCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -3634,11 +3572,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid AisTransceiver( ) const
+        const Guid& AisTransceiver( ) const
         {
             return aisTransceiver_;
         }
@@ -3646,7 +3584,7 @@ namespace Barrelman::Data
         {
             aisTransceiver_ = aisTransceiver;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -3662,7 +3600,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -3670,7 +3608,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -3680,13 +3618,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, &aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -3713,7 +3651,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -3735,7 +3673,7 @@ namespace Barrelman::Data
             return Kind::AisTransceiverCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -3747,11 +3685,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid AisTransceiver( ) const
+        const Guid& AisTransceiver( ) const
         {
             return aisTransceiver_;
         }
@@ -3759,7 +3697,7 @@ namespace Barrelman::Data
         {
             aisTransceiver_ = aisTransceiver;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -3767,7 +3705,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -3789,16 +3727,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, &aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -3816,7 +3754,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -3828,60 +3766,49 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid aisTransceiver_;
         DateTime timestamp_;
-        std::array<wchar_t,128> userName_ = {};
-        SQLLEN userNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,128> password_ = {};
-        SQLLEN passwordLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
-        std::array<wchar_t,128> aisProviderLoginURL_ = {};
-        SQLLEN aisProviderLoginURLLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,33> comPort_ = {};
-        SQLLEN comPortLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> aisProviderLoginURL_;
+        FixedDBWideString<32> comPort_;
         Int32 baudRate_ = 0;
         bool filterByArea_ = false;
         double upperLeftCornerLatitude_ = 0.0;
         double upperLeftCornerLongitude_ = 0.0;
         double bottomRightCornerLatitude_ = 0.0;
         double bottomRightCornerLongitude_ = 0.0;
-        std::array<wchar_t,128> aisProviderIPAddress_ = {};
-        SQLLEN aisProviderIPAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> aisProviderIPAddress_;
         Int32 aisProviderPort_ = 0;
         bool useLogin_ = false;
         Int32 aisProviderLoginPort_ = 0;
         bool canSendAISMessage_ = false;
         WideString textMessageHeader_;
-        SQLLEN textMessageHeaderLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
         WideString urls_;
-        SQLLEN urlsLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN urlsLength_ = SQL_NULL_DATA;
         Int32 udpPort_ = 0;
         Data::AisTransceiverConnectionType connectionType_ = Data::AisTransceiverConnectionType::Unknown;
         bool enableRefreshAidToNavigationIn30sec_ = false;
         bool enableAidToNavigationFromFile_ = false;
         WideString aidToNavigationHeader_;
-        SQLLEN aidToNavigationHeaderLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
         bool sendingMMSI_ = false;
         Int32 sourceUpdateRate_ = 0;
         bool enableRefreshStayingStillTargetIn30sec_ = false;
         WideString excludeSendAisBaseStation_;
-        SQLLEN excludeSendAisBaseStationLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
         WideString excludeSendAisA_;
-        SQLLEN excludeSendAisALengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
         bool enableSendBaseStationAlarms_ = false;
-        std::array<wchar_t,128> aisWebConfig_ = {};
-        SQLLEN aisWebConfigLengthOrNullIndicator_ = SQL_NULL_DATA;
-        bool enableBaseStation600_ = false;
-        std::array<wchar_t,128> baseStation600IPAddress_ = {};
-        SQLLEN baseStation600IPAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 baseStation600Port_ = 0;
-        Int32 esdInputCount_ = 0;
+        FixedDBWideString<127> aisWebConfig_;
         bool storeReceivedSentences_ = false;
         bool storeSentMessages_ = false;
         bool storeUnsentMessages_ = false;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[UserName],[Password],[Latitude],[Longitude],[AisProviderLoginURL],[ComPort],[BaudRate],[FilterByArea],[UpperLeftCornerLatitude],[UpperLeftCornerLongitude],[BottomRightCornerLatitude],[BottomRightCornerLongitude],[AisProviderIPAddress],[AisProviderPort],[UseLogin],[AisProviderLoginPort],[CanSendAISMessage],[UdpPort],[ConnectionType],[EnableRefreshAidToNavigationIn30sec],[EnableAidToNavigationFromFile],[SendingMMSI],[SourceUpdateRate],[EnableRefreshStayingStillTargetIn30sec],[EnableSendBaseStationAlarms],[AisWebConfig],[EnableBaseStation600],[BaseStation600IPAddress],[BaseStation600Port],[EsdInputCount],[StoreReceivedSentences],[StoreSentMessages],[StoreUnsentMessages],[TextMessageHeader],[Urls],[AidToNavigationHeader],[ExcludeSendAisBaseStation],[ExcludeSendAisA]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[UserName],[Password],[Latitude],[Longitude],[AisProviderLoginURL],[ComPort],[BaudRate],[FilterByArea],[UpperLeftCornerLatitude],[UpperLeftCornerLongitude],[BottomRightCornerLatitude],[BottomRightCornerLongitude],[AisProviderIPAddress],[AisProviderPort],[UseLogin],[AisProviderLoginPort],[CanSendAISMessage],[UdpPort],[ConnectionType],[EnableRefreshAidToNavigationIn30sec],[EnableAidToNavigationFromFile],[SendingMMSI],[SourceUpdateRate],[EnableRefreshStayingStillTargetIn30sec],[EnableSendBaseStationAlarms],[AisWebConfig],[StoreReceivedSentences],[StoreSentMessages],[StoreUnsentMessages],[TextMessageHeader],[Urls],[AidToNavigationHeader],[ExcludeSendAisBaseStation],[ExcludeSendAisA]";
         static constexpr std::wstring_view ViewName = L"AisTransceiverConfigurationView";
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
@@ -3914,18 +3841,14 @@ namespace Barrelman::Data
         static constexpr SQLUSMALLINT ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID = 28;
         static constexpr SQLUSMALLINT ENABLESENDBASESTATIONALARMS_FIELD_ID = 29;
         static constexpr SQLUSMALLINT AISWEBCONFIG_FIELD_ID = 30;
-        static constexpr SQLUSMALLINT ENABLEBASESTATION600_FIELD_ID = 31;
-        static constexpr SQLUSMALLINT BASESTATION600IPADDRESS_FIELD_ID = 32;
-        static constexpr SQLUSMALLINT BASESTATION600PORT_FIELD_ID = 33;
-        static constexpr SQLUSMALLINT ESDINPUTCOUNT_FIELD_ID = 34;
-        static constexpr SQLUSMALLINT STORERECEIVEDSENTENCES_FIELD_ID = 35;
-        static constexpr SQLUSMALLINT STORESENTMESSAGES_FIELD_ID = 36;
-        static constexpr SQLUSMALLINT STOREUNSENTMESSAGES_FIELD_ID = 37;
-        static constexpr SQLUSMALLINT TEXTMESSAGEHEADER_FIELD_ID = 38;
-        static constexpr SQLUSMALLINT URLS_FIELD_ID = 39;
-        static constexpr SQLUSMALLINT AIDTONAVIGATIONHEADER_FIELD_ID = 40;
-        static constexpr SQLUSMALLINT EXCLUDESENDAISBASESTATION_FIELD_ID = 41;
-        static constexpr SQLUSMALLINT EXCLUDESENDAISA_FIELD_ID = 42;
+        static constexpr SQLUSMALLINT STORERECEIVEDSENTENCES_FIELD_ID = 31;
+        static constexpr SQLUSMALLINT STORESENTMESSAGES_FIELD_ID = 32;
+        static constexpr SQLUSMALLINT STOREUNSENTMESSAGES_FIELD_ID = 33;
+        static constexpr SQLUSMALLINT TEXTMESSAGEHEADER_FIELD_ID = 34;
+        static constexpr SQLUSMALLINT URLS_FIELD_ID = 35;
+        static constexpr SQLUSMALLINT AIDTONAVIGATIONHEADER_FIELD_ID = 36;
+        static constexpr SQLUSMALLINT EXCLUDESENDAISBASESTATION_FIELD_ID = 37;
+        static constexpr SQLUSMALLINT EXCLUDESENDAISA_FIELD_ID = 38;
 
         AisTransceiverConfigurationColumnData( ) = default;
 
@@ -3934,7 +3857,7 @@ namespace Barrelman::Data
             return Kind::AisTransceiverConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -3946,11 +3869,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid AisTransceiver( ) const
+        const Guid& AisTransceiver( ) const
         {
             return aisTransceiver_;
         }
@@ -3958,7 +3881,7 @@ namespace Barrelman::Data
         {
             aisTransceiver_ = aisTransceiver;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -3966,29 +3889,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::wstring_view UserName( ) const
+        const FixedDBWideString<127>& UserName( ) const
         {
-            if(userNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(userName_.data(),static_cast<size_t>( userNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return userName_;
         }
         void SetUserName( const WideString& userName )
         {
-            Assign(userName, userName_, userNameLengthOrNullIndicator_);
+            userName_ = userName;
         }
-        std::wstring_view Password( ) const
+        const FixedDBWideString<127>& Password( ) const
         {
-            if(passwordLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(password_.data(),static_cast<size_t>( passwordLengthOrNullIndicator_ ));
-            }
-            return {};
+            return password_;
         }
         void SetPassword( const WideString& password )
         {
-            Assign(password, password_, passwordLengthOrNullIndicator_);
+            password_ = password;
         }
         double Latitude( ) const
         {
@@ -4006,29 +3921,21 @@ namespace Barrelman::Data
         {
             longitude_ = longitude;
         }
-        std::wstring_view AisProviderLoginURL( ) const
+        const FixedDBWideString<127>& AisProviderLoginURL( ) const
         {
-            if(aisProviderLoginURLLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(aisProviderLoginURL_.data(),static_cast<size_t>( aisProviderLoginURLLengthOrNullIndicator_ ));
-            }
-            return {};
+            return aisProviderLoginURL_;
         }
         void SetAisProviderLoginURL( const WideString& aisProviderLoginURL )
         {
-            Assign(aisProviderLoginURL, aisProviderLoginURL_, aisProviderLoginURLLengthOrNullIndicator_);
+            aisProviderLoginURL_ = aisProviderLoginURL;
         }
-        std::wstring_view ComPort( ) const
+        const FixedDBWideString<32>& ComPort( ) const
         {
-            if(comPortLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(comPort_.data(),static_cast<size_t>( comPortLengthOrNullIndicator_ ));
-            }
-            return {};
+            return comPort_;
         }
         void SetComPort( const WideString& comPort )
         {
-            Assign(comPort, comPort_, comPortLengthOrNullIndicator_);
+            comPort_ = comPort;
         }
         Int32 BaudRate( ) const
         {
@@ -4078,17 +3985,13 @@ namespace Barrelman::Data
         {
             bottomRightCornerLongitude_ = bottomRightCornerLongitude;
         }
-        std::wstring_view AisProviderIPAddress( ) const
+        const FixedDBWideString<127>& AisProviderIPAddress( ) const
         {
-            if(aisProviderIPAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(aisProviderIPAddress_.data(),static_cast<size_t>( aisProviderIPAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return aisProviderIPAddress_;
         }
         void SetAisProviderIPAddress( const WideString& aisProviderIPAddress )
         {
-            Assign(aisProviderIPAddress, aisProviderIPAddress_, aisProviderIPAddressLengthOrNullIndicator_);
+            aisProviderIPAddress_ = aisProviderIPAddress;
         }
         Int32 AisProviderPort( ) const
         {
@@ -4128,7 +4031,7 @@ namespace Barrelman::Data
         }
         void SetTextMessageHeader( const WideString& textMessageHeader )
         {
-            Assign(textMessageHeader, textMessageHeader_, textMessageHeaderLengthOrNullIndicator_);
+            textMessageHeader_ = textMessageHeader;
         }
         const WideString& Urls( ) const
         {
@@ -4136,7 +4039,7 @@ namespace Barrelman::Data
         }
         void SetUrls( const WideString& urls )
         {
-            Assign(urls, urls_, urlsLengthOrNullIndicator_);
+            urls_ = urls;
         }
         Int32 UdpPort( ) const
         {
@@ -4176,7 +4079,7 @@ namespace Barrelman::Data
         }
         void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
         {
-            Assign(aidToNavigationHeader, aidToNavigationHeader_, aidToNavigationHeaderLengthOrNullIndicator_);
+            aidToNavigationHeader_ = aidToNavigationHeader;
         }
         bool SendingMMSI( ) const
         {
@@ -4208,7 +4111,7 @@ namespace Barrelman::Data
         }
         void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
         {
-            Assign(excludeSendAisBaseStation, excludeSendAisBaseStation_, excludeSendAisBaseStationLengthOrNullIndicator_);
+            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
         }
         const WideString& ExcludeSendAisA( ) const
         {
@@ -4216,7 +4119,7 @@ namespace Barrelman::Data
         }
         void SetExcludeSendAisA( const WideString& excludeSendAisA )
         {
-            Assign(excludeSendAisA, excludeSendAisA_, excludeSendAisALengthOrNullIndicator_);
+            excludeSendAisA_ = excludeSendAisA;
         }
         bool EnableSendBaseStationAlarms( ) const
         {
@@ -4226,53 +4129,13 @@ namespace Barrelman::Data
         {
             enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
         }
-        std::wstring_view AisWebConfig( ) const
+        const FixedDBWideString<127>& AisWebConfig( ) const
         {
-            if(aisWebConfigLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(aisWebConfig_.data(),static_cast<size_t>( aisWebConfigLengthOrNullIndicator_ ));
-            }
-            return {};
+            return aisWebConfig_;
         }
         void SetAisWebConfig( const WideString& aisWebConfig )
         {
-            Assign(aisWebConfig, aisWebConfig_, aisWebConfigLengthOrNullIndicator_);
-        }
-        bool EnableBaseStation600( ) const
-        {
-            return enableBaseStation600_;
-        }
-        void SetEnableBaseStation600( bool enableBaseStation600 )
-        {
-            enableBaseStation600_ = enableBaseStation600;
-        }
-        std::wstring_view BaseStation600IPAddress( ) const
-        {
-            if(baseStation600IPAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(baseStation600IPAddress_.data(),static_cast<size_t>( baseStation600IPAddressLengthOrNullIndicator_ ));
-            }
-            return {};
-        }
-        void SetBaseStation600IPAddress( const WideString& baseStation600IPAddress )
-        {
-            Assign(baseStation600IPAddress, baseStation600IPAddress_, baseStation600IPAddressLengthOrNullIndicator_);
-        }
-        Int32 BaseStation600Port( ) const
-        {
-            return baseStation600Port_;
-        }
-        void SetBaseStation600Port( Int32 baseStation600Port )
-        {
-            baseStation600Port_ = baseStation600Port;
-        }
-        Int32 EsdInputCount( ) const
-        {
-            return esdInputCount_;
-        }
-        void SetEsdInputCount( Int32 esdInputCount )
-        {
-            esdInputCount_ = esdInputCount;
+            aisWebConfig_ = aisWebConfig;
         }
         bool StoreReceivedSentences( ) const
         {
@@ -4300,43 +4163,39 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, &aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, USERNAME_FIELD_ID, &userName_, &userNameLengthOrNullIndicator_);
-            Bind(statement, PASSWORD_FIELD_ID, &password_, &passwordLengthOrNullIndicator_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, AISPROVIDERLOGINURL_FIELD_ID, &aisProviderLoginURL_, &aisProviderLoginURLLengthOrNullIndicator_);
-            Bind(statement, COMPORT_FIELD_ID, &comPort_, &comPortLengthOrNullIndicator_);
-            Bind(statement, BAUDRATE_FIELD_ID, &baudRate_);
-            Bind(statement, FILTERBYAREA_FIELD_ID, &filterByArea_);
-            Bind(statement, UPPERLEFTCORNERLATITUDE_FIELD_ID, &upperLeftCornerLatitude_);
-            Bind(statement, UPPERLEFTCORNERLONGITUDE_FIELD_ID, &upperLeftCornerLongitude_);
-            Bind(statement, BOTTOMRIGHTCORNERLATITUDE_FIELD_ID, &bottomRightCornerLatitude_);
-            Bind(statement, BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID, &bottomRightCornerLongitude_);
-            Bind(statement, AISPROVIDERIPADDRESS_FIELD_ID, &aisProviderIPAddress_, &aisProviderIPAddressLengthOrNullIndicator_);
-            Bind(statement, AISPROVIDERPORT_FIELD_ID, &aisProviderPort_);
-            Bind(statement, USELOGIN_FIELD_ID, &useLogin_);
-            Bind(statement, AISPROVIDERLOGINPORT_FIELD_ID, &aisProviderLoginPort_);
-            Bind(statement, CANSENDAISMESSAGE_FIELD_ID, &canSendAISMessage_);
-            Bind(statement, UDPPORT_FIELD_ID, &udpPort_);
-            Bind(statement, CONNECTIONTYPE_FIELD_ID, &connectionType_);
-            Bind(statement, ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID, &enableRefreshAidToNavigationIn30sec_);
-            Bind(statement, ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID, &enableAidToNavigationFromFile_);
-            Bind(statement, SENDINGMMSI_FIELD_ID, &sendingMMSI_);
-            Bind(statement, SOURCEUPDATERATE_FIELD_ID, &sourceUpdateRate_);
-            Bind(statement, ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID, &enableRefreshStayingStillTargetIn30sec_);
-            Bind(statement, ENABLESENDBASESTATIONALARMS_FIELD_ID, &enableSendBaseStationAlarms_);
-            Bind(statement, AISWEBCONFIG_FIELD_ID, &aisWebConfig_, &aisWebConfigLengthOrNullIndicator_);
-            Bind(statement, ENABLEBASESTATION600_FIELD_ID, &enableBaseStation600_);
-            Bind(statement, BASESTATION600IPADDRESS_FIELD_ID, &baseStation600IPAddress_, &baseStation600IPAddressLengthOrNullIndicator_);
-            Bind(statement, BASESTATION600PORT_FIELD_ID, &baseStation600Port_);
-            Bind(statement, ESDINPUTCOUNT_FIELD_ID, &esdInputCount_);
-            Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, &storeReceivedSentences_);
-            Bind(statement, STORESENTMESSAGES_FIELD_ID, &storeSentMessages_);
-            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, &storeUnsentMessages_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, USERNAME_FIELD_ID, userName_);
+            Bind(statement, PASSWORD_FIELD_ID, password_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, AISPROVIDERLOGINURL_FIELD_ID, aisProviderLoginURL_);
+            Bind(statement, COMPORT_FIELD_ID, comPort_);
+            Bind(statement, BAUDRATE_FIELD_ID, baudRate_);
+            Bind(statement, FILTERBYAREA_FIELD_ID, filterByArea_);
+            Bind(statement, UPPERLEFTCORNERLATITUDE_FIELD_ID, upperLeftCornerLatitude_);
+            Bind(statement, UPPERLEFTCORNERLONGITUDE_FIELD_ID, upperLeftCornerLongitude_);
+            Bind(statement, BOTTOMRIGHTCORNERLATITUDE_FIELD_ID, bottomRightCornerLatitude_);
+            Bind(statement, BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID, bottomRightCornerLongitude_);
+            Bind(statement, AISPROVIDERIPADDRESS_FIELD_ID, aisProviderIPAddress_);
+            Bind(statement, AISPROVIDERPORT_FIELD_ID, aisProviderPort_);
+            Bind(statement, USELOGIN_FIELD_ID, useLogin_);
+            Bind(statement, AISPROVIDERLOGINPORT_FIELD_ID, aisProviderLoginPort_);
+            Bind(statement, CANSENDAISMESSAGE_FIELD_ID, canSendAISMessage_);
+            Bind(statement, UDPPORT_FIELD_ID, udpPort_);
+            Bind(statement, CONNECTIONTYPE_FIELD_ID, connectionType_);
+            Bind(statement, ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID, enableRefreshAidToNavigationIn30sec_);
+            Bind(statement, ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID, enableAidToNavigationFromFile_);
+            Bind(statement, SENDINGMMSI_FIELD_ID, sendingMMSI_);
+            Bind(statement, SOURCEUPDATERATE_FIELD_ID, sourceUpdateRate_);
+            Bind(statement, ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID, enableRefreshStayingStillTargetIn30sec_);
+            Bind(statement, ENABLESENDBASESTATIONALARMS_FIELD_ID, enableSendBaseStationAlarms_);
+            Bind(statement, AISWEBCONFIG_FIELD_ID, aisWebConfig_);
+            Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, storeReceivedSentences_);
+            Bind(statement, STORESENTMESSAGES_FIELD_ID, storeSentMessages_);
+            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, storeUnsentMessages_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -4356,41 +4215,37 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, aisTransceiver_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, userName_, userNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, password_, passwordLengthOrNullIndicator_);
+            WriteColumnValue( destination, userName_);
+            WriteColumnValue( destination, password_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
-            WriteColumnValue( destination, aisProviderLoginURL_, aisProviderLoginURLLengthOrNullIndicator_);
-            WriteColumnValue( destination, comPort_, comPortLengthOrNullIndicator_);
+            WriteColumnValue( destination, aisProviderLoginURL_);
+            WriteColumnValue( destination, comPort_);
             WriteColumnValue( destination, baudRate_);
             WriteColumnValue( destination, filterByArea_);
             WriteColumnValue( destination, upperLeftCornerLatitude_);
             WriteColumnValue( destination, upperLeftCornerLongitude_);
             WriteColumnValue( destination, bottomRightCornerLatitude_);
             WriteColumnValue( destination, bottomRightCornerLongitude_);
-            WriteColumnValue( destination, aisProviderIPAddress_, aisProviderIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, aisProviderIPAddress_);
             WriteColumnValue( destination, aisProviderPort_);
             WriteColumnValue( destination, useLogin_);
             WriteColumnValue( destination, aisProviderLoginPort_);
             WriteColumnValue( destination, canSendAISMessage_);
-            WriteColumnValue( destination, textMessageHeader_, textMessageHeaderLengthOrNullIndicator_);
-            WriteColumnValue( destination, urls_, urlsLengthOrNullIndicator_);
+            WriteColumnValue( destination, textMessageHeader_);
+            WriteColumnValue( destination, urls_);
             WriteColumnValue( destination, udpPort_);
             WriteColumnValue( destination, connectionType_);
             WriteColumnValue( destination, enableRefreshAidToNavigationIn30sec_);
             WriteColumnValue( destination, enableAidToNavigationFromFile_);
-            WriteColumnValue( destination, aidToNavigationHeader_, aidToNavigationHeaderLengthOrNullIndicator_);
+            WriteColumnValue( destination, aidToNavigationHeader_);
             WriteColumnValue( destination, sendingMMSI_);
             WriteColumnValue( destination, sourceUpdateRate_);
             WriteColumnValue( destination, enableRefreshStayingStillTargetIn30sec_);
-            WriteColumnValue( destination, excludeSendAisBaseStation_, excludeSendAisBaseStationLengthOrNullIndicator_);
-            WriteColumnValue( destination, excludeSendAisA_, excludeSendAisALengthOrNullIndicator_);
+            WriteColumnValue( destination, excludeSendAisBaseStation_);
+            WriteColumnValue( destination, excludeSendAisA_);
             WriteColumnValue( destination, enableSendBaseStationAlarms_);
-            WriteColumnValue( destination, aisWebConfig_, aisWebConfigLengthOrNullIndicator_);
-            WriteColumnValue( destination, enableBaseStation600_);
-            WriteColumnValue( destination, baseStation600IPAddress_, baseStation600IPAddressLengthOrNullIndicator_);
-            WriteColumnValue( destination, baseStation600Port_);
-            WriteColumnValue( destination, esdInputCount_);
+            WriteColumnValue( destination, aisWebConfig_);
             WriteColumnValue( destination, storeReceivedSentences_);
             WriteColumnValue( destination, storeSentMessages_);
             WriteColumnValue( destination, storeUnsentMessages_);
@@ -4406,8 +4261,7 @@ namespace Barrelman::Data
         Guid aisTransceiver_;
         DateTime timestamp_;
         bool isSent_ = false;
-        std::array<wchar_t,101> message_ = {};
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> message_;
     public:
         using Base = BaseColumnData;
 
@@ -4428,7 +4282,7 @@ namespace Barrelman::Data
             return Kind::AisTransceiverRawMessage;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -4440,11 +4294,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid AisTransceiver( ) const
+        const Guid& AisTransceiver( ) const
         {
             return aisTransceiver_;
         }
@@ -4452,7 +4306,7 @@ namespace Barrelman::Data
         {
             aisTransceiver_ = aisTransceiver;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -4468,26 +4322,22 @@ namespace Barrelman::Data
         {
             isSent_ = isSent;
         }
-        std::wstring_view Message( ) const
+        const FixedDBWideString<100>& Message( ) const
         {
-            if(messageLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(message_.data(),static_cast<size_t>( messageLengthOrNullIndicator_ ));
-            }
-            return {};
+            return message_;
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, &aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, ISSENT_FIELD_ID, &isSent_);
-            Bind(statement, MESSAGE_FIELD_ID, &message_, &messageLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, ISSENT_FIELD_ID, isSent_);
+            Bind(statement, MESSAGE_FIELD_ID, message_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -4498,7 +4348,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, aisTransceiver_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, isSent_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -4511,7 +4361,7 @@ namespace Barrelman::Data
         Guid aisTransceiver_;
         DateTime timestamp_;
         WideString sentence_;
-        SQLLEN sentenceLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN sentenceLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -4531,7 +4381,7 @@ namespace Barrelman::Data
             return Kind::AisTransceiverRawSentence;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -4543,11 +4393,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid AisTransceiver( ) const
+        const Guid& AisTransceiver( ) const
         {
             return aisTransceiver_;
         }
@@ -4555,7 +4405,7 @@ namespace Barrelman::Data
         {
             aisTransceiver_ = aisTransceiver;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -4569,14 +4419,14 @@ namespace Barrelman::Data
         }
         void SetSentence( const WideString& sentence )
         {
-            Assign(sentence, sentence_, sentenceLengthOrNullIndicator_);
+            sentence_ = sentence;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, &aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -4592,7 +4442,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, aisTransceiver_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, sentence_, sentenceLengthOrNullIndicator_);
+            WriteColumnValue( destination, sentence_);
         }
     };
 
@@ -4624,7 +4474,7 @@ namespace Barrelman::Data
             return Kind::AlarmStateChange;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -4636,11 +4486,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Alarm( ) const
+        const Guid& Alarm( ) const
         {
             return alarm_;
         }
@@ -4648,7 +4498,7 @@ namespace Barrelman::Data
         {
             alarm_ = alarm;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -4666,11 +4516,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ALARM_FIELD_ID, &alarm_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, STATE_FIELD_ID, &state_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ALARM_FIELD_ID, alarm_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, STATE_FIELD_ID, state_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -4690,8 +4540,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -4709,7 +4558,7 @@ namespace Barrelman::Data
             return Kind::BaseStationType;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -4721,27 +4570,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -4749,7 +4594,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -4761,8 +4606,8 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        std::vector<Byte> value_;
-        SQLLEN valueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary value_;
+        SQLLEN valueLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -4782,7 +4627,7 @@ namespace Barrelman::Data
             return Kind::BinaryTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -4794,11 +4639,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -4806,7 +4651,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -4814,20 +4659,20 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        const std::vector<Byte>& Value( ) const
+        const Binary& Value( ) const
         {
             return value_;
         }
-        void SetValue( const std::vector<Byte>& value )
+        void SetValue( const Binary& value )
         {
-            Assign(value, value_, valueLengthOrNullIndicator_);
+            value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -4843,7 +4688,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -4854,10 +4699,8 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid view_;
-        std::array<wchar_t,101> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        DateTime timestamp_;
-        SQLLEN timestampNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> name_;
+        DBDateTime timestamp_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double zoomLevel_ = 0.0;
@@ -4883,7 +4726,7 @@ namespace Barrelman::Data
             return Kind::Bookmark;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -4895,11 +4738,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid View( ) const
+        const Guid& View( ) const
         {
             return view_;
         }
@@ -4907,31 +4750,19 @@ namespace Barrelman::Data
         {
             view_ = view;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<100>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        std::optional<DateTime> Timestamp( ) const
+        const DBDateTime& Timestamp( ) const
         {
-            if(timestampNullIndicator_ != SQL_NULL_DATA)
-            {
-                return timestamp_;
-            }
-            return {};
+            return timestamp_;
         }
-        bool IsTimestampNull( ) const
-        {
-            return timestampNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTimestamp( const DateTime& timestamp )
+        void SetTimestamp( const DBDateTime& timestamp )
         {
             timestamp_ = timestamp;
         }
@@ -4961,14 +4792,14 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, VIEW_FIELD_ID, &view_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_, &timestampNullIndicator_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, ZOOMLEVEL_FIELD_ID, &zoomLevel_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, VIEW_FIELD_ID, view_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, ZOOMLEVEL_FIELD_ID, zoomLevel_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -4977,8 +4808,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, view_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, timestamp_, timestampNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, zoomLevel_);
@@ -4993,8 +4824,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        bool value_ = false;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBBoolean  value_;
     public:
         using Base = BaseColumnData;
 
@@ -5014,7 +4844,7 @@ namespace Barrelman::Data
             return Kind::BooleanTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -5026,11 +4856,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -5038,7 +4868,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -5046,29 +4876,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<bool> Value( ) const
+        const DBBoolean & Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( bool value )
+        void SetValue( const DBBoolean & value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5078,7 +4900,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -5090,8 +4912,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        Byte value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBByte value_;
     public:
         using Base = BaseColumnData;
 
@@ -5111,7 +4932,7 @@ namespace Barrelman::Data
             return Kind::ByteTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -5123,11 +4944,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -5135,7 +4956,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -5143,29 +4964,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<Byte> Value( ) const
+        const DBByte& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( Byte value )
+        void SetValue( const DBByte& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5175,7 +4988,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -5211,7 +5024,7 @@ namespace Barrelman::Data
             return Kind::CameraCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -5223,11 +5036,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -5235,7 +5048,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -5251,7 +5064,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -5259,7 +5072,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -5269,13 +5082,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5296,21 +5109,15 @@ namespace Barrelman::Data
     class CameraCommandAbsoluteMoveColumnData : public CameraCommandColumnData
     {
         Data::CameraPanTiltMode positionPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
-        double panAngle_ = 0.0;
-        SQLLEN panAngleNullIndicator_ = SQL_NULL_DATA;
-        double tiltAngle_ = 0.0;
-        SQLLEN tiltAngleNullIndicator_ = SQL_NULL_DATA;
+        DBDouble panAngle_;
+        DBDouble tiltAngle_;
         Data::CameraFocalLengthMode positionFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
-        double focalLength_ = 0.0;
-        SQLLEN focalLengthNullIndicator_ = SQL_NULL_DATA;
+        DBDouble focalLength_;
         Data::CameraPanTiltMode speedPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
-        double panSpeed_ = 0.0;
-        SQLLEN panSpeedNullIndicator_ = SQL_NULL_DATA;
-        double tiltSpeed_ = 0.0;
-        SQLLEN tiltSpeedNullIndicator_ = SQL_NULL_DATA;
+        DBDouble panSpeed_;
+        DBDouble tiltSpeed_;
         Data::CameraFocalLengthMode speedFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
-        double zoomSpeed_ = 0.0;
-        SQLLEN zoomSpeedNullIndicator_ = SQL_NULL_DATA;
+        DBDouble zoomSpeed_;
     public:
         using Base = CameraCommandColumnData;
 
@@ -5343,35 +5150,19 @@ namespace Barrelman::Data
         {
             positionPanTiltMode_ = positionPanTiltMode;
         }
-        std::optional<double> PanAngle( ) const
+        const DBDouble& PanAngle( ) const
         {
-            if(panAngleNullIndicator_ != SQL_NULL_DATA)
-            {
-                return panAngle_;
-            }
-            return {};
+            return panAngle_;
         }
-        bool IsPanAngleNull( ) const
-        {
-            return panAngleNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPanAngle( double panAngle )
+        void SetPanAngle( const DBDouble& panAngle )
         {
             panAngle_ = panAngle;
         }
-        std::optional<double> TiltAngle( ) const
+        const DBDouble& TiltAngle( ) const
         {
-            if(tiltAngleNullIndicator_ != SQL_NULL_DATA)
-            {
-                return tiltAngle_;
-            }
-            return {};
+            return tiltAngle_;
         }
-        bool IsTiltAngleNull( ) const
-        {
-            return tiltAngleNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTiltAngle( double tiltAngle )
+        void SetTiltAngle( const DBDouble& tiltAngle )
         {
             tiltAngle_ = tiltAngle;
         }
@@ -5383,19 +5174,11 @@ namespace Barrelman::Data
         {
             positionFocalLengthMode_ = positionFocalLengthMode;
         }
-        std::optional<double> FocalLength( ) const
+        const DBDouble& FocalLength( ) const
         {
-            if(focalLengthNullIndicator_ != SQL_NULL_DATA)
-            {
-                return focalLength_;
-            }
-            return {};
+            return focalLength_;
         }
-        bool IsFocalLengthNull( ) const
-        {
-            return focalLengthNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetFocalLength( double focalLength )
+        void SetFocalLength( const DBDouble& focalLength )
         {
             focalLength_ = focalLength;
         }
@@ -5407,35 +5190,19 @@ namespace Barrelman::Data
         {
             speedPanTiltMode_ = speedPanTiltMode;
         }
-        std::optional<double> PanSpeed( ) const
+        const DBDouble& PanSpeed( ) const
         {
-            if(panSpeedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return panSpeed_;
-            }
-            return {};
+            return panSpeed_;
         }
-        bool IsPanSpeedNull( ) const
-        {
-            return panSpeedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPanSpeed( double panSpeed )
+        void SetPanSpeed( const DBDouble& panSpeed )
         {
             panSpeed_ = panSpeed;
         }
-        std::optional<double> TiltSpeed( ) const
+        const DBDouble& TiltSpeed( ) const
         {
-            if(tiltSpeedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return tiltSpeed_;
-            }
-            return {};
+            return tiltSpeed_;
         }
-        bool IsTiltSpeedNull( ) const
-        {
-            return tiltSpeedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTiltSpeed( double tiltSpeed )
+        void SetTiltSpeed( const DBDouble& tiltSpeed )
         {
             tiltSpeed_ = tiltSpeed;
         }
@@ -5447,19 +5214,11 @@ namespace Barrelman::Data
         {
             speedFocalLengthMode_ = speedFocalLengthMode;
         }
-        std::optional<double> ZoomSpeed( ) const
+        const DBDouble& ZoomSpeed( ) const
         {
-            if(zoomSpeedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return zoomSpeed_;
-            }
-            return {};
+            return zoomSpeed_;
         }
-        bool IsZoomSpeedNull( ) const
-        {
-            return zoomSpeedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetZoomSpeed( double zoomSpeed )
+        void SetZoomSpeed( const DBDouble& zoomSpeed )
         {
             zoomSpeed_ = zoomSpeed;
         }
@@ -5467,16 +5226,16 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, POSITIONPANTILTMODE_FIELD_ID, &positionPanTiltMode_);
-            Bind(statement, PANANGLE_FIELD_ID, &panAngle_, &panAngleNullIndicator_);
-            Bind(statement, TILTANGLE_FIELD_ID, &tiltAngle_, &tiltAngleNullIndicator_);
-            Bind(statement, POSITIONFOCALLENGTHMODE_FIELD_ID, &positionFocalLengthMode_);
-            Bind(statement, FOCALLENGTH_FIELD_ID, &focalLength_, &focalLengthNullIndicator_);
-            Bind(statement, SPEEDPANTILTMODE_FIELD_ID, &speedPanTiltMode_);
-            Bind(statement, PANSPEED_FIELD_ID, &panSpeed_, &panSpeedNullIndicator_);
-            Bind(statement, TILTSPEED_FIELD_ID, &tiltSpeed_, &tiltSpeedNullIndicator_);
-            Bind(statement, SPEEDFOCALLENGTHMODE_FIELD_ID, &speedFocalLengthMode_);
-            Bind(statement, ZOOMSPEED_FIELD_ID, &zoomSpeed_, &zoomSpeedNullIndicator_);
+            Bind(statement, POSITIONPANTILTMODE_FIELD_ID, positionPanTiltMode_);
+            Bind(statement, PANANGLE_FIELD_ID, panAngle_);
+            Bind(statement, TILTANGLE_FIELD_ID, tiltAngle_);
+            Bind(statement, POSITIONFOCALLENGTHMODE_FIELD_ID, positionFocalLengthMode_);
+            Bind(statement, FOCALLENGTH_FIELD_ID, focalLength_);
+            Bind(statement, SPEEDPANTILTMODE_FIELD_ID, speedPanTiltMode_);
+            Bind(statement, PANSPEED_FIELD_ID, panSpeed_);
+            Bind(statement, TILTSPEED_FIELD_ID, tiltSpeed_);
+            Bind(statement, SPEEDFOCALLENGTHMODE_FIELD_ID, speedFocalLengthMode_);
+            Bind(statement, ZOOMSPEED_FIELD_ID, zoomSpeed_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5484,15 +5243,15 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, positionPanTiltMode_);
-            WriteColumnValue( destination, panAngle_, panAngleNullIndicator_);
-            WriteColumnValue( destination, tiltAngle_, tiltAngleNullIndicator_);
+            WriteColumnValue( destination, panAngle_);
+            WriteColumnValue( destination, tiltAngle_);
             WriteColumnValue( destination, positionFocalLengthMode_);
-            WriteColumnValue( destination, focalLength_, focalLengthNullIndicator_);
+            WriteColumnValue( destination, focalLength_);
             WriteColumnValue( destination, speedPanTiltMode_);
-            WriteColumnValue( destination, panSpeed_, panSpeedNullIndicator_);
-            WriteColumnValue( destination, tiltSpeed_, tiltSpeedNullIndicator_);
+            WriteColumnValue( destination, panSpeed_);
+            WriteColumnValue( destination, tiltSpeed_);
             WriteColumnValue( destination, speedFocalLengthMode_);
-            WriteColumnValue( destination, zoomSpeed_, zoomSpeedNullIndicator_);
+            WriteColumnValue( destination, zoomSpeed_);
         }
     };
 
@@ -5500,12 +5259,9 @@ namespace Barrelman::Data
 
     class CameraCommandAdjustPanTiltZoomColumnData : public CameraCommandColumnData
     {
-        double x_ = 0.0;
-        SQLLEN xNullIndicator_ = SQL_NULL_DATA;
-        double y_ = 0.0;
-        SQLLEN yNullIndicator_ = SQL_NULL_DATA;
-        double z_ = 0.0;
-        SQLLEN zNullIndicator_ = SQL_NULL_DATA;
+        DBDouble x_;
+        DBDouble y_;
+        DBDouble z_;
     public:
         using Base = CameraCommandColumnData;
 
@@ -5523,51 +5279,27 @@ namespace Barrelman::Data
             return Kind::CameraCommandAdjustPanTiltZoom;
         }
 
-        std::optional<double> X( ) const
+        const DBDouble& X( ) const
         {
-            if(xNullIndicator_ != SQL_NULL_DATA)
-            {
-                return x_;
-            }
-            return {};
+            return x_;
         }
-        bool IsXNull( ) const
-        {
-            return xNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetX( double x )
+        void SetX( const DBDouble& x )
         {
             x_ = x;
         }
-        std::optional<double> Y( ) const
+        const DBDouble& Y( ) const
         {
-            if(yNullIndicator_ != SQL_NULL_DATA)
-            {
-                return y_;
-            }
-            return {};
+            return y_;
         }
-        bool IsYNull( ) const
-        {
-            return yNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetY( double y )
+        void SetY( const DBDouble& y )
         {
             y_ = y;
         }
-        std::optional<double> Z( ) const
+        const DBDouble& Z( ) const
         {
-            if(zNullIndicator_ != SQL_NULL_DATA)
-            {
-                return z_;
-            }
-            return {};
+            return z_;
         }
-        bool IsZNull( ) const
-        {
-            return zNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetZ( double z )
+        void SetZ( const DBDouble& z )
         {
             z_ = z;
         }
@@ -5575,18 +5307,18 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, X_FIELD_ID, &x_, &xNullIndicator_);
-            Bind(statement, Y_FIELD_ID, &y_, &yNullIndicator_);
-            Bind(statement, Z_FIELD_ID, &z_, &zNullIndicator_);
+            Bind(statement, X_FIELD_ID, x_);
+            Bind(statement, Y_FIELD_ID, y_);
+            Bind(statement, Z_FIELD_ID, z_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, x_, xNullIndicator_);
-            WriteColumnValue( destination, y_, yNullIndicator_);
-            WriteColumnValue( destination, z_, zNullIndicator_);
+            WriteColumnValue( destination, x_);
+            WriteColumnValue( destination, y_);
+            WriteColumnValue( destination, z_);
         }
     };
 
@@ -5595,14 +5327,10 @@ namespace Barrelman::Data
     class CameraCommandContinuousMoveColumnData : public CameraCommandColumnData
     {
         bool normalized_ = false;
-        double panVelocity_ = 0.0;
-        SQLLEN panVelocityNullIndicator_ = SQL_NULL_DATA;
-        double tiltVelocity_ = 0.0;
-        SQLLEN tiltVelocityNullIndicator_ = SQL_NULL_DATA;
-        double zoomVelocity_ = 0.0;
-        SQLLEN zoomVelocityNullIndicator_ = SQL_NULL_DATA;
-        TimeSpan duration_;
-        SQLLEN durationNullIndicator_ = SQL_NULL_DATA;
+        DBDouble panVelocity_;
+        DBDouble tiltVelocity_;
+        DBDouble zoomVelocity_;
+        DBTimeSpan duration_;
     public:
         using Base = CameraCommandColumnData;
 
@@ -5630,67 +5358,35 @@ namespace Barrelman::Data
         {
             normalized_ = normalized;
         }
-        std::optional<double> PanVelocity( ) const
+        const DBDouble& PanVelocity( ) const
         {
-            if(panVelocityNullIndicator_ != SQL_NULL_DATA)
-            {
-                return panVelocity_;
-            }
-            return {};
+            return panVelocity_;
         }
-        bool IsPanVelocityNull( ) const
-        {
-            return panVelocityNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPanVelocity( double panVelocity )
+        void SetPanVelocity( const DBDouble& panVelocity )
         {
             panVelocity_ = panVelocity;
         }
-        std::optional<double> TiltVelocity( ) const
+        const DBDouble& TiltVelocity( ) const
         {
-            if(tiltVelocityNullIndicator_ != SQL_NULL_DATA)
-            {
-                return tiltVelocity_;
-            }
-            return {};
+            return tiltVelocity_;
         }
-        bool IsTiltVelocityNull( ) const
-        {
-            return tiltVelocityNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTiltVelocity( double tiltVelocity )
+        void SetTiltVelocity( const DBDouble& tiltVelocity )
         {
             tiltVelocity_ = tiltVelocity;
         }
-        std::optional<double> ZoomVelocity( ) const
+        const DBDouble& ZoomVelocity( ) const
         {
-            if(zoomVelocityNullIndicator_ != SQL_NULL_DATA)
-            {
-                return zoomVelocity_;
-            }
-            return {};
+            return zoomVelocity_;
         }
-        bool IsZoomVelocityNull( ) const
-        {
-            return zoomVelocityNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetZoomVelocity( double zoomVelocity )
+        void SetZoomVelocity( const DBDouble& zoomVelocity )
         {
             zoomVelocity_ = zoomVelocity;
         }
-        std::optional<TimeSpan> Duration( ) const
+        const DBTimeSpan& Duration( ) const
         {
-            if(durationNullIndicator_ != SQL_NULL_DATA)
-            {
-                return duration_;
-            }
-            return {};
+            return duration_;
         }
-        bool IsDurationNull( ) const
-        {
-            return durationNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetDuration( const TimeSpan& duration )
+        void SetDuration( const DBTimeSpan& duration )
         {
             duration_ = duration;
         }
@@ -5698,11 +5394,11 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NORMALIZED_FIELD_ID, &normalized_);
-            Bind(statement, PANVELOCITY_FIELD_ID, &panVelocity_, &panVelocityNullIndicator_);
-            Bind(statement, TILTVELOCITY_FIELD_ID, &tiltVelocity_, &tiltVelocityNullIndicator_);
-            Bind(statement, ZOOMVELOCITY_FIELD_ID, &zoomVelocity_, &zoomVelocityNullIndicator_);
-            Bind(statement, DURATION_FIELD_ID, &duration_, &durationNullIndicator_);
+            Bind(statement, NORMALIZED_FIELD_ID, normalized_);
+            Bind(statement, PANVELOCITY_FIELD_ID, panVelocity_);
+            Bind(statement, TILTVELOCITY_FIELD_ID, tiltVelocity_);
+            Bind(statement, ZOOMVELOCITY_FIELD_ID, zoomVelocity_);
+            Bind(statement, DURATION_FIELD_ID, duration_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5710,10 +5406,10 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, normalized_);
-            WriteColumnValue( destination, panVelocity_, panVelocityNullIndicator_);
-            WriteColumnValue( destination, tiltVelocity_, tiltVelocityNullIndicator_);
-            WriteColumnValue( destination, zoomVelocity_, zoomVelocityNullIndicator_);
-            WriteColumnValue( destination, duration_, durationNullIndicator_);
+            WriteColumnValue( destination, panVelocity_);
+            WriteColumnValue( destination, tiltVelocity_);
+            WriteColumnValue( destination, zoomVelocity_);
+            WriteColumnValue( destination, duration_);
         }
     };
 
@@ -5723,12 +5419,9 @@ namespace Barrelman::Data
     {
         double latitude_ = 0.0;
         double longitude_ = 0.0;
-        double altitude_ = 0.0;
-        SQLLEN altitudeNullIndicator_ = SQL_NULL_DATA;
-        double viewportWidth_ = 0.0;
-        SQLLEN viewportWidthNullIndicator_ = SQL_NULL_DATA;
-        double viewportHeight_ = 0.0;
-        SQLLEN viewportHeightNullIndicator_ = SQL_NULL_DATA;
+        DBDouble altitude_;
+        DBDouble viewportWidth_;
+        DBDouble viewportHeight_;
     public:
         using Base = CameraCommandColumnData;
 
@@ -5764,51 +5457,27 @@ namespace Barrelman::Data
         {
             longitude_ = longitude;
         }
-        std::optional<double> Altitude( ) const
+        const DBDouble& Altitude( ) const
         {
-            if(altitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return altitude_;
-            }
-            return {};
+            return altitude_;
         }
-        bool IsAltitudeNull( ) const
-        {
-            return altitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetAltitude( double altitude )
+        void SetAltitude( const DBDouble& altitude )
         {
             altitude_ = altitude;
         }
-        std::optional<double> ViewportWidth( ) const
+        const DBDouble& ViewportWidth( ) const
         {
-            if(viewportWidthNullIndicator_ != SQL_NULL_DATA)
-            {
-                return viewportWidth_;
-            }
-            return {};
+            return viewportWidth_;
         }
-        bool IsViewportWidthNull( ) const
-        {
-            return viewportWidthNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetViewportWidth( double viewportWidth )
+        void SetViewportWidth( const DBDouble& viewportWidth )
         {
             viewportWidth_ = viewportWidth;
         }
-        std::optional<double> ViewportHeight( ) const
+        const DBDouble& ViewportHeight( ) const
         {
-            if(viewportHeightNullIndicator_ != SQL_NULL_DATA)
-            {
-                return viewportHeight_;
-            }
-            return {};
+            return viewportHeight_;
         }
-        bool IsViewportHeightNull( ) const
-        {
-            return viewportHeightNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetViewportHeight( double viewportHeight )
+        void SetViewportHeight( const DBDouble& viewportHeight )
         {
             viewportHeight_ = viewportHeight;
         }
@@ -5816,11 +5485,11 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, ALTITUDE_FIELD_ID, &altitude_, &altitudeNullIndicator_);
-            Bind(statement, VIEWPORTWIDTH_FIELD_ID, &viewportWidth_, &viewportWidthNullIndicator_);
-            Bind(statement, VIEWPORTHEIGHT_FIELD_ID, &viewportHeight_, &viewportHeightNullIndicator_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, ALTITUDE_FIELD_ID, altitude_);
+            Bind(statement, VIEWPORTWIDTH_FIELD_ID, viewportWidth_);
+            Bind(statement, VIEWPORTHEIGHT_FIELD_ID, viewportHeight_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5829,9 +5498,9 @@ namespace Barrelman::Data
             Base::WriteColumns( destination );
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
-            WriteColumnValue( destination, altitude_, altitudeNullIndicator_);
-            WriteColumnValue( destination, viewportWidth_, viewportWidthNullIndicator_);
-            WriteColumnValue( destination, viewportHeight_, viewportHeightNullIndicator_);
+            WriteColumnValue( destination, altitude_);
+            WriteColumnValue( destination, viewportWidth_);
+            WriteColumnValue( destination, viewportHeight_);
         }
     };
 
@@ -5840,18 +5509,12 @@ namespace Barrelman::Data
     class CameraCommandRelativeMoveColumnData : public CameraCommandColumnData
     {
         bool normalized_ = false;
-        double panAngle_ = 0.0;
-        SQLLEN panAngleNullIndicator_ = SQL_NULL_DATA;
-        double tiltAngle_ = 0.0;
-        SQLLEN tiltAngleNullIndicator_ = SQL_NULL_DATA;
-        double focalLength_ = 0.0;
-        SQLLEN focalLengthNullIndicator_ = SQL_NULL_DATA;
-        double panSpeed_ = 0.0;
-        SQLLEN panSpeedNullIndicator_ = SQL_NULL_DATA;
-        double tiltSpeed_ = 0.0;
-        SQLLEN tiltSpeedNullIndicator_ = SQL_NULL_DATA;
-        double zoomSpeed_ = 0.0;
-        SQLLEN zoomSpeedNullIndicator_ = SQL_NULL_DATA;
+        DBDouble panAngle_;
+        DBDouble tiltAngle_;
+        DBDouble focalLength_;
+        DBDouble panSpeed_;
+        DBDouble tiltSpeed_;
+        DBDouble zoomSpeed_;
     public:
         using Base = CameraCommandColumnData;
 
@@ -5881,99 +5544,51 @@ namespace Barrelman::Data
         {
             normalized_ = normalized;
         }
-        std::optional<double> PanAngle( ) const
+        const DBDouble& PanAngle( ) const
         {
-            if(panAngleNullIndicator_ != SQL_NULL_DATA)
-            {
-                return panAngle_;
-            }
-            return {};
+            return panAngle_;
         }
-        bool IsPanAngleNull( ) const
-        {
-            return panAngleNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPanAngle( double panAngle )
+        void SetPanAngle( const DBDouble& panAngle )
         {
             panAngle_ = panAngle;
         }
-        std::optional<double> TiltAngle( ) const
+        const DBDouble& TiltAngle( ) const
         {
-            if(tiltAngleNullIndicator_ != SQL_NULL_DATA)
-            {
-                return tiltAngle_;
-            }
-            return {};
+            return tiltAngle_;
         }
-        bool IsTiltAngleNull( ) const
-        {
-            return tiltAngleNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTiltAngle( double tiltAngle )
+        void SetTiltAngle( const DBDouble& tiltAngle )
         {
             tiltAngle_ = tiltAngle;
         }
-        std::optional<double> FocalLength( ) const
+        const DBDouble& FocalLength( ) const
         {
-            if(focalLengthNullIndicator_ != SQL_NULL_DATA)
-            {
-                return focalLength_;
-            }
-            return {};
+            return focalLength_;
         }
-        bool IsFocalLengthNull( ) const
-        {
-            return focalLengthNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetFocalLength( double focalLength )
+        void SetFocalLength( const DBDouble& focalLength )
         {
             focalLength_ = focalLength;
         }
-        std::optional<double> PanSpeed( ) const
+        const DBDouble& PanSpeed( ) const
         {
-            if(panSpeedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return panSpeed_;
-            }
-            return {};
+            return panSpeed_;
         }
-        bool IsPanSpeedNull( ) const
-        {
-            return panSpeedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPanSpeed( double panSpeed )
+        void SetPanSpeed( const DBDouble& panSpeed )
         {
             panSpeed_ = panSpeed;
         }
-        std::optional<double> TiltSpeed( ) const
+        const DBDouble& TiltSpeed( ) const
         {
-            if(tiltSpeedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return tiltSpeed_;
-            }
-            return {};
+            return tiltSpeed_;
         }
-        bool IsTiltSpeedNull( ) const
-        {
-            return tiltSpeedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTiltSpeed( double tiltSpeed )
+        void SetTiltSpeed( const DBDouble& tiltSpeed )
         {
             tiltSpeed_ = tiltSpeed;
         }
-        std::optional<double> ZoomSpeed( ) const
+        const DBDouble& ZoomSpeed( ) const
         {
-            if(zoomSpeedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return zoomSpeed_;
-            }
-            return {};
+            return zoomSpeed_;
         }
-        bool IsZoomSpeedNull( ) const
-        {
-            return zoomSpeedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetZoomSpeed( double zoomSpeed )
+        void SetZoomSpeed( const DBDouble& zoomSpeed )
         {
             zoomSpeed_ = zoomSpeed;
         }
@@ -5981,13 +5596,13 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NORMALIZED_FIELD_ID, &normalized_);
-            Bind(statement, PANANGLE_FIELD_ID, &panAngle_, &panAngleNullIndicator_);
-            Bind(statement, TILTANGLE_FIELD_ID, &tiltAngle_, &tiltAngleNullIndicator_);
-            Bind(statement, FOCALLENGTH_FIELD_ID, &focalLength_, &focalLengthNullIndicator_);
-            Bind(statement, PANSPEED_FIELD_ID, &panSpeed_, &panSpeedNullIndicator_);
-            Bind(statement, TILTSPEED_FIELD_ID, &tiltSpeed_, &tiltSpeedNullIndicator_);
-            Bind(statement, ZOOMSPEED_FIELD_ID, &zoomSpeed_, &zoomSpeedNullIndicator_);
+            Bind(statement, NORMALIZED_FIELD_ID, normalized_);
+            Bind(statement, PANANGLE_FIELD_ID, panAngle_);
+            Bind(statement, TILTANGLE_FIELD_ID, tiltAngle_);
+            Bind(statement, FOCALLENGTH_FIELD_ID, focalLength_);
+            Bind(statement, PANSPEED_FIELD_ID, panSpeed_);
+            Bind(statement, TILTSPEED_FIELD_ID, tiltSpeed_);
+            Bind(statement, ZOOMSPEED_FIELD_ID, zoomSpeed_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -5995,12 +5610,12 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, normalized_);
-            WriteColumnValue( destination, panAngle_, panAngleNullIndicator_);
-            WriteColumnValue( destination, tiltAngle_, tiltAngleNullIndicator_);
-            WriteColumnValue( destination, focalLength_, focalLengthNullIndicator_);
-            WriteColumnValue( destination, panSpeed_, panSpeedNullIndicator_);
-            WriteColumnValue( destination, tiltSpeed_, tiltSpeedNullIndicator_);
-            WriteColumnValue( destination, zoomSpeed_, zoomSpeedNullIndicator_);
+            WriteColumnValue( destination, panAngle_);
+            WriteColumnValue( destination, tiltAngle_);
+            WriteColumnValue( destination, focalLength_);
+            WriteColumnValue( destination, panSpeed_);
+            WriteColumnValue( destination, tiltSpeed_);
+            WriteColumnValue( destination, zoomSpeed_);
         }
     };
 
@@ -6084,7 +5699,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ENABLED_FIELD_ID, &enabled_);
+            Bind(statement, ENABLED_FIELD_ID, enabled_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6127,7 +5742,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ENABLED_FIELD_ID, &enabled_);
+            Bind(statement, ENABLED_FIELD_ID, enabled_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6160,7 +5775,7 @@ namespace Barrelman::Data
             return Kind::CameraCommandSetFollowed;
         }
 
-        Guid TrackId( ) const
+        const Guid& TrackId( ) const
         {
             return trackId_;
         }
@@ -6180,8 +5795,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TRACKID_FIELD_ID, &trackId_);
-            Bind(statement, REASON_FIELD_ID, &reason_);
+            Bind(statement, TRACKID_FIELD_ID, trackId_);
+            Bind(statement, REASON_FIELD_ID, reason_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6225,7 +5840,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ENABLED_FIELD_ID, &enabled_);
+            Bind(statement, ENABLED_FIELD_ID, enabled_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6268,7 +5883,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ENABLED_FIELD_ID, &enabled_);
+            Bind(statement, ENABLED_FIELD_ID, enabled_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6311,7 +5926,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ENABLED_FIELD_ID, &enabled_);
+            Bind(statement, ENABLED_FIELD_ID, enabled_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6364,8 +5979,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, PANTILT_FIELD_ID, &panTilt_);
-            Bind(statement, ZOOM_FIELD_ID, &zoom_);
+            Bind(statement, PANTILT_FIELD_ID, panTilt_);
+            Bind(statement, ZOOM_FIELD_ID, zoom_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -6388,7 +6003,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
         double panAngle_ = 0.0;
         double tiltAngle_ = 0.0;
         double focalLength_ = 0.0;
@@ -6416,7 +6031,7 @@ namespace Barrelman::Data
             return Kind::CameraCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -6428,11 +6043,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -6440,7 +6055,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -6448,7 +6063,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -6470,7 +6085,7 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         double PanAngle( ) const
         {
@@ -6498,15 +6113,15 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
-            Bind(statement, PANANGLE_FIELD_ID, &panAngle_);
-            Bind(statement, TILTANGLE_FIELD_ID, &tiltAngle_);
-            Bind(statement, FOCALLENGTH_FIELD_ID, &focalLength_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
+            Bind(statement, PANANGLE_FIELD_ID, panAngle_);
+            Bind(statement, TILTANGLE_FIELD_ID, tiltAngle_);
+            Bind(statement, FOCALLENGTH_FIELD_ID, focalLength_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -6524,7 +6139,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
             WriteColumnValue( destination, panAngle_);
             WriteColumnValue( destination, tiltAngle_);
             WriteColumnValue( destination, focalLength_);
@@ -6540,19 +6155,14 @@ namespace Barrelman::Data
         Guid camera_;
         DateTime timestamp_;
         Data::CameraControlProtocol cameraControlProtocol_ = Data::CameraControlProtocol::Unknown;
-        std::array<wchar_t,128> cameraAddress_ = {};
-        SQLLEN cameraAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> cameraAddress_;
         Int32 cameraPort_ = 0;
-        std::array<wchar_t,128> cameraControlAddress_ = {};
-        SQLLEN cameraControlAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> cameraControlAddress_;
         Int32 cameraControlPort_ = 0;
-        std::array<wchar_t,128> cameraUserName_ = {};
-        SQLLEN cameraUserNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,128> cameraPassword_ = {};
-        SQLLEN cameraPasswordLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> cameraUserName_;
+        FixedDBWideString<127> cameraPassword_;
         bool useRtspUriOverride_ = false;
-        std::array<wchar_t,128> rtspUriOverride_ = {};
-        SQLLEN rtspUriOverrideLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> rtspUriOverride_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double altitude_ = 0.0;
@@ -6602,12 +6212,9 @@ namespace Barrelman::Data
         TimeSpan updateStatusInterval_;
         TimeSpan readTimeout_;
         TimeSpan moveCommandStatusDelay_;
-        std::array<wchar_t,128> ptzProfileName_ = {};
-        SQLLEN ptzProfileNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,128> ptzConfigurationToken_ = {};
-        SQLLEN ptzConfigurationTokenLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,128> videoSourceToken_ = {};
-        SQLLEN videoSourceTokenLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> ptzProfileName_;
+        FixedDBWideString<127> ptzConfigurationToken_;
+        FixedDBWideString<127> videoSourceToken_;
     public:
         using Base = BaseColumnData;
 
@@ -6687,7 +6294,7 @@ namespace Barrelman::Data
             return Kind::CameraConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -6699,11 +6306,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -6711,7 +6318,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -6727,17 +6334,13 @@ namespace Barrelman::Data
         {
             cameraControlProtocol_ = cameraControlProtocol;
         }
-        std::wstring_view CameraAddress( ) const
+        const FixedDBWideString<127>& CameraAddress( ) const
         {
-            if(cameraAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(cameraAddress_.data(),static_cast<size_t>( cameraAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return cameraAddress_;
         }
         void SetCameraAddress( const WideString& cameraAddress )
         {
-            Assign(cameraAddress, cameraAddress_, cameraAddressLengthOrNullIndicator_);
+            cameraAddress_ = cameraAddress;
         }
         Int32 CameraPort( ) const
         {
@@ -6747,17 +6350,13 @@ namespace Barrelman::Data
         {
             cameraPort_ = cameraPort;
         }
-        std::wstring_view CameraControlAddress( ) const
+        const FixedDBWideString<127>& CameraControlAddress( ) const
         {
-            if(cameraControlAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(cameraControlAddress_.data(),static_cast<size_t>( cameraControlAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return cameraControlAddress_;
         }
         void SetCameraControlAddress( const WideString& cameraControlAddress )
         {
-            Assign(cameraControlAddress, cameraControlAddress_, cameraControlAddressLengthOrNullIndicator_);
+            cameraControlAddress_ = cameraControlAddress;
         }
         Int32 CameraControlPort( ) const
         {
@@ -6767,29 +6366,21 @@ namespace Barrelman::Data
         {
             cameraControlPort_ = cameraControlPort;
         }
-        std::wstring_view CameraUserName( ) const
+        const FixedDBWideString<127>& CameraUserName( ) const
         {
-            if(cameraUserNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(cameraUserName_.data(),static_cast<size_t>( cameraUserNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return cameraUserName_;
         }
         void SetCameraUserName( const WideString& cameraUserName )
         {
-            Assign(cameraUserName, cameraUserName_, cameraUserNameLengthOrNullIndicator_);
+            cameraUserName_ = cameraUserName;
         }
-        std::wstring_view CameraPassword( ) const
+        const FixedDBWideString<127>& CameraPassword( ) const
         {
-            if(cameraPasswordLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(cameraPassword_.data(),static_cast<size_t>( cameraPasswordLengthOrNullIndicator_ ));
-            }
-            return {};
+            return cameraPassword_;
         }
         void SetCameraPassword( const WideString& cameraPassword )
         {
-            Assign(cameraPassword, cameraPassword_, cameraPasswordLengthOrNullIndicator_);
+            cameraPassword_ = cameraPassword;
         }
         bool UseRtspUriOverride( ) const
         {
@@ -6799,17 +6390,13 @@ namespace Barrelman::Data
         {
             useRtspUriOverride_ = useRtspUriOverride;
         }
-        std::wstring_view RtspUriOverride( ) const
+        const FixedDBWideString<127>& RtspUriOverride( ) const
         {
-            if(rtspUriOverrideLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(rtspUriOverride_.data(),static_cast<size_t>( rtspUriOverrideLengthOrNullIndicator_ ));
-            }
-            return {};
+            return rtspUriOverride_;
         }
         void SetRtspUriOverride( const WideString& rtspUriOverride )
         {
-            Assign(rtspUriOverride, rtspUriOverride_, rtspUriOverrideLengthOrNullIndicator_);
+            rtspUriOverride_ = rtspUriOverride;
         }
         double Latitude( ) const
         {
@@ -7171,7 +6758,7 @@ namespace Barrelman::Data
         {
             minimumTargetWidth_ = minimumTargetWidth;
         }
-        TimeSpan TargetLockTimeout( ) const
+        const TimeSpan& TargetLockTimeout( ) const
         {
             return targetLockTimeout_;
         }
@@ -7179,7 +6766,7 @@ namespace Barrelman::Data
         {
             targetLockTimeout_ = targetLockTimeout;
         }
-        TimeSpan UpdateStatusInterval( ) const
+        const TimeSpan& UpdateStatusInterval( ) const
         {
             return updateStatusInterval_;
         }
@@ -7187,7 +6774,7 @@ namespace Barrelman::Data
         {
             updateStatusInterval_ = updateStatusInterval;
         }
-        TimeSpan ReadTimeout( ) const
+        const TimeSpan& ReadTimeout( ) const
         {
             return readTimeout_;
         }
@@ -7195,7 +6782,7 @@ namespace Barrelman::Data
         {
             readTimeout_ = readTimeout;
         }
-        TimeSpan MoveCommandStatusDelay( ) const
+        const TimeSpan& MoveCommandStatusDelay( ) const
         {
             return moveCommandStatusDelay_;
         }
@@ -7203,109 +6790,97 @@ namespace Barrelman::Data
         {
             moveCommandStatusDelay_ = moveCommandStatusDelay;
         }
-        std::wstring_view PtzProfileName( ) const
+        const FixedDBWideString<127>& PtzProfileName( ) const
         {
-            if(ptzProfileNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(ptzProfileName_.data(),static_cast<size_t>( ptzProfileNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return ptzProfileName_;
         }
         void SetPtzProfileName( const WideString& ptzProfileName )
         {
-            Assign(ptzProfileName, ptzProfileName_, ptzProfileNameLengthOrNullIndicator_);
+            ptzProfileName_ = ptzProfileName;
         }
-        std::wstring_view PtzConfigurationToken( ) const
+        const FixedDBWideString<127>& PtzConfigurationToken( ) const
         {
-            if(ptzConfigurationTokenLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(ptzConfigurationToken_.data(),static_cast<size_t>( ptzConfigurationTokenLengthOrNullIndicator_ ));
-            }
-            return {};
+            return ptzConfigurationToken_;
         }
         void SetPtzConfigurationToken( const WideString& ptzConfigurationToken )
         {
-            Assign(ptzConfigurationToken, ptzConfigurationToken_, ptzConfigurationTokenLengthOrNullIndicator_);
+            ptzConfigurationToken_ = ptzConfigurationToken;
         }
-        std::wstring_view VideoSourceToken( ) const
+        const FixedDBWideString<127>& VideoSourceToken( ) const
         {
-            if(videoSourceTokenLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(videoSourceToken_.data(),static_cast<size_t>( videoSourceTokenLengthOrNullIndicator_ ));
-            }
-            return {};
+            return videoSourceToken_;
         }
         void SetVideoSourceToken( const WideString& videoSourceToken )
         {
-            Assign(videoSourceToken, videoSourceToken_, videoSourceTokenLengthOrNullIndicator_);
+            videoSourceToken_ = videoSourceToken;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, CAMERACONTROLPROTOCOL_FIELD_ID, &cameraControlProtocol_);
-            Bind(statement, CAMERAADDRESS_FIELD_ID, &cameraAddress_, &cameraAddressLengthOrNullIndicator_);
-            Bind(statement, CAMERAPORT_FIELD_ID, &cameraPort_);
-            Bind(statement, CAMERACONTROLADDRESS_FIELD_ID, &cameraControlAddress_, &cameraControlAddressLengthOrNullIndicator_);
-            Bind(statement, CAMERACONTROLPORT_FIELD_ID, &cameraControlPort_);
-            Bind(statement, CAMERAUSERNAME_FIELD_ID, &cameraUserName_, &cameraUserNameLengthOrNullIndicator_);
-            Bind(statement, CAMERAPASSWORD_FIELD_ID, &cameraPassword_, &cameraPasswordLengthOrNullIndicator_);
-            Bind(statement, USERTSPURIOVERRIDE_FIELD_ID, &useRtspUriOverride_);
-            Bind(statement, RTSPURIOVERRIDE_FIELD_ID, &rtspUriOverride_, &rtspUriOverrideLengthOrNullIndicator_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, ALTITUDE_FIELD_ID, &altitude_);
-            Bind(statement, USERELATIVEPOSITION_FIELD_ID, &useRelativePosition_);
-            Bind(statement, AZIMUTHFROMGPS_FIELD_ID, &azimuthFromGPS_);
-            Bind(statement, DISTANCEFROMGPS_FIELD_ID, &distanceFromGPS_);
-            Bind(statement, PANTILTMODE_FIELD_ID, &panTiltMode_);
-            Bind(statement, MINTILTANGLE_FIELD_ID, &minTiltAngle_);
-            Bind(statement, MAXTILTANGLE_FIELD_ID, &maxTiltAngle_);
-            Bind(statement, MINTILTSCALEANGLE_FIELD_ID, &minTiltScaleAngle_);
-            Bind(statement, MAXTILTSCALEANGLE_FIELD_ID, &maxTiltScaleAngle_);
-            Bind(statement, USEREVERSETILTANGLE_FIELD_ID, &useReverseTiltAngle_);
-            Bind(statement, USEREVERSENORMALIZEDTILTANGLE_FIELD_ID, &useReverseNormalizedTiltAngle_);
-            Bind(statement, MINTILTVELOCITY_FIELD_ID, &minTiltVelocity_);
-            Bind(statement, MAXTILTVELOCITY_FIELD_ID, &maxTiltVelocity_);
-            Bind(statement, MINTILTSPEED_FIELD_ID, &minTiltSpeed_);
-            Bind(statement, MAXTILTSPEED_FIELD_ID, &maxTiltSpeed_);
-            Bind(statement, MINPANANGLE_FIELD_ID, &minPanAngle_);
-            Bind(statement, MAXPANANGLE_FIELD_ID, &maxPanAngle_);
-            Bind(statement, MINPANSCALEANGLE_FIELD_ID, &minPanScaleAngle_);
-            Bind(statement, MAXPANSCALEANGLE_FIELD_ID, &maxPanScaleAngle_);
-            Bind(statement, USEREVERSEPANANGLE_FIELD_ID, &useReversePanAngle_);
-            Bind(statement, USEREVERSENORMALIZEDPANANGLE_FIELD_ID, &useReverseNormalizedPanAngle_);
-            Bind(statement, MINPANVELOCITY_FIELD_ID, &minPanVelocity_);
-            Bind(statement, MAXPANVELOCITY_FIELD_ID, &maxPanVelocity_);
-            Bind(statement, MINPANSPEED_FIELD_ID, &minPanSpeed_);
-            Bind(statement, MAXPANSPEED_FIELD_ID, &maxPanSpeed_);
-            Bind(statement, FOCALLENGTHMODE_FIELD_ID, &focalLengthMode_);
-            Bind(statement, MINFOCALLENGTH_FIELD_ID, &minFocalLength_);
-            Bind(statement, MAXFOCALLENGTH_FIELD_ID, &maxFocalLength_);
-            Bind(statement, MINFOCALLENGTHSCALE_FIELD_ID, &minFocalLengthScale_);
-            Bind(statement, MAXFOCALLENGTHSCALE_FIELD_ID, &maxFocalLengthScale_);
-            Bind(statement, MINZOOMVELOCITY_FIELD_ID, &minZoomVelocity_);
-            Bind(statement, MAXZOOMVELOCITY_FIELD_ID, &maxZoomVelocity_);
-            Bind(statement, MINZOOMSPEED_FIELD_ID, &minZoomSpeed_);
-            Bind(statement, MAXZOOMSPEED_FIELD_ID, &maxZoomSpeed_);
-            Bind(statement, IMAGESENSORWIDTH_FIELD_ID, &imageSensorWidth_);
-            Bind(statement, IMAGESENSORHEIGHT_FIELD_ID, &imageSensorHeight_);
-            Bind(statement, HOMEPANANGLE_FIELD_ID, &homePanAngle_);
-            Bind(statement, HOMETILTANGLE_FIELD_ID, &homeTiltAngle_);
-            Bind(statement, HOMEFOCALLENGTH_FIELD_ID, &homeFocalLength_);
-            Bind(statement, PANOFFSET_FIELD_ID, &panOffset_);
-            Bind(statement, TILTOFFSET_FIELD_ID, &tiltOffset_);
-            Bind(statement, AIMALTITUDE_FIELD_ID, &aimAltitude_);
-            Bind(statement, MINIMUMTARGETWIDTH_FIELD_ID, &minimumTargetWidth_);
-            Bind(statement, TARGETLOCKTIMEOUT_FIELD_ID, &targetLockTimeout_);
-            Bind(statement, UPDATESTATUSINTERVAL_FIELD_ID, &updateStatusInterval_);
-            Bind(statement, READTIMEOUT_FIELD_ID, &readTimeout_);
-            Bind(statement, MOVECOMMANDSTATUSDELAY_FIELD_ID, &moveCommandStatusDelay_);
-            Bind(statement, PTZPROFILENAME_FIELD_ID, &ptzProfileName_, &ptzProfileNameLengthOrNullIndicator_);
-            Bind(statement, PTZCONFIGURATIONTOKEN_FIELD_ID, &ptzConfigurationToken_, &ptzConfigurationTokenLengthOrNullIndicator_);
-            Bind(statement, VIDEOSOURCETOKEN_FIELD_ID, &videoSourceToken_, &videoSourceTokenLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, CAMERACONTROLPROTOCOL_FIELD_ID, cameraControlProtocol_);
+            Bind(statement, CAMERAADDRESS_FIELD_ID, cameraAddress_);
+            Bind(statement, CAMERAPORT_FIELD_ID, cameraPort_);
+            Bind(statement, CAMERACONTROLADDRESS_FIELD_ID, cameraControlAddress_);
+            Bind(statement, CAMERACONTROLPORT_FIELD_ID, cameraControlPort_);
+            Bind(statement, CAMERAUSERNAME_FIELD_ID, cameraUserName_);
+            Bind(statement, CAMERAPASSWORD_FIELD_ID, cameraPassword_);
+            Bind(statement, USERTSPURIOVERRIDE_FIELD_ID, useRtspUriOverride_);
+            Bind(statement, RTSPURIOVERRIDE_FIELD_ID, rtspUriOverride_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, ALTITUDE_FIELD_ID, altitude_);
+            Bind(statement, USERELATIVEPOSITION_FIELD_ID, useRelativePosition_);
+            Bind(statement, AZIMUTHFROMGPS_FIELD_ID, azimuthFromGPS_);
+            Bind(statement, DISTANCEFROMGPS_FIELD_ID, distanceFromGPS_);
+            Bind(statement, PANTILTMODE_FIELD_ID, panTiltMode_);
+            Bind(statement, MINTILTANGLE_FIELD_ID, minTiltAngle_);
+            Bind(statement, MAXTILTANGLE_FIELD_ID, maxTiltAngle_);
+            Bind(statement, MINTILTSCALEANGLE_FIELD_ID, minTiltScaleAngle_);
+            Bind(statement, MAXTILTSCALEANGLE_FIELD_ID, maxTiltScaleAngle_);
+            Bind(statement, USEREVERSETILTANGLE_FIELD_ID, useReverseTiltAngle_);
+            Bind(statement, USEREVERSENORMALIZEDTILTANGLE_FIELD_ID, useReverseNormalizedTiltAngle_);
+            Bind(statement, MINTILTVELOCITY_FIELD_ID, minTiltVelocity_);
+            Bind(statement, MAXTILTVELOCITY_FIELD_ID, maxTiltVelocity_);
+            Bind(statement, MINTILTSPEED_FIELD_ID, minTiltSpeed_);
+            Bind(statement, MAXTILTSPEED_FIELD_ID, maxTiltSpeed_);
+            Bind(statement, MINPANANGLE_FIELD_ID, minPanAngle_);
+            Bind(statement, MAXPANANGLE_FIELD_ID, maxPanAngle_);
+            Bind(statement, MINPANSCALEANGLE_FIELD_ID, minPanScaleAngle_);
+            Bind(statement, MAXPANSCALEANGLE_FIELD_ID, maxPanScaleAngle_);
+            Bind(statement, USEREVERSEPANANGLE_FIELD_ID, useReversePanAngle_);
+            Bind(statement, USEREVERSENORMALIZEDPANANGLE_FIELD_ID, useReverseNormalizedPanAngle_);
+            Bind(statement, MINPANVELOCITY_FIELD_ID, minPanVelocity_);
+            Bind(statement, MAXPANVELOCITY_FIELD_ID, maxPanVelocity_);
+            Bind(statement, MINPANSPEED_FIELD_ID, minPanSpeed_);
+            Bind(statement, MAXPANSPEED_FIELD_ID, maxPanSpeed_);
+            Bind(statement, FOCALLENGTHMODE_FIELD_ID, focalLengthMode_);
+            Bind(statement, MINFOCALLENGTH_FIELD_ID, minFocalLength_);
+            Bind(statement, MAXFOCALLENGTH_FIELD_ID, maxFocalLength_);
+            Bind(statement, MINFOCALLENGTHSCALE_FIELD_ID, minFocalLengthScale_);
+            Bind(statement, MAXFOCALLENGTHSCALE_FIELD_ID, maxFocalLengthScale_);
+            Bind(statement, MINZOOMVELOCITY_FIELD_ID, minZoomVelocity_);
+            Bind(statement, MAXZOOMVELOCITY_FIELD_ID, maxZoomVelocity_);
+            Bind(statement, MINZOOMSPEED_FIELD_ID, minZoomSpeed_);
+            Bind(statement, MAXZOOMSPEED_FIELD_ID, maxZoomSpeed_);
+            Bind(statement, IMAGESENSORWIDTH_FIELD_ID, imageSensorWidth_);
+            Bind(statement, IMAGESENSORHEIGHT_FIELD_ID, imageSensorHeight_);
+            Bind(statement, HOMEPANANGLE_FIELD_ID, homePanAngle_);
+            Bind(statement, HOMETILTANGLE_FIELD_ID, homeTiltAngle_);
+            Bind(statement, HOMEFOCALLENGTH_FIELD_ID, homeFocalLength_);
+            Bind(statement, PANOFFSET_FIELD_ID, panOffset_);
+            Bind(statement, TILTOFFSET_FIELD_ID, tiltOffset_);
+            Bind(statement, AIMALTITUDE_FIELD_ID, aimAltitude_);
+            Bind(statement, MINIMUMTARGETWIDTH_FIELD_ID, minimumTargetWidth_);
+            Bind(statement, TARGETLOCKTIMEOUT_FIELD_ID, targetLockTimeout_);
+            Bind(statement, UPDATESTATUSINTERVAL_FIELD_ID, updateStatusInterval_);
+            Bind(statement, READTIMEOUT_FIELD_ID, readTimeout_);
+            Bind(statement, MOVECOMMANDSTATUSDELAY_FIELD_ID, moveCommandStatusDelay_);
+            Bind(statement, PTZPROFILENAME_FIELD_ID, ptzProfileName_);
+            Bind(statement, PTZCONFIGURATIONTOKEN_FIELD_ID, ptzConfigurationToken_);
+            Bind(statement, VIDEOSOURCETOKEN_FIELD_ID, videoSourceToken_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -7316,14 +6891,14 @@ namespace Barrelman::Data
             WriteColumnValue( destination, camera_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, cameraControlProtocol_);
-            WriteColumnValue( destination, cameraAddress_, cameraAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraAddress_);
             WriteColumnValue( destination, cameraPort_);
-            WriteColumnValue( destination, cameraControlAddress_, cameraControlAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraControlAddress_);
             WriteColumnValue( destination, cameraControlPort_);
-            WriteColumnValue( destination, cameraUserName_, cameraUserNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, cameraPassword_, cameraPasswordLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraUserName_);
+            WriteColumnValue( destination, cameraPassword_);
             WriteColumnValue( destination, useRtspUriOverride_);
-            WriteColumnValue( destination, rtspUriOverride_, rtspUriOverrideLengthOrNullIndicator_);
+            WriteColumnValue( destination, rtspUriOverride_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, altitude_);
@@ -7373,9 +6948,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, updateStatusInterval_);
             WriteColumnValue( destination, readTimeout_);
             WriteColumnValue( destination, moveCommandStatusDelay_);
-            WriteColumnValue( destination, ptzProfileName_, ptzProfileNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, ptzConfigurationToken_, ptzConfigurationTokenLengthOrNullIndicator_);
-            WriteColumnValue( destination, videoSourceToken_, videoSourceTokenLengthOrNullIndicator_);
+            WriteColumnValue( destination, ptzProfileName_);
+            WriteColumnValue( destination, ptzConfigurationToken_);
+            WriteColumnValue( destination, videoSourceToken_);
         }
     };
 
@@ -7405,7 +6980,7 @@ namespace Barrelman::Data
             return Kind::CameraPanCalibration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -7417,11 +6992,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -7429,7 +7004,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -7439,10 +7014,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -7483,7 +7058,7 @@ namespace Barrelman::Data
             return Kind::CameraPanCalibrationValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -7495,11 +7070,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid PanCalibration( ) const
+        const Guid& PanCalibration( ) const
         {
             return panCalibration_;
         }
@@ -7525,11 +7100,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PANCALIBRATION_FIELD_ID, &panCalibration_);
-            Bind(statement, PANANGLE_FIELD_ID, &panAngle_);
-            Bind(statement, PANOFFSET_FIELD_ID, &panOffset_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PANCALIBRATION_FIELD_ID, panCalibration_);
+            Bind(statement, PANANGLE_FIELD_ID, panAngle_);
+            Bind(statement, PANOFFSET_FIELD_ID, panOffset_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -7560,16 +7135,13 @@ namespace Barrelman::Data
         Data::CameraMoveStatus panTiltMoveStatus_ = Data::CameraMoveStatus::Unknown;
         Data::CameraMoveStatus zoomMoveStatus_ = Data::CameraMoveStatus::Unknown;
         Data::CameraPanTiltMode velocityPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
-        double panVelocity_ = 0.0;
-        SQLLEN panVelocityNullIndicator_ = SQL_NULL_DATA;
-        double tiltVelocity_ = 0.0;
-        SQLLEN tiltVelocityNullIndicator_ = SQL_NULL_DATA;
+        DBDouble panVelocity_;
+        DBDouble tiltVelocity_;
         Data::CameraFocalLengthMode velocityFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
-        double zoomVelocity_ = 0.0;
-        SQLLEN zoomVelocityNullIndicator_ = SQL_NULL_DATA;
+        DBDouble zoomVelocity_;
         Data::CameraFeatures activeFeatures_ = Data::CameraFeatures::None;
         WideString error_;
-        SQLLEN errorLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN errorLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -7603,7 +7175,7 @@ namespace Barrelman::Data
             return Kind::CameraStatus;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -7615,11 +7187,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -7627,7 +7199,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        Guid Track( ) const
+        const Guid& Track( ) const
         {
             return track_;
         }
@@ -7635,7 +7207,7 @@ namespace Barrelman::Data
         {
             track_ = track;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -7707,35 +7279,19 @@ namespace Barrelman::Data
         {
             velocityPanTiltMode_ = velocityPanTiltMode;
         }
-        std::optional<double> PanVelocity( ) const
+        const DBDouble& PanVelocity( ) const
         {
-            if(panVelocityNullIndicator_ != SQL_NULL_DATA)
-            {
-                return panVelocity_;
-            }
-            return {};
+            return panVelocity_;
         }
-        bool IsPanVelocityNull( ) const
-        {
-            return panVelocityNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPanVelocity( double panVelocity )
+        void SetPanVelocity( const DBDouble& panVelocity )
         {
             panVelocity_ = panVelocity;
         }
-        std::optional<double> TiltVelocity( ) const
+        const DBDouble& TiltVelocity( ) const
         {
-            if(tiltVelocityNullIndicator_ != SQL_NULL_DATA)
-            {
-                return tiltVelocity_;
-            }
-            return {};
+            return tiltVelocity_;
         }
-        bool IsTiltVelocityNull( ) const
-        {
-            return tiltVelocityNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetTiltVelocity( double tiltVelocity )
+        void SetTiltVelocity( const DBDouble& tiltVelocity )
         {
             tiltVelocity_ = tiltVelocity;
         }
@@ -7747,19 +7303,11 @@ namespace Barrelman::Data
         {
             velocityFocalLengthMode_ = velocityFocalLengthMode;
         }
-        std::optional<double> ZoomVelocity( ) const
+        const DBDouble& ZoomVelocity( ) const
         {
-            if(zoomVelocityNullIndicator_ != SQL_NULL_DATA)
-            {
-                return zoomVelocity_;
-            }
-            return {};
+            return zoomVelocity_;
         }
-        bool IsZoomVelocityNull( ) const
-        {
-            return zoomVelocityNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetZoomVelocity( double zoomVelocity )
+        void SetZoomVelocity( const DBDouble& zoomVelocity )
         {
             zoomVelocity_ = zoomVelocity;
         }
@@ -7777,28 +7325,28 @@ namespace Barrelman::Data
         }
         void SetError( const WideString& error )
         {
-            Assign(error, error_, errorLengthOrNullIndicator_);
+            error_ = error;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TRACK_FIELD_ID, &track_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, POSITIONPANTILTMODE_FIELD_ID, &positionPanTiltMode_);
-            Bind(statement, PANANGLE_FIELD_ID, &panAngle_);
-            Bind(statement, TILTANGLE_FIELD_ID, &tiltAngle_);
-            Bind(statement, POSITIONFOCALLENGTHMODE_FIELD_ID, &positionFocalLengthMode_);
-            Bind(statement, FOCALLENGTH_FIELD_ID, &focalLength_);
-            Bind(statement, PANTILTMOVESTATUS_FIELD_ID, &panTiltMoveStatus_);
-            Bind(statement, ZOOMMOVESTATUS_FIELD_ID, &zoomMoveStatus_);
-            Bind(statement, VELOCITYPANTILTMODE_FIELD_ID, &velocityPanTiltMode_);
-            Bind(statement, PANVELOCITY_FIELD_ID, &panVelocity_, &panVelocityNullIndicator_);
-            Bind(statement, TILTVELOCITY_FIELD_ID, &tiltVelocity_, &tiltVelocityNullIndicator_);
-            Bind(statement, VELOCITYFOCALLENGTHMODE_FIELD_ID, &velocityFocalLengthMode_);
-            Bind(statement, ZOOMVELOCITY_FIELD_ID, &zoomVelocity_, &zoomVelocityNullIndicator_);
-            Bind(statement, ACTIVEFEATURES_FIELD_ID, &activeFeatures_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TRACK_FIELD_ID, track_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, POSITIONPANTILTMODE_FIELD_ID, positionPanTiltMode_);
+            Bind(statement, PANANGLE_FIELD_ID, panAngle_);
+            Bind(statement, TILTANGLE_FIELD_ID, tiltAngle_);
+            Bind(statement, POSITIONFOCALLENGTHMODE_FIELD_ID, positionFocalLengthMode_);
+            Bind(statement, FOCALLENGTH_FIELD_ID, focalLength_);
+            Bind(statement, PANTILTMOVESTATUS_FIELD_ID, panTiltMoveStatus_);
+            Bind(statement, ZOOMMOVESTATUS_FIELD_ID, zoomMoveStatus_);
+            Bind(statement, VELOCITYPANTILTMODE_FIELD_ID, velocityPanTiltMode_);
+            Bind(statement, PANVELOCITY_FIELD_ID, panVelocity_);
+            Bind(statement, TILTVELOCITY_FIELD_ID, tiltVelocity_);
+            Bind(statement, VELOCITYFOCALLENGTHMODE_FIELD_ID, velocityFocalLengthMode_);
+            Bind(statement, ZOOMVELOCITY_FIELD_ID, zoomVelocity_);
+            Bind(statement, ACTIVEFEATURES_FIELD_ID, activeFeatures_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -7823,12 +7371,12 @@ namespace Barrelman::Data
             WriteColumnValue( destination, panTiltMoveStatus_);
             WriteColumnValue( destination, zoomMoveStatus_);
             WriteColumnValue( destination, velocityPanTiltMode_);
-            WriteColumnValue( destination, panVelocity_, panVelocityNullIndicator_);
-            WriteColumnValue( destination, tiltVelocity_, tiltVelocityNullIndicator_);
+            WriteColumnValue( destination, panVelocity_);
+            WriteColumnValue( destination, tiltVelocity_);
             WriteColumnValue( destination, velocityFocalLengthMode_);
-            WriteColumnValue( destination, zoomVelocity_, zoomVelocityNullIndicator_);
+            WriteColumnValue( destination, zoomVelocity_);
             WriteColumnValue( destination, activeFeatures_);
-            WriteColumnValue( destination, error_, errorLengthOrNullIndicator_);
+            WriteColumnValue( destination, error_);
         }
     };
 
@@ -7858,7 +7406,7 @@ namespace Barrelman::Data
             return Kind::CameraTiltCalibration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -7870,11 +7418,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -7882,7 +7430,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -7892,10 +7440,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -7936,7 +7484,7 @@ namespace Barrelman::Data
             return Kind::CameraTiltCalibrationValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -7948,11 +7496,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid TiltCalibration( ) const
+        const Guid& TiltCalibration( ) const
         {
             return tiltCalibration_;
         }
@@ -7978,11 +7526,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TILTCALIBRATION_FIELD_ID, &tiltCalibration_);
-            Bind(statement, PANANGLE_FIELD_ID, &panAngle_);
-            Bind(statement, TILTOFFSET_FIELD_ID, &tiltOffset_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TILTCALIBRATION_FIELD_ID, tiltCalibration_);
+            Bind(statement, PANANGLE_FIELD_ID, panAngle_);
+            Bind(statement, TILTOFFSET_FIELD_ID, tiltOffset_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8022,7 +7570,7 @@ namespace Barrelman::Data
             return Kind::CameraZoomCalibration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8034,11 +7582,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -8046,7 +7594,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -8056,10 +7604,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8100,7 +7648,7 @@ namespace Barrelman::Data
             return Kind::CameraZoomCalibrationValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8112,11 +7660,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid ZoomCalibration( ) const
+        const Guid& ZoomCalibration( ) const
         {
             return zoomCalibration_;
         }
@@ -8142,11 +7690,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ZOOMCALIBRATION_FIELD_ID, &zoomCalibration_);
-            Bind(statement, FOCALLENGTH_FIELD_ID, &focalLength_);
-            Bind(statement, FOCALLENGTHOFFSET_FIELD_ID, &focalLengthOffset_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ZOOMCALIBRATION_FIELD_ID, zoomCalibration_);
+            Bind(statement, FOCALLENGTH_FIELD_ID, focalLength_);
+            Bind(statement, FOCALLENGTHOFFSET_FIELD_ID, focalLengthOffset_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8167,8 +7715,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid catalog_;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -8187,7 +7734,7 @@ namespace Barrelman::Data
             return Kind::CatalogElement;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8199,11 +7746,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Catalog( ) const
+        const Guid& Catalog( ) const
         {
             return catalog_;
         }
@@ -8211,24 +7758,20 @@ namespace Barrelman::Data
         {
             catalog_ = catalog;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CATALOG_FIELD_ID, &catalog_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CATALOG_FIELD_ID, catalog_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8237,7 +7780,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, catalog_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -8285,7 +7828,7 @@ namespace Barrelman::Data
             return Kind::Element;
         }
 
-        Guid ElementType( ) const
+        const Guid& ElementType( ) const
         {
             return elementType_;
         }
@@ -8297,7 +7840,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, ELEMENTTYPE_FIELD_ID, &elementType_);
+            Bind(statement, ELEMENTTYPE_FIELD_ID, elementType_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8332,7 +7875,7 @@ namespace Barrelman::Data
             return Kind::CollectionInfo;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8344,7 +7887,7 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
@@ -8358,9 +7901,9 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, COUNT_FIELD_ID, &count_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, COUNT_FIELD_ID, count_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8378,13 +7921,10 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Int32 code_ = 0;
-        std::array<wchar_t,3> alpha2_ = {};
-        SQLLEN alpha2LengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,4> alpha3_ = {};
-        SQLLEN alpha3LengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<2> alpha2_;
+        FixedDBWideString<3> alpha3_;
     public:
         using Base = BaseColumnData;
 
@@ -8405,7 +7945,7 @@ namespace Barrelman::Data
             return Kind::Country;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8417,21 +7957,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         Int32 Code( ) const
         {
@@ -8441,38 +7977,30 @@ namespace Barrelman::Data
         {
             code_ = code;
         }
-        std::wstring_view Alpha2( ) const
+        const FixedDBWideString<2>& Alpha2( ) const
         {
-            if(alpha2LengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(alpha2_.data(),static_cast<size_t>( alpha2LengthOrNullIndicator_ ));
-            }
-            return {};
+            return alpha2_;
         }
         void SetAlpha2( const WideString& alpha2 )
         {
-            Assign(alpha2, alpha2_, alpha2LengthOrNullIndicator_);
+            alpha2_ = alpha2;
         }
-        std::wstring_view Alpha3( ) const
+        const FixedDBWideString<3>& Alpha3( ) const
         {
-            if(alpha3LengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(alpha3_.data(),static_cast<size_t>( alpha3LengthOrNullIndicator_ ));
-            }
-            return {};
+            return alpha3_;
         }
         void SetAlpha3( const WideString& alpha3 )
         {
-            Assign(alpha3, alpha3_, alpha3LengthOrNullIndicator_);
+            alpha3_ = alpha3;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, CODE_FIELD_ID, &code_);
-            Bind(statement, ALPHA2_FIELD_ID, &alpha2_, &alpha2LengthOrNullIndicator_);
-            Bind(statement, ALPHA3_FIELD_ID, &alpha3_, &alpha3LengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, CODE_FIELD_ID, code_);
+            Bind(statement, ALPHA2_FIELD_ID, alpha2_);
+            Bind(statement, ALPHA3_FIELD_ID, alpha3_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8480,10 +8008,10 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, code_);
-            WriteColumnValue( destination, alpha2_, alpha2LengthOrNullIndicator_);
-            WriteColumnValue( destination, alpha3_, alpha3LengthOrNullIndicator_);
+            WriteColumnValue( destination, alpha2_);
+            WriteColumnValue( destination, alpha3_);
         }
     };
 
@@ -8511,7 +8039,7 @@ namespace Barrelman::Data
             return Kind::CursorInfo;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8523,7 +8051,7 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
@@ -8537,9 +8065,9 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TYPECODE_FIELD_ID, &typeCode_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TYPECODE_FIELD_ID, typeCode_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8559,8 +8087,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        DateTime value_;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime value_;
     public:
         using Base = BaseColumnData;
 
@@ -8580,7 +8107,7 @@ namespace Barrelman::Data
             return Kind::DateTimeTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8592,11 +8119,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -8604,7 +8131,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -8612,29 +8139,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<DateTime> Value( ) const
+        const DBDateTime& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( const DateTime& value )
+        void SetValue( const DBDateTime& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8644,7 +8163,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -8654,8 +8173,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -8673,7 +8191,7 @@ namespace Barrelman::Data
             return Kind::DeviceHost;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8685,27 +8203,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8713,7 +8227,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -8725,11 +8239,9 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid host_;
         DateTime timestamp_;
-        std::array<wchar_t,128> hostname_ = {};
-        SQLLEN hostnameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> hostname_;
         Int32 port_ = 0;
-        std::array<wchar_t,101> queueName_ = {};
-        SQLLEN queueNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> queueName_;
     public:
         using Base = BaseColumnData;
 
@@ -8751,7 +8263,7 @@ namespace Barrelman::Data
             return Kind::DeviceHostConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8763,11 +8275,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Host( ) const
+        const Guid& Host( ) const
         {
             return host_;
         }
@@ -8775,7 +8287,7 @@ namespace Barrelman::Data
         {
             host_ = host;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -8783,17 +8295,13 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::wstring_view Hostname( ) const
+        const FixedDBWideString<127>& Hostname( ) const
         {
-            if(hostnameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(hostname_.data(),static_cast<size_t>( hostnameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return hostname_;
         }
         void SetHostname( const WideString& hostname )
         {
-            Assign(hostname, hostname_, hostnameLengthOrNullIndicator_);
+            hostname_ = hostname;
         }
         Int32 Port( ) const
         {
@@ -8803,27 +8311,23 @@ namespace Barrelman::Data
         {
             port_ = port;
         }
-        std::wstring_view QueueName( ) const
+        const FixedDBWideString<100>& QueueName( ) const
         {
-            if(queueNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(queueName_.data(),static_cast<size_t>( queueNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return queueName_;
         }
         void SetQueueName( const WideString& queueName )
         {
-            Assign(queueName, queueName_, queueNameLengthOrNullIndicator_);
+            queueName_ = queueName;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, HOST_FIELD_ID, &host_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, HOSTNAME_FIELD_ID, &hostname_, &hostnameLengthOrNullIndicator_);
-            Bind(statement, PORT_FIELD_ID, &port_);
-            Bind(statement, QUEUENAME_FIELD_ID, &queueName_, &queueNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, HOST_FIELD_ID, host_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, HOSTNAME_FIELD_ID, hostname_);
+            Bind(statement, PORT_FIELD_ID, port_);
+            Bind(statement, QUEUENAME_FIELD_ID, queueName_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8833,9 +8337,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, host_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, hostname_, hostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, hostname_);
             WriteColumnValue( destination, port_);
-            WriteColumnValue( destination, queueName_, queueNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, queueName_);
         }
     };
 
@@ -8845,14 +8349,10 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,101> assemblyName_ = {};
-        SQLLEN assemblyNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> className_ = {};
-        SQLLEN classNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> proxyAssemblyName_ = {};
-        SQLLEN proxyAssemblyNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> proxyClassName_ = {};
-        SQLLEN proxyClassNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> assemblyName_;
+        FixedDBWideString<100> className_;
+        FixedDBWideString<100> proxyAssemblyName_;
+        FixedDBWideString<100> proxyClassName_;
     public:
         using Base = BaseColumnData;
 
@@ -8873,7 +8373,7 @@ namespace Barrelman::Data
             return Kind::DeviceType;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -8885,66 +8385,50 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view AssemblyName( ) const
+        const FixedDBWideString<100>& AssemblyName( ) const
         {
-            if(assemblyNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(assemblyName_.data(),static_cast<size_t>( assemblyNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return assemblyName_;
         }
         void SetAssemblyName( const WideString& assemblyName )
         {
-            Assign(assemblyName, assemblyName_, assemblyNameLengthOrNullIndicator_);
+            assemblyName_ = assemblyName;
         }
-        std::wstring_view ClassName( ) const
+        const FixedDBWideString<100>& ClassName( ) const
         {
-            if(classNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(className_.data(),static_cast<size_t>( classNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return className_;
         }
         void SetClassName( const WideString& className )
         {
-            Assign(className, className_, classNameLengthOrNullIndicator_);
+            className_ = className;
         }
-        std::wstring_view ProxyAssemblyName( ) const
+        const FixedDBWideString<100>& ProxyAssemblyName( ) const
         {
-            if(proxyAssemblyNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(proxyAssemblyName_.data(),static_cast<size_t>( proxyAssemblyNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return proxyAssemblyName_;
         }
         void SetProxyAssemblyName( const WideString& proxyAssemblyName )
         {
-            Assign(proxyAssemblyName, proxyAssemblyName_, proxyAssemblyNameLengthOrNullIndicator_);
+            proxyAssemblyName_ = proxyAssemblyName;
         }
-        std::wstring_view ProxyClassName( ) const
+        const FixedDBWideString<100>& ProxyClassName( ) const
         {
-            if(proxyClassNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(proxyClassName_.data(),static_cast<size_t>( proxyClassNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return proxyClassName_;
         }
         void SetProxyClassName( const WideString& proxyClassName )
         {
-            Assign(proxyClassName, proxyClassName_, proxyClassNameLengthOrNullIndicator_);
+            proxyClassName_ = proxyClassName;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ASSEMBLYNAME_FIELD_ID, &assemblyName_, &assemblyNameLengthOrNullIndicator_);
-            Bind(statement, CLASSNAME_FIELD_ID, &className_, &classNameLengthOrNullIndicator_);
-            Bind(statement, PROXYASSEMBLYNAME_FIELD_ID, &proxyAssemblyName_, &proxyAssemblyNameLengthOrNullIndicator_);
-            Bind(statement, PROXYCLASSNAME_FIELD_ID, &proxyClassName_, &proxyClassNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ASSEMBLYNAME_FIELD_ID, assemblyName_);
+            Bind(statement, CLASSNAME_FIELD_ID, className_);
+            Bind(statement, PROXYASSEMBLYNAME_FIELD_ID, proxyAssemblyName_);
+            Bind(statement, PROXYCLASSNAME_FIELD_ID, proxyClassName_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -8952,10 +8436,10 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, assemblyName_, assemblyNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, className_, classNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, proxyAssemblyName_, proxyAssemblyNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, proxyClassName_, proxyClassNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, assemblyName_);
+            WriteColumnValue( destination, className_);
+            WriteColumnValue( destination, proxyAssemblyName_);
+            WriteColumnValue( destination, proxyClassName_);
         }
     };
 
@@ -8963,8 +8447,7 @@ namespace Barrelman::Data
 
     class AisTransceiverTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -8980,30 +8463,26 @@ namespace Barrelman::Data
             return Kind::AisTransceiverType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9011,8 +8490,7 @@ namespace Barrelman::Data
 
     class CameraTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Data::CameraFeatures cameraFeatures_ = Data::CameraFeatures::None;
     public:
         using Base = DeviceTypeColumnData;
@@ -9030,17 +8508,13 @@ namespace Barrelman::Data
             return Kind::CameraType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         Data::CameraFeatures CameraFeatures( ) const
         {
@@ -9054,15 +8528,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, CAMERAFEATURES_FIELD_ID, &cameraFeatures_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, CAMERAFEATURES_FIELD_ID, cameraFeatures_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, cameraFeatures_);
         }
     };
@@ -9071,8 +8545,7 @@ namespace Barrelman::Data
 
     class GNSSDeviceTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9088,30 +8561,26 @@ namespace Barrelman::Data
             return Kind::GNSSDeviceType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9119,8 +8588,7 @@ namespace Barrelman::Data
 
     class GyroDeviceTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9136,30 +8604,26 @@ namespace Barrelman::Data
             return Kind::GyroDeviceType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9167,8 +8631,7 @@ namespace Barrelman::Data
 
     class LineInputDeviceTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9184,30 +8647,26 @@ namespace Barrelman::Data
             return Kind::LineInputDeviceType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9215,8 +8674,7 @@ namespace Barrelman::Data
 
     class OilspillDetectorTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9232,30 +8690,26 @@ namespace Barrelman::Data
             return Kind::OilspillDetectorType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9263,44 +8717,25 @@ namespace Barrelman::Data
 
     class RadarTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseShortMinusValue_ = 0;
-        SQLLEN pulseShortMinusValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseShortMinusDisplayText_ = {};
-        SQLLEN pulseShortMinusDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseShortValue_ = 0;
-        SQLLEN pulseShortValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseShortDisplayText_ = {};
-        SQLLEN pulseShortDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseShortPlusValue_ = 0;
-        SQLLEN pulseShortPlusValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseShortPlusDisplayText_ = {};
-        SQLLEN pulseShortPlusDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseMediumMinusValue_ = 0;
-        SQLLEN pulseMediumMinusValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseMediumMinusDisplayText_ = {};
-        SQLLEN pulseMediumMinusDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseMediumValue_ = 0;
-        SQLLEN pulseMediumValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseMediumDisplayText_ = {};
-        SQLLEN pulseMediumDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseMediumPlusValue_ = 0;
-        SQLLEN pulseMediumPlusValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseMediumPlusDisplayText_ = {};
-        SQLLEN pulseMediumPlusDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseLongMinusValue_ = 0;
-        SQLLEN pulseLongMinusValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseLongMinusDisplayText_ = {};
-        SQLLEN pulseLongMinusDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseLongValue_ = 0;
-        SQLLEN pulseLongValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseLongDisplayText_ = {};
-        SQLLEN pulseLongDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
-        Int32 pulseLongPlusValue_ = 0;
-        SQLLEN pulseLongPlusValueNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,51> pulseLongPlusDisplayText_ = {};
-        SQLLEN pulseLongPlusDisplayTextLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
+        DBInt32 pulseShortMinusValue_;
+        FixedDBWideString<50> pulseShortMinusDisplayText_;
+        DBInt32 pulseShortValue_;
+        FixedDBWideString<50> pulseShortDisplayText_;
+        DBInt32 pulseShortPlusValue_;
+        FixedDBWideString<50> pulseShortPlusDisplayText_;
+        DBInt32 pulseMediumMinusValue_;
+        FixedDBWideString<50> pulseMediumMinusDisplayText_;
+        DBInt32 pulseMediumValue_;
+        FixedDBWideString<50> pulseMediumDisplayText_;
+        DBInt32 pulseMediumPlusValue_;
+        FixedDBWideString<50> pulseMediumPlusDisplayText_;
+        DBInt32 pulseLongMinusValue_;
+        FixedDBWideString<50> pulseLongMinusDisplayText_;
+        DBInt32 pulseLongValue_;
+        FixedDBWideString<50> pulseLongDisplayText_;
+        DBInt32 pulseLongPlusValue_;
+        FixedDBWideString<50> pulseLongPlusDisplayText_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9334,318 +8769,206 @@ namespace Barrelman::Data
             return Kind::RadarType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        std::optional<Int32> PulseShortMinusValue( ) const
+        const DBInt32& PulseShortMinusValue( ) const
         {
-            if(pulseShortMinusValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseShortMinusValue_;
-            }
-            return {};
+            return pulseShortMinusValue_;
         }
-        bool IsPulseShortMinusValueNull( ) const
-        {
-            return pulseShortMinusValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseShortMinusValue( Int32 pulseShortMinusValue )
+        void SetPulseShortMinusValue( const DBInt32& pulseShortMinusValue )
         {
             pulseShortMinusValue_ = pulseShortMinusValue;
         }
-        std::wstring_view PulseShortMinusDisplayText( ) const
+        const FixedDBWideString<50>& PulseShortMinusDisplayText( ) const
         {
-            if(pulseShortMinusDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseShortMinusDisplayText_.data(),static_cast<size_t>( pulseShortMinusDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseShortMinusDisplayText_;
         }
         void SetPulseShortMinusDisplayText( const WideString& pulseShortMinusDisplayText )
         {
-            Assign(pulseShortMinusDisplayText, pulseShortMinusDisplayText_, pulseShortMinusDisplayTextLengthOrNullIndicator_);
+            pulseShortMinusDisplayText_ = pulseShortMinusDisplayText;
         }
-        std::optional<Int32> PulseShortValue( ) const
+        const DBInt32& PulseShortValue( ) const
         {
-            if(pulseShortValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseShortValue_;
-            }
-            return {};
+            return pulseShortValue_;
         }
-        bool IsPulseShortValueNull( ) const
-        {
-            return pulseShortValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseShortValue( Int32 pulseShortValue )
+        void SetPulseShortValue( const DBInt32& pulseShortValue )
         {
             pulseShortValue_ = pulseShortValue;
         }
-        std::wstring_view PulseShortDisplayText( ) const
+        const FixedDBWideString<50>& PulseShortDisplayText( ) const
         {
-            if(pulseShortDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseShortDisplayText_.data(),static_cast<size_t>( pulseShortDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseShortDisplayText_;
         }
         void SetPulseShortDisplayText( const WideString& pulseShortDisplayText )
         {
-            Assign(pulseShortDisplayText, pulseShortDisplayText_, pulseShortDisplayTextLengthOrNullIndicator_);
+            pulseShortDisplayText_ = pulseShortDisplayText;
         }
-        std::optional<Int32> PulseShortPlusValue( ) const
+        const DBInt32& PulseShortPlusValue( ) const
         {
-            if(pulseShortPlusValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseShortPlusValue_;
-            }
-            return {};
+            return pulseShortPlusValue_;
         }
-        bool IsPulseShortPlusValueNull( ) const
-        {
-            return pulseShortPlusValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseShortPlusValue( Int32 pulseShortPlusValue )
+        void SetPulseShortPlusValue( const DBInt32& pulseShortPlusValue )
         {
             pulseShortPlusValue_ = pulseShortPlusValue;
         }
-        std::wstring_view PulseShortPlusDisplayText( ) const
+        const FixedDBWideString<50>& PulseShortPlusDisplayText( ) const
         {
-            if(pulseShortPlusDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseShortPlusDisplayText_.data(),static_cast<size_t>( pulseShortPlusDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseShortPlusDisplayText_;
         }
         void SetPulseShortPlusDisplayText( const WideString& pulseShortPlusDisplayText )
         {
-            Assign(pulseShortPlusDisplayText, pulseShortPlusDisplayText_, pulseShortPlusDisplayTextLengthOrNullIndicator_);
+            pulseShortPlusDisplayText_ = pulseShortPlusDisplayText;
         }
-        std::optional<Int32> PulseMediumMinusValue( ) const
+        const DBInt32& PulseMediumMinusValue( ) const
         {
-            if(pulseMediumMinusValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseMediumMinusValue_;
-            }
-            return {};
+            return pulseMediumMinusValue_;
         }
-        bool IsPulseMediumMinusValueNull( ) const
-        {
-            return pulseMediumMinusValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseMediumMinusValue( Int32 pulseMediumMinusValue )
+        void SetPulseMediumMinusValue( const DBInt32& pulseMediumMinusValue )
         {
             pulseMediumMinusValue_ = pulseMediumMinusValue;
         }
-        std::wstring_view PulseMediumMinusDisplayText( ) const
+        const FixedDBWideString<50>& PulseMediumMinusDisplayText( ) const
         {
-            if(pulseMediumMinusDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseMediumMinusDisplayText_.data(),static_cast<size_t>( pulseMediumMinusDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseMediumMinusDisplayText_;
         }
         void SetPulseMediumMinusDisplayText( const WideString& pulseMediumMinusDisplayText )
         {
-            Assign(pulseMediumMinusDisplayText, pulseMediumMinusDisplayText_, pulseMediumMinusDisplayTextLengthOrNullIndicator_);
+            pulseMediumMinusDisplayText_ = pulseMediumMinusDisplayText;
         }
-        std::optional<Int32> PulseMediumValue( ) const
+        const DBInt32& PulseMediumValue( ) const
         {
-            if(pulseMediumValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseMediumValue_;
-            }
-            return {};
+            return pulseMediumValue_;
         }
-        bool IsPulseMediumValueNull( ) const
-        {
-            return pulseMediumValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseMediumValue( Int32 pulseMediumValue )
+        void SetPulseMediumValue( const DBInt32& pulseMediumValue )
         {
             pulseMediumValue_ = pulseMediumValue;
         }
-        std::wstring_view PulseMediumDisplayText( ) const
+        const FixedDBWideString<50>& PulseMediumDisplayText( ) const
         {
-            if(pulseMediumDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseMediumDisplayText_.data(),static_cast<size_t>( pulseMediumDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseMediumDisplayText_;
         }
         void SetPulseMediumDisplayText( const WideString& pulseMediumDisplayText )
         {
-            Assign(pulseMediumDisplayText, pulseMediumDisplayText_, pulseMediumDisplayTextLengthOrNullIndicator_);
+            pulseMediumDisplayText_ = pulseMediumDisplayText;
         }
-        std::optional<Int32> PulseMediumPlusValue( ) const
+        const DBInt32& PulseMediumPlusValue( ) const
         {
-            if(pulseMediumPlusValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseMediumPlusValue_;
-            }
-            return {};
+            return pulseMediumPlusValue_;
         }
-        bool IsPulseMediumPlusValueNull( ) const
-        {
-            return pulseMediumPlusValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseMediumPlusValue( Int32 pulseMediumPlusValue )
+        void SetPulseMediumPlusValue( const DBInt32& pulseMediumPlusValue )
         {
             pulseMediumPlusValue_ = pulseMediumPlusValue;
         }
-        std::wstring_view PulseMediumPlusDisplayText( ) const
+        const FixedDBWideString<50>& PulseMediumPlusDisplayText( ) const
         {
-            if(pulseMediumPlusDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseMediumPlusDisplayText_.data(),static_cast<size_t>( pulseMediumPlusDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseMediumPlusDisplayText_;
         }
         void SetPulseMediumPlusDisplayText( const WideString& pulseMediumPlusDisplayText )
         {
-            Assign(pulseMediumPlusDisplayText, pulseMediumPlusDisplayText_, pulseMediumPlusDisplayTextLengthOrNullIndicator_);
+            pulseMediumPlusDisplayText_ = pulseMediumPlusDisplayText;
         }
-        std::optional<Int32> PulseLongMinusValue( ) const
+        const DBInt32& PulseLongMinusValue( ) const
         {
-            if(pulseLongMinusValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseLongMinusValue_;
-            }
-            return {};
+            return pulseLongMinusValue_;
         }
-        bool IsPulseLongMinusValueNull( ) const
-        {
-            return pulseLongMinusValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseLongMinusValue( Int32 pulseLongMinusValue )
+        void SetPulseLongMinusValue( const DBInt32& pulseLongMinusValue )
         {
             pulseLongMinusValue_ = pulseLongMinusValue;
         }
-        std::wstring_view PulseLongMinusDisplayText( ) const
+        const FixedDBWideString<50>& PulseLongMinusDisplayText( ) const
         {
-            if(pulseLongMinusDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseLongMinusDisplayText_.data(),static_cast<size_t>( pulseLongMinusDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseLongMinusDisplayText_;
         }
         void SetPulseLongMinusDisplayText( const WideString& pulseLongMinusDisplayText )
         {
-            Assign(pulseLongMinusDisplayText, pulseLongMinusDisplayText_, pulseLongMinusDisplayTextLengthOrNullIndicator_);
+            pulseLongMinusDisplayText_ = pulseLongMinusDisplayText;
         }
-        std::optional<Int32> PulseLongValue( ) const
+        const DBInt32& PulseLongValue( ) const
         {
-            if(pulseLongValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseLongValue_;
-            }
-            return {};
+            return pulseLongValue_;
         }
-        bool IsPulseLongValueNull( ) const
-        {
-            return pulseLongValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseLongValue( Int32 pulseLongValue )
+        void SetPulseLongValue( const DBInt32& pulseLongValue )
         {
             pulseLongValue_ = pulseLongValue;
         }
-        std::wstring_view PulseLongDisplayText( ) const
+        const FixedDBWideString<50>& PulseLongDisplayText( ) const
         {
-            if(pulseLongDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseLongDisplayText_.data(),static_cast<size_t>( pulseLongDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseLongDisplayText_;
         }
         void SetPulseLongDisplayText( const WideString& pulseLongDisplayText )
         {
-            Assign(pulseLongDisplayText, pulseLongDisplayText_, pulseLongDisplayTextLengthOrNullIndicator_);
+            pulseLongDisplayText_ = pulseLongDisplayText;
         }
-        std::optional<Int32> PulseLongPlusValue( ) const
+        const DBInt32& PulseLongPlusValue( ) const
         {
-            if(pulseLongPlusValueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return pulseLongPlusValue_;
-            }
-            return {};
+            return pulseLongPlusValue_;
         }
-        bool IsPulseLongPlusValueNull( ) const
-        {
-            return pulseLongPlusValueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetPulseLongPlusValue( Int32 pulseLongPlusValue )
+        void SetPulseLongPlusValue( const DBInt32& pulseLongPlusValue )
         {
             pulseLongPlusValue_ = pulseLongPlusValue;
         }
-        std::wstring_view PulseLongPlusDisplayText( ) const
+        const FixedDBWideString<50>& PulseLongPlusDisplayText( ) const
         {
-            if(pulseLongPlusDisplayTextLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pulseLongPlusDisplayText_.data(),static_cast<size_t>( pulseLongPlusDisplayTextLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pulseLongPlusDisplayText_;
         }
         void SetPulseLongPlusDisplayText( const WideString& pulseLongPlusDisplayText )
         {
-            Assign(pulseLongPlusDisplayText, pulseLongPlusDisplayText_, pulseLongPlusDisplayTextLengthOrNullIndicator_);
+            pulseLongPlusDisplayText_ = pulseLongPlusDisplayText;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, PULSESHORTMINUSVALUE_FIELD_ID, &pulseShortMinusValue_, &pulseShortMinusValueNullIndicator_);
-            Bind(statement, PULSESHORTMINUSDISPLAYTEXT_FIELD_ID, &pulseShortMinusDisplayText_, &pulseShortMinusDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSESHORTVALUE_FIELD_ID, &pulseShortValue_, &pulseShortValueNullIndicator_);
-            Bind(statement, PULSESHORTDISPLAYTEXT_FIELD_ID, &pulseShortDisplayText_, &pulseShortDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSESHORTPLUSVALUE_FIELD_ID, &pulseShortPlusValue_, &pulseShortPlusValueNullIndicator_);
-            Bind(statement, PULSESHORTPLUSDISPLAYTEXT_FIELD_ID, &pulseShortPlusDisplayText_, &pulseShortPlusDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSEMEDIUMMINUSVALUE_FIELD_ID, &pulseMediumMinusValue_, &pulseMediumMinusValueNullIndicator_);
-            Bind(statement, PULSEMEDIUMMINUSDISPLAYTEXT_FIELD_ID, &pulseMediumMinusDisplayText_, &pulseMediumMinusDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSEMEDIUMVALUE_FIELD_ID, &pulseMediumValue_, &pulseMediumValueNullIndicator_);
-            Bind(statement, PULSEMEDIUMDISPLAYTEXT_FIELD_ID, &pulseMediumDisplayText_, &pulseMediumDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSEMEDIUMPLUSVALUE_FIELD_ID, &pulseMediumPlusValue_, &pulseMediumPlusValueNullIndicator_);
-            Bind(statement, PULSEMEDIUMPLUSDISPLAYTEXT_FIELD_ID, &pulseMediumPlusDisplayText_, &pulseMediumPlusDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSELONGMINUSVALUE_FIELD_ID, &pulseLongMinusValue_, &pulseLongMinusValueNullIndicator_);
-            Bind(statement, PULSELONGMINUSDISPLAYTEXT_FIELD_ID, &pulseLongMinusDisplayText_, &pulseLongMinusDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSELONGVALUE_FIELD_ID, &pulseLongValue_, &pulseLongValueNullIndicator_);
-            Bind(statement, PULSELONGDISPLAYTEXT_FIELD_ID, &pulseLongDisplayText_, &pulseLongDisplayTextLengthOrNullIndicator_);
-            Bind(statement, PULSELONGPLUSVALUE_FIELD_ID, &pulseLongPlusValue_, &pulseLongPlusValueNullIndicator_);
-            Bind(statement, PULSELONGPLUSDISPLAYTEXT_FIELD_ID, &pulseLongPlusDisplayText_, &pulseLongPlusDisplayTextLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, PULSESHORTMINUSVALUE_FIELD_ID, pulseShortMinusValue_);
+            Bind(statement, PULSESHORTMINUSDISPLAYTEXT_FIELD_ID, pulseShortMinusDisplayText_);
+            Bind(statement, PULSESHORTVALUE_FIELD_ID, pulseShortValue_);
+            Bind(statement, PULSESHORTDISPLAYTEXT_FIELD_ID, pulseShortDisplayText_);
+            Bind(statement, PULSESHORTPLUSVALUE_FIELD_ID, pulseShortPlusValue_);
+            Bind(statement, PULSESHORTPLUSDISPLAYTEXT_FIELD_ID, pulseShortPlusDisplayText_);
+            Bind(statement, PULSEMEDIUMMINUSVALUE_FIELD_ID, pulseMediumMinusValue_);
+            Bind(statement, PULSEMEDIUMMINUSDISPLAYTEXT_FIELD_ID, pulseMediumMinusDisplayText_);
+            Bind(statement, PULSEMEDIUMVALUE_FIELD_ID, pulseMediumValue_);
+            Bind(statement, PULSEMEDIUMDISPLAYTEXT_FIELD_ID, pulseMediumDisplayText_);
+            Bind(statement, PULSEMEDIUMPLUSVALUE_FIELD_ID, pulseMediumPlusValue_);
+            Bind(statement, PULSEMEDIUMPLUSDISPLAYTEXT_FIELD_ID, pulseMediumPlusDisplayText_);
+            Bind(statement, PULSELONGMINUSVALUE_FIELD_ID, pulseLongMinusValue_);
+            Bind(statement, PULSELONGMINUSDISPLAYTEXT_FIELD_ID, pulseLongMinusDisplayText_);
+            Bind(statement, PULSELONGVALUE_FIELD_ID, pulseLongValue_);
+            Bind(statement, PULSELONGDISPLAYTEXT_FIELD_ID, pulseLongDisplayText_);
+            Bind(statement, PULSELONGPLUSVALUE_FIELD_ID, pulseLongPlusValue_);
+            Bind(statement, PULSELONGPLUSDISPLAYTEXT_FIELD_ID, pulseLongPlusDisplayText_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseShortMinusValue_, pulseShortMinusValueNullIndicator_);
-            WriteColumnValue( destination, pulseShortMinusDisplayText_, pulseShortMinusDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseShortValue_, pulseShortValueNullIndicator_);
-            WriteColumnValue( destination, pulseShortDisplayText_, pulseShortDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseShortPlusValue_, pulseShortPlusValueNullIndicator_);
-            WriteColumnValue( destination, pulseShortPlusDisplayText_, pulseShortPlusDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseMediumMinusValue_, pulseMediumMinusValueNullIndicator_);
-            WriteColumnValue( destination, pulseMediumMinusDisplayText_, pulseMediumMinusDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseMediumValue_, pulseMediumValueNullIndicator_);
-            WriteColumnValue( destination, pulseMediumDisplayText_, pulseMediumDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseMediumPlusValue_, pulseMediumPlusValueNullIndicator_);
-            WriteColumnValue( destination, pulseMediumPlusDisplayText_, pulseMediumPlusDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseLongMinusValue_, pulseLongMinusValueNullIndicator_);
-            WriteColumnValue( destination, pulseLongMinusDisplayText_, pulseLongMinusDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseLongValue_, pulseLongValueNullIndicator_);
-            WriteColumnValue( destination, pulseLongDisplayText_, pulseLongDisplayTextLengthOrNullIndicator_);
-            WriteColumnValue( destination, pulseLongPlusValue_, pulseLongPlusValueNullIndicator_);
-            WriteColumnValue( destination, pulseLongPlusDisplayText_, pulseLongPlusDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, pulseShortMinusValue_);
+            WriteColumnValue( destination, pulseShortMinusDisplayText_);
+            WriteColumnValue( destination, pulseShortValue_);
+            WriteColumnValue( destination, pulseShortDisplayText_);
+            WriteColumnValue( destination, pulseShortPlusValue_);
+            WriteColumnValue( destination, pulseShortPlusDisplayText_);
+            WriteColumnValue( destination, pulseMediumMinusValue_);
+            WriteColumnValue( destination, pulseMediumMinusDisplayText_);
+            WriteColumnValue( destination, pulseMediumValue_);
+            WriteColumnValue( destination, pulseMediumDisplayText_);
+            WriteColumnValue( destination, pulseMediumPlusValue_);
+            WriteColumnValue( destination, pulseMediumPlusDisplayText_);
+            WriteColumnValue( destination, pulseLongMinusValue_);
+            WriteColumnValue( destination, pulseLongMinusDisplayText_);
+            WriteColumnValue( destination, pulseLongValue_);
+            WriteColumnValue( destination, pulseLongDisplayText_);
+            WriteColumnValue( destination, pulseLongPlusValue_);
+            WriteColumnValue( destination, pulseLongPlusDisplayText_);
         }
     };
 
@@ -9653,8 +8976,7 @@ namespace Barrelman::Data
 
     class RadioTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9670,30 +8992,26 @@ namespace Barrelman::Data
             return Kind::RadioType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9701,8 +9019,7 @@ namespace Barrelman::Data
 
     class RadomeTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9718,30 +9035,26 @@ namespace Barrelman::Data
             return Kind::RadomeType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9749,8 +9062,7 @@ namespace Barrelman::Data
 
     class WeatherStationTypeColumnData : public DeviceTypeColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = DeviceTypeColumnData;
 
@@ -9766,30 +9078,26 @@ namespace Barrelman::Data
             return Kind::WeatherStationType;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9801,8 +9109,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        double value_ = 0.0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBDouble value_;
     public:
         using Base = BaseColumnData;
 
@@ -9822,7 +9129,7 @@ namespace Barrelman::Data
             return Kind::DoubleTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -9834,11 +9141,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -9846,7 +9153,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -9854,29 +9161,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<double> Value( ) const
+        const DBDouble& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( double value )
+        void SetValue( const DBDouble& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -9886,7 +9185,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -9896,8 +9195,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -9915,7 +9213,7 @@ namespace Barrelman::Data
             return Kind::FacilityType;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -9927,27 +9225,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -9955,7 +9249,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -9967,10 +9261,8 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        double latitude_ = 0.0;
-        SQLLEN latitudeNullIndicator_ = SQL_NULL_DATA;
-        double longitude_ = 0.0;
-        SQLLEN longitudeNullIndicator_ = SQL_NULL_DATA;
+        DBDouble latitude_;
+        DBDouble longitude_;
     public:
         using Base = BaseColumnData;
 
@@ -9991,7 +9283,7 @@ namespace Barrelman::Data
             return Kind::GeoPosition2DTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10003,11 +9295,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -10015,7 +9307,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10023,46 +9315,30 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<double> Latitude( ) const
+        const DBDouble& Latitude( ) const
         {
-            if(latitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return latitude_;
-            }
-            return {};
+            return latitude_;
         }
-        bool IsLatitudeNull( ) const
-        {
-            return latitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLatitude( double latitude )
+        void SetLatitude( const DBDouble& latitude )
         {
             latitude_ = latitude;
         }
-        std::optional<double> Longitude( ) const
+        const DBDouble& Longitude( ) const
         {
-            if(longitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return longitude_;
-            }
-            return {};
+            return longitude_;
         }
-        bool IsLongitudeNull( ) const
-        {
-            return longitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLongitude( double longitude )
+        void SetLongitude( const DBDouble& longitude )
         {
             longitude_ = longitude;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_, &latitudeNullIndicator_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_, &longitudeNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -10072,8 +9348,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, latitude_, latitudeNullIndicator_);
-            WriteColumnValue( destination, longitude_, longitudeNullIndicator_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
         }
     };
 
@@ -10085,12 +9361,9 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        double latitude_ = 0.0;
-        SQLLEN latitudeNullIndicator_ = SQL_NULL_DATA;
-        double longitude_ = 0.0;
-        SQLLEN longitudeNullIndicator_ = SQL_NULL_DATA;
-        double altitude_ = 0.0;
-        SQLLEN altitudeNullIndicator_ = SQL_NULL_DATA;
+        DBDouble latitude_;
+        DBDouble longitude_;
+        DBDouble altitude_;
     public:
         using Base = BaseColumnData;
 
@@ -10112,7 +9385,7 @@ namespace Barrelman::Data
             return Kind::GeoPosition3DTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10124,11 +9397,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -10136,7 +9409,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10144,63 +9417,39 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<double> Latitude( ) const
+        const DBDouble& Latitude( ) const
         {
-            if(latitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return latitude_;
-            }
-            return {};
+            return latitude_;
         }
-        bool IsLatitudeNull( ) const
-        {
-            return latitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLatitude( double latitude )
+        void SetLatitude( const DBDouble& latitude )
         {
             latitude_ = latitude;
         }
-        std::optional<double> Longitude( ) const
+        const DBDouble& Longitude( ) const
         {
-            if(longitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return longitude_;
-            }
-            return {};
+            return longitude_;
         }
-        bool IsLongitudeNull( ) const
-        {
-            return longitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLongitude( double longitude )
+        void SetLongitude( const DBDouble& longitude )
         {
             longitude_ = longitude;
         }
-        std::optional<double> Altitude( ) const
+        const DBDouble& Altitude( ) const
         {
-            if(altitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return altitude_;
-            }
-            return {};
+            return altitude_;
         }
-        bool IsAltitudeNull( ) const
-        {
-            return altitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetAltitude( double altitude )
+        void SetAltitude( const DBDouble& altitude )
         {
             altitude_ = altitude;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_, &latitudeNullIndicator_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_, &longitudeNullIndicator_);
-            Bind(statement, ALTITUDE_FIELD_ID, &altitude_, &altitudeNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, ALTITUDE_FIELD_ID, altitude_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -10210,9 +9459,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, latitude_, latitudeNullIndicator_);
-            WriteColumnValue( destination, longitude_, longitudeNullIndicator_);
-            WriteColumnValue( destination, altitude_, altitudeNullIndicator_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, altitude_);
         }
     };
 
@@ -10248,7 +9497,7 @@ namespace Barrelman::Data
             return Kind::GNSSDeviceCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10260,11 +9509,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -10272,7 +9521,7 @@ namespace Barrelman::Data
         {
             gNSSDevice_ = gNSSDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10288,7 +9537,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -10296,7 +9545,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -10306,13 +9555,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -10339,7 +9588,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -10361,7 +9610,7 @@ namespace Barrelman::Data
             return Kind::GNSSDeviceCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10373,11 +9622,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -10385,7 +9634,7 @@ namespace Barrelman::Data
         {
             gNSSDevice_ = gNSSDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10393,7 +9642,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -10415,16 +9664,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -10442,7 +9691,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -10484,7 +9733,7 @@ namespace Barrelman::Data
             return Kind::GNSSDeviceConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10496,11 +9745,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -10508,7 +9757,7 @@ namespace Barrelman::Data
         {
             gNSSDevice_ = gNSSDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10566,16 +9815,16 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEFAULTLATITUDE_FIELD_ID, &defaultLatitude_);
-            Bind(statement, DEFAULTLONGITUDE_FIELD_ID, &defaultLongitude_);
-            Bind(statement, DEFAULTALTITUDE_FIELD_ID, &defaultAltitude_);
-            Bind(statement, LATITUDEOFFSET_FIELD_ID, &latitudeOffset_);
-            Bind(statement, LONGITUDEOFFSET_FIELD_ID, &longitudeOffset_);
-            Bind(statement, ALTITUDEOFFSET_FIELD_ID, &altitudeOffset_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEFAULTLATITUDE_FIELD_ID, defaultLatitude_);
+            Bind(statement, DEFAULTLONGITUDE_FIELD_ID, defaultLongitude_);
+            Bind(statement, DEFAULTALTITUDE_FIELD_ID, defaultAltitude_);
+            Bind(statement, LATITUDEOFFSET_FIELD_ID, latitudeOffset_);
+            Bind(statement, LONGITUDEOFFSET_FIELD_ID, longitudeOffset_);
+            Bind(statement, ALTITUDEOFFSET_FIELD_ID, altitudeOffset_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -10602,8 +9851,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        Guid value_;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBGuid value_;
     public:
         using Base = BaseColumnData;
 
@@ -10623,7 +9871,7 @@ namespace Barrelman::Data
             return Kind::GuidTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10635,11 +9883,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -10647,7 +9895,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10655,29 +9903,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<Guid> Value( ) const
+        const DBGuid& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( const Guid& value )
+        void SetValue( const DBGuid& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -10687,7 +9927,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -10723,7 +9963,7 @@ namespace Barrelman::Data
             return Kind::GyroDeviceCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10735,11 +9975,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -10747,7 +9987,7 @@ namespace Barrelman::Data
         {
             gyroDevice_ = gyroDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10763,7 +10003,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -10771,7 +10011,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -10781,13 +10021,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -10814,7 +10054,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -10836,7 +10076,7 @@ namespace Barrelman::Data
             return Kind::GyroDeviceCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10848,11 +10088,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -10860,7 +10100,7 @@ namespace Barrelman::Data
         {
             gyroDevice_ = gyroDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -10868,7 +10108,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -10890,16 +10130,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -10917,7 +10157,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -10933,10 +10173,8 @@ namespace Barrelman::Data
         double defaultMagneticTrueNorth_ = 0.0;
         double headingTrueNorthOffset_ = 0.0;
         double headingMagneticNorthOffset_ = 0.0;
-        std::array<wchar_t,65> pitchTransducerName_ = {};
-        SQLLEN pitchTransducerNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,65> rollTransducerName_ = {};
-        SQLLEN rollTransducerNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<64> pitchTransducerName_;
+        FixedDBWideString<64> rollTransducerName_;
     public:
         using Base = BaseColumnData;
 
@@ -10961,7 +10199,7 @@ namespace Barrelman::Data
             return Kind::GyroDeviceConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -10973,11 +10211,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -10985,7 +10223,7 @@ namespace Barrelman::Data
         {
             gyroDevice_ = gyroDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -11025,42 +10263,34 @@ namespace Barrelman::Data
         {
             headingMagneticNorthOffset_ = headingMagneticNorthOffset;
         }
-        std::wstring_view PitchTransducerName( ) const
+        const FixedDBWideString<64>& PitchTransducerName( ) const
         {
-            if(pitchTransducerNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pitchTransducerName_.data(),static_cast<size_t>( pitchTransducerNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pitchTransducerName_;
         }
         void SetPitchTransducerName( const WideString& pitchTransducerName )
         {
-            Assign(pitchTransducerName, pitchTransducerName_, pitchTransducerNameLengthOrNullIndicator_);
+            pitchTransducerName_ = pitchTransducerName;
         }
-        std::wstring_view RollTransducerName( ) const
+        const FixedDBWideString<64>& RollTransducerName( ) const
         {
-            if(rollTransducerNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(rollTransducerName_.data(),static_cast<size_t>( rollTransducerNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return rollTransducerName_;
         }
         void SetRollTransducerName( const WideString& rollTransducerName )
         {
-            Assign(rollTransducerName, rollTransducerName_, rollTransducerNameLengthOrNullIndicator_);
+            rollTransducerName_ = rollTransducerName;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEFAULTHEADINGTRUENORTH_FIELD_ID, &defaultHeadingTrueNorth_);
-            Bind(statement, DEFAULTMAGNETICTRUENORTH_FIELD_ID, &defaultMagneticTrueNorth_);
-            Bind(statement, HEADINGTRUENORTHOFFSET_FIELD_ID, &headingTrueNorthOffset_);
-            Bind(statement, HEADINGMAGNETICNORTHOFFSET_FIELD_ID, &headingMagneticNorthOffset_);
-            Bind(statement, PITCHTRANSDUCERNAME_FIELD_ID, &pitchTransducerName_, &pitchTransducerNameLengthOrNullIndicator_);
-            Bind(statement, ROLLTRANSDUCERNAME_FIELD_ID, &rollTransducerName_, &rollTransducerNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEFAULTHEADINGTRUENORTH_FIELD_ID, defaultHeadingTrueNorth_);
+            Bind(statement, DEFAULTMAGNETICTRUENORTH_FIELD_ID, defaultMagneticTrueNorth_);
+            Bind(statement, HEADINGTRUENORTHOFFSET_FIELD_ID, headingTrueNorthOffset_);
+            Bind(statement, HEADINGMAGNETICNORTHOFFSET_FIELD_ID, headingMagneticNorthOffset_);
+            Bind(statement, PITCHTRANSDUCERNAME_FIELD_ID, pitchTransducerName_);
+            Bind(statement, ROLLTRANSDUCERNAME_FIELD_ID, rollTransducerName_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11074,8 +10304,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, defaultMagneticTrueNorth_);
             WriteColumnValue( destination, headingTrueNorthOffset_);
             WriteColumnValue( destination, headingMagneticNorthOffset_);
-            WriteColumnValue( destination, pitchTransducerName_, pitchTransducerNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, rollTransducerName_, rollTransducerNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, pitchTransducerName_);
+            WriteColumnValue( destination, rollTransducerName_);
         }
     };
 
@@ -11101,7 +10331,7 @@ namespace Barrelman::Data
             return Kind::Identity;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -11113,14 +10343,14 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11135,8 +10365,7 @@ namespace Barrelman::Data
 
     class CallsignColumnData : public IdentityColumnData
     {
-        std::array<wchar_t,128> identifier_ = {};
-        SQLLEN identifierLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> identifier_;
     public:
         using Base = IdentityColumnData;
 
@@ -11152,30 +10381,26 @@ namespace Barrelman::Data
             return Kind::Callsign;
         }
 
-        std::wstring_view Identifier( ) const
+        const FixedDBWideString<127>& Identifier( ) const
         {
-            if(identifierLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(identifier_.data(),static_cast<size_t>( identifierLengthOrNullIndicator_ ));
-            }
-            return {};
+            return identifier_;
         }
         void SetIdentifier( const WideString& identifier )
         {
-            Assign(identifier, identifier_, identifierLengthOrNullIndicator_);
+            identifier_ = identifier;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, IDENTIFIER_FIELD_ID, &identifier_, &identifierLengthOrNullIndicator_);
+            Bind(statement, IDENTIFIER_FIELD_ID, identifier_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, identifier_, identifierLengthOrNullIndicator_);
+            WriteColumnValue( destination, identifier_);
         }
     };
 
@@ -11211,7 +10436,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, IDENTIFIER_FIELD_ID, &identifier_);
+            Bind(statement, IDENTIFIER_FIELD_ID, identifier_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11254,7 +10479,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, IDENTIFIER_FIELD_ID, &identifier_);
+            Bind(statement, IDENTIFIER_FIELD_ID, identifier_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11269,8 +10494,7 @@ namespace Barrelman::Data
 
     class NameColumnData : public IdentityColumnData
     {
-        std::array<wchar_t,101> text_ = {};
-        SQLLEN textLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> text_;
     public:
         using Base = IdentityColumnData;
 
@@ -11286,30 +10510,26 @@ namespace Barrelman::Data
             return Kind::Name;
         }
 
-        std::wstring_view Text( ) const
+        const FixedDBWideString<100>& Text( ) const
         {
-            if(textLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(text_.data(),static_cast<size_t>( textLengthOrNullIndicator_ ));
-            }
-            return {};
+            return text_;
         }
         void SetText( const WideString& text )
         {
-            Assign(text, text_, textLengthOrNullIndicator_);
+            text_ = text;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TEXT_FIELD_ID, &text_, &textLengthOrNullIndicator_);
+            Bind(statement, TEXT_FIELD_ID, text_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, text_, textLengthOrNullIndicator_);
+            WriteColumnValue( destination, text_);
         }
     };
 
@@ -11321,8 +10541,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        Int16 value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBInt16 value_;
     public:
         using Base = BaseColumnData;
 
@@ -11342,7 +10561,7 @@ namespace Barrelman::Data
             return Kind::Int16TimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -11354,11 +10573,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -11366,7 +10585,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -11374,29 +10593,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<Int16> Value( ) const
+        const DBInt16& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( Int16 value )
+        void SetValue( const DBInt16& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11406,7 +10617,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -11418,8 +10629,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        Int32 value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBInt32 value_;
     public:
         using Base = BaseColumnData;
 
@@ -11439,7 +10649,7 @@ namespace Barrelman::Data
             return Kind::Int32TimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -11451,11 +10661,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -11463,7 +10673,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -11471,29 +10681,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<Int32> Value( ) const
+        const DBInt32& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( Int32 value )
+        void SetValue( const DBInt32& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11503,7 +10705,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -11515,8 +10717,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        Int64 value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBInt64 value_;
     public:
         using Base = BaseColumnData;
 
@@ -11536,7 +10737,7 @@ namespace Barrelman::Data
             return Kind::Int64TimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -11548,11 +10749,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -11560,7 +10761,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -11568,29 +10769,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<Int64> Value( ) const
+        const DBInt64& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( Int64 value )
+        void SetValue( const DBInt64& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11600,7 +10793,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -11626,7 +10819,7 @@ namespace Barrelman::Data
             return Kind::Item;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -11638,14 +10831,14 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11660,8 +10853,7 @@ namespace Barrelman::Data
 
     class BaseStationColumnData : public ItemColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid type_;
     public:
         using Base = ItemColumnData;
@@ -11679,19 +10871,15 @@ namespace Barrelman::Data
             return Kind::BaseStation;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -11703,15 +10891,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, type_);
         }
     };
@@ -11721,10 +10909,9 @@ namespace Barrelman::Data
     class DeviceColumnData : public ItemColumnData
     {
         Guid host_;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
         Guid enabledTimeseries_;
     public:
         using Base = ItemColumnData;
@@ -11744,7 +10931,7 @@ namespace Barrelman::Data
             return Kind::Device;
         }
 
-        Guid Host( ) const
+        const Guid& Host( ) const
         {
             return host_;
         }
@@ -11752,17 +10939,13 @@ namespace Barrelman::Data
         {
             host_ = host;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         const WideString& Description( ) const
         {
@@ -11770,9 +10953,9 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
-        Guid EnabledTimeseries( ) const
+        const Guid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
@@ -11784,9 +10967,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, HOST_FIELD_ID, &host_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, ENABLEDTIMESERIES_FIELD_ID, &enabledTimeseries_);
+            Bind(statement, HOST_FIELD_ID, host_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, ENABLEDTIMESERIES_FIELD_ID, enabledTimeseries_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -11800,8 +10983,8 @@ namespace Barrelman::Data
         {
             Base::WriteColumns( destination );
             WriteColumnValue( destination, host_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, description_);
             WriteColumnValue( destination, enabledTimeseries_);
         }
     };
@@ -11826,7 +11009,7 @@ namespace Barrelman::Data
             return Kind::Camera;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -11838,7 +11021,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11875,7 +11058,7 @@ namespace Barrelman::Data
             return Kind::GNSSDevice;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -11883,7 +11066,7 @@ namespace Barrelman::Data
         {
             type_ = type;
         }
-        Guid LatitudeTimeseries( ) const
+        const Guid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
         }
@@ -11891,7 +11074,7 @@ namespace Barrelman::Data
         {
             latitudeTimeseries_ = latitudeTimeseries;
         }
-        Guid LongitudeTimeseries( ) const
+        const Guid& LongitudeTimeseries( ) const
         {
             return longitudeTimeseries_;
         }
@@ -11899,7 +11082,7 @@ namespace Barrelman::Data
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        Guid AltitudeTimeseries( ) const
+        const Guid& AltitudeTimeseries( ) const
         {
             return altitudeTimeseries_;
         }
@@ -11911,10 +11094,10 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, LATITUDETIMESERIES_FIELD_ID, &latitudeTimeseries_);
-            Bind(statement, LONGITUDETIMESERIES_FIELD_ID, &longitudeTimeseries_);
-            Bind(statement, ALTITUDETIMESERIES_FIELD_ID, &altitudeTimeseries_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, LATITUDETIMESERIES_FIELD_ID, latitudeTimeseries_);
+            Bind(statement, LONGITUDETIMESERIES_FIELD_ID, longitudeTimeseries_);
+            Bind(statement, ALTITUDETIMESERIES_FIELD_ID, altitudeTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -11964,7 +11147,7 @@ namespace Barrelman::Data
             return Kind::GyroDevice;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -11972,7 +11155,7 @@ namespace Barrelman::Data
         {
             type_ = type;
         }
-        Guid HeadingTrueNorthTimeseries( ) const
+        const Guid& HeadingTrueNorthTimeseries( ) const
         {
             return headingTrueNorthTimeseries_;
         }
@@ -11980,7 +11163,7 @@ namespace Barrelman::Data
         {
             headingTrueNorthTimeseries_ = headingTrueNorthTimeseries;
         }
-        Guid HeadingMagneticNorthTimeseries( ) const
+        const Guid& HeadingMagneticNorthTimeseries( ) const
         {
             return headingMagneticNorthTimeseries_;
         }
@@ -11988,7 +11171,7 @@ namespace Barrelman::Data
         {
             headingMagneticNorthTimeseries_ = headingMagneticNorthTimeseries;
         }
-        Guid PitchTimeseries( ) const
+        const Guid& PitchTimeseries( ) const
         {
             return pitchTimeseries_;
         }
@@ -11996,7 +11179,7 @@ namespace Barrelman::Data
         {
             pitchTimeseries_ = pitchTimeseries;
         }
-        Guid RateOfTurnTimeseries( ) const
+        const Guid& RateOfTurnTimeseries( ) const
         {
             return rateOfTurnTimeseries_;
         }
@@ -12004,7 +11187,7 @@ namespace Barrelman::Data
         {
             rateOfTurnTimeseries_ = rateOfTurnTimeseries;
         }
-        Guid RollTimeseries( ) const
+        const Guid& RollTimeseries( ) const
         {
             return rollTimeseries_;
         }
@@ -12012,7 +11195,7 @@ namespace Barrelman::Data
         {
             rollTimeseries_ = rollTimeseries;
         }
-        Guid CourseTimeseries( ) const
+        const Guid& CourseTimeseries( ) const
         {
             return courseTimeseries_;
         }
@@ -12020,7 +11203,7 @@ namespace Barrelman::Data
         {
             courseTimeseries_ = courseTimeseries;
         }
-        Guid SpeedTimeseries( ) const
+        const Guid& SpeedTimeseries( ) const
         {
             return speedTimeseries_;
         }
@@ -12028,7 +11211,7 @@ namespace Barrelman::Data
         {
             speedTimeseries_ = speedTimeseries;
         }
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -12040,15 +11223,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, HEADINGTRUENORTHTIMESERIES_FIELD_ID, &headingTrueNorthTimeseries_);
-            Bind(statement, HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID, &headingMagneticNorthTimeseries_);
-            Bind(statement, PITCHTIMESERIES_FIELD_ID, &pitchTimeseries_);
-            Bind(statement, RATEOFTURNTIMESERIES_FIELD_ID, &rateOfTurnTimeseries_);
-            Bind(statement, ROLLTIMESERIES_FIELD_ID, &rollTimeseries_);
-            Bind(statement, COURSETIMESERIES_FIELD_ID, &courseTimeseries_);
-            Bind(statement, SPEEDTIMESERIES_FIELD_ID, &speedTimeseries_);
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, HEADINGTRUENORTHTIMESERIES_FIELD_ID, headingTrueNorthTimeseries_);
+            Bind(statement, HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID, headingMagneticNorthTimeseries_);
+            Bind(statement, PITCHTIMESERIES_FIELD_ID, pitchTimeseries_);
+            Bind(statement, RATEOFTURNTIMESERIES_FIELD_ID, rateOfTurnTimeseries_);
+            Bind(statement, ROLLTIMESERIES_FIELD_ID, rollTimeseries_);
+            Bind(statement, COURSETIMESERIES_FIELD_ID, courseTimeseries_);
+            Bind(statement, SPEEDTIMESERIES_FIELD_ID, speedTimeseries_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12087,7 +11270,7 @@ namespace Barrelman::Data
             return Kind::LineInputDevice;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12099,7 +11282,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12130,7 +11313,7 @@ namespace Barrelman::Data
             return Kind::OilspillDetector;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12142,7 +11325,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12173,7 +11356,7 @@ namespace Barrelman::Data
             return Kind::Radio;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12185,7 +11368,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12226,7 +11409,7 @@ namespace Barrelman::Data
             return Kind::Radome;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12234,7 +11417,7 @@ namespace Barrelman::Data
         {
             type_ = type;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -12242,7 +11425,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        Guid PressureTimeseries( ) const
+        const Guid& PressureTimeseries( ) const
         {
             return pressureTimeseries_;
         }
@@ -12250,7 +11433,7 @@ namespace Barrelman::Data
         {
             pressureTimeseries_ = pressureTimeseries;
         }
-        Guid TemperatureTimeseries( ) const
+        const Guid& TemperatureTimeseries( ) const
         {
             return temperatureTimeseries_;
         }
@@ -12258,7 +11441,7 @@ namespace Barrelman::Data
         {
             temperatureTimeseries_ = temperatureTimeseries;
         }
-        Guid DewPointTimeseries( ) const
+        const Guid& DewPointTimeseries( ) const
         {
             return dewPointTimeseries_;
         }
@@ -12266,7 +11449,7 @@ namespace Barrelman::Data
         {
             dewPointTimeseries_ = dewPointTimeseries;
         }
-        Guid StatusTimeseries( ) const
+        const Guid& StatusTimeseries( ) const
         {
             return statusTimeseries_;
         }
@@ -12278,12 +11461,12 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, PRESSURETIMESERIES_FIELD_ID, &pressureTimeseries_);
-            Bind(statement, TEMPERATURETIMESERIES_FIELD_ID, &temperatureTimeseries_);
-            Bind(statement, DEWPOINTTIMESERIES_FIELD_ID, &dewPointTimeseries_);
-            Bind(statement, STATUSTIMESERIES_FIELD_ID, &statusTimeseries_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, PRESSURETIMESERIES_FIELD_ID, pressureTimeseries_);
+            Bind(statement, TEMPERATURETIMESERIES_FIELD_ID, temperatureTimeseries_);
+            Bind(statement, DEWPOINTTIMESERIES_FIELD_ID, dewPointTimeseries_);
+            Bind(statement, STATUSTIMESERIES_FIELD_ID, statusTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12343,7 +11526,7 @@ namespace Barrelman::Data
             return Kind::AisTransceiver;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12355,7 +11538,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12432,7 +11615,7 @@ namespace Barrelman::Data
             return Kind::Radar;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12440,7 +11623,7 @@ namespace Barrelman::Data
         {
             type_ = type;
         }
-        Guid SaveSettingsTimeseries( ) const
+        const Guid& SaveSettingsTimeseries( ) const
         {
             return saveSettingsTimeseries_;
         }
@@ -12448,7 +11631,7 @@ namespace Barrelman::Data
         {
             saveSettingsTimeseries_ = saveSettingsTimeseries;
         }
-        Guid PowerOnTimeseries( ) const
+        const Guid& PowerOnTimeseries( ) const
         {
             return powerOnTimeseries_;
         }
@@ -12456,7 +11639,7 @@ namespace Barrelman::Data
         {
             powerOnTimeseries_ = powerOnTimeseries;
         }
-        Guid TrackingOnTimeseries( ) const
+        const Guid& TrackingOnTimeseries( ) const
         {
             return trackingOnTimeseries_;
         }
@@ -12464,7 +11647,7 @@ namespace Barrelman::Data
         {
             trackingOnTimeseries_ = trackingOnTimeseries;
         }
-        Guid RadarPulseTimeseries( ) const
+        const Guid& RadarPulseTimeseries( ) const
         {
             return radarPulseTimeseries_;
         }
@@ -12472,7 +11655,7 @@ namespace Barrelman::Data
         {
             radarPulseTimeseries_ = radarPulseTimeseries;
         }
-        Guid TuningTimeseries( ) const
+        const Guid& TuningTimeseries( ) const
         {
             return tuningTimeseries_;
         }
@@ -12480,7 +11663,7 @@ namespace Barrelman::Data
         {
             tuningTimeseries_ = tuningTimeseries;
         }
-        Guid BlankSector1Timeseries( ) const
+        const Guid& BlankSector1Timeseries( ) const
         {
             return blankSector1Timeseries_;
         }
@@ -12488,7 +11671,7 @@ namespace Barrelman::Data
         {
             blankSector1Timeseries_ = blankSector1Timeseries;
         }
-        Guid Sector1StartTimeseries( ) const
+        const Guid& Sector1StartTimeseries( ) const
         {
             return sector1StartTimeseries_;
         }
@@ -12496,7 +11679,7 @@ namespace Barrelman::Data
         {
             sector1StartTimeseries_ = sector1StartTimeseries;
         }
-        Guid Sector1EndTimeseries( ) const
+        const Guid& Sector1EndTimeseries( ) const
         {
             return sector1EndTimeseries_;
         }
@@ -12504,7 +11687,7 @@ namespace Barrelman::Data
         {
             sector1EndTimeseries_ = sector1EndTimeseries;
         }
-        Guid BlankSector2Timeseries( ) const
+        const Guid& BlankSector2Timeseries( ) const
         {
             return blankSector2Timeseries_;
         }
@@ -12512,7 +11695,7 @@ namespace Barrelman::Data
         {
             blankSector2Timeseries_ = blankSector2Timeseries;
         }
-        Guid Sector2StartTimeseries( ) const
+        const Guid& Sector2StartTimeseries( ) const
         {
             return sector2StartTimeseries_;
         }
@@ -12520,7 +11703,7 @@ namespace Barrelman::Data
         {
             sector2StartTimeseries_ = sector2StartTimeseries;
         }
-        Guid Sector2EndTimeseries( ) const
+        const Guid& Sector2EndTimeseries( ) const
         {
             return sector2EndTimeseries_;
         }
@@ -12528,7 +11711,7 @@ namespace Barrelman::Data
         {
             sector2EndTimeseries_ = sector2EndTimeseries;
         }
-        Guid EnableAutomaticFrequencyControlTimeseries( ) const
+        const Guid& EnableAutomaticFrequencyControlTimeseries( ) const
         {
             return enableAutomaticFrequencyControlTimeseries_;
         }
@@ -12536,7 +11719,7 @@ namespace Barrelman::Data
         {
             enableAutomaticFrequencyControlTimeseries_ = enableAutomaticFrequencyControlTimeseries;
         }
-        Guid AzimuthOffsetTimeseries( ) const
+        const Guid& AzimuthOffsetTimeseries( ) const
         {
             return azimuthOffsetTimeseries_;
         }
@@ -12544,7 +11727,7 @@ namespace Barrelman::Data
         {
             azimuthOffsetTimeseries_ = azimuthOffsetTimeseries;
         }
-        Guid EnableSensitivityTimeControlTimeseries( ) const
+        const Guid& EnableSensitivityTimeControlTimeseries( ) const
         {
             return enableSensitivityTimeControlTimeseries_;
         }
@@ -12552,7 +11735,7 @@ namespace Barrelman::Data
         {
             enableSensitivityTimeControlTimeseries_ = enableSensitivityTimeControlTimeseries;
         }
-        Guid AutomaticSensitivityTimeControlTimeseries( ) const
+        const Guid& AutomaticSensitivityTimeControlTimeseries( ) const
         {
             return automaticSensitivityTimeControlTimeseries_;
         }
@@ -12560,7 +11743,7 @@ namespace Barrelman::Data
         {
             automaticSensitivityTimeControlTimeseries_ = automaticSensitivityTimeControlTimeseries;
         }
-        Guid SensitivityTimeControlLevelTimeseries( ) const
+        const Guid& SensitivityTimeControlLevelTimeseries( ) const
         {
             return sensitivityTimeControlLevelTimeseries_;
         }
@@ -12568,7 +11751,7 @@ namespace Barrelman::Data
         {
             sensitivityTimeControlLevelTimeseries_ = sensitivityTimeControlLevelTimeseries;
         }
-        Guid EnableFastTimeConstantTimeseries( ) const
+        const Guid& EnableFastTimeConstantTimeseries( ) const
         {
             return enableFastTimeConstantTimeseries_;
         }
@@ -12576,7 +11759,7 @@ namespace Barrelman::Data
         {
             enableFastTimeConstantTimeseries_ = enableFastTimeConstantTimeseries;
         }
-        Guid FastTimeConstantLevelTimeseries( ) const
+        const Guid& FastTimeConstantLevelTimeseries( ) const
         {
             return fastTimeConstantLevelTimeseries_;
         }
@@ -12584,7 +11767,7 @@ namespace Barrelman::Data
         {
             fastTimeConstantLevelTimeseries_ = fastTimeConstantLevelTimeseries;
         }
-        Guid FastTimeConstantModeTimeseries( ) const
+        const Guid& FastTimeConstantModeTimeseries( ) const
         {
             return fastTimeConstantModeTimeseries_;
         }
@@ -12592,7 +11775,7 @@ namespace Barrelman::Data
         {
             fastTimeConstantModeTimeseries_ = fastTimeConstantModeTimeseries;
         }
-        Guid LatitudeTimeseries( ) const
+        const Guid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
         }
@@ -12600,7 +11783,7 @@ namespace Barrelman::Data
         {
             latitudeTimeseries_ = latitudeTimeseries;
         }
-        Guid LongitudeTimeseries( ) const
+        const Guid& LongitudeTimeseries( ) const
         {
             return longitudeTimeseries_;
         }
@@ -12608,7 +11791,7 @@ namespace Barrelman::Data
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -12616,7 +11799,7 @@ namespace Barrelman::Data
         {
             radome_ = radome;
         }
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -12628,30 +11811,30 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, SAVESETTINGSTIMESERIES_FIELD_ID, &saveSettingsTimeseries_);
-            Bind(statement, POWERONTIMESERIES_FIELD_ID, &powerOnTimeseries_);
-            Bind(statement, TRACKINGONTIMESERIES_FIELD_ID, &trackingOnTimeseries_);
-            Bind(statement, RADARPULSETIMESERIES_FIELD_ID, &radarPulseTimeseries_);
-            Bind(statement, TUNINGTIMESERIES_FIELD_ID, &tuningTimeseries_);
-            Bind(statement, BLANKSECTOR1TIMESERIES_FIELD_ID, &blankSector1Timeseries_);
-            Bind(statement, SECTOR1STARTTIMESERIES_FIELD_ID, &sector1StartTimeseries_);
-            Bind(statement, SECTOR1ENDTIMESERIES_FIELD_ID, &sector1EndTimeseries_);
-            Bind(statement, BLANKSECTOR2TIMESERIES_FIELD_ID, &blankSector2Timeseries_);
-            Bind(statement, SECTOR2STARTTIMESERIES_FIELD_ID, &sector2StartTimeseries_);
-            Bind(statement, SECTOR2ENDTIMESERIES_FIELD_ID, &sector2EndTimeseries_);
-            Bind(statement, ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, &enableAutomaticFrequencyControlTimeseries_);
-            Bind(statement, AZIMUTHOFFSETTIMESERIES_FIELD_ID, &azimuthOffsetTimeseries_);
-            Bind(statement, ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, &enableSensitivityTimeControlTimeseries_);
-            Bind(statement, AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, &automaticSensitivityTimeControlTimeseries_);
-            Bind(statement, SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, &sensitivityTimeControlLevelTimeseries_);
-            Bind(statement, ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, &enableFastTimeConstantTimeseries_);
-            Bind(statement, FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, &fastTimeConstantLevelTimeseries_);
-            Bind(statement, FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, &fastTimeConstantModeTimeseries_);
-            Bind(statement, LATITUDETIMESERIES_FIELD_ID, &latitudeTimeseries_);
-            Bind(statement, LONGITUDETIMESERIES_FIELD_ID, &longitudeTimeseries_);
-            Bind(statement, RADOME_FIELD_ID, &radome_);
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, SAVESETTINGSTIMESERIES_FIELD_ID, saveSettingsTimeseries_);
+            Bind(statement, POWERONTIMESERIES_FIELD_ID, powerOnTimeseries_);
+            Bind(statement, TRACKINGONTIMESERIES_FIELD_ID, trackingOnTimeseries_);
+            Bind(statement, RADARPULSETIMESERIES_FIELD_ID, radarPulseTimeseries_);
+            Bind(statement, TUNINGTIMESERIES_FIELD_ID, tuningTimeseries_);
+            Bind(statement, BLANKSECTOR1TIMESERIES_FIELD_ID, blankSector1Timeseries_);
+            Bind(statement, SECTOR1STARTTIMESERIES_FIELD_ID, sector1StartTimeseries_);
+            Bind(statement, SECTOR1ENDTIMESERIES_FIELD_ID, sector1EndTimeseries_);
+            Bind(statement, BLANKSECTOR2TIMESERIES_FIELD_ID, blankSector2Timeseries_);
+            Bind(statement, SECTOR2STARTTIMESERIES_FIELD_ID, sector2StartTimeseries_);
+            Bind(statement, SECTOR2ENDTIMESERIES_FIELD_ID, sector2EndTimeseries_);
+            Bind(statement, ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, enableAutomaticFrequencyControlTimeseries_);
+            Bind(statement, AZIMUTHOFFSETTIMESERIES_FIELD_ID, azimuthOffsetTimeseries_);
+            Bind(statement, ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, enableSensitivityTimeControlTimeseries_);
+            Bind(statement, AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, automaticSensitivityTimeControlTimeseries_);
+            Bind(statement, SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, sensitivityTimeControlLevelTimeseries_);
+            Bind(statement, ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, enableFastTimeConstantTimeseries_);
+            Bind(statement, FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, fastTimeConstantLevelTimeseries_);
+            Bind(statement, FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, fastTimeConstantModeTimeseries_);
+            Bind(statement, LATITUDETIMESERIES_FIELD_ID, latitudeTimeseries_);
+            Bind(statement, LONGITUDETIMESERIES_FIELD_ID, longitudeTimeseries_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12723,7 +11906,7 @@ namespace Barrelman::Data
             return Kind::WeatherStation;
         }
 
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12731,7 +11914,7 @@ namespace Barrelman::Data
         {
             type_ = type;
         }
-        Guid BarometricPressureTimeseries( ) const
+        const Guid& BarometricPressureTimeseries( ) const
         {
             return barometricPressureTimeseries_;
         }
@@ -12739,7 +11922,7 @@ namespace Barrelman::Data
         {
             barometricPressureTimeseries_ = barometricPressureTimeseries;
         }
-        Guid AirTemperatureTimeseries( ) const
+        const Guid& AirTemperatureTimeseries( ) const
         {
             return airTemperatureTimeseries_;
         }
@@ -12747,7 +11930,7 @@ namespace Barrelman::Data
         {
             airTemperatureTimeseries_ = airTemperatureTimeseries;
         }
-        Guid WaterTemperatureTimeseries( ) const
+        const Guid& WaterTemperatureTimeseries( ) const
         {
             return waterTemperatureTimeseries_;
         }
@@ -12755,7 +11938,7 @@ namespace Barrelman::Data
         {
             waterTemperatureTimeseries_ = waterTemperatureTimeseries;
         }
-        Guid RelativeHumidityTimeseries( ) const
+        const Guid& RelativeHumidityTimeseries( ) const
         {
             return relativeHumidityTimeseries_;
         }
@@ -12763,7 +11946,7 @@ namespace Barrelman::Data
         {
             relativeHumidityTimeseries_ = relativeHumidityTimeseries;
         }
-        Guid AbsoluteHumidityTimeseries( ) const
+        const Guid& AbsoluteHumidityTimeseries( ) const
         {
             return absoluteHumidityTimeseries_;
         }
@@ -12771,7 +11954,7 @@ namespace Barrelman::Data
         {
             absoluteHumidityTimeseries_ = absoluteHumidityTimeseries;
         }
-        Guid DewPointTimeseries( ) const
+        const Guid& DewPointTimeseries( ) const
         {
             return dewPointTimeseries_;
         }
@@ -12779,7 +11962,7 @@ namespace Barrelman::Data
         {
             dewPointTimeseries_ = dewPointTimeseries;
         }
-        Guid WindDirectionTimeseries( ) const
+        const Guid& WindDirectionTimeseries( ) const
         {
             return windDirectionTimeseries_;
         }
@@ -12787,7 +11970,7 @@ namespace Barrelman::Data
         {
             windDirectionTimeseries_ = windDirectionTimeseries;
         }
-        Guid WindSpeedTimeseries( ) const
+        const Guid& WindSpeedTimeseries( ) const
         {
             return windSpeedTimeseries_;
         }
@@ -12795,7 +11978,7 @@ namespace Barrelman::Data
         {
             windSpeedTimeseries_ = windSpeedTimeseries;
         }
-        Guid Gyro( ) const
+        const Guid& Gyro( ) const
         {
             return gyro_;
         }
@@ -12807,16 +11990,16 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, BAROMETRICPRESSURETIMESERIES_FIELD_ID, &barometricPressureTimeseries_);
-            Bind(statement, AIRTEMPERATURETIMESERIES_FIELD_ID, &airTemperatureTimeseries_);
-            Bind(statement, WATERTEMPERATURETIMESERIES_FIELD_ID, &waterTemperatureTimeseries_);
-            Bind(statement, RELATIVEHUMIDITYTIMESERIES_FIELD_ID, &relativeHumidityTimeseries_);
-            Bind(statement, ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID, &absoluteHumidityTimeseries_);
-            Bind(statement, DEWPOINTTIMESERIES_FIELD_ID, &dewPointTimeseries_);
-            Bind(statement, WINDDIRECTIONTIMESERIES_FIELD_ID, &windDirectionTimeseries_);
-            Bind(statement, WINDSPEEDTIMESERIES_FIELD_ID, &windSpeedTimeseries_);
-            Bind(statement, GYRO_FIELD_ID, &gyro_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, BAROMETRICPRESSURETIMESERIES_FIELD_ID, barometricPressureTimeseries_);
+            Bind(statement, AIRTEMPERATURETIMESERIES_FIELD_ID, airTemperatureTimeseries_);
+            Bind(statement, WATERTEMPERATURETIMESERIES_FIELD_ID, waterTemperatureTimeseries_);
+            Bind(statement, RELATIVEHUMIDITYTIMESERIES_FIELD_ID, relativeHumidityTimeseries_);
+            Bind(statement, ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID, absoluteHumidityTimeseries_);
+            Bind(statement, DEWPOINTTIMESERIES_FIELD_ID, dewPointTimeseries_);
+            Bind(statement, WINDDIRECTIONTIMESERIES_FIELD_ID, windDirectionTimeseries_);
+            Bind(statement, WINDSPEEDTIMESERIES_FIELD_ID, windSpeedTimeseries_);
+            Bind(statement, GYRO_FIELD_ID, gyro_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -12840,8 +12023,7 @@ namespace Barrelman::Data
 
     class FacilityColumnData : public ItemColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid type_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
@@ -12865,19 +12047,15 @@ namespace Barrelman::Data
             return Kind::Facility;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -12913,18 +12091,18 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, ALTITUDE_FIELD_ID, &altitude_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, ALTITUDE_FIELD_ID, altitude_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, type_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
@@ -12960,8 +12138,7 @@ namespace Barrelman::Data
 
     class AircraftColumnData : public TrackableItemColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid type_;
     public:
         using Base = TrackableItemColumnData;
@@ -12979,19 +12156,15 @@ namespace Barrelman::Data
             return Kind::Aircraft;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -13003,15 +12176,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, type_);
         }
     };
@@ -13020,8 +12193,7 @@ namespace Barrelman::Data
 
     class AisAidToNavigationColumnData : public TrackableItemColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid mMSI_;
         Data::NavigationalAidType navigationalAidType_ = Data::NavigationalAidType::NotSpecified;
         Guid position_;
@@ -13055,19 +12227,15 @@ namespace Barrelman::Data
             return Kind::AisAidToNavigation;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid MMSI( ) const
+        const Guid& MMSI( ) const
         {
             return mMSI_;
         }
@@ -13083,7 +12251,7 @@ namespace Barrelman::Data
         {
             navigationalAidType_ = navigationalAidType;
         }
-        Guid Position( ) const
+        const Guid& Position( ) const
         {
             return position_;
         }
@@ -13131,7 +12299,7 @@ namespace Barrelman::Data
         {
             toStarboard_ = toStarboard;
         }
-        Guid OffPositionTimeseries( ) const
+        const Guid& OffPositionTimeseries( ) const
         {
             return offPositionTimeseries_;
         }
@@ -13143,23 +12311,23 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, MMSI_FIELD_ID, &mMSI_);
-            Bind(statement, NAVIGATIONALAIDTYPE_FIELD_ID, &navigationalAidType_);
-            Bind(statement, POSITION_FIELD_ID, &position_);
-            Bind(statement, ISVIRTUAL_FIELD_ID, &isVirtual_);
-            Bind(statement, TOBOW_FIELD_ID, &toBow_);
-            Bind(statement, TOSTERN_FIELD_ID, &toStern_);
-            Bind(statement, TOPORT_FIELD_ID, &toPort_);
-            Bind(statement, TOSTARBOARD_FIELD_ID, &toStarboard_);
-            Bind(statement, OFFPOSITIONTIMESERIES_FIELD_ID, &offPositionTimeseries_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, MMSI_FIELD_ID, mMSI_);
+            Bind(statement, NAVIGATIONALAIDTYPE_FIELD_ID, navigationalAidType_);
+            Bind(statement, POSITION_FIELD_ID, position_);
+            Bind(statement, ISVIRTUAL_FIELD_ID, isVirtual_);
+            Bind(statement, TOBOW_FIELD_ID, toBow_);
+            Bind(statement, TOSTERN_FIELD_ID, toStern_);
+            Bind(statement, TOPORT_FIELD_ID, toPort_);
+            Bind(statement, TOSTARBOARD_FIELD_ID, toStarboard_);
+            Bind(statement, OFFPOSITIONTIMESERIES_FIELD_ID, offPositionTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, mMSI_);
             WriteColumnValue( destination, navigationalAidType_);
             WriteColumnValue( destination, position_);
@@ -13176,8 +12344,7 @@ namespace Barrelman::Data
 
     class VehicleColumnData : public TrackableItemColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid type_;
     public:
         using Base = TrackableItemColumnData;
@@ -13195,19 +12362,15 @@ namespace Barrelman::Data
             return Kind::Vehicle;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -13219,15 +12382,15 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, type_);
         }
     };
@@ -13236,8 +12399,7 @@ namespace Barrelman::Data
 
     class VesselColumnData : public TrackableItemColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid type_;
         Int32 toBow_ = 0;
         Int32 toStern_ = 0;
@@ -13267,19 +12429,15 @@ namespace Barrelman::Data
             return Kind::Vessel;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid Type( ) const
+        const Guid& Type( ) const
         {
             return type_;
         }
@@ -13319,7 +12477,7 @@ namespace Barrelman::Data
         {
             toStarboard_ = toStarboard;
         }
-        Guid DraughtTimeseries( ) const
+        const Guid& DraughtTimeseries( ) const
         {
             return draughtTimeseries_;
         }
@@ -13327,7 +12485,7 @@ namespace Barrelman::Data
         {
             draughtTimeseries_ = draughtTimeseries;
         }
-        Guid PersonsOnBoardTimeseries( ) const
+        const Guid& PersonsOnBoardTimeseries( ) const
         {
             return personsOnBoardTimeseries_;
         }
@@ -13339,21 +12497,21 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, TYPE_FIELD_ID, &type_);
-            Bind(statement, TOBOW_FIELD_ID, &toBow_);
-            Bind(statement, TOSTERN_FIELD_ID, &toStern_);
-            Bind(statement, TOPORT_FIELD_ID, &toPort_);
-            Bind(statement, TOSTARBOARD_FIELD_ID, &toStarboard_);
-            Bind(statement, DRAUGHTTIMESERIES_FIELD_ID, &draughtTimeseries_);
-            Bind(statement, PERSONSONBOARDTIMESERIES_FIELD_ID, &personsOnBoardTimeseries_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, TYPE_FIELD_ID, type_);
+            Bind(statement, TOBOW_FIELD_ID, toBow_);
+            Bind(statement, TOSTERN_FIELD_ID, toStern_);
+            Bind(statement, TOPORT_FIELD_ID, toPort_);
+            Bind(statement, TOSTARBOARD_FIELD_ID, toStarboard_);
+            Bind(statement, DRAUGHTTIMESERIES_FIELD_ID, draughtTimeseries_);
+            Bind(statement, PERSONSONBOARDTIMESERIES_FIELD_ID, personsOnBoardTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, type_);
             WriteColumnValue( destination, toBow_);
             WriteColumnValue( destination, toStern_);
@@ -13373,8 +12531,7 @@ namespace Barrelman::Data
         Guid item_;
         Guid identity_;
         DateTime start_;
-        DateTime end_;
-        SQLLEN endNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime end_;
     public:
         using Base = BaseColumnData;
 
@@ -13395,7 +12552,7 @@ namespace Barrelman::Data
             return Kind::ItemIdentityLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -13407,11 +12564,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Item( ) const
+        const Guid& Item( ) const
         {
             return item_;
         }
@@ -13419,7 +12576,7 @@ namespace Barrelman::Data
         {
             item_ = item;
         }
-        Guid Identity( ) const
+        const Guid& Identity( ) const
         {
             return identity_;
         }
@@ -13427,7 +12584,7 @@ namespace Barrelman::Data
         {
             identity_ = identity;
         }
-        DateTime Start( ) const
+        const DateTime& Start( ) const
         {
             return start_;
         }
@@ -13435,30 +12592,22 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        std::optional<DateTime> End( ) const
+        const DBDateTime& End( ) const
         {
-            if(endNullIndicator_ != SQL_NULL_DATA)
-            {
-                return end_;
-            }
-            return {};
+            return end_;
         }
-        bool IsEndNull( ) const
-        {
-            return endNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnd( const DateTime& end )
+        void SetEnd( const DBDateTime& end )
         {
             end_ = end;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ITEM_FIELD_ID, &item_);
-            Bind(statement, IDENTITY_FIELD_ID, &identity_);
-            Bind(statement, START_FIELD_ID, &start_);
-            Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ITEM_FIELD_ID, item_);
+            Bind(statement, IDENTITY_FIELD_ID, identity_);
+            Bind(statement, START_FIELD_ID, start_);
+            Bind(statement, END_FIELD_ID, end_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -13469,7 +12618,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, item_);
             WriteColumnValue( destination, identity_);
             WriteColumnValue( destination, start_);
-            WriteColumnValue( destination, end_, endNullIndicator_);
+            WriteColumnValue( destination, end_);
         }
     };
 
@@ -13501,7 +12650,7 @@ namespace Barrelman::Data
             return Kind::ItemParentChildLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -13513,11 +12662,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Parent( ) const
+        const Guid& Parent( ) const
         {
             return parent_;
         }
@@ -13525,7 +12674,7 @@ namespace Barrelman::Data
         {
             parent_ = parent;
         }
-        Guid Child( ) const
+        const Guid& Child( ) const
         {
             return child_;
         }
@@ -13533,7 +12682,7 @@ namespace Barrelman::Data
         {
             child_ = child;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -13543,11 +12692,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PARENT_FIELD_ID, &parent_);
-            Bind(statement, CHILD_FIELD_ID, &child_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PARENT_FIELD_ID, parent_);
+            Bind(statement, CHILD_FIELD_ID, child_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -13593,7 +12742,7 @@ namespace Barrelman::Data
             return Kind::LineInputDeviceCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -13605,11 +12754,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid LineInputDevice( ) const
+        const Guid& LineInputDevice( ) const
         {
             return lineInputDevice_;
         }
@@ -13617,7 +12766,7 @@ namespace Barrelman::Data
         {
             lineInputDevice_ = lineInputDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -13633,7 +12782,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -13641,7 +12790,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -13651,13 +12800,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, LINEINPUTDEVICE_FIELD_ID, &lineInputDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, LINEINPUTDEVICE_FIELD_ID, lineInputDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -13684,7 +12833,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -13706,7 +12855,7 @@ namespace Barrelman::Data
             return Kind::LineInputDeviceCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -13718,11 +12867,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid LineInputDevice( ) const
+        const Guid& LineInputDevice( ) const
         {
             return lineInputDevice_;
         }
@@ -13730,7 +12879,7 @@ namespace Barrelman::Data
         {
             lineInputDevice_ = lineInputDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -13738,7 +12887,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -13760,16 +12909,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, LINEINPUTDEVICE_FIELD_ID, &lineInputDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, LINEINPUTDEVICE_FIELD_ID, lineInputDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -13787,7 +12936,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -13806,29 +12955,22 @@ namespace Barrelman::Data
         bool strictNMEA_ = false;
         Data::LineInputDeviceConnectionType connectionType_ = Data::LineInputDeviceConnectionType::Unknown;
         Int32 udpReceivePort_ = 0;
-        std::array<wchar_t,101> udpSendHostname_ = {};
-        SQLLEN udpSendHostnameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> udpSendHostname_;
         Int32 udpSendPort_ = 0;
-        std::array<wchar_t,101> tcpHostname_ = {};
-        SQLLEN tcpHostnameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> tcpHostname_;
         Int32 tcpPort_ = 0;
         bool useHttpLogin_ = false;
-        std::array<wchar_t,101> loginHostname_ = {};
-        SQLLEN loginHostnameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> loginHostname_;
         Int32 loginPort_ = 0;
-        std::array<wchar_t,101> userName_ = {};
-        SQLLEN userNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> password_ = {};
-        SQLLEN passwordLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> comPort_ = {};
-        SQLLEN comPortLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> userName_;
+        FixedDBWideString<100> password_;
+        FixedDBWideString<100> comPort_;
         Int32 baudRate_ = 0;
         Int32 dataBits_ = 0;
         bool discardNull_ = false;
         bool dtrEnable_ = false;
         Data::Handshake handshake_ = Data::Handshake::None;
-        std::array<wchar_t,101> newLine_ = {};
-        SQLLEN newLineLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> newLine_;
         Data::Parity parity_ = Data::Parity::None;
         Byte parityReplace_ = 0;
         Int32 readBufferSize_ = 0;
@@ -13838,8 +12980,7 @@ namespace Barrelman::Data
         Data::StopBits stopBits_ = Data::StopBits::None;
         Int32 writeBufferSize_ = 0;
         TimeSpan writeTimeout_;
-        std::array<wchar_t,101> pairedComPort_ = {};
-        SQLLEN pairedComPortLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> pairedComPort_;
     public:
         using Base = BaseColumnData;
 
@@ -13891,7 +13032,7 @@ namespace Barrelman::Data
             return Kind::LineInputDeviceConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -13903,11 +13044,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid LineInputDevice( ) const
+        const Guid& LineInputDevice( ) const
         {
             return lineInputDevice_;
         }
@@ -13915,7 +13056,7 @@ namespace Barrelman::Data
         {
             lineInputDevice_ = lineInputDevice;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -13979,17 +13120,13 @@ namespace Barrelman::Data
         {
             udpReceivePort_ = udpReceivePort;
         }
-        std::wstring_view UdpSendHostname( ) const
+        const FixedDBWideString<100>& UdpSendHostname( ) const
         {
-            if(udpSendHostnameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(udpSendHostname_.data(),static_cast<size_t>( udpSendHostnameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return udpSendHostname_;
         }
         void SetUdpSendHostname( const WideString& udpSendHostname )
         {
-            Assign(udpSendHostname, udpSendHostname_, udpSendHostnameLengthOrNullIndicator_);
+            udpSendHostname_ = udpSendHostname;
         }
         Int32 UdpSendPort( ) const
         {
@@ -13999,17 +13136,13 @@ namespace Barrelman::Data
         {
             udpSendPort_ = udpSendPort;
         }
-        std::wstring_view TcpHostname( ) const
+        const FixedDBWideString<100>& TcpHostname( ) const
         {
-            if(tcpHostnameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(tcpHostname_.data(),static_cast<size_t>( tcpHostnameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return tcpHostname_;
         }
         void SetTcpHostname( const WideString& tcpHostname )
         {
-            Assign(tcpHostname, tcpHostname_, tcpHostnameLengthOrNullIndicator_);
+            tcpHostname_ = tcpHostname;
         }
         Int32 TcpPort( ) const
         {
@@ -14027,17 +13160,13 @@ namespace Barrelman::Data
         {
             useHttpLogin_ = useHttpLogin;
         }
-        std::wstring_view LoginHostname( ) const
+        const FixedDBWideString<100>& LoginHostname( ) const
         {
-            if(loginHostnameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(loginHostname_.data(),static_cast<size_t>( loginHostnameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return loginHostname_;
         }
         void SetLoginHostname( const WideString& loginHostname )
         {
-            Assign(loginHostname, loginHostname_, loginHostnameLengthOrNullIndicator_);
+            loginHostname_ = loginHostname;
         }
         Int32 LoginPort( ) const
         {
@@ -14047,41 +13176,29 @@ namespace Barrelman::Data
         {
             loginPort_ = loginPort;
         }
-        std::wstring_view UserName( ) const
+        const FixedDBWideString<100>& UserName( ) const
         {
-            if(userNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(userName_.data(),static_cast<size_t>( userNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return userName_;
         }
         void SetUserName( const WideString& userName )
         {
-            Assign(userName, userName_, userNameLengthOrNullIndicator_);
+            userName_ = userName;
         }
-        std::wstring_view Password( ) const
+        const FixedDBWideString<100>& Password( ) const
         {
-            if(passwordLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(password_.data(),static_cast<size_t>( passwordLengthOrNullIndicator_ ));
-            }
-            return {};
+            return password_;
         }
         void SetPassword( const WideString& password )
         {
-            Assign(password, password_, passwordLengthOrNullIndicator_);
+            password_ = password;
         }
-        std::wstring_view ComPort( ) const
+        const FixedDBWideString<100>& ComPort( ) const
         {
-            if(comPortLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(comPort_.data(),static_cast<size_t>( comPortLengthOrNullIndicator_ ));
-            }
-            return {};
+            return comPort_;
         }
         void SetComPort( const WideString& comPort )
         {
-            Assign(comPort, comPort_, comPortLengthOrNullIndicator_);
+            comPort_ = comPort;
         }
         Int32 BaudRate( ) const
         {
@@ -14123,17 +13240,13 @@ namespace Barrelman::Data
         {
             handshake_ = handshake;
         }
-        std::wstring_view NewLine( ) const
+        const FixedDBWideString<100>& NewLine( ) const
         {
-            if(newLineLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(newLine_.data(),static_cast<size_t>( newLineLengthOrNullIndicator_ ));
-            }
-            return {};
+            return newLine_;
         }
         void SetNewLine( const WideString& newLine )
         {
-            Assign(newLine, newLine_, newLineLengthOrNullIndicator_);
+            newLine_ = newLine;
         }
         Data::Parity Parity( ) const
         {
@@ -14159,7 +13272,7 @@ namespace Barrelman::Data
         {
             readBufferSize_ = readBufferSize;
         }
-        TimeSpan ReadTimeout( ) const
+        const TimeSpan& ReadTimeout( ) const
         {
             return readTimeout_;
         }
@@ -14199,7 +13312,7 @@ namespace Barrelman::Data
         {
             writeBufferSize_ = writeBufferSize;
         }
-        TimeSpan WriteTimeout( ) const
+        const TimeSpan& WriteTimeout( ) const
         {
             return writeTimeout_;
         }
@@ -14207,57 +13320,53 @@ namespace Barrelman::Data
         {
             writeTimeout_ = writeTimeout;
         }
-        std::wstring_view PairedComPort( ) const
+        const FixedDBWideString<100>& PairedComPort( ) const
         {
-            if(pairedComPortLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pairedComPort_.data(),static_cast<size_t>( pairedComPortLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pairedComPort_;
         }
         void SetPairedComPort( const WideString& pairedComPort )
         {
-            Assign(pairedComPort, pairedComPort_, pairedComPortLengthOrNullIndicator_);
+            pairedComPort_ = pairedComPort;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, LINEINPUTDEVICE_FIELD_ID, &lineInputDevice_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, &storeReceivedSentences_);
-            Bind(statement, STORESENTMESSAGES_FIELD_ID, &storeSentMessages_);
-            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, &storeUnsentMessages_);
-            Bind(statement, NMEA_FIELD_ID, &nMEA_);
-            Bind(statement, STRICTNMEA_FIELD_ID, &strictNMEA_);
-            Bind(statement, CONNECTIONTYPE_FIELD_ID, &connectionType_);
-            Bind(statement, UDPRECEIVEPORT_FIELD_ID, &udpReceivePort_);
-            Bind(statement, UDPSENDHOSTNAME_FIELD_ID, &udpSendHostname_, &udpSendHostnameLengthOrNullIndicator_);
-            Bind(statement, UDPSENDPORT_FIELD_ID, &udpSendPort_);
-            Bind(statement, TCPHOSTNAME_FIELD_ID, &tcpHostname_, &tcpHostnameLengthOrNullIndicator_);
-            Bind(statement, TCPPORT_FIELD_ID, &tcpPort_);
-            Bind(statement, USEHTTPLOGIN_FIELD_ID, &useHttpLogin_);
-            Bind(statement, LOGINHOSTNAME_FIELD_ID, &loginHostname_, &loginHostnameLengthOrNullIndicator_);
-            Bind(statement, LOGINPORT_FIELD_ID, &loginPort_);
-            Bind(statement, USERNAME_FIELD_ID, &userName_, &userNameLengthOrNullIndicator_);
-            Bind(statement, PASSWORD_FIELD_ID, &password_, &passwordLengthOrNullIndicator_);
-            Bind(statement, COMPORT_FIELD_ID, &comPort_, &comPortLengthOrNullIndicator_);
-            Bind(statement, BAUDRATE_FIELD_ID, &baudRate_);
-            Bind(statement, DATABITS_FIELD_ID, &dataBits_);
-            Bind(statement, DISCARDNULL_FIELD_ID, &discardNull_);
-            Bind(statement, DTRENABLE_FIELD_ID, &dtrEnable_);
-            Bind(statement, HANDSHAKE_FIELD_ID, &handshake_);
-            Bind(statement, NEWLINE_FIELD_ID, &newLine_, &newLineLengthOrNullIndicator_);
-            Bind(statement, PARITY_FIELD_ID, &parity_);
-            Bind(statement, PARITYREPLACE_FIELD_ID, &parityReplace_);
-            Bind(statement, READBUFFERSIZE_FIELD_ID, &readBufferSize_);
-            Bind(statement, READTIMEOUT_FIELD_ID, &readTimeout_);
-            Bind(statement, RECEIVEDBYTESTHRESHOLD_FIELD_ID, &receivedBytesThreshold_);
-            Bind(statement, RTSENABLE_FIELD_ID, &rtsEnable_);
-            Bind(statement, STOPBITS_FIELD_ID, &stopBits_);
-            Bind(statement, WRITEBUFFERSIZE_FIELD_ID, &writeBufferSize_);
-            Bind(statement, WRITETIMEOUT_FIELD_ID, &writeTimeout_);
-            Bind(statement, PAIREDCOMPORT_FIELD_ID, &pairedComPort_, &pairedComPortLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, LINEINPUTDEVICE_FIELD_ID, lineInputDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, storeReceivedSentences_);
+            Bind(statement, STORESENTMESSAGES_FIELD_ID, storeSentMessages_);
+            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, storeUnsentMessages_);
+            Bind(statement, NMEA_FIELD_ID, nMEA_);
+            Bind(statement, STRICTNMEA_FIELD_ID, strictNMEA_);
+            Bind(statement, CONNECTIONTYPE_FIELD_ID, connectionType_);
+            Bind(statement, UDPRECEIVEPORT_FIELD_ID, udpReceivePort_);
+            Bind(statement, UDPSENDHOSTNAME_FIELD_ID, udpSendHostname_);
+            Bind(statement, UDPSENDPORT_FIELD_ID, udpSendPort_);
+            Bind(statement, TCPHOSTNAME_FIELD_ID, tcpHostname_);
+            Bind(statement, TCPPORT_FIELD_ID, tcpPort_);
+            Bind(statement, USEHTTPLOGIN_FIELD_ID, useHttpLogin_);
+            Bind(statement, LOGINHOSTNAME_FIELD_ID, loginHostname_);
+            Bind(statement, LOGINPORT_FIELD_ID, loginPort_);
+            Bind(statement, USERNAME_FIELD_ID, userName_);
+            Bind(statement, PASSWORD_FIELD_ID, password_);
+            Bind(statement, COMPORT_FIELD_ID, comPort_);
+            Bind(statement, BAUDRATE_FIELD_ID, baudRate_);
+            Bind(statement, DATABITS_FIELD_ID, dataBits_);
+            Bind(statement, DISCARDNULL_FIELD_ID, discardNull_);
+            Bind(statement, DTRENABLE_FIELD_ID, dtrEnable_);
+            Bind(statement, HANDSHAKE_FIELD_ID, handshake_);
+            Bind(statement, NEWLINE_FIELD_ID, newLine_);
+            Bind(statement, PARITY_FIELD_ID, parity_);
+            Bind(statement, PARITYREPLACE_FIELD_ID, parityReplace_);
+            Bind(statement, READBUFFERSIZE_FIELD_ID, readBufferSize_);
+            Bind(statement, READTIMEOUT_FIELD_ID, readTimeout_);
+            Bind(statement, RECEIVEDBYTESTHRESHOLD_FIELD_ID, receivedBytesThreshold_);
+            Bind(statement, RTSENABLE_FIELD_ID, rtsEnable_);
+            Bind(statement, STOPBITS_FIELD_ID, stopBits_);
+            Bind(statement, WRITEBUFFERSIZE_FIELD_ID, writeBufferSize_);
+            Bind(statement, WRITETIMEOUT_FIELD_ID, writeTimeout_);
+            Bind(statement, PAIREDCOMPORT_FIELD_ID, pairedComPort_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -14274,22 +13383,22 @@ namespace Barrelman::Data
             WriteColumnValue( destination, strictNMEA_);
             WriteColumnValue( destination, connectionType_);
             WriteColumnValue( destination, udpReceivePort_);
-            WriteColumnValue( destination, udpSendHostname_, udpSendHostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, udpSendHostname_);
             WriteColumnValue( destination, udpSendPort_);
-            WriteColumnValue( destination, tcpHostname_, tcpHostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, tcpHostname_);
             WriteColumnValue( destination, tcpPort_);
             WriteColumnValue( destination, useHttpLogin_);
-            WriteColumnValue( destination, loginHostname_, loginHostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, loginHostname_);
             WriteColumnValue( destination, loginPort_);
-            WriteColumnValue( destination, userName_, userNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, password_, passwordLengthOrNullIndicator_);
-            WriteColumnValue( destination, comPort_, comPortLengthOrNullIndicator_);
+            WriteColumnValue( destination, userName_);
+            WriteColumnValue( destination, password_);
+            WriteColumnValue( destination, comPort_);
             WriteColumnValue( destination, baudRate_);
             WriteColumnValue( destination, dataBits_);
             WriteColumnValue( destination, discardNull_);
             WriteColumnValue( destination, dtrEnable_);
             WriteColumnValue( destination, handshake_);
-            WriteColumnValue( destination, newLine_, newLineLengthOrNullIndicator_);
+            WriteColumnValue( destination, newLine_);
             WriteColumnValue( destination, parity_);
             WriteColumnValue( destination, parityReplace_);
             WriteColumnValue( destination, readBufferSize_);
@@ -14299,7 +13408,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, stopBits_);
             WriteColumnValue( destination, writeBufferSize_);
             WriteColumnValue( destination, writeTimeout_);
-            WriteColumnValue( destination, pairedComPort_, pairedComPortLengthOrNullIndicator_);
+            WriteColumnValue( destination, pairedComPort_);
         }
     };
 
@@ -14310,8 +13419,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid lineInputDevice_;
-        std::array<wchar_t,101> type_ = {};
-        SQLLEN typeLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> type_;
     public:
         using Base = BaseColumnData;
 
@@ -14330,7 +13438,7 @@ namespace Barrelman::Data
             return Kind::LineInputMessageRouting;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -14342,11 +13450,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid LineInputDevice( ) const
+        const Guid& LineInputDevice( ) const
         {
             return lineInputDevice_;
         }
@@ -14354,24 +13462,20 @@ namespace Barrelman::Data
         {
             lineInputDevice_ = lineInputDevice;
         }
-        std::wstring_view Type( ) const
+        const FixedDBWideString<100>& Type( ) const
         {
-            if(typeLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(type_.data(),static_cast<size_t>( typeLengthOrNullIndicator_ ));
-            }
-            return {};
+            return type_;
         }
         void SetType( const WideString& type )
         {
-            Assign(type, type_, typeLengthOrNullIndicator_);
+            type_ = type;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, LINEINPUTDEVICE_FIELD_ID, &lineInputDevice_);
-            Bind(statement, TYPE_FIELD_ID, &type_, &typeLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, LINEINPUTDEVICE_FIELD_ID, lineInputDevice_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -14380,7 +13484,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, lineInputDevice_);
-            WriteColumnValue( destination, type_, typeLengthOrNullIndicator_);
+            WriteColumnValue( destination, type_);
         }
     };
 
@@ -14410,7 +13514,7 @@ namespace Barrelman::Data
             return Kind::LineInputMessageRoutingDestination;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -14422,11 +13526,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Routing( ) const
+        const Guid& Routing( ) const
         {
             return routing_;
         }
@@ -14434,7 +13538,7 @@ namespace Barrelman::Data
         {
             routing_ = routing;
         }
-        Guid Listener( ) const
+        const Guid& Listener( ) const
         {
             return listener_;
         }
@@ -14444,10 +13548,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ROUTING_FIELD_ID, &routing_);
-            Bind(statement, LISTENER_FIELD_ID, &listener_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ROUTING_FIELD_ID, routing_);
+            Bind(statement, LISTENER_FIELD_ID, listener_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -14467,8 +13571,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid lineInputDevice_;
-        std::array<wchar_t,129> hostName_ = {};
-        SQLLEN hostNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<128> hostName_;
         Int32 port_ = 0;
     public:
         using Base = BaseColumnData;
@@ -14489,7 +13592,7 @@ namespace Barrelman::Data
             return Kind::LineInputWhiteListEntry;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -14501,11 +13604,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid LineInputDevice( ) const
+        const Guid& LineInputDevice( ) const
         {
             return lineInputDevice_;
         }
@@ -14513,17 +13616,13 @@ namespace Barrelman::Data
         {
             lineInputDevice_ = lineInputDevice;
         }
-        std::wstring_view HostName( ) const
+        const FixedDBWideString<128>& HostName( ) const
         {
-            if(hostNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(hostName_.data(),static_cast<size_t>( hostNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return hostName_;
         }
         void SetHostName( const WideString& hostName )
         {
-            Assign(hostName, hostName_, hostNameLengthOrNullIndicator_);
+            hostName_ = hostName;
         }
         Int32 Port( ) const
         {
@@ -14535,11 +13634,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, LINEINPUTDEVICE_FIELD_ID, &lineInputDevice_);
-            Bind(statement, HOSTNAME_FIELD_ID, &hostName_, &hostNameLengthOrNullIndicator_);
-            Bind(statement, PORT_FIELD_ID, &port_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, LINEINPUTDEVICE_FIELD_ID, lineInputDevice_);
+            Bind(statement, HOSTNAME_FIELD_ID, hostName_);
+            Bind(statement, PORT_FIELD_ID, port_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -14548,7 +13647,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, lineInputDevice_);
-            WriteColumnValue( destination, hostName_, hostNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, hostName_);
             WriteColumnValue( destination, port_);
         }
     };
@@ -14559,10 +13658,9 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -14581,7 +13679,7 @@ namespace Barrelman::Data
             return Kind::LogApplication;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -14593,21 +13691,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         const WideString& Description( ) const
         {
@@ -14615,13 +13709,13 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -14635,8 +13729,8 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, description_);
         }
     };
 
@@ -14690,7 +13784,7 @@ namespace Barrelman::Data
             return Kind::LogApplicationConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -14702,11 +13796,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Application( ) const
+        const Guid& Application( ) const
         {
             return application_;
         }
@@ -14714,7 +13808,7 @@ namespace Barrelman::Data
         {
             application_ = application;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -14820,22 +13914,22 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, APPLICATION_FIELD_ID, &application_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, FINEST_FIELD_ID, &finest_);
-            Bind(statement, FINER_FIELD_ID, &finer_);
-            Bind(statement, FINE_FIELD_ID, &fine_);
-            Bind(statement, INFO_FIELD_ID, &info_);
-            Bind(statement, NOTICE_FIELD_ID, &notice_);
-            Bind(statement, WARN_FIELD_ID, &warn_);
-            Bind(statement, ERROR_FIELD_ID, &error_);
-            Bind(statement, SEVERE_FIELD_ID, &severe_);
-            Bind(statement, CRITICAL_FIELD_ID, &critical_);
-            Bind(statement, ALERT_FIELD_ID, &alert_);
-            Bind(statement, FATAL_FIELD_ID, &fatal_);
-            Bind(statement, EMERGENCY_FIELD_ID, &emergency_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, APPLICATION_FIELD_ID, application_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, FINEST_FIELD_ID, finest_);
+            Bind(statement, FINER_FIELD_ID, finer_);
+            Bind(statement, FINE_FIELD_ID, fine_);
+            Bind(statement, INFO_FIELD_ID, info_);
+            Bind(statement, NOTICE_FIELD_ID, notice_);
+            Bind(statement, WARN_FIELD_ID, warn_);
+            Bind(statement, ERROR_FIELD_ID, error_);
+            Bind(statement, SEVERE_FIELD_ID, severe_);
+            Bind(statement, CRITICAL_FIELD_ID, critical_);
+            Bind(statement, ALERT_FIELD_ID, alert_);
+            Bind(statement, FATAL_FIELD_ID, fatal_);
+            Bind(statement, EMERGENCY_FIELD_ID, emergency_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -14866,10 +13960,9 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> computerName_ = {};
-        SQLLEN computerNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> computerName_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -14888,7 +13981,7 @@ namespace Barrelman::Data
             return Kind::LogHost;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -14900,21 +13993,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view ComputerName( ) const
+        const FixedDBWideString<127>& ComputerName( ) const
         {
-            if(computerNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(computerName_.data(),static_cast<size_t>( computerNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return computerName_;
         }
         void SetComputerName( const WideString& computerName )
         {
-            Assign(computerName, computerName_, computerNameLengthOrNullIndicator_);
+            computerName_ = computerName;
         }
         const WideString& Description( ) const
         {
@@ -14922,13 +14011,13 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, COMPUTERNAME_FIELD_ID, &computerName_, &computerNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, COMPUTERNAME_FIELD_ID, computerName_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -14942,8 +14031,8 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, computerName_, computerNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, computerName_);
+            WriteColumnValue( destination, description_);
         }
     };
 
@@ -14997,7 +14086,7 @@ namespace Barrelman::Data
             return Kind::LogHostConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15009,11 +14098,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Host( ) const
+        const Guid& Host( ) const
         {
             return host_;
         }
@@ -15021,7 +14110,7 @@ namespace Barrelman::Data
         {
             host_ = host;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -15127,22 +14216,22 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, HOST_FIELD_ID, &host_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, FINEST_FIELD_ID, &finest_);
-            Bind(statement, FINER_FIELD_ID, &finer_);
-            Bind(statement, FINE_FIELD_ID, &fine_);
-            Bind(statement, INFO_FIELD_ID, &info_);
-            Bind(statement, NOTICE_FIELD_ID, &notice_);
-            Bind(statement, WARN_FIELD_ID, &warn_);
-            Bind(statement, ERROR_FIELD_ID, &error_);
-            Bind(statement, SEVERE_FIELD_ID, &severe_);
-            Bind(statement, CRITICAL_FIELD_ID, &critical_);
-            Bind(statement, ALERT_FIELD_ID, &alert_);
-            Bind(statement, FATAL_FIELD_ID, &fatal_);
-            Bind(statement, EMERGENCY_FIELD_ID, &emergency_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, HOST_FIELD_ID, host_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, FINEST_FIELD_ID, finest_);
+            Bind(statement, FINER_FIELD_ID, finer_);
+            Bind(statement, FINE_FIELD_ID, fine_);
+            Bind(statement, INFO_FIELD_ID, info_);
+            Bind(statement, NOTICE_FIELD_ID, notice_);
+            Bind(statement, WARN_FIELD_ID, warn_);
+            Bind(statement, ERROR_FIELD_ID, error_);
+            Bind(statement, SEVERE_FIELD_ID, severe_);
+            Bind(statement, CRITICAL_FIELD_ID, critical_);
+            Bind(statement, ALERT_FIELD_ID, alert_);
+            Bind(statement, FATAL_FIELD_ID, fatal_);
+            Bind(statement, EMERGENCY_FIELD_ID, emergency_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -15173,15 +14262,13 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,261> fileName_ = {};
-        SQLLEN fileNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<260> fileName_;
         Int32 lineNumber_ = 0;
         WideString namespace_;
-        SQLLEN namespaceLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN namespaceLength_ = SQL_NULL_DATA;
         WideString className_;
-        SQLLEN classNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,256> methodName_ = {};
-        SQLLEN methodNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN classNameLength_ = SQL_NULL_DATA;
+        FixedDBWideString<255> methodName_;
     public:
         using Base = BaseColumnData;
 
@@ -15203,7 +14290,7 @@ namespace Barrelman::Data
             return Kind::LogLocation;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15215,21 +14302,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view FileName( ) const
+        const FixedDBWideString<260>& FileName( ) const
         {
-            if(fileNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(fileName_.data(),static_cast<size_t>( fileNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return fileName_;
         }
         void SetFileName( const WideString& fileName )
         {
-            Assign(fileName, fileName_, fileNameLengthOrNullIndicator_);
+            fileName_ = fileName;
         }
         Int32 LineNumber( ) const
         {
@@ -15245,7 +14328,7 @@ namespace Barrelman::Data
         }
         void SetNamespace( const WideString& namespace__ )
         {
-            Assign(namespace__, namespace_, namespaceLengthOrNullIndicator_);
+            namespace_ = namespace__;
         }
         const WideString& ClassName( ) const
         {
@@ -15253,27 +14336,23 @@ namespace Barrelman::Data
         }
         void SetClassName( const WideString& className )
         {
-            Assign(className, className_, classNameLengthOrNullIndicator_);
+            className_ = className;
         }
-        std::wstring_view MethodName( ) const
+        const FixedDBWideString<255>& MethodName( ) const
         {
-            if(methodNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(methodName_.data(),static_cast<size_t>( methodNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return methodName_;
         }
         void SetMethodName( const WideString& methodName )
         {
-            Assign(methodName, methodName_, methodNameLengthOrNullIndicator_);
+            methodName_ = methodName;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, FILENAME_FIELD_ID, &fileName_, &fileNameLengthOrNullIndicator_);
-            Bind(statement, LINENUMBER_FIELD_ID, &lineNumber_);
-            Bind(statement, METHODNAME_FIELD_ID, &methodName_, &methodNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, FILENAME_FIELD_ID, fileName_);
+            Bind(statement, LINENUMBER_FIELD_ID, lineNumber_);
+            Bind(statement, METHODNAME_FIELD_ID, methodName_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -15288,11 +14367,11 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, fileName_, fileNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, fileName_);
             WriteColumnValue( destination, lineNumber_);
-            WriteColumnValue( destination, namespace_, namespaceLengthOrNullIndicator_);
-            WriteColumnValue( destination, className_, classNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, methodName_, methodNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, namespace_);
+            WriteColumnValue( destination, className_);
+            WriteColumnValue( destination, methodName_);
         }
     };
 
@@ -15305,13 +14384,11 @@ namespace Barrelman::Data
         Guid application_;
         Guid host_;
         DateTime started_;
-        DateTime stopped_;
-        SQLLEN stoppedNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime stopped_;
         Int64 processId_ = 0;
         WideString path_;
-        SQLLEN pathLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,128> identity_ = {};
-        SQLLEN identityLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN pathLength_ = SQL_NULL_DATA;
+        FixedDBWideString<127> identity_;
     public:
         using Base = BaseColumnData;
 
@@ -15335,7 +14412,7 @@ namespace Barrelman::Data
             return Kind::LogProcess;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15347,11 +14424,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Application( ) const
+        const Guid& Application( ) const
         {
             return application_;
         }
@@ -15359,7 +14436,7 @@ namespace Barrelman::Data
         {
             application_ = application;
         }
-        Guid Host( ) const
+        const Guid& Host( ) const
         {
             return host_;
         }
@@ -15367,7 +14444,7 @@ namespace Barrelman::Data
         {
             host_ = host;
         }
-        DateTime Started( ) const
+        const DateTime& Started( ) const
         {
             return started_;
         }
@@ -15375,19 +14452,11 @@ namespace Barrelman::Data
         {
             started_ = started;
         }
-        std::optional<DateTime> Stopped( ) const
+        const DBDateTime& Stopped( ) const
         {
-            if(stoppedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return stopped_;
-            }
-            return {};
+            return stopped_;
         }
-        bool IsStoppedNull( ) const
-        {
-            return stoppedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetStopped( const DateTime& stopped )
+        void SetStopped( const DBDateTime& stopped )
         {
             stopped_ = stopped;
         }
@@ -15405,30 +14474,26 @@ namespace Barrelman::Data
         }
         void SetPath( const WideString& path )
         {
-            Assign(path, path_, pathLengthOrNullIndicator_);
+            path_ = path;
         }
-        std::wstring_view Identity( ) const
+        const FixedDBWideString<127>& Identity( ) const
         {
-            if(identityLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(identity_.data(),static_cast<size_t>( identityLengthOrNullIndicator_ ));
-            }
-            return {};
+            return identity_;
         }
         void SetIdentity( const WideString& identity )
         {
-            Assign(identity, identity_, identityLengthOrNullIndicator_);
+            identity_ = identity;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, APPLICATION_FIELD_ID, &application_);
-            Bind(statement, HOST_FIELD_ID, &host_);
-            Bind(statement, STARTED_FIELD_ID, &started_);
-            Bind(statement, STOPPED_FIELD_ID, &stopped_, &stoppedNullIndicator_);
-            Bind(statement, PROCESSID_FIELD_ID, &processId_);
-            Bind(statement, IDENTITY_FIELD_ID, &identity_, &identityLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, APPLICATION_FIELD_ID, application_);
+            Bind(statement, HOST_FIELD_ID, host_);
+            Bind(statement, STARTED_FIELD_ID, started_);
+            Bind(statement, STOPPED_FIELD_ID, stopped_);
+            Bind(statement, PROCESSID_FIELD_ID, processId_);
+            Bind(statement, IDENTITY_FIELD_ID, identity_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -15445,10 +14510,10 @@ namespace Barrelman::Data
             WriteColumnValue( destination, application_);
             WriteColumnValue( destination, host_);
             WriteColumnValue( destination, started_);
-            WriteColumnValue( destination, stopped_, stoppedNullIndicator_);
+            WriteColumnValue( destination, stopped_);
             WriteColumnValue( destination, processId_);
-            WriteColumnValue( destination, path_, pathLengthOrNullIndicator_);
-            WriteColumnValue( destination, identity_, identityLengthOrNullIndicator_);
+            WriteColumnValue( destination, path_);
+            WriteColumnValue( destination, identity_);
         }
     };
 
@@ -15465,11 +14530,11 @@ namespace Barrelman::Data
         Int32 depth_ = 0;
         Guid location_;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
         WideString exceptionString_;
-        SQLLEN exceptionStringLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::vector<Byte> propertiesData_;
-        SQLLEN propertiesDataLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN exceptionStringLength_ = SQL_NULL_DATA;
+        Binary propertiesData_;
+        SQLLEN propertiesDataLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -15495,7 +14560,7 @@ namespace Barrelman::Data
             return Kind::LogRecord;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15507,11 +14572,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Thread( ) const
+        const Guid& Thread( ) const
         {
             return thread_;
         }
@@ -15535,7 +14600,7 @@ namespace Barrelman::Data
         {
             level_ = level;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -15551,7 +14616,7 @@ namespace Barrelman::Data
         {
             depth_ = depth;
         }
-        Guid Location( ) const
+        const Guid& Location( ) const
         {
             return location_;
         }
@@ -15565,7 +14630,7 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         const WideString& ExceptionString( ) const
         {
@@ -15573,26 +14638,26 @@ namespace Barrelman::Data
         }
         void SetExceptionString( const WideString& exceptionString )
         {
-            Assign(exceptionString, exceptionString_, exceptionStringLengthOrNullIndicator_);
+            exceptionString_ = exceptionString;
         }
-        const std::vector<Byte>& PropertiesData( ) const
+        const Binary& PropertiesData( ) const
         {
             return propertiesData_;
         }
-        void SetPropertiesData( const std::vector<Byte>& propertiesData )
+        void SetPropertiesData( const Binary& propertiesData )
         {
-            Assign(propertiesData, propertiesData_, propertiesDataLengthOrNullIndicator_);
+            propertiesData_ = propertiesData;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, THREAD_FIELD_ID, &thread_);
-            Bind(statement, SEQUENCENUMBER_FIELD_ID, &sequenceNumber_);
-            Bind(statement, LEVEL_FIELD_ID, &level_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEPTH_FIELD_ID, &depth_);
-            Bind(statement, LOCATION_FIELD_ID, &location_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, THREAD_FIELD_ID, thread_);
+            Bind(statement, SEQUENCENUMBER_FIELD_ID, sequenceNumber_);
+            Bind(statement, LEVEL_FIELD_ID, level_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEPTH_FIELD_ID, depth_);
+            Bind(statement, LOCATION_FIELD_ID, location_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -15614,9 +14679,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, depth_);
             WriteColumnValue( destination, location_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
-            WriteColumnValue( destination, exceptionString_, exceptionStringLengthOrNullIndicator_);
-            WriteColumnValue( destination, propertiesData_, propertiesDataLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
+            WriteColumnValue( destination, exceptionString_);
+            WriteColumnValue( destination, propertiesData_);
         }
     };
 
@@ -15628,11 +14693,9 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid process_;
         DateTime started_;
-        DateTime stopped_;
-        SQLLEN stoppedNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime stopped_;
         Int64 threadId_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -15654,7 +14717,7 @@ namespace Barrelman::Data
             return Kind::LogThread;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15666,11 +14729,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Process( ) const
+        const Guid& Process( ) const
         {
             return process_;
         }
@@ -15678,7 +14741,7 @@ namespace Barrelman::Data
         {
             process_ = process;
         }
-        DateTime Started( ) const
+        const DateTime& Started( ) const
         {
             return started_;
         }
@@ -15686,19 +14749,11 @@ namespace Barrelman::Data
         {
             started_ = started;
         }
-        std::optional<DateTime> Stopped( ) const
+        const DBDateTime& Stopped( ) const
         {
-            if(stoppedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return stopped_;
-            }
-            return {};
+            return stopped_;
         }
-        bool IsStoppedNull( ) const
-        {
-            return stoppedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetStopped( const DateTime& stopped )
+        void SetStopped( const DBDateTime& stopped )
         {
             stopped_ = stopped;
         }
@@ -15710,27 +14765,23 @@ namespace Barrelman::Data
         {
             threadId_ = threadId;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PROCESS_FIELD_ID, &process_);
-            Bind(statement, STARTED_FIELD_ID, &started_);
-            Bind(statement, STOPPED_FIELD_ID, &stopped_, &stoppedNullIndicator_);
-            Bind(statement, THREADID_FIELD_ID, &threadId_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PROCESS_FIELD_ID, process_);
+            Bind(statement, STARTED_FIELD_ID, started_);
+            Bind(statement, STOPPED_FIELD_ID, stopped_);
+            Bind(statement, THREADID_FIELD_ID, threadId_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -15740,9 +14791,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, process_);
             WriteColumnValue( destination, started_);
-            WriteColumnValue( destination, stopped_, stoppedNullIndicator_);
+            WriteColumnValue( destination, stopped_);
             WriteColumnValue( destination, threadId_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -15757,8 +14808,7 @@ namespace Barrelman::Data
         Guid location_;
         Int32 depth_ = 0;
         DateTime entered_;
-        DateTime ended_;
-        SQLLEN endedNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime ended_;
     public:
         using Base = BaseColumnData;
 
@@ -15781,7 +14831,7 @@ namespace Barrelman::Data
             return Kind::LogTraceEntry;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15793,11 +14843,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Thread( ) const
+        const Guid& Thread( ) const
         {
             return thread_;
         }
@@ -15813,7 +14863,7 @@ namespace Barrelman::Data
         {
             sequenceNumber_ = sequenceNumber;
         }
-        Guid Location( ) const
+        const Guid& Location( ) const
         {
             return location_;
         }
@@ -15829,7 +14879,7 @@ namespace Barrelman::Data
         {
             depth_ = depth;
         }
-        DateTime Entered( ) const
+        const DateTime& Entered( ) const
         {
             return entered_;
         }
@@ -15837,32 +14887,24 @@ namespace Barrelman::Data
         {
             entered_ = entered;
         }
-        std::optional<DateTime> Ended( ) const
+        const DBDateTime& Ended( ) const
         {
-            if(endedNullIndicator_ != SQL_NULL_DATA)
-            {
-                return ended_;
-            }
-            return {};
+            return ended_;
         }
-        bool IsEndedNull( ) const
-        {
-            return endedNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnded( const DateTime& ended )
+        void SetEnded( const DBDateTime& ended )
         {
             ended_ = ended;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, THREAD_FIELD_ID, &thread_);
-            Bind(statement, SEQUENCENUMBER_FIELD_ID, &sequenceNumber_);
-            Bind(statement, LOCATION_FIELD_ID, &location_);
-            Bind(statement, DEPTH_FIELD_ID, &depth_);
-            Bind(statement, ENTERED_FIELD_ID, &entered_);
-            Bind(statement, ENDED_FIELD_ID, &ended_, &endedNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, THREAD_FIELD_ID, thread_);
+            Bind(statement, SEQUENCENUMBER_FIELD_ID, sequenceNumber_);
+            Bind(statement, LOCATION_FIELD_ID, location_);
+            Bind(statement, DEPTH_FIELD_ID, depth_);
+            Bind(statement, ENTERED_FIELD_ID, entered_);
+            Bind(statement, ENDED_FIELD_ID, ended_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -15875,7 +14917,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, location_);
             WriteColumnValue( destination, depth_);
             WriteColumnValue( destination, entered_);
-            WriteColumnValue( destination, ended_, endedNullIndicator_);
+            WriteColumnValue( destination, ended_);
         }
     };
 
@@ -15894,10 +14936,9 @@ namespace Barrelman::Data
         double top_ = 0.0;
         double width_ = 0.0;
         double height_ = 0.0;
-        std::array<wchar_t,101> label_ = {};
-        SQLLEN labelLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::vector<Byte> data_;
-        SQLLEN dataLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> label_;
+        Binary data_;
+        SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -15925,7 +14966,7 @@ namespace Barrelman::Data
             return Kind::MapElement;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -15937,11 +14978,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Item( ) const
+        const Guid& Item( ) const
         {
             return item_;
         }
@@ -16013,40 +15054,36 @@ namespace Barrelman::Data
         {
             height_ = height;
         }
-        std::wstring_view Label( ) const
+        const FixedDBWideString<100>& Label( ) const
         {
-            if(labelLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(label_.data(),static_cast<size_t>( labelLengthOrNullIndicator_ ));
-            }
-            return {};
+            return label_;
         }
         void SetLabel( const WideString& label )
         {
-            Assign(label, label_, labelLengthOrNullIndicator_);
+            label_ = label;
         }
-        const std::vector<Byte>& Data( ) const
+        const Binary& Data( ) const
         {
             return data_;
         }
-        void SetData( const std::vector<Byte>& data )
+        void SetData( const Binary& data )
         {
-            Assign(data, data_, dataLengthOrNullIndicator_);
+            data_ = data;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ITEM_FIELD_ID, &item_);
-            Bind(statement, ELEMENTTYPE_FIELD_ID, &elementType_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, ANGLE_FIELD_ID, &angle_);
-            Bind(statement, LEFT_FIELD_ID, &left_);
-            Bind(statement, TOP_FIELD_ID, &top_);
-            Bind(statement, WIDTH_FIELD_ID, &width_);
-            Bind(statement, HEIGHT_FIELD_ID, &height_);
-            Bind(statement, LABEL_FIELD_ID, &label_, &labelLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ITEM_FIELD_ID, item_);
+            Bind(statement, ELEMENTTYPE_FIELD_ID, elementType_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, ANGLE_FIELD_ID, angle_);
+            Bind(statement, LEFT_FIELD_ID, left_);
+            Bind(statement, TOP_FIELD_ID, top_);
+            Bind(statement, WIDTH_FIELD_ID, width_);
+            Bind(statement, HEIGHT_FIELD_ID, height_);
+            Bind(statement, LABEL_FIELD_ID, label_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -16069,8 +15106,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, top_);
             WriteColumnValue( destination, width_);
             WriteColumnValue( destination, height_);
-            WriteColumnValue( destination, label_, labelLengthOrNullIndicator_);
-            WriteColumnValue( destination, data_, dataLengthOrNullIndicator_);
+            WriteColumnValue( destination, label_);
+            WriteColumnValue( destination, data_);
         }
     };
 
@@ -16087,8 +15124,8 @@ namespace Barrelman::Data
         double northWestLongitude_ = 0.0;
         double southEastLatitude_ = 0.0;
         double southEastLongitude_ = 0.0;
-        std::vector<Byte> image_;
-        SQLLEN imageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary image_;
+        SQLLEN imageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -16113,7 +15150,7 @@ namespace Barrelman::Data
             return Kind::MapInfo;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16125,7 +15162,7 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
@@ -16185,25 +15222,25 @@ namespace Barrelman::Data
         {
             southEastLongitude_ = southEastLongitude;
         }
-        const std::vector<Byte>& Image( ) const
+        const Binary& Image( ) const
         {
             return image_;
         }
-        void SetImage( const std::vector<Byte>& image )
+        void SetImage( const Binary& image )
         {
-            Assign(image, image_, imageLengthOrNullIndicator_);
+            image_ = image;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, SCALE_FIELD_ID, &scale_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, NORTHWESTLATITUDE_FIELD_ID, &northWestLatitude_);
-            Bind(statement, NORTHWESTLONGITUDE_FIELD_ID, &northWestLongitude_);
-            Bind(statement, SOUTHEASTLATITUDE_FIELD_ID, &southEastLatitude_);
-            Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, &southEastLongitude_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, SCALE_FIELD_ID, scale_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, NORTHWESTLATITUDE_FIELD_ID, northWestLatitude_);
+            Bind(statement, NORTHWESTLONGITUDE_FIELD_ID, northWestLongitude_);
+            Bind(statement, SOUTHEASTLATITUDE_FIELD_ID, southEastLatitude_);
+            Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, southEastLongitude_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -16224,7 +15261,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, northWestLongitude_);
             WriteColumnValue( destination, southEastLatitude_);
             WriteColumnValue( destination, southEastLongitude_);
-            WriteColumnValue( destination, image_, imageLengthOrNullIndicator_);
+            WriteColumnValue( destination, image_);
         }
     };
 
@@ -16235,8 +15272,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         DateTime timestamp_;
-        std::array<wchar_t,128> ipAddress_ = {};
-        SQLLEN ipAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> ipAddress_;
         Int32 port_ = 0;
         double imageScaleFactorX_ = 0.0;
         double imageOffsetX_ = 0.0;
@@ -16265,7 +15301,7 @@ namespace Barrelman::Data
             return Kind::MapServiceOptions;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16277,11 +15313,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -16289,17 +15325,13 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::wstring_view IpAddress( ) const
+        const FixedDBWideString<127>& IpAddress( ) const
         {
-            if(ipAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(ipAddress_.data(),static_cast<size_t>( ipAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return ipAddress_;
         }
         void SetIpAddress( const WideString& ipAddress )
         {
-            Assign(ipAddress, ipAddress_, ipAddressLengthOrNullIndicator_);
+            ipAddress_ = ipAddress;
         }
         Int32 Port( ) const
         {
@@ -16343,15 +15375,15 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, IPADDRESS_FIELD_ID, &ipAddress_, &ipAddressLengthOrNullIndicator_);
-            Bind(statement, PORT_FIELD_ID, &port_);
-            Bind(statement, IMAGESCALEFACTORX_FIELD_ID, &imageScaleFactorX_);
-            Bind(statement, IMAGEOFFSETX_FIELD_ID, &imageOffsetX_);
-            Bind(statement, IMAGESCALEFACTORY_FIELD_ID, &imageScaleFactorY_);
-            Bind(statement, IMAGEOFFSETY_FIELD_ID, &imageOffsetY_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, IPADDRESS_FIELD_ID, ipAddress_);
+            Bind(statement, PORT_FIELD_ID, port_);
+            Bind(statement, IMAGESCALEFACTORX_FIELD_ID, imageScaleFactorX_);
+            Bind(statement, IMAGEOFFSETX_FIELD_ID, imageOffsetX_);
+            Bind(statement, IMAGESCALEFACTORY_FIELD_ID, imageScaleFactorY_);
+            Bind(statement, IMAGEOFFSETY_FIELD_ID, imageOffsetY_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -16360,7 +15392,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, ipAddress_, ipAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, ipAddress_);
             WriteColumnValue( destination, port_);
             WriteColumnValue( destination, imageScaleFactorX_);
             WriteColumnValue( destination, imageOffsetX_);
@@ -16395,7 +15427,7 @@ namespace Barrelman::Data
             return Kind::MaritimeIdentificationDigits;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16407,7 +15439,7 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
@@ -16419,7 +15451,7 @@ namespace Barrelman::Data
         {
             code_ = code;
         }
-        Guid Country( ) const
+        const Guid& Country( ) const
         {
             return country_;
         }
@@ -16429,10 +15461,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CODE_FIELD_ID, &code_);
-            Bind(statement, COUNTRY_FIELD_ID, &country_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CODE_FIELD_ID, code_);
+            Bind(statement, COUNTRY_FIELD_ID, country_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -16452,8 +15484,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid service_;
-        std::array<wchar_t,129> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<128> name_;
         Guid enabledTimeseries_;
     public:
         using Base = BaseColumnData;
@@ -16474,7 +15505,7 @@ namespace Barrelman::Data
             return Kind::MediaProxySession;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16486,11 +15517,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Service( ) const
+        const Guid& Service( ) const
         {
             return service_;
         }
@@ -16498,19 +15529,15 @@ namespace Barrelman::Data
         {
             service_ = service;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<128>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid EnabledTimeseries( ) const
+        const Guid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
@@ -16520,11 +15547,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, SERVICE_FIELD_ID, &service_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, ENABLEDTIMESERIES_FIELD_ID, &enabledTimeseries_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, SERVICE_FIELD_ID, service_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, ENABLEDTIMESERIES_FIELD_ID, enabledTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -16533,7 +15560,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, service_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, enabledTimeseries_);
         }
     };
@@ -16546,8 +15573,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid proxySession_;
         DateTime timestamp_;
-        std::array<wchar_t,101> streamName_ = {};
-        SQLLEN streamNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> streamName_;
     public:
         using Base = BaseColumnData;
 
@@ -16567,7 +15593,7 @@ namespace Barrelman::Data
             return Kind::MediaProxySessionFile;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16579,11 +15605,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid ProxySession( ) const
+        const Guid& ProxySession( ) const
         {
             return proxySession_;
         }
@@ -16591,7 +15617,7 @@ namespace Barrelman::Data
         {
             proxySession_ = proxySession;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -16599,25 +15625,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::wstring_view StreamName( ) const
+        const FixedDBWideString<100>& StreamName( ) const
         {
-            if(streamNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(streamName_.data(),static_cast<size_t>( streamNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return streamName_;
         }
         void SetStreamName( const WideString& streamName )
         {
-            Assign(streamName, streamName_, streamNameLengthOrNullIndicator_);
+            streamName_ = streamName;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PROXYSESSION_FIELD_ID, &proxySession_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, STREAMNAME_FIELD_ID, &streamName_, &streamNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PROXYSESSION_FIELD_ID, proxySession_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, STREAMNAME_FIELD_ID, streamName_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -16627,7 +15649,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, proxySession_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, streamName_, streamNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, streamName_);
         }
     };
 
@@ -16639,22 +15661,17 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid proxySession_;
         DateTime timestamp_;
-        std::array<wchar_t,256> sourceStreamUrl_ = {};
-        SQLLEN sourceStreamUrlLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,256> streamName_ = {};
-        SQLLEN streamNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<255> sourceStreamUrl_;
+        FixedDBWideString<255> streamName_;
         Data::MediaProxySessionMode mode_ = Data::MediaProxySessionMode::Unknown;
         Int32 tunnelOverHTTPPortNumber_ = 0;
-        std::array<wchar_t,129> username_ = {};
-        SQLLEN usernameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,129> password_ = {};
-        SQLLEN passwordLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<128> username_;
+        FixedDBWideString<128> password_;
         Int32 recorderPortNumber_ = 0;
         Data::MediaProxySessionType sessionType_ = Data::MediaProxySessionType::Unknown;
         TimeSpan maxFileTime_;
         TimeSpan maxFileRetention_;
-        std::array<wchar_t,261> videoDirectory_ = {};
-        SQLLEN videoDirectoryLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<260> videoDirectory_;
     public:
         using Base = BaseColumnData;
 
@@ -16684,7 +15701,7 @@ namespace Barrelman::Data
             return Kind::MediaProxySessionOptions;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16696,11 +15713,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid ProxySession( ) const
+        const Guid& ProxySession( ) const
         {
             return proxySession_;
         }
@@ -16708,7 +15725,7 @@ namespace Barrelman::Data
         {
             proxySession_ = proxySession;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -16716,29 +15733,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::wstring_view SourceStreamUrl( ) const
+        const FixedDBWideString<255>& SourceStreamUrl( ) const
         {
-            if(sourceStreamUrlLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(sourceStreamUrl_.data(),static_cast<size_t>( sourceStreamUrlLengthOrNullIndicator_ ));
-            }
-            return {};
+            return sourceStreamUrl_;
         }
         void SetSourceStreamUrl( const WideString& sourceStreamUrl )
         {
-            Assign(sourceStreamUrl, sourceStreamUrl_, sourceStreamUrlLengthOrNullIndicator_);
+            sourceStreamUrl_ = sourceStreamUrl;
         }
-        std::wstring_view StreamName( ) const
+        const FixedDBWideString<255>& StreamName( ) const
         {
-            if(streamNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(streamName_.data(),static_cast<size_t>( streamNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return streamName_;
         }
         void SetStreamName( const WideString& streamName )
         {
-            Assign(streamName, streamName_, streamNameLengthOrNullIndicator_);
+            streamName_ = streamName;
         }
         Data::MediaProxySessionMode Mode( ) const
         {
@@ -16756,29 +15765,21 @@ namespace Barrelman::Data
         {
             tunnelOverHTTPPortNumber_ = tunnelOverHTTPPortNumber;
         }
-        std::wstring_view Username( ) const
+        const FixedDBWideString<128>& Username( ) const
         {
-            if(usernameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(username_.data(),static_cast<size_t>( usernameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return username_;
         }
         void SetUsername( const WideString& username )
         {
-            Assign(username, username_, usernameLengthOrNullIndicator_);
+            username_ = username;
         }
-        std::wstring_view Password( ) const
+        const FixedDBWideString<128>& Password( ) const
         {
-            if(passwordLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(password_.data(),static_cast<size_t>( passwordLengthOrNullIndicator_ ));
-            }
-            return {};
+            return password_;
         }
         void SetPassword( const WideString& password )
         {
-            Assign(password, password_, passwordLengthOrNullIndicator_);
+            password_ = password;
         }
         Int32 RecorderPortNumber( ) const
         {
@@ -16796,7 +15797,7 @@ namespace Barrelman::Data
         {
             sessionType_ = sessionType;
         }
-        TimeSpan MaxFileTime( ) const
+        const TimeSpan& MaxFileTime( ) const
         {
             return maxFileTime_;
         }
@@ -16804,7 +15805,7 @@ namespace Barrelman::Data
         {
             maxFileTime_ = maxFileTime;
         }
-        TimeSpan MaxFileRetention( ) const
+        const TimeSpan& MaxFileRetention( ) const
         {
             return maxFileRetention_;
         }
@@ -16812,35 +15813,31 @@ namespace Barrelman::Data
         {
             maxFileRetention_ = maxFileRetention;
         }
-        std::wstring_view VideoDirectory( ) const
+        const FixedDBWideString<260>& VideoDirectory( ) const
         {
-            if(videoDirectoryLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(videoDirectory_.data(),static_cast<size_t>( videoDirectoryLengthOrNullIndicator_ ));
-            }
-            return {};
+            return videoDirectory_;
         }
         void SetVideoDirectory( const WideString& videoDirectory )
         {
-            Assign(videoDirectory, videoDirectory_, videoDirectoryLengthOrNullIndicator_);
+            videoDirectory_ = videoDirectory;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PROXYSESSION_FIELD_ID, &proxySession_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, SOURCESTREAMURL_FIELD_ID, &sourceStreamUrl_, &sourceStreamUrlLengthOrNullIndicator_);
-            Bind(statement, STREAMNAME_FIELD_ID, &streamName_, &streamNameLengthOrNullIndicator_);
-            Bind(statement, MODE_FIELD_ID, &mode_);
-            Bind(statement, TUNNELOVERHTTPPORTNUMBER_FIELD_ID, &tunnelOverHTTPPortNumber_);
-            Bind(statement, USERNAME_FIELD_ID, &username_, &usernameLengthOrNullIndicator_);
-            Bind(statement, PASSWORD_FIELD_ID, &password_, &passwordLengthOrNullIndicator_);
-            Bind(statement, RECORDERPORTNUMBER_FIELD_ID, &recorderPortNumber_);
-            Bind(statement, SESSIONTYPE_FIELD_ID, &sessionType_);
-            Bind(statement, MAXFILETIME_FIELD_ID, &maxFileTime_);
-            Bind(statement, MAXFILERETENTION_FIELD_ID, &maxFileRetention_);
-            Bind(statement, VIDEODIRECTORY_FIELD_ID, &videoDirectory_, &videoDirectoryLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PROXYSESSION_FIELD_ID, proxySession_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, SOURCESTREAMURL_FIELD_ID, sourceStreamUrl_);
+            Bind(statement, STREAMNAME_FIELD_ID, streamName_);
+            Bind(statement, MODE_FIELD_ID, mode_);
+            Bind(statement, TUNNELOVERHTTPPORTNUMBER_FIELD_ID, tunnelOverHTTPPortNumber_);
+            Bind(statement, USERNAME_FIELD_ID, username_);
+            Bind(statement, PASSWORD_FIELD_ID, password_);
+            Bind(statement, RECORDERPORTNUMBER_FIELD_ID, recorderPortNumber_);
+            Bind(statement, SESSIONTYPE_FIELD_ID, sessionType_);
+            Bind(statement, MAXFILETIME_FIELD_ID, maxFileTime_);
+            Bind(statement, MAXFILERETENTION_FIELD_ID, maxFileRetention_);
+            Bind(statement, VIDEODIRECTORY_FIELD_ID, videoDirectory_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -16850,17 +15847,17 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, proxySession_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, sourceStreamUrl_, sourceStreamUrlLengthOrNullIndicator_);
-            WriteColumnValue( destination, streamName_, streamNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, sourceStreamUrl_);
+            WriteColumnValue( destination, streamName_);
             WriteColumnValue( destination, mode_);
             WriteColumnValue( destination, tunnelOverHTTPPortNumber_);
-            WriteColumnValue( destination, username_, usernameLengthOrNullIndicator_);
-            WriteColumnValue( destination, password_, passwordLengthOrNullIndicator_);
+            WriteColumnValue( destination, username_);
+            WriteColumnValue( destination, password_);
             WriteColumnValue( destination, recorderPortNumber_);
             WriteColumnValue( destination, sessionType_);
             WriteColumnValue( destination, maxFileTime_);
             WriteColumnValue( destination, maxFileRetention_);
-            WriteColumnValue( destination, videoDirectory_, videoDirectoryLengthOrNullIndicator_);
+            WriteColumnValue( destination, videoDirectory_);
         }
     };
 
@@ -16888,7 +15885,7 @@ namespace Barrelman::Data
             return Kind::MediaService;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16900,11 +15897,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid EnabledTimeseries( ) const
+        const Guid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
@@ -16914,9 +15911,9 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ENABLEDTIMESERIES_FIELD_ID, &enabledTimeseries_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ENABLEDTIMESERIES_FIELD_ID, enabledTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -16958,7 +15955,7 @@ namespace Barrelman::Data
             return Kind::MediaServiceOptions;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -16970,11 +15967,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid MediaService( ) const
+        const Guid& MediaService( ) const
         {
             return mediaService_;
         }
@@ -16982,7 +15979,7 @@ namespace Barrelman::Data
         {
             mediaService_ = mediaService;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -17008,12 +16005,12 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, MEDIASERVICE_FIELD_ID, &mediaService_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, RTSPPORTNUMBER_FIELD_ID, &rtspPortNumber_);
-            Bind(statement, HTTPPORTNUMBER_FIELD_ID, &httpPortNumber_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, MEDIASERVICE_FIELD_ID, mediaService_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, RTSPPORTNUMBER_FIELD_ID, rtspPortNumber_);
+            Bind(statement, HTTPPORTNUMBER_FIELD_ID, httpPortNumber_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -17035,10 +16032,9 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid namespace_;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -17058,7 +16054,7 @@ namespace Barrelman::Data
             return Kind::NamespaceElement;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -17070,11 +16066,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Namespace( ) const
+        const Guid& Namespace( ) const
         {
             return namespace_;
         }
@@ -17082,17 +16078,13 @@ namespace Barrelman::Data
         {
             namespace_ = namespace__;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         const WideString& Description( ) const
         {
@@ -17100,14 +16092,14 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAMESPACE_FIELD_ID, &namespace_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAMESPACE_FIELD_ID, namespace_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -17122,8 +16114,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, namespace_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, description_);
         }
     };
 
@@ -17184,14 +16176,14 @@ namespace Barrelman::Data
         Guid oilSpillDetector_;
         DateTime timestamp_;
         double oilArea_ = 0.0;
-        std::vector<Byte> shape_;
-        SQLLEN shapeLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::vector<Byte> bSI_;
-        SQLLEN bSILengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::vector<Byte> oil_;
-        SQLLEN oilLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::vector<Byte> trace_;
-        SQLLEN traceLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary shape_;
+        SQLLEN shapeLength_ = SQL_NULL_DATA;
+        Binary bSI_;
+        SQLLEN bSILength_ = SQL_NULL_DATA;
+        Binary oil_;
+        SQLLEN oilLength_ = SQL_NULL_DATA;
+        Binary trace_;
+        SQLLEN traceLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -17215,7 +16207,7 @@ namespace Barrelman::Data
             return Kind::Oilspill;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -17227,11 +16219,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid OilSpillDetector( ) const
+        const Guid& OilSpillDetector( ) const
         {
             return oilSpillDetector_;
         }
@@ -17239,7 +16231,7 @@ namespace Barrelman::Data
         {
             oilSpillDetector_ = oilSpillDetector;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -17255,45 +16247,45 @@ namespace Barrelman::Data
         {
             oilArea_ = oilArea;
         }
-        const std::vector<Byte>& Shape( ) const
+        const Binary& Shape( ) const
         {
             return shape_;
         }
-        void SetShape( const std::vector<Byte>& shape )
+        void SetShape( const Binary& shape )
         {
-            Assign(shape, shape_, shapeLengthOrNullIndicator_);
+            shape_ = shape;
         }
-        const std::vector<Byte>& BSI( ) const
+        const Binary& BSI( ) const
         {
             return bSI_;
         }
-        void SetBSI( const std::vector<Byte>& bSI )
+        void SetBSI( const Binary& bSI )
         {
-            Assign(bSI, bSI_, bSILengthOrNullIndicator_);
+            bSI_ = bSI;
         }
-        const std::vector<Byte>& Oil( ) const
+        const Binary& Oil( ) const
         {
             return oil_;
         }
-        void SetOil( const std::vector<Byte>& oil )
+        void SetOil( const Binary& oil )
         {
-            Assign(oil, oil_, oilLengthOrNullIndicator_);
+            oil_ = oil;
         }
-        const std::vector<Byte>& Trace( ) const
+        const Binary& Trace( ) const
         {
             return trace_;
         }
-        void SetTrace( const std::vector<Byte>& trace )
+        void SetTrace( const Binary& trace )
         {
-            Assign(trace, trace_, traceLengthOrNullIndicator_);
+            trace_ = trace;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, OILSPILLDETECTOR_FIELD_ID, &oilSpillDetector_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, OILAREA_FIELD_ID, &oilArea_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, OILSPILLDETECTOR_FIELD_ID, oilSpillDetector_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, OILAREA_FIELD_ID, oilArea_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -17313,10 +16305,10 @@ namespace Barrelman::Data
             WriteColumnValue( destination, oilSpillDetector_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, oilArea_);
-            WriteColumnValue( destination, shape_, shapeLengthOrNullIndicator_);
-            WriteColumnValue( destination, bSI_, bSILengthOrNullIndicator_);
-            WriteColumnValue( destination, oil_, oilLengthOrNullIndicator_);
-            WriteColumnValue( destination, trace_, traceLengthOrNullIndicator_);
+            WriteColumnValue( destination, shape_);
+            WriteColumnValue( destination, bSI_);
+            WriteColumnValue( destination, oil_);
+            WriteColumnValue( destination, trace_);
         }
     };
 
@@ -17352,7 +16344,7 @@ namespace Barrelman::Data
             return Kind::OilspillDetectorCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -17364,11 +16356,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid OilSpillDetector( ) const
+        const Guid& OilSpillDetector( ) const
         {
             return oilSpillDetector_;
         }
@@ -17376,7 +16368,7 @@ namespace Barrelman::Data
         {
             oilSpillDetector_ = oilSpillDetector;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -17392,7 +16384,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -17400,7 +16392,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -17410,13 +16402,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, OILSPILLDETECTOR_FIELD_ID, &oilSpillDetector_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, OILSPILLDETECTOR_FIELD_ID, oilSpillDetector_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -17443,7 +16435,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -17465,7 +16457,7 @@ namespace Barrelman::Data
             return Kind::OilspillDetectorCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -17477,11 +16469,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid OilSpillDetector( ) const
+        const Guid& OilSpillDetector( ) const
         {
             return oilSpillDetector_;
         }
@@ -17489,7 +16481,7 @@ namespace Barrelman::Data
         {
             oilSpillDetector_ = oilSpillDetector;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -17497,7 +16489,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -17519,16 +16511,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, OILSPILLDETECTOR_FIELD_ID, &oilSpillDetector_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, OILSPILLDETECTOR_FIELD_ID, oilSpillDetector_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -17546,7 +16538,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -17566,23 +16558,20 @@ namespace Barrelman::Data
         Int32 updateRate_ = 0;
         TimeSpan statusSendTime_;
         bool drawBorder_ = false;
-        std::vector<Byte> colors_;
-        SQLLEN colorsLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary colors_;
+        SQLLEN colorsLength_ = SQL_NULL_DATA;
         bool sendToServer_ = false;
-        std::array<wchar_t,101> directory_ = {};
-        SQLLEN directoryLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> directory_;
         bool transparentWater_ = false;
         bool savePictures_ = false;
         bool sendAsTarget_ = false;
         bool writeLog_ = false;
-        std::array<wchar_t,101> targetFilePrefix_ = {};
-        SQLLEN targetFilePrefixLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> targetFilePrefix_;
         Guid targetMMSI_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         bool testSourceEnabled_ = false;
-        std::array<wchar_t,101> proxyServer_ = {};
-        SQLLEN proxyServerLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> proxyServer_;
         bool useProxyServer_ = false;
     public:
         using Base = BaseColumnData;
@@ -17624,7 +16613,7 @@ namespace Barrelman::Data
             return Kind::OilspillDetectorConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -17636,11 +16625,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid OilSpillDetector( ) const
+        const Guid& OilSpillDetector( ) const
         {
             return oilSpillDetector_;
         }
@@ -17648,7 +16637,7 @@ namespace Barrelman::Data
         {
             oilSpillDetector_ = oilSpillDetector;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -17704,7 +16693,7 @@ namespace Barrelman::Data
         {
             updateRate_ = updateRate;
         }
-        TimeSpan StatusSendTime( ) const
+        const TimeSpan& StatusSendTime( ) const
         {
             return statusSendTime_;
         }
@@ -17720,13 +16709,13 @@ namespace Barrelman::Data
         {
             drawBorder_ = drawBorder;
         }
-        const std::vector<Byte>& Colors( ) const
+        const Binary& Colors( ) const
         {
             return colors_;
         }
-        void SetColors( const std::vector<Byte>& colors )
+        void SetColors( const Binary& colors )
         {
-            Assign(colors, colors_, colorsLengthOrNullIndicator_);
+            colors_ = colors;
         }
         bool SendToServer( ) const
         {
@@ -17736,17 +16725,13 @@ namespace Barrelman::Data
         {
             sendToServer_ = sendToServer;
         }
-        std::wstring_view Directory( ) const
+        const FixedDBWideString<100>& Directory( ) const
         {
-            if(directoryLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(directory_.data(),static_cast<size_t>( directoryLengthOrNullIndicator_ ));
-            }
-            return {};
+            return directory_;
         }
         void SetDirectory( const WideString& directory )
         {
-            Assign(directory, directory_, directoryLengthOrNullIndicator_);
+            directory_ = directory;
         }
         bool TransparentWater( ) const
         {
@@ -17780,19 +16765,15 @@ namespace Barrelman::Data
         {
             writeLog_ = writeLog;
         }
-        std::wstring_view TargetFilePrefix( ) const
+        const FixedDBWideString<100>& TargetFilePrefix( ) const
         {
-            if(targetFilePrefixLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(targetFilePrefix_.data(),static_cast<size_t>( targetFilePrefixLengthOrNullIndicator_ ));
-            }
-            return {};
+            return targetFilePrefix_;
         }
         void SetTargetFilePrefix( const WideString& targetFilePrefix )
         {
-            Assign(targetFilePrefix, targetFilePrefix_, targetFilePrefixLengthOrNullIndicator_);
+            targetFilePrefix_ = targetFilePrefix;
         }
-        Guid TargetMMSI( ) const
+        const Guid& TargetMMSI( ) const
         {
             return targetMMSI_;
         }
@@ -17824,17 +16805,13 @@ namespace Barrelman::Data
         {
             testSourceEnabled_ = testSourceEnabled;
         }
-        std::wstring_view ProxyServer( ) const
+        const FixedDBWideString<100>& ProxyServer( ) const
         {
-            if(proxyServerLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(proxyServer_.data(),static_cast<size_t>( proxyServerLengthOrNullIndicator_ ));
-            }
-            return {};
+            return proxyServer_;
         }
         void SetProxyServer( const WideString& proxyServer )
         {
-            Assign(proxyServer, proxyServer_, proxyServerLengthOrNullIndicator_);
+            proxyServer_ = proxyServer;
         }
         bool UseProxyServer( ) const
         {
@@ -17846,31 +16823,31 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, OILSPILLDETECTOR_FIELD_ID, &oilSpillDetector_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, RANGE_FIELD_ID, &range_);
-            Bind(statement, STARTANGLE_FIELD_ID, &startAngle_);
-            Bind(statement, ENDANGLE_FIELD_ID, &endAngle_);
-            Bind(statement, STARTRANGE_FIELD_ID, &startRange_);
-            Bind(statement, ENDRANGE_FIELD_ID, &endRange_);
-            Bind(statement, UPDATERATE_FIELD_ID, &updateRate_);
-            Bind(statement, STATUSSENDTIME_FIELD_ID, &statusSendTime_);
-            Bind(statement, DRAWBORDER_FIELD_ID, &drawBorder_);
-            Bind(statement, SENDTOSERVER_FIELD_ID, &sendToServer_);
-            Bind(statement, DIRECTORY_FIELD_ID, &directory_, &directoryLengthOrNullIndicator_);
-            Bind(statement, TRANSPARENTWATER_FIELD_ID, &transparentWater_);
-            Bind(statement, SAVEPICTURES_FIELD_ID, &savePictures_);
-            Bind(statement, SENDASTARGET_FIELD_ID, &sendAsTarget_);
-            Bind(statement, WRITELOG_FIELD_ID, &writeLog_);
-            Bind(statement, TARGETFILEPREFIX_FIELD_ID, &targetFilePrefix_, &targetFilePrefixLengthOrNullIndicator_);
-            Bind(statement, TARGETMMSI_FIELD_ID, &targetMMSI_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, TESTSOURCEENABLED_FIELD_ID, &testSourceEnabled_);
-            Bind(statement, PROXYSERVER_FIELD_ID, &proxyServer_, &proxyServerLengthOrNullIndicator_);
-            Bind(statement, USEPROXYSERVER_FIELD_ID, &useProxyServer_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, OILSPILLDETECTOR_FIELD_ID, oilSpillDetector_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, RANGE_FIELD_ID, range_);
+            Bind(statement, STARTANGLE_FIELD_ID, startAngle_);
+            Bind(statement, ENDANGLE_FIELD_ID, endAngle_);
+            Bind(statement, STARTRANGE_FIELD_ID, startRange_);
+            Bind(statement, ENDRANGE_FIELD_ID, endRange_);
+            Bind(statement, UPDATERATE_FIELD_ID, updateRate_);
+            Bind(statement, STATUSSENDTIME_FIELD_ID, statusSendTime_);
+            Bind(statement, DRAWBORDER_FIELD_ID, drawBorder_);
+            Bind(statement, SENDTOSERVER_FIELD_ID, sendToServer_);
+            Bind(statement, DIRECTORY_FIELD_ID, directory_);
+            Bind(statement, TRANSPARENTWATER_FIELD_ID, transparentWater_);
+            Bind(statement, SAVEPICTURES_FIELD_ID, savePictures_);
+            Bind(statement, SENDASTARGET_FIELD_ID, sendAsTarget_);
+            Bind(statement, WRITELOG_FIELD_ID, writeLog_);
+            Bind(statement, TARGETFILEPREFIX_FIELD_ID, targetFilePrefix_);
+            Bind(statement, TARGETMMSI_FIELD_ID, targetMMSI_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, TESTSOURCEENABLED_FIELD_ID, testSourceEnabled_);
+            Bind(statement, PROXYSERVER_FIELD_ID, proxyServer_);
+            Bind(statement, USEPROXYSERVER_FIELD_ID, useProxyServer_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -17894,19 +16871,19 @@ namespace Barrelman::Data
             WriteColumnValue( destination, updateRate_);
             WriteColumnValue( destination, statusSendTime_);
             WriteColumnValue( destination, drawBorder_);
-            WriteColumnValue( destination, colors_, colorsLengthOrNullIndicator_);
+            WriteColumnValue( destination, colors_);
             WriteColumnValue( destination, sendToServer_);
-            WriteColumnValue( destination, directory_, directoryLengthOrNullIndicator_);
+            WriteColumnValue( destination, directory_);
             WriteColumnValue( destination, transparentWater_);
             WriteColumnValue( destination, savePictures_);
             WriteColumnValue( destination, sendAsTarget_);
             WriteColumnValue( destination, writeLog_);
-            WriteColumnValue( destination, targetFilePrefix_, targetFilePrefixLengthOrNullIndicator_);
+            WriteColumnValue( destination, targetFilePrefix_);
             WriteColumnValue( destination, targetMMSI_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, testSourceEnabled_);
-            WriteColumnValue( destination, proxyServer_, proxyServerLengthOrNullIndicator_);
+            WriteColumnValue( destination, proxyServer_);
             WriteColumnValue( destination, useProxyServer_);
         }
     };
@@ -17919,10 +16896,8 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        double x_ = 0.0;
-        SQLLEN xNullIndicator_ = SQL_NULL_DATA;
-        double y_ = 0.0;
-        SQLLEN yNullIndicator_ = SQL_NULL_DATA;
+        DBDouble x_;
+        DBDouble y_;
     public:
         using Base = BaseColumnData;
 
@@ -17943,7 +16918,7 @@ namespace Barrelman::Data
             return Kind::Position2DTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -17955,11 +16930,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -17967,7 +16942,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -17975,46 +16950,30 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<double> X( ) const
+        const DBDouble& X( ) const
         {
-            if(xNullIndicator_ != SQL_NULL_DATA)
-            {
-                return x_;
-            }
-            return {};
+            return x_;
         }
-        bool IsXNull( ) const
-        {
-            return xNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetX( double x )
+        void SetX( const DBDouble& x )
         {
             x_ = x;
         }
-        std::optional<double> Y( ) const
+        const DBDouble& Y( ) const
         {
-            if(yNullIndicator_ != SQL_NULL_DATA)
-            {
-                return y_;
-            }
-            return {};
+            return y_;
         }
-        bool IsYNull( ) const
-        {
-            return yNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetY( double y )
+        void SetY( const DBDouble& y )
         {
             y_ = y;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, X_FIELD_ID, &x_, &xNullIndicator_);
-            Bind(statement, Y_FIELD_ID, &y_, &yNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, X_FIELD_ID, x_);
+            Bind(statement, Y_FIELD_ID, y_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18024,8 +16983,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, x_, xNullIndicator_);
-            WriteColumnValue( destination, y_, yNullIndicator_);
+            WriteColumnValue( destination, x_);
+            WriteColumnValue( destination, y_);
         }
     };
 
@@ -18037,12 +16996,9 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        double x_ = 0.0;
-        SQLLEN xNullIndicator_ = SQL_NULL_DATA;
-        double y_ = 0.0;
-        SQLLEN yNullIndicator_ = SQL_NULL_DATA;
-        double z_ = 0.0;
-        SQLLEN zNullIndicator_ = SQL_NULL_DATA;
+        DBDouble x_;
+        DBDouble y_;
+        DBDouble z_;
     public:
         using Base = BaseColumnData;
 
@@ -18064,7 +17020,7 @@ namespace Barrelman::Data
             return Kind::Position3DTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -18076,11 +17032,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -18088,7 +17044,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -18096,63 +17052,39 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<double> X( ) const
+        const DBDouble& X( ) const
         {
-            if(xNullIndicator_ != SQL_NULL_DATA)
-            {
-                return x_;
-            }
-            return {};
+            return x_;
         }
-        bool IsXNull( ) const
-        {
-            return xNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetX( double x )
+        void SetX( const DBDouble& x )
         {
             x_ = x;
         }
-        std::optional<double> Y( ) const
+        const DBDouble& Y( ) const
         {
-            if(yNullIndicator_ != SQL_NULL_DATA)
-            {
-                return y_;
-            }
-            return {};
+            return y_;
         }
-        bool IsYNull( ) const
-        {
-            return yNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetY( double y )
+        void SetY( const DBDouble& y )
         {
             y_ = y;
         }
-        std::optional<double> Z( ) const
+        const DBDouble& Z( ) const
         {
-            if(zNullIndicator_ != SQL_NULL_DATA)
-            {
-                return z_;
-            }
-            return {};
+            return z_;
         }
-        bool IsZNull( ) const
-        {
-            return zNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetZ( double z )
+        void SetZ( const DBDouble& z )
         {
             z_ = z;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, X_FIELD_ID, &x_, &xNullIndicator_);
-            Bind(statement, Y_FIELD_ID, &y_, &yNullIndicator_);
-            Bind(statement, Z_FIELD_ID, &z_, &zNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, X_FIELD_ID, x_);
+            Bind(statement, Y_FIELD_ID, y_);
+            Bind(statement, Z_FIELD_ID, z_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18162,9 +17094,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, x_, xNullIndicator_);
-            WriteColumnValue( destination, y_, yNullIndicator_);
-            WriteColumnValue( destination, z_, zNullIndicator_);
+            WriteColumnValue( destination, x_);
+            WriteColumnValue( destination, y_);
+            WriteColumnValue( destination, z_);
         }
     };
 
@@ -18194,7 +17126,7 @@ namespace Barrelman::Data
             return Kind::ProcessTrackValueResult;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -18206,7 +17138,7 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
@@ -18218,7 +17150,7 @@ namespace Barrelman::Data
         {
             createdNewTrack_ = createdNewTrack;
         }
-        Guid TrackId( ) const
+        const Guid& TrackId( ) const
         {
             return trackId_;
         }
@@ -18228,10 +17160,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CREATEDNEWTRACK_FIELD_ID, &createdNewTrack_);
-            Bind(statement, TRACKID_FIELD_ID, &trackId_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CREATEDNEWTRACK_FIELD_ID, createdNewTrack_);
+            Bind(statement, TRACKID_FIELD_ID, trackId_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18270,7 +17202,7 @@ namespace Barrelman::Data
             return Kind::Property;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -18282,11 +17214,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Element( ) const
+        const Guid& Element( ) const
         {
             return element_;
         }
@@ -18294,7 +17226,7 @@ namespace Barrelman::Data
         {
             element_ = element;
         }
-        Guid Definition( ) const
+        const Guid& Definition( ) const
         {
             return definition_;
         }
@@ -18304,10 +17236,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ELEMENT_FIELD_ID, &element_);
-            Bind(statement, DEFINITION_FIELD_ID, &definition_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ELEMENT_FIELD_ID, element_);
+            Bind(statement, DEFINITION_FIELD_ID, definition_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18324,8 +17256,8 @@ namespace Barrelman::Data
 
     class BinaryPropertyColumnData : public PropertyColumnData
     {
-        std::vector<Byte> value_;
-        SQLLEN valueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary value_;
+        SQLLEN valueLength_ = SQL_NULL_DATA;
     public:
         using Base = PropertyColumnData;
 
@@ -18341,13 +17273,13 @@ namespace Barrelman::Data
             return Kind::BinaryProperty;
         }
 
-        const std::vector<Byte>& Value( ) const
+        const Binary& Value( ) const
         {
             return value_;
         }
-        void SetValue( const std::vector<Byte>& value )
+        void SetValue( const Binary& value )
         {
-            Assign(value, value_, valueLengthOrNullIndicator_);
+            value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
@@ -18365,7 +17297,7 @@ namespace Barrelman::Data
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -18401,7 +17333,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18444,7 +17376,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18475,7 +17407,7 @@ namespace Barrelman::Data
             return Kind::DateTimeProperty;
         }
 
-        DateTime Value( ) const
+        const DateTime& Value( ) const
         {
             return value_;
         }
@@ -18487,7 +17419,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18530,7 +17462,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18561,7 +17493,7 @@ namespace Barrelman::Data
             return Kind::GuidProperty;
         }
 
-        Guid Value( ) const
+        const Guid& Value( ) const
         {
             return value_;
         }
@@ -18573,7 +17505,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18616,7 +17548,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18659,7 +17591,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18702,7 +17634,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18733,7 +17665,7 @@ namespace Barrelman::Data
             return Kind::ReferenceProperty;
         }
 
-        Guid Value( ) const
+        const Guid& Value( ) const
         {
             return value_;
         }
@@ -18745,7 +17677,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18788,7 +17720,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18831,7 +17763,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18846,8 +17778,7 @@ namespace Barrelman::Data
 
     class StringPropertyColumnData : public PropertyColumnData
     {
-        std::array<wchar_t,101> value_ = {};
-        SQLLEN valueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> value_;
     public:
         using Base = PropertyColumnData;
 
@@ -18863,30 +17794,26 @@ namespace Barrelman::Data
             return Kind::StringProperty;
         }
 
-        std::wstring_view Value( ) const
+        const FixedDBWideString<100>& Value( ) const
         {
-            if(valueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(value_.data(),static_cast<size_t>( valueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return value_;
         }
         void SetValue( const WideString& value )
         {
-            Assign(value, value_, valueLengthOrNullIndicator_);
+            value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueLengthOrNullIndicator_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -18934,7 +17861,7 @@ namespace Barrelman::Data
             return Kind::BinaryTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -18946,7 +17873,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -18977,7 +17904,7 @@ namespace Barrelman::Data
             return Kind::BooleanTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -18989,7 +17916,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19020,7 +17947,7 @@ namespace Barrelman::Data
             return Kind::ByteTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19032,7 +17959,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19063,7 +17990,7 @@ namespace Barrelman::Data
             return Kind::DateTimeTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19075,7 +18002,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19106,7 +18033,7 @@ namespace Barrelman::Data
             return Kind::DoubleTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19118,7 +18045,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19149,7 +18076,7 @@ namespace Barrelman::Data
             return Kind::GuidTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19161,7 +18088,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19192,7 +18119,7 @@ namespace Barrelman::Data
             return Kind::Int16TimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19204,7 +18131,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19235,7 +18162,7 @@ namespace Barrelman::Data
             return Kind::Int32TimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19247,7 +18174,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19278,7 +18205,7 @@ namespace Barrelman::Data
             return Kind::Int64TimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19290,7 +18217,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19321,7 +18248,7 @@ namespace Barrelman::Data
             return Kind::ReferenceTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19333,7 +18260,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19364,7 +18291,7 @@ namespace Barrelman::Data
             return Kind::SByteTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19376,7 +18303,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19407,7 +18334,7 @@ namespace Barrelman::Data
             return Kind::SingleTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19419,7 +18346,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19450,7 +18377,7 @@ namespace Barrelman::Data
             return Kind::StringTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19462,7 +18389,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19493,7 +18420,7 @@ namespace Barrelman::Data
             return Kind::TimeSpanTimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19505,7 +18432,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19536,7 +18463,7 @@ namespace Barrelman::Data
             return Kind::UInt16TimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19548,7 +18475,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19579,7 +18506,7 @@ namespace Barrelman::Data
             return Kind::UInt32TimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19591,7 +18518,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19622,7 +18549,7 @@ namespace Barrelman::Data
             return Kind::UInt64TimeseriesProperty;
         }
 
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -19634,7 +18561,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19665,7 +18592,7 @@ namespace Barrelman::Data
             return Kind::TimeSpanProperty;
         }
 
-        TimeSpan Value( ) const
+        const TimeSpan& Value( ) const
         {
             return value_;
         }
@@ -19677,7 +18604,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19720,7 +18647,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19763,7 +18690,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19806,7 +18733,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -19824,10 +18751,9 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid elementType_;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -19847,7 +18773,7 @@ namespace Barrelman::Data
             return Kind::PropertyDefinition;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -19859,11 +18785,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid ElementType( ) const
+        const Guid& ElementType( ) const
         {
             return elementType_;
         }
@@ -19871,17 +18797,13 @@ namespace Barrelman::Data
         {
             elementType_ = elementType;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         const WideString& Description( ) const
         {
@@ -19889,14 +18811,14 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ELEMENTTYPE_FIELD_ID, &elementType_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ELEMENTTYPE_FIELD_ID, elementType_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -19911,8 +18833,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, elementType_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, description_);
         }
     };
 
@@ -19920,8 +18842,8 @@ namespace Barrelman::Data
 
     class BinaryPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
-        std::vector<Byte> defaultValue_;
-        SQLLEN defaultValueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary defaultValue_;
+        SQLLEN defaultValueLength_ = SQL_NULL_DATA;
     public:
         using Base = PropertyDefinitionColumnData;
 
@@ -19937,13 +18859,13 @@ namespace Barrelman::Data
             return Kind::BinaryPropertyDefinition;
         }
 
-        const std::vector<Byte>& DefaultValue( ) const
+        const Binary& DefaultValue( ) const
         {
             return defaultValue_;
         }
-        void SetDefaultValue( const std::vector<Byte>& defaultValue )
+        void SetDefaultValue( const Binary& defaultValue )
         {
-            Assign(defaultValue, defaultValue_, defaultValueLengthOrNullIndicator_);
+            defaultValue_ = defaultValue;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
@@ -19961,7 +18883,7 @@ namespace Barrelman::Data
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, defaultValue_, defaultValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, defaultValue_);
         }
     };
 
@@ -19997,7 +18919,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20060,9 +18982,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20079,12 +19001,9 @@ namespace Barrelman::Data
 
     class DateTimePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
-        std::array<wchar_t,101> defaultValue_ = {};
-        SQLLEN defaultValueLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> minValue_ = {};
-        SQLLEN minValueLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> maxValue_ = {};
-        SQLLEN maxValueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> defaultValue_;
+        FixedDBWideString<100> minValue_;
+        FixedDBWideString<100> maxValue_;
     public:
         using Base = PropertyDefinitionColumnData;
 
@@ -20102,58 +19021,46 @@ namespace Barrelman::Data
             return Kind::DateTimePropertyDefinition;
         }
 
-        std::wstring_view DefaultValue( ) const
+        const FixedDBWideString<100>& DefaultValue( ) const
         {
-            if(defaultValueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(defaultValue_.data(),static_cast<size_t>( defaultValueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return defaultValue_;
         }
         void SetDefaultValue( const WideString& defaultValue )
         {
-            Assign(defaultValue, defaultValue_, defaultValueLengthOrNullIndicator_);
+            defaultValue_ = defaultValue;
         }
-        std::wstring_view MinValue( ) const
+        const FixedDBWideString<100>& MinValue( ) const
         {
-            if(minValueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(minValue_.data(),static_cast<size_t>( minValueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return minValue_;
         }
         void SetMinValue( const WideString& minValue )
         {
-            Assign(minValue, minValue_, minValueLengthOrNullIndicator_);
+            minValue_ = minValue;
         }
-        std::wstring_view MaxValue( ) const
+        const FixedDBWideString<100>& MaxValue( ) const
         {
-            if(maxValueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(maxValue_.data(),static_cast<size_t>( maxValueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return maxValue_;
         }
         void SetMaxValue( const WideString& maxValue )
         {
-            Assign(maxValue, maxValue_, maxValueLengthOrNullIndicator_);
+            maxValue_ = maxValue;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_, &defaultValueLengthOrNullIndicator_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_, &minValueLengthOrNullIndicator_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_, &maxValueLengthOrNullIndicator_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, defaultValue_, defaultValueLengthOrNullIndicator_);
-            WriteColumnValue( destination, minValue_, minValueLengthOrNullIndicator_);
-            WriteColumnValue( destination, maxValue_, maxValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
         }
     };
 
@@ -20209,9 +19116,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20244,7 +19151,7 @@ namespace Barrelman::Data
             return Kind::GuidPropertyDefinition;
         }
 
-        Guid DefaultValue( ) const
+        const Guid& DefaultValue( ) const
         {
             return defaultValue_;
         }
@@ -20256,7 +19163,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20319,9 +19226,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20386,9 +19293,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20453,9 +19360,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20490,7 +19397,7 @@ namespace Barrelman::Data
             return Kind::ReferencePropertyDefinition;
         }
 
-        Guid DefaultValue( ) const
+        const Guid& DefaultValue( ) const
         {
             return defaultValue_;
         }
@@ -20498,7 +19405,7 @@ namespace Barrelman::Data
         {
             defaultValue_ = defaultValue;
         }
-        Guid ReferencedElementType( ) const
+        const Guid& ReferencedElementType( ) const
         {
             return referencedElementType_;
         }
@@ -20510,8 +19417,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, REFERENCEDELEMENTTYPE_FIELD_ID, &referencedElementType_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, REFERENCEDELEMENTTYPE_FIELD_ID, referencedElementType_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20575,9 +19482,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20642,9 +19549,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20661,10 +19568,8 @@ namespace Barrelman::Data
 
     class StringPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
-        std::array<wchar_t,101> defaultValue_ = {};
-        SQLLEN defaultValueLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> pattern_ = {};
-        SQLLEN patternLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> defaultValue_;
+        FixedDBWideString<100> pattern_;
     public:
         using Base = PropertyDefinitionColumnData;
 
@@ -20681,44 +19586,36 @@ namespace Barrelman::Data
             return Kind::StringPropertyDefinition;
         }
 
-        std::wstring_view DefaultValue( ) const
+        const FixedDBWideString<100>& DefaultValue( ) const
         {
-            if(defaultValueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(defaultValue_.data(),static_cast<size_t>( defaultValueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return defaultValue_;
         }
         void SetDefaultValue( const WideString& defaultValue )
         {
-            Assign(defaultValue, defaultValue_, defaultValueLengthOrNullIndicator_);
+            defaultValue_ = defaultValue;
         }
-        std::wstring_view Pattern( ) const
+        const FixedDBWideString<100>& Pattern( ) const
         {
-            if(patternLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pattern_.data(),static_cast<size_t>( patternLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pattern_;
         }
         void SetPattern( const WideString& pattern )
         {
-            Assign(pattern, pattern_, patternLengthOrNullIndicator_);
+            pattern_ = pattern;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_, &defaultValueLengthOrNullIndicator_);
-            Bind(statement, PATTERN_FIELD_ID, &pattern_, &patternLengthOrNullIndicator_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, PATTERN_FIELD_ID, pattern_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, defaultValue_, defaultValueLengthOrNullIndicator_);
-            WriteColumnValue( destination, pattern_, patternLengthOrNullIndicator_);
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, pattern_);
         }
     };
 
@@ -20836,8 +19733,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -20853,10 +19750,8 @@ namespace Barrelman::Data
 
     class DateTimeTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
-        std::array<wchar_t,101> minValue_ = {};
-        SQLLEN minValueLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> maxValue_ = {};
-        SQLLEN maxValueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> minValue_;
+        FixedDBWideString<100> maxValue_;
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
@@ -20873,44 +19768,36 @@ namespace Barrelman::Data
             return Kind::DateTimeTimeseriesPropertyDefinition;
         }
 
-        std::wstring_view MinValue( ) const
+        const FixedDBWideString<100>& MinValue( ) const
         {
-            if(minValueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(minValue_.data(),static_cast<size_t>( minValueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return minValue_;
         }
         void SetMinValue( const WideString& minValue )
         {
-            Assign(minValue, minValue_, minValueLengthOrNullIndicator_);
+            minValue_ = minValue;
         }
-        std::wstring_view MaxValue( ) const
+        const FixedDBWideString<100>& MaxValue( ) const
         {
-            if(maxValueLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(maxValue_.data(),static_cast<size_t>( maxValueLengthOrNullIndicator_ ));
-            }
-            return {};
+            return maxValue_;
         }
         void SetMaxValue( const WideString& maxValue )
         {
-            Assign(maxValue, maxValue_, maxValueLengthOrNullIndicator_);
+            maxValue_ = maxValue;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_, &minValueLengthOrNullIndicator_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_, &maxValueLengthOrNullIndicator_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, minValue_, minValueLengthOrNullIndicator_);
-            WriteColumnValue( destination, maxValue_, maxValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
         }
     };
 
@@ -20956,8 +19843,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21035,8 +19922,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21090,8 +19977,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21145,8 +20032,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21178,7 +20065,7 @@ namespace Barrelman::Data
             return Kind::ReferenceTimeseriesPropertyDefinition;
         }
 
-        Guid ReferencedElementType( ) const
+        const Guid& ReferencedElementType( ) const
         {
             return referencedElementType_;
         }
@@ -21190,7 +20077,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, REFERENCEDELEMENTTYPE_FIELD_ID, &referencedElementType_);
+            Bind(statement, REFERENCEDELEMENTTYPE_FIELD_ID, referencedElementType_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21243,8 +20130,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21298,8 +20185,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21315,8 +20202,7 @@ namespace Barrelman::Data
 
     class StringTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
-        std::array<wchar_t,101> pattern_ = {};
-        SQLLEN patternLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> pattern_;
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
@@ -21332,30 +20218,26 @@ namespace Barrelman::Data
             return Kind::StringTimeseriesPropertyDefinition;
         }
 
-        std::wstring_view Pattern( ) const
+        const FixedDBWideString<100>& Pattern( ) const
         {
-            if(patternLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(pattern_.data(),static_cast<size_t>( patternLengthOrNullIndicator_ ));
-            }
-            return {};
+            return pattern_;
         }
         void SetPattern( const WideString& pattern )
         {
-            Assign(pattern, pattern_, patternLengthOrNullIndicator_);
+            pattern_ = pattern;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, PATTERN_FIELD_ID, &pattern_, &patternLengthOrNullIndicator_);
+            Bind(statement, PATTERN_FIELD_ID, pattern_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, pattern_, patternLengthOrNullIndicator_);
+            WriteColumnValue( destination, pattern_);
         }
     };
 
@@ -21381,7 +20263,7 @@ namespace Barrelman::Data
             return Kind::TimeSpanTimeseriesPropertyDefinition;
         }
 
-        TimeSpan MinValue( ) const
+        const TimeSpan& MinValue( ) const
         {
             return minValue_;
         }
@@ -21389,7 +20271,7 @@ namespace Barrelman::Data
         {
             minValue_ = minValue;
         }
-        TimeSpan MaxValue( ) const
+        const TimeSpan& MaxValue( ) const
         {
             return maxValue_;
         }
@@ -21401,8 +20283,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21456,8 +20338,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21511,8 +20393,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21566,8 +20448,8 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21603,7 +20485,7 @@ namespace Barrelman::Data
             return Kind::TimeSpanPropertyDefinition;
         }
 
-        TimeSpan DefaultValue( ) const
+        const TimeSpan& DefaultValue( ) const
         {
             return defaultValue_;
         }
@@ -21611,7 +20493,7 @@ namespace Barrelman::Data
         {
             defaultValue_ = defaultValue;
         }
-        TimeSpan MinValue( ) const
+        const TimeSpan& MinValue( ) const
         {
             return minValue_;
         }
@@ -21619,7 +20501,7 @@ namespace Barrelman::Data
         {
             minValue_ = minValue;
         }
-        TimeSpan MaxValue( ) const
+        const TimeSpan& MaxValue( ) const
         {
             return maxValue_;
         }
@@ -21631,9 +20513,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21698,9 +20580,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21765,9 +20647,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21832,9 +20714,9 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
-            Bind(statement, MINVALUE_FIELD_ID, &minValue_);
-            Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
+            Bind(statement, DEFAULTVALUE_FIELD_ID, defaultValue_);
+            Bind(statement, MINVALUE_FIELD_ID, minValue_);
+            Bind(statement, MAXVALUE_FIELD_ID, maxValue_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21875,7 +20757,7 @@ namespace Barrelman::Data
             return Kind::RadarAlarmStatus;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -21887,11 +20769,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -21899,7 +20781,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -21917,11 +20799,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, TYPE_FIELD_ID, &type_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, TYPE_FIELD_ID, type_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -21967,7 +20849,7 @@ namespace Barrelman::Data
             return Kind::RadarCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -21979,11 +20861,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -21991,7 +20873,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -22007,7 +20889,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -22015,7 +20897,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -22025,13 +20907,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -22082,7 +20964,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -22104,7 +20986,7 @@ namespace Barrelman::Data
             return Kind::RadarCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -22116,11 +20998,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -22128,7 +21010,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -22136,7 +21018,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -22158,16 +21040,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -22185,7 +21067,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -22233,7 +21115,7 @@ namespace Barrelman::Data
         {
             triggerCount_ = triggerCount;
         }
-        TimeSpan RotationCount( ) const
+        const TimeSpan& RotationCount( ) const
         {
             return rotationCount_;
         }
@@ -22261,11 +21143,11 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, AZIMUTHCOUNT_FIELD_ID, &azimuthCount_);
-            Bind(statement, TRIGGERCOUNT_FIELD_ID, &triggerCount_);
-            Bind(statement, ROTATIONCOUNT_FIELD_ID, &rotationCount_);
-            Bind(statement, PULSE_FIELD_ID, &pulse_);
-            Bind(statement, TX_FIELD_ID, &tx_);
+            Bind(statement, AZIMUTHCOUNT_FIELD_ID, azimuthCount_);
+            Bind(statement, TRIGGERCOUNT_FIELD_ID, triggerCount_);
+            Bind(statement, ROTATIONCOUNT_FIELD_ID, rotationCount_);
+            Bind(statement, PULSE_FIELD_ID, pulse_);
+            Bind(statement, TX_FIELD_ID, tx_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -22289,8 +21171,7 @@ namespace Barrelman::Data
         Guid radar_;
         DateTime timestamp_;
         Int32 radarProtocolVersion_ = 0;
-        std::array<wchar_t,101> radarIPAddress_ = {};
-        SQLLEN radarIPAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> radarIPAddress_;
         Int32 radarPort_ = 0;
         Int32 radarConfigurationPort_ = 0;
         TimeSpan skipMagicTimeout_;
@@ -22301,8 +21182,7 @@ namespace Barrelman::Data
         Int32 sectorCount_ = 0;
         Int32 sectorOffset_ = 0;
         UInt32 imageColor_ = 0;
-        UInt32 imageSubstitutionColor_ = 0;
-        SQLLEN imageSubstitutionColorNullIndicator_ = SQL_NULL_DATA;
+        DBUInt32 imageSubstitutionColor_;
         UInt32 transparentColor_ = 0;
         double imageScaleFactorX_ = 0.0;
         double imageOffsetX_ = 0.0;
@@ -22312,11 +21192,9 @@ namespace Barrelman::Data
         UInt32 trackColor_ = 0;
         UInt32 vectorColor_ = 0;
         bool enableNmea_ = false;
-        std::array<wchar_t,101> nmeaReceiverIPAddress_ = {};
-        SQLLEN nmeaReceiverIPAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> nmeaReceiverIPAddress_;
         Int32 nmeaReceiverPort_ = 0;
-        std::array<wchar_t,101> nmeaReceiverSourceId_ = {};
-        SQLLEN nmeaReceiverSourceIdLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> nmeaReceiverSourceId_;
     public:
         using Base = BaseColumnData;
 
@@ -22360,7 +21238,7 @@ namespace Barrelman::Data
             return Kind::RadarConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -22372,11 +21250,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -22384,7 +21262,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -22400,17 +21278,13 @@ namespace Barrelman::Data
         {
             radarProtocolVersion_ = radarProtocolVersion;
         }
-        std::wstring_view RadarIPAddress( ) const
+        const FixedDBWideString<100>& RadarIPAddress( ) const
         {
-            if(radarIPAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(radarIPAddress_.data(),static_cast<size_t>( radarIPAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return radarIPAddress_;
         }
         void SetRadarIPAddress( const WideString& radarIPAddress )
         {
-            Assign(radarIPAddress, radarIPAddress_, radarIPAddressLengthOrNullIndicator_);
+            radarIPAddress_ = radarIPAddress;
         }
         Int32 RadarPort( ) const
         {
@@ -22428,7 +21302,7 @@ namespace Barrelman::Data
         {
             radarConfigurationPort_ = radarConfigurationPort;
         }
-        TimeSpan SkipMagicTimeout( ) const
+        const TimeSpan& SkipMagicTimeout( ) const
         {
             return skipMagicTimeout_;
         }
@@ -22436,7 +21310,7 @@ namespace Barrelman::Data
         {
             skipMagicTimeout_ = skipMagicTimeout;
         }
-        TimeSpan ReadTimeout( ) const
+        const TimeSpan& ReadTimeout( ) const
         {
             return readTimeout_;
         }
@@ -22444,7 +21318,7 @@ namespace Barrelman::Data
         {
             readTimeout_ = readTimeout;
         }
-        TimeSpan SynchronizationInterval( ) const
+        const TimeSpan& SynchronizationInterval( ) const
         {
             return synchronizationInterval_;
         }
@@ -22492,19 +21366,11 @@ namespace Barrelman::Data
         {
             imageColor_ = imageColor;
         }
-        std::optional<UInt32> ImageSubstitutionColor( ) const
+        const DBUInt32& ImageSubstitutionColor( ) const
         {
-            if(imageSubstitutionColorNullIndicator_ != SQL_NULL_DATA)
-            {
-                return imageSubstitutionColor_;
-            }
-            return {};
+            return imageSubstitutionColor_;
         }
-        bool IsImageSubstitutionColorNull( ) const
-        {
-            return imageSubstitutionColorNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetImageSubstitutionColor( UInt32 imageSubstitutionColor )
+        void SetImageSubstitutionColor( const DBUInt32& imageSubstitutionColor )
         {
             imageSubstitutionColor_ = imageSubstitutionColor;
         }
@@ -22580,17 +21446,13 @@ namespace Barrelman::Data
         {
             enableNmea_ = enableNmea;
         }
-        std::wstring_view NmeaReceiverIPAddress( ) const
+        const FixedDBWideString<100>& NmeaReceiverIPAddress( ) const
         {
-            if(nmeaReceiverIPAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(nmeaReceiverIPAddress_.data(),static_cast<size_t>( nmeaReceiverIPAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return nmeaReceiverIPAddress_;
         }
         void SetNmeaReceiverIPAddress( const WideString& nmeaReceiverIPAddress )
         {
-            Assign(nmeaReceiverIPAddress, nmeaReceiverIPAddress_, nmeaReceiverIPAddressLengthOrNullIndicator_);
+            nmeaReceiverIPAddress_ = nmeaReceiverIPAddress;
         }
         Int32 NmeaReceiverPort( ) const
         {
@@ -22600,49 +21462,45 @@ namespace Barrelman::Data
         {
             nmeaReceiverPort_ = nmeaReceiverPort;
         }
-        std::wstring_view NmeaReceiverSourceId( ) const
+        const FixedDBWideString<100>& NmeaReceiverSourceId( ) const
         {
-            if(nmeaReceiverSourceIdLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(nmeaReceiverSourceId_.data(),static_cast<size_t>( nmeaReceiverSourceIdLengthOrNullIndicator_ ));
-            }
-            return {};
+            return nmeaReceiverSourceId_;
         }
         void SetNmeaReceiverSourceId( const WideString& nmeaReceiverSourceId )
         {
-            Assign(nmeaReceiverSourceId, nmeaReceiverSourceId_, nmeaReceiverSourceIdLengthOrNullIndicator_);
+            nmeaReceiverSourceId_ = nmeaReceiverSourceId;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, RADARPROTOCOLVERSION_FIELD_ID, &radarProtocolVersion_);
-            Bind(statement, RADARIPADDRESS_FIELD_ID, &radarIPAddress_, &radarIPAddressLengthOrNullIndicator_);
-            Bind(statement, RADARPORT_FIELD_ID, &radarPort_);
-            Bind(statement, RADARCONFIGURATIONPORT_FIELD_ID, &radarConfigurationPort_);
-            Bind(statement, SKIPMAGICTIMEOUT_FIELD_ID, &skipMagicTimeout_);
-            Bind(statement, READTIMEOUT_FIELD_ID, &readTimeout_);
-            Bind(statement, SYNCHRONIZATIONINTERVAL_FIELD_ID, &synchronizationInterval_);
-            Bind(statement, TARGETSREFRESHRATE_FIELD_ID, &targetsRefreshRate_);
-            Bind(statement, RANGE_FIELD_ID, &range_);
-            Bind(statement, SECTORCOUNT_FIELD_ID, &sectorCount_);
-            Bind(statement, SECTOROFFSET_FIELD_ID, &sectorOffset_);
-            Bind(statement, IMAGECOLOR_FIELD_ID, &imageColor_);
-            Bind(statement, IMAGESUBSTITUTIONCOLOR_FIELD_ID, &imageSubstitutionColor_, &imageSubstitutionColorNullIndicator_);
-            Bind(statement, TRANSPARENTCOLOR_FIELD_ID, &transparentColor_);
-            Bind(statement, IMAGESCALEFACTORX_FIELD_ID, &imageScaleFactorX_);
-            Bind(statement, IMAGEOFFSETX_FIELD_ID, &imageOffsetX_);
-            Bind(statement, IMAGESCALEFACTORY_FIELD_ID, &imageScaleFactorY_);
-            Bind(statement, IMAGEOFFSETY_FIELD_ID, &imageOffsetY_);
-            Bind(statement, RADARIMAGETYPE_FIELD_ID, &radarImageType_);
-            Bind(statement, TRACKCOLOR_FIELD_ID, &trackColor_);
-            Bind(statement, VECTORCOLOR_FIELD_ID, &vectorColor_);
-            Bind(statement, ENABLENMEA_FIELD_ID, &enableNmea_);
-            Bind(statement, NMEARECEIVERIPADDRESS_FIELD_ID, &nmeaReceiverIPAddress_, &nmeaReceiverIPAddressLengthOrNullIndicator_);
-            Bind(statement, NMEARECEIVERPORT_FIELD_ID, &nmeaReceiverPort_);
-            Bind(statement, NMEARECEIVERSOURCEID_FIELD_ID, &nmeaReceiverSourceId_, &nmeaReceiverSourceIdLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, RADARPROTOCOLVERSION_FIELD_ID, radarProtocolVersion_);
+            Bind(statement, RADARIPADDRESS_FIELD_ID, radarIPAddress_);
+            Bind(statement, RADARPORT_FIELD_ID, radarPort_);
+            Bind(statement, RADARCONFIGURATIONPORT_FIELD_ID, radarConfigurationPort_);
+            Bind(statement, SKIPMAGICTIMEOUT_FIELD_ID, skipMagicTimeout_);
+            Bind(statement, READTIMEOUT_FIELD_ID, readTimeout_);
+            Bind(statement, SYNCHRONIZATIONINTERVAL_FIELD_ID, synchronizationInterval_);
+            Bind(statement, TARGETSREFRESHRATE_FIELD_ID, targetsRefreshRate_);
+            Bind(statement, RANGE_FIELD_ID, range_);
+            Bind(statement, SECTORCOUNT_FIELD_ID, sectorCount_);
+            Bind(statement, SECTOROFFSET_FIELD_ID, sectorOffset_);
+            Bind(statement, IMAGECOLOR_FIELD_ID, imageColor_);
+            Bind(statement, IMAGESUBSTITUTIONCOLOR_FIELD_ID, imageSubstitutionColor_);
+            Bind(statement, TRANSPARENTCOLOR_FIELD_ID, transparentColor_);
+            Bind(statement, IMAGESCALEFACTORX_FIELD_ID, imageScaleFactorX_);
+            Bind(statement, IMAGEOFFSETX_FIELD_ID, imageOffsetX_);
+            Bind(statement, IMAGESCALEFACTORY_FIELD_ID, imageScaleFactorY_);
+            Bind(statement, IMAGEOFFSETY_FIELD_ID, imageOffsetY_);
+            Bind(statement, RADARIMAGETYPE_FIELD_ID, radarImageType_);
+            Bind(statement, TRACKCOLOR_FIELD_ID, trackColor_);
+            Bind(statement, VECTORCOLOR_FIELD_ID, vectorColor_);
+            Bind(statement, ENABLENMEA_FIELD_ID, enableNmea_);
+            Bind(statement, NMEARECEIVERIPADDRESS_FIELD_ID, nmeaReceiverIPAddress_);
+            Bind(statement, NMEARECEIVERPORT_FIELD_ID, nmeaReceiverPort_);
+            Bind(statement, NMEARECEIVERSOURCEID_FIELD_ID, nmeaReceiverSourceId_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -22653,7 +21511,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, radar_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, radarProtocolVersion_);
-            WriteColumnValue( destination, radarIPAddress_, radarIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, radarIPAddress_);
             WriteColumnValue( destination, radarPort_);
             WriteColumnValue( destination, radarConfigurationPort_);
             WriteColumnValue( destination, skipMagicTimeout_);
@@ -22664,7 +21522,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, sectorCount_);
             WriteColumnValue( destination, sectorOffset_);
             WriteColumnValue( destination, imageColor_);
-            WriteColumnValue( destination, imageSubstitutionColor_, imageSubstitutionColorNullIndicator_);
+            WriteColumnValue( destination, imageSubstitutionColor_);
             WriteColumnValue( destination, transparentColor_);
             WriteColumnValue( destination, imageScaleFactorX_);
             WriteColumnValue( destination, imageOffsetX_);
@@ -22674,9 +21532,9 @@ namespace Barrelman::Data
             WriteColumnValue( destination, trackColor_);
             WriteColumnValue( destination, vectorColor_);
             WriteColumnValue( destination, enableNmea_);
-            WriteColumnValue( destination, nmeaReceiverIPAddress_, nmeaReceiverIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, nmeaReceiverIPAddress_);
             WriteColumnValue( destination, nmeaReceiverPort_);
-            WriteColumnValue( destination, nmeaReceiverSourceId_, nmeaReceiverSourceIdLengthOrNullIndicator_);
+            WriteColumnValue( destination, nmeaReceiverSourceId_);
         }
     };
 
@@ -22691,8 +21549,8 @@ namespace Barrelman::Data
         UInt32 depth_ = 0;
         Int32 resolution_ = 0;
         Int32 range_ = 0;
-        std::vector<Byte> image_;
-        SQLLEN imageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary image_;
+        SQLLEN imageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -22715,7 +21573,7 @@ namespace Barrelman::Data
             return Kind::RadarImage;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -22727,11 +21585,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -22739,7 +21597,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -22771,23 +21629,23 @@ namespace Barrelman::Data
         {
             range_ = range;
         }
-        const std::vector<Byte>& Image( ) const
+        const Binary& Image( ) const
         {
             return image_;
         }
-        void SetImage( const std::vector<Byte>& image )
+        void SetImage( const Binary& image )
         {
-            Assign(image, image_, imageLengthOrNullIndicator_);
+            image_ = image;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEPTH_FIELD_ID, &depth_);
-            Bind(statement, RESOLUTION_FIELD_ID, &resolution_);
-            Bind(statement, RANGE_FIELD_ID, &range_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEPTH_FIELD_ID, depth_);
+            Bind(statement, RESOLUTION_FIELD_ID, resolution_);
+            Bind(statement, RANGE_FIELD_ID, range_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -22806,7 +21664,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, depth_);
             WriteColumnValue( destination, resolution_);
             WriteColumnValue( destination, range_);
-            WriteColumnValue( destination, image_, imageLengthOrNullIndicator_);
+            WriteColumnValue( destination, image_);
         }
     };
 
@@ -22819,8 +21677,8 @@ namespace Barrelman::Data
         Guid radar_;
         DateTime timestamp_;
         Int32 count_ = 0;
-        std::vector<Byte> table_;
-        SQLLEN tableLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary table_;
+        SQLLEN tableLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -22841,7 +21699,7 @@ namespace Barrelman::Data
             return Kind::RadarRawTrackTable;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -22853,11 +21711,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -22865,7 +21723,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -22881,21 +21739,21 @@ namespace Barrelman::Data
         {
             count_ = count;
         }
-        const std::vector<Byte>& Table( ) const
+        const Binary& Table( ) const
         {
             return table_;
         }
-        void SetTable( const std::vector<Byte>& table )
+        void SetTable( const Binary& table )
         {
-            Assign(table, table_, tableLengthOrNullIndicator_);
+            table_ = table;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COUNT_FIELD_ID, &count_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COUNT_FIELD_ID, count_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -22912,7 +21770,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, radar_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, count_);
-            WriteColumnValue( destination, table_, tableLengthOrNullIndicator_);
+            WriteColumnValue( destination, table_);
         }
     };
 
@@ -22954,7 +21812,7 @@ namespace Barrelman::Data
             return Kind::RadarStatus;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -22966,11 +21824,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -22978,7 +21836,7 @@ namespace Barrelman::Data
         {
             radar_ = radar;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23002,7 +21860,7 @@ namespace Barrelman::Data
         {
             triggerCount_ = triggerCount;
         }
-        TimeSpan RotationTime( ) const
+        const TimeSpan& RotationTime( ) const
         {
             return rotationTime_;
         }
@@ -23036,16 +21894,16 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADAR_FIELD_ID, &radar_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, AZIMUTHCOUNT_FIELD_ID, &azimuthCount_);
-            Bind(statement, TRIGGERCOUNT_FIELD_ID, &triggerCount_);
-            Bind(statement, ROTATIONTIME_FIELD_ID, &rotationTime_);
-            Bind(statement, PULSE_FIELD_ID, &pulse_);
-            Bind(statement, TX_FIELD_ID, &tx_);
-            Bind(statement, TRACKING_FIELD_ID, &tracking_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, AZIMUTHCOUNT_FIELD_ID, azimuthCount_);
+            Bind(statement, TRIGGERCOUNT_FIELD_ID, triggerCount_);
+            Bind(statement, ROTATIONTIME_FIELD_ID, rotationTime_);
+            Bind(statement, PULSE_FIELD_ID, pulse_);
+            Bind(statement, TX_FIELD_ID, tx_);
+            Bind(statement, TRACKING_FIELD_ID, tracking_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -23096,7 +21954,7 @@ namespace Barrelman::Data
             return Kind::RadioCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23108,11 +21966,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radio( ) const
+        const Guid& Radio( ) const
         {
             return radio_;
         }
@@ -23120,7 +21978,7 @@ namespace Barrelman::Data
         {
             radio_ = radio;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23136,7 +21994,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -23144,7 +22002,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -23154,13 +22012,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADIO_FIELD_ID, &radio_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADIO_FIELD_ID, radio_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -23187,7 +22045,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -23209,7 +22067,7 @@ namespace Barrelman::Data
             return Kind::RadioCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23221,11 +22079,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radio( ) const
+        const Guid& Radio( ) const
         {
             return radio_;
         }
@@ -23233,7 +22091,7 @@ namespace Barrelman::Data
         {
             radio_ = radio;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23241,7 +22099,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -23263,16 +22121,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADIO_FIELD_ID, &radio_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADIO_FIELD_ID, radio_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -23290,7 +22148,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -23304,13 +22162,10 @@ namespace Barrelman::Data
         DateTime timestamp_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
-        std::array<wchar_t,101> playbackUrl_ = {};
-        SQLLEN playbackUrlLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,101> radioIPAddress_ = {};
-        SQLLEN radioIPAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> playbackUrl_;
+        FixedDBWideString<100> radioIPAddress_;
         Int32 radioPort_ = 0;
-        std::array<wchar_t,101> ed137IPAddress_ = {};
-        SQLLEN ed137IPAddressLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> ed137IPAddress_;
         Int32 ed137Port_ = 0;
     public:
         using Base = BaseColumnData;
@@ -23337,7 +22192,7 @@ namespace Barrelman::Data
             return Kind::RadioConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23349,11 +22204,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radio( ) const
+        const Guid& Radio( ) const
         {
             return radio_;
         }
@@ -23361,7 +22216,7 @@ namespace Barrelman::Data
         {
             radio_ = radio;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23385,29 +22240,21 @@ namespace Barrelman::Data
         {
             latitude_ = latitude;
         }
-        std::wstring_view PlaybackUrl( ) const
+        const FixedDBWideString<100>& PlaybackUrl( ) const
         {
-            if(playbackUrlLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(playbackUrl_.data(),static_cast<size_t>( playbackUrlLengthOrNullIndicator_ ));
-            }
-            return {};
+            return playbackUrl_;
         }
         void SetPlaybackUrl( const WideString& playbackUrl )
         {
-            Assign(playbackUrl, playbackUrl_, playbackUrlLengthOrNullIndicator_);
+            playbackUrl_ = playbackUrl;
         }
-        std::wstring_view RadioIPAddress( ) const
+        const FixedDBWideString<100>& RadioIPAddress( ) const
         {
-            if(radioIPAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(radioIPAddress_.data(),static_cast<size_t>( radioIPAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return radioIPAddress_;
         }
         void SetRadioIPAddress( const WideString& radioIPAddress )
         {
-            Assign(radioIPAddress, radioIPAddress_, radioIPAddressLengthOrNullIndicator_);
+            radioIPAddress_ = radioIPAddress;
         }
         Int32 RadioPort( ) const
         {
@@ -23417,17 +22264,13 @@ namespace Barrelman::Data
         {
             radioPort_ = radioPort;
         }
-        std::wstring_view Ed137IPAddress( ) const
+        const FixedDBWideString<100>& Ed137IPAddress( ) const
         {
-            if(ed137IPAddressLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(ed137IPAddress_.data(),static_cast<size_t>( ed137IPAddressLengthOrNullIndicator_ ));
-            }
-            return {};
+            return ed137IPAddress_;
         }
         void SetEd137IPAddress( const WideString& ed137IPAddress )
         {
-            Assign(ed137IPAddress, ed137IPAddress_, ed137IPAddressLengthOrNullIndicator_);
+            ed137IPAddress_ = ed137IPAddress;
         }
         Int32 Ed137Port( ) const
         {
@@ -23439,17 +22282,17 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADIO_FIELD_ID, &radio_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, PLAYBACKURL_FIELD_ID, &playbackUrl_, &playbackUrlLengthOrNullIndicator_);
-            Bind(statement, RADIOIPADDRESS_FIELD_ID, &radioIPAddress_, &radioIPAddressLengthOrNullIndicator_);
-            Bind(statement, RADIOPORT_FIELD_ID, &radioPort_);
-            Bind(statement, ED137IPADDRESS_FIELD_ID, &ed137IPAddress_, &ed137IPAddressLengthOrNullIndicator_);
-            Bind(statement, ED137PORT_FIELD_ID, &ed137Port_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADIO_FIELD_ID, radio_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, PLAYBACKURL_FIELD_ID, playbackUrl_);
+            Bind(statement, RADIOIPADDRESS_FIELD_ID, radioIPAddress_);
+            Bind(statement, RADIOPORT_FIELD_ID, radioPort_);
+            Bind(statement, ED137IPADDRESS_FIELD_ID, ed137IPAddress_);
+            Bind(statement, ED137PORT_FIELD_ID, ed137Port_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -23461,10 +22304,10 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
-            WriteColumnValue( destination, playbackUrl_, playbackUrlLengthOrNullIndicator_);
-            WriteColumnValue( destination, radioIPAddress_, radioIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, playbackUrl_);
+            WriteColumnValue( destination, radioIPAddress_);
             WriteColumnValue( destination, radioPort_);
-            WriteColumnValue( destination, ed137IPAddress_, ed137IPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, ed137IPAddress_);
             WriteColumnValue( destination, ed137Port_);
         }
     };
@@ -23501,7 +22344,7 @@ namespace Barrelman::Data
             return Kind::RadomeCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23513,11 +22356,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -23525,7 +22368,7 @@ namespace Barrelman::Data
         {
             radome_ = radome;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23541,7 +22384,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -23549,7 +22392,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -23559,13 +22402,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADOME_FIELD_ID, &radome_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -23592,7 +22435,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -23614,7 +22457,7 @@ namespace Barrelman::Data
             return Kind::RadomeCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23626,11 +22469,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -23638,7 +22481,7 @@ namespace Barrelman::Data
         {
             radome_ = radome;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23646,7 +22489,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -23668,16 +22511,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADOME_FIELD_ID, &radome_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -23695,7 +22538,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -23735,7 +22578,7 @@ namespace Barrelman::Data
             return Kind::RadomeConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23747,11 +22590,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -23759,7 +22602,7 @@ namespace Barrelman::Data
         {
             radome_ = radome;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23767,7 +22610,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        TimeSpan Interval( ) const
+        const TimeSpan& Interval( ) const
         {
             return interval_;
         }
@@ -23809,15 +22652,15 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, RADOME_FIELD_ID, &radome_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, INTERVAL_FIELD_ID, &interval_);
-            Bind(statement, LOWPRESSURELIMIT_FIELD_ID, &lowPressureLimit_);
-            Bind(statement, HIGHPRESSURELIMIT_FIELD_ID, &highPressureLimit_);
-            Bind(statement, LOWTEMPERATURELIMIT_FIELD_ID, &lowTemperatureLimit_);
-            Bind(statement, HIGHTEMPERATURELIMIT_FIELD_ID, &highTemperatureLimit_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, INTERVAL_FIELD_ID, interval_);
+            Bind(statement, LOWPRESSURELIMIT_FIELD_ID, lowPressureLimit_);
+            Bind(statement, HIGHPRESSURELIMIT_FIELD_ID, highPressureLimit_);
+            Bind(statement, LOWTEMPERATURELIMIT_FIELD_ID, lowTemperatureLimit_);
+            Bind(statement, HIGHTEMPERATURELIMIT_FIELD_ID, highTemperatureLimit_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -23863,7 +22706,7 @@ namespace Barrelman::Data
             return Kind::ReferenceTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23875,11 +22718,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -23887,7 +22730,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23895,7 +22738,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Value( ) const
+        const Guid& Value( ) const
         {
             return value_;
         }
@@ -23905,11 +22748,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -23931,8 +22774,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        SByte value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBSByte value_;
     public:
         using Base = BaseColumnData;
 
@@ -23952,7 +22794,7 @@ namespace Barrelman::Data
             return Kind::SByteTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -23964,11 +22806,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -23976,7 +22818,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -23984,29 +22826,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<SByte> Value( ) const
+        const DBSByte& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( SByte value )
+        void SetValue( const DBSByte& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -24016,7 +22850,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -24026,10 +22860,9 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -24048,7 +22881,7 @@ namespace Barrelman::Data
             return Kind::SecurityDomain;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24060,21 +22893,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         const WideString& Description( ) const
         {
@@ -24082,13 +22911,13 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -24102,8 +22931,8 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, description_);
         }
     };
 
@@ -24114,10 +22943,9 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid domain_;
-        std::array<wchar_t,256> identity_ = {};
-        SQLLEN identityLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<255> identity_;
         WideString description_;
-        SQLLEN descriptionLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -24137,7 +22965,7 @@ namespace Barrelman::Data
             return Kind::SecurityIdentifier;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24149,11 +22977,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Domain( ) const
+        const Guid& Domain( ) const
         {
             return domain_;
         }
@@ -24161,17 +22989,13 @@ namespace Barrelman::Data
         {
             domain_ = domain;
         }
-        std::wstring_view Identity( ) const
+        const FixedDBWideString<255>& Identity( ) const
         {
-            if(identityLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(identity_.data(),static_cast<size_t>( identityLengthOrNullIndicator_ ));
-            }
-            return {};
+            return identity_;
         }
         void SetIdentity( const WideString& identity )
         {
-            Assign(identity, identity_, identityLengthOrNullIndicator_);
+            identity_ = identity;
         }
         const WideString& Description( ) const
         {
@@ -24179,14 +23003,14 @@ namespace Barrelman::Data
         }
         void SetDescription( const WideString& description )
         {
-            Assign(description, description_, descriptionLengthOrNullIndicator_);
+            description_ = description;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, DOMAIN_FIELD_ID, &domain_);
-            Bind(statement, IDENTITY_FIELD_ID, &identity_, &identityLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, DOMAIN_FIELD_ID, domain_);
+            Bind(statement, IDENTITY_FIELD_ID, identity_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -24201,8 +23025,8 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, domain_);
-            WriteColumnValue( destination, identity_, identityLengthOrNullIndicator_);
-            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, identity_);
+            WriteColumnValue( destination, description_);
         }
     };
 
@@ -24234,8 +23058,7 @@ namespace Barrelman::Data
 
     class SecurityRoleColumnData : public SecurityIdentifierColumnData
     {
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = SecurityIdentifierColumnData;
 
@@ -24251,30 +23074,26 @@ namespace Barrelman::Data
             return Kind::SecurityRole;
         }
 
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Base::BindColumns( statement );
 
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -24287,8 +23106,7 @@ namespace Barrelman::Data
         Guid member_;
         Guid role_;
         DateTime start_;
-        DateTime end_;
-        SQLLEN endNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime end_;
     public:
         using Base = BaseColumnData;
 
@@ -24309,7 +23127,7 @@ namespace Barrelman::Data
             return Kind::SecurityIdentifierRoleLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24321,11 +23139,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Member( ) const
+        const Guid& Member( ) const
         {
             return member_;
         }
@@ -24333,7 +23151,7 @@ namespace Barrelman::Data
         {
             member_ = member;
         }
-        Guid Role( ) const
+        const Guid& Role( ) const
         {
             return role_;
         }
@@ -24341,7 +23159,7 @@ namespace Barrelman::Data
         {
             role_ = role;
         }
-        DateTime Start( ) const
+        const DateTime& Start( ) const
         {
             return start_;
         }
@@ -24349,30 +23167,22 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        std::optional<DateTime> End( ) const
+        const DBDateTime& End( ) const
         {
-            if(endNullIndicator_ != SQL_NULL_DATA)
-            {
-                return end_;
-            }
-            return {};
+            return end_;
         }
-        bool IsEndNull( ) const
-        {
-            return endNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnd( const DateTime& end )
+        void SetEnd( const DBDateTime& end )
         {
             end_ = end;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, MEMBER_FIELD_ID, &member_);
-            Bind(statement, ROLE_FIELD_ID, &role_);
-            Bind(statement, START_FIELD_ID, &start_);
-            Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, MEMBER_FIELD_ID, member_);
+            Bind(statement, ROLE_FIELD_ID, role_);
+            Bind(statement, START_FIELD_ID, start_);
+            Bind(statement, END_FIELD_ID, end_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -24383,7 +23193,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, member_);
             WriteColumnValue( destination, role_);
             WriteColumnValue( destination, start_);
-            WriteColumnValue( destination, end_, endNullIndicator_);
+            WriteColumnValue( destination, end_);
         }
     };
 
@@ -24395,13 +23205,10 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid login_;
         DateTime fromTime_;
-        DateTime throughTime_;
-        SQLLEN throughTimeNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime throughTime_;
         Guid clientSession_;
-        std::array<wchar_t,261> notificationQueueName_ = {};
-        SQLLEN notificationQueueNameLengthOrNullIndicator_ = SQL_NULL_DATA;
-        std::array<wchar_t,261> messageQueueName_ = {};
-        SQLLEN messageQueueNameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<260> notificationQueueName_;
+        FixedDBWideString<260> messageQueueName_;
     public:
         using Base = BaseColumnData;
 
@@ -24424,7 +23231,7 @@ namespace Barrelman::Data
             return Kind::SecurityLoginSession;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24436,11 +23243,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Login( ) const
+        const Guid& Login( ) const
         {
             return login_;
         }
@@ -24448,7 +23255,7 @@ namespace Barrelman::Data
         {
             login_ = login;
         }
-        DateTime FromTime( ) const
+        const DateTime& FromTime( ) const
         {
             return fromTime_;
         }
@@ -24456,23 +23263,15 @@ namespace Barrelman::Data
         {
             fromTime_ = fromTime;
         }
-        std::optional<DateTime> ThroughTime( ) const
+        const DBDateTime& ThroughTime( ) const
         {
-            if(throughTimeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return throughTime_;
-            }
-            return {};
+            return throughTime_;
         }
-        bool IsThroughTimeNull( ) const
-        {
-            return throughTimeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetThroughTime( const DateTime& throughTime )
+        void SetThroughTime( const DBDateTime& throughTime )
         {
             throughTime_ = throughTime;
         }
-        Guid ClientSession( ) const
+        const Guid& ClientSession( ) const
         {
             return clientSession_;
         }
@@ -24480,40 +23279,32 @@ namespace Barrelman::Data
         {
             clientSession_ = clientSession;
         }
-        std::wstring_view NotificationQueueName( ) const
+        const FixedDBWideString<260>& NotificationQueueName( ) const
         {
-            if(notificationQueueNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(notificationQueueName_.data(),static_cast<size_t>( notificationQueueNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return notificationQueueName_;
         }
         void SetNotificationQueueName( const WideString& notificationQueueName )
         {
-            Assign(notificationQueueName, notificationQueueName_, notificationQueueNameLengthOrNullIndicator_);
+            notificationQueueName_ = notificationQueueName;
         }
-        std::wstring_view MessageQueueName( ) const
+        const FixedDBWideString<260>& MessageQueueName( ) const
         {
-            if(messageQueueNameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(messageQueueName_.data(),static_cast<size_t>( messageQueueNameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return messageQueueName_;
         }
         void SetMessageQueueName( const WideString& messageQueueName )
         {
-            Assign(messageQueueName, messageQueueName_, messageQueueNameLengthOrNullIndicator_);
+            messageQueueName_ = messageQueueName;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, LOGIN_FIELD_ID, &login_);
-            Bind(statement, FROMTIME_FIELD_ID, &fromTime_);
-            Bind(statement, THROUGHTIME_FIELD_ID, &throughTime_, &throughTimeNullIndicator_);
-            Bind(statement, CLIENTSESSION_FIELD_ID, &clientSession_);
-            Bind(statement, NOTIFICATIONQUEUENAME_FIELD_ID, &notificationQueueName_, &notificationQueueNameLengthOrNullIndicator_);
-            Bind(statement, MESSAGEQUEUENAME_FIELD_ID, &messageQueueName_, &messageQueueNameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, LOGIN_FIELD_ID, login_);
+            Bind(statement, FROMTIME_FIELD_ID, fromTime_);
+            Bind(statement, THROUGHTIME_FIELD_ID, throughTime_);
+            Bind(statement, CLIENTSESSION_FIELD_ID, clientSession_);
+            Bind(statement, NOTIFICATIONQUEUENAME_FIELD_ID, notificationQueueName_);
+            Bind(statement, MESSAGEQUEUENAME_FIELD_ID, messageQueueName_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -24523,10 +23314,10 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, login_);
             WriteColumnValue( destination, fromTime_);
-            WriteColumnValue( destination, throughTime_, throughTimeNullIndicator_);
+            WriteColumnValue( destination, throughTime_);
             WriteColumnValue( destination, clientSession_);
-            WriteColumnValue( destination, notificationQueueName_, notificationQueueNameLengthOrNullIndicator_);
-            WriteColumnValue( destination, messageQueueName_, messageQueueNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, notificationQueueName_);
+            WriteColumnValue( destination, messageQueueName_);
         }
     };
 
@@ -24566,7 +23357,7 @@ namespace Barrelman::Data
             return Kind::SecurityPermission;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24578,11 +23369,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Identifier( ) const
+        const Guid& Identifier( ) const
         {
             return identifier_;
         }
@@ -24590,7 +23381,7 @@ namespace Barrelman::Data
         {
             identifier_ = identifier;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -24640,15 +23431,15 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, IDENTIFIER_FIELD_ID, &identifier_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, TYPECODE_FIELD_ID, &typeCode_);
-            Bind(statement, CANCREATE_FIELD_ID, &canCreate_);
-            Bind(statement, CANREAD_FIELD_ID, &canRead_);
-            Bind(statement, CANUPDATE_FIELD_ID, &canUpdate_);
-            Bind(statement, CANDELETE_FIELD_ID, &canDelete_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, IDENTIFIER_FIELD_ID, identifier_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, TYPECODE_FIELD_ID, typeCode_);
+            Bind(statement, CANCREATE_FIELD_ID, canCreate_);
+            Bind(statement, CANREAD_FIELD_ID, canRead_);
+            Bind(statement, CANUPDATE_FIELD_ID, canUpdate_);
+            Bind(statement, CANDELETE_FIELD_ID, canDelete_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -24674,8 +23465,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        float value_ = 0.0f;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBSingle value_;
     public:
         using Base = BaseColumnData;
 
@@ -24695,7 +23485,7 @@ namespace Barrelman::Data
             return Kind::SingleTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24707,11 +23497,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -24719,7 +23509,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -24727,29 +23517,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<float> Value( ) const
+        const DBSingle& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( float value )
+        void SetValue( const DBSingle& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -24759,7 +23541,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -24772,7 +23554,7 @@ namespace Barrelman::Data
         Guid timeseries_;
         DateTime timestamp_;
         WideString value_;
-        SQLLEN valueLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN valueLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -24792,7 +23574,7 @@ namespace Barrelman::Data
             return Kind::StringTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24804,11 +23586,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -24816,7 +23598,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -24830,14 +23612,14 @@ namespace Barrelman::Data
         }
         void SetValue( const WideString& value )
         {
-            Assign(value, value_, valueLengthOrNullIndicator_);
+            value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -24853,7 +23635,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -24864,8 +23646,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid catalog_;
-        std::array<wchar_t,101> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> name_;
     public:
         using Base = BaseColumnData;
 
@@ -24884,7 +23665,7 @@ namespace Barrelman::Data
             return Kind::TimeseriesCatalogElement;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -24896,11 +23677,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Catalog( ) const
+        const Guid& Catalog( ) const
         {
             return catalog_;
         }
@@ -24908,24 +23689,20 @@ namespace Barrelman::Data
         {
             catalog_ = catalog;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<100>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, CATALOG_FIELD_ID, &catalog_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, CATALOG_FIELD_ID, catalog_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -24934,7 +23711,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, catalog_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -24958,7 +23735,7 @@ namespace Barrelman::Data
             return Kind::Timeseries;
         }
 
-        TimeSpan MaxRetention( ) const
+        const TimeSpan& MaxRetention( ) const
         {
             return maxRetention_;
         }
@@ -24970,7 +23747,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, MAXRETENTION_FIELD_ID, &maxRetention_);
+            Bind(statement, MAXRETENTION_FIELD_ID, maxRetention_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25049,7 +23826,7 @@ namespace Barrelman::Data
             return Kind::AisAidToNavigationOffPositionTimeseries;
         }
 
-        Guid AidToNavigation( ) const
+        const Guid& AidToNavigation( ) const
         {
             return aidToNavigation_;
         }
@@ -25061,7 +23838,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, AIDTONAVIGATION_FIELD_ID, &aidToNavigation_);
+            Bind(statement, AIDTONAVIGATION_FIELD_ID, aidToNavigation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25092,7 +23869,7 @@ namespace Barrelman::Data
             return Kind::DeviceEnabledTimeseries;
         }
 
-        Guid Device( ) const
+        const Guid& Device( ) const
         {
             return device_;
         }
@@ -25104,7 +23881,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, DEVICE_FIELD_ID, &device_);
+            Bind(statement, DEVICE_FIELD_ID, device_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25135,7 +23912,7 @@ namespace Barrelman::Data
             return Kind::RadarAutomaticSensitivityTimeControlTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25147,7 +23924,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25178,7 +23955,7 @@ namespace Barrelman::Data
             return Kind::RadarBlankSector1Timeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25190,7 +23967,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25221,7 +23998,7 @@ namespace Barrelman::Data
             return Kind::RadarBlankSector2Timeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25233,7 +24010,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25264,7 +24041,7 @@ namespace Barrelman::Data
             return Kind::RadarEnableAutomaticFrequencyControlTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25276,7 +24053,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25307,7 +24084,7 @@ namespace Barrelman::Data
             return Kind::RadarEnableFastTimeConstantTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25319,7 +24096,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25350,7 +24127,7 @@ namespace Barrelman::Data
             return Kind::RadarEnableSensitivityTimeControlTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25362,7 +24139,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25393,7 +24170,7 @@ namespace Barrelman::Data
             return Kind::RadarPowerOnTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25405,7 +24182,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25436,7 +24213,7 @@ namespace Barrelman::Data
             return Kind::RadarSaveSettingsTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25448,7 +24225,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25479,7 +24256,7 @@ namespace Barrelman::Data
             return Kind::RadarTrackingTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -25491,7 +24268,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25522,7 +24299,7 @@ namespace Barrelman::Data
             return Kind::MediaProxySessionEnabledTimeseries;
         }
 
-        Guid ProxySession( ) const
+        const Guid& ProxySession( ) const
         {
             return proxySession_;
         }
@@ -25534,7 +24311,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, PROXYSESSION_FIELD_ID, &proxySession_);
+            Bind(statement, PROXYSESSION_FIELD_ID, proxySession_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25565,7 +24342,7 @@ namespace Barrelman::Data
             return Kind::MediaServiceEnabledTimeseries;
         }
 
-        Guid Service( ) const
+        const Guid& Service( ) const
         {
             return service_;
         }
@@ -25577,7 +24354,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, SERVICE_FIELD_ID, &service_);
+            Bind(statement, SERVICE_FIELD_ID, service_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25680,7 +24457,7 @@ namespace Barrelman::Data
             return Kind::GNSSAltitudeTimeseries;
         }
 
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -25692,7 +24469,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25723,7 +24500,7 @@ namespace Barrelman::Data
             return Kind::GNSSLatitudeTimeseries;
         }
 
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -25735,7 +24512,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25766,7 +24543,7 @@ namespace Barrelman::Data
             return Kind::GNSSLongitudeTimeseries;
         }
 
-        Guid GNSSDevice( ) const
+        const Guid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
@@ -25778,7 +24555,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
+            Bind(statement, GNSSDEVICE_FIELD_ID, gNSSDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25809,7 +24586,7 @@ namespace Barrelman::Data
             return Kind::GyroCourseTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -25821,7 +24598,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25852,7 +24629,7 @@ namespace Barrelman::Data
             return Kind::GyroHeadingMagneticNorthTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -25864,7 +24641,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25895,7 +24672,7 @@ namespace Barrelman::Data
             return Kind::GyroHeadingTrueNorthTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -25907,7 +24684,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25938,7 +24715,7 @@ namespace Barrelman::Data
             return Kind::GyroPitchTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -25950,7 +24727,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -25981,7 +24758,7 @@ namespace Barrelman::Data
             return Kind::GyroRateOfTurnTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -25993,7 +24770,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26024,7 +24801,7 @@ namespace Barrelman::Data
             return Kind::GyroRollTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -26036,7 +24813,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26067,7 +24844,7 @@ namespace Barrelman::Data
             return Kind::GyroSpeedTimeseries;
         }
 
-        Guid GyroDevice( ) const
+        const Guid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
@@ -26079,7 +24856,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
+            Bind(statement, GYRODEVICE_FIELD_ID, gyroDevice_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26110,7 +24887,7 @@ namespace Barrelman::Data
             return Kind::RadarLatitudeTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -26122,7 +24899,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26153,7 +24930,7 @@ namespace Barrelman::Data
             return Kind::RadarLongitudeTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -26165,7 +24942,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26196,7 +24973,7 @@ namespace Barrelman::Data
             return Kind::RadomeDewPointTimeseries;
         }
 
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -26208,7 +24985,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADOME_FIELD_ID, &radome_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26239,7 +25016,7 @@ namespace Barrelman::Data
             return Kind::RadomePressureTimeseries;
         }
 
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -26251,7 +25028,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADOME_FIELD_ID, &radome_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26282,7 +25059,7 @@ namespace Barrelman::Data
             return Kind::RadomeTemperatureTimeseries;
         }
 
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -26294,7 +25071,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADOME_FIELD_ID, &radome_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26325,7 +25102,7 @@ namespace Barrelman::Data
             return Kind::VesselDraughtTimeseries;
         }
 
-        Guid Vessel( ) const
+        const Guid& Vessel( ) const
         {
             return vessel_;
         }
@@ -26337,7 +25114,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VESSEL_FIELD_ID, &vessel_);
+            Bind(statement, VESSEL_FIELD_ID, vessel_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26368,7 +25145,7 @@ namespace Barrelman::Data
             return Kind::ViewLatitudeTimeseries;
         }
 
-        Guid View( ) const
+        const Guid& View( ) const
         {
             return view_;
         }
@@ -26380,7 +25157,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VIEW_FIELD_ID, &view_);
+            Bind(statement, VIEW_FIELD_ID, view_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26411,7 +25188,7 @@ namespace Barrelman::Data
             return Kind::ViewLongitudeTimeseries;
         }
 
-        Guid View( ) const
+        const Guid& View( ) const
         {
             return view_;
         }
@@ -26423,7 +25200,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VIEW_FIELD_ID, &view_);
+            Bind(statement, VIEW_FIELD_ID, view_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26454,7 +25231,7 @@ namespace Barrelman::Data
             return Kind::ViewZoomLevelTimeseries;
         }
 
-        Guid View( ) const
+        const Guid& View( ) const
         {
             return view_;
         }
@@ -26466,7 +25243,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VIEW_FIELD_ID, &view_);
+            Bind(statement, VIEW_FIELD_ID, view_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26497,7 +25274,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationAbsoluteHumidityTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26509,7 +25286,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26540,7 +25317,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationAirTemperatureTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26552,7 +25329,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26583,7 +25360,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationBarometricPressureTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26595,7 +25372,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26626,7 +25403,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationDewPointTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26638,7 +25415,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26669,7 +25446,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationRelativeHumidityTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26681,7 +25458,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26712,7 +25489,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationWaterTemperatureTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26724,7 +25501,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26755,7 +25532,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationWindDirectionTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26767,7 +25544,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26798,7 +25575,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationWindSpeedTimeseries;
         }
 
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -26810,7 +25587,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -26865,7 +25642,7 @@ namespace Barrelman::Data
             return Kind::AisAidToNavigationPositionTimeseries;
         }
 
-        Guid AidToNavigation( ) const
+        const Guid& AidToNavigation( ) const
         {
             return aidToNavigation_;
         }
@@ -26877,7 +25654,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, AIDTONAVIGATION_FIELD_ID, &aidToNavigation_);
+            Bind(statement, AIDTONAVIGATION_FIELD_ID, aidToNavigation_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27004,7 +25781,7 @@ namespace Barrelman::Data
             return Kind::RadarAzimuthOffsetTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27016,7 +25793,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27047,7 +25824,7 @@ namespace Barrelman::Data
             return Kind::RadarFastTimeConstantLevelTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27059,7 +25836,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27090,7 +25867,7 @@ namespace Barrelman::Data
             return Kind::RadarFastTimeConstantModeTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27102,7 +25879,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27133,7 +25910,7 @@ namespace Barrelman::Data
             return Kind::RadarPulseTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27145,7 +25922,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27176,7 +25953,7 @@ namespace Barrelman::Data
             return Kind::RadarSector1EndTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27188,7 +25965,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27219,7 +25996,7 @@ namespace Barrelman::Data
             return Kind::RadarSector1StartTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27231,7 +26008,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27262,7 +26039,7 @@ namespace Barrelman::Data
             return Kind::RadarSector2EndTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27274,7 +26051,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27305,7 +26082,7 @@ namespace Barrelman::Data
             return Kind::RadarSector2StartTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27317,7 +26094,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27348,7 +26125,7 @@ namespace Barrelman::Data
             return Kind::RadarSensitivityTimeControlLevelTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27360,7 +26137,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27391,7 +26168,7 @@ namespace Barrelman::Data
             return Kind::RadarTuningTimeseries;
         }
 
-        Guid Radar( ) const
+        const Guid& Radar( ) const
         {
             return radar_;
         }
@@ -27403,7 +26180,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADAR_FIELD_ID, &radar_);
+            Bind(statement, RADAR_FIELD_ID, radar_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27434,7 +26211,7 @@ namespace Barrelman::Data
             return Kind::VesselPersonsOnBoardTimeseries;
         }
 
-        Guid Vessel( ) const
+        const Guid& Vessel( ) const
         {
             return vessel_;
         }
@@ -27446,7 +26223,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, VESSEL_FIELD_ID, &vessel_);
+            Bind(statement, VESSEL_FIELD_ID, vessel_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27717,7 +26494,7 @@ namespace Barrelman::Data
             return Kind::RadomeStatusTimeseries;
         }
 
-        Guid Radome( ) const
+        const Guid& Radome( ) const
         {
             return radome_;
         }
@@ -27729,7 +26506,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADOME_FIELD_ID, &radome_);
+            Bind(statement, RADOME_FIELD_ID, radome_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27794,10 +26571,8 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        DateTime firstTimestamp_;
-        SQLLEN firstTimestampNullIndicator_ = SQL_NULL_DATA;
-        DateTime lastTimestamp_;
-        SQLLEN lastTimestampNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime firstTimestamp_;
+        DBDateTime lastTimestamp_;
         Int64 count_ = 0;
     public:
         using Base = BaseColumnData;
@@ -27818,7 +26593,7 @@ namespace Barrelman::Data
             return Kind::TimeseriesInfo;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -27830,39 +26605,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::optional<DateTime> FirstTimestamp( ) const
+        const DBDateTime& FirstTimestamp( ) const
         {
-            if(firstTimestampNullIndicator_ != SQL_NULL_DATA)
-            {
-                return firstTimestamp_;
-            }
-            return {};
+            return firstTimestamp_;
         }
-        bool IsFirstTimestampNull( ) const
-        {
-            return firstTimestampNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetFirstTimestamp( const DateTime& firstTimestamp )
+        void SetFirstTimestamp( const DBDateTime& firstTimestamp )
         {
             firstTimestamp_ = firstTimestamp;
         }
-        std::optional<DateTime> LastTimestamp( ) const
+        const DBDateTime& LastTimestamp( ) const
         {
-            if(lastTimestampNullIndicator_ != SQL_NULL_DATA)
-            {
-                return lastTimestamp_;
-            }
-            return {};
+            return lastTimestamp_;
         }
-        bool IsLastTimestampNull( ) const
-        {
-            return lastTimestampNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLastTimestamp( const DateTime& lastTimestamp )
+        void SetLastTimestamp( const DBDateTime& lastTimestamp )
         {
             lastTimestamp_ = lastTimestamp;
         }
@@ -27876,11 +26635,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, FIRSTTIMESTAMP_FIELD_ID, &firstTimestamp_, &firstTimestampNullIndicator_);
-            Bind(statement, LASTTIMESTAMP_FIELD_ID, &lastTimestamp_, &lastTimestampNullIndicator_);
-            Bind(statement, COUNT_FIELD_ID, &count_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, FIRSTTIMESTAMP_FIELD_ID, firstTimestamp_);
+            Bind(statement, LASTTIMESTAMP_FIELD_ID, lastTimestamp_);
+            Bind(statement, COUNT_FIELD_ID, count_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27888,8 +26647,8 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, firstTimestamp_, firstTimestampNullIndicator_);
-            WriteColumnValue( destination, lastTimestamp_, lastTimestampNullIndicator_);
+            WriteColumnValue( destination, firstTimestamp_);
+            WriteColumnValue( destination, lastTimestamp_);
             WriteColumnValue( destination, count_);
         }
     };
@@ -27902,8 +26661,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        TimeSpan value_;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBTimeSpan value_;
     public:
         using Base = BaseColumnData;
 
@@ -27923,7 +26681,7 @@ namespace Barrelman::Data
             return Kind::TimeSpanTimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -27935,11 +26693,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -27947,7 +26705,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -27955,29 +26713,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<TimeSpan> Value( ) const
+        const DBTimeSpan& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( const TimeSpan& value )
+        void SetValue( const DBTimeSpan& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -27987,7 +26737,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -28000,8 +26750,7 @@ namespace Barrelman::Data
         Guid item_;
         Guid track_;
         DateTime start_;
-        DateTime end_;
-        SQLLEN endNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime end_;
     public:
         using Base = BaseColumnData;
 
@@ -28022,7 +26771,7 @@ namespace Barrelman::Data
             return Kind::TrackableItemTrackLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28034,11 +26783,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Item( ) const
+        const Guid& Item( ) const
         {
             return item_;
         }
@@ -28046,7 +26795,7 @@ namespace Barrelman::Data
         {
             item_ = item;
         }
-        Guid Track( ) const
+        const Guid& Track( ) const
         {
             return track_;
         }
@@ -28054,7 +26803,7 @@ namespace Barrelman::Data
         {
             track_ = track;
         }
-        DateTime Start( ) const
+        const DateTime& Start( ) const
         {
             return start_;
         }
@@ -28062,30 +26811,22 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        std::optional<DateTime> End( ) const
+        const DBDateTime& End( ) const
         {
-            if(endNullIndicator_ != SQL_NULL_DATA)
-            {
-                return end_;
-            }
-            return {};
+            return end_;
         }
-        bool IsEndNull( ) const
-        {
-            return endNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnd( const DateTime& end )
+        void SetEnd( const DBDateTime& end )
         {
             end_ = end;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ITEM_FIELD_ID, &item_);
-            Bind(statement, TRACK_FIELD_ID, &track_);
-            Bind(statement, START_FIELD_ID, &start_);
-            Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ITEM_FIELD_ID, item_);
+            Bind(statement, TRACK_FIELD_ID, track_);
+            Bind(statement, START_FIELD_ID, start_);
+            Bind(statement, END_FIELD_ID, end_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -28096,7 +26837,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, item_);
             WriteColumnValue( destination, track_);
             WriteColumnValue( destination, start_);
-            WriteColumnValue( destination, end_, endNullIndicator_);
+            WriteColumnValue( destination, end_);
         }
     };
 
@@ -28128,7 +26869,7 @@ namespace Barrelman::Data
             return Kind::TrackBase;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28140,11 +26881,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Tracker( ) const
+        const Guid& Tracker( ) const
         {
             return tracker_;
         }
@@ -28160,7 +26901,7 @@ namespace Barrelman::Data
         {
             trackNumber_ = trackNumber;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -28170,11 +26911,11 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TRACKER_FIELD_ID, &tracker_);
-            Bind(statement, TRACKNUMBER_FIELD_ID, &trackNumber_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TRACKER_FIELD_ID, tracker_);
+            Bind(statement, TRACKNUMBER_FIELD_ID, trackNumber_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -28243,8 +26984,7 @@ namespace Barrelman::Data
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid tracker_;
-        std::array<wchar_t,101> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<100> name_;
     public:
         using Base = BaseColumnData;
 
@@ -28263,7 +27003,7 @@ namespace Barrelman::Data
             return Kind::TrackerFilterParameters;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28275,11 +27015,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Tracker( ) const
+        const Guid& Tracker( ) const
         {
             return tracker_;
         }
@@ -28287,24 +27027,20 @@ namespace Barrelman::Data
         {
             tracker_ = tracker;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<100>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TRACKER_FIELD_ID, &tracker_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TRACKER_FIELD_ID, tracker_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -28313,7 +27049,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, tracker_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -28369,7 +27105,7 @@ namespace Barrelman::Data
             return Kind::TrackerFilterParametersConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28381,11 +27117,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Parameters( ) const
+        const Guid& Parameters( ) const
         {
             return parameters_;
         }
@@ -28393,7 +27129,7 @@ namespace Barrelman::Data
         {
             parameters_ = parameters;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -28507,23 +27243,23 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PARAMETERS_FIELD_ID, &parameters_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, USENAIVEPREDICTOR_FIELD_ID, &useNaivePredictor_);
-            Bind(statement, NUMBEROFPOINTS_FIELD_ID, &numberOfPoints_);
-            Bind(statement, WINDOWSIZE_FIELD_ID, &windowSize_);
-            Bind(statement, STABILIZECOUNT_FIELD_ID, &stabilizeCount_);
-            Bind(statement, MAXBADPOINTS_FIELD_ID, &maxBadPoints_);
-            Bind(statement, MODELTYPE_FIELD_ID, &modelType_);
-            Bind(statement, SIGMAR_FIELD_ID, &sigmaR_);
-            Bind(statement, SIGMAACC_FIELD_ID, &sigmaAcc_);
-            Bind(statement, TAUVEL_FIELD_ID, &tauVel_);
-            Bind(statement, TAUACC_FIELD_ID, &tauAcc_);
-            Bind(statement, DELTARMIN_FIELD_ID, &deltaRMin_);
-            Bind(statement, DELTAVMAX_FIELD_ID, &deltaVMax_);
-            Bind(statement, DELTAAMAX_FIELD_ID, &deltaAMax_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PARAMETERS_FIELD_ID, parameters_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, USENAIVEPREDICTOR_FIELD_ID, useNaivePredictor_);
+            Bind(statement, NUMBEROFPOINTS_FIELD_ID, numberOfPoints_);
+            Bind(statement, WINDOWSIZE_FIELD_ID, windowSize_);
+            Bind(statement, STABILIZECOUNT_FIELD_ID, stabilizeCount_);
+            Bind(statement, MAXBADPOINTS_FIELD_ID, maxBadPoints_);
+            Bind(statement, MODELTYPE_FIELD_ID, modelType_);
+            Bind(statement, SIGMAR_FIELD_ID, sigmaR_);
+            Bind(statement, SIGMAACC_FIELD_ID, sigmaAcc_);
+            Bind(statement, TAUVEL_FIELD_ID, tauVel_);
+            Bind(statement, TAUACC_FIELD_ID, tauAcc_);
+            Bind(statement, DELTARMIN_FIELD_ID, deltaRMin_);
+            Bind(statement, DELTAVMAX_FIELD_ID, deltaVMax_);
+            Bind(statement, DELTAAMAX_FIELD_ID, deltaAMax_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -28555,19 +27291,13 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        DateTime firstTimestamp_;
-        SQLLEN firstTimestampNullIndicator_ = SQL_NULL_DATA;
-        DateTime lastTimestamp_;
-        SQLLEN lastTimestampNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime firstTimestamp_;
+        DBDateTime lastTimestamp_;
         Int64 count_ = 0;
-        double northWestLatitude_ = 0.0;
-        SQLLEN northWestLatitudeNullIndicator_ = SQL_NULL_DATA;
-        double northWestLongitude_ = 0.0;
-        SQLLEN northWestLongitudeNullIndicator_ = SQL_NULL_DATA;
-        double southEastLatitude_ = 0.0;
-        SQLLEN southEastLatitudeNullIndicator_ = SQL_NULL_DATA;
-        double southEastLongitude_ = 0.0;
-        SQLLEN southEastLongitudeNullIndicator_ = SQL_NULL_DATA;
+        DBDouble northWestLatitude_;
+        DBDouble northWestLongitude_;
+        DBDouble southEastLatitude_;
+        DBDouble southEastLongitude_;
     public:
         using Base = BaseColumnData;
 
@@ -28591,7 +27321,7 @@ namespace Barrelman::Data
             return Kind::TrackInfo;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28603,39 +27333,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::optional<DateTime> FirstTimestamp( ) const
+        const DBDateTime& FirstTimestamp( ) const
         {
-            if(firstTimestampNullIndicator_ != SQL_NULL_DATA)
-            {
-                return firstTimestamp_;
-            }
-            return {};
+            return firstTimestamp_;
         }
-        bool IsFirstTimestampNull( ) const
-        {
-            return firstTimestampNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetFirstTimestamp( const DateTime& firstTimestamp )
+        void SetFirstTimestamp( const DBDateTime& firstTimestamp )
         {
             firstTimestamp_ = firstTimestamp;
         }
-        std::optional<DateTime> LastTimestamp( ) const
+        const DBDateTime& LastTimestamp( ) const
         {
-            if(lastTimestampNullIndicator_ != SQL_NULL_DATA)
-            {
-                return lastTimestamp_;
-            }
-            return {};
+            return lastTimestamp_;
         }
-        bool IsLastTimestampNull( ) const
-        {
-            return lastTimestampNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLastTimestamp( const DateTime& lastTimestamp )
+        void SetLastTimestamp( const DBDateTime& lastTimestamp )
         {
             lastTimestamp_ = lastTimestamp;
         }
@@ -28647,81 +27361,49 @@ namespace Barrelman::Data
         {
             count_ = count;
         }
-        std::optional<double> NorthWestLatitude( ) const
+        const DBDouble& NorthWestLatitude( ) const
         {
-            if(northWestLatitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return northWestLatitude_;
-            }
-            return {};
+            return northWestLatitude_;
         }
-        bool IsNorthWestLatitudeNull( ) const
-        {
-            return northWestLatitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetNorthWestLatitude( double northWestLatitude )
+        void SetNorthWestLatitude( const DBDouble& northWestLatitude )
         {
             northWestLatitude_ = northWestLatitude;
         }
-        std::optional<double> NorthWestLongitude( ) const
+        const DBDouble& NorthWestLongitude( ) const
         {
-            if(northWestLongitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return northWestLongitude_;
-            }
-            return {};
+            return northWestLongitude_;
         }
-        bool IsNorthWestLongitudeNull( ) const
-        {
-            return northWestLongitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetNorthWestLongitude( double northWestLongitude )
+        void SetNorthWestLongitude( const DBDouble& northWestLongitude )
         {
             northWestLongitude_ = northWestLongitude;
         }
-        std::optional<double> SouthEastLatitude( ) const
+        const DBDouble& SouthEastLatitude( ) const
         {
-            if(southEastLatitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return southEastLatitude_;
-            }
-            return {};
+            return southEastLatitude_;
         }
-        bool IsSouthEastLatitudeNull( ) const
-        {
-            return southEastLatitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetSouthEastLatitude( double southEastLatitude )
+        void SetSouthEastLatitude( const DBDouble& southEastLatitude )
         {
             southEastLatitude_ = southEastLatitude;
         }
-        std::optional<double> SouthEastLongitude( ) const
+        const DBDouble& SouthEastLongitude( ) const
         {
-            if(southEastLongitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return southEastLongitude_;
-            }
-            return {};
+            return southEastLongitude_;
         }
-        bool IsSouthEastLongitudeNull( ) const
-        {
-            return southEastLongitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetSouthEastLongitude( double southEastLongitude )
+        void SetSouthEastLongitude( const DBDouble& southEastLongitude )
         {
             southEastLongitude_ = southEastLongitude;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, FIRSTTIMESTAMP_FIELD_ID, &firstTimestamp_, &firstTimestampNullIndicator_);
-            Bind(statement, LASTTIMESTAMP_FIELD_ID, &lastTimestamp_, &lastTimestampNullIndicator_);
-            Bind(statement, COUNT_FIELD_ID, &count_);
-            Bind(statement, NORTHWESTLATITUDE_FIELD_ID, &northWestLatitude_, &northWestLatitudeNullIndicator_);
-            Bind(statement, NORTHWESTLONGITUDE_FIELD_ID, &northWestLongitude_, &northWestLongitudeNullIndicator_);
-            Bind(statement, SOUTHEASTLATITUDE_FIELD_ID, &southEastLatitude_, &southEastLatitudeNullIndicator_);
-            Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, &southEastLongitude_, &southEastLongitudeNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, FIRSTTIMESTAMP_FIELD_ID, firstTimestamp_);
+            Bind(statement, LASTTIMESTAMP_FIELD_ID, lastTimestamp_);
+            Bind(statement, COUNT_FIELD_ID, count_);
+            Bind(statement, NORTHWESTLATITUDE_FIELD_ID, northWestLatitude_);
+            Bind(statement, NORTHWESTLONGITUDE_FIELD_ID, northWestLongitude_);
+            Bind(statement, SOUTHEASTLATITUDE_FIELD_ID, southEastLatitude_);
+            Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, southEastLongitude_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -28729,13 +27411,13 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, firstTimestamp_, firstTimestampNullIndicator_);
-            WriteColumnValue( destination, lastTimestamp_, lastTimestampNullIndicator_);
+            WriteColumnValue( destination, firstTimestamp_);
+            WriteColumnValue( destination, lastTimestamp_);
             WriteColumnValue( destination, count_);
-            WriteColumnValue( destination, northWestLatitude_, northWestLatitudeNullIndicator_);
-            WriteColumnValue( destination, northWestLongitude_, northWestLongitudeNullIndicator_);
-            WriteColumnValue( destination, southEastLatitude_, southEastLatitudeNullIndicator_);
-            WriteColumnValue( destination, southEastLongitude_, southEastLongitudeNullIndicator_);
+            WriteColumnValue( destination, northWestLatitude_);
+            WriteColumnValue( destination, northWestLongitude_);
+            WriteColumnValue( destination, southEastLatitude_);
+            WriteColumnValue( destination, southEastLongitude_);
         }
     };
 
@@ -28783,7 +27465,7 @@ namespace Barrelman::Data
             return Kind::TrackingServiceOptions;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28795,11 +27477,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -28807,7 +27489,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        TimeSpan TimerInterval( ) const
+        const TimeSpan& TimerInterval( ) const
         {
             return timerInterval_;
         }
@@ -28815,7 +27497,7 @@ namespace Barrelman::Data
         {
             timerInterval_ = timerInterval;
         }
-        TimeSpan MaxAgeOfCurrentTrackValue( ) const
+        const TimeSpan& MaxAgeOfCurrentTrackValue( ) const
         {
             return maxAgeOfCurrentTrackValue_;
         }
@@ -28889,19 +27571,19 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, TIMERINTERVAL_FIELD_ID, &timerInterval_);
-            Bind(statement, MAXAGEOFCURRENTTRACKVALUE_FIELD_ID, &maxAgeOfCurrentTrackValue_);
-            Bind(statement, FALSETHRESHOLD_FIELD_ID, &falseThreshold_);
-            Bind(statement, DISTANCETHRESHOLD_FIELD_ID, &distanceThreshold_);
-            Bind(statement, DISTANCEUNMERGETHRESHOLD_FIELD_ID, &distanceUnmergeThreshold_);
-            Bind(statement, UNMERGELATENCY_FIELD_ID, &unmergeLatency_);
-            Bind(statement, KALMANFILTERING_FIELD_ID, &kalmanFiltering_);
-            Bind(statement, MAXCOURSEDEVIATION_FIELD_ID, &maxCourseDeviation_);
-            Bind(statement, MAXSPEEDDEVIATION_FIELD_ID, &maxSpeedDeviation_);
-            Bind(statement, MINIMUMSPEEDTHRESHOLD_FIELD_ID, &minimumSpeedThreshold_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, TIMERINTERVAL_FIELD_ID, timerInterval_);
+            Bind(statement, MAXAGEOFCURRENTTRACKVALUE_FIELD_ID, maxAgeOfCurrentTrackValue_);
+            Bind(statement, FALSETHRESHOLD_FIELD_ID, falseThreshold_);
+            Bind(statement, DISTANCETHRESHOLD_FIELD_ID, distanceThreshold_);
+            Bind(statement, DISTANCEUNMERGETHRESHOLD_FIELD_ID, distanceUnmergeThreshold_);
+            Bind(statement, UNMERGELATENCY_FIELD_ID, unmergeLatency_);
+            Bind(statement, KALMANFILTERING_FIELD_ID, kalmanFiltering_);
+            Bind(statement, MAXCOURSEDEVIATION_FIELD_ID, maxCourseDeviation_);
+            Bind(statement, MAXSPEEDDEVIATION_FIELD_ID, maxSpeedDeviation_);
+            Bind(statement, MINIMUMSPEEDTHRESHOLD_FIELD_ID, minimumSpeedThreshold_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -28932,8 +27614,7 @@ namespace Barrelman::Data
         Guid primary_;
         Guid secondary_;
         DateTime start_;
-        DateTime end_;
-        SQLLEN endNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime end_;
     public:
         using Base = BaseColumnData;
 
@@ -28954,7 +27635,7 @@ namespace Barrelman::Data
             return Kind::TrackLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -28966,11 +27647,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Primary( ) const
+        const Guid& Primary( ) const
         {
             return primary_;
         }
@@ -28978,7 +27659,7 @@ namespace Barrelman::Data
         {
             primary_ = primary;
         }
-        Guid Secondary( ) const
+        const Guid& Secondary( ) const
         {
             return secondary_;
         }
@@ -28986,7 +27667,7 @@ namespace Barrelman::Data
         {
             secondary_ = secondary;
         }
-        DateTime Start( ) const
+        const DateTime& Start( ) const
         {
             return start_;
         }
@@ -28994,30 +27675,22 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        std::optional<DateTime> End( ) const
+        const DBDateTime& End( ) const
         {
-            if(endNullIndicator_ != SQL_NULL_DATA)
-            {
-                return end_;
-            }
-            return {};
+            return end_;
         }
-        bool IsEndNull( ) const
-        {
-            return endNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnd( const DateTime& end )
+        void SetEnd( const DBDateTime& end )
         {
             end_ = end;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, PRIMARY_FIELD_ID, &primary_);
-            Bind(statement, SECONDARY_FIELD_ID, &secondary_);
-            Bind(statement, START_FIELD_ID, &start_);
-            Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, PRIMARY_FIELD_ID, primary_);
+            Bind(statement, SECONDARY_FIELD_ID, secondary_);
+            Bind(statement, START_FIELD_ID, start_);
+            Bind(statement, END_FIELD_ID, end_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29028,7 +27701,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, primary_);
             WriteColumnValue( destination, secondary_);
             WriteColumnValue( destination, start_);
-            WriteColumnValue( destination, end_, endNullIndicator_);
+            WriteColumnValue( destination, end_);
         }
     };
 
@@ -29072,7 +27745,7 @@ namespace Barrelman::Data
             return Kind::TrackValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29084,11 +27757,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Track( ) const
+        const Guid& Track( ) const
         {
             return track_;
         }
@@ -29096,7 +27769,7 @@ namespace Barrelman::Data
         {
             track_ = track;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -29162,17 +27835,17 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TRACK_FIELD_ID, &track_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, FLAGS_FIELD_ID, &flags_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, SPEED_FIELD_ID, &speed_);
-            Bind(statement, COURSE_FIELD_ID, &course_);
-            Bind(statement, HEADING_FIELD_ID, &heading_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TRACK_FIELD_ID, track_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, FLAGS_FIELD_ID, flags_);
+            Bind(statement, STATUS_FIELD_ID, status_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, SPEED_FIELD_ID, speed_);
+            Bind(statement, COURSE_FIELD_ID, course_);
+            Bind(statement, HEADING_FIELD_ID, heading_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29234,7 +27907,7 @@ namespace Barrelman::Data
             return Kind::TrackValue3D;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29246,11 +27919,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Track( ) const
+        const Guid& Track( ) const
         {
             return track_;
         }
@@ -29258,7 +27931,7 @@ namespace Barrelman::Data
         {
             track_ = track;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -29332,18 +28005,18 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TRACK_FIELD_ID, &track_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, FLAGS_FIELD_ID, &flags_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, ALTITUDE_FIELD_ID, &altitude_);
-            Bind(statement, SPEED_FIELD_ID, &speed_);
-            Bind(statement, COURSE_FIELD_ID, &course_);
-            Bind(statement, RATEOFCLIMB_FIELD_ID, &rateOfClimb_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TRACK_FIELD_ID, track_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, FLAGS_FIELD_ID, flags_);
+            Bind(statement, STATUS_FIELD_ID, status_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, ALTITUDE_FIELD_ID, altitude_);
+            Bind(statement, SPEED_FIELD_ID, speed_);
+            Bind(statement, COURSE_FIELD_ID, course_);
+            Bind(statement, RATEOFCLIMB_FIELD_ID, rateOfClimb_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29372,8 +28045,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        UInt16 value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBUInt16 value_;
     public:
         using Base = BaseColumnData;
 
@@ -29393,7 +28065,7 @@ namespace Barrelman::Data
             return Kind::UInt16TimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29405,11 +28077,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -29417,7 +28089,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -29425,29 +28097,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<UInt16> Value( ) const
+        const DBUInt16& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( UInt16 value )
+        void SetValue( const DBUInt16& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29457,7 +28121,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -29469,8 +28133,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        UInt32 value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBUInt32 value_;
     public:
         using Base = BaseColumnData;
 
@@ -29490,7 +28153,7 @@ namespace Barrelman::Data
             return Kind::UInt32TimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29502,11 +28165,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -29514,7 +28177,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -29522,29 +28185,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<UInt32> Value( ) const
+        const DBUInt32& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( UInt32 value )
+        void SetValue( const DBUInt32& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29554,7 +28209,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -29566,8 +28221,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid timeseries_;
         DateTime timestamp_;
-        Int64 value_ = 0;
-        SQLLEN valueNullIndicator_ = SQL_NULL_DATA;
+        DBInt64 value_;
     public:
         using Base = BaseColumnData;
 
@@ -29587,7 +28241,7 @@ namespace Barrelman::Data
             return Kind::UInt64TimeseriesValue;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29599,11 +28253,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Timeseries( ) const
+        const Guid& Timeseries( ) const
         {
             return timeseries_;
         }
@@ -29611,7 +28265,7 @@ namespace Barrelman::Data
         {
             timeseries_ = timeseries;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -29619,29 +28273,21 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        std::optional<Int64> Value( ) const
+        const DBInt64& Value( ) const
         {
-            if(valueNullIndicator_ != SQL_NULL_DATA)
-            {
-                return value_;
-            }
-            return {};
+            return value_;
         }
-        bool IsValueNull( ) const
-        {
-            return valueNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetValue( Int64 value )
+        void SetValue( const DBInt64& value )
         {
             value_ = value;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TIMESERIES_FIELD_ID, timeseries_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, VALUE_FIELD_ID, value_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29651,7 +28297,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, timeseries_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, value_, valueNullIndicator_);
+            WriteColumnValue( destination, value_);
         }
     };
 
@@ -29661,8 +28307,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -29680,7 +28325,7 @@ namespace Barrelman::Data
             return Kind::VehicleType;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29692,27 +28337,23 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29720,7 +28361,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
         }
     };
 
@@ -29730,8 +28371,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Int32 code_ = 0;
     public:
         using Base = BaseColumnData;
@@ -29751,7 +28391,7 @@ namespace Barrelman::Data
             return Kind::VesselType;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29763,21 +28403,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         Int32 Code( ) const
         {
@@ -29789,10 +28425,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, CODE_FIELD_ID, &code_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, CODE_FIELD_ID, code_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29800,7 +28436,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, code_);
         }
     };
@@ -29811,8 +28447,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
         Guid zoomLevelTimeseries_;
@@ -29836,7 +28471,7 @@ namespace Barrelman::Data
             return Kind::View;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29848,23 +28483,19 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
-        Guid LatitudeTimeseries( ) const
+        const Guid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
         }
@@ -29872,7 +28503,7 @@ namespace Barrelman::Data
         {
             latitudeTimeseries_ = latitudeTimeseries;
         }
-        Guid LongitudeTimeseries( ) const
+        const Guid& LongitudeTimeseries( ) const
         {
             return longitudeTimeseries_;
         }
@@ -29880,7 +28511,7 @@ namespace Barrelman::Data
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        Guid ZoomLevelTimeseries( ) const
+        const Guid& ZoomLevelTimeseries( ) const
         {
             return zoomLevelTimeseries_;
         }
@@ -29890,12 +28521,12 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, LATITUDETIMESERIES_FIELD_ID, &latitudeTimeseries_);
-            Bind(statement, LONGITUDETIMESERIES_FIELD_ID, &longitudeTimeseries_);
-            Bind(statement, ZOOMLEVELTIMESERIES_FIELD_ID, &zoomLevelTimeseries_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, LATITUDETIMESERIES_FIELD_ID, latitudeTimeseries_);
+            Bind(statement, LONGITUDETIMESERIES_FIELD_ID, longitudeTimeseries_);
+            Bind(statement, ZOOMLEVELTIMESERIES_FIELD_ID, zoomLevelTimeseries_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -29903,7 +28534,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, latitudeTimeseries_);
             WriteColumnValue( destination, longitudeTimeseries_);
             WriteColumnValue( destination, zoomLevelTimeseries_);
@@ -29919,8 +28550,7 @@ namespace Barrelman::Data
         Guid view_;
         Guid camera_;
         DateTime start_;
-        DateTime end_;
-        SQLLEN endNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime end_;
     public:
         using Base = BaseColumnData;
 
@@ -29941,7 +28571,7 @@ namespace Barrelman::Data
             return Kind::ViewCameraLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -29953,11 +28583,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid View( ) const
+        const Guid& View( ) const
         {
             return view_;
         }
@@ -29965,7 +28595,7 @@ namespace Barrelman::Data
         {
             view_ = view;
         }
-        Guid Camera( ) const
+        const Guid& Camera( ) const
         {
             return camera_;
         }
@@ -29973,7 +28603,7 @@ namespace Barrelman::Data
         {
             camera_ = camera;
         }
-        DateTime Start( ) const
+        const DateTime& Start( ) const
         {
             return start_;
         }
@@ -29981,30 +28611,22 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        std::optional<DateTime> End( ) const
+        const DBDateTime& End( ) const
         {
-            if(endNullIndicator_ != SQL_NULL_DATA)
-            {
-                return end_;
-            }
-            return {};
+            return end_;
         }
-        bool IsEndNull( ) const
-        {
-            return endNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnd( const DateTime& end )
+        void SetEnd( const DBDateTime& end )
         {
             end_ = end;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, VIEW_FIELD_ID, &view_);
-            Bind(statement, CAMERA_FIELD_ID, &camera_);
-            Bind(statement, START_FIELD_ID, &start_);
-            Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, VIEW_FIELD_ID, view_);
+            Bind(statement, CAMERA_FIELD_ID, camera_);
+            Bind(statement, START_FIELD_ID, start_);
+            Bind(statement, END_FIELD_ID, end_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30015,7 +28637,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, view_);
             WriteColumnValue( destination, camera_);
             WriteColumnValue( destination, start_);
-            WriteColumnValue( destination, end_, endNullIndicator_);
+            WriteColumnValue( destination, end_);
         }
     };
 
@@ -30028,8 +28650,7 @@ namespace Barrelman::Data
         Guid view_;
         Guid tracker_;
         DateTime start_;
-        DateTime end_;
-        SQLLEN endNullIndicator_ = SQL_NULL_DATA;
+        DBDateTime end_;
     public:
         using Base = BaseColumnData;
 
@@ -30050,7 +28671,7 @@ namespace Barrelman::Data
             return Kind::ViewTrackerLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30062,11 +28683,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid View( ) const
+        const Guid& View( ) const
         {
             return view_;
         }
@@ -30074,7 +28695,7 @@ namespace Barrelman::Data
         {
             view_ = view;
         }
-        Guid Tracker( ) const
+        const Guid& Tracker( ) const
         {
             return tracker_;
         }
@@ -30082,7 +28703,7 @@ namespace Barrelman::Data
         {
             tracker_ = tracker;
         }
-        DateTime Start( ) const
+        const DateTime& Start( ) const
         {
             return start_;
         }
@@ -30090,30 +28711,22 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        std::optional<DateTime> End( ) const
+        const DBDateTime& End( ) const
         {
-            if(endNullIndicator_ != SQL_NULL_DATA)
-            {
-                return end_;
-            }
-            return {};
+            return end_;
         }
-        bool IsEndNull( ) const
-        {
-            return endNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetEnd( const DateTime& end )
+        void SetEnd( const DBDateTime& end )
         {
             end_ = end;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, VIEW_FIELD_ID, &view_);
-            Bind(statement, TRACKER_FIELD_ID, &tracker_);
-            Bind(statement, START_FIELD_ID, &start_);
-            Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, VIEW_FIELD_ID, view_);
+            Bind(statement, TRACKER_FIELD_ID, tracker_);
+            Bind(statement, START_FIELD_ID, start_);
+            Bind(statement, END_FIELD_ID, end_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30124,7 +28737,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, view_);
             WriteColumnValue( destination, tracker_);
             WriteColumnValue( destination, start_);
-            WriteColumnValue( destination, end_, endNullIndicator_);
+            WriteColumnValue( destination, end_);
         }
     };
 
@@ -30160,7 +28773,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationCommand;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30172,11 +28785,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -30184,7 +28797,7 @@ namespace Barrelman::Data
         {
             weatherStation_ = weatherStation;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -30200,7 +28813,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
-        Guid DeviceCommandSourceId( ) const
+        const Guid& DeviceCommandSourceId( ) const
         {
             return deviceCommandSourceId_;
         }
@@ -30208,7 +28821,7 @@ namespace Barrelman::Data
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        Guid Reply( ) const
+        const Guid& Reply( ) const
         {
             return reply_;
         }
@@ -30218,13 +28831,13 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, &deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, &deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, &reply_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30251,7 +28864,7 @@ namespace Barrelman::Data
         Guid command_;
         Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
         WideString message_;
-        SQLLEN messageLengthOrNullIndicator_ = SQL_NULL_DATA;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
         using Base = BaseColumnData;
 
@@ -30273,7 +28886,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationCommandReply;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30285,11 +28898,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -30297,7 +28910,7 @@ namespace Barrelman::Data
         {
             weatherStation_ = weatherStation;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -30305,7 +28918,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Command( ) const
+        const Guid& Command( ) const
         {
             return command_;
         }
@@ -30327,16 +28940,16 @@ namespace Barrelman::Data
         }
         void SetMessage( const WideString& message )
         {
-            Assign(message, message_, messageLengthOrNullIndicator_);
+            message_ = message;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, &command_);
-            Bind(statement, STATUS_FIELD_ID, &status_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
         }
 
         void ReadUnboundData( const ODBC::Statement& statement )
@@ -30354,7 +28967,7 @@ namespace Barrelman::Data
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, command_);
             WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, message_);
         }
     };
 
@@ -30398,7 +29011,7 @@ namespace Barrelman::Data
             return Kind::WeatherStationConfiguration;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30410,11 +29023,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid WeatherStation( ) const
+        const Guid& WeatherStation( ) const
         {
             return weatherStation_;
         }
@@ -30422,7 +29035,7 @@ namespace Barrelman::Data
         {
             weatherStation_ = weatherStation;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -30430,7 +29043,7 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        TimeSpan NoDataTimeOut( ) const
+        const TimeSpan& NoDataTimeOut( ) const
         {
             return noDataTimeOut_;
         }
@@ -30438,7 +29051,7 @@ namespace Barrelman::Data
         {
             noDataTimeOut_ = noDataTimeOut;
         }
-        TimeSpan SendInterval( ) const
+        const TimeSpan& SendInterval( ) const
         {
             return sendInterval_;
         }
@@ -30478,7 +29091,7 @@ namespace Barrelman::Data
         {
             enableAveraging_ = enableAveraging;
         }
-        TimeSpan AveragingInterval( ) const
+        const TimeSpan& AveragingInterval( ) const
         {
             return averagingInterval_;
         }
@@ -30488,17 +29101,17 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, NODATATIMEOUT_FIELD_ID, &noDataTimeOut_);
-            Bind(statement, SENDINTERVAL_FIELD_ID, &sendInterval_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, GYROOFFSET_FIELD_ID, &gyroOffset_);
-            Bind(statement, ENABLEAVERAGING_FIELD_ID, &enableAveraging_);
-            Bind(statement, AVERAGINGINTERVAL_FIELD_ID, &averagingInterval_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, WEATHERSTATION_FIELD_ID, weatherStation_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, NODATATIMEOUT_FIELD_ID, noDataTimeOut_);
+            Bind(statement, SENDINTERVAL_FIELD_ID, sendInterval_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, GYROOFFSET_FIELD_ID, gyroOffset_);
+            Bind(statement, ENABLEAVERAGING_FIELD_ID, enableAveraging_);
+            Bind(statement, AVERAGINGINTERVAL_FIELD_ID, averagingInterval_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30524,8 +29137,7 @@ namespace Barrelman::Data
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        std::array<wchar_t,128> name_ = {};
-        SQLLEN nameLengthOrNullIndicator_ = SQL_NULL_DATA;
+        FixedDBWideString<127> name_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         Data::ZoneAlarmType alarmType_ = Data::ZoneAlarmType::None;
@@ -30559,7 +29171,7 @@ namespace Barrelman::Data
             return Kind::Zone;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30571,21 +29183,17 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        std::wstring_view Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
-            if(nameLengthOrNullIndicator_ != SQL_NULL_DATA)
-            {
-                return std::wstring_view(name_.data(),static_cast<size_t>( nameLengthOrNullIndicator_ ));
-            }
-            return {};
+            return name_;
         }
         void SetName( const WideString& name )
         {
-            Assign(name, name_, nameLengthOrNullIndicator_);
+            name_ = name;
         }
         double Longitude( ) const
         {
@@ -30611,7 +29219,7 @@ namespace Barrelman::Data
         {
             alarmType_ = alarmType;
         }
-        TimeSpan AlarmTime( ) const
+        const TimeSpan& AlarmTime( ) const
         {
             return alarmTime_;
         }
@@ -30619,7 +29227,7 @@ namespace Barrelman::Data
         {
             alarmTime_ = alarmTime;
         }
-        TimeSpan RadarTrackMinimumLifetime( ) const
+        const TimeSpan& RadarTrackMinimumLifetime( ) const
         {
             return radarTrackMinimumLifetime_;
         }
@@ -30653,17 +29261,17 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, ALARMTYPE_FIELD_ID, &alarmType_);
-            Bind(statement, ALARMTIME_FIELD_ID, &alarmTime_);
-            Bind(statement, RADARTRACKMINIMUMLIFETIME_FIELD_ID, &radarTrackMinimumLifetime_);
-            Bind(statement, SPEED_FIELD_ID, &speed_);
-            Bind(statement, STROKECOLOR_FIELD_ID, &strokeColor_);
-            Bind(statement, FILLCOLOR_FIELD_ID, &fillColor_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, NAME_FIELD_ID, name_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, ALARMTYPE_FIELD_ID, alarmType_);
+            Bind(statement, ALARMTIME_FIELD_ID, alarmTime_);
+            Bind(statement, RADARTRACKMINIMUMLIFETIME_FIELD_ID, radarTrackMinimumLifetime_);
+            Bind(statement, SPEED_FIELD_ID, speed_);
+            Bind(statement, STROKECOLOR_FIELD_ID, strokeColor_);
+            Bind(statement, FILLCOLOR_FIELD_ID, fillColor_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30671,7 +29279,7 @@ namespace Barrelman::Data
         {
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, name_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, alarmType_);
@@ -30715,7 +29323,7 @@ namespace Barrelman::Data
         {
             Base::BindColumns( statement );
 
-            Bind(statement, RADIUS_FIELD_ID, &radius_);
+            Bind(statement, RADIUS_FIELD_ID, radius_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30730,8 +29338,8 @@ namespace Barrelman::Data
 
     class PolygonZoneColumnData : public ZoneColumnData
     {
-        std::vector<Byte> polygon_;
-        SQLLEN polygonLengthOrNullIndicator_ = SQL_NULL_DATA;
+        Binary polygon_;
+        SQLLEN polygonLength_ = SQL_NULL_DATA;
     public:
         using Base = ZoneColumnData;
 
@@ -30747,13 +29355,13 @@ namespace Barrelman::Data
             return Kind::PolygonZone;
         }
 
-        const std::vector<Byte>& Polygon( ) const
+        const Binary& Polygon( ) const
         {
             return polygon_;
         }
-        void SetPolygon( const std::vector<Byte>& polygon )
+        void SetPolygon( const Binary& polygon )
         {
-            Assign(polygon, polygon_, polygonLengthOrNullIndicator_);
+            polygon_ = polygon;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
@@ -30771,7 +29379,7 @@ namespace Barrelman::Data
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, polygon_, polygonLengthOrNullIndicator_);
+            WriteColumnValue( destination, polygon_);
         }
     };
 
@@ -30801,7 +29409,7 @@ namespace Barrelman::Data
             return Kind::ZoneExceptions;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30813,11 +29421,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Zone( ) const
+        const Guid& Zone( ) const
         {
             return zone_;
         }
@@ -30825,7 +29433,7 @@ namespace Barrelman::Data
         {
             zone_ = zone;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -30835,10 +29443,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ZONE_FIELD_ID, &zone_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ZONE_FIELD_ID, zone_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30877,7 +29485,7 @@ namespace Barrelman::Data
             return Kind::ZoneExceptionsVesselLink;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30889,11 +29497,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid ZoneExceptions( ) const
+        const Guid& ZoneExceptions( ) const
         {
             return zoneExceptions_;
         }
@@ -30901,7 +29509,7 @@ namespace Barrelman::Data
         {
             zoneExceptions_ = zoneExceptions;
         }
-        Guid Vessel( ) const
+        const Guid& Vessel( ) const
         {
             return vessel_;
         }
@@ -30911,10 +29519,10 @@ namespace Barrelman::Data
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, ZONEEXCEPTIONS_FIELD_ID, &zoneExceptions_);
-            Bind(statement, VESSEL_FIELD_ID, &vessel_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, ZONEEXCEPTIONS_FIELD_ID, zoneExceptions_);
+            Bind(statement, VESSEL_FIELD_ID, vessel_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -30940,16 +29548,12 @@ namespace Barrelman::Data
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double speed_ = 0.0;
-        double course_ = 0.0;
-        SQLLEN courseNullIndicator_ = SQL_NULL_DATA;
-        double heading_ = 0.0;
-        SQLLEN headingNullIndicator_ = SQL_NULL_DATA;
+        DBDouble course_;
+        DBDouble heading_;
         double enterLatitude_ = 0.0;
         double enterLongitude_ = 0.0;
-        double leaveLatitude_ = 0.0;
-        SQLLEN leaveLatitudeNullIndicator_ = SQL_NULL_DATA;
-        double leaveLongitude_ = 0.0;
-        SQLLEN leaveLongitudeNullIndicator_ = SQL_NULL_DATA;
+        DBDouble leaveLatitude_;
+        DBDouble leaveLongitude_;
     public:
         using Base = BaseColumnData;
 
@@ -30979,7 +29583,7 @@ namespace Barrelman::Data
             return Kind::ZoneTrackAlarm;
         }
 
-        Guid Id( ) const
+        const Guid& Id( ) const
         {
             return id_;
         }
@@ -30991,11 +29595,11 @@ namespace Barrelman::Data
         {
             return rowVersion_;
         }
-        void SetRowVersion( Int64 rowVersion )
+        void SetRowVersion( Int64& rowVersion )
         {
             rowVersion_ = rowVersion;
         }
-        Guid Track( ) const
+        const Guid& Track( ) const
         {
             return track_;
         }
@@ -31003,7 +29607,7 @@ namespace Barrelman::Data
         {
             track_ = track;
         }
-        Guid Zone( ) const
+        const Guid& Zone( ) const
         {
             return zone_;
         }
@@ -31011,7 +29615,7 @@ namespace Barrelman::Data
         {
             zone_ = zone;
         }
-        Guid RadarTrack( ) const
+        const Guid& RadarTrack( ) const
         {
             return radarTrack_;
         }
@@ -31019,7 +29623,7 @@ namespace Barrelman::Data
         {
             radarTrack_ = radarTrack;
         }
-        DateTime Timestamp( ) const
+        const DateTime& Timestamp( ) const
         {
             return timestamp_;
         }
@@ -31051,35 +29655,19 @@ namespace Barrelman::Data
         {
             speed_ = speed;
         }
-        std::optional<double> Course( ) const
+        const DBDouble& Course( ) const
         {
-            if(courseNullIndicator_ != SQL_NULL_DATA)
-            {
-                return course_;
-            }
-            return {};
+            return course_;
         }
-        bool IsCourseNull( ) const
-        {
-            return courseNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetCourse( double course )
+        void SetCourse( const DBDouble& course )
         {
             course_ = course;
         }
-        std::optional<double> Heading( ) const
+        const DBDouble& Heading( ) const
         {
-            if(headingNullIndicator_ != SQL_NULL_DATA)
-            {
-                return heading_;
-            }
-            return {};
+            return heading_;
         }
-        bool IsHeadingNull( ) const
-        {
-            return headingNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetHeading( double heading )
+        void SetHeading( const DBDouble& heading )
         {
             heading_ = heading;
         }
@@ -31099,55 +29687,39 @@ namespace Barrelman::Data
         {
             enterLongitude_ = enterLongitude;
         }
-        std::optional<double> LeaveLatitude( ) const
+        const DBDouble& LeaveLatitude( ) const
         {
-            if(leaveLatitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return leaveLatitude_;
-            }
-            return {};
+            return leaveLatitude_;
         }
-        bool IsLeaveLatitudeNull( ) const
-        {
-            return leaveLatitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLeaveLatitude( double leaveLatitude )
+        void SetLeaveLatitude( const DBDouble& leaveLatitude )
         {
             leaveLatitude_ = leaveLatitude;
         }
-        std::optional<double> LeaveLongitude( ) const
+        const DBDouble& LeaveLongitude( ) const
         {
-            if(leaveLongitudeNullIndicator_ != SQL_NULL_DATA)
-            {
-                return leaveLongitude_;
-            }
-            return {};
+            return leaveLongitude_;
         }
-        bool IsLeaveLongitudeNull( ) const
-        {
-            return leaveLongitudeNullIndicator_ == SQL_NULL_DATA;
-        }
-        void SetLeaveLongitude( double leaveLongitude )
+        void SetLeaveLongitude( const DBDouble& leaveLongitude )
         {
             leaveLongitude_ = leaveLongitude;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
-            Bind(statement, ID_FIELD_ID, &id_);
-            Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
-            Bind(statement, TRACK_FIELD_ID, &track_);
-            Bind(statement, ZONE_FIELD_ID, &zone_);
-            Bind(statement, RADARTRACK_FIELD_ID, &radarTrack_);
-            Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
-            Bind(statement, LATITUDE_FIELD_ID, &latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, &longitude_);
-            Bind(statement, SPEED_FIELD_ID, &speed_);
-            Bind(statement, COURSE_FIELD_ID, &course_, &courseNullIndicator_);
-            Bind(statement, HEADING_FIELD_ID, &heading_, &headingNullIndicator_);
-            Bind(statement, ENTERLATITUDE_FIELD_ID, &enterLatitude_);
-            Bind(statement, ENTERLONGITUDE_FIELD_ID, &enterLongitude_);
-            Bind(statement, LEAVELATITUDE_FIELD_ID, &leaveLatitude_, &leaveLatitudeNullIndicator_);
-            Bind(statement, LEAVELONGITUDE_FIELD_ID, &leaveLongitude_, &leaveLongitudeNullIndicator_);
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, TRACK_FIELD_ID, track_);
+            Bind(statement, ZONE_FIELD_ID, zone_);
+            Bind(statement, RADARTRACK_FIELD_ID, radarTrack_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, SPEED_FIELD_ID, speed_);
+            Bind(statement, COURSE_FIELD_ID, course_);
+            Bind(statement, HEADING_FIELD_ID, heading_);
+            Bind(statement, ENTERLATITUDE_FIELD_ID, enterLatitude_);
+            Bind(statement, ENTERLONGITUDE_FIELD_ID, enterLongitude_);
+            Bind(statement, LEAVELATITUDE_FIELD_ID, leaveLatitude_);
+            Bind(statement, LEAVELONGITUDE_FIELD_ID, leaveLongitude_);
         }
 
         template<IO::StreamWriter StreamT>
@@ -31162,12 +29734,12 @@ namespace Barrelman::Data
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, speed_);
-            WriteColumnValue( destination, course_, courseNullIndicator_);
-            WriteColumnValue( destination, heading_, headingNullIndicator_);
+            WriteColumnValue( destination, course_);
+            WriteColumnValue( destination, heading_);
             WriteColumnValue( destination, enterLatitude_);
             WriteColumnValue( destination, enterLongitude_);
-            WriteColumnValue( destination, leaveLatitude_, leaveLatitudeNullIndicator_);
-            WriteColumnValue( destination, leaveLongitude_, leaveLongitudeNullIndicator_);
+            WriteColumnValue( destination, leaveLatitude_);
+            WriteColumnValue( destination, leaveLongitude_);
         }
     };
 

@@ -32,6 +32,7 @@ namespace Harlinn::ODBC::Tool
         static WideString GetInputArgumentType( const MemberInfo& member );
         static WideString GetInputArgumentName( const MemberInfo& member );
         static WideString GetMemberFieldType( const MemberInfo& member );
+        static WideString GetDataMemberFieldType( const MemberInfo& member );
         static WideString GetMemberFieldName( const MemberInfo& member );
         static WideString GetMemberAccessorName( const MemberInfo& member );
         static WideString GetMemberAccessorReturnType( const MemberInfo& member );
@@ -41,9 +42,9 @@ namespace Harlinn::ODBC::Tool
         static WideString GetMemberIndicatorName( const MemberInfo& member );
 
         static bool MemberFieldRequiresDefaultValue( const MemberInfo& member );
-
-
+        
         static WideString GetColumnDataType( const ClassInfo& classInfo );
+        static WideString GetDataType( const ClassInfo& classInfo );
 
     };
 

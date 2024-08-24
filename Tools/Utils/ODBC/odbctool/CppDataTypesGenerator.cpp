@@ -34,7 +34,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( "#include \"Data/Enums.h\"" );
         WriteLine( "#include <HODBC.h>" );
-        WriteLine( "#include <HCCBinaryWriter.h>" );
+        WriteLine( "#include <HCCData.h>" );
         WriteLine( );
 
         WriteLine( );
@@ -50,7 +50,7 @@ namespace Harlinn::ODBC::Tool
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];
-            CreateDataType( classInfo );
+            CreateColumnDataType( classInfo );
         }
 
         WriteLine( L"}" );
@@ -61,6 +61,10 @@ namespace Harlinn::ODBC::Tool
 
     void CppDataTypesGenerator::CreateBaseClass( )
     {
+        WriteLine( L"template<typename ObjectT, typename KeyT>");
+        WriteLine( L"    requires std::is_enum_v<ObjectT>");
+        WriteLine( L"using BaseData = Harlinn::Common::Core::Data::BaseData<ObjectT, KeyT>;" );
+        WriteLine( );
         WriteLine( L"    class BaseColumnData" );
         WriteLine( L"    {" );
         WriteLine( L"    public:" );
@@ -74,116 +78,161 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        {");
         WriteLine( L"            throw Exception( L\"Bounds exceeded.\" );");
         WriteLine( L"        }");
-        WriteLine( L"        template<size_t N>");
-        WriteLine( L"        static void Assign( const WideString& str, std::array<wchar_t, N>& destination, SQLLEN& lengthOrNullIndicator )");
-        WriteLine( L"        {");
-        WriteLine( L"            auto strLength = str.Length( );");
-        WriteLine( L"            if ( strLength > N - 1 )");
-        WriteLine( L"            {");
-        WriteLine( L"                ThrowBoundsExceededException( );");
-        WriteLine( L"            }");
-        WriteLine( L"            wmemcpy_s( destination.data( ), N, str.data( ), strLength );");
-        WriteLine( L"            lengthOrNullIndicator = static_cast< SQLLEN >( strLength );");
-        WriteLine( L"        }");
         WriteLine( L"        static void Assign( const WideString& str, WideString& destination, SQLLEN& lengthOrNullIndicator )");
         WriteLine( L"        {");
         WriteLine( L"            auto strLength = str.Length( );");
         WriteLine( L"            destination = str;");
         WriteLine( L"            lengthOrNullIndicator = static_cast< SQLLEN >( strLength );");
         WriteLine( L"        }");
-        WriteLine( L"        template<size_t N>");
-        WriteLine( L"        static void Assign( const std::vector<Byte>& data, std::array<Byte, N>& destination, SQLLEN& lengthOrNullIndicator )");
-        WriteLine( L"        {");
-        WriteLine( L"            auto dataLength = data.size( );");
-        WriteLine( L"            if ( dataLength > N )");
-        WriteLine( L"            {");
-        WriteLine( L"                ThrowBoundsExceededException( );");
-        WriteLine( L"            }");
-        WriteLine( L"            memcpy_s( destination.data( ), N, data.data( ), dataLength );");
-        WriteLine( L"            lengthOrNullIndicator = static_cast< SQLLEN >( dataLength );");
-        WriteLine( L"        }");
         WriteLine( L"        static void Assign( const std::vector<Byte>& data, std::vector<Byte>& destination, SQLLEN& lengthOrNullIndicator )");
         WriteLine( L"        {");
         WriteLine( L"            auto dataLength = data.size( );");
         WriteLine( L"            destination = data;");
         WriteLine( L"            lengthOrNullIndicator = static_cast< SQLLEN >( dataLength );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, bool& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( &value ), nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBBoolean& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( value.data() ), value.Indicator() );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, SByte& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindSByteColumn( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBSByte& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindSByteColumn( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Byte& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindByteColumn( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBByte& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindByteColumn( fieldId, value.data(), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Int16& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt16Column( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBInt16& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt16Column( fieldId, value.data(), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, UInt16& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindUInt16Column( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBUInt16& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindUInt16Column( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Int32& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt32Column( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBInt32& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt32Column( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, UInt32& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindUInt32Column( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBUInt32& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindUInt32Column( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Int64& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBInt64& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, UInt64& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindUInt64Column( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBUInt64& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindUInt64Column( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, float& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindSingleColumn( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBSingle& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindSingleColumn( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, double& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindDoubleColumn( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBDouble& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindDoubleColumn( fieldId, value.data( ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Currency& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( &value ), nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBCurrency& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value.data() ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DateTime& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( &value ), nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBDateTime& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value.data() ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, TimeSpan& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( &value ), nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBTimeSpan& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value.data() ), value.Indicator( ) );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, Guid& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindGuidColumn( fieldId, &value, nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, DBGuid& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindGuidColumn( fieldId, value.data( ), value.Indicator( ) );");
         WriteLine( L"        }" );
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, bool* value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindBooleanColumn( fieldId, reinterpret_cast< Byte* >( value ), lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, SByte * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindSByteColumn( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Byte * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindByteColumn( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Int16 * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindInt16Column( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, UInt16 * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindUInt16Column( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Int32 * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindInt32Column( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, UInt32 * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindUInt32Column( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Int64 * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindInt64Column( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, UInt64 * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindUInt64Column( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, float* value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindSingleColumn( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, double* value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindDoubleColumn( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Currency * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value ), lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, DateTime * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value ), lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, TimeSpan * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindInt64Column( fieldId, reinterpret_cast< Int64* >( value ), lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, Guid * value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindGuidColumn( fieldId, value, lengthOrNullIndicator );");
-        WriteLine( L"        }");
         WriteLine( L"        template<typename T>");
         WriteLine( L"            requires std::is_enum_v<T>");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, T * value, SQLLEN * lengthOrNullIndicator = nullptr )");
+        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, T& value )");
         WriteLine( L"        {");
         WriteLine( L"            using IntegerType = std::underlying_type_t<T>;");
-        WriteLine( L"            Bind( statement, fieldId, reinterpret_cast< IntegerType* >( value ), lengthOrNullIndicator );");
+        WriteLine( L"            statement.BindColumn( fieldId, NativeType::Int32, &value, sizeof( IntegerType ), nullptr );");
+        WriteLine( L"        }");
+        WriteLine( L"        template<typename T>" );
+        WriteLine( L"            requires std::is_enum_v<T>" );
+        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, DBEnum<T>& value )" );
+        WriteLine( L"        {" );
+        WriteLine( L"            using IntegerType = std::underlying_type_t<T>;" );
+        WriteLine( L"            statement.BindColumn( fieldId, NativeType::Int32, value.data( ), sizeof( IntegerType ), value.Indicator( ) );" );
+        WriteLine( L"        }" );
+        WriteLine( L"        template<size_t N>");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, FixedDBWideString<N>& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            statement.BindColumn( fieldId, NativeType::WideChar, value.data( ), static_cast< SQLLEN >( N * sizeof( wchar_t ) ), value.Indicator( ) );");
         WriteLine( L"        }");
         WriteLine( L"        template<size_t N>");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, std::array<wchar_t, N>*value, SQLLEN * lengthOrNullIndicator = nullptr )");
+        WriteLine( L"        static void Bind( const ODBC::Statement& statement, SQLUSMALLINT fieldId, FixedDBBinary<N>& value )");
         WriteLine( L"        {");
-        WriteLine( L"            statement.BindColumn( fieldId, NativeType::WideChar, value->data( ), static_cast< SQLLEN >( N * sizeof( wchar_t ) ), lengthOrNullIndicator );");
-        WriteLine( L"        }");
-        WriteLine( L"        template<size_t N>");
-        WriteLine( L"        static void Bind( const ODBC::Statement & statement, SQLUSMALLINT fieldId, std::array<Byte, N>*value, SQLLEN * lengthOrNullIndicator = nullptr )");
-        WriteLine( L"        {");
-        WriteLine( L"            statement.BindColumn( fieldId, NativeType::Binary, value->data( ), static_cast< SQLLEN >( N ), lengthOrNullIndicator );");
+        WriteLine( L"            statement.BindColumn( fieldId, NativeType::Binary, value.data( ), static_cast< SQLLEN >( N ), value.Indicator( ) );");
         WriteLine( L"        }" );
         WriteLine( L"        template<IO::StreamWriter StreamT, typename T>");
         WriteLine( L"            requires std::is_same_v<Currency, T> || std::is_same_v<DateTime, T> || std::is_same_v<TimeSpan, T> || std::is_same_v<Guid, T> || std::is_floating_point_v<T> || std::is_integral_v<T> || std::is_enum_v<T>");
@@ -277,6 +326,106 @@ namespace Harlinn::ODBC::Tool
 
 
     void CppDataTypesGenerator::CreateDataType( const ClassInfo& classInfo )
+    {
+        auto className = CppHelper::GetColumnDataType( classInfo );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyTypeName = CppHelper::GetMemberFieldType( *primaryKey );
+        const auto& persistentMembers = classInfo.OwnPersistentMembers( );
+
+
+        WriteLine( L"    class {} : public BaseData<Kind, {}>", className, primaryKeyTypeName );
+        WriteLine( L"    {");
+        WriteLine( L"    public:");
+        WriteLine( L"        using Base = BaseData<Kind, {}>;", primaryKeyTypeName );
+        WriteLine( L"        static constexpr Kind KIND = Kind::{};",classInfo.Name());
+        WriteLine( L"    private:");
+        for ( const auto& member : persistentMembers )
+        {
+            if ( member->PrimaryKey( ) == false )
+            {
+                auto typeName = CppHelper::GetMemberFieldType( *member );
+                auto fieldName = CppHelper::GetMemberFieldName( *member );
+                if ( CppHelper::MemberFieldRequiresDefaultValue( *member ) )
+                {
+                    auto defaultValue = CppHelper::GetDefaultValue( *member );
+                    WriteLine( L"        {} {} = {};", typeName, fieldName, defaultValue );
+                }
+                else
+                {
+                    WriteLine( L"        {} {};", typeName, fieldName );
+                }
+                if ( CppHelper::RequiresIndicator( *member ) )
+                {
+                    auto indicatorName = CppHelper::GetMemberIndicatorName( *member );
+                    WriteLine( L"        SQLLEN {} = SQL_NULL_DATA;", indicatorName );
+                }
+            }
+        }
+        WriteLine( L"        Int64 rowVersion_ = 0;");
+        WriteLine( L"        WideString name_;");
+        WriteLine( L"    public:");
+        WriteLine( L"        AircraftTypeData( ) = default;");
+        WriteLine( L"        HCC_ROWVERSION_DATA_PROPERTY( RowVersion, rowVersion_ );");
+        WriteLine( L"        HCC_STRING_DATA_PROPERTY( Name, name_ );");
+        WriteLine( L"        template<IO::StreamWriter StreamT>");
+        WriteLine( L"        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const");
+        WriteLine( L"        {");
+        WriteLine( L"            Base::WriteTo( destination );");
+        WriteLine( L"            destination.Write( rowVersion_ );");
+        WriteLine( L"            destination.Write( name_ );");
+        WriteLine( L"        }");
+        WriteLine( L"        template<IO::StreamReader StreamT>");
+        WriteLine( L"        void ReadFrom( IO::BinaryReader<StreamT>& source )");
+        WriteLine( L"        {");
+        WriteLine( L"            Base::ReadFrom( source );");
+        WriteLine( L"            source.Read( rowVersion_ );");
+        WriteLine( L"            source.Read( name_ );");
+        WriteLine( L"        }");
+        WriteLine( L"        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override");
+        WriteLine( L"        {");
+        WriteLine( L"            return KIND;");
+        WriteLine( L"        }");
+        WriteLine( L"        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept");
+        WriteLine( L"        {");
+        WriteLine( L"            if ( objectType == KIND )");
+        WriteLine( L"            {");
+        WriteLine( L"                return true;");
+        WriteLine( L"            }");
+        WriteLine( L"            return Base::IsOfType( objectType );");
+        WriteLine( L"        }");
+        WriteLine( L"        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override");
+        WriteLine( L"        {");
+        WriteLine( L"            return std::make_shared<AircraftTypeData>( );");
+        WriteLine( L"        }");
+        WriteLine( L"        virtual void AssignTo( BaseData& target ) const override");
+        WriteLine( L"        {");
+        WriteLine( L"            Base::AssignTo( target );");
+        WriteLine( L"            auto& dest = static_cast< AircraftTypeData& >( target );");
+        WriteLine( L"            dest.rowVersion_ = rowVersion_;");
+        WriteLine( L"            dest.name_ = name_;");
+        WriteLine( L"        }");
+        WriteLine( L"        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const");
+        WriteLine( L"        {");
+        WriteLine( L"            if ( Base::IsEqualTo( other ) )");
+        WriteLine( L"            {");
+        WriteLine( L"                const auto& dataObject = static_cast< const AircraftTypeData& >( other );");
+        WriteLine( L"                if ( dataObject.rowVersion_ != rowVersion_ )");
+        WriteLine( L"                {");
+        WriteLine( L"                    return false;");
+        WriteLine( L"                }");
+        WriteLine( L"                if ( dataObject.name_ != name_ )");
+        WriteLine( L"                {");
+        WriteLine( L"                    return false;");
+        WriteLine( L"                }");
+        WriteLine( L"                return true;");
+        WriteLine( L"            }");
+        WriteLine( L"            return false;");
+        WriteLine( L"        }");
+        WriteLine( L"    };" );
+
+    }
+
+    void CppDataTypesGenerator::CreateColumnDataType( const ClassInfo& classInfo )
     {
         auto className = CppHelper::GetColumnDataType( classInfo );
         auto primaryKey = classInfo.PrimaryKey( );
@@ -428,15 +577,7 @@ namespace Harlinn::ODBC::Tool
                     auto fieldName = CppHelper::GetMemberFieldName( *member );
                     auto fieldId = Format( L"{}_FIELD_ID", member->Name( ).ToUpper( ) );
 
-                    if ( CppHelper::RequiresIndicator( *member ) )
-                    {
-                        auto indicatorName = CppHelper::GetMemberIndicatorName( *member );
-                        WriteLine( L"            Bind(statement, {}, &{}, &{});", fieldId, fieldName, indicatorName );
-                    }
-                    else
-                    {
-                        WriteLine( L"            Bind(statement, {}, &{});", fieldId, fieldName );
-                    }
+                    WriteLine( L"            Bind(statement, {}, {});", fieldId, fieldName );
                     
                 }
             }
@@ -499,63 +640,8 @@ namespace Harlinn::ODBC::Tool
         auto returnType = CppHelper::GetMemberAccessorReturnType( member );
         WriteLine( L"        {} {}( ) const", returnType, accessorName );
         WriteLine( L"        {" );
-        if ( memberInfoType == MemberInfoType::String )
-        {
-            if ( CppHelper::IsBindable( member ) )
-            {
-                auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-                WriteLine( L"            if({} != SQL_NULL_DATA)", indicatorName );
-                WriteLine( L"            {" );
-                WriteLine( L"                return std::wstring_view({}.data(),static_cast<size_t>( {} ));", fieldName, indicatorName );
-                WriteLine( L"            }" );
-                WriteLine( L"            return {};" );
-            }
-            else
-            {
-                WriteLine( L"            return {};", fieldName );
-            }
-        }
-        else if ( memberInfoType == MemberInfoType::Binary )
-        {
-            if ( CppHelper::IsBindable( member ) )
-            {
-                auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-                WriteLine( L"            if({} != SQL_NULL_DATA)", indicatorName );
-                WriteLine( L"            {" );
-                WriteLine( L"                return std::span<Byte>({}.data(),static_cast<size_t>( {} ));", fieldName, indicatorName );
-                WriteLine( L"            }" );
-                WriteLine( L"            return {};" );
-            }
-            else
-            {
-                WriteLine( L"            return {};", fieldName );
-            }
-        }
-        else
-        {
-            if ( member.Nullable( ) )
-            {
-                auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-                WriteLine( L"            if({} != SQL_NULL_DATA)", indicatorName );
-                WriteLine( L"            {" );
-                WriteLine( L"                return {};", fieldName );
-                WriteLine( L"            }" );
-                WriteLine( L"            return {};" );
-            }
-            else
-            {
-                WriteLine( L"            return {};", fieldName );
-            }
-        }
+        WriteLine( L"            return {};", fieldName );
         WriteLine( L"        }" );
-        if ( member.Nullable( ) )
-        {
-            auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-            WriteLine( L"        bool Is{}Null( ) const", accessorName );
-            WriteLine( L"        {" );
-            WriteLine( L"            return {} == SQL_NULL_DATA;", indicatorName );
-            WriteLine( L"        }" );
-        }
     }
     void CppDataTypesGenerator::CreateSetter( const ClassInfo& classInfo, const MemberInfo& member )
     {
@@ -567,15 +653,9 @@ namespace Harlinn::ODBC::Tool
 
         WriteLine( L"        void {}( {} {} )", setterName, argumentType, argumentName );
         WriteLine( L"        {" );
-        if ( memberInfoType == MemberInfoType::String || memberInfoType == MemberInfoType::Binary )
-        {
-            auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-            WriteLine( L"            Assign({}, {}, {});", argumentName, fieldName, indicatorName );
-        }
-        else
-        {
-            WriteLine( L"            {} = {};", fieldName, argumentName );
-        }
+        
+        WriteLine( L"            {} = {};", fieldName, argumentName );
+        
         WriteLine( L"        }" );
     }
 
@@ -595,23 +675,7 @@ namespace Harlinn::ODBC::Tool
             const auto& member = *members[ i ];
             auto fieldName = CppHelper::GetMemberFieldName( member );
             auto memberType = member.Type( );
-            if ( member.Nullable( ) && ( memberType == MemberInfoType::String || memberType == MemberInfoType::Binary ) && CppHelper::IsBindable( member ) )
-            {
-                auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-                WriteLine( L"            WriteNullableColumnValue( destination, {}, {});", fieldName, indicatorName );
-            }
-            else
-            {
-                if ( CppHelper::RequiresIndicator( member ) )
-                {
-                    auto indicatorName = CppHelper::GetMemberIndicatorName( member );
-                    WriteLine( L"            WriteColumnValue( destination, {}, {});", fieldName, indicatorName );
-                }
-                else
-                {
-                    WriteLine( L"            WriteColumnValue( destination, {});", fieldName );
-                }
-            }
+            WriteLine( L"            WriteColumnValue( destination, {});", fieldName );
         }
         WriteLine( L"        }" );
     }

@@ -21,6 +21,7 @@
 #include <HCCGuid.h>
 #include <HCCDateTime.h>
 #include <HCCString.h>
+#include <HCCBinary.h>
 #include <HCCCurrency.h>
 #include <HCCConcepts.h>
 #include <HCCSync.h>

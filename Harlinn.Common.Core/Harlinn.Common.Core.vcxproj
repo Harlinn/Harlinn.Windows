@@ -204,6 +204,7 @@
     <ClInclude Include="HCCApplication.h" />
     <ClInclude Include="HCCApplicationOptions.h" />
     <ClInclude Include="HCCArray.h" />
+    <ClInclude Include="HCCBinary.h" />
     <ClInclude Include="HCCBinaryReader.h" />
     <ClInclude Include="HCCBinaryWriter.h" />
     <ClInclude Include="HCCBitConverter.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="HCCComRegistry.h" />
     <ClInclude Include="HCCConcepts.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
+    <ClInclude Include="HCCData.h" />
     <ClInclude Include="HCCDataSource.h" />
     <ClInclude Include="HCCDebugServiceHost.h" />
     <ClInclude Include="HCCDemangle.h" />
@@ -327,6 +329,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HCCApplication.cpp" />
+    <ClCompile Include="HCCBinary.cpp" />
     <ClCompile Include="HCCBlocks.cpp" />
     <ClCompile Include="HCCCom.cpp" />
     <ClCompile Include="HCCCRC32.cpp" />

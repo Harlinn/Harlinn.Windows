@@ -37,7 +37,7 @@ public:
 
     using Base = DataReader;
 
-    TimeseriesValue1DateReader( const Statement* statement )
+    TimeseriesValue1DateReader( const ODBC::Statement* statement )
         : Base( statement )
     {
         BindInt64( ID_ID, &id_ );

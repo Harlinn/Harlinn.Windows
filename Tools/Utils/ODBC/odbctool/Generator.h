@@ -250,6 +250,7 @@ namespace Harlinn::ODBC::Tool
     private:
         void CreateBaseClass( );
         void CreateDataType( const ClassInfo& classInfo );
+        void CreateColumnDataType( const ClassInfo& classInfo );
         void CreateFieldNames( const ClassInfo& classInfo );
         void CreateFieldIds( const ClassInfo& classInfo );
         void CreateBindColumns( const ClassInfo& classInfo );

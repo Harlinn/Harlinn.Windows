@@ -15,6 +15,7 @@
 */
 
 #include "ModelInfo.h"
+#include "SqlServerHelper.h"
 
 namespace Harlinn::ODBC::Tool
 {
@@ -143,6 +144,30 @@ namespace Harlinn::ODBC::Tool
         {
             classInfo->AfterLoad( );
         }
+        for ( auto& classInfo : classList_ )
+        {
+            if ( classInfo->IsTopLevel( ) )
+            {
+                auto classes = classInfo->AllDerivedClassesAndSelf( );
+                std::unordered_map<WideString, WideString> shortNames;
+                for ( auto& cls : classes )
+                {
+                    auto shortName = cls->ShortName();
+                    auto it = shortNames.find( shortName );
+                    if ( it != shortNames.end( ) )
+                    {
+                        std::println( std::cout, "Short name {} for {} collides with short name for {}.", AnsiString::From( shortName ), AnsiString::From( cls->Name() ), AnsiString::From( it->second ) );
+                    }
+                    else
+                    {
+                        shortNames.emplace( shortName, cls->Name() );
+
+                    }
+                }
+            }
+        }
+
+
     }
 
 

@@ -123,7 +123,7 @@ public:
 
     using Base = DataReader;
 
-    DateReaderTest1DateReader(const Statement* statement)
+    DateReaderTest1DateReader(const ODBC::Statement* statement)
         : Base( statement )
     {
         BindInt64( ID_ID, &id_, nullptr );
