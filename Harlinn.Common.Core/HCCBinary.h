@@ -1958,6 +1958,7 @@ namespace Harlinn::Common::Core
         size_t size_ = 0;
     private:
         ArrayType data_ = {};
+    protected:
         static size_t CheckSize( size_t size )
         {
             return Internal::CheckFixedBinarySize<MaxSize>( size );
@@ -2121,6 +2122,36 @@ namespace Harlinn::Common::Core
         {
             return data_[ size( ) - 1 ];
         }
+
+    private:
+        [[nodiscard]] static bool AreEqual( const Byte* first, size_type firstSize, const Byte* second, size_type secondSize )
+        {
+            if ( first && firstSize )
+            {
+                if ( second )
+                {
+                    if ( firstSize == secondSize )
+                    {
+                        return memcmp( first, second, secondSize ) == 0;
+                    }
+                }
+                return false;
+            }
+            return second && secondSize ? false : true;
+        }
+
+    public:
+        template<size_t M>
+        bool operator == ( const FixedBinary<M>& other ) const
+        {
+            return AreEqual( data( ), size( ), other.data( ), other.size( ) );
+        }
+        template<size_t M>
+        bool operator != ( const FixedBinary<M>& other ) const
+        {
+            return AreEqual( data( ), size( ), other.data( ), other.size( ) ) == false;
+        }
+
     };
 
 

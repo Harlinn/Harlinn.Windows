@@ -45,6 +45,17 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    using namespace Harlinn::Common::Core;" );
         WriteLine( );
 
+        WriteLine( L"    template<typename ObjectT, typename KeyT>" );
+        WriteLine( L"        requires std::is_enum_v<ObjectT>" );
+        WriteLine( L"    using BaseData = Harlinn::Common::Core::Data::BaseData<ObjectT, KeyT>;" );
+        WriteLine( );
+
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto& classInfo = *classes[ i ];
+            CreateDataType( classInfo );
+        }
+
         CreateBaseClass( );
 
         for ( size_t i = 0; i < classCount; i++ )
@@ -61,10 +72,7 @@ namespace Harlinn::ODBC::Tool
 
     void CppDataTypesGenerator::CreateBaseClass( )
     {
-        WriteLine( L"template<typename ObjectT, typename KeyT>");
-        WriteLine( L"    requires std::is_enum_v<ObjectT>");
-        WriteLine( L"using BaseData = Harlinn::Common::Core::Data::BaseData<ObjectT, KeyT>;" );
-        WriteLine( );
+        
         WriteLine( L"    class BaseColumnData" );
         WriteLine( L"    {" );
         WriteLine( L"    public:" );
@@ -327,16 +335,23 @@ namespace Harlinn::ODBC::Tool
 
     void CppDataTypesGenerator::CreateDataType( const ClassInfo& classInfo )
     {
-        auto className = CppHelper::GetColumnDataType( classInfo );
+        auto baseClass = classInfo.BaseClass( );
+
+        auto className = CppHelper::GetDataType( classInfo );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyTypeName = CppHelper::GetMemberFieldType( *primaryKey );
         const auto& persistentMembers = classInfo.OwnPersistentMembers( );
 
+        auto baseClassName = Format(L"BaseData<Kind, {}>", primaryKeyTypeName );
+        if ( baseClass )
+        {
+            baseClassName = CppHelper::GetDataType( *baseClass );
+        }
 
-        WriteLine( L"    class {} : public BaseData<Kind, {}>", className, primaryKeyTypeName );
+        WriteLine( L"    class {} : public {}", className, baseClassName );
         WriteLine( L"    {");
         WriteLine( L"    public:");
-        WriteLine( L"        using Base = BaseData<Kind, {}>;", primaryKeyTypeName );
+        WriteLine( L"        using Base = {};", baseClassName );
         WriteLine( L"        static constexpr Kind KIND = Kind::{};",classInfo.Name());
         WriteLine( L"    private:");
         for ( const auto& member : persistentMembers )
@@ -361,25 +376,63 @@ namespace Harlinn::ODBC::Tool
                 }
             }
         }
-        WriteLine( L"        Int64 rowVersion_ = 0;");
-        WriteLine( L"        WideString name_;");
         WriteLine( L"    public:");
-        WriteLine( L"        AircraftTypeData( ) = default;");
-        WriteLine( L"        HCC_ROWVERSION_DATA_PROPERTY( RowVersion, rowVersion_ );");
-        WriteLine( L"        HCC_STRING_DATA_PROPERTY( Name, name_ );");
+        WriteLine( L"        {}( ) = default;", className );
         WriteLine( L"        template<IO::StreamWriter StreamT>");
         WriteLine( L"        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const");
         WriteLine( L"        {");
         WriteLine( L"            Base::WriteTo( destination );");
-        WriteLine( L"            destination.Write( rowVersion_ );");
-        WriteLine( L"            destination.Write( name_ );");
+        for ( const auto& member : persistentMembers )
+        {
+            if ( member->PrimaryKey( ) == false )
+            {
+                auto memberType = member->Type( );
+                auto fieldName = CppHelper::GetMemberFieldName( *member );
+                if ( CppHelper::IsBindable( *member ) )
+                {
+                    if ( member->Nullable( ) || memberType == MemberInfoType::String || memberType == MemberInfoType::Binary )
+                    {
+                        WriteLine( L"            {}.WriteTo( destination );", fieldName );
+                    }
+                    else
+                    {
+                        WriteLine( L"            destination.Write({});", fieldName );
+                    }
+                }
+                else
+                {
+                    WriteLine( L"            destination.Write({});", fieldName );
+                }
+            }
+        }
         WriteLine( L"        }");
         WriteLine( L"        template<IO::StreamReader StreamT>");
         WriteLine( L"        void ReadFrom( IO::BinaryReader<StreamT>& source )");
         WriteLine( L"        {");
         WriteLine( L"            Base::ReadFrom( source );");
-        WriteLine( L"            source.Read( rowVersion_ );");
-        WriteLine( L"            source.Read( name_ );");
+        for ( const auto& member : persistentMembers )
+        {
+            if ( member->PrimaryKey( ) == false )
+            {
+                auto memberType = member->Type( );
+                auto fieldName = CppHelper::GetMemberFieldName( *member );
+                if ( CppHelper::IsBindable( *member ) )
+                {
+                    if ( member->Nullable( ) || memberType == MemberInfoType::String || memberType == MemberInfoType::Binary )
+                    {
+                        WriteLine( L"            {}.ReadFrom( source );", fieldName );
+                    }
+                    else
+                    {
+                        WriteLine( L"            source.Read({});", fieldName );
+                    }
+                }
+                else
+                {
+                    WriteLine( L"            source.Read({});", fieldName );
+                }
+            }
+        }
         WriteLine( L"        }");
         WriteLine( L"        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override");
         WriteLine( L"        {");
@@ -395,28 +448,29 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }");
         WriteLine( L"        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override");
         WriteLine( L"        {");
-        WriteLine( L"            return std::make_shared<AircraftTypeData>( );");
+        WriteLine( L"            return std::make_shared<{}>( );", className );
         WriteLine( L"        }");
         WriteLine( L"        virtual void AssignTo( BaseData& target ) const override");
         WriteLine( L"        {");
         WriteLine( L"            Base::AssignTo( target );");
-        WriteLine( L"            auto& dest = static_cast< AircraftTypeData& >( target );");
-        WriteLine( L"            dest.rowVersion_ = rowVersion_;");
-        WriteLine( L"            dest.name_ = name_;");
+        WriteLine( L"            auto& dest = static_cast<{}&>( target );", className );
         WriteLine( L"        }");
         WriteLine( L"        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const");
         WriteLine( L"        {");
         WriteLine( L"            if ( Base::IsEqualTo( other ) )");
         WriteLine( L"            {");
-        WriteLine( L"                const auto& dataObject = static_cast< const AircraftTypeData& >( other );");
-        WriteLine( L"                if ( dataObject.rowVersion_ != rowVersion_ )");
-        WriteLine( L"                {");
-        WriteLine( L"                    return false;");
-        WriteLine( L"                }");
-        WriteLine( L"                if ( dataObject.name_ != name_ )");
-        WriteLine( L"                {");
-        WriteLine( L"                    return false;");
-        WriteLine( L"                }");
+        WriteLine( L"                const auto& dataObject = static_cast< const {}& >( other );", className );
+        for ( const auto& member : persistentMembers )
+        {
+            if ( member->PrimaryKey( ) == false )
+            {
+                auto fieldName = CppHelper::GetMemberFieldName( *member );
+                WriteLine( L"                if ( dataObject.{} != {} )", fieldName, fieldName );
+                WriteLine( L"                {" );
+                WriteLine( L"                    return false;" );
+                WriteLine( L"                }" );
+            }
+        }
         WriteLine( L"                return true;");
         WriteLine( L"            }");
         WriteLine( L"            return false;");
@@ -650,6 +704,11 @@ namespace Harlinn::ODBC::Tool
         auto setterName = CppHelper::GetMemberSetterName( member );
         auto argumentName = CppHelper::GetInputArgumentName( member );
         auto argumentType = CppHelper::GetInputArgumentType( member );
+
+        if ( memberInfoType == MemberInfoType::RowVersion )
+        {
+            argumentType = L"const Int64&";
+        }
 
         WriteLine( L"        void {}( {} {} )", setterName, argumentType, argumentName );
         WriteLine( L"        {" );

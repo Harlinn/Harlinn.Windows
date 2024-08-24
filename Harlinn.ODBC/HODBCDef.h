@@ -25,6 +25,8 @@
 #include <HCCCurrency.h>
 #include <HCCConcepts.h>
 #include <HCCSync.h>
+#include <HCCBinaryReader.h>
+#include <HCCBinaryWriter.h>
 
 
 #ifdef BUILDING_HARLINN_ODBC

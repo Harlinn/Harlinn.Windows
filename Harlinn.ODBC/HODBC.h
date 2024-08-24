@@ -38,6 +38,10 @@ namespace Harlinn::ODBC
     private:
         using Base::size_;
     public:
+        using Base::size;
+        using Base::data;
+        using Base::CheckSize;
+    public:
         constexpr FixedDBString( ) noexcept = default;
 
 
@@ -59,6 +63,37 @@ namespace Harlinn::ODBC
         {
             return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
         }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            bool notNull = IsNull( ) == false;
+            destination.Write( notNull );
+            if ( notNull )
+            {
+                auto sz = size( ) * sizeof( CharT );
+                destination.Write7BitEncoded( sz );
+                destination.Write( data( ), sz );
+            }
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            bool notNull = source.Read<bool>( );
+            if ( notNull )
+            {
+                auto sz = source.Read7BitEncoded( );
+                size_ = CheckSize(sz / sizeof( CharT ));
+                source.Read( data( ), sz );
+                data( )[ size_ ] = static_cast< CharT >( 0 );
+            }
+            else
+            {
+                data( )[ 0 ] = static_cast< CharT >( 0 );
+                size_ = SQL_NULL_DATA;
+            }
+        }
+
     };
 
     template<size_t maxSize>
@@ -75,6 +110,10 @@ namespace Harlinn::ODBC
     private:
         using Base::size_;
     public:
+        using Base::size;
+        using Base::data;
+        using Base::CheckSize;
+    public:
         SQLLEN* Indicator( )
         {
             auto* ptr = &size_;
@@ -85,6 +124,37 @@ namespace Harlinn::ODBC
         {
             return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
         }
+
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            bool notNull = IsNull( ) == false;
+            destination.Write( notNull );
+            if ( notNull )
+            {
+                auto sz = size( );
+                destination.WriteSize( sz );
+                destination.Write( data( ), sz );
+            }
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            bool notNull = source.Read<bool>( );
+            if ( notNull )
+            {
+                auto sz = source.ReadSize( );
+                size_ = CheckSize( sz );
+                source.Read( data( ), sz );
+                data( )[ size_ ] = 0;
+            }
+            else
+            {
+                data( )[ 0 ] = 0;
+                size_ = SQL_NULL_DATA;
+            }
+        }
+
     };
 
     namespace Internal
@@ -122,6 +192,17 @@ namespace Harlinn::ODBC
                 value_ = value;
                 return *this;
             }
+
+            bool operator == ( const DBValue& other ) const
+            {
+                return indicator_ == other.indicator_ && value_ == other.value_;
+            }
+
+            bool operator != ( const DBValue& other ) const
+            {
+                return indicator_ != other.indicator_ || value_ != other.value_;
+            }
+
 
             [[nodiscard]] 
             SQLLEN* Indicator( ) const noexcept
@@ -161,6 +242,31 @@ namespace Harlinn::ODBC
                 }
                 throw std::bad_optional_access{};
             }
+
+            template<IO::StreamWriter StreamT>
+            void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+            {
+                bool notNull = IsNull( ) == false;
+                destination.Write( notNull );
+                if ( notNull )
+                {
+                    destination.Write( value_ );
+                }
+            }
+            template<IO::StreamReader StreamT>
+            void ReadFrom( IO::BinaryReader<StreamT>& source )
+            {
+                bool notNull = source.Read<bool>( );
+                if ( notNull )
+                {
+                    value_ = source.Read<value_type>( );
+                }
+                else
+                {
+                    reset( );
+                }
+            }
+
         };
     }
 

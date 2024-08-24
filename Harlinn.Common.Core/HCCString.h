@@ -4811,6 +4811,7 @@ namespace Harlinn::Common::Core
         size_t size_ = 0;
     private:
         ArrayType data_ = {};
+    protected:
         static size_t CheckSize( size_t size )
         {
             return Internal::CheckFixedStringSize<MaxSize>( size );
@@ -5021,6 +5022,34 @@ namespace Harlinn::Common::Core
             return {};
         }
 
+    private:
+        [[nodiscard]] static bool AreEqual( const CharType* first, size_type firstSize, const CharType* second, size_type secondSize )
+        {
+            if ( first && firstSize )
+            {
+                if ( second )
+                {
+                    if ( firstSize == secondSize )
+                    {
+                        return Internal::Compare( first, firstSize, second, secondSize ) == 0;
+                    }
+                }
+                return false;
+            }
+            return second && secondSize ? false : true;
+        }
+
+    public:
+        template<size_t M>
+        bool operator == ( const FixedString<CharType,M>& other ) const
+        {
+            return AreEqual( data( ), size( ), other.data( ), other.size( ) );
+        }
+        template<size_t M>
+        bool operator != ( const FixedString<CharType, M>& other ) const
+        {
+            return AreEqual( data( ), size( ), other.data( ), other.size( ) ) == false;
+        }
 
     };
 
