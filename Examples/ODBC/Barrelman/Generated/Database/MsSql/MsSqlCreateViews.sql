@@ -1063,139 +1063,6 @@ AS
 
 go 
 
-CREATE OR ALTER VIEW DeviceTypeView
-AS
- SELECT
-  [DeviceType].[Id],
-  [DeviceType].[EntityType],
-  [DeviceType].[RowVersion],
-  [DeviceType].[AssemblyName],
-  [DeviceType].[ClassName],
-  [DeviceType].[ProxyAssemblyName],
-  [DeviceType].[ProxyClassName]
- FROM [DeviceType]
-
-go 
-
-CREATE OR ALTER VIEW AisTransceiverTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [AisTransceiverType].[Name]
- FROM [AisTransceiverType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [AisTransceiverType].Id)
-
-go 
-
-CREATE OR ALTER VIEW CameraTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [CameraType].[Name],
-  [CameraType].[CameraFeatures]
- FROM [CameraType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [CameraType].Id)
-
-go 
-
-CREATE OR ALTER VIEW GNSSDeviceTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [GNSSDeviceType].[Name]
- FROM [GNSSDeviceType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [GNSSDeviceType].Id)
-
-go 
-
-CREATE OR ALTER VIEW GyroDeviceTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [GyroDeviceType].[Name]
- FROM [GyroDeviceType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [GyroDeviceType].Id)
-
-go 
-
-CREATE OR ALTER VIEW LineInputDeviceTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [LineInputDeviceType].[Name]
- FROM [LineInputDeviceType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [LineInputDeviceType].Id)
-
-go 
-
-CREATE OR ALTER VIEW OilspillDetectorTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [OilspillDetectorType].[Name]
- FROM [OilspillDetectorType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [OilspillDetectorType].Id)
-
-go 
-
-CREATE OR ALTER VIEW RadarTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [RadarType].[Name],
-  [RadarType].[PulseShortMinusValue],
-  [RadarType].[PulseShortMinusDisplayText],
-  [RadarType].[PulseShortValue],
-  [RadarType].[PulseShortDisplayText],
-  [RadarType].[PulseShortPlusValue],
-  [RadarType].[PulseShortPlusDisplayText],
-  [RadarType].[PulseMediumMinusValue],
-  [RadarType].[PulseMediumMinusDisplayText],
-  [RadarType].[PulseMediumValue],
-  [RadarType].[PulseMediumDisplayText],
-  [RadarType].[PulseMediumPlusValue],
-  [RadarType].[PulseMediumPlusDisplayText],
-  [RadarType].[PulseLongMinusValue],
-  [RadarType].[PulseLongMinusDisplayText],
-  [RadarType].[PulseLongValue],
-  [RadarType].[PulseLongDisplayText],
-  [RadarType].[PulseLongPlusValue],
-  [RadarType].[PulseLongPlusDisplayText]
- FROM [RadarType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [RadarType].Id)
-
-go 
-
-CREATE OR ALTER VIEW RadioTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [RadioType].[Name]
- FROM [RadioType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [RadioType].Id)
-
-go 
-
-CREATE OR ALTER VIEW RadomeTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [RadomeType].[Name]
- FROM [RadomeType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [RadomeType].Id)
-
-go 
-
-CREATE OR ALTER VIEW WeatherStationTypeView
-AS
- SELECT
-  DeviceTypeView.*,
-  [WeatherStationType].[Name]
- FROM [WeatherStationType]
- JOIN DeviceTypeView ON ([DeviceTypeView].Id = [WeatherStationType].Id)
-
-go 
-
 CREATE OR ALTER VIEW DoubleTimeseriesValueView
 AS
  SELECT
@@ -1470,8 +1337,7 @@ go
 CREATE OR ALTER VIEW CameraView
 AS
  SELECT
-  DeviceView.*,
-  [Camera].[Type]
+  DeviceView.*
  FROM [Camera]
  JOIN DeviceView ON ([DeviceView].Id = [Camera].Id)
 
@@ -1481,7 +1347,6 @@ CREATE OR ALTER VIEW GNSSDeviceView
 AS
  SELECT
   DeviceView.*,
-  [GNSSDevice].[Type],
   [GNSSDevice].[LatitudeTimeseries],
   [GNSSDevice].[LongitudeTimeseries],
   [GNSSDevice].[AltitudeTimeseries]
@@ -1494,7 +1359,6 @@ CREATE OR ALTER VIEW GyroDeviceView
 AS
  SELECT
   DeviceView.*,
-  [GyroDevice].[Type],
   [GyroDevice].[HeadingTrueNorthTimeseries],
   [GyroDevice].[HeadingMagneticNorthTimeseries],
   [GyroDevice].[PitchTimeseries],
@@ -1511,8 +1375,7 @@ go
 CREATE OR ALTER VIEW LineInputDeviceView
 AS
  SELECT
-  DeviceView.*,
-  [LineInputDevice].[Type]
+  DeviceView.*
  FROM [LineInputDevice]
  JOIN DeviceView ON ([DeviceView].Id = [LineInputDevice].Id)
 
@@ -1521,8 +1384,7 @@ go
 CREATE OR ALTER VIEW OilspillDetectorView
 AS
  SELECT
-  DeviceView.*,
-  [OilspillDetector].[Type]
+  DeviceView.*
  FROM [OilspillDetector]
  JOIN DeviceView ON ([DeviceView].Id = [OilspillDetector].Id)
 
@@ -1531,8 +1393,7 @@ go
 CREATE OR ALTER VIEW RadioView
 AS
  SELECT
-  DeviceView.*,
-  [Radio].[Type]
+  DeviceView.*
  FROM [Radio]
  JOIN DeviceView ON ([DeviceView].Id = [Radio].Id)
 
@@ -1542,7 +1403,6 @@ CREATE OR ALTER VIEW RadomeView
 AS
  SELECT
   DeviceView.*,
-  [Radome].[Type],
   [Radome].[Radar],
   [Radome].[PressureTimeseries],
   [Radome].[TemperatureTimeseries],
@@ -1565,8 +1425,7 @@ go
 CREATE OR ALTER VIEW AisTransceiverView
 AS
  SELECT
-  TrackerView.*,
-  [AisTransceiver].[Type]
+  TrackerView.*
  FROM [AisTransceiver]
  JOIN TrackerView ON ([TrackerView].Id = [AisTransceiver].Id)
 
@@ -1576,7 +1435,6 @@ CREATE OR ALTER VIEW RadarView
 AS
  SELECT
   TrackerView.*,
-  [Radar].[Type],
   [Radar].[SaveSettingsTimeseries],
   [Radar].[PowerOnTimeseries],
   [Radar].[TrackingOnTimeseries],
@@ -1609,7 +1467,6 @@ CREATE OR ALTER VIEW WeatherStationView
 AS
  SELECT
   DeviceView.*,
-  [WeatherStation].[Type],
   [WeatherStation].[BarometricPressureTimeseries],
   [WeatherStation].[AirTemperatureTimeseries],
   [WeatherStation].[WaterTemperatureTimeseries],

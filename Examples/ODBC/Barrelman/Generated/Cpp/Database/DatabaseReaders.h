@@ -8342,764 +8342,6 @@ namespace Barrelman::Database
 
     using SimpleDeviceHostConfigurationDataReader = SimpleColumnDataReader<DeviceHostConfigurationColumnData>;
 
-    class DeviceTypeColumnData : public BaseColumnData
-    {
-        Guid id_;
-        Int64 rowVersion_ = 0;
-        FixedDBWideString<100> assemblyName_;
-        FixedDBWideString<100> className_;
-        FixedDBWideString<100> proxyAssemblyName_;
-        FixedDBWideString<100> proxyClassName_;
-    public:
-        using Base = BaseColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName]";
-        static constexpr std::wstring_view ViewName = L"DeviceTypeView";
-
-        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT ASSEMBLYNAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT CLASSNAME_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT PROXYASSEMBLYNAME_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT PROXYCLASSNAME_FIELD_ID = 6;
-
-        DeviceTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::DeviceType;
-        }
-
-        const Guid& Id( ) const
-        {
-            return id_;
-        }
-        void SetId( const Guid& id )
-        {
-            id_ = id;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const FixedDBWideString<100>& AssemblyName( ) const
-        {
-            return assemblyName_;
-        }
-        void SetAssemblyName( const WideString& assemblyName )
-        {
-            assemblyName_ = assemblyName;
-        }
-        const FixedDBWideString<100>& ClassName( ) const
-        {
-            return className_;
-        }
-        void SetClassName( const WideString& className )
-        {
-            className_ = className;
-        }
-        const FixedDBWideString<100>& ProxyAssemblyName( ) const
-        {
-            return proxyAssemblyName_;
-        }
-        void SetProxyAssemblyName( const WideString& proxyAssemblyName )
-        {
-            proxyAssemblyName_ = proxyAssemblyName;
-        }
-        const FixedDBWideString<100>& ProxyClassName( ) const
-        {
-            return proxyClassName_;
-        }
-        void SetProxyClassName( const WideString& proxyClassName )
-        {
-            proxyClassName_ = proxyClassName;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Bind(statement, ID_FIELD_ID, id_);
-            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, ASSEMBLYNAME_FIELD_ID, assemblyName_);
-            Bind(statement, CLASSNAME_FIELD_ID, className_);
-            Bind(statement, PROXYASSEMBLYNAME_FIELD_ID, proxyAssemblyName_);
-            Bind(statement, PROXYCLASSNAME_FIELD_ID, proxyClassName_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            WriteColumnValue( destination, id_);
-            WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, assemblyName_);
-            WriteColumnValue( destination, className_);
-            WriteColumnValue( destination, proxyAssemblyName_);
-            WriteColumnValue( destination, proxyClassName_);
-        }
-    };
-
-    using SimpleDeviceTypeDataReader = SimpleColumnDataReader<DeviceTypeColumnData>;
-
-    class AisTransceiverTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        AisTransceiverTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::AisTransceiverType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleAisTransceiverTypeDataReader = SimpleColumnDataReader<AisTransceiverTypeColumnData>;
-
-    class CameraTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-        Data::CameraFeatures cameraFeatures_ = Data::CameraFeatures::None;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name],[CameraFeatures]";
-        static constexpr std::wstring_view ViewName = L"CameraTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT CAMERAFEATURES_FIELD_ID = 8;
-
-        CameraTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::CameraType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        Data::CameraFeatures CameraFeatures( ) const
-        {
-            return cameraFeatures_;
-        }
-        void SetCameraFeatures( Data::CameraFeatures cameraFeatures )
-        {
-            cameraFeatures_ = cameraFeatures;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-            Bind(statement, CAMERAFEATURES_FIELD_ID, cameraFeatures_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-            WriteColumnValue( destination, cameraFeatures_);
-        }
-    };
-
-    using SimpleCameraTypeDataReader = SimpleColumnDataReader<CameraTypeColumnData>;
-
-    class GNSSDeviceTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"GNSSDeviceTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        GNSSDeviceTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::GNSSDeviceType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleGNSSDeviceTypeDataReader = SimpleColumnDataReader<GNSSDeviceTypeColumnData>;
-
-    class GyroDeviceTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"GyroDeviceTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        GyroDeviceTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::GyroDeviceType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleGyroDeviceTypeDataReader = SimpleColumnDataReader<GyroDeviceTypeColumnData>;
-
-    class LineInputDeviceTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"LineInputDeviceTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        LineInputDeviceTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::LineInputDeviceType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleLineInputDeviceTypeDataReader = SimpleColumnDataReader<LineInputDeviceTypeColumnData>;
-
-    class OilspillDetectorTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"OilspillDetectorTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        OilspillDetectorTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::OilspillDetectorType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleOilspillDetectorTypeDataReader = SimpleColumnDataReader<OilspillDetectorTypeColumnData>;
-
-    class RadarTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-        DBInt32 pulseShortMinusValue_;
-        FixedDBWideString<50> pulseShortMinusDisplayText_;
-        DBInt32 pulseShortValue_;
-        FixedDBWideString<50> pulseShortDisplayText_;
-        DBInt32 pulseShortPlusValue_;
-        FixedDBWideString<50> pulseShortPlusDisplayText_;
-        DBInt32 pulseMediumMinusValue_;
-        FixedDBWideString<50> pulseMediumMinusDisplayText_;
-        DBInt32 pulseMediumValue_;
-        FixedDBWideString<50> pulseMediumDisplayText_;
-        DBInt32 pulseMediumPlusValue_;
-        FixedDBWideString<50> pulseMediumPlusDisplayText_;
-        DBInt32 pulseLongMinusValue_;
-        FixedDBWideString<50> pulseLongMinusDisplayText_;
-        DBInt32 pulseLongValue_;
-        FixedDBWideString<50> pulseLongDisplayText_;
-        DBInt32 pulseLongPlusValue_;
-        FixedDBWideString<50> pulseLongPlusDisplayText_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name],[PulseShortMinusValue],[PulseShortMinusDisplayText],[PulseShortValue],[PulseShortDisplayText],[PulseShortPlusValue],[PulseShortPlusDisplayText],[PulseMediumMinusValue],[PulseMediumMinusDisplayText],[PulseMediumValue],[PulseMediumDisplayText],[PulseMediumPlusValue],[PulseMediumPlusDisplayText],[PulseLongMinusValue],[PulseLongMinusDisplayText],[PulseLongValue],[PulseLongDisplayText],[PulseLongPlusValue],[PulseLongPlusDisplayText]";
-        static constexpr std::wstring_view ViewName = L"RadarTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT PULSESHORTMINUSVALUE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT PULSESHORTMINUSDISPLAYTEXT_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT PULSESHORTVALUE_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT PULSESHORTDISPLAYTEXT_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT PULSESHORTPLUSVALUE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT PULSESHORTPLUSDISPLAYTEXT_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT PULSEMEDIUMMINUSVALUE_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT PULSEMEDIUMMINUSDISPLAYTEXT_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT PULSEMEDIUMVALUE_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT PULSEMEDIUMDISPLAYTEXT_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT PULSEMEDIUMPLUSVALUE_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT PULSEMEDIUMPLUSDISPLAYTEXT_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT PULSELONGMINUSVALUE_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT PULSELONGMINUSDISPLAYTEXT_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT PULSELONGVALUE_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT PULSELONGDISPLAYTEXT_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT PULSELONGPLUSVALUE_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT PULSELONGPLUSDISPLAYTEXT_FIELD_ID = 25;
-
-        RadarTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::RadarType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        const DBInt32& PulseShortMinusValue( ) const
-        {
-            return pulseShortMinusValue_;
-        }
-        void SetPulseShortMinusValue( const DBInt32& pulseShortMinusValue )
-        {
-            pulseShortMinusValue_ = pulseShortMinusValue;
-        }
-        const FixedDBWideString<50>& PulseShortMinusDisplayText( ) const
-        {
-            return pulseShortMinusDisplayText_;
-        }
-        void SetPulseShortMinusDisplayText( const WideString& pulseShortMinusDisplayText )
-        {
-            pulseShortMinusDisplayText_ = pulseShortMinusDisplayText;
-        }
-        const DBInt32& PulseShortValue( ) const
-        {
-            return pulseShortValue_;
-        }
-        void SetPulseShortValue( const DBInt32& pulseShortValue )
-        {
-            pulseShortValue_ = pulseShortValue;
-        }
-        const FixedDBWideString<50>& PulseShortDisplayText( ) const
-        {
-            return pulseShortDisplayText_;
-        }
-        void SetPulseShortDisplayText( const WideString& pulseShortDisplayText )
-        {
-            pulseShortDisplayText_ = pulseShortDisplayText;
-        }
-        const DBInt32& PulseShortPlusValue( ) const
-        {
-            return pulseShortPlusValue_;
-        }
-        void SetPulseShortPlusValue( const DBInt32& pulseShortPlusValue )
-        {
-            pulseShortPlusValue_ = pulseShortPlusValue;
-        }
-        const FixedDBWideString<50>& PulseShortPlusDisplayText( ) const
-        {
-            return pulseShortPlusDisplayText_;
-        }
-        void SetPulseShortPlusDisplayText( const WideString& pulseShortPlusDisplayText )
-        {
-            pulseShortPlusDisplayText_ = pulseShortPlusDisplayText;
-        }
-        const DBInt32& PulseMediumMinusValue( ) const
-        {
-            return pulseMediumMinusValue_;
-        }
-        void SetPulseMediumMinusValue( const DBInt32& pulseMediumMinusValue )
-        {
-            pulseMediumMinusValue_ = pulseMediumMinusValue;
-        }
-        const FixedDBWideString<50>& PulseMediumMinusDisplayText( ) const
-        {
-            return pulseMediumMinusDisplayText_;
-        }
-        void SetPulseMediumMinusDisplayText( const WideString& pulseMediumMinusDisplayText )
-        {
-            pulseMediumMinusDisplayText_ = pulseMediumMinusDisplayText;
-        }
-        const DBInt32& PulseMediumValue( ) const
-        {
-            return pulseMediumValue_;
-        }
-        void SetPulseMediumValue( const DBInt32& pulseMediumValue )
-        {
-            pulseMediumValue_ = pulseMediumValue;
-        }
-        const FixedDBWideString<50>& PulseMediumDisplayText( ) const
-        {
-            return pulseMediumDisplayText_;
-        }
-        void SetPulseMediumDisplayText( const WideString& pulseMediumDisplayText )
-        {
-            pulseMediumDisplayText_ = pulseMediumDisplayText;
-        }
-        const DBInt32& PulseMediumPlusValue( ) const
-        {
-            return pulseMediumPlusValue_;
-        }
-        void SetPulseMediumPlusValue( const DBInt32& pulseMediumPlusValue )
-        {
-            pulseMediumPlusValue_ = pulseMediumPlusValue;
-        }
-        const FixedDBWideString<50>& PulseMediumPlusDisplayText( ) const
-        {
-            return pulseMediumPlusDisplayText_;
-        }
-        void SetPulseMediumPlusDisplayText( const WideString& pulseMediumPlusDisplayText )
-        {
-            pulseMediumPlusDisplayText_ = pulseMediumPlusDisplayText;
-        }
-        const DBInt32& PulseLongMinusValue( ) const
-        {
-            return pulseLongMinusValue_;
-        }
-        void SetPulseLongMinusValue( const DBInt32& pulseLongMinusValue )
-        {
-            pulseLongMinusValue_ = pulseLongMinusValue;
-        }
-        const FixedDBWideString<50>& PulseLongMinusDisplayText( ) const
-        {
-            return pulseLongMinusDisplayText_;
-        }
-        void SetPulseLongMinusDisplayText( const WideString& pulseLongMinusDisplayText )
-        {
-            pulseLongMinusDisplayText_ = pulseLongMinusDisplayText;
-        }
-        const DBInt32& PulseLongValue( ) const
-        {
-            return pulseLongValue_;
-        }
-        void SetPulseLongValue( const DBInt32& pulseLongValue )
-        {
-            pulseLongValue_ = pulseLongValue;
-        }
-        const FixedDBWideString<50>& PulseLongDisplayText( ) const
-        {
-            return pulseLongDisplayText_;
-        }
-        void SetPulseLongDisplayText( const WideString& pulseLongDisplayText )
-        {
-            pulseLongDisplayText_ = pulseLongDisplayText;
-        }
-        const DBInt32& PulseLongPlusValue( ) const
-        {
-            return pulseLongPlusValue_;
-        }
-        void SetPulseLongPlusValue( const DBInt32& pulseLongPlusValue )
-        {
-            pulseLongPlusValue_ = pulseLongPlusValue;
-        }
-        const FixedDBWideString<50>& PulseLongPlusDisplayText( ) const
-        {
-            return pulseLongPlusDisplayText_;
-        }
-        void SetPulseLongPlusDisplayText( const WideString& pulseLongPlusDisplayText )
-        {
-            pulseLongPlusDisplayText_ = pulseLongPlusDisplayText;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-            Bind(statement, PULSESHORTMINUSVALUE_FIELD_ID, pulseShortMinusValue_);
-            Bind(statement, PULSESHORTMINUSDISPLAYTEXT_FIELD_ID, pulseShortMinusDisplayText_);
-            Bind(statement, PULSESHORTVALUE_FIELD_ID, pulseShortValue_);
-            Bind(statement, PULSESHORTDISPLAYTEXT_FIELD_ID, pulseShortDisplayText_);
-            Bind(statement, PULSESHORTPLUSVALUE_FIELD_ID, pulseShortPlusValue_);
-            Bind(statement, PULSESHORTPLUSDISPLAYTEXT_FIELD_ID, pulseShortPlusDisplayText_);
-            Bind(statement, PULSEMEDIUMMINUSVALUE_FIELD_ID, pulseMediumMinusValue_);
-            Bind(statement, PULSEMEDIUMMINUSDISPLAYTEXT_FIELD_ID, pulseMediumMinusDisplayText_);
-            Bind(statement, PULSEMEDIUMVALUE_FIELD_ID, pulseMediumValue_);
-            Bind(statement, PULSEMEDIUMDISPLAYTEXT_FIELD_ID, pulseMediumDisplayText_);
-            Bind(statement, PULSEMEDIUMPLUSVALUE_FIELD_ID, pulseMediumPlusValue_);
-            Bind(statement, PULSEMEDIUMPLUSDISPLAYTEXT_FIELD_ID, pulseMediumPlusDisplayText_);
-            Bind(statement, PULSELONGMINUSVALUE_FIELD_ID, pulseLongMinusValue_);
-            Bind(statement, PULSELONGMINUSDISPLAYTEXT_FIELD_ID, pulseLongMinusDisplayText_);
-            Bind(statement, PULSELONGVALUE_FIELD_ID, pulseLongValue_);
-            Bind(statement, PULSELONGDISPLAYTEXT_FIELD_ID, pulseLongDisplayText_);
-            Bind(statement, PULSELONGPLUSVALUE_FIELD_ID, pulseLongPlusValue_);
-            Bind(statement, PULSELONGPLUSDISPLAYTEXT_FIELD_ID, pulseLongPlusDisplayText_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-            WriteColumnValue( destination, pulseShortMinusValue_);
-            WriteColumnValue( destination, pulseShortMinusDisplayText_);
-            WriteColumnValue( destination, pulseShortValue_);
-            WriteColumnValue( destination, pulseShortDisplayText_);
-            WriteColumnValue( destination, pulseShortPlusValue_);
-            WriteColumnValue( destination, pulseShortPlusDisplayText_);
-            WriteColumnValue( destination, pulseMediumMinusValue_);
-            WriteColumnValue( destination, pulseMediumMinusDisplayText_);
-            WriteColumnValue( destination, pulseMediumValue_);
-            WriteColumnValue( destination, pulseMediumDisplayText_);
-            WriteColumnValue( destination, pulseMediumPlusValue_);
-            WriteColumnValue( destination, pulseMediumPlusDisplayText_);
-            WriteColumnValue( destination, pulseLongMinusValue_);
-            WriteColumnValue( destination, pulseLongMinusDisplayText_);
-            WriteColumnValue( destination, pulseLongValue_);
-            WriteColumnValue( destination, pulseLongDisplayText_);
-            WriteColumnValue( destination, pulseLongPlusValue_);
-            WriteColumnValue( destination, pulseLongPlusDisplayText_);
-        }
-    };
-
-    using SimpleRadarTypeDataReader = SimpleColumnDataReader<RadarTypeColumnData>;
-
-    class RadioTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"RadioTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        RadioTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::RadioType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleRadioTypeDataReader = SimpleColumnDataReader<RadioTypeColumnData>;
-
-    class RadomeTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"RadomeTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        RadomeTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::RadomeType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleRadomeTypeDataReader = SimpleColumnDataReader<RadomeTypeColumnData>;
-
-    class WeatherStationTypeColumnData : public DeviceTypeColumnData
-    {
-        FixedDBWideString<127> name_;
-    public:
-        using Base = DeviceTypeColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AssemblyName],[ClassName],[ProxyAssemblyName],[ProxyClassName],[Name]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationTypeView";
-
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 7;
-
-        WeatherStationTypeColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::WeatherStationType;
-        }
-
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, NAME_FIELD_ID, name_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteColumns( destination );
-            WriteColumnValue( destination, name_);
-        }
-    };
-
-    using SimpleWeatherStationTypeDataReader = SimpleColumnDataReader<WeatherStationTypeColumnData>;
-
     class DoubleTimeseriesValueColumnData : public BaseColumnData
     {
         Guid id_;
@@ -10990,14 +10232,11 @@ namespace Barrelman::Database
 
     class CameraColumnData : public DeviceColumnData
     {
-        Guid type_;
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"CameraView";
-
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
 
         CameraColumnData( ) = default;
 
@@ -11006,26 +10245,10 @@ namespace Barrelman::Database
             return Kind::Camera;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, TYPE_FIELD_ID, type_);
-        }
-
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
         }
     };
 
@@ -11033,20 +10256,18 @@ namespace Barrelman::Database
 
     class GNSSDeviceColumnData : public DeviceColumnData
     {
-        Guid type_;
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
         Guid altitudeTimeseries_;
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[LatitudeTimeseries],[LongitudeTimeseries],[AltitudeTimeseries],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[LatitudeTimeseries],[LongitudeTimeseries],[AltitudeTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"GNSSDeviceView";
 
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT ALTITUDETIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT ALTITUDETIMESERIES_FIELD_ID = 9;
 
         GNSSDeviceColumnData( ) = default;
 
@@ -11055,14 +10276,6 @@ namespace Barrelman::Database
             return Kind::GNSSDevice;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
         const Guid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
@@ -11091,7 +10304,6 @@ namespace Barrelman::Database
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, type_);
             Bind(statement, LATITUDETIMESERIES_FIELD_ID, latitudeTimeseries_);
             Bind(statement, LONGITUDETIMESERIES_FIELD_ID, longitudeTimeseries_);
             Bind(statement, ALTITUDETIMESERIES_FIELD_ID, altitudeTimeseries_);
@@ -11101,7 +10313,6 @@ namespace Barrelman::Database
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
             WriteColumnValue( destination, latitudeTimeseries_);
             WriteColumnValue( destination, longitudeTimeseries_);
             WriteColumnValue( destination, altitudeTimeseries_);
@@ -11112,7 +10323,6 @@ namespace Barrelman::Database
 
     class GyroDeviceColumnData : public DeviceColumnData
     {
-        Guid type_;
         Guid headingTrueNorthTimeseries_;
         Guid headingMagneticNorthTimeseries_;
         Guid pitchTimeseries_;
@@ -11124,18 +10334,17 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[HeadingTrueNorthTimeseries],[HeadingMagneticNorthTimeseries],[PitchTimeseries],[RateOfTurnTimeseries],[RollTimeseries],[CourseTimeseries],[SpeedTimeseries],[GNSSDevice],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[HeadingTrueNorthTimeseries],[HeadingMagneticNorthTimeseries],[PitchTimeseries],[RateOfTurnTimeseries],[RollTimeseries],[CourseTimeseries],[SpeedTimeseries],[GNSSDevice],[Description]";
         static constexpr std::wstring_view ViewName = L"GyroDeviceView";
 
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT HEADINGTRUENORTHTIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT PITCHTIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT RATEOFTURNTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT ROLLTIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT COURSETIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT SPEEDTIMESERIES_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT HEADINGTRUENORTHTIMESERIES_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT PITCHTIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT RATEOFTURNTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT ROLLTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT COURSETIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT SPEEDTIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 14;
 
         GyroDeviceColumnData( ) = default;
 
@@ -11144,14 +10353,6 @@ namespace Barrelman::Database
             return Kind::GyroDevice;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
         const Guid& HeadingTrueNorthTimeseries( ) const
         {
             return headingTrueNorthTimeseries_;
@@ -11220,7 +10421,6 @@ namespace Barrelman::Database
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, type_);
             Bind(statement, HEADINGTRUENORTHTIMESERIES_FIELD_ID, headingTrueNorthTimeseries_);
             Bind(statement, HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID, headingMagneticNorthTimeseries_);
             Bind(statement, PITCHTIMESERIES_FIELD_ID, pitchTimeseries_);
@@ -11235,7 +10435,6 @@ namespace Barrelman::Database
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
             WriteColumnValue( destination, headingTrueNorthTimeseries_);
             WriteColumnValue( destination, headingMagneticNorthTimeseries_);
             WriteColumnValue( destination, pitchTimeseries_);
@@ -11251,14 +10450,11 @@ namespace Barrelman::Database
 
     class LineInputDeviceColumnData : public DeviceColumnData
     {
-        Guid type_;
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"LineInputDeviceView";
-
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
 
         LineInputDeviceColumnData( ) = default;
 
@@ -11267,26 +10463,10 @@ namespace Barrelman::Database
             return Kind::LineInputDevice;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, TYPE_FIELD_ID, type_);
-        }
-
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
         }
     };
 
@@ -11294,14 +10474,11 @@ namespace Barrelman::Database
 
     class OilspillDetectorColumnData : public DeviceColumnData
     {
-        Guid type_;
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"OilspillDetectorView";
-
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
 
         OilspillDetectorColumnData( ) = default;
 
@@ -11310,26 +10487,10 @@ namespace Barrelman::Database
             return Kind::OilspillDetector;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, TYPE_FIELD_ID, type_);
-        }
-
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
         }
     };
 
@@ -11337,14 +10498,11 @@ namespace Barrelman::Database
 
     class RadioColumnData : public DeviceColumnData
     {
-        Guid type_;
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"RadioView";
-
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
 
         RadioColumnData( ) = default;
 
@@ -11353,26 +10511,10 @@ namespace Barrelman::Database
             return Kind::Radio;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, TYPE_FIELD_ID, type_);
-        }
-
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
         }
     };
 
@@ -11380,7 +10522,6 @@ namespace Barrelman::Database
 
     class RadomeColumnData : public DeviceColumnData
     {
-        Guid type_;
         Guid radar_;
         Guid pressureTimeseries_;
         Guid temperatureTimeseries_;
@@ -11389,15 +10530,14 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[Radar],[PressureTimeseries],[TemperatureTimeseries],[DewPointTimeseries],[StatusTimeseries],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Radar],[PressureTimeseries],[TemperatureTimeseries],[DewPointTimeseries],[StatusTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"RadomeView";
 
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT PRESSURETIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT TEMPERATURETIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT STATUSTIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT PRESSURETIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT TEMPERATURETIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT STATUSTIMESERIES_FIELD_ID = 11;
 
         RadomeColumnData( ) = default;
 
@@ -11406,14 +10546,6 @@ namespace Barrelman::Database
             return Kind::Radome;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
         const Guid& Radar( ) const
         {
             return radar_;
@@ -11458,7 +10590,6 @@ namespace Barrelman::Database
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, type_);
             Bind(statement, RADAR_FIELD_ID, radar_);
             Bind(statement, PRESSURETIMESERIES_FIELD_ID, pressureTimeseries_);
             Bind(statement, TEMPERATURETIMESERIES_FIELD_ID, temperatureTimeseries_);
@@ -11470,7 +10601,6 @@ namespace Barrelman::Database
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
             WriteColumnValue( destination, radar_);
             WriteColumnValue( destination, pressureTimeseries_);
             WriteColumnValue( destination, temperatureTimeseries_);
@@ -11507,14 +10637,11 @@ namespace Barrelman::Database
 
     class AisTransceiverColumnData : public TrackerColumnData
     {
-        Guid type_;
     public:
         using Base = TrackerColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
         static constexpr std::wstring_view ViewName = L"AisTransceiverView";
-
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
 
         AisTransceiverColumnData( ) = default;
 
@@ -11523,26 +10650,10 @@ namespace Barrelman::Database
             return Kind::AisTransceiver;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Base::BindColumns( statement );
-
-            Bind(statement, TYPE_FIELD_ID, type_);
-        }
-
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
         }
     };
 
@@ -11550,7 +10661,6 @@ namespace Barrelman::Database
 
     class RadarColumnData : public TrackerColumnData
     {
-        Guid type_;
         Guid saveSettingsTimeseries_;
         Guid powerOnTimeseries_;
         Guid trackingOnTimeseries_;
@@ -11577,33 +10687,32 @@ namespace Barrelman::Database
     public:
         using Base = TrackerColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[SaveSettingsTimeseries],[PowerOnTimeseries],[TrackingOnTimeseries],[RadarPulseTimeseries],[TuningTimeseries],[BlankSector1Timeseries],[Sector1StartTimeseries],[Sector1EndTimeseries],[BlankSector2Timeseries],[Sector2StartTimeseries],[Sector2EndTimeseries],[EnableAutomaticFrequencyControlTimeseries],[AzimuthOffsetTimeseries],[EnableSensitivityTimeControlTimeseries],[AutomaticSensitivityTimeControlTimeseries],[SensitivityTimeControlLevelTimeseries],[EnableFastTimeConstantTimeseries],[FastTimeConstantLevelTimeseries],[FastTimeConstantModeTimeseries],[LatitudeTimeseries],[LongitudeTimeseries],[Radome],[GNSSDevice],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[SaveSettingsTimeseries],[PowerOnTimeseries],[TrackingOnTimeseries],[RadarPulseTimeseries],[TuningTimeseries],[BlankSector1Timeseries],[Sector1StartTimeseries],[Sector1EndTimeseries],[BlankSector2Timeseries],[Sector2StartTimeseries],[Sector2EndTimeseries],[EnableAutomaticFrequencyControlTimeseries],[AzimuthOffsetTimeseries],[EnableSensitivityTimeControlTimeseries],[AutomaticSensitivityTimeControlTimeseries],[SensitivityTimeControlLevelTimeseries],[EnableFastTimeConstantTimeseries],[FastTimeConstantLevelTimeseries],[FastTimeConstantModeTimeseries],[LatitudeTimeseries],[LongitudeTimeseries],[Radome],[GNSSDevice],[Description]";
         static constexpr std::wstring_view ViewName = L"RadarView";
 
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT SAVESETTINGSTIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT POWERONTIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT TRACKINGONTIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT RADARPULSETIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT TUNINGTIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT BLANKSECTOR1TIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT SECTOR1STARTTIMESERIES_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT SECTOR1ENDTIMESERIES_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT BLANKSECTOR2TIMESERIES_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT SECTOR2STARTTIMESERIES_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT SECTOR2ENDTIMESERIES_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT AZIMUTHOFFSETTIMESERIES_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 30;
+        static constexpr SQLUSMALLINT SAVESETTINGSTIMESERIES_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT POWERONTIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT TRACKINGONTIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT RADARPULSETIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT TUNINGTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT BLANKSECTOR1TIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT SECTOR1STARTTIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT SECTOR1ENDTIMESERIES_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT BLANKSECTOR2TIMESERIES_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT SECTOR2STARTTIMESERIES_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT SECTOR2ENDTIMESERIES_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT AZIMUTHOFFSETTIMESERIES_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT RADOME_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 29;
 
         RadarColumnData( ) = default;
 
@@ -11612,14 +10721,6 @@ namespace Barrelman::Database
             return Kind::Radar;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
         const Guid& SaveSettingsTimeseries( ) const
         {
             return saveSettingsTimeseries_;
@@ -11808,7 +10909,6 @@ namespace Barrelman::Database
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, type_);
             Bind(statement, SAVESETTINGSTIMESERIES_FIELD_ID, saveSettingsTimeseries_);
             Bind(statement, POWERONTIMESERIES_FIELD_ID, powerOnTimeseries_);
             Bind(statement, TRACKINGONTIMESERIES_FIELD_ID, trackingOnTimeseries_);
@@ -11838,7 +10938,6 @@ namespace Barrelman::Database
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
             WriteColumnValue( destination, saveSettingsTimeseries_);
             WriteColumnValue( destination, powerOnTimeseries_);
             WriteColumnValue( destination, trackingOnTimeseries_);
@@ -11869,7 +10968,6 @@ namespace Barrelman::Database
 
     class WeatherStationColumnData : public DeviceColumnData
     {
-        Guid type_;
         Guid barometricPressureTimeseries_;
         Guid airTemperatureTimeseries_;
         Guid waterTemperatureTimeseries_;
@@ -11882,19 +10980,18 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Type],[BarometricPressureTimeseries],[AirTemperatureTimeseries],[WaterTemperatureTimeseries],[RelativeHumidityTimeseries],[AbsoluteHumidityTimeseries],[DewPointTimeseries],[WindDirectionTimeseries],[WindSpeedTimeseries],[Gyro],[Description]";
+        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[BarometricPressureTimeseries],[AirTemperatureTimeseries],[WaterTemperatureTimeseries],[RelativeHumidityTimeseries],[AbsoluteHumidityTimeseries],[DewPointTimeseries],[WindDirectionTimeseries],[WindSpeedTimeseries],[Gyro],[Description]";
         static constexpr std::wstring_view ViewName = L"WeatherStationView";
 
-        static constexpr SQLUSMALLINT TYPE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT BAROMETRICPRESSURETIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT AIRTEMPERATURETIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT WATERTEMPERATURETIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT WINDDIRECTIONTIMESERIES_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT WINDSPEEDTIMESERIES_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT GYRO_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT BAROMETRICPRESSURETIMESERIES_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT AIRTEMPERATURETIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT WATERTEMPERATURETIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT WINDDIRECTIONTIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT WINDSPEEDTIMESERIES_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT GYRO_FIELD_ID = 15;
 
         WeatherStationColumnData( ) = default;
 
@@ -11903,14 +11000,6 @@ namespace Barrelman::Database
             return Kind::WeatherStation;
         }
 
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
-        }
         const Guid& BarometricPressureTimeseries( ) const
         {
             return barometricPressureTimeseries_;
@@ -11987,7 +11076,6 @@ namespace Barrelman::Database
         {
             Base::BindColumns( statement );
 
-            Bind(statement, TYPE_FIELD_ID, type_);
             Bind(statement, BAROMETRICPRESSURETIMESERIES_FIELD_ID, barometricPressureTimeseries_);
             Bind(statement, AIRTEMPERATURETIMESERIES_FIELD_ID, airTemperatureTimeseries_);
             Bind(statement, WATERTEMPERATURETIMESERIES_FIELD_ID, waterTemperatureTimeseries_);
@@ -12003,7 +11091,6 @@ namespace Barrelman::Database
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteColumns( destination );
-            WriteColumnValue( destination, type_);
             WriteColumnValue( destination, barometricPressureTimeseries_);
             WriteColumnValue( destination, airTemperatureTimeseries_);
             WriteColumnValue( destination, waterTemperatureTimeseries_);

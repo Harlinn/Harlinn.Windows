@@ -1764,277 +1764,6 @@ CREATE INDEX [IDX_DeviceHostConfiguration_Timestamp] ON [dbo].[DeviceHostConfigu
 go
 
 /*
- * DeviceType
- *
- */
-CREATE TABLE [dbo].[DeviceType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  /*
-   * [EntityType] discriminates between DeviceType
-   * derived entity types.
-   */
-  [EntityType] [int] NOT NULL,
-  [RowVersion] [bigint] NOT NULL,
-  [AssemblyName] [nvarchar](100) NOT NULL,
-  [ClassName] [nvarchar](100) NOT NULL,
-  [ProxyAssemblyName] [nvarchar](100) NOT NULL,
-  [ProxyClassName] [nvarchar](100) NOT NULL,
-  CONSTRAINT [FK_DeviceType_EntityType] FOREIGN KEY([EntityType]) REFERENCES [dbo].[EntityTypes]([Id]),
-  CONSTRAINT [PK_DeviceType] PRIMARY KEY([Id])
-)
-go
-
-/*
- * AisTransceiverType
- *
- * The AisTransceiverType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[AisTransceiverType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[AisTransceiverType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_AisTransceiverType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_AisTransceiverType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[AisTransceiverType]
-  ADD CONSTRAINT [UNQ_AisTransceiverType_Name] UNIQUE([Name])
-go
-
-/*
- * CameraType
- *
- * The CameraType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[CameraType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[CameraType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  [CameraFeatures] [int] NOT NULL,
-  CONSTRAINT [FK_CameraType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_CameraType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[CameraType]
-  ADD CONSTRAINT [UNQ_CameraType_Name] UNIQUE([Name])
-go
-
-/*
- * GNSSDeviceType
- *
- * The GNSSDeviceType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[GNSSDeviceType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[GNSSDeviceType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_GNSSDeviceType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_GNSSDeviceType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[GNSSDeviceType]
-  ADD CONSTRAINT [UNQ_GNSSDeviceType_Name] UNIQUE([Name])
-go
-
-/*
- * GyroDeviceType
- *
- * The GyroDeviceType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[GyroDeviceType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[GyroDeviceType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_GyroDeviceType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_GyroDeviceType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[GyroDeviceType]
-  ADD CONSTRAINT [UNQ_GyroDeviceType_Name] UNIQUE([Name])
-go
-
-/*
- * LineInputDeviceType
- *
- * The LineInputDeviceType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[LineInputDeviceType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[LineInputDeviceType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_LineInputDeviceType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_LineInputDeviceType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[LineInputDeviceType]
-  ADD CONSTRAINT [UNQ_LineInputDeviceType_Name] UNIQUE([Name])
-go
-
-/*
- * OilspillDetectorType
- *
- * The OilspillDetectorType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[OilspillDetectorType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[OilspillDetectorType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_OilspillDetectorType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_OilspillDetectorType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[OilspillDetectorType]
-  ADD CONSTRAINT [UNQ_OilspillDetectorType_Name] UNIQUE([Name])
-go
-
-/*
- * RadarType
- *
- * The RadarType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[RadarType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[RadarType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  [PulseShortMinusValue] [int] NULL,
-  [PulseShortMinusDisplayText] [nvarchar](50) NOT NULL,
-  [PulseShortValue] [int] NULL,
-  [PulseShortDisplayText] [nvarchar](50) NOT NULL,
-  [PulseShortPlusValue] [int] NULL,
-  [PulseShortPlusDisplayText] [nvarchar](50) NOT NULL,
-  [PulseMediumMinusValue] [int] NULL,
-  [PulseMediumMinusDisplayText] [nvarchar](50) NOT NULL,
-  [PulseMediumValue] [int] NULL,
-  [PulseMediumDisplayText] [nvarchar](50) NOT NULL,
-  [PulseMediumPlusValue] [int] NULL,
-  [PulseMediumPlusDisplayText] [nvarchar](50) NOT NULL,
-  [PulseLongMinusValue] [int] NULL,
-  [PulseLongMinusDisplayText] [nvarchar](50) NOT NULL,
-  [PulseLongValue] [int] NULL,
-  [PulseLongDisplayText] [nvarchar](50) NOT NULL,
-  [PulseLongPlusValue] [int] NULL,
-  [PulseLongPlusDisplayText] [nvarchar](50) NOT NULL,
-  CONSTRAINT [FK_RadarType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_RadarType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[RadarType]
-  ADD CONSTRAINT [UNQ_RadarType_Name] UNIQUE([Name])
-go
-
-/*
- * RadioType
- *
- * The RadioType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[RadioType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[RadioType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_RadioType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_RadioType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[RadioType]
-  ADD CONSTRAINT [UNQ_RadioType_Name] UNIQUE([Name])
-go
-
-/*
- * RadomeType
- *
- * The RadomeType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[RadomeType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[RadomeType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_RadomeType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_RadomeType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[RadomeType]
-  ADD CONSTRAINT [UNQ_RadomeType_Name] UNIQUE([Name])
-go
-
-/*
- * WeatherStationType
- *
- * The WeatherStationType entity a descendant of the DeviceType entity.
- *
- * Hence the one-to-one relationship between the 
- * [dbo].[WeatherStationType].[Id] field and the
- * [dbo].[DeviceType].[Id] field.
- *
- */
-CREATE TABLE [dbo].[WeatherStationType]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Name] [nvarchar](127) NOT NULL,
-  CONSTRAINT [FK_WeatherStationType_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[DeviceType]([Id]),
-  CONSTRAINT [PK_WeatherStationType] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[WeatherStationType]
-  ADD CONSTRAINT [UNQ_WeatherStationType_Name] UNIQUE([Name])
-go
-
-/*
  * DoubleTimeseriesValue
  *
  */
@@ -2580,13 +2309,9 @@ go
 CREATE TABLE [dbo].[Camera]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   CONSTRAINT [FK_Camera_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_Camera] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_Camera_Type] ON [dbo].[Camera]([Type])
 go
 
 /*
@@ -2602,16 +2327,12 @@ go
 CREATE TABLE [dbo].[GNSSDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   [LatitudeTimeseries] [uniqueidentifier] NOT NULL,
   [LongitudeTimeseries] [uniqueidentifier] NOT NULL,
   [AltitudeTimeseries] [uniqueidentifier] NOT NULL,
   CONSTRAINT [FK_GNSSDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_GNSSDevice] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_GNSSDevice_Type] ON [dbo].[GNSSDevice]([Type])
 go
 
 /*
@@ -2627,7 +2348,6 @@ go
 CREATE TABLE [dbo].[GyroDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   [HeadingTrueNorthTimeseries] [uniqueidentifier] NOT NULL,
   [HeadingMagneticNorthTimeseries] [uniqueidentifier] NOT NULL,
   [PitchTimeseries] [uniqueidentifier] NOT NULL,
@@ -2639,9 +2359,6 @@ CREATE TABLE [dbo].[GyroDevice]
   CONSTRAINT [FK_GyroDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_GyroDevice] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_GyroDevice_Type] ON [dbo].[GyroDevice]([Type])
 go
 
 CREATE INDEX [IDX_GyroDevice_GNSSDevice] ON [dbo].[GyroDevice]([GNSSDevice])
@@ -2660,16 +2377,9 @@ go
 CREATE TABLE [dbo].[LineInputDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  /*
-   * A `LineInputDevice` device is a device that performs line oriented I/O on behalf of the server.
-   */
-  [Type] [uniqueidentifier] NOT NULL,
   CONSTRAINT [FK_LineInputDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_LineInputDevice] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_LineInputDevice_Type] ON [dbo].[LineInputDevice]([Type])
 go
 
 /*
@@ -2685,13 +2395,9 @@ go
 CREATE TABLE [dbo].[OilspillDetector]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   CONSTRAINT [FK_OilspillDetector_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_OilspillDetector] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_OilspillDetector_Type] ON [dbo].[OilspillDetector]([Type])
 go
 
 /*
@@ -2707,13 +2413,9 @@ go
 CREATE TABLE [dbo].[Radio]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   CONSTRAINT [FK_Radio_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_Radio] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_Radio_Type] ON [dbo].[Radio]([Type])
 go
 
 /*
@@ -2729,10 +2431,6 @@ go
 CREATE TABLE [dbo].[Radome]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  /*
-   * A Radome device.
-   */
-  [Type] [uniqueidentifier] NOT NULL,
   /*
    * A Radome device.
    */
@@ -2756,9 +2454,6 @@ CREATE TABLE [dbo].[Radome]
   CONSTRAINT [FK_Radome_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_Radome] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_Radome_Type] ON [dbo].[Radome]([Type])
 go
 
 CREATE INDEX [IDX_Radome_Radar] ON [dbo].[Radome]([Radar])
@@ -2795,13 +2490,9 @@ go
 CREATE TABLE [dbo].[AisTransceiver]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   CONSTRAINT [FK_AisTransceiver_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Tracker]([Id]),
   CONSTRAINT [PK_AisTransceiver] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_AisTransceiver_Type] ON [dbo].[AisTransceiver]([Type])
 go
 
 /*
@@ -2817,7 +2508,6 @@ go
 CREATE TABLE [dbo].[Radar]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   [SaveSettingsTimeseries] [uniqueidentifier] NOT NULL,
   [PowerOnTimeseries] [uniqueidentifier] NOT NULL,
   [TrackingOnTimeseries] [uniqueidentifier] NOT NULL,
@@ -2846,9 +2536,6 @@ CREATE TABLE [dbo].[Radar]
 )
 go
 
-CREATE INDEX [IDX_Radar_Type] ON [dbo].[Radar]([Type])
-go
-
 CREATE INDEX [IDX_Radar_Radome] ON [dbo].[Radar]([Radome])
 go
 
@@ -2868,7 +2555,6 @@ go
 CREATE TABLE [dbo].[WeatherStation]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
   [BarometricPressureTimeseries] [uniqueidentifier] NOT NULL,
   [AirTemperatureTimeseries] [uniqueidentifier] NOT NULL,
   [WaterTemperatureTimeseries] [uniqueidentifier] NOT NULL,
@@ -2881,9 +2567,6 @@ CREATE TABLE [dbo].[WeatherStation]
   CONSTRAINT [FK_WeatherStation_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
   CONSTRAINT [PK_WeatherStation] PRIMARY KEY([Id])
 )
-go
-
-CREATE INDEX [IDX_WeatherStation_Type] ON [dbo].[WeatherStation]([Type])
 go
 
 CREATE INDEX [IDX_WeatherStation_Gyro] ON [dbo].[WeatherStation]([Gyro])
@@ -9007,14 +8690,6 @@ ALTER TABLE [dbo].[Device]
   ADD CONSTRAINT [FK_Device_EnabledTimeseries] FOREIGN KEY([EnabledTimeseries]) REFERENCES [dbo].[DeviceEnabledTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Camera]
-  ADD CONSTRAINT [FK_Camera_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[CameraType]([Id])
-go
-
-ALTER TABLE [dbo].[GNSSDevice]
-  ADD CONSTRAINT [FK_GNSSDevice_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[GNSSDeviceType]([Id])
-go
-
 ALTER TABLE [dbo].[GNSSDevice]
   ADD CONSTRAINT [FK_GNSSDevice_LatitudeTimeseries] FOREIGN KEY([LatitudeTimeseries]) REFERENCES [dbo].[GNSSLatitudeTimeseries]([Id])
 go
@@ -9025,10 +8700,6 @@ go
 
 ALTER TABLE [dbo].[GNSSDevice]
   ADD CONSTRAINT [FK_GNSSDevice_AltitudeTimeseries] FOREIGN KEY([AltitudeTimeseries]) REFERENCES [dbo].[GNSSAltitudeTimeseries]([Id])
-go
-
-ALTER TABLE [dbo].[GyroDevice]
-  ADD CONSTRAINT [FK_GyroDevice_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[GyroDeviceType]([Id])
 go
 
 ALTER TABLE [dbo].[GyroDevice]
@@ -9063,22 +8734,6 @@ ALTER TABLE [dbo].[GyroDevice]
   ADD CONSTRAINT [FK_GyroDevice_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
 go
 
-ALTER TABLE [dbo].[LineInputDevice]
-  ADD CONSTRAINT [FK_LineInputDevice_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[LineInputDeviceType]([Id])
-go
-
-ALTER TABLE [dbo].[OilspillDetector]
-  ADD CONSTRAINT [FK_OilspillDetector_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[OilspillDetectorType]([Id])
-go
-
-ALTER TABLE [dbo].[Radio]
-  ADD CONSTRAINT [FK_Radio_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[RadioType]([Id])
-go
-
-ALTER TABLE [dbo].[Radome]
-  ADD CONSTRAINT [FK_Radome_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[RadomeType]([Id])
-go
-
 ALTER TABLE [dbo].[Radome]
   ADD CONSTRAINT [FK_Radome_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
 go
@@ -9097,14 +8752,6 @@ go
 
 ALTER TABLE [dbo].[Radome]
   ADD CONSTRAINT [FK_Radome_StatusTimeseries] FOREIGN KEY([StatusTimeseries]) REFERENCES [dbo].[RadomeStatusTimeseries]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiver]
-  ADD CONSTRAINT [FK_AisTransceiver_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[AisTransceiverType]([Id])
-go
-
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[RadarType]([Id])
 go
 
 ALTER TABLE [dbo].[Radar]
@@ -9197,10 +8844,6 @@ go
 
 ALTER TABLE [dbo].[Radar]
   ADD CONSTRAINT [FK_Radar_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
-go
-
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_Type] FOREIGN KEY([Type]) REFERENCES [dbo].[WeatherStationType]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStation]

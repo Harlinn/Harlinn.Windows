@@ -8012,1091 +8012,6 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17000;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17000;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [AisTransceiverType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17000;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisTransceiverTypeInsertTrigger]
-ON [AisTransceiverTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisTransceiverTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [CameraTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127),
-  @CameraFeatures [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17100;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17100;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [CameraType]([Id], [Name], [CameraFeatures])
-          VALUES(@Id, @Name, @CameraFeatures);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17100;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [CameraTypeInsertTrigger]
-ON [CameraTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name],
-        [CameraFeatures]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    DECLARE @CameraFeatures [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name,
-        @CameraFeatures
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [CameraTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name,@CameraFeatures
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name,
-            @CameraFeatures
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [GNSSDeviceTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17200;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17200;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [GNSSDeviceType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17200;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [GNSSDeviceTypeInsertTrigger]
-ON [GNSSDeviceTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [GNSSDeviceTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [GyroDeviceTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17300;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [GyroDeviceType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [GyroDeviceTypeInsertTrigger]
-ON [GyroDeviceTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [GyroDeviceTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [LineInputDeviceTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17400;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [LineInputDeviceType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [LineInputDeviceTypeInsertTrigger]
-ON [LineInputDeviceTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [LineInputDeviceTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [OilspillDetectorTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17500;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [OilspillDetectorType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [OilspillDetectorTypeInsertTrigger]
-ON [OilspillDetectorTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [OilspillDetectorTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [RadarTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127),
-  @PulseShortMinusValue [int],
-  @PulseShortMinusDisplayText [nvarchar](50),
-  @PulseShortValue [int],
-  @PulseShortDisplayText [nvarchar](50),
-  @PulseShortPlusValue [int],
-  @PulseShortPlusDisplayText [nvarchar](50),
-  @PulseMediumMinusValue [int],
-  @PulseMediumMinusDisplayText [nvarchar](50),
-  @PulseMediumValue [int],
-  @PulseMediumDisplayText [nvarchar](50),
-  @PulseMediumPlusValue [int],
-  @PulseMediumPlusDisplayText [nvarchar](50),
-  @PulseLongMinusValue [int],
-  @PulseLongMinusDisplayText [nvarchar](50),
-  @PulseLongValue [int],
-  @PulseLongDisplayText [nvarchar](50),
-  @PulseLongPlusValue [int],
-  @PulseLongPlusDisplayText [nvarchar](50)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17600;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [RadarType]([Id], [Name], [PulseShortMinusValue], [PulseShortMinusDisplayText], [PulseShortValue], [PulseShortDisplayText], [PulseShortPlusValue], [PulseShortPlusDisplayText], [PulseMediumMinusValue], [PulseMediumMinusDisplayText], [PulseMediumValue], [PulseMediumDisplayText], [PulseMediumPlusValue], [PulseMediumPlusDisplayText], [PulseLongMinusValue], [PulseLongMinusDisplayText], [PulseLongValue], [PulseLongDisplayText], [PulseLongPlusValue], [PulseLongPlusDisplayText])
-          VALUES(@Id, @Name, @PulseShortMinusValue, @PulseShortMinusDisplayText, @PulseShortValue, @PulseShortDisplayText, @PulseShortPlusValue, @PulseShortPlusDisplayText, @PulseMediumMinusValue, @PulseMediumMinusDisplayText, @PulseMediumValue, @PulseMediumDisplayText, @PulseMediumPlusValue, @PulseMediumPlusDisplayText, @PulseLongMinusValue, @PulseLongMinusDisplayText, @PulseLongValue, @PulseLongDisplayText, @PulseLongPlusValue, @PulseLongPlusDisplayText);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [RadarTypeInsertTrigger]
-ON [RadarTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name],
-        [PulseShortMinusValue],
-        [PulseShortMinusDisplayText],
-        [PulseShortValue],
-        [PulseShortDisplayText],
-        [PulseShortPlusValue],
-        [PulseShortPlusDisplayText],
-        [PulseMediumMinusValue],
-        [PulseMediumMinusDisplayText],
-        [PulseMediumValue],
-        [PulseMediumDisplayText],
-        [PulseMediumPlusValue],
-        [PulseMediumPlusDisplayText],
-        [PulseLongMinusValue],
-        [PulseLongMinusDisplayText],
-        [PulseLongValue],
-        [PulseLongDisplayText],
-        [PulseLongPlusValue],
-        [PulseLongPlusDisplayText]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    DECLARE @PulseShortMinusValue [int]
-    DECLARE @PulseShortMinusDisplayText [nvarchar](50)
-    DECLARE @PulseShortValue [int]
-    DECLARE @PulseShortDisplayText [nvarchar](50)
-    DECLARE @PulseShortPlusValue [int]
-    DECLARE @PulseShortPlusDisplayText [nvarchar](50)
-    DECLARE @PulseMediumMinusValue [int]
-    DECLARE @PulseMediumMinusDisplayText [nvarchar](50)
-    DECLARE @PulseMediumValue [int]
-    DECLARE @PulseMediumDisplayText [nvarchar](50)
-    DECLARE @PulseMediumPlusValue [int]
-    DECLARE @PulseMediumPlusDisplayText [nvarchar](50)
-    DECLARE @PulseLongMinusValue [int]
-    DECLARE @PulseLongMinusDisplayText [nvarchar](50)
-    DECLARE @PulseLongValue [int]
-    DECLARE @PulseLongDisplayText [nvarchar](50)
-    DECLARE @PulseLongPlusValue [int]
-    DECLARE @PulseLongPlusDisplayText [nvarchar](50)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name,
-        @PulseShortMinusValue,
-        @PulseShortMinusDisplayText,
-        @PulseShortValue,
-        @PulseShortDisplayText,
-        @PulseShortPlusValue,
-        @PulseShortPlusDisplayText,
-        @PulseMediumMinusValue,
-        @PulseMediumMinusDisplayText,
-        @PulseMediumValue,
-        @PulseMediumDisplayText,
-        @PulseMediumPlusValue,
-        @PulseMediumPlusDisplayText,
-        @PulseLongMinusValue,
-        @PulseLongMinusDisplayText,
-        @PulseLongValue,
-        @PulseLongDisplayText,
-        @PulseLongPlusValue,
-        @PulseLongPlusDisplayText
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [RadarTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name,@PulseShortMinusValue,@PulseShortMinusDisplayText,@PulseShortValue,@PulseShortDisplayText,@PulseShortPlusValue,@PulseShortPlusDisplayText,@PulseMediumMinusValue,@PulseMediumMinusDisplayText,@PulseMediumValue,@PulseMediumDisplayText,@PulseMediumPlusValue,@PulseMediumPlusDisplayText,@PulseLongMinusValue,@PulseLongMinusDisplayText,@PulseLongValue,@PulseLongDisplayText,@PulseLongPlusValue,@PulseLongPlusDisplayText
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name,
-            @PulseShortMinusValue,
-            @PulseShortMinusDisplayText,
-            @PulseShortValue,
-            @PulseShortDisplayText,
-            @PulseShortPlusValue,
-            @PulseShortPlusDisplayText,
-            @PulseMediumMinusValue,
-            @PulseMediumMinusDisplayText,
-            @PulseMediumValue,
-            @PulseMediumDisplayText,
-            @PulseMediumPlusValue,
-            @PulseMediumPlusDisplayText,
-            @PulseLongMinusValue,
-            @PulseLongMinusDisplayText,
-            @PulseLongValue,
-            @PulseLongDisplayText,
-            @PulseLongPlusValue,
-            @PulseLongPlusDisplayText
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [RadioTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17700;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17700;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [RadioType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17700;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [RadioTypeInsertTrigger]
-ON [RadioTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [RadioTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [RadomeTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17800;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17800;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [RadomeType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17800;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [RadomeTypeInsertTrigger]
-ON [RadomeTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [RadomeTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [WeatherStationTypeInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AssemblyName [nvarchar](100),
-  @ClassName [nvarchar](100),
-  @ProxyAssemblyName [nvarchar](100),
-  @ProxyClassName [nvarchar](100),
-  @Name [nvarchar](127)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 17900;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint17900;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [DeviceType]([Id], [EntityType], [RowVersion], [AssemblyName], [ClassName], [ProxyAssemblyName], [ProxyClassName])
-          VALUES(@Id, @EntityType, 0, @AssemblyName, @ClassName, @ProxyAssemblyName, @ProxyClassName);
-      INSERT INTO [WeatherStationType]([Id], [Name])
-          VALUES(@Id, @Name);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint17900;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [WeatherStationTypeInsertTrigger]
-ON [WeatherStationTypeView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AssemblyName],
-        [ClassName],
-        [ProxyAssemblyName],
-        [ProxyClassName],
-        [Name]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AssemblyName [nvarchar](100)
-    DECLARE @ClassName [nvarchar](100)
-    DECLARE @ProxyAssemblyName [nvarchar](100)
-    DECLARE @ProxyClassName [nvarchar](100)
-    DECLARE @Name [nvarchar](127)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AssemblyName,
-        @ClassName,
-        @ProxyAssemblyName,
-        @ProxyClassName,
-        @Name
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [WeatherStationTypeInsert] @Id,@RowVersion,@AssemblyName,@ClassName,@ProxyAssemblyName,@ProxyClassName,@Name
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AssemblyName,
-            @ClassName,
-            @ProxyAssemblyName,
-            @ProxyClassName,
-            @Name
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
 CREATE OR ALTER PROCEDURE [DoubleTimeseriesValueInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Timeseries [uniqueidentifier],
@@ -9111,7 +8026,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18000;
+      SAVE TRANSACTION SavePoint16900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9131,7 +8046,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18000;
+            ROLLBACK TRANSACTION SavePoint16900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9194,7 +8109,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18100;
+      SAVE TRANSACTION SavePoint17000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9214,7 +8129,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18100;
+            ROLLBACK TRANSACTION SavePoint17000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9272,7 +8187,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18200;
+      SAVE TRANSACTION SavePoint17100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9292,7 +8207,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18200;
+            ROLLBACK TRANSACTION SavePoint17100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9363,7 +8278,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18300;
+      SAVE TRANSACTION SavePoint17200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9383,7 +8298,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18300;
+            ROLLBACK TRANSACTION SavePoint17200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9458,7 +8373,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18400;
+      SAVE TRANSACTION SavePoint17300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9478,7 +8393,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18400;
+            ROLLBACK TRANSACTION SavePoint17300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9553,7 +8468,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18500;
+      SAVE TRANSACTION SavePoint17400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9573,7 +8488,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18500;
+            ROLLBACK TRANSACTION SavePoint17400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9651,7 +8566,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18600;
+      SAVE TRANSACTION SavePoint17500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9671,7 +8586,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18600;
+            ROLLBACK TRANSACTION SavePoint17500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9756,7 +8671,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18700;
+      SAVE TRANSACTION SavePoint17600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9776,7 +8691,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18700;
+            ROLLBACK TRANSACTION SavePoint17600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9843,7 +8758,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18800;
+      SAVE TRANSACTION SavePoint17700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9863,7 +8778,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18800;
+            ROLLBACK TRANSACTION SavePoint17700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -9938,7 +8853,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint18900;
+      SAVE TRANSACTION SavePoint17800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -9958,7 +8873,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint18900;
+            ROLLBACK TRANSACTION SavePoint17800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10036,7 +8951,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19000;
+      SAVE TRANSACTION SavePoint17900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10056,7 +8971,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19000;
+            ROLLBACK TRANSACTION SavePoint17900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10137,11 +9052,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 19200;
+    SET @EntityType = 18100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19200;
+      SAVE TRANSACTION SavePoint18100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10163,7 +9078,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19200;
+            ROLLBACK TRANSACTION SavePoint18100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10216,11 +9131,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 19300;
+    SET @EntityType = 18200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19300;
+      SAVE TRANSACTION SavePoint18200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10242,7 +9157,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19300;
+            ROLLBACK TRANSACTION SavePoint18200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10295,11 +9210,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 19400;
+    SET @EntityType = 18300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19400;
+      SAVE TRANSACTION SavePoint18300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10321,7 +9236,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19400;
+            ROLLBACK TRANSACTION SavePoint18300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10374,11 +9289,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 19500;
+    SET @EntityType = 18400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19500;
+      SAVE TRANSACTION SavePoint18400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10400,7 +9315,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19500;
+            ROLLBACK TRANSACTION SavePoint18400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10457,7 +9372,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19600;
+      SAVE TRANSACTION SavePoint18500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10477,7 +9392,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19600;
+            ROLLBACK TRANSACTION SavePoint18500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10542,7 +9457,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19700;
+      SAVE TRANSACTION SavePoint18600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10562,7 +9477,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19700;
+            ROLLBACK TRANSACTION SavePoint18600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10627,7 +9542,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint19800;
+      SAVE TRANSACTION SavePoint18700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10647,7 +9562,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint19800;
+            ROLLBACK TRANSACTION SavePoint18700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10709,11 +9624,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20000;
+    SET @EntityType = 18900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20000;
+      SAVE TRANSACTION SavePoint18900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10735,7 +9650,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20000;
+            ROLLBACK TRANSACTION SavePoint18900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10787,8 +9702,7 @@ CREATE OR ALTER PROCEDURE [CameraInsert]
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier]
+  @EnabledTimeseries [uniqueidentifier]
 AS
   BEGIN
     IF @Id IS NULL
@@ -10796,11 +9710,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20200;
+    SET @EntityType = 19100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20200;
+      SAVE TRANSACTION SavePoint19100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10808,8 +9722,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Camera]([Id], [Type])
-          VALUES(@Id, @Type);
+      INSERT INTO [Camera]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -10824,7 +9738,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20200;
+            ROLLBACK TRANSACTION SavePoint19100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10846,8 +9760,7 @@ INSTEAD OF INSERT AS
         [Host],
         [Name],
         [Description],
-        [EnabledTimeseries],
-        [Type]
+        [EnabledTimeseries]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
@@ -10856,26 +9769,23 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
         @Host,
         @Name,
         @Description,
-        @EnabledTimeseries,
-        @Type
+        @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [CameraInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type
+        EXEC [CameraInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @Host,
             @Name,
             @Description,
-            @EnabledTimeseries,
-            @Type
+            @EnabledTimeseries
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -10889,7 +9799,6 @@ CREATE OR ALTER PROCEDURE [GNSSDeviceInsert]
   @Name [nvarchar](127),
   @Description [nvarchar](max),
   @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier],
   @LatitudeTimeseries [uniqueidentifier],
   @LongitudeTimeseries [uniqueidentifier],
   @AltitudeTimeseries [uniqueidentifier]
@@ -10900,11 +9809,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20300;
+    SET @EntityType = 19200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20300;
+      SAVE TRANSACTION SavePoint19200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -10912,8 +9821,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [GNSSDevice]([Id], [Type], [LatitudeTimeseries], [LongitudeTimeseries], [AltitudeTimeseries])
-          VALUES(@Id, @Type, @LatitudeTimeseries, @LongitudeTimeseries, @AltitudeTimeseries);
+      INSERT INTO [GNSSDevice]([Id], [LatitudeTimeseries], [LongitudeTimeseries], [AltitudeTimeseries])
+          VALUES(@Id, @LatitudeTimeseries, @LongitudeTimeseries, @AltitudeTimeseries);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -10928,7 +9837,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20300;
+            ROLLBACK TRANSACTION SavePoint19200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -10951,7 +9860,6 @@ INSTEAD OF INSERT AS
         [Name],
         [Description],
         [EnabledTimeseries],
-        [Type],
         [LatitudeTimeseries],
         [LongitudeTimeseries],
         [AltitudeTimeseries]
@@ -10963,7 +9871,6 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     DECLARE @LatitudeTimeseries [uniqueidentifier]
     DECLARE @LongitudeTimeseries [uniqueidentifier]
     DECLARE @AltitudeTimeseries [uniqueidentifier]
@@ -10974,13 +9881,12 @@ INSTEAD OF INSERT AS
         @Name,
         @Description,
         @EnabledTimeseries,
-        @Type,
         @LatitudeTimeseries,
         @LongitudeTimeseries,
         @AltitudeTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [GNSSDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type,@LatitudeTimeseries,@LongitudeTimeseries,@AltitudeTimeseries
+        EXEC [GNSSDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@LatitudeTimeseries,@LongitudeTimeseries,@AltitudeTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10988,7 +9894,6 @@ INSTEAD OF INSERT AS
             @Name,
             @Description,
             @EnabledTimeseries,
-            @Type,
             @LatitudeTimeseries,
             @LongitudeTimeseries,
             @AltitudeTimeseries
@@ -11005,7 +9910,6 @@ CREATE OR ALTER PROCEDURE [GyroDeviceInsert]
   @Name [nvarchar](127),
   @Description [nvarchar](max),
   @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier],
   @HeadingTrueNorthTimeseries [uniqueidentifier],
   @HeadingMagneticNorthTimeseries [uniqueidentifier],
   @PitchTimeseries [uniqueidentifier],
@@ -11021,11 +9925,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20400;
+    SET @EntityType = 19300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20400;
+      SAVE TRANSACTION SavePoint19300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11033,8 +9937,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [GyroDevice]([Id], [Type], [HeadingTrueNorthTimeseries], [HeadingMagneticNorthTimeseries], [PitchTimeseries], [RateOfTurnTimeseries], [RollTimeseries], [CourseTimeseries], [SpeedTimeseries], [GNSSDevice])
-          VALUES(@Id, @Type, @HeadingTrueNorthTimeseries, @HeadingMagneticNorthTimeseries, @PitchTimeseries, @RateOfTurnTimeseries, @RollTimeseries, @CourseTimeseries, @SpeedTimeseries, @GNSSDevice);
+      INSERT INTO [GyroDevice]([Id], [HeadingTrueNorthTimeseries], [HeadingMagneticNorthTimeseries], [PitchTimeseries], [RateOfTurnTimeseries], [RollTimeseries], [CourseTimeseries], [SpeedTimeseries], [GNSSDevice])
+          VALUES(@Id, @HeadingTrueNorthTimeseries, @HeadingMagneticNorthTimeseries, @PitchTimeseries, @RateOfTurnTimeseries, @RollTimeseries, @CourseTimeseries, @SpeedTimeseries, @GNSSDevice);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11049,7 +9953,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20400;
+            ROLLBACK TRANSACTION SavePoint19300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11072,7 +9976,6 @@ INSTEAD OF INSERT AS
         [Name],
         [Description],
         [EnabledTimeseries],
-        [Type],
         [HeadingTrueNorthTimeseries],
         [HeadingMagneticNorthTimeseries],
         [PitchTimeseries],
@@ -11089,7 +9992,6 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     DECLARE @HeadingTrueNorthTimeseries [uniqueidentifier]
     DECLARE @HeadingMagneticNorthTimeseries [uniqueidentifier]
     DECLARE @PitchTimeseries [uniqueidentifier]
@@ -11105,7 +10007,6 @@ INSTEAD OF INSERT AS
         @Name,
         @Description,
         @EnabledTimeseries,
-        @Type,
         @HeadingTrueNorthTimeseries,
         @HeadingMagneticNorthTimeseries,
         @PitchTimeseries,
@@ -11116,7 +10017,7 @@ INSTEAD OF INSERT AS
         @GNSSDevice
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [GyroDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type,@HeadingTrueNorthTimeseries,@HeadingMagneticNorthTimeseries,@PitchTimeseries,@RateOfTurnTimeseries,@RollTimeseries,@CourseTimeseries,@SpeedTimeseries,@GNSSDevice
+        EXEC [GyroDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@HeadingTrueNorthTimeseries,@HeadingMagneticNorthTimeseries,@PitchTimeseries,@RateOfTurnTimeseries,@RollTimeseries,@CourseTimeseries,@SpeedTimeseries,@GNSSDevice
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -11124,7 +10025,6 @@ INSTEAD OF INSERT AS
             @Name,
             @Description,
             @EnabledTimeseries,
-            @Type,
             @HeadingTrueNorthTimeseries,
             @HeadingMagneticNorthTimeseries,
             @PitchTimeseries,
@@ -11145,8 +10045,7 @@ CREATE OR ALTER PROCEDURE [LineInputDeviceInsert]
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier]
+  @EnabledTimeseries [uniqueidentifier]
 AS
   BEGIN
     IF @Id IS NULL
@@ -11154,11 +10053,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20500;
+    SET @EntityType = 19400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20500;
+      SAVE TRANSACTION SavePoint19400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11166,8 +10065,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [LineInputDevice]([Id], [Type])
-          VALUES(@Id, @Type);
+      INSERT INTO [LineInputDevice]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11182,7 +10081,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20500;
+            ROLLBACK TRANSACTION SavePoint19400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11204,8 +10103,7 @@ INSTEAD OF INSERT AS
         [Host],
         [Name],
         [Description],
-        [EnabledTimeseries],
-        [Type]
+        [EnabledTimeseries]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
@@ -11214,26 +10112,23 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
         @Host,
         @Name,
         @Description,
-        @EnabledTimeseries,
-        @Type
+        @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [LineInputDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type
+        EXEC [LineInputDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @Host,
             @Name,
             @Description,
-            @EnabledTimeseries,
-            @Type
+            @EnabledTimeseries
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -11246,8 +10141,7 @@ CREATE OR ALTER PROCEDURE [OilspillDetectorInsert]
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier]
+  @EnabledTimeseries [uniqueidentifier]
 AS
   BEGIN
     IF @Id IS NULL
@@ -11255,11 +10149,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20600;
+    SET @EntityType = 19500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20600;
+      SAVE TRANSACTION SavePoint19500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11267,8 +10161,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [OilspillDetector]([Id], [Type])
-          VALUES(@Id, @Type);
+      INSERT INTO [OilspillDetector]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11283,7 +10177,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20600;
+            ROLLBACK TRANSACTION SavePoint19500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11305,8 +10199,7 @@ INSTEAD OF INSERT AS
         [Host],
         [Name],
         [Description],
-        [EnabledTimeseries],
-        [Type]
+        [EnabledTimeseries]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
@@ -11315,26 +10208,23 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
         @Host,
         @Name,
         @Description,
-        @EnabledTimeseries,
-        @Type
+        @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [OilspillDetectorInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type
+        EXEC [OilspillDetectorInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @Host,
             @Name,
             @Description,
-            @EnabledTimeseries,
-            @Type
+            @EnabledTimeseries
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -11347,8 +10237,7 @@ CREATE OR ALTER PROCEDURE [RadioInsert]
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier]
+  @EnabledTimeseries [uniqueidentifier]
 AS
   BEGIN
     IF @Id IS NULL
@@ -11356,11 +10245,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20700;
+    SET @EntityType = 19600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20700;
+      SAVE TRANSACTION SavePoint19600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11368,8 +10257,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Radio]([Id], [Type])
-          VALUES(@Id, @Type);
+      INSERT INTO [Radio]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11384,7 +10273,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20700;
+            ROLLBACK TRANSACTION SavePoint19600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11406,8 +10295,7 @@ INSTEAD OF INSERT AS
         [Host],
         [Name],
         [Description],
-        [EnabledTimeseries],
-        [Type]
+        [EnabledTimeseries]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
@@ -11416,26 +10304,23 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
         @Host,
         @Name,
         @Description,
-        @EnabledTimeseries,
-        @Type
+        @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [RadioInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type
+        EXEC [RadioInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @Host,
             @Name,
             @Description,
-            @EnabledTimeseries,
-            @Type
+            @EnabledTimeseries
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -11449,7 +10334,6 @@ CREATE OR ALTER PROCEDURE [RadomeInsert]
   @Name [nvarchar](127),
   @Description [nvarchar](max),
   @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier],
   @Radar [uniqueidentifier],
   @PressureTimeseries [uniqueidentifier],
   @TemperatureTimeseries [uniqueidentifier],
@@ -11462,11 +10346,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 20800;
+    SET @EntityType = 19700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint20800;
+      SAVE TRANSACTION SavePoint19700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11474,8 +10358,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Radome]([Id], [Type], [Radar], [PressureTimeseries], [TemperatureTimeseries], [DewPointTimeseries], [StatusTimeseries])
-          VALUES(@Id, @Type, @Radar, @PressureTimeseries, @TemperatureTimeseries, @DewPointTimeseries, @StatusTimeseries);
+      INSERT INTO [Radome]([Id], [Radar], [PressureTimeseries], [TemperatureTimeseries], [DewPointTimeseries], [StatusTimeseries])
+          VALUES(@Id, @Radar, @PressureTimeseries, @TemperatureTimeseries, @DewPointTimeseries, @StatusTimeseries);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11490,7 +10374,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint20800;
+            ROLLBACK TRANSACTION SavePoint19700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11513,7 +10397,6 @@ INSTEAD OF INSERT AS
         [Name],
         [Description],
         [EnabledTimeseries],
-        [Type],
         [Radar],
         [PressureTimeseries],
         [TemperatureTimeseries],
@@ -11527,7 +10410,6 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     DECLARE @Radar [uniqueidentifier]
     DECLARE @PressureTimeseries [uniqueidentifier]
     DECLARE @TemperatureTimeseries [uniqueidentifier]
@@ -11540,7 +10422,6 @@ INSTEAD OF INSERT AS
         @Name,
         @Description,
         @EnabledTimeseries,
-        @Type,
         @Radar,
         @PressureTimeseries,
         @TemperatureTimeseries,
@@ -11548,7 +10429,7 @@ INSTEAD OF INSERT AS
         @StatusTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [RadomeInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type,@Radar,@PressureTimeseries,@TemperatureTimeseries,@DewPointTimeseries,@StatusTimeseries
+        EXEC [RadomeInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Radar,@PressureTimeseries,@TemperatureTimeseries,@DewPointTimeseries,@StatusTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -11556,7 +10437,6 @@ INSTEAD OF INSERT AS
             @Name,
             @Description,
             @EnabledTimeseries,
-            @Type,
             @Radar,
             @PressureTimeseries,
             @TemperatureTimeseries,
@@ -11574,8 +10454,7 @@ CREATE OR ALTER PROCEDURE [AisTransceiverInsert]
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier]
+  @EnabledTimeseries [uniqueidentifier]
 AS
   BEGIN
     IF @Id IS NULL
@@ -11583,11 +10462,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21000;
+    SET @EntityType = 19900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21000;
+      SAVE TRANSACTION SavePoint19900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11597,8 +10476,8 @@ AS
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
       INSERT INTO [Tracker]([Id])
           VALUES(@Id);
-      INSERT INTO [AisTransceiver]([Id], [Type])
-          VALUES(@Id, @Type);
+      INSERT INTO [AisTransceiver]([Id])
+          VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11613,7 +10492,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21000;
+            ROLLBACK TRANSACTION SavePoint19900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11635,8 +10514,7 @@ INSTEAD OF INSERT AS
         [Host],
         [Name],
         [Description],
-        [EnabledTimeseries],
-        [Type]
+        [EnabledTimeseries]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
@@ -11645,26 +10523,23 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
         @Host,
         @Name,
         @Description,
-        @EnabledTimeseries,
-        @Type
+        @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type
+        EXEC [AisTransceiverInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @Host,
             @Name,
             @Description,
-            @EnabledTimeseries,
-            @Type
+            @EnabledTimeseries
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -11678,7 +10553,6 @@ CREATE OR ALTER PROCEDURE [RadarInsert]
   @Name [nvarchar](127),
   @Description [nvarchar](max),
   @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier],
   @SaveSettingsTimeseries [uniqueidentifier],
   @PowerOnTimeseries [uniqueidentifier],
   @TrackingOnTimeseries [uniqueidentifier],
@@ -11709,11 +10583,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21100;
+    SET @EntityType = 20000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21100;
+      SAVE TRANSACTION SavePoint20000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11723,8 +10597,8 @@ AS
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
       INSERT INTO [Tracker]([Id])
           VALUES(@Id);
-      INSERT INTO [Radar]([Id], [Type], [SaveSettingsTimeseries], [PowerOnTimeseries], [TrackingOnTimeseries], [RadarPulseTimeseries], [TuningTimeseries], [BlankSector1Timeseries], [Sector1StartTimeseries], [Sector1EndTimeseries], [BlankSector2Timeseries], [Sector2StartTimeseries], [Sector2EndTimeseries], [EnableAutomaticFrequencyControlTimeseries], [AzimuthOffsetTimeseries], [EnableSensitivityTimeControlTimeseries], [AutomaticSensitivityTimeControlTimeseries], [SensitivityTimeControlLevelTimeseries], [EnableFastTimeConstantTimeseries], [FastTimeConstantLevelTimeseries], [FastTimeConstantModeTimeseries], [LatitudeTimeseries], [LongitudeTimeseries], [Radome], [GNSSDevice])
-          VALUES(@Id, @Type, @SaveSettingsTimeseries, @PowerOnTimeseries, @TrackingOnTimeseries, @RadarPulseTimeseries, @TuningTimeseries, @BlankSector1Timeseries, @Sector1StartTimeseries, @Sector1EndTimeseries, @BlankSector2Timeseries, @Sector2StartTimeseries, @Sector2EndTimeseries, @EnableAutomaticFrequencyControlTimeseries, @AzimuthOffsetTimeseries, @EnableSensitivityTimeControlTimeseries, @AutomaticSensitivityTimeControlTimeseries, @SensitivityTimeControlLevelTimeseries, @EnableFastTimeConstantTimeseries, @FastTimeConstantLevelTimeseries, @FastTimeConstantModeTimeseries, @LatitudeTimeseries, @LongitudeTimeseries, @Radome, @GNSSDevice);
+      INSERT INTO [Radar]([Id], [SaveSettingsTimeseries], [PowerOnTimeseries], [TrackingOnTimeseries], [RadarPulseTimeseries], [TuningTimeseries], [BlankSector1Timeseries], [Sector1StartTimeseries], [Sector1EndTimeseries], [BlankSector2Timeseries], [Sector2StartTimeseries], [Sector2EndTimeseries], [EnableAutomaticFrequencyControlTimeseries], [AzimuthOffsetTimeseries], [EnableSensitivityTimeControlTimeseries], [AutomaticSensitivityTimeControlTimeseries], [SensitivityTimeControlLevelTimeseries], [EnableFastTimeConstantTimeseries], [FastTimeConstantLevelTimeseries], [FastTimeConstantModeTimeseries], [LatitudeTimeseries], [LongitudeTimeseries], [Radome], [GNSSDevice])
+          VALUES(@Id, @SaveSettingsTimeseries, @PowerOnTimeseries, @TrackingOnTimeseries, @RadarPulseTimeseries, @TuningTimeseries, @BlankSector1Timeseries, @Sector1StartTimeseries, @Sector1EndTimeseries, @BlankSector2Timeseries, @Sector2StartTimeseries, @Sector2EndTimeseries, @EnableAutomaticFrequencyControlTimeseries, @AzimuthOffsetTimeseries, @EnableSensitivityTimeControlTimeseries, @AutomaticSensitivityTimeControlTimeseries, @SensitivityTimeControlLevelTimeseries, @EnableFastTimeConstantTimeseries, @FastTimeConstantLevelTimeseries, @FastTimeConstantModeTimeseries, @LatitudeTimeseries, @LongitudeTimeseries, @Radome, @GNSSDevice);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11739,7 +10613,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21100;
+            ROLLBACK TRANSACTION SavePoint20000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11762,7 +10636,6 @@ INSTEAD OF INSERT AS
         [Name],
         [Description],
         [EnabledTimeseries],
-        [Type],
         [SaveSettingsTimeseries],
         [PowerOnTimeseries],
         [TrackingOnTimeseries],
@@ -11794,7 +10667,6 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     DECLARE @SaveSettingsTimeseries [uniqueidentifier]
     DECLARE @PowerOnTimeseries [uniqueidentifier]
     DECLARE @TrackingOnTimeseries [uniqueidentifier]
@@ -11825,7 +10697,6 @@ INSTEAD OF INSERT AS
         @Name,
         @Description,
         @EnabledTimeseries,
-        @Type,
         @SaveSettingsTimeseries,
         @PowerOnTimeseries,
         @TrackingOnTimeseries,
@@ -11851,7 +10722,7 @@ INSTEAD OF INSERT AS
         @GNSSDevice
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [RadarInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type,@SaveSettingsTimeseries,@PowerOnTimeseries,@TrackingOnTimeseries,@RadarPulseTimeseries,@TuningTimeseries,@BlankSector1Timeseries,@Sector1StartTimeseries,@Sector1EndTimeseries,@BlankSector2Timeseries,@Sector2StartTimeseries,@Sector2EndTimeseries,@EnableAutomaticFrequencyControlTimeseries,@AzimuthOffsetTimeseries,@EnableSensitivityTimeControlTimeseries,@AutomaticSensitivityTimeControlTimeseries,@SensitivityTimeControlLevelTimeseries,@EnableFastTimeConstantTimeseries,@FastTimeConstantLevelTimeseries,@FastTimeConstantModeTimeseries,@LatitudeTimeseries,@LongitudeTimeseries,@Radome,@GNSSDevice
+        EXEC [RadarInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@SaveSettingsTimeseries,@PowerOnTimeseries,@TrackingOnTimeseries,@RadarPulseTimeseries,@TuningTimeseries,@BlankSector1Timeseries,@Sector1StartTimeseries,@Sector1EndTimeseries,@BlankSector2Timeseries,@Sector2StartTimeseries,@Sector2EndTimeseries,@EnableAutomaticFrequencyControlTimeseries,@AzimuthOffsetTimeseries,@EnableSensitivityTimeControlTimeseries,@AutomaticSensitivityTimeControlTimeseries,@SensitivityTimeControlLevelTimeseries,@EnableFastTimeConstantTimeseries,@FastTimeConstantLevelTimeseries,@FastTimeConstantModeTimeseries,@LatitudeTimeseries,@LongitudeTimeseries,@Radome,@GNSSDevice
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -11859,7 +10730,6 @@ INSTEAD OF INSERT AS
             @Name,
             @Description,
             @EnabledTimeseries,
-            @Type,
             @SaveSettingsTimeseries,
             @PowerOnTimeseries,
             @TrackingOnTimeseries,
@@ -11896,7 +10766,6 @@ CREATE OR ALTER PROCEDURE [WeatherStationInsert]
   @Name [nvarchar](127),
   @Description [nvarchar](max),
   @EnabledTimeseries [uniqueidentifier],
-  @Type [uniqueidentifier],
   @BarometricPressureTimeseries [uniqueidentifier],
   @AirTemperatureTimeseries [uniqueidentifier],
   @WaterTemperatureTimeseries [uniqueidentifier],
@@ -11913,11 +10782,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21200;
+    SET @EntityType = 20100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21200;
+      SAVE TRANSACTION SavePoint20100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -11925,8 +10794,8 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [WeatherStation]([Id], [Type], [BarometricPressureTimeseries], [AirTemperatureTimeseries], [WaterTemperatureTimeseries], [RelativeHumidityTimeseries], [AbsoluteHumidityTimeseries], [DewPointTimeseries], [WindDirectionTimeseries], [WindSpeedTimeseries], [Gyro])
-          VALUES(@Id, @Type, @BarometricPressureTimeseries, @AirTemperatureTimeseries, @WaterTemperatureTimeseries, @RelativeHumidityTimeseries, @AbsoluteHumidityTimeseries, @DewPointTimeseries, @WindDirectionTimeseries, @WindSpeedTimeseries, @Gyro);
+      INSERT INTO [WeatherStation]([Id], [BarometricPressureTimeseries], [AirTemperatureTimeseries], [WaterTemperatureTimeseries], [RelativeHumidityTimeseries], [AbsoluteHumidityTimeseries], [DewPointTimeseries], [WindDirectionTimeseries], [WindSpeedTimeseries], [Gyro])
+          VALUES(@Id, @BarometricPressureTimeseries, @AirTemperatureTimeseries, @WaterTemperatureTimeseries, @RelativeHumidityTimeseries, @AbsoluteHumidityTimeseries, @DewPointTimeseries, @WindDirectionTimeseries, @WindSpeedTimeseries, @Gyro);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -11941,7 +10810,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21200;
+            ROLLBACK TRANSACTION SavePoint20100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -11964,7 +10833,6 @@ INSTEAD OF INSERT AS
         [Name],
         [Description],
         [EnabledTimeseries],
-        [Type],
         [BarometricPressureTimeseries],
         [AirTemperatureTimeseries],
         [WaterTemperatureTimeseries],
@@ -11982,7 +10850,6 @@ INSTEAD OF INSERT AS
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
     DECLARE @EnabledTimeseries [uniqueidentifier]
-    DECLARE @Type [uniqueidentifier]
     DECLARE @BarometricPressureTimeseries [uniqueidentifier]
     DECLARE @AirTemperatureTimeseries [uniqueidentifier]
     DECLARE @WaterTemperatureTimeseries [uniqueidentifier]
@@ -11999,7 +10866,6 @@ INSTEAD OF INSERT AS
         @Name,
         @Description,
         @EnabledTimeseries,
-        @Type,
         @BarometricPressureTimeseries,
         @AirTemperatureTimeseries,
         @WaterTemperatureTimeseries,
@@ -12011,7 +10877,7 @@ INSTEAD OF INSERT AS
         @Gyro
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [WeatherStationInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Type,@BarometricPressureTimeseries,@AirTemperatureTimeseries,@WaterTemperatureTimeseries,@RelativeHumidityTimeseries,@AbsoluteHumidityTimeseries,@DewPointTimeseries,@WindDirectionTimeseries,@WindSpeedTimeseries,@Gyro
+        EXEC [WeatherStationInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@BarometricPressureTimeseries,@AirTemperatureTimeseries,@WaterTemperatureTimeseries,@RelativeHumidityTimeseries,@AbsoluteHumidityTimeseries,@DewPointTimeseries,@WindDirectionTimeseries,@WindSpeedTimeseries,@Gyro
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -12019,7 +10885,6 @@ INSTEAD OF INSERT AS
             @Name,
             @Description,
             @EnabledTimeseries,
-            @Type,
             @BarometricPressureTimeseries,
             @AirTemperatureTimeseries,
             @WaterTemperatureTimeseries,
@@ -12050,11 +10915,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21300;
+    SET @EntityType = 20200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21300;
+      SAVE TRANSACTION SavePoint20200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12076,7 +10941,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21300;
+            ROLLBACK TRANSACTION SavePoint20200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12146,11 +11011,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21500;
+    SET @EntityType = 20400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21500;
+      SAVE TRANSACTION SavePoint20400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12174,7 +11039,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21500;
+            ROLLBACK TRANSACTION SavePoint20400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12240,11 +11105,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21600;
+    SET @EntityType = 20500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21600;
+      SAVE TRANSACTION SavePoint20500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12268,7 +11133,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21600;
+            ROLLBACK TRANSACTION SavePoint20500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12358,11 +11223,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21700;
+    SET @EntityType = 20600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21700;
+      SAVE TRANSACTION SavePoint20600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12386,7 +11251,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21700;
+            ROLLBACK TRANSACTION SavePoint20600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12450,11 +11315,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 21800;
+    SET @EntityType = 20700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21800;
+      SAVE TRANSACTION SavePoint20700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12478,7 +11343,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21800;
+            ROLLBACK TRANSACTION SavePoint20700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12564,7 +11429,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint21900;
+      SAVE TRANSACTION SavePoint20800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12584,7 +11449,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint21900;
+            ROLLBACK TRANSACTION SavePoint20800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12653,7 +11518,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22000;
+      SAVE TRANSACTION SavePoint20900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12673,7 +11538,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22000;
+            ROLLBACK TRANSACTION SavePoint20900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12740,7 +11605,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22100;
+      SAVE TRANSACTION SavePoint21000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12760,7 +11625,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22100;
+            ROLLBACK TRANSACTION SavePoint21000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12835,7 +11700,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22200;
+      SAVE TRANSACTION SavePoint21100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12855,7 +11720,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22200;
+            ROLLBACK TRANSACTION SavePoint21100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -12960,7 +11825,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22300;
+      SAVE TRANSACTION SavePoint21200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -12980,7 +11845,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22300;
+            ROLLBACK TRANSACTION SavePoint21200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13172,7 +12037,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22400;
+      SAVE TRANSACTION SavePoint21300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13192,7 +12057,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22400;
+            ROLLBACK TRANSACTION SavePoint21300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13252,7 +12117,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22500;
+      SAVE TRANSACTION SavePoint21400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13272,7 +12137,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22500;
+            ROLLBACK TRANSACTION SavePoint21400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13333,7 +12198,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22600;
+      SAVE TRANSACTION SavePoint21500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13353,7 +12218,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22600;
+            ROLLBACK TRANSACTION SavePoint21500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13417,7 +12282,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22700;
+      SAVE TRANSACTION SavePoint21600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13437,7 +12302,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22700;
+            ROLLBACK TRANSACTION SavePoint21600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13509,7 +12374,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22800;
+      SAVE TRANSACTION SavePoint21700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13529,7 +12394,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22800;
+            ROLLBACK TRANSACTION SavePoint21700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13637,7 +12502,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint22900;
+      SAVE TRANSACTION SavePoint21800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13657,7 +12522,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint22900;
+            ROLLBACK TRANSACTION SavePoint21800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13729,7 +12594,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23000;
+      SAVE TRANSACTION SavePoint21900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13749,7 +12614,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23000;
+            ROLLBACK TRANSACTION SavePoint21900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13860,7 +12725,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23100;
+      SAVE TRANSACTION SavePoint22000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13880,7 +12745,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23100;
+            ROLLBACK TRANSACTION SavePoint22000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -13957,7 +12822,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23200;
+      SAVE TRANSACTION SavePoint22100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -13977,7 +12842,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23200;
+            ROLLBACK TRANSACTION SavePoint22100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14064,7 +12929,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23300;
+      SAVE TRANSACTION SavePoint22200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14084,7 +12949,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23300;
+            ROLLBACK TRANSACTION SavePoint22200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14175,7 +13040,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23400;
+      SAVE TRANSACTION SavePoint22300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14195,7 +13060,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23400;
+            ROLLBACK TRANSACTION SavePoint22300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14271,7 +13136,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23500;
+      SAVE TRANSACTION SavePoint22400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14291,7 +13156,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23500;
+            ROLLBACK TRANSACTION SavePoint22400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14376,7 +13241,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23600;
+      SAVE TRANSACTION SavePoint22500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14396,7 +13261,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23600;
+            ROLLBACK TRANSACTION SavePoint22500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14498,7 +13363,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23700;
+      SAVE TRANSACTION SavePoint22600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14518,7 +13383,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23700;
+            ROLLBACK TRANSACTION SavePoint22600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14607,7 +13472,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23800;
+      SAVE TRANSACTION SavePoint22700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14627,7 +13492,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23800;
+            ROLLBACK TRANSACTION SavePoint22700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14707,7 +13572,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint23900;
+      SAVE TRANSACTION SavePoint22800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14727,7 +13592,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint23900;
+            ROLLBACK TRANSACTION SavePoint22800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14788,7 +13653,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24000;
+      SAVE TRANSACTION SavePoint22900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14808,7 +13673,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24000;
+            ROLLBACK TRANSACTION SavePoint22900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14873,7 +13738,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24100;
+      SAVE TRANSACTION SavePoint23000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14893,7 +13758,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24100;
+            ROLLBACK TRANSACTION SavePoint23000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -14968,7 +13833,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24200;
+      SAVE TRANSACTION SavePoint23100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -14988,7 +13853,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24200;
+            ROLLBACK TRANSACTION SavePoint23100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15091,7 +13956,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24300;
+      SAVE TRANSACTION SavePoint23200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15111,7 +13976,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24300;
+            ROLLBACK TRANSACTION SavePoint23200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15169,7 +14034,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24400;
+      SAVE TRANSACTION SavePoint23300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15189,7 +14054,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24400;
+            ROLLBACK TRANSACTION SavePoint23300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15256,11 +14121,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 24600;
+    SET @EntityType = 23500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24600;
+      SAVE TRANSACTION SavePoint23500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15282,7 +14147,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24600;
+            ROLLBACK TRANSACTION SavePoint23500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15345,11 +14210,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 24700;
+    SET @EntityType = 23600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24700;
+      SAVE TRANSACTION SavePoint23600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15371,7 +14236,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24700;
+            ROLLBACK TRANSACTION SavePoint23600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15440,7 +14305,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24800;
+      SAVE TRANSACTION SavePoint23700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15460,7 +14325,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24800;
+            ROLLBACK TRANSACTION SavePoint23700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15543,7 +14408,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint24900;
+      SAVE TRANSACTION SavePoint23800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15563,7 +14428,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint24900;
+            ROLLBACK TRANSACTION SavePoint23800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15638,7 +14503,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25000;
+      SAVE TRANSACTION SavePoint23900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15658,7 +14523,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25000;
+            ROLLBACK TRANSACTION SavePoint23900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15752,7 +14617,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25100;
+      SAVE TRANSACTION SavePoint24000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15772,7 +14637,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25100;
+            ROLLBACK TRANSACTION SavePoint24000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -15922,7 +14787,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25200;
+      SAVE TRANSACTION SavePoint24100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -15942,7 +14807,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25200;
+            ROLLBACK TRANSACTION SavePoint24100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16013,7 +14878,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25300;
+      SAVE TRANSACTION SavePoint24200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16033,7 +14898,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25300;
+            ROLLBACK TRANSACTION SavePoint24200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16105,7 +14970,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25400;
+      SAVE TRANSACTION SavePoint24300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16125,7 +14990,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25400;
+            ROLLBACK TRANSACTION SavePoint24300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16184,11 +15049,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 25600;
+    SET @EntityType = 24500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25600;
+      SAVE TRANSACTION SavePoint24500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16210,7 +15075,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25600;
+            ROLLBACK TRANSACTION SavePoint24500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16273,11 +15138,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 25700;
+    SET @EntityType = 24600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25700;
+      SAVE TRANSACTION SavePoint24600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16299,7 +15164,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25700;
+            ROLLBACK TRANSACTION SavePoint24600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16362,11 +15227,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 25800;
+    SET @EntityType = 24700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25800;
+      SAVE TRANSACTION SavePoint24700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16388,7 +15253,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25800;
+            ROLLBACK TRANSACTION SavePoint24700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16451,11 +15316,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 25900;
+    SET @EntityType = 24800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint25900;
+      SAVE TRANSACTION SavePoint24800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16477,7 +15342,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint25900;
+            ROLLBACK TRANSACTION SavePoint24800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16540,11 +15405,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26000;
+    SET @EntityType = 24900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26000;
+      SAVE TRANSACTION SavePoint24900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16566,7 +15431,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26000;
+            ROLLBACK TRANSACTION SavePoint24900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16629,11 +15494,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26100;
+    SET @EntityType = 25000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26100;
+      SAVE TRANSACTION SavePoint25000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16655,7 +15520,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26100;
+            ROLLBACK TRANSACTION SavePoint25000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16718,11 +15583,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26200;
+    SET @EntityType = 25100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26200;
+      SAVE TRANSACTION SavePoint25100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16744,7 +15609,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26200;
+            ROLLBACK TRANSACTION SavePoint25100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16807,11 +15672,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26300;
+    SET @EntityType = 25200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26300;
+      SAVE TRANSACTION SavePoint25200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16833,7 +15698,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26300;
+            ROLLBACK TRANSACTION SavePoint25200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16896,11 +15761,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26400;
+    SET @EntityType = 25300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26400;
+      SAVE TRANSACTION SavePoint25300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -16922,7 +15787,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26400;
+            ROLLBACK TRANSACTION SavePoint25300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -16985,11 +15850,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26500;
+    SET @EntityType = 25400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26500;
+      SAVE TRANSACTION SavePoint25400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17011,7 +15876,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26500;
+            ROLLBACK TRANSACTION SavePoint25400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17074,11 +15939,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26600;
+    SET @EntityType = 25500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26600;
+      SAVE TRANSACTION SavePoint25500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17100,7 +15965,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26600;
+            ROLLBACK TRANSACTION SavePoint25500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17163,11 +16028,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26700;
+    SET @EntityType = 25600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26700;
+      SAVE TRANSACTION SavePoint25600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17189,7 +16054,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26700;
+            ROLLBACK TRANSACTION SavePoint25600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17252,11 +16117,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 26800;
+    SET @EntityType = 25700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint26800;
+      SAVE TRANSACTION SavePoint25700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17278,7 +16143,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint26800;
+            ROLLBACK TRANSACTION SavePoint25700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17341,11 +16206,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27000;
+    SET @EntityType = 25900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27000;
+      SAVE TRANSACTION SavePoint25900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17369,7 +16234,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27000;
+            ROLLBACK TRANSACTION SavePoint25900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17432,11 +16297,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27100;
+    SET @EntityType = 26000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27100;
+      SAVE TRANSACTION SavePoint26000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17460,7 +16325,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27100;
+            ROLLBACK TRANSACTION SavePoint26000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17523,11 +16388,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27200;
+    SET @EntityType = 26100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27200;
+      SAVE TRANSACTION SavePoint26100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17551,7 +16416,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27200;
+            ROLLBACK TRANSACTION SavePoint26100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17614,11 +16479,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27300;
+    SET @EntityType = 26200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27300;
+      SAVE TRANSACTION SavePoint26200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17642,7 +16507,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27300;
+            ROLLBACK TRANSACTION SavePoint26200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17705,11 +16570,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27400;
+    SET @EntityType = 26300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27400;
+      SAVE TRANSACTION SavePoint26300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17733,7 +16598,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27400;
+            ROLLBACK TRANSACTION SavePoint26300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17796,11 +16661,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27500;
+    SET @EntityType = 26400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27500;
+      SAVE TRANSACTION SavePoint26400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17824,7 +16689,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27500;
+            ROLLBACK TRANSACTION SavePoint26400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17887,11 +16752,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27600;
+    SET @EntityType = 26500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27600;
+      SAVE TRANSACTION SavePoint26500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -17915,7 +16780,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27600;
+            ROLLBACK TRANSACTION SavePoint26500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -17978,11 +16843,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27700;
+    SET @EntityType = 26600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27700;
+      SAVE TRANSACTION SavePoint26600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18006,7 +16871,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27700;
+            ROLLBACK TRANSACTION SavePoint26600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18069,11 +16934,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27800;
+    SET @EntityType = 26700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27800;
+      SAVE TRANSACTION SavePoint26700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18097,7 +16962,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27800;
+            ROLLBACK TRANSACTION SavePoint26700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18160,11 +17025,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 27900;
+    SET @EntityType = 26800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint27900;
+      SAVE TRANSACTION SavePoint26800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18188,7 +17053,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint27900;
+            ROLLBACK TRANSACTION SavePoint26800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18251,11 +17116,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28000;
+    SET @EntityType = 26900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28000;
+      SAVE TRANSACTION SavePoint26900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18279,7 +17144,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28000;
+            ROLLBACK TRANSACTION SavePoint26900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18342,11 +17207,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28100;
+    SET @EntityType = 27000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28100;
+      SAVE TRANSACTION SavePoint27000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18370,7 +17235,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28100;
+            ROLLBACK TRANSACTION SavePoint27000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18433,11 +17298,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28200;
+    SET @EntityType = 27100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28200;
+      SAVE TRANSACTION SavePoint27100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18461,7 +17326,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28200;
+            ROLLBACK TRANSACTION SavePoint27100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18524,11 +17389,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28300;
+    SET @EntityType = 27200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28300;
+      SAVE TRANSACTION SavePoint27200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18552,7 +17417,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28300;
+            ROLLBACK TRANSACTION SavePoint27200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18615,11 +17480,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28400;
+    SET @EntityType = 27300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28400;
+      SAVE TRANSACTION SavePoint27300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18643,7 +17508,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28400;
+            ROLLBACK TRANSACTION SavePoint27300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18706,11 +17571,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28500;
+    SET @EntityType = 27400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28500;
+      SAVE TRANSACTION SavePoint27400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18734,7 +17599,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28500;
+            ROLLBACK TRANSACTION SavePoint27400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18797,11 +17662,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28600;
+    SET @EntityType = 27500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28600;
+      SAVE TRANSACTION SavePoint27500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18825,7 +17690,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28600;
+            ROLLBACK TRANSACTION SavePoint27500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18888,11 +17753,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28700;
+    SET @EntityType = 27600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28700;
+      SAVE TRANSACTION SavePoint27600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -18914,7 +17779,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28700;
+            ROLLBACK TRANSACTION SavePoint27600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -18977,11 +17842,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28800;
+    SET @EntityType = 27700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28800;
+      SAVE TRANSACTION SavePoint27700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19003,7 +17868,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28800;
+            ROLLBACK TRANSACTION SavePoint27700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19066,11 +17931,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 28900;
+    SET @EntityType = 27800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint28900;
+      SAVE TRANSACTION SavePoint27800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19092,7 +17957,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint28900;
+            ROLLBACK TRANSACTION SavePoint27800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19155,11 +18020,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29000;
+    SET @EntityType = 27900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29000;
+      SAVE TRANSACTION SavePoint27900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19181,7 +18046,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29000;
+            ROLLBACK TRANSACTION SavePoint27900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19245,11 +18110,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29200;
+    SET @EntityType = 28100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29200;
+      SAVE TRANSACTION SavePoint28100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19271,7 +18136,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29200;
+            ROLLBACK TRANSACTION SavePoint28100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19339,11 +18204,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29300;
+    SET @EntityType = 28200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29300;
+      SAVE TRANSACTION SavePoint28200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19365,7 +18230,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29300;
+            ROLLBACK TRANSACTION SavePoint28200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19435,11 +18300,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29400;
+    SET @EntityType = 28300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29400;
+      SAVE TRANSACTION SavePoint28300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19461,7 +18326,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29400;
+            ROLLBACK TRANSACTION SavePoint28300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19539,11 +18404,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29500;
+    SET @EntityType = 28400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29500;
+      SAVE TRANSACTION SavePoint28400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19565,7 +18430,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29500;
+            ROLLBACK TRANSACTION SavePoint28400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19643,11 +18508,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29600;
+    SET @EntityType = 28500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29600;
+      SAVE TRANSACTION SavePoint28500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19669,7 +18534,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29600;
+            ROLLBACK TRANSACTION SavePoint28500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19745,11 +18610,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29700;
+    SET @EntityType = 28600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29700;
+      SAVE TRANSACTION SavePoint28600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19771,7 +18636,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29700;
+            ROLLBACK TRANSACTION SavePoint28600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19841,11 +18706,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29800;
+    SET @EntityType = 28700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29800;
+      SAVE TRANSACTION SavePoint28700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19867,7 +18732,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29800;
+            ROLLBACK TRANSACTION SavePoint28700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -19945,11 +18810,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 29900;
+    SET @EntityType = 28800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint29900;
+      SAVE TRANSACTION SavePoint28800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -19971,7 +18836,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint29900;
+            ROLLBACK TRANSACTION SavePoint28800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20049,11 +18914,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30000;
+    SET @EntityType = 28900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30000;
+      SAVE TRANSACTION SavePoint28900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20075,7 +18940,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30000;
+            ROLLBACK TRANSACTION SavePoint28900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20152,11 +19017,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30100;
+    SET @EntityType = 29000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30100;
+      SAVE TRANSACTION SavePoint29000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20178,7 +19043,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30100;
+            ROLLBACK TRANSACTION SavePoint29000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20252,11 +19117,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30200;
+    SET @EntityType = 29100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30200;
+      SAVE TRANSACTION SavePoint29100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20278,7 +19143,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30200;
+            ROLLBACK TRANSACTION SavePoint29100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20356,11 +19221,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30300;
+    SET @EntityType = 29200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30300;
+      SAVE TRANSACTION SavePoint29200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20382,7 +19247,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30300;
+            ROLLBACK TRANSACTION SavePoint29200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20459,11 +19324,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30400;
+    SET @EntityType = 29300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30400;
+      SAVE TRANSACTION SavePoint29300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20485,7 +19350,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30400;
+            ROLLBACK TRANSACTION SavePoint29300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20556,11 +19421,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30600;
+    SET @EntityType = 29500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30600;
+      SAVE TRANSACTION SavePoint29500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20584,7 +19449,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30600;
+            ROLLBACK TRANSACTION SavePoint29500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20647,11 +19512,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30700;
+    SET @EntityType = 29600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30700;
+      SAVE TRANSACTION SavePoint29600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20675,7 +19540,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30700;
+            ROLLBACK TRANSACTION SavePoint29600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20740,11 +19605,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30800;
+    SET @EntityType = 29700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30800;
+      SAVE TRANSACTION SavePoint29700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20768,7 +19633,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30800;
+            ROLLBACK TRANSACTION SavePoint29700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20841,11 +19706,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 30900;
+    SET @EntityType = 29800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint30900;
+      SAVE TRANSACTION SavePoint29800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20869,7 +19734,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint30900;
+            ROLLBACK TRANSACTION SavePoint29800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -20942,11 +19807,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31000;
+    SET @EntityType = 29900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31000;
+      SAVE TRANSACTION SavePoint29900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -20970,7 +19835,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31000;
+            ROLLBACK TRANSACTION SavePoint29900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21041,11 +19906,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31100;
+    SET @EntityType = 30000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31100;
+      SAVE TRANSACTION SavePoint30000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21069,7 +19934,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31100;
+            ROLLBACK TRANSACTION SavePoint30000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21134,11 +19999,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31200;
+    SET @EntityType = 30100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31200;
+      SAVE TRANSACTION SavePoint30100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21162,7 +20027,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31200;
+            ROLLBACK TRANSACTION SavePoint30100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21235,11 +20100,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31300;
+    SET @EntityType = 30200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31300;
+      SAVE TRANSACTION SavePoint30200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21263,7 +20128,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31300;
+            ROLLBACK TRANSACTION SavePoint30200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21336,11 +20201,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31400;
+    SET @EntityType = 30300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31400;
+      SAVE TRANSACTION SavePoint30300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21364,7 +20229,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31400;
+            ROLLBACK TRANSACTION SavePoint30300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21436,11 +20301,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31500;
+    SET @EntityType = 30400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31500;
+      SAVE TRANSACTION SavePoint30400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21464,7 +20329,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31500;
+            ROLLBACK TRANSACTION SavePoint30400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21533,11 +20398,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31600;
+    SET @EntityType = 30500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31600;
+      SAVE TRANSACTION SavePoint30500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21561,7 +20426,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31600;
+            ROLLBACK TRANSACTION SavePoint30500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21634,11 +20499,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31700;
+    SET @EntityType = 30600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31700;
+      SAVE TRANSACTION SavePoint30600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21662,7 +20527,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31700;
+            ROLLBACK TRANSACTION SavePoint30600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21734,11 +20599,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31800;
+    SET @EntityType = 30700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31800;
+      SAVE TRANSACTION SavePoint30700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21762,7 +20627,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31800;
+            ROLLBACK TRANSACTION SavePoint30700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21831,11 +20696,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 31900;
+    SET @EntityType = 30800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint31900;
+      SAVE TRANSACTION SavePoint30800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21859,7 +20724,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint31900;
+            ROLLBACK TRANSACTION SavePoint30800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -21932,11 +20797,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32000;
+    SET @EntityType = 30900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32000;
+      SAVE TRANSACTION SavePoint30900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -21960,7 +20825,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32000;
+            ROLLBACK TRANSACTION SavePoint30900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22033,11 +20898,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32100;
+    SET @EntityType = 31000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32100;
+      SAVE TRANSACTION SavePoint31000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22061,7 +20926,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32100;
+            ROLLBACK TRANSACTION SavePoint31000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22134,11 +20999,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32200;
+    SET @EntityType = 31100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32200;
+      SAVE TRANSACTION SavePoint31100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22162,7 +21027,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32200;
+            ROLLBACK TRANSACTION SavePoint31100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22236,11 +21101,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32300;
+    SET @EntityType = 31200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32300;
+      SAVE TRANSACTION SavePoint31200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22262,7 +21127,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32300;
+            ROLLBACK TRANSACTION SavePoint31200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22340,11 +21205,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32400;
+    SET @EntityType = 31300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32400;
+      SAVE TRANSACTION SavePoint31300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22366,7 +21231,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32400;
+            ROLLBACK TRANSACTION SavePoint31300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22444,11 +21309,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32500;
+    SET @EntityType = 31400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32500;
+      SAVE TRANSACTION SavePoint31400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22470,7 +21335,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32500;
+            ROLLBACK TRANSACTION SavePoint31400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22548,11 +21413,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32600;
+    SET @EntityType = 31500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32600;
+      SAVE TRANSACTION SavePoint31500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22574,7 +21439,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32600;
+            ROLLBACK TRANSACTION SavePoint31500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22651,7 +21516,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32700;
+      SAVE TRANSACTION SavePoint31600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22671,7 +21536,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32700;
+            ROLLBACK TRANSACTION SavePoint31600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22736,11 +21601,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32800;
+    SET @EntityType = 31700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32800;
+      SAVE TRANSACTION SavePoint31700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22760,7 +21625,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32800;
+            ROLLBACK TRANSACTION SavePoint31700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22833,11 +21698,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 32900;
+    SET @EntityType = 31800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint32900;
+      SAVE TRANSACTION SavePoint31800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22859,7 +21724,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint32900;
+            ROLLBACK TRANSACTION SavePoint31800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -22932,11 +21797,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 33000;
+    SET @EntityType = 31900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33000;
+      SAVE TRANSACTION SavePoint31900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -22956,7 +21821,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33000;
+            ROLLBACK TRANSACTION SavePoint31900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23034,11 +21899,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 33100;
+    SET @EntityType = 32000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33100;
+      SAVE TRANSACTION SavePoint32000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23060,7 +21925,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33100;
+            ROLLBACK TRANSACTION SavePoint32000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23177,7 +22042,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33200;
+      SAVE TRANSACTION SavePoint32100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23197,7 +22062,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33200;
+            ROLLBACK TRANSACTION SavePoint32100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23361,7 +22226,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33300;
+      SAVE TRANSACTION SavePoint32200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23381,7 +22246,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33300;
+            ROLLBACK TRANSACTION SavePoint32200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23459,7 +22324,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33400;
+      SAVE TRANSACTION SavePoint32300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23479,7 +22344,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33400;
+            ROLLBACK TRANSACTION SavePoint32300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23553,7 +22418,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33500;
+      SAVE TRANSACTION SavePoint32400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23573,7 +22438,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33500;
+            ROLLBACK TRANSACTION SavePoint32400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23660,7 +22525,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33600;
+      SAVE TRANSACTION SavePoint32500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23680,7 +22545,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33600;
+            ROLLBACK TRANSACTION SavePoint32500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23755,7 +22620,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33700;
+      SAVE TRANSACTION SavePoint32600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23775,7 +22640,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33700;
+            ROLLBACK TRANSACTION SavePoint32600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23854,7 +22719,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33800;
+      SAVE TRANSACTION SavePoint32700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23874,7 +22739,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33800;
+            ROLLBACK TRANSACTION SavePoint32700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -23965,7 +22830,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint33900;
+      SAVE TRANSACTION SavePoint32800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -23985,7 +22850,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint33900;
+            ROLLBACK TRANSACTION SavePoint32800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24060,7 +22925,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34000;
+      SAVE TRANSACTION SavePoint32900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24080,7 +22945,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34000;
+            ROLLBACK TRANSACTION SavePoint32900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24157,7 +23022,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34100;
+      SAVE TRANSACTION SavePoint33000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24177,7 +23042,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34100;
+            ROLLBACK TRANSACTION SavePoint33000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24258,7 +23123,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34200;
+      SAVE TRANSACTION SavePoint33100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24278,7 +23143,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34200;
+            ROLLBACK TRANSACTION SavePoint33100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24343,7 +23208,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34300;
+      SAVE TRANSACTION SavePoint33200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24363,7 +23228,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34300;
+            ROLLBACK TRANSACTION SavePoint33200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24427,7 +23292,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34400;
+      SAVE TRANSACTION SavePoint33300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24447,7 +23312,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34400;
+            ROLLBACK TRANSACTION SavePoint33300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24506,11 +23371,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 34600;
+    SET @EntityType = 33500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34600;
+      SAVE TRANSACTION SavePoint33500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24532,7 +23397,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34600;
+            ROLLBACK TRANSACTION SavePoint33500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24596,11 +23461,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 34700;
+    SET @EntityType = 33600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34700;
+      SAVE TRANSACTION SavePoint33600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24622,7 +23487,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34700;
+            ROLLBACK TRANSACTION SavePoint33600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24692,7 +23557,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34800;
+      SAVE TRANSACTION SavePoint33700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24712,7 +23577,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34800;
+            ROLLBACK TRANSACTION SavePoint33700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24784,7 +23649,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint34900;
+      SAVE TRANSACTION SavePoint33800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24804,7 +23669,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint34900;
+            ROLLBACK TRANSACTION SavePoint33800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24885,7 +23750,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35000;
+      SAVE TRANSACTION SavePoint33900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -24905,7 +23770,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35000;
+            ROLLBACK TRANSACTION SavePoint33900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -24986,7 +23851,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35100;
+      SAVE TRANSACTION SavePoint34000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25006,7 +23871,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35100;
+            ROLLBACK TRANSACTION SavePoint34000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25071,7 +23936,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35200;
+      SAVE TRANSACTION SavePoint34100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25091,7 +23956,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35200;
+            ROLLBACK TRANSACTION SavePoint34100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25154,11 +24019,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 35500;
+    SET @EntityType = 34400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35500;
+      SAVE TRANSACTION SavePoint34400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25182,7 +24047,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35500;
+            ROLLBACK TRANSACTION SavePoint34400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25245,11 +24110,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 35600;
+    SET @EntityType = 34500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35600;
+      SAVE TRANSACTION SavePoint34500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25273,7 +24138,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35600;
+            ROLLBACK TRANSACTION SavePoint34500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25337,11 +24202,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 35700;
+    SET @EntityType = 34600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35700;
+      SAVE TRANSACTION SavePoint34600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25367,7 +24232,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35700;
+            ROLLBACK TRANSACTION SavePoint34600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25435,11 +24300,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 35800;
+    SET @EntityType = 34700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35800;
+      SAVE TRANSACTION SavePoint34700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25465,7 +24330,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35800;
+            ROLLBACK TRANSACTION SavePoint34700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25533,11 +24398,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 35900;
+    SET @EntityType = 34800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint35900;
+      SAVE TRANSACTION SavePoint34800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25563,7 +24428,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint35900;
+            ROLLBACK TRANSACTION SavePoint34800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25631,11 +24496,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36000;
+    SET @EntityType = 34900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36000;
+      SAVE TRANSACTION SavePoint34900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25661,7 +24526,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36000;
+            ROLLBACK TRANSACTION SavePoint34900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25729,11 +24594,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36100;
+    SET @EntityType = 35000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36100;
+      SAVE TRANSACTION SavePoint35000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25759,7 +24624,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36100;
+            ROLLBACK TRANSACTION SavePoint35000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25827,11 +24692,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36200;
+    SET @EntityType = 35100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36200;
+      SAVE TRANSACTION SavePoint35100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25857,7 +24722,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36200;
+            ROLLBACK TRANSACTION SavePoint35100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -25925,11 +24790,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36300;
+    SET @EntityType = 35200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36300;
+      SAVE TRANSACTION SavePoint35200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -25955,7 +24820,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36300;
+            ROLLBACK TRANSACTION SavePoint35200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26023,11 +24888,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36400;
+    SET @EntityType = 35300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36400;
+      SAVE TRANSACTION SavePoint35300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26053,7 +24918,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36400;
+            ROLLBACK TRANSACTION SavePoint35300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26121,11 +24986,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36500;
+    SET @EntityType = 35400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36500;
+      SAVE TRANSACTION SavePoint35400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26151,7 +25016,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36500;
+            ROLLBACK TRANSACTION SavePoint35400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26219,11 +25084,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36600;
+    SET @EntityType = 35500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36600;
+      SAVE TRANSACTION SavePoint35500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26249,7 +25114,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36600;
+            ROLLBACK TRANSACTION SavePoint35500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26317,11 +25182,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36700;
+    SET @EntityType = 35600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36700;
+      SAVE TRANSACTION SavePoint35600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26347,7 +25212,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36700;
+            ROLLBACK TRANSACTION SavePoint35600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26415,11 +25280,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36800;
+    SET @EntityType = 35700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36800;
+      SAVE TRANSACTION SavePoint35700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26445,7 +25310,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36800;
+            ROLLBACK TRANSACTION SavePoint35700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26513,11 +25378,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 36900;
+    SET @EntityType = 35800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint36900;
+      SAVE TRANSACTION SavePoint35800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26543,7 +25408,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint36900;
+            ROLLBACK TRANSACTION SavePoint35800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26610,11 +25475,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37000;
+    SET @EntityType = 35900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37000;
+      SAVE TRANSACTION SavePoint35900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26638,7 +25503,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37000;
+            ROLLBACK TRANSACTION SavePoint35900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26701,11 +25566,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37100;
+    SET @EntityType = 36000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37100;
+      SAVE TRANSACTION SavePoint36000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26729,7 +25594,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37100;
+            ROLLBACK TRANSACTION SavePoint36000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26792,11 +25657,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37200;
+    SET @EntityType = 36100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37200;
+      SAVE TRANSACTION SavePoint36100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26820,7 +25685,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37200;
+            ROLLBACK TRANSACTION SavePoint36100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26884,11 +25749,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37300;
+    SET @EntityType = 36200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37300;
+      SAVE TRANSACTION SavePoint36200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -26914,7 +25779,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37300;
+            ROLLBACK TRANSACTION SavePoint36200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -26982,11 +25847,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37400;
+    SET @EntityType = 36300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37400;
+      SAVE TRANSACTION SavePoint36300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27012,7 +25877,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37400;
+            ROLLBACK TRANSACTION SavePoint36300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27080,11 +25945,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37500;
+    SET @EntityType = 36400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37500;
+      SAVE TRANSACTION SavePoint36400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27110,7 +25975,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37500;
+            ROLLBACK TRANSACTION SavePoint36400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27178,11 +26043,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37600;
+    SET @EntityType = 36500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37600;
+      SAVE TRANSACTION SavePoint36500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27208,7 +26073,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37600;
+            ROLLBACK TRANSACTION SavePoint36500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27276,11 +26141,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37700;
+    SET @EntityType = 36600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37700;
+      SAVE TRANSACTION SavePoint36600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27306,7 +26171,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37700;
+            ROLLBACK TRANSACTION SavePoint36600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27374,11 +26239,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37800;
+    SET @EntityType = 36700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37800;
+      SAVE TRANSACTION SavePoint36700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27404,7 +26269,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37800;
+            ROLLBACK TRANSACTION SavePoint36700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27472,11 +26337,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 37900;
+    SET @EntityType = 36800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint37900;
+      SAVE TRANSACTION SavePoint36800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27502,7 +26367,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint37900;
+            ROLLBACK TRANSACTION SavePoint36800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27570,11 +26435,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38000;
+    SET @EntityType = 36900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38000;
+      SAVE TRANSACTION SavePoint36900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27600,7 +26465,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38000;
+            ROLLBACK TRANSACTION SavePoint36900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27668,11 +26533,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38100;
+    SET @EntityType = 37000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38100;
+      SAVE TRANSACTION SavePoint37000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27698,7 +26563,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38100;
+            ROLLBACK TRANSACTION SavePoint37000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27766,11 +26631,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38200;
+    SET @EntityType = 37100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38200;
+      SAVE TRANSACTION SavePoint37100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27796,7 +26661,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38200;
+            ROLLBACK TRANSACTION SavePoint37100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27864,11 +26729,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38300;
+    SET @EntityType = 37200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38300;
+      SAVE TRANSACTION SavePoint37200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27894,7 +26759,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38300;
+            ROLLBACK TRANSACTION SavePoint37200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -27962,11 +26827,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38400;
+    SET @EntityType = 37300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38400;
+      SAVE TRANSACTION SavePoint37300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -27992,7 +26857,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38400;
+            ROLLBACK TRANSACTION SavePoint37300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28060,11 +26925,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38500;
+    SET @EntityType = 37400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38500;
+      SAVE TRANSACTION SavePoint37400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28090,7 +26955,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38500;
+            ROLLBACK TRANSACTION SavePoint37400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28158,11 +27023,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38600;
+    SET @EntityType = 37500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38600;
+      SAVE TRANSACTION SavePoint37500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28188,7 +27053,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38600;
+            ROLLBACK TRANSACTION SavePoint37500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28256,11 +27121,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38700;
+    SET @EntityType = 37600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38700;
+      SAVE TRANSACTION SavePoint37600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28286,7 +27151,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38700;
+            ROLLBACK TRANSACTION SavePoint37600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28354,11 +27219,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38800;
+    SET @EntityType = 37700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38800;
+      SAVE TRANSACTION SavePoint37700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28384,7 +27249,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38800;
+            ROLLBACK TRANSACTION SavePoint37700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28452,11 +27317,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 38900;
+    SET @EntityType = 37800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint38900;
+      SAVE TRANSACTION SavePoint37800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28482,7 +27347,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint38900;
+            ROLLBACK TRANSACTION SavePoint37800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28550,11 +27415,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39000;
+    SET @EntityType = 37900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39000;
+      SAVE TRANSACTION SavePoint37900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28580,7 +27445,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39000;
+            ROLLBACK TRANSACTION SavePoint37900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28648,11 +27513,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39100;
+    SET @EntityType = 38000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39100;
+      SAVE TRANSACTION SavePoint38000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28678,7 +27543,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39100;
+            ROLLBACK TRANSACTION SavePoint38000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28746,11 +27611,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39200;
+    SET @EntityType = 38100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39200;
+      SAVE TRANSACTION SavePoint38100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28776,7 +27641,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39200;
+            ROLLBACK TRANSACTION SavePoint38100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28844,11 +27709,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39300;
+    SET @EntityType = 38200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39300;
+      SAVE TRANSACTION SavePoint38200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28874,7 +27739,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39300;
+            ROLLBACK TRANSACTION SavePoint38200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -28942,11 +27807,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39400;
+    SET @EntityType = 38300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39400;
+      SAVE TRANSACTION SavePoint38300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -28972,7 +27837,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39400;
+            ROLLBACK TRANSACTION SavePoint38300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29040,11 +27905,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39500;
+    SET @EntityType = 38400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39500;
+      SAVE TRANSACTION SavePoint38400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29070,7 +27935,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39500;
+            ROLLBACK TRANSACTION SavePoint38400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29138,11 +28003,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39600;
+    SET @EntityType = 38500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39600;
+      SAVE TRANSACTION SavePoint38500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29168,7 +28033,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39600;
+            ROLLBACK TRANSACTION SavePoint38500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29236,11 +28101,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39700;
+    SET @EntityType = 38600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39700;
+      SAVE TRANSACTION SavePoint38600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29266,7 +28131,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39700;
+            ROLLBACK TRANSACTION SavePoint38600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29334,11 +28199,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39800;
+    SET @EntityType = 38700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39800;
+      SAVE TRANSACTION SavePoint38700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29364,7 +28229,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39800;
+            ROLLBACK TRANSACTION SavePoint38700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29432,11 +28297,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 39900;
+    SET @EntityType = 38800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint39900;
+      SAVE TRANSACTION SavePoint38800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29462,7 +28327,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint39900;
+            ROLLBACK TRANSACTION SavePoint38800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29529,11 +28394,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40000;
+    SET @EntityType = 38900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40000;
+      SAVE TRANSACTION SavePoint38900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29557,7 +28422,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40000;
+            ROLLBACK TRANSACTION SavePoint38900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29621,11 +28486,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40100;
+    SET @EntityType = 39000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40100;
+      SAVE TRANSACTION SavePoint39000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29651,7 +28516,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40100;
+            ROLLBACK TRANSACTION SavePoint39000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29718,11 +28583,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40200;
+    SET @EntityType = 39100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40200;
+      SAVE TRANSACTION SavePoint39100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29746,7 +28611,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40200;
+            ROLLBACK TRANSACTION SavePoint39100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29809,11 +28674,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40300;
+    SET @EntityType = 39200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40300;
+      SAVE TRANSACTION SavePoint39200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29837,7 +28702,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40300;
+            ROLLBACK TRANSACTION SavePoint39200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29900,11 +28765,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40400;
+    SET @EntityType = 39300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40400;
+      SAVE TRANSACTION SavePoint39300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -29928,7 +28793,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40400;
+            ROLLBACK TRANSACTION SavePoint39300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -29991,11 +28856,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40500;
+    SET @EntityType = 39400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40500;
+      SAVE TRANSACTION SavePoint39400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30019,7 +28884,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40500;
+            ROLLBACK TRANSACTION SavePoint39400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30083,11 +28948,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40600;
+    SET @EntityType = 39500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40600;
+      SAVE TRANSACTION SavePoint39500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30113,7 +28978,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40600;
+            ROLLBACK TRANSACTION SavePoint39500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30181,11 +29046,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40700;
+    SET @EntityType = 39600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40700;
+      SAVE TRANSACTION SavePoint39600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30211,7 +29076,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40700;
+            ROLLBACK TRANSACTION SavePoint39600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30279,11 +29144,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40800;
+    SET @EntityType = 39700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40800;
+      SAVE TRANSACTION SavePoint39700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30309,7 +29174,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40800;
+            ROLLBACK TRANSACTION SavePoint39700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30377,11 +29242,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 40900;
+    SET @EntityType = 39800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint40900;
+      SAVE TRANSACTION SavePoint39800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30407,7 +29272,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint40900;
+            ROLLBACK TRANSACTION SavePoint39800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30475,11 +29340,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41000;
+    SET @EntityType = 39900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41000;
+      SAVE TRANSACTION SavePoint39900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30505,7 +29370,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41000;
+            ROLLBACK TRANSACTION SavePoint39900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30573,11 +29438,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41100;
+    SET @EntityType = 40000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41100;
+      SAVE TRANSACTION SavePoint40000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30603,7 +29468,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41100;
+            ROLLBACK TRANSACTION SavePoint40000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30671,11 +29536,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41200;
+    SET @EntityType = 40100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41200;
+      SAVE TRANSACTION SavePoint40100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30701,7 +29566,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41200;
+            ROLLBACK TRANSACTION SavePoint40100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30769,11 +29634,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41300;
+    SET @EntityType = 40200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41300;
+      SAVE TRANSACTION SavePoint40200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30799,7 +29664,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41300;
+            ROLLBACK TRANSACTION SavePoint40200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30867,11 +29732,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41400;
+    SET @EntityType = 40300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41400;
+      SAVE TRANSACTION SavePoint40300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30897,7 +29762,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41400;
+            ROLLBACK TRANSACTION SavePoint40300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -30965,11 +29830,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41500;
+    SET @EntityType = 40400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41500;
+      SAVE TRANSACTION SavePoint40400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -30995,7 +29860,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41500;
+            ROLLBACK TRANSACTION SavePoint40400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31063,11 +29928,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41600;
+    SET @EntityType = 40500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41600;
+      SAVE TRANSACTION SavePoint40500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31093,7 +29958,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41600;
+            ROLLBACK TRANSACTION SavePoint40500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31160,11 +30025,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41700;
+    SET @EntityType = 40600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41700;
+      SAVE TRANSACTION SavePoint40600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31188,7 +30053,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41700;
+            ROLLBACK TRANSACTION SavePoint40600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31251,11 +30116,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41800;
+    SET @EntityType = 40700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41800;
+      SAVE TRANSACTION SavePoint40700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31279,7 +30144,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41800;
+            ROLLBACK TRANSACTION SavePoint40700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31342,11 +30207,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 41900;
+    SET @EntityType = 40800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint41900;
+      SAVE TRANSACTION SavePoint40800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31370,7 +30235,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint41900;
+            ROLLBACK TRANSACTION SavePoint40800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31433,11 +30298,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42000;
+    SET @EntityType = 40900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42000;
+      SAVE TRANSACTION SavePoint40900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31461,7 +30326,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42000;
+            ROLLBACK TRANSACTION SavePoint40900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31524,11 +30389,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42100;
+    SET @EntityType = 41000;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42100;
+      SAVE TRANSACTION SavePoint41000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31552,7 +30417,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42100;
+            ROLLBACK TRANSACTION SavePoint41000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31615,11 +30480,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42200;
+    SET @EntityType = 41100;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42200;
+      SAVE TRANSACTION SavePoint41100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31643,7 +30508,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42200;
+            ROLLBACK TRANSACTION SavePoint41100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31706,11 +30571,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42300;
+    SET @EntityType = 41200;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42300;
+      SAVE TRANSACTION SavePoint41200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31734,7 +30599,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42300;
+            ROLLBACK TRANSACTION SavePoint41200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31797,11 +30662,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42400;
+    SET @EntityType = 41300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42400;
+      SAVE TRANSACTION SavePoint41300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31825,7 +30690,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42400;
+            ROLLBACK TRANSACTION SavePoint41300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31888,11 +30753,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42500;
+    SET @EntityType = 41400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42500;
+      SAVE TRANSACTION SavePoint41400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -31916,7 +30781,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42500;
+            ROLLBACK TRANSACTION SavePoint41400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -31979,11 +30844,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42600;
+    SET @EntityType = 41500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42600;
+      SAVE TRANSACTION SavePoint41500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32007,7 +30872,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42600;
+            ROLLBACK TRANSACTION SavePoint41500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32071,11 +30936,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42700;
+    SET @EntityType = 41600;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42700;
+      SAVE TRANSACTION SavePoint41600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32101,7 +30966,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42700;
+            ROLLBACK TRANSACTION SavePoint41600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32168,11 +31033,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42800;
+    SET @EntityType = 41700;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42800;
+      SAVE TRANSACTION SavePoint41700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32196,7 +31061,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42800;
+            ROLLBACK TRANSACTION SavePoint41700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32258,11 +31123,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 42900;
+    SET @EntityType = 41800;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint42900;
+      SAVE TRANSACTION SavePoint41800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32284,7 +31149,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint42900;
+            ROLLBACK TRANSACTION SavePoint41800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32345,7 +31210,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43000;
+      SAVE TRANSACTION SavePoint41900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32365,7 +31230,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43000;
+            ROLLBACK TRANSACTION SavePoint41900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32430,7 +31295,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43100;
+      SAVE TRANSACTION SavePoint42000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32450,7 +31315,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43100;
+            ROLLBACK TRANSACTION SavePoint42000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32516,7 +31381,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43200;
+      SAVE TRANSACTION SavePoint42100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32536,7 +31401,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43200;
+            ROLLBACK TRANSACTION SavePoint42100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32603,11 +31468,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 43400;
+    SET @EntityType = 42300;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43400;
+      SAVE TRANSACTION SavePoint42300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32629,7 +31494,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43400;
+            ROLLBACK TRANSACTION SavePoint42300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32692,11 +31557,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 43500;
+    SET @EntityType = 42400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43500;
+      SAVE TRANSACTION SavePoint42400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32718,7 +31583,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43500;
+            ROLLBACK TRANSACTION SavePoint42400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32782,7 +31647,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43600;
+      SAVE TRANSACTION SavePoint42500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32802,7 +31667,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43600;
+            ROLLBACK TRANSACTION SavePoint42500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -32875,7 +31740,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43700;
+      SAVE TRANSACTION SavePoint42600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -32895,7 +31760,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43700;
+            ROLLBACK TRANSACTION SavePoint42600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33012,7 +31877,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43800;
+      SAVE TRANSACTION SavePoint42700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33032,7 +31897,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43800;
+            ROLLBACK TRANSACTION SavePoint42700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33121,7 +31986,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint43900;
+      SAVE TRANSACTION SavePoint42800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33141,7 +32006,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint43900;
+            ROLLBACK TRANSACTION SavePoint42800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33239,7 +32104,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44000;
+      SAVE TRANSACTION SavePoint42900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33259,7 +32124,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44000;
+            ROLLBACK TRANSACTION SavePoint42900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33334,7 +32199,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44100;
+      SAVE TRANSACTION SavePoint43000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33354,7 +32219,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44100;
+            ROLLBACK TRANSACTION SavePoint43000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33450,7 +32315,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44200;
+      SAVE TRANSACTION SavePoint43100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33470,7 +32335,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44200;
+            ROLLBACK TRANSACTION SavePoint43100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33563,7 +32428,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44300;
+      SAVE TRANSACTION SavePoint43200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33583,7 +32448,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44300;
+            ROLLBACK TRANSACTION SavePoint43200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33648,7 +32513,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44400;
+      SAVE TRANSACTION SavePoint43300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33668,7 +32533,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44400;
+            ROLLBACK TRANSACTION SavePoint43300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33733,7 +32598,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44500;
+      SAVE TRANSACTION SavePoint43400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33753,7 +32618,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44500;
+            ROLLBACK TRANSACTION SavePoint43400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33816,7 +32681,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44600;
+      SAVE TRANSACTION SavePoint43500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33836,7 +32701,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44600;
+            ROLLBACK TRANSACTION SavePoint43500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33892,7 +32757,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44700;
+      SAVE TRANSACTION SavePoint43600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33912,7 +32777,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44700;
+            ROLLBACK TRANSACTION SavePoint43600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -33974,7 +32839,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44800;
+      SAVE TRANSACTION SavePoint43700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -33994,7 +32859,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44800;
+            ROLLBACK TRANSACTION SavePoint43700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34064,7 +32929,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint44900;
+      SAVE TRANSACTION SavePoint43800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34084,7 +32949,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint44900;
+            ROLLBACK TRANSACTION SavePoint43800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34154,7 +33019,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45000;
+      SAVE TRANSACTION SavePoint43900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34174,7 +33039,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45000;
+            ROLLBACK TRANSACTION SavePoint43900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34245,7 +33110,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45100;
+      SAVE TRANSACTION SavePoint44000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34265,7 +33130,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45100;
+            ROLLBACK TRANSACTION SavePoint44000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34340,7 +33205,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45200;
+      SAVE TRANSACTION SavePoint44100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34360,7 +33225,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45200;
+            ROLLBACK TRANSACTION SavePoint44100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34439,7 +33304,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45300;
+      SAVE TRANSACTION SavePoint44200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34459,7 +33324,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45300;
+            ROLLBACK TRANSACTION SavePoint44200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34553,11 +33418,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 45500;
+    SET @EntityType = 44400;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45500;
+      SAVE TRANSACTION SavePoint44400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34579,7 +33444,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45500;
+            ROLLBACK TRANSACTION SavePoint44400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34677,11 +33542,11 @@ AS
       SET @Id = NEWID()
     END
     DECLARE @EntityType INT;
-    SET @EntityType = 45600;
+    SET @EntityType = 44500;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45600;
+      SAVE TRANSACTION SavePoint44500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34703,7 +33568,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45600;
+            ROLLBACK TRANSACTION SavePoint44500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34795,7 +33660,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45700;
+      SAVE TRANSACTION SavePoint44600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34815,7 +33680,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45700;
+            ROLLBACK TRANSACTION SavePoint44600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34875,7 +33740,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45800;
+      SAVE TRANSACTION SavePoint44700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34895,7 +33760,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45800;
+            ROLLBACK TRANSACTION SavePoint44700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -34966,7 +33831,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint45900;
+      SAVE TRANSACTION SavePoint44800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -34986,7 +33851,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint45900;
+            ROLLBACK TRANSACTION SavePoint44800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,

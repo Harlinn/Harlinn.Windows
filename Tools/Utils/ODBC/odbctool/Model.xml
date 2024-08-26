@@ -1293,105 +1293,6 @@
     <index name="Host_Timestamp" fields="Host;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
   </class>
-  <class name="DeviceType" abstract="true">
-    <members>
-      <guid name="Id" primarykey="true"/>
-      <rowversion name="RowVersion"/>
-      <string name="AssemblyName" size="100"/>
-      <string name="ClassName" size="100"/>
-      <string name="ProxyAssemblyName" size="100"/>
-      <string name="ProxyClassName" size="100"/>
-    </members>
-  </class>
-  <class name="AisTransceiverType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `AisTransceiverType`"/>
-      <collection name="AisTransceivers" type="AisTransceiver" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="CameraType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `CameraType`"/>
-      <enum name="CameraFeatures" type="CameraFeatures"/>
-      <collection name="Cameras" type="Camera" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="GNSSDeviceType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `GNSSDeviceType`"/>
-      <collection name="GNSSDevices" type="GNSSDevice" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="GyroDeviceType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `GyroDeviceType`"/>
-      <collection name="GyroDevices" type="GyroDevice" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="LineInputDeviceType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `LineInputDeviceType`"/>
-      <collection name="LineInputDevices" type="LineInputDevice" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="OilspillDetectorType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `OilspillDetectorType`"/>
-      <collection name="OilSpillDetectors" type="OilspillDetector" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="RadarType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `RadarType`"/>
-      <collection name="Radars" type="Radar" member="Type"/>
-      <int32 name="PulseShortMinusValue" nullable="true"/>
-      <string name="PulseShortMinusDisplayText" size="50"/>
-      <int32 name="PulseShortValue" nullable="true"/>
-      <string name="PulseShortDisplayText" size="50"/>
-      <int32 name="PulseShortPlusValue" nullable="true"/>
-      <string name="PulseShortPlusDisplayText" size="50"/>
-      <int32 name="PulseMediumMinusValue" nullable="true"/>
-      <string name="PulseMediumMinusDisplayText" size="50"/>
-      <int32 name="PulseMediumValue" nullable="true"/>
-      <string name="PulseMediumDisplayText" size="50"/>
-      <int32 name="PulseMediumPlusValue" nullable="true"/>
-      <string name="PulseMediumPlusDisplayText" size="50"/>
-      <int32 name="PulseLongMinusValue" nullable="true"/>
-      <string name="PulseLongMinusDisplayText" size="50"/>
-      <int32 name="PulseLongValue" nullable="true"/>
-      <string name="PulseLongDisplayText" size="50"/>
-      <int32 name="PulseLongPlusValue" nullable="true"/>
-      <string name="PulseLongPlusDisplayText" size="50"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="RadioType" base="DeviceType" displayname="Device Type" shortname="RAT">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `RadioType`"/>
-      <collection name="Radios" type="Radio" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="RadomeType" base="DeviceType" displayname="Device Type" shortname="ROT">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `RadomeType`"/>
-      <collection name="Radomes" type="Radome" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
-  <class name="WeatherStationType" base="DeviceType" displayname="Device Type">
-    <members>
-      <string name="Name" size="127" description="A name that uniquely identifies this `WeatherStationType`"/>
-      <collection name="WeatherStations" type="WeatherStation" member="Type"/>
-    </members>
-    <index name="Name" fields="Name" unique="true"/>
-  </class>
   <class name="DoubleTimeseriesValue">
     <members>
       <guid name="Id" primarykey="true"/>
@@ -1639,7 +1540,6 @@
   </class>
   <class name="Camera" base="Device">
     <members>
-      <reference name="Type" type="CameraType"/>
       <collection name="Commands" type="CameraCommand" member="Camera" browsable="false"/>
       <collection name="CommandReplies" type="CameraCommandReply" member="Camera" browsable="false"/>
       <collection name="Configuration" type="CameraConfiguration" member="Camera" browsable="false"/>
@@ -1648,11 +1548,9 @@
       <collection name="TiltCalibration" type="CameraTiltCalibration" member="Camera" browsable="false"/>
       <collection name="ZoomCalibration" type="CameraZoomCalibration" member="Camera" browsable="false"/>
     </members>
-    <index name="Type" fields="Type"/>
   </class>
   <class name="GNSSDevice" base="Device">
     <members>
-      <reference name="Type" type="GNSSDeviceType"/>
       <timeseries name="LatitudeTimeseries" type="GNSSLatitudeTimeseries" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="LongitudeTimeseries" type="GNSSLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="AltitudeTimeseries" type="GNSSAltitudeTimeseries" propertyname="Altitude" propertytype="Double" propertynullable="true" browsable="false"/>
@@ -1662,11 +1560,9 @@
       <collection name="Radars" type="Radar" member="GNSSDevice"/>
       <collection name="Gyros" type="GyroDevice" member="GNSSDevice"/>
     </members>
-    <index name="Type" fields="Type"/>
   </class>
   <class name="GyroDevice" base="Device">
     <members>
-      <reference name="Type" type="GyroDeviceType"/>
       <timeseries name="HeadingTrueNorthTimeseries" type="GyroHeadingTrueNorthTimeseries" propertyname="HeadingTrueNorth" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="HeadingMagneticNorthTimeseries" type="GyroHeadingMagneticNorthTimeseries" propertyname="HeadingMagneticNorth" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="PitchTimeseries" type="GyroPitchTimeseries" propertyname="Pitch" propertytype="Double" propertynullable="true" browsable="false"/>
@@ -1680,42 +1576,34 @@
       <collection name="Configuration" type="GyroDeviceConfiguration" member="GyroDevice"/>
       <collection name="WeatherStations" type="WeatherStation" member="Gyro"/>
     </members>
-    <index name="Type" fields="Type"/>
     <index name="GNSSDevice" fields="GNSSDevice"/>
   </class>
   <class name="LineInputDevice" base="Device" description="A `LineInputDevice` device is a device that performs line oriented I/O on behalf of the server.">
     <members>
-      <reference name="Type" type="LineInputDeviceType"/>
       <collection name="Commands" type="LineInputDeviceCommand" member="LineInputDevice"/>
       <collection name="CommandReplies" type="LineInputDeviceCommandReply" member="LineInputDevice"/>
       <collection name="Configuration" type="LineInputDeviceConfiguration" member="LineInputDevice"/>
       <collection name="Routing" type="LineInputMessageRouting" member="LineInputDevice"/>
       <collection name="WhiteList" type="LineInputWhiteListEntry" member="LineInputDevice"/>
     </members>
-    <index name="Type" fields="Type"/>
   </class>
   <class name="OilspillDetector" base="Device" displayname="Oil Spill Detector">
     <members>
-      <reference name="Type" type="OilspillDetectorType"/>
       <collection name="OilSpills" type="Oilspill" member="OilSpillDetector"/>
       <collection name="Commands" type="OilspillDetectorCommand" member="OilSpillDetector"/>
       <collection name="CommandReplies" type="OilspillDetectorCommandReply" member="OilSpillDetector"/>
       <collection name="Configuration" type="OilspillDetectorConfiguration" member="OilSpillDetector"/>
     </members>
-    <index name="Type" fields="Type"/>
   </class>
   <class name="Radio" base="Device" shortname="RDI">
     <members>
-      <reference name="Type" type="RadioType"/>
       <collection name="Commands" type="RadioCommand" member="Radio"/>
       <collection name="CommandReplies" type="RadioCommandReply" member="Radio"/>
       <collection name="Configuration" type="RadioConfiguration" member="Radio"/>
     </members>
-    <index name="Type" fields="Type"/>
   </class>
   <class name="Radome" base="Device" description="A Radome device." shortname="RDO">
     <members>
-      <reference name="Type" type="RadomeType"/>
       <reference name="Radar" type="Radar"/>
       <collection name="Commands" type="RadomeCommand" member="Radome"/>
       <collection name="CommandReplies" type="RadomeCommandReply" member="Radome"/>
@@ -1725,7 +1613,6 @@
       <timeseries name="DewPointTimeseries" type="RadomeDewPointTimeseries" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="StatusTimeseries" type="RadomeStatusTimeseries" propertyname="Status" propertytype="UInt32" propertynullable="true" browsable="false"/>
     </members>
-    <index name="Type" fields="Type"/>
     <index name="Radar" fields="Radar"/>
   </class>
   <class name="Tracker" base="Device" abstract="true">
@@ -1736,7 +1623,6 @@
   </class>
   <class name="AisTransceiver" base="Tracker" displayname="AIS Transceiver">
     <members>
-      <reference name="Type" type="AisTransceiverType"/>
       <collection name="Messages" type="AisMessage" member="AisTransceiver" browsable="false"/>
       <collection name="Commands" type="AisTransceiverCommand" member="AisTransceiver" browsable="false"/>
       <collection name="CommandReplies" type="AisTransceiverCommandReply" member="AisTransceiver" browsable="false"/>
@@ -1744,11 +1630,9 @@
       <collection name="ReceivedSentences" type="AisTransceiverRawSentence" member="AisTransceiver" browsable="false"/>
       <collection name="RawMessages" type="AisTransceiverRawMessage" member="AisTransceiver" browsable="false"/>
     </members>
-    <index name="Type" fields="Type"/>
   </class>
   <class name="Radar" base="Tracker">
     <members>
-      <reference name="Type" type="RadarType"/>
       <timeseries name="SaveSettingsTimeseries" type="RadarSaveSettingsTimeseries" propertyname="SaveSettings" propertytype="Boolean" propertynullable="true" browsable="false"/>
       <timeseries name="PowerOnTimeseries" type="RadarPowerOnTimeseries" propertyname="PowerOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
       <timeseries name="TrackingOnTimeseries" type="RadarTrackingTimeseries" propertyname="TrackingOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
@@ -1780,13 +1664,11 @@
       <collection name="Statuses" type="RadarStatus" member="Radar" browsable="false"/>
       <collection name="AlarmStatuses" type="RadarAlarmStatus" member="Radar" browsable="false"/>
     </members>
-    <index name="Type" fields="Type"/>
     <index name="Radome" fields="Radome"/>
     <index name="GNSSDevice" fields="GNSSDevice"/>
   </class>
   <class name="WeatherStation" base="Device">
     <members>
-      <reference name="Type" type="WeatherStationType"/>
       <collection name="Commands" type="WeatherStationCommand" member="WeatherStation"/>
       <collection name="CommandReplies" type="WeatherStationCommandReply" member="WeatherStation"/>
       <collection name="Configuration" type="WeatherStationConfiguration" member="WeatherStation"/>
@@ -1800,7 +1682,6 @@
       <timeseries name="WindSpeedTimeseries" type="WeatherStationWindSpeedTimeseries" propertyname="WindSpeed" propertytype="Double" propertynullable="true" browsable="false"/>
       <reference name="Gyro" type="GyroDevice" browsable="false"/>
     </members>
-    <index name="Type" fields="Type"/>
     <index name="Gyro" fields="Gyro"/>
   </class>
   <class name="Facility" base="Item">

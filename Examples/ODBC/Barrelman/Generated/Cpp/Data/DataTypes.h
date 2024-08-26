@@ -10475,1055 +10475,6 @@ namespace Barrelman::Data
             queueName_ = queueName;
         }
     };
-    class DeviceTypeData : public BaseData<Kind, Guid>
-    {
-    public:
-        using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::DeviceType;
-    private:
-        Int64 rowVersion_ = 0;
-        FixedDBWideString<100> assemblyName_;
-        FixedDBWideString<100> className_;
-        FixedDBWideString<100> proxyAssemblyName_;
-        FixedDBWideString<100> proxyClassName_;
-    public:
-        DeviceTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            destination.Write(rowVersion_);
-            assemblyName_.WriteTo( destination );
-            className_.WriteTo( destination );
-            proxyAssemblyName_.WriteTo( destination );
-            proxyClassName_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            source.Read(rowVersion_);
-            assemblyName_.ReadFrom( source );
-            className_.ReadFrom( source );
-            proxyAssemblyName_.ReadFrom( source );
-            proxyClassName_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<DeviceTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<DeviceTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const DeviceTypeData& >( other );
-                if ( dataObject.rowVersion_ != rowVersion_ )
-                {
-                    return false;
-                }
-                if ( dataObject.assemblyName_ != assemblyName_ )
-                {
-                    return false;
-                }
-                if ( dataObject.className_ != className_ )
-                {
-                    return false;
-                }
-                if ( dataObject.proxyAssemblyName_ != proxyAssemblyName_ )
-                {
-                    return false;
-                }
-                if ( dataObject.proxyClassName_ != proxyClassName_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const FixedDBWideString<100>& AssemblyName( ) const
-        {
-            return assemblyName_;
-        }
-        void SetAssemblyName( const WideString& assemblyName )
-        {
-            assemblyName_ = assemblyName;
-        }
-        const FixedDBWideString<100>& ClassName( ) const
-        {
-            return className_;
-        }
-        void SetClassName( const WideString& className )
-        {
-            className_ = className;
-        }
-        const FixedDBWideString<100>& ProxyAssemblyName( ) const
-        {
-            return proxyAssemblyName_;
-        }
-        void SetProxyAssemblyName( const WideString& proxyAssemblyName )
-        {
-            proxyAssemblyName_ = proxyAssemblyName;
-        }
-        const FixedDBWideString<100>& ProxyClassName( ) const
-        {
-            return proxyClassName_;
-        }
-        void SetProxyClassName( const WideString& proxyClassName )
-        {
-            proxyClassName_ = proxyClassName;
-        }
-    };
-    class AisTransceiverTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::AisTransceiverType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        AisTransceiverTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<AisTransceiverTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const AisTransceiverTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class CameraTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::CameraType;
-    private:
-        FixedDBWideString<127> name_;
-        Data::CameraFeatures cameraFeatures_ = Data::CameraFeatures::None;
-    public:
-        CameraTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-            destination.Write(cameraFeatures_);
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-            source.Read(cameraFeatures_);
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<CameraTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<CameraTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const CameraTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                if ( dataObject.cameraFeatures_ != cameraFeatures_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        Data::CameraFeatures CameraFeatures( ) const
-        {
-            return cameraFeatures_;
-        }
-        void SetCameraFeatures( Data::CameraFeatures cameraFeatures )
-        {
-            cameraFeatures_ = cameraFeatures;
-        }
-    };
-    class GNSSDeviceTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::GNSSDeviceType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        GNSSDeviceTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<GNSSDeviceTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<GNSSDeviceTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const GNSSDeviceTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class GyroDeviceTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::GyroDeviceType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        GyroDeviceTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<GyroDeviceTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<GyroDeviceTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const GyroDeviceTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class LineInputDeviceTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::LineInputDeviceType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        LineInputDeviceTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<LineInputDeviceTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<LineInputDeviceTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const LineInputDeviceTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class OilspillDetectorTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::OilspillDetectorType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        OilspillDetectorTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<OilspillDetectorTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<OilspillDetectorTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const OilspillDetectorTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class RadarTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::RadarType;
-    private:
-        FixedDBWideString<127> name_;
-        DBInt32 pulseShortMinusValue_;
-        FixedDBWideString<50> pulseShortMinusDisplayText_;
-        DBInt32 pulseShortValue_;
-        FixedDBWideString<50> pulseShortDisplayText_;
-        DBInt32 pulseShortPlusValue_;
-        FixedDBWideString<50> pulseShortPlusDisplayText_;
-        DBInt32 pulseMediumMinusValue_;
-        FixedDBWideString<50> pulseMediumMinusDisplayText_;
-        DBInt32 pulseMediumValue_;
-        FixedDBWideString<50> pulseMediumDisplayText_;
-        DBInt32 pulseMediumPlusValue_;
-        FixedDBWideString<50> pulseMediumPlusDisplayText_;
-        DBInt32 pulseLongMinusValue_;
-        FixedDBWideString<50> pulseLongMinusDisplayText_;
-        DBInt32 pulseLongValue_;
-        FixedDBWideString<50> pulseLongDisplayText_;
-        DBInt32 pulseLongPlusValue_;
-        FixedDBWideString<50> pulseLongPlusDisplayText_;
-    public:
-        RadarTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-            pulseShortMinusValue_.WriteTo( destination );
-            pulseShortMinusDisplayText_.WriteTo( destination );
-            pulseShortValue_.WriteTo( destination );
-            pulseShortDisplayText_.WriteTo( destination );
-            pulseShortPlusValue_.WriteTo( destination );
-            pulseShortPlusDisplayText_.WriteTo( destination );
-            pulseMediumMinusValue_.WriteTo( destination );
-            pulseMediumMinusDisplayText_.WriteTo( destination );
-            pulseMediumValue_.WriteTo( destination );
-            pulseMediumDisplayText_.WriteTo( destination );
-            pulseMediumPlusValue_.WriteTo( destination );
-            pulseMediumPlusDisplayText_.WriteTo( destination );
-            pulseLongMinusValue_.WriteTo( destination );
-            pulseLongMinusDisplayText_.WriteTo( destination );
-            pulseLongValue_.WriteTo( destination );
-            pulseLongDisplayText_.WriteTo( destination );
-            pulseLongPlusValue_.WriteTo( destination );
-            pulseLongPlusDisplayText_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-            pulseShortMinusValue_.ReadFrom( source );
-            pulseShortMinusDisplayText_.ReadFrom( source );
-            pulseShortValue_.ReadFrom( source );
-            pulseShortDisplayText_.ReadFrom( source );
-            pulseShortPlusValue_.ReadFrom( source );
-            pulseShortPlusDisplayText_.ReadFrom( source );
-            pulseMediumMinusValue_.ReadFrom( source );
-            pulseMediumMinusDisplayText_.ReadFrom( source );
-            pulseMediumValue_.ReadFrom( source );
-            pulseMediumDisplayText_.ReadFrom( source );
-            pulseMediumPlusValue_.ReadFrom( source );
-            pulseMediumPlusDisplayText_.ReadFrom( source );
-            pulseLongMinusValue_.ReadFrom( source );
-            pulseLongMinusDisplayText_.ReadFrom( source );
-            pulseLongValue_.ReadFrom( source );
-            pulseLongDisplayText_.ReadFrom( source );
-            pulseLongPlusValue_.ReadFrom( source );
-            pulseLongPlusDisplayText_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<RadarTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<RadarTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const RadarTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseShortMinusValue_ != pulseShortMinusValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseShortMinusDisplayText_ != pulseShortMinusDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseShortValue_ != pulseShortValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseShortDisplayText_ != pulseShortDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseShortPlusValue_ != pulseShortPlusValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseShortPlusDisplayText_ != pulseShortPlusDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseMediumMinusValue_ != pulseMediumMinusValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseMediumMinusDisplayText_ != pulseMediumMinusDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseMediumValue_ != pulseMediumValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseMediumDisplayText_ != pulseMediumDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseMediumPlusValue_ != pulseMediumPlusValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseMediumPlusDisplayText_ != pulseMediumPlusDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseLongMinusValue_ != pulseLongMinusValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseLongMinusDisplayText_ != pulseLongMinusDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseLongValue_ != pulseLongValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseLongDisplayText_ != pulseLongDisplayText_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseLongPlusValue_ != pulseLongPlusValue_ )
-                {
-                    return false;
-                }
-                if ( dataObject.pulseLongPlusDisplayText_ != pulseLongPlusDisplayText_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-        const DBInt32& PulseShortMinusValue( ) const
-        {
-            return pulseShortMinusValue_;
-        }
-        void SetPulseShortMinusValue( const DBInt32& pulseShortMinusValue )
-        {
-            pulseShortMinusValue_ = pulseShortMinusValue;
-        }
-        const FixedDBWideString<50>& PulseShortMinusDisplayText( ) const
-        {
-            return pulseShortMinusDisplayText_;
-        }
-        void SetPulseShortMinusDisplayText( const WideString& pulseShortMinusDisplayText )
-        {
-            pulseShortMinusDisplayText_ = pulseShortMinusDisplayText;
-        }
-        const DBInt32& PulseShortValue( ) const
-        {
-            return pulseShortValue_;
-        }
-        void SetPulseShortValue( const DBInt32& pulseShortValue )
-        {
-            pulseShortValue_ = pulseShortValue;
-        }
-        const FixedDBWideString<50>& PulseShortDisplayText( ) const
-        {
-            return pulseShortDisplayText_;
-        }
-        void SetPulseShortDisplayText( const WideString& pulseShortDisplayText )
-        {
-            pulseShortDisplayText_ = pulseShortDisplayText;
-        }
-        const DBInt32& PulseShortPlusValue( ) const
-        {
-            return pulseShortPlusValue_;
-        }
-        void SetPulseShortPlusValue( const DBInt32& pulseShortPlusValue )
-        {
-            pulseShortPlusValue_ = pulseShortPlusValue;
-        }
-        const FixedDBWideString<50>& PulseShortPlusDisplayText( ) const
-        {
-            return pulseShortPlusDisplayText_;
-        }
-        void SetPulseShortPlusDisplayText( const WideString& pulseShortPlusDisplayText )
-        {
-            pulseShortPlusDisplayText_ = pulseShortPlusDisplayText;
-        }
-        const DBInt32& PulseMediumMinusValue( ) const
-        {
-            return pulseMediumMinusValue_;
-        }
-        void SetPulseMediumMinusValue( const DBInt32& pulseMediumMinusValue )
-        {
-            pulseMediumMinusValue_ = pulseMediumMinusValue;
-        }
-        const FixedDBWideString<50>& PulseMediumMinusDisplayText( ) const
-        {
-            return pulseMediumMinusDisplayText_;
-        }
-        void SetPulseMediumMinusDisplayText( const WideString& pulseMediumMinusDisplayText )
-        {
-            pulseMediumMinusDisplayText_ = pulseMediumMinusDisplayText;
-        }
-        const DBInt32& PulseMediumValue( ) const
-        {
-            return pulseMediumValue_;
-        }
-        void SetPulseMediumValue( const DBInt32& pulseMediumValue )
-        {
-            pulseMediumValue_ = pulseMediumValue;
-        }
-        const FixedDBWideString<50>& PulseMediumDisplayText( ) const
-        {
-            return pulseMediumDisplayText_;
-        }
-        void SetPulseMediumDisplayText( const WideString& pulseMediumDisplayText )
-        {
-            pulseMediumDisplayText_ = pulseMediumDisplayText;
-        }
-        const DBInt32& PulseMediumPlusValue( ) const
-        {
-            return pulseMediumPlusValue_;
-        }
-        void SetPulseMediumPlusValue( const DBInt32& pulseMediumPlusValue )
-        {
-            pulseMediumPlusValue_ = pulseMediumPlusValue;
-        }
-        const FixedDBWideString<50>& PulseMediumPlusDisplayText( ) const
-        {
-            return pulseMediumPlusDisplayText_;
-        }
-        void SetPulseMediumPlusDisplayText( const WideString& pulseMediumPlusDisplayText )
-        {
-            pulseMediumPlusDisplayText_ = pulseMediumPlusDisplayText;
-        }
-        const DBInt32& PulseLongMinusValue( ) const
-        {
-            return pulseLongMinusValue_;
-        }
-        void SetPulseLongMinusValue( const DBInt32& pulseLongMinusValue )
-        {
-            pulseLongMinusValue_ = pulseLongMinusValue;
-        }
-        const FixedDBWideString<50>& PulseLongMinusDisplayText( ) const
-        {
-            return pulseLongMinusDisplayText_;
-        }
-        void SetPulseLongMinusDisplayText( const WideString& pulseLongMinusDisplayText )
-        {
-            pulseLongMinusDisplayText_ = pulseLongMinusDisplayText;
-        }
-        const DBInt32& PulseLongValue( ) const
-        {
-            return pulseLongValue_;
-        }
-        void SetPulseLongValue( const DBInt32& pulseLongValue )
-        {
-            pulseLongValue_ = pulseLongValue;
-        }
-        const FixedDBWideString<50>& PulseLongDisplayText( ) const
-        {
-            return pulseLongDisplayText_;
-        }
-        void SetPulseLongDisplayText( const WideString& pulseLongDisplayText )
-        {
-            pulseLongDisplayText_ = pulseLongDisplayText;
-        }
-        const DBInt32& PulseLongPlusValue( ) const
-        {
-            return pulseLongPlusValue_;
-        }
-        void SetPulseLongPlusValue( const DBInt32& pulseLongPlusValue )
-        {
-            pulseLongPlusValue_ = pulseLongPlusValue;
-        }
-        const FixedDBWideString<50>& PulseLongPlusDisplayText( ) const
-        {
-            return pulseLongPlusDisplayText_;
-        }
-        void SetPulseLongPlusDisplayText( const WideString& pulseLongPlusDisplayText )
-        {
-            pulseLongPlusDisplayText_ = pulseLongPlusDisplayText;
-        }
-    };
-    class RadioTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::RadioType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        RadioTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<RadioTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<RadioTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const RadioTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class RadomeTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::RadomeType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        RadomeTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<RadomeTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<RadomeTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const RadomeTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
-    class WeatherStationTypeData : public DeviceTypeData
-    {
-    public:
-        using Base = DeviceTypeData;
-        static constexpr Kind KIND = Kind::WeatherStationType;
-    private:
-        FixedDBWideString<127> name_;
-    public:
-        WeatherStationTypeData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            name_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            name_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<WeatherStationTypeData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationTypeData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const WeatherStationTypeData& >( other );
-                if ( dataObject.name_ != name_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        const FixedDBWideString<127>& Name( ) const
-        {
-            return name_;
-        }
-        void SetName( const WideString& name )
-        {
-            name_ = name;
-        }
-    };
     class DoubleTimeseriesValueData : public BaseData<Kind, Guid>
     {
     public:
@@ -13916,20 +12867,17 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::Camera;
     private:
-        Guid type_;
     public:
         CameraData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -13957,21 +12905,9 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const CameraData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
     };
     class GNSSDeviceData : public DeviceData
@@ -13980,7 +12916,6 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::GNSSDevice;
     private:
-        Guid type_;
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
         Guid altitudeTimeseries_;
@@ -13990,7 +12925,6 @@ namespace Barrelman::Data
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
             destination.Write(latitudeTimeseries_);
             destination.Write(longitudeTimeseries_);
             destination.Write(altitudeTimeseries_);
@@ -13999,7 +12933,6 @@ namespace Barrelman::Data
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
             source.Read(latitudeTimeseries_);
             source.Read(longitudeTimeseries_);
             source.Read(altitudeTimeseries_);
@@ -14030,10 +12963,6 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const GNSSDeviceData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 if ( dataObject.latitudeTimeseries_ != latitudeTimeseries_ )
                 {
                     return false;
@@ -14049,14 +12978,6 @@ namespace Barrelman::Data
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
         const Guid& LatitudeTimeseries( ) const
         {
@@ -14089,7 +13010,6 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::GyroDevice;
     private:
-        Guid type_;
         Guid headingTrueNorthTimeseries_;
         Guid headingMagneticNorthTimeseries_;
         Guid pitchTimeseries_;
@@ -14104,7 +13024,6 @@ namespace Barrelman::Data
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
             destination.Write(headingTrueNorthTimeseries_);
             destination.Write(headingMagneticNorthTimeseries_);
             destination.Write(pitchTimeseries_);
@@ -14118,7 +13037,6 @@ namespace Barrelman::Data
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
             source.Read(headingTrueNorthTimeseries_);
             source.Read(headingMagneticNorthTimeseries_);
             source.Read(pitchTimeseries_);
@@ -14154,10 +13072,6 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const GyroDeviceData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 if ( dataObject.headingTrueNorthTimeseries_ != headingTrueNorthTimeseries_ )
                 {
                     return false;
@@ -14193,14 +13107,6 @@ namespace Barrelman::Data
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
         const Guid& HeadingTrueNorthTimeseries( ) const
         {
@@ -14273,20 +13179,17 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::LineInputDevice;
     private:
-        Guid type_;
     public:
         LineInputDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -14314,21 +13217,9 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const LineInputDeviceData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
     };
     class OilspillDetectorData : public DeviceData
@@ -14337,20 +13228,17 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::OilspillDetector;
     private:
-        Guid type_;
     public:
         OilspillDetectorData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -14378,21 +13266,9 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const OilspillDetectorData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
     };
     class RadioData : public DeviceData
@@ -14401,20 +13277,17 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::Radio;
     private:
-        Guid type_;
     public:
         RadioData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -14442,21 +13315,9 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const RadioData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
     };
     class RadomeData : public DeviceData
@@ -14465,7 +13326,6 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::Radome;
     private:
-        Guid type_;
         Guid radar_;
         Guid pressureTimeseries_;
         Guid temperatureTimeseries_;
@@ -14477,7 +13337,6 @@ namespace Barrelman::Data
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
             destination.Write(radar_);
             destination.Write(pressureTimeseries_);
             destination.Write(temperatureTimeseries_);
@@ -14488,7 +13347,6 @@ namespace Barrelman::Data
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
             source.Read(radar_);
             source.Read(pressureTimeseries_);
             source.Read(temperatureTimeseries_);
@@ -14521,10 +13379,6 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const RadomeData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -14548,14 +13402,6 @@ namespace Barrelman::Data
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
         const Guid& Radar( ) const
         {
@@ -14653,20 +13499,17 @@ namespace Barrelman::Data
         using Base = TrackerData;
         static constexpr Kind KIND = Kind::AisTransceiver;
     private:
-        Guid type_;
     public:
         AisTransceiverData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -14694,21 +13537,9 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const AisTransceiverData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
     };
     class RadarData : public TrackerData
@@ -14717,7 +13548,6 @@ namespace Barrelman::Data
         using Base = TrackerData;
         static constexpr Kind KIND = Kind::Radar;
     private:
-        Guid type_;
         Guid saveSettingsTimeseries_;
         Guid powerOnTimeseries_;
         Guid trackingOnTimeseries_;
@@ -14747,7 +13577,6 @@ namespace Barrelman::Data
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
             destination.Write(saveSettingsTimeseries_);
             destination.Write(powerOnTimeseries_);
             destination.Write(trackingOnTimeseries_);
@@ -14776,7 +13605,6 @@ namespace Barrelman::Data
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
             source.Read(saveSettingsTimeseries_);
             source.Read(powerOnTimeseries_);
             source.Read(trackingOnTimeseries_);
@@ -14827,10 +13655,6 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const RadarData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 if ( dataObject.saveSettingsTimeseries_ != saveSettingsTimeseries_ )
                 {
                     return false;
@@ -14926,14 +13750,6 @@ namespace Barrelman::Data
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
         const Guid& SaveSettingsTimeseries( ) const
         {
@@ -15126,7 +13942,6 @@ namespace Barrelman::Data
         using Base = DeviceData;
         static constexpr Kind KIND = Kind::WeatherStation;
     private:
-        Guid type_;
         Guid barometricPressureTimeseries_;
         Guid airTemperatureTimeseries_;
         Guid waterTemperatureTimeseries_;
@@ -15142,7 +13957,6 @@ namespace Barrelman::Data
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(type_);
             destination.Write(barometricPressureTimeseries_);
             destination.Write(airTemperatureTimeseries_);
             destination.Write(waterTemperatureTimeseries_);
@@ -15157,7 +13971,6 @@ namespace Barrelman::Data
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(type_);
             source.Read(barometricPressureTimeseries_);
             source.Read(airTemperatureTimeseries_);
             source.Read(waterTemperatureTimeseries_);
@@ -15194,10 +14007,6 @@ namespace Barrelman::Data
             if ( Base::IsEqualTo( other ) )
             {
                 const auto& dataObject = static_cast< const WeatherStationData& >( other );
-                if ( dataObject.type_ != type_ )
-                {
-                    return false;
-                }
                 if ( dataObject.barometricPressureTimeseries_ != barometricPressureTimeseries_ )
                 {
                     return false;
@@ -15237,14 +14046,6 @@ namespace Barrelman::Data
                 return true;
             }
             return false;
-        }
-        const Guid& Type( ) const
-        {
-            return type_;
-        }
-        void SetType( const Guid& type )
-        {
-            type_ = type;
         }
         const Guid& BarometricPressureTimeseries( ) const
         {
