@@ -28,6 +28,9 @@
     <Filter Include="Generated\Database\MsSql">
       <UniqueIdentifier>{2e2f6732-330a-42c4-b46a-ad5fc47c4455}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated\Cpp\Database">
+      <UniqueIdentifier>{406d8bb0-51f2-4ae0-acf3-e739ed0f9ac1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -42,6 +45,9 @@
     <ClInclude Include="Generated\Cpp\Data\Enums.h">
       <Filter>Generated\Cpp\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h">
+      <Filter>Generated\Cpp\Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -52,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="Generated\Cpp\Data\DataTypes.cpp">
       <Filter>Generated\Cpp\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp">
+      <Filter>Generated\Cpp\Database</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

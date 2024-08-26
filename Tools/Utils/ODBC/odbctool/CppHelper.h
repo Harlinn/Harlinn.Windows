@@ -26,7 +26,7 @@ namespace Harlinn::ODBC::Tool
     {
     public:
         static WideString GetHeaderGuard( const WideString& filename );
-        static WideString GetNamespace( const ModelInfo& model, const WideString& filename );
+        
         static WideString GetBaseType( const MemberInfo& member );
         static WideString GetDefaultValue( const MemberInfo& member );
         static WideString GetInputArgumentType( const MemberInfo& member );

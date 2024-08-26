@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<options model="Model.xml">
+  <database outdir="%HCC_HOME%\Examples\ODBC\Barrelman\Generated\Database">
+    
+  </database>
+  <cpp outdir="%HCC_HOME%\Examples\ODBC\Barrelman\Generated\Cpp" namespace="Barrelman">
+    
+  </cpp>
+  <csharp outdir="%HCC_HOME%\DotNet\Examples\Barrelman\Barrelman.Data" namespace="Barrelman.Data">
+    
+  </csharp>
+</options>

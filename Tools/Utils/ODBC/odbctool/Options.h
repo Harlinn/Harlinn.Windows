@@ -26,6 +26,9 @@ namespace Harlinn::ODBC::Tool
     class DatabaseOptions;
     class CppDatabaseOptions;
     class CppOptions;
+    class CSharpDataOptions;
+    class CSharpDatabaseOptions;
+    class CSharpOptions;
     class Options;
 
     
@@ -42,6 +45,19 @@ namespace Harlinn::ODBC::Tool
         {
             return owner.OutputDirectory( );
         }
+
+        template<typename OwnerT>
+        WideString GetNamespace( const WideString& separator, const OwnerT& owner, const WideString& namespaceName )
+        {
+            return Format( L"{}{}{}", owner.Namespace( separator ), separator, namespaceName );
+        }
+
+        template<typename OwnerT>
+        WideString GetNamespace( const WideString& separator, const OwnerT& owner )
+        {
+            return owner.Namespace( separator );
+        }
+
     }
 
     template<typename OwnerT>
@@ -52,10 +68,16 @@ namespace Harlinn::ODBC::Tool
     private:
         const OwnerType& owner_;
         WideString outputDirectory_;
+        WideString namespace_;
     public:
         OptionsContainer( const OwnerType& owner, const WideString& outputDirectory )
             : owner_( owner ), outputDirectory_( outputDirectory )
         { }
+
+        OptionsContainer( const OwnerType& owner, const WideString& outputDirectory, const WideString& namespaceName )
+            : owner_( owner ), outputDirectory_( outputDirectory ), namespace_( namespaceName )
+        {
+        }
 
         const OwnerType& Owner( ) const
         {
@@ -65,6 +87,18 @@ namespace Harlinn::ODBC::Tool
         WideString OutputDirectory( ) const
         {
             return Internal::GetOutputDirectory( owner_, outputDirectory_ );
+        }
+
+        WideString Namespace( const WideString& separator ) const
+        {
+            if ( namespace_ )
+            {
+                return Internal::GetNamespace( separator, owner_, namespace_ );
+            }
+            else
+            {
+                return Internal::GetNamespace( separator, owner_, outputDirectory_ );
+            }
         }
 
     };
@@ -77,9 +111,15 @@ namespace Harlinn::ODBC::Tool
     private:
         const OwnerType& owner_;
         WideString filename_;
+        WideString namespace_;
     public:
         OptionsFile( const OwnerType& owner, const WideString& outputDirectory )
             : owner_( owner ), filename_( outputDirectory )
+        {
+        }
+
+        OptionsFile( const OwnerType& owner, const WideString& outputDirectory, const WideString& namespaceName )
+            : owner_( owner ), filename_( outputDirectory ), namespace_( namespaceName )
         {
         }
 
@@ -97,6 +137,19 @@ namespace Harlinn::ODBC::Tool
         {
             return IO::Path::Combine( OutputDirectory( ), filename_ );
         }
+
+        WideString Namespace( const WideString& separator ) const
+        {
+            if ( namespace_ )
+            {
+                return Internal::GetNamespace( separator, owner_, namespace_ );
+            }
+            else
+            {
+                return Internal::GetNamespace( separator, owner_ );
+            }
+        }
+
     };
 
 
@@ -191,19 +244,38 @@ namespace Harlinn::ODBC::Tool
 
 
     
-    class DatabaseOptions : public OptionsContainer<Options>
+    class DatabaseOptions
     {
+        const Options& owner_;
+        WideString outputDirectory_ = L"%HCC_HOME%\\Examples\\ODBC\\Barrelman\\Generated\\Database";
         SqlServerOptions sqlServer_;
     public:
-        using Base = OptionsContainer<Options>;
+        
         DatabaseOptions( const Options& owner )
-            : Base(owner, L"Database" ), sqlServer_(*this)
+            : owner_( owner ),sqlServer_(*this)
         { }
+
+        const Options& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Harlinn::Common::Core::Environment::Expand( outputDirectory_ );
+        }
+
+        WideString Namespace( const WideString& separator ) const
+        {
+            return {};
+        }
 
         const SqlServerOptions& SqlServer( ) const
         {
             return sqlServer_;
         }
+
+        void Load( const XmlElement& element );
 
     };
 
@@ -277,15 +349,33 @@ namespace Harlinn::ODBC::Tool
     };
 
 
-    class CppOptions : public OptionsContainer<Options>
+    class CppOptions 
     {
+        const Options& owner_;
+        WideString outputDirectory_ = L"%HCC_HOME%\\Examples\\ODBC\\Barrelman\\Generated\\Cpp";
+        WideString namespace_ = L"Barrelman";
         CppDataOptions data_;
         CppDatabaseOptions database_;
     public:
         using Base = OptionsContainer<Options>;
         CppOptions( const Options& owner )
-            : Base( owner, L"Cpp" ), data_(*this), database_(*this)
+            : owner_( owner ), data_(*this), database_(*this)
         { }
+
+        const Options& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Harlinn::Common::Core::Environment::Expand( outputDirectory_ );
+        }
+
+        WideString Namespace( const WideString& separator ) const
+        {
+            return namespace_;
+        }
 
         const CppDataOptions& Data( ) const
         {
@@ -295,6 +385,49 @@ namespace Harlinn::ODBC::Tool
         {
             return database_;
         }
+
+        void Load( const XmlElement& element );
+    };
+
+    class CSharpDataOptions : public OptionsContainer<CSharpOptions>
+    {
+    public:
+        using Base = OptionsContainer<CSharpOptions>;
+
+        CSharpDataOptions(const CSharpOptions& owner )
+            : Base( owner, L"Data" )
+        { }
+    };
+
+
+    class CSharpOptions
+    {
+        const Options& owner_;
+        WideString outputDirectory_ = L"%HCC_HOME%\\DotNet\\Examples\\Barrelman\\Barrelman.Data";
+        WideString namespace_ = L"Barrelman";
+    public:
+        CSharpOptions( const Options& owner )
+            : owner_( owner )
+        {
+        }
+
+        const Options& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Harlinn::Common::Core::Environment::Expand( outputDirectory_ );
+        }
+
+        WideString Namespace( const WideString& separator ) const
+        {
+            return namespace_;
+        }
+
+        void Load( const XmlElement& element );
+
     };
 
     
@@ -302,17 +435,18 @@ namespace Harlinn::ODBC::Tool
 
     class Options
     {
-        WideString outputDirectory_ = L"%HCC_HOME%\\Examples\\ODBC\\Barrelman\\Generated";
+        WideString modelFilename_;
         DatabaseOptions database_;
         CppOptions cpp_;
+        CSharpOptions csharp_;
     public:
         Options()
-            : database_(*this), cpp_(*this)
+            : database_(*this), cpp_(*this), csharp_(*this)
         { }
 
-        WideString OutputDirectory( ) const
+        const WideString& ModelFilename( ) const
         {
-            return Harlinn::Common::Core::Environment::Expand( outputDirectory_ );
+            return modelFilename_;
         }
 
         const Tool::DatabaseOptions& Database( ) const
@@ -324,6 +458,14 @@ namespace Harlinn::ODBC::Tool
         {
             return cpp_;
         }
+
+        const CSharpOptions& CSharp( ) const
+        {
+            return csharp_;
+        }
+
+        void Load( const XmlElement& element );
+        static std::unique_ptr<Options> LoadFromFile( const WideString& optionsFilename );
 
 
     };

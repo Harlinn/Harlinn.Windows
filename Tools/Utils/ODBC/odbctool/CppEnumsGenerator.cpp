@@ -26,7 +26,7 @@ namespace Harlinn::ODBC::Tool
         const auto& enumMap = model.Enums( );
 
         auto headerGuard = CppHelper::GetHeaderGuard( Filename( ) );
-        auto nspace = CppHelper::GetNamespace( model, Filename( ) );
+        auto nspace = Options().Namespace( L"::" );
         WriteLine( L"#pragma once" );
         WriteLine( L"#ifndef {}", headerGuard );
         WriteLine( L"#define {}", headerGuard );

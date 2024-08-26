@@ -248,16 +248,16 @@ namespace Harlinn::ODBC::Tool
 
         void Run( );
     private:
-        void CreateBaseClass( );
+        //void CreateBaseClass( );
         void CreateDataType( const ClassInfo& classInfo );
-        void CreateColumnDataType( const ClassInfo& classInfo );
-        void CreateFieldNames( const ClassInfo& classInfo );
-        void CreateFieldIds( const ClassInfo& classInfo );
-        void CreateBindColumns( const ClassInfo& classInfo );
-        void CreateReadUnboundData( const ClassInfo& classInfo );
+        //void CreateColumnDataType( const ClassInfo& classInfo );
+        //void CreateFieldNames( const ClassInfo& classInfo );
+        //void CreateFieldIds( const ClassInfo& classInfo );
+        //void CreateBindColumns( const ClassInfo& classInfo );
+        //void CreateReadUnboundData( const ClassInfo& classInfo );
         void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
-        void CreateWriteColumns( const ClassInfo& classInfo );
+        //void CreateWriteColumns( const ClassInfo& classInfo );
         
     };
 
@@ -290,18 +290,44 @@ namespace Harlinn::ODBC::Tool
 
     }
 
+    class CppDatabaseReadersGenerator : public CodeGenerator<CppDatabaseGenerator, CppDatabaseReadersOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDatabaseGenerator, CppDatabaseReadersOptions>;
+        CppDatabaseReadersGenerator( const CppDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateBaseClass( );
+        void CreateColumnDataType( const ClassInfo& classInfo );
+        void CreateFieldNames( const ClassInfo& classInfo );
+        void CreateFieldIds( const ClassInfo& classInfo );
+        void CreateBindColumns( const ClassInfo& classInfo );
+        void CreateReadUnboundData( const ClassInfo& classInfo );
+        void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateWriteColumns( const ClassInfo& classInfo );
+    };
+
 
     class CppDatabaseGenerator : public GeneratorContainer<CppGenerator, CppDatabaseOptions>
     {
+        CppDatabaseReadersGenerator databaseReaders_;
     public:
         using Base = GeneratorContainer<CppGenerator, CppDatabaseOptions>;
         CppDatabaseGenerator( const CppGenerator& owner );
 
         void Run( )
         {
-
+            databaseReaders_.Run( );
         }
     };
+
+    inline CppDatabaseReadersGenerator::CppDatabaseReadersGenerator( const CppDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).DatabaseReaders( ) )
+    {
+
+    }
 
 
     class CppGenerator : public GeneratorContainer<Generator, CppOptions>
@@ -335,7 +361,7 @@ namespace Harlinn::ODBC::Tool
     { }
 
     inline CppDatabaseGenerator::CppDatabaseGenerator( const CppGenerator& owner )
-        : Base( owner, owner.Options( ).Database( ) )
+        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this)
     { }
 
 

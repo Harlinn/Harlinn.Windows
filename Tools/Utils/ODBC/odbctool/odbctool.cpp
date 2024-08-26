@@ -17,16 +17,28 @@
 #include "odbctool.h"
 
 
-int main()
+int main(int argc, char* argv[] )
 {
-    using namespace Harlinn::ODBC::Tool;
-    Harlinn::Common::Core::ComInitialize comInitializer;
-    //auto modelInfo = ModelInfo::LoadFromFile( L"TestModel.xml" );
-    auto modelInfo = ModelInfo::LoadFromFile( L"Model.xml" );
-    Options options;
-    Generator generator( options, *modelInfo );
-    generator.Run( );
+    if ( argc > 1 )
+    {
+        using namespace Harlinn::Common::Core;
+        using namespace Harlinn::ODBC::Tool;
 
+        ComInitialize comInitializer;
+        
+        
+        auto optionsFilename = WideString::From( argv[1] );
+        if ( IO::File::Exist( optionsFilename ) )
+        {
+            auto options = Options::LoadFromFile( optionsFilename );
+
+            auto modelInfo = ModelInfo::LoadFromFile( options->ModelFilename() );
+
+            Generator generator( *options, *modelInfo );
+            generator.Run( );
+        }
+
+    }
 
     
 }

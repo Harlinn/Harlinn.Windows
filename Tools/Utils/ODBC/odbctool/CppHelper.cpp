@@ -46,32 +46,6 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
-    WideString CppHelper::GetNamespace( const ModelInfo& model, const WideString& filename )
-    {
-        auto name = model.Name( ).FirstToUpper();
-        IO::SplitPath<WideString> splitPath( filename );
-
-        auto directory = splitPath.Directory( );
-        if ( directory )
-        {
-            directory.SetLength( directory.Length( ) - 1 );
-        }
-        auto index = directory.LastIndexOf( L'\\' );
-        if ( index == WideString::npos )
-        {
-            index = directory.LastIndexOf( L'/' );
-        }
-        if ( index == WideString::npos )
-        {
-            return name;
-        }
-        else
-        {
-            directory = directory.SubString( index + 1 ).FirstToUpper( );
-            return Format( L"{}::{}", name, directory );
-        }
-    }
-
 
     WideString CppHelper::GetBaseType( const MemberInfo& member )
     {

@@ -75,6 +75,12 @@
     <ClCompile Include="SqlServerHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Options.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CppDatabaseReadersGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Options.h">
@@ -114,5 +120,6 @@
   <ItemGroup>
     <Xml Include="TestModel.xml" />
     <Xml Include="Model.xml" />
+    <Xml Include="options.xml" />
   </ItemGroup>
 </Project>

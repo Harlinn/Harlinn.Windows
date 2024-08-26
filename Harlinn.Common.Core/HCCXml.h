@@ -1690,14 +1690,28 @@ namespace Harlinn::Common::Core::Xml
                 requires std::is_same_v<T,Element>
             T Read( const wchar_t* tagName ) const
             {
-                return FindElement( tagName );
+                auto childNodes = ChildNodes( );
+                for ( const auto& childNode : childNodes )
+                {
+                    auto nodeType = childNode.NodeType( );
+                    if ( nodeType == Dom::NodeType::Element )
+                    {
+                        auto element = childNode.As<Element>( );
+                        auto elementTagName = element.TagName( );
+                        if ( elementTagName == tagName )
+                        {
+                            return element;
+                        }
+                    }
+                }
+                return {};
             }
 
             template<typename T, SimpleWideStringLike StringT>
                 requires std::is_same_v<T, Element>
             T Read( const StringT& tagName ) const
             {
-                return FindElement( tagName );
+                return Read<Element>( tagName.c_str() );
             }
 
         };
