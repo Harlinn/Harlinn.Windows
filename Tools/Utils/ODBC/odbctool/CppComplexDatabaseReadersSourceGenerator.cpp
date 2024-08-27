@@ -26,7 +26,6 @@ namespace Harlinn::ODBC::Tool
         const auto& classes = model.Classes( );
         auto classCount = classes.size( );
 
-        auto headerGuard = CppHelper::GetHeaderGuard( Filename( ) );
         auto nspace = Options( ).Namespace( L"::" );
         WriteLine( L"#include \"pch.h\"" );
         WriteLine( );

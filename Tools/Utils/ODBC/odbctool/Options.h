@@ -375,15 +375,27 @@ namespace Harlinn::ODBC::Tool
         }
     };
 
+    class CppDataTypesSourceOptions : public OptionsFile<CppDataOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDataOptions>;
+        CppDataTypesSourceOptions( const CppDataOptions& owner )
+            : Base( owner, L"DataTypes.cpp" )
+        {
+        }
+    };
+
+
     class CppOptions;
     class CppDataOptions : public OptionsContainer<CppOptions>
     {
         CppEnumsOptions enums_;
         CppDataTypesOptions dataTypes_;
+        CppDataTypesSourceOptions dataTypesSource_;
     public:
         using Base = OptionsContainer<CppOptions>;
         CppDataOptions( const CppOptions& owner )
-            : Base( owner, L"Data" ), enums_(*this), dataTypes_(*this)
+            : Base( owner, L"Data" ), enums_(*this), dataTypes_(*this), dataTypesSource_( *this )
         { }
 
         const CppEnumsOptions& Enums( ) const
@@ -393,6 +405,11 @@ namespace Harlinn::ODBC::Tool
         const CppDataTypesOptions& DataTypes( ) const
         {
             return dataTypes_;
+        }
+
+        const CppDataTypesSourceOptions& DataTypesSource( ) const
+        {
+            return dataTypesSource_;
         }
 
     };

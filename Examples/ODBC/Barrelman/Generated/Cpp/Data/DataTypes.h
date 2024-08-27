@@ -17,6 +17,8 @@ namespace Barrelman::Data
         requires std::is_enum_v<ObjectT>
     using BaseData = Harlinn::Common::Core::Data::BaseData<ObjectT, KeyT>;
 
+    BARRELMAN_EXPORT std::shared_ptr<BaseData<Kind, Guid>> DataFactory( Kind kind );
+
     class AircraftTypeData : public BaseData<Kind, Guid>
     {
     public:

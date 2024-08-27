@@ -248,17 +248,20 @@ namespace Harlinn::ODBC::Tool
 
         void Run( );
     private:
-        //void CreateBaseClass( );
         void CreateDataType( const ClassInfo& classInfo );
-        //void CreateColumnDataType( const ClassInfo& classInfo );
-        //void CreateFieldNames( const ClassInfo& classInfo );
-        //void CreateFieldIds( const ClassInfo& classInfo );
-        //void CreateBindColumns( const ClassInfo& classInfo );
-        //void CreateReadUnboundData( const ClassInfo& classInfo );
         void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
-        //void CreateWriteColumns( const ClassInfo& classInfo );
-        
+    };
+
+    class CppDataTypesSourceGenerator : public CodeGenerator<CppDataGenerator, CppDataTypesSourceOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDataGenerator, CppDataTypesSourceOptions>;
+        CppDataTypesSourceGenerator( const CppDataGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateDataTypeFactory( );
     };
 
 
@@ -267,6 +270,7 @@ namespace Harlinn::ODBC::Tool
     {
         CppEnumsGenerator enums_;
         CppDataTypesGenerator dataTypes_;
+        CppDataTypesSourceGenerator dataTypesSource_;
     public:
         using Base = GeneratorContainer<CppGenerator, CppDataOptions>;
         CppDataGenerator( const CppGenerator& owner );
@@ -275,6 +279,7 @@ namespace Harlinn::ODBC::Tool
         {
             enums_.Run( );
             dataTypes_.Run( );
+            dataTypesSource_.Run( );
         }
     };
 
@@ -286,6 +291,12 @@ namespace Harlinn::ODBC::Tool
 
     inline CppDataTypesGenerator::CppDataTypesGenerator( const CppDataGenerator& owner )
         : Base( owner, owner.Options( ).DataTypes( ) )
+    {
+
+    }
+
+    inline CppDataTypesSourceGenerator::CppDataTypesSourceGenerator( const CppDataGenerator& owner )
+        : Base( owner, owner.Options( ).DataTypesSource( ) )
     {
 
     }
@@ -307,6 +318,7 @@ namespace Harlinn::ODBC::Tool
         void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateWriteColumns( const ClassInfo& classInfo );
+        void CreateAssignTo( const ClassInfo& classInfo );
     };
 
 
@@ -323,8 +335,8 @@ namespace Harlinn::ODBC::Tool
         void CreateFieldIds( const ClassInfo& classInfo );
         void CreateBindColumns( const ClassInfo& classInfo );
         void CreateReadUnboundData( const ClassInfo& classInfo );
-        void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member, bool longName = false );
-        void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member, bool longName = false );
+        void CreateAccessors( const ClassInfo& classInfo );
+        
         void CreateWriteColumns( const ClassInfo& classInfo );
     };
 
@@ -407,7 +419,7 @@ namespace Harlinn::ODBC::Tool
 
 
     inline CppDataGenerator::CppDataGenerator( const CppGenerator& owner )
-        : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this)
+        : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this), dataTypesSource_( *this )
     { }
 
     inline CppDatabaseGenerator::CppDatabaseGenerator( const CppGenerator& owner )

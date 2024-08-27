@@ -127,6 +127,7 @@ namespace Harlinn::ODBC::Tool
 
         CreateBindColumns( classInfo );
         CreateReadUnboundData( classInfo );
+        CreateAccessors( classInfo );
 
         /*
         
@@ -225,37 +226,49 @@ namespace Harlinn::ODBC::Tool
 
 
 
-    void CppComplexDatabaseReadersGenerator::CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member, bool longName )
+    void CppComplexDatabaseReadersGenerator::CreateAccessors( const ClassInfo& classInfo )
     {
-        auto memberInfoType = member.Type( );
-        auto fieldName = CppHelper::GetMemberFieldName( member );
-        auto accessorName = CppHelper::GetMemberAccessorName( member );
-        auto returnType = CppHelper::GetMemberAccessorReturnType( member );
-        WriteLine( L"        {} {}( ) const", returnType, accessorName );
-        WriteLine( L"        {" );
-        WriteLine( L"            return {};", fieldName );
-        WriteLine( L"        }" );
-    }
-    void CppComplexDatabaseReadersGenerator::CreateSetter( const ClassInfo& classInfo, const MemberInfo& member, bool longName )
-    {
-        auto memberInfoType = member.Type( );
-        auto fieldName = CppHelper::GetMemberFieldName( member );
-        auto setterName = CppHelper::GetMemberSetterName( member );
-        auto argumentName = CppHelper::GetInputArgumentName( member );
-        auto argumentType = CppHelper::GetInputArgumentType( member );
-
-        if ( memberInfoType == MemberInfoType::RowVersion )
+        const auto& viewMembers = classInfo.ViewMembers( );
+        for ( const auto& member : viewMembers )
         {
-            argumentType = L"const Int64&";
+            auto memberType = member->Type( );
+            auto typeName = CppHelper::GetMemberFieldType( *member );
+            auto fieldName = CppHelper::GetMemberFieldName( *member );
+            auto returnType = typeName;
+            if ( memberType > MemberInfoType::Double && memberType != MemberInfoType::RowVersion )
+            {
+                returnType = Format( L"const {}&", typeName );
+            }
+            auto accessorName = CppHelper::GetMemberAccessorName( *member );
+            WriteLine( L"        {} {}( ) const", returnType, accessorName );
+            WriteLine( L"        {" );
+            WriteLine( L"            return {};", fieldName );
+            WriteLine( L"        }" );
         }
 
-        WriteLine( L"        void {}( {} {} )", setterName, argumentType, argumentName );
-        WriteLine( L"        {" );
-
-        WriteLine( L"            {} = {};", fieldName, argumentName );
-
-        WriteLine( L"        }" );
+        auto derivedClasses = classInfo.AllDerivedClasses( );
+        for ( const auto& derivedClass : derivedClasses )
+        {
+            auto ownPersistentMembers = derivedClass->OwnPersistentMembers( );
+            for ( const auto& member : ownPersistentMembers )
+            {
+                auto memberType = member->Type( );
+                auto typeName = CppHelper::GetMemberNullableFieldType( *member );
+                auto fieldName = CppHelper::GetLongMemberFieldName( *member );
+                auto returnType = typeName;
+                if ( memberType > MemberInfoType::Double && memberType != MemberInfoType::RowVersion )
+                {
+                    returnType = Format( L"const {}&", typeName );
+                }
+                auto accessorName = derivedClass->Name() + CppHelper::GetMemberAccessorName( *member );
+                WriteLine( L"        {} {}( ) const", returnType, accessorName );
+                WriteLine( L"        {" );
+                WriteLine( L"            return {};", fieldName );
+                WriteLine( L"        }" );
+            }
+        }
     }
+    
 
     void CppComplexDatabaseReadersGenerator::CreateWriteColumns( const ClassInfo& classInfo )
     {

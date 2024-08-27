@@ -443,6 +443,826 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& AisTransceiver( ) const
+        {
+            return aisTransceiver_;
+        }
+        const DateTime& ReceivedTimestamp( ) const
+        {
+            return receivedTimestamp_;
+        }
+        Int64 MessageSequenceNumber( ) const
+        {
+            return messageSequenceNumber_;
+        }
+        Int32 Repeat( ) const
+        {
+            return repeat_;
+        }
+        const Guid& Mmsi( ) const
+        {
+            return mmsi_;
+        }
+        DBEnum<Data::NavigationalAidType> AidToNavigationReportMessageNavigationalAidType( ) const
+        {
+            return atnrmNavigationalAidType_;
+        }
+        const FixedDBWideString<100>& AidToNavigationReportMessageName( ) const
+        {
+            return atnrmName_;
+        }
+        DBEnum<Data::PositionAccuracy> AidToNavigationReportMessagePositionAccuracy( ) const
+        {
+            return atnrmPositionAccuracy_;
+        }
+        DBDouble AidToNavigationReportMessageLongitude( ) const
+        {
+            return atnrmLongitude_;
+        }
+        DBDouble AidToNavigationReportMessageLatitude( ) const
+        {
+            return atnrmLatitude_;
+        }
+        DBInt32 AidToNavigationReportMessageDimensionToBow( ) const
+        {
+            return atnrmDimensionToBow_;
+        }
+        DBInt32 AidToNavigationReportMessageDimensionToStern( ) const
+        {
+            return atnrmDimensionToStern_;
+        }
+        DBInt32 AidToNavigationReportMessageDimensionToPort( ) const
+        {
+            return atnrmDimensionToPort_;
+        }
+        DBInt32 AidToNavigationReportMessageDimensionToStarboard( ) const
+        {
+            return atnrmDimensionToStarboard_;
+        }
+        DBEnum<Data::PositionFixType> AidToNavigationReportMessagePositionFixType( ) const
+        {
+            return atnrmPositionFixType_;
+        }
+        DBInt32 AidToNavigationReportMessageTimestamp( ) const
+        {
+            return atnrmTimestamp_;
+        }
+        DBBoolean AidToNavigationReportMessageOffPosition( ) const
+        {
+            return atnrmOffPosition_;
+        }
+        DBInt32 AidToNavigationReportMessageRegionalReserved( ) const
+        {
+            return atnrmRegionalReserved_;
+        }
+        DBEnum<Data::Raim> AidToNavigationReportMessageRaim( ) const
+        {
+            return atnrmRaim_;
+        }
+        DBBoolean AidToNavigationReportMessageVirtualAid( ) const
+        {
+            return atnrmVirtualAid_;
+        }
+        DBBoolean AidToNavigationReportMessageAssigned( ) const
+        {
+            return atnrmAssigned_;
+        }
+        DBInt32 AidToNavigationReportMessageSpare( ) const
+        {
+            return atnrmSpare_;
+        }
+        const FixedDBWideString<100>& AidToNavigationReportMessageNameExtension( ) const
+        {
+            return atnrmNameExtension_;
+        }
+        DBInt32 AisAddressedSafetyRelatedMessageSequenceNumber( ) const
+        {
+            return aasrmSequenceNumber_;
+        }
+        const DBGuid& AisAddressedSafetyRelatedMessageDestinationMmsi( ) const
+        {
+            return aasrmDestinationMmsi_;
+        }
+        DBBoolean AisAddressedSafetyRelatedMessageRetransmitFlag( ) const
+        {
+            return aasrmRetransmitFlag_;
+        }
+        DBInt32 AisAddressedSafetyRelatedMessageSpare( ) const
+        {
+            return aasrmSpare_;
+        }
+        const FixedDBWideString<100>& AisAddressedSafetyRelatedMessageText( ) const
+        {
+            return aasrmText_;
+        }
+        const DBDateTime& AisBaseStationReportMessageTimestamp( ) const
+        {
+            return absrmTimestamp_;
+        }
+        DBEnum<Data::PositionAccuracy> AisBaseStationReportMessagePositionAccuracy( ) const
+        {
+            return absrmPositionAccuracy_;
+        }
+        DBDouble AisBaseStationReportMessageLongitude( ) const
+        {
+            return absrmLongitude_;
+        }
+        DBDouble AisBaseStationReportMessageLatitude( ) const
+        {
+            return absrmLatitude_;
+        }
+        DBEnum<Data::PositionFixType> AisBaseStationReportMessagePositionFixType( ) const
+        {
+            return absrmPositionFixType_;
+        }
+        DBInt32 AisBaseStationReportMessageSpare( ) const
+        {
+            return absrmSpare_;
+        }
+        DBEnum<Data::Raim> AisBaseStationReportMessageRaim( ) const
+        {
+            return absrmRaim_;
+        }
+        DBInt32 AisBaseStationReportMessageRadioStatus( ) const
+        {
+            return absrmRadioStatus_;
+        }
+        DBInt32 AisBinaryAcknowledgeMessageSpare( ) const
+        {
+            return abacSpare_;
+        }
+        DBInt32 AisBinaryAcknowledgeMessageSequenceNumber1( ) const
+        {
+            return abacSequenceNumber1_;
+        }
+        const DBGuid& AisBinaryAcknowledgeMessageMmsi1( ) const
+        {
+            return abacMmsi1_;
+        }
+        DBInt32 AisBinaryAcknowledgeMessageSequenceNumber2( ) const
+        {
+            return abacSequenceNumber2_;
+        }
+        const DBGuid& AisBinaryAcknowledgeMessageMmsi2( ) const
+        {
+            return abacMmsi2_;
+        }
+        DBInt32 AisBinaryAcknowledgeMessageSequenceNumber3( ) const
+        {
+            return abacSequenceNumber3_;
+        }
+        const DBGuid& AisBinaryAcknowledgeMessageMmsi3( ) const
+        {
+            return abacMmsi3_;
+        }
+        DBInt32 AisBinaryAcknowledgeMessageSequenceNumber4( ) const
+        {
+            return abacSequenceNumber4_;
+        }
+        const DBGuid& AisBinaryAcknowledgeMessageMmsi4( ) const
+        {
+            return abacMmsi4_;
+        }
+        DBInt32 AisBinaryAddressedMessageSequenceNumber( ) const
+        {
+            return abamSequenceNumber_;
+        }
+        const DBGuid& AisBinaryAddressedMessageDestinationMmsi( ) const
+        {
+            return abamDestinationMmsi_;
+        }
+        DBBoolean AisBinaryAddressedMessageRetransmitFlag( ) const
+        {
+            return abamRetransmitFlag_;
+        }
+        DBInt32 AisBinaryAddressedMessageSpare( ) const
+        {
+            return abamSpare_;
+        }
+        DBInt32 AisBinaryAddressedMessageDesignatedAreaCode( ) const
+        {
+            return abamDesignatedAreaCode_;
+        }
+        DBInt32 AisBinaryAddressedMessageFunctionalId( ) const
+        {
+            return abamFunctionalId_;
+        }
+        const DBWideString& AisBinaryAddressedMessageData( ) const
+        {
+            return abamData_;
+        }
+        DBInt32 AisBinaryBroadcastMessageSpare( ) const
+        {
+            return abbmSpare_;
+        }
+        DBInt32 AisBinaryBroadcastMessageDesignatedAreaCode( ) const
+        {
+            return abbmDesignatedAreaCode_;
+        }
+        DBInt32 AisBinaryBroadcastMessageFunctionalId( ) const
+        {
+            return abbmFunctionalId_;
+        }
+        const DBWideString& AisBinaryBroadcastMessageData( ) const
+        {
+            return abbmData_;
+        }
+        DBInt32 AisDataLinkManagementMessageSpare( ) const
+        {
+            return adlmmSpare_;
+        }
+        DBInt32 AisDataLinkManagementMessageOffset1( ) const
+        {
+            return adlmmOffset1_;
+        }
+        DBInt32 AisDataLinkManagementMessageReservedSlots1( ) const
+        {
+            return adlmmReservedSlots1_;
+        }
+        DBInt32 AisDataLinkManagementMessageTimeout1( ) const
+        {
+            return adlmmTimeout1_;
+        }
+        DBInt32 AisDataLinkManagementMessageIncrement1( ) const
+        {
+            return adlmmIncrement1_;
+        }
+        DBInt32 AisDataLinkManagementMessageOffset2( ) const
+        {
+            return adlmmOffset2_;
+        }
+        DBInt32 AisDataLinkManagementMessageReservedSlots2( ) const
+        {
+            return adlmmReservedSlots2_;
+        }
+        DBInt32 AisDataLinkManagementMessageTimeout2( ) const
+        {
+            return adlmmTimeout2_;
+        }
+        DBInt32 AisDataLinkManagementMessageIncrement2( ) const
+        {
+            return adlmmIncrement2_;
+        }
+        DBInt32 AisDataLinkManagementMessageOffset3( ) const
+        {
+            return adlmmOffset3_;
+        }
+        DBInt32 AisDataLinkManagementMessageReservedSlots3( ) const
+        {
+            return adlmmReservedSlots3_;
+        }
+        DBInt32 AisDataLinkManagementMessageTimeout3( ) const
+        {
+            return adlmmTimeout3_;
+        }
+        DBInt32 AisDataLinkManagementMessageIncrement3( ) const
+        {
+            return adlmmIncrement3_;
+        }
+        DBInt32 AisDataLinkManagementMessageOffset4( ) const
+        {
+            return adlmmOffset4_;
+        }
+        DBInt32 AisDataLinkManagementMessageReservedSlots4( ) const
+        {
+            return adlmmReservedSlots4_;
+        }
+        DBInt32 AisDataLinkManagementMessageTimeout4( ) const
+        {
+            return adlmmTimeout4_;
+        }
+        DBInt32 AisDataLinkManagementMessageIncrement4( ) const
+        {
+            return adlmmIncrement4_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageReserved( ) const
+        {
+            return aecbprmReserved_;
+        }
+        DBDouble AisExtendedClassBCsPositionReportMessageSpeedOverGround( ) const
+        {
+            return aecbprmSpeedOverGround_;
+        }
+        DBEnum<Data::PositionAccuracy> AisExtendedClassBCsPositionReportMessagePositionAccuracy( ) const
+        {
+            return aecbprmPositionAccuracy_;
+        }
+        DBDouble AisExtendedClassBCsPositionReportMessageLongitude( ) const
+        {
+            return aecbprmLongitude_;
+        }
+        DBDouble AisExtendedClassBCsPositionReportMessageLatitude( ) const
+        {
+            return aecbprmLatitude_;
+        }
+        DBDouble AisExtendedClassBCsPositionReportMessageCourseOverGround( ) const
+        {
+            return aecbprmCourseOverGround_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageTrueHeading( ) const
+        {
+            return aecbprmTrueHeading_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageTimestamp( ) const
+        {
+            return aecbprmTimestamp_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageRegionalReserved( ) const
+        {
+            return aecbprmRegionalReserved_;
+        }
+        const DBGuid& AisExtendedClassBCsPositionReportMessageName( ) const
+        {
+            return aecbprmName_;
+        }
+        DBEnum<Data::ShipType> AisExtendedClassBCsPositionReportMessageShipType( ) const
+        {
+            return aecbprmShipType_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageDimensionToBow( ) const
+        {
+            return aecbprmDimensionToBow_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageDimensionToStern( ) const
+        {
+            return aecbprmDimensionToStern_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageDimensionToPort( ) const
+        {
+            return aecbprmDimensionToPort_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageDimensionToStarboard( ) const
+        {
+            return aecbprmDimensionToStarboard_;
+        }
+        DBEnum<Data::PositionFixType> AisExtendedClassBCsPositionReportMessagePositionFixType( ) const
+        {
+            return aecbprmPositionFixType_;
+        }
+        DBEnum<Data::Raim> AisExtendedClassBCsPositionReportMessageRaim( ) const
+        {
+            return aecbprmRaim_;
+        }
+        DBBoolean AisExtendedClassBCsPositionReportMessageDataTerminalReady( ) const
+        {
+            return aecbprmDataTerminalReady_;
+        }
+        DBBoolean AisExtendedClassBCsPositionReportMessageAssigned( ) const
+        {
+            return aecbprmAssigned_;
+        }
+        DBInt32 AisExtendedClassBCsPositionReportMessageSpare( ) const
+        {
+            return aecbprmSpare_;
+        }
+        const DBGuid& AisInterrogationMessageInterrogatedMmsi( ) const
+        {
+            return aimInterrogatedMmsi_;
+        }
+        DBEnum<Data::AisMessageType> AisInterrogationMessageFirstMessageType( ) const
+        {
+            return aimFirstMessageType_;
+        }
+        DBInt32 AisInterrogationMessageFirstSlotOffset( ) const
+        {
+            return aimFirstSlotOffset_;
+        }
+        DBEnum<Data::AisMessageType> AisInterrogationMessageSecondMessageType( ) const
+        {
+            return aimSecondMessageType_;
+        }
+        DBInt32 AisInterrogationMessageSecondSlotOffset( ) const
+        {
+            return aimSecondSlotOffset_;
+        }
+        const DBGuid& AisInterrogationMessageSecondStationInterrogationMmsi( ) const
+        {
+            return aimSecondStationInterrogationMmsi_;
+        }
+        DBEnum<Data::AisMessageType> AisInterrogationMessageSecondStationFirstMessageType( ) const
+        {
+            return aimSecondStationFirstMessageType_;
+        }
+        DBInt32 AisInterrogationMessageSecondStationFirstSlotOffset( ) const
+        {
+            return aimSecondStationFirstSlotOffset_;
+        }
+        DBEnum<Data::NavigationStatus> AisPositionReportClassAMessageBaseNavigationStatus( ) const
+        {
+            return aprcabNavigationStatus_;
+        }
+        DBInt32 AisPositionReportClassAMessageBaseRateOfTurn( ) const
+        {
+            return aprcabRateOfTurn_;
+        }
+        DBDouble AisPositionReportClassAMessageBaseSpeedOverGround( ) const
+        {
+            return aprcabSpeedOverGround_;
+        }
+        DBEnum<Data::PositionAccuracy> AisPositionReportClassAMessageBasePositionAccuracy( ) const
+        {
+            return aprcabPositionAccuracy_;
+        }
+        DBDouble AisPositionReportClassAMessageBaseLongitude( ) const
+        {
+            return aprcabLongitude_;
+        }
+        DBDouble AisPositionReportClassAMessageBaseLatitude( ) const
+        {
+            return aprcabLatitude_;
+        }
+        DBDouble AisPositionReportClassAMessageBaseCourseOverGround( ) const
+        {
+            return aprcabCourseOverGround_;
+        }
+        DBInt32 AisPositionReportClassAMessageBaseTrueHeading( ) const
+        {
+            return aprcabTrueHeading_;
+        }
+        DBInt32 AisPositionReportClassAMessageBaseTimestamp( ) const
+        {
+            return aprcabTimestamp_;
+        }
+        DBEnum<Data::ManeuverIndicator> AisPositionReportClassAMessageBaseManeuverIndicator( ) const
+        {
+            return aprcabManeuverIndicator_;
+        }
+        DBInt32 AisPositionReportClassAMessageBaseSpare( ) const
+        {
+            return aprcabSpare_;
+        }
+        DBEnum<Data::Raim> AisPositionReportClassAMessageBaseRaim( ) const
+        {
+            return aprcabRaim_;
+        }
+        DBInt32 AisPositionReportClassAMessageBaseRadioStatus( ) const
+        {
+            return aprcabRadioStatus_;
+        }
+        DBEnum<Data::PositionAccuracy> AisPositionReportForLongRangeApplicationsMessagePositionAccuracy( ) const
+        {
+            return aprflramPositionAccuracy_;
+        }
+        DBEnum<Data::Raim> AisPositionReportForLongRangeApplicationsMessageRaim( ) const
+        {
+            return aprflramRaim_;
+        }
+        DBEnum<Data::NavigationStatus> AisPositionReportForLongRangeApplicationsMessageNavigationStatus( ) const
+        {
+            return aprflramNavigationStatus_;
+        }
+        DBDouble AisPositionReportForLongRangeApplicationsMessageLongitude( ) const
+        {
+            return aprflramLongitude_;
+        }
+        DBDouble AisPositionReportForLongRangeApplicationsMessageLatitude( ) const
+        {
+            return aprflramLatitude_;
+        }
+        DBDouble AisPositionReportForLongRangeApplicationsMessageSpeedOverGround( ) const
+        {
+            return aprflramSpeedOverGround_;
+        }
+        DBDouble AisPositionReportForLongRangeApplicationsMessageCourseOverGround( ) const
+        {
+            return aprflramCourseOverGround_;
+        }
+        DBEnum<Data::GnssPositionStatus> AisPositionReportForLongRangeApplicationsMessageGnssPositionStatus( ) const
+        {
+            return aprflramGnssPositionStatus_;
+        }
+        DBInt32 AisPositionReportForLongRangeApplicationsMessageSpare( ) const
+        {
+            return aprflramSpare_;
+        }
+        DBInt32 AisSafetyRelatedAcknowledgmentMessageSpare( ) const
+        {
+            return asramSpare_;
+        }
+        DBInt32 AisSafetyRelatedAcknowledgmentMessageSequenceNumber1( ) const
+        {
+            return asramSequenceNumber1_;
+        }
+        const DBGuid& AisSafetyRelatedAcknowledgmentMessageMmsi1( ) const
+        {
+            return asramMmsi1_;
+        }
+        DBInt32 AisSafetyRelatedAcknowledgmentMessageSequenceNumber2( ) const
+        {
+            return asramSequenceNumber2_;
+        }
+        const DBGuid& AisSafetyRelatedAcknowledgmentMessageMmsi2( ) const
+        {
+            return asramMmsi2_;
+        }
+        DBInt32 AisSafetyRelatedAcknowledgmentMessageSequenceNumber3( ) const
+        {
+            return asramSequenceNumber3_;
+        }
+        const DBGuid& AisSafetyRelatedAcknowledgmentMessageMmsi3( ) const
+        {
+            return asramMmsi3_;
+        }
+        DBInt32 AisSafetyRelatedAcknowledgmentMessageSequenceNumber4( ) const
+        {
+            return asramSequenceNumber4_;
+        }
+        const DBGuid& AisSafetyRelatedAcknowledgmentMessageMmsi4( ) const
+        {
+            return asramMmsi4_;
+        }
+        DBInt32 AisStandardClassBCsPositionReportMessageReserved( ) const
+        {
+            return ascbprmReserved_;
+        }
+        DBDouble AisStandardClassBCsPositionReportMessageSpeedOverGround( ) const
+        {
+            return ascbprmSpeedOverGround_;
+        }
+        DBEnum<Data::PositionAccuracy> AisStandardClassBCsPositionReportMessagePositionAccuracy( ) const
+        {
+            return ascbprmPositionAccuracy_;
+        }
+        DBDouble AisStandardClassBCsPositionReportMessageLongitude( ) const
+        {
+            return ascbprmLongitude_;
+        }
+        DBDouble AisStandardClassBCsPositionReportMessageLatitude( ) const
+        {
+            return ascbprmLatitude_;
+        }
+        DBDouble AisStandardClassBCsPositionReportMessageCourseOverGround( ) const
+        {
+            return ascbprmCourseOverGround_;
+        }
+        DBInt32 AisStandardClassBCsPositionReportMessageTrueHeading( ) const
+        {
+            return ascbprmTrueHeading_;
+        }
+        DBInt32 AisStandardClassBCsPositionReportMessageTimestamp( ) const
+        {
+            return ascbprmTimestamp_;
+        }
+        DBInt32 AisStandardClassBCsPositionReportMessageRegionalReserved( ) const
+        {
+            return ascbprmRegionalReserved_;
+        }
+        DBBoolean AisStandardClassBCsPositionReportMessageIsCsUnit( ) const
+        {
+            return ascbprmIsCsUnit_;
+        }
+        DBBoolean AisStandardClassBCsPositionReportMessageHasDisplay( ) const
+        {
+            return ascbprmHasDisplay_;
+        }
+        DBBoolean AisStandardClassBCsPositionReportMessageHasDscCapability( ) const
+        {
+            return ascbprmHasDscCapability_;
+        }
+        DBBoolean AisStandardClassBCsPositionReportMessageBand( ) const
+        {
+            return ascbprmBand_;
+        }
+        DBBoolean AisStandardClassBCsPositionReportMessageCanAcceptMessage22( ) const
+        {
+            return ascbprmCanAcceptMessage22_;
+        }
+        DBBoolean AisStandardClassBCsPositionReportMessageAssigned( ) const
+        {
+            return ascbprmAssigned_;
+        }
+        DBEnum<Data::Raim> AisStandardClassBCsPositionReportMessageRaim( ) const
+        {
+            return ascbprmRaim_;
+        }
+        DBInt32 AisStandardClassBCsPositionReportMessageRadioStatus( ) const
+        {
+            return ascbprmRadioStatus_;
+        }
+        DBInt32 AisStandardSarAircraftPositionReportMessageAltitude( ) const
+        {
+            return assaprmAltitude_;
+        }
+        DBInt32 AisStandardSarAircraftPositionReportMessageSpeedOverGround( ) const
+        {
+            return assaprmSpeedOverGround_;
+        }
+        DBEnum<Data::PositionAccuracy> AisStandardSarAircraftPositionReportMessagePositionAccuracy( ) const
+        {
+            return assaprmPositionAccuracy_;
+        }
+        DBDouble AisStandardSarAircraftPositionReportMessageLongitude( ) const
+        {
+            return assaprmLongitude_;
+        }
+        DBDouble AisStandardSarAircraftPositionReportMessageLatitude( ) const
+        {
+            return assaprmLatitude_;
+        }
+        DBDouble AisStandardSarAircraftPositionReportMessageCourseOverGround( ) const
+        {
+            return assaprmCourseOverGround_;
+        }
+        DBInt32 AisStandardSarAircraftPositionReportMessageTimestamp( ) const
+        {
+            return assaprmTimestamp_;
+        }
+        DBInt32 AisStandardSarAircraftPositionReportMessageReserved( ) const
+        {
+            return assaprmReserved_;
+        }
+        DBBoolean AisStandardSarAircraftPositionReportMessageDataTerminalReady( ) const
+        {
+            return assaprmDataTerminalReady_;
+        }
+        DBInt32 AisStandardSarAircraftPositionReportMessageSpare( ) const
+        {
+            return assaprmSpare_;
+        }
+        DBBoolean AisStandardSarAircraftPositionReportMessageAssigned( ) const
+        {
+            return assaprmAssigned_;
+        }
+        DBEnum<Data::Raim> AisStandardSarAircraftPositionReportMessageRaim( ) const
+        {
+            return assaprmRaim_;
+        }
+        DBInt32 AisStandardSarAircraftPositionReportMessageRadioStatus( ) const
+        {
+            return assaprmRadioStatus_;
+        }
+        DBInt32 AisStaticAndVoyageRelatedDataMessageAisVersion( ) const
+        {
+            return asavrdmAisVersion_;
+        }
+        const DBGuid& AisStaticAndVoyageRelatedDataMessageImoNumber( ) const
+        {
+            return asavrdmImoNumber_;
+        }
+        const DBGuid& AisStaticAndVoyageRelatedDataMessageCallsign( ) const
+        {
+            return asavrdmCallsign_;
+        }
+        const DBGuid& AisStaticAndVoyageRelatedDataMessageShipName( ) const
+        {
+            return asavrdmShipName_;
+        }
+        DBEnum<Data::ShipType> AisStaticAndVoyageRelatedDataMessageShipType( ) const
+        {
+            return asavrdmShipType_;
+        }
+        DBInt32 AisStaticAndVoyageRelatedDataMessageDimensionToBow( ) const
+        {
+            return asavrdmDimensionToBow_;
+        }
+        DBInt32 AisStaticAndVoyageRelatedDataMessageDimensionToStern( ) const
+        {
+            return asavrdmDimensionToStern_;
+        }
+        DBInt32 AisStaticAndVoyageRelatedDataMessageDimensionToPort( ) const
+        {
+            return asavrdmDimensionToPort_;
+        }
+        DBInt32 AisStaticAndVoyageRelatedDataMessageDimensionToStarboard( ) const
+        {
+            return asavrdmDimensionToStarboard_;
+        }
+        DBEnum<Data::PositionFixType> AisStaticAndVoyageRelatedDataMessagePositionFixType( ) const
+        {
+            return asavrdmPositionFixType_;
+        }
+        const DBDateTime& AisStaticAndVoyageRelatedDataMessageEstimatedTimeOfArrival( ) const
+        {
+            return asavrdmEstimatedTimeOfArrival_;
+        }
+        DBDouble AisStaticAndVoyageRelatedDataMessageDraught( ) const
+        {
+            return asavrdmDraught_;
+        }
+        const FixedDBWideString<100>& AisStaticAndVoyageRelatedDataMessageDestination( ) const
+        {
+            return asavrdmDestination_;
+        }
+        DBBoolean AisStaticAndVoyageRelatedDataMessageDataTerminalReady( ) const
+        {
+            return asavrdmDataTerminalReady_;
+        }
+        DBInt32 AisStaticAndVoyageRelatedDataMessageSpare( ) const
+        {
+            return asavrdmSpare_;
+        }
+        DBInt32 AisStaticDataReportMessagePartNumber( ) const
+        {
+            return asdrmPartNumber_;
+        }
+        const DBGuid& AisStaticDataReportPartAMessageShipName( ) const
+        {
+            return asdrpaShipName_;
+        }
+        DBInt32 AisStaticDataReportPartAMessageSpare( ) const
+        {
+            return asdrpaSpare_;
+        }
+        DBEnum<Data::ShipType> AisStaticDataReportPartBMessageShipType( ) const
+        {
+            return asdrpbShipType_;
+        }
+        const FixedDBWideString<100>& AisStaticDataReportPartBMessageVendorId( ) const
+        {
+            return asdrpbVendorId_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageUnitModelCode( ) const
+        {
+            return asdrpbUnitModelCode_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageSerialNumber( ) const
+        {
+            return asdrpbSerialNumber_;
+        }
+        const DBGuid& AisStaticDataReportPartBMessageCallsign( ) const
+        {
+            return asdrpbCallsign_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToBow( ) const
+        {
+            return asdrpbDimensionToBow_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToStern( ) const
+        {
+            return asdrpbDimensionToStern_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToPort( ) const
+        {
+            return asdrpbDimensionToPort_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToStarboard( ) const
+        {
+            return asdrpbDimensionToStarboard_;
+        }
+        const DBGuid& AisStaticDataReportPartBMessageMothershipMmsi( ) const
+        {
+            return asdrpbMothershipMmsi_;
+        }
+        DBEnum<Data::PositionFixType> AisStaticDataReportPartBMessagePositionFixType( ) const
+        {
+            return asdrpbPositionFixType_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageSpare( ) const
+        {
+            return asdrpbSpare_;
+        }
+        DBInt32 AisUtcAndDateInquiryMessageSpare1( ) const
+        {
+            return auadimSpare1_;
+        }
+        DBInt32 AisUtcAndDateInquiryMessageDestinationMmsi( ) const
+        {
+            return auadimDestinationMmsi_;
+        }
+        DBInt32 AisUtcAndDateInquiryMessageSpare2( ) const
+        {
+            return auadimSpare2_;
+        }
+        const DBDateTime& AisUtcAndDateResponseMessageDatetime( ) const
+        {
+            return auadrmDatetime_;
+        }
+        DBEnum<Data::PositionAccuracy> AisUtcAndDateResponseMessagePositionAccuracy( ) const
+        {
+            return auadrmPositionAccuracy_;
+        }
+        DBDouble AisUtcAndDateResponseMessageLongitude( ) const
+        {
+            return auadrmLongitude_;
+        }
+        DBDouble AisUtcAndDateResponseMessageLatitude( ) const
+        {
+            return auadrmLatitude_;
+        }
+        DBEnum<Data::PositionFixType> AisUtcAndDateResponseMessagePositionFixType( ) const
+        {
+            return auadrmPositionFixType_;
+        }
+        DBInt32 AisUtcAndDateResponseMessageSpare( ) const
+        {
+            return auadrmSpare_;
+        }
+        DBEnum<Data::Raim> AisUtcAndDateResponseMessageRaim( ) const
+        {
+            return auadrmRaim_;
+        }
+        DBInt32 AisUtcAndDateResponseMessageRadioStatus( ) const
+        {
+            return auadrmRadioStatus_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -837,6 +1657,86 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& AisTransceiver( ) const
+        {
+            return aisTransceiver_;
+        }
+        const DateTime& ReceivedTimestamp( ) const
+        {
+            return receivedTimestamp_;
+        }
+        Int64 MessageSequenceNumber( ) const
+        {
+            return messageSequenceNumber_;
+        }
+        Int32 Repeat( ) const
+        {
+            return repeat_;
+        }
+        const Guid& Mmsi( ) const
+        {
+            return mmsi_;
+        }
+        Data::NavigationStatus NavigationStatus( ) const
+        {
+            return navigationStatus_;
+        }
+        DBInt32 RateOfTurn( ) const
+        {
+            return rateOfTurn_;
+        }
+        double SpeedOverGround( ) const
+        {
+            return speedOverGround_;
+        }
+        Data::PositionAccuracy PositionAccuracy( ) const
+        {
+            return positionAccuracy_;
+        }
+        double Longitude( ) const
+        {
+            return longitude_;
+        }
+        double Latitude( ) const
+        {
+            return latitude_;
+        }
+        double CourseOverGround( ) const
+        {
+            return courseOverGround_;
+        }
+        DBInt32 TrueHeading( ) const
+        {
+            return trueHeading_;
+        }
+        Int32 Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        Data::ManeuverIndicator ManeuverIndicator( ) const
+        {
+            return maneuverIndicator_;
+        }
+        Int32 Spare( ) const
+        {
+            return spare_;
+        }
+        Data::Raim Raim( ) const
+        {
+            return raim_;
+        }
+        Int32 RadioStatus( ) const
+        {
+            return radioStatus_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -931,6 +1831,94 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& AisTransceiver( ) const
+        {
+            return aisTransceiver_;
+        }
+        const DateTime& ReceivedTimestamp( ) const
+        {
+            return receivedTimestamp_;
+        }
+        Int64 MessageSequenceNumber( ) const
+        {
+            return messageSequenceNumber_;
+        }
+        Int32 Repeat( ) const
+        {
+            return repeat_;
+        }
+        const Guid& Mmsi( ) const
+        {
+            return mmsi_;
+        }
+        Int32 PartNumber( ) const
+        {
+            return partNumber_;
+        }
+        const DBGuid& AisStaticDataReportPartAMessageShipName( ) const
+        {
+            return asdrpaShipName_;
+        }
+        DBInt32 AisStaticDataReportPartAMessageSpare( ) const
+        {
+            return asdrpaSpare_;
+        }
+        DBEnum<Data::ShipType> AisStaticDataReportPartBMessageShipType( ) const
+        {
+            return asdrpbShipType_;
+        }
+        const FixedDBWideString<100>& AisStaticDataReportPartBMessageVendorId( ) const
+        {
+            return asdrpbVendorId_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageUnitModelCode( ) const
+        {
+            return asdrpbUnitModelCode_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageSerialNumber( ) const
+        {
+            return asdrpbSerialNumber_;
+        }
+        const DBGuid& AisStaticDataReportPartBMessageCallsign( ) const
+        {
+            return asdrpbCallsign_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToBow( ) const
+        {
+            return asdrpbDimensionToBow_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToStern( ) const
+        {
+            return asdrpbDimensionToStern_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToPort( ) const
+        {
+            return asdrpbDimensionToPort_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageDimensionToStarboard( ) const
+        {
+            return asdrpbDimensionToStarboard_;
+        }
+        const DBGuid& AisStaticDataReportPartBMessageMothershipMmsi( ) const
+        {
+            return asdrpbMothershipMmsi_;
+        }
+        DBEnum<Data::PositionFixType> AisStaticDataReportPartBMessagePositionFixType( ) const
+        {
+            return asdrpbPositionFixType_;
+        }
+        DBInt32 AisStaticDataReportPartBMessageSpare( ) const
+        {
+            return asdrpbSpare_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1086,6 +2074,190 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Camera( ) const
+        {
+            return camera_;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        {
+            return deviceCommandSourceType_;
+        }
+        const Guid& DeviceCommandSourceId( ) const
+        {
+            return deviceCommandSourceId_;
+        }
+        const Guid& Reply( ) const
+        {
+            return reply_;
+        }
+        DBEnum<Data::CameraPanTiltMode> CameraCommandAbsoluteMovePositionPanTiltMode( ) const
+        {
+            return ccamPositionPanTiltMode_;
+        }
+        DBDouble CameraCommandAbsoluteMovePanAngle( ) const
+        {
+            return ccamPanAngle_;
+        }
+        DBDouble CameraCommandAbsoluteMoveTiltAngle( ) const
+        {
+            return ccamTiltAngle_;
+        }
+        DBEnum<Data::CameraFocalLengthMode> CameraCommandAbsoluteMovePositionFocalLengthMode( ) const
+        {
+            return ccamPositionFocalLengthMode_;
+        }
+        DBDouble CameraCommandAbsoluteMoveFocalLength( ) const
+        {
+            return ccamFocalLength_;
+        }
+        DBEnum<Data::CameraPanTiltMode> CameraCommandAbsoluteMoveSpeedPanTiltMode( ) const
+        {
+            return ccamSpeedPanTiltMode_;
+        }
+        DBDouble CameraCommandAbsoluteMovePanSpeed( ) const
+        {
+            return ccamPanSpeed_;
+        }
+        DBDouble CameraCommandAbsoluteMoveTiltSpeed( ) const
+        {
+            return ccamTiltSpeed_;
+        }
+        DBEnum<Data::CameraFocalLengthMode> CameraCommandAbsoluteMoveSpeedFocalLengthMode( ) const
+        {
+            return ccamSpeedFocalLengthMode_;
+        }
+        DBDouble CameraCommandAbsoluteMoveZoomSpeed( ) const
+        {
+            return ccamZoomSpeed_;
+        }
+        DBDouble CameraCommandAdjustPanTiltZoomX( ) const
+        {
+            return ccaptzX_;
+        }
+        DBDouble CameraCommandAdjustPanTiltZoomY( ) const
+        {
+            return ccaptzY_;
+        }
+        DBDouble CameraCommandAdjustPanTiltZoomZ( ) const
+        {
+            return ccaptzZ_;
+        }
+        DBBoolean CameraCommandContinuousMoveNormalized( ) const
+        {
+            return cccmNormalized_;
+        }
+        DBDouble CameraCommandContinuousMovePanVelocity( ) const
+        {
+            return cccmPanVelocity_;
+        }
+        DBDouble CameraCommandContinuousMoveTiltVelocity( ) const
+        {
+            return cccmTiltVelocity_;
+        }
+        DBDouble CameraCommandContinuousMoveZoomVelocity( ) const
+        {
+            return cccmZoomVelocity_;
+        }
+        const DBTimeSpan& CameraCommandContinuousMoveDuration( ) const
+        {
+            return cccmDuration_;
+        }
+        DBDouble CameraCommandGeoMoveLatitude( ) const
+        {
+            return ccgmLatitude_;
+        }
+        DBDouble CameraCommandGeoMoveLongitude( ) const
+        {
+            return ccgmLongitude_;
+        }
+        DBDouble CameraCommandGeoMoveAltitude( ) const
+        {
+            return ccgmAltitude_;
+        }
+        DBDouble CameraCommandGeoMoveViewportWidth( ) const
+        {
+            return ccgmViewportWidth_;
+        }
+        DBDouble CameraCommandGeoMoveViewportHeight( ) const
+        {
+            return ccgmViewportHeight_;
+        }
+        DBBoolean CameraCommandRelativeMoveNormalized( ) const
+        {
+            return ccrmNormalized_;
+        }
+        DBDouble CameraCommandRelativeMovePanAngle( ) const
+        {
+            return ccrmPanAngle_;
+        }
+        DBDouble CameraCommandRelativeMoveTiltAngle( ) const
+        {
+            return ccrmTiltAngle_;
+        }
+        DBDouble CameraCommandRelativeMoveFocalLength( ) const
+        {
+            return ccrmFocalLength_;
+        }
+        DBDouble CameraCommandRelativeMovePanSpeed( ) const
+        {
+            return ccrmPanSpeed_;
+        }
+        DBDouble CameraCommandRelativeMoveTiltSpeed( ) const
+        {
+            return ccrmTiltSpeed_;
+        }
+        DBDouble CameraCommandRelativeMoveZoomSpeed( ) const
+        {
+            return ccrmZoomSpeed_;
+        }
+        DBBoolean CameraCommandSetAutoFocusEnabled( ) const
+        {
+            return ccsafEnabled_;
+        }
+        DBBoolean CameraCommandSetBlackAndWhiteEnabled( ) const
+        {
+            return ccsbawEnabled_;
+        }
+        const DBGuid& CameraCommandSetFollowedTrackId( ) const
+        {
+            return ccsfTrackId_;
+        }
+        DBEnum<Data::CameraFollowReason> CameraCommandSetFollowedReason( ) const
+        {
+            return ccsfReason_;
+        }
+        DBBoolean CameraCommandSetInfraRedLampEnabled( ) const
+        {
+            return ccsirlEnabled_;
+        }
+        DBBoolean CameraCommandSetWasherEnabled( ) const
+        {
+            return cwaEnabled_;
+        }
+        DBBoolean CameraCommandSetWiperEnabled( ) const
+        {
+            return cwiEnabled_;
+        }
+        DBBoolean CameraCommandStopPanTilt( ) const
+        {
+            return ccsPanTilt_;
+        }
+        DBBoolean CameraCommandStopZoom( ) const
+        {
+            return ccsZoom_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1223,6 +2395,26 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        const DBGuid& ElementElementType( ) const
+        {
+            return eElementType_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1277,6 +2469,30 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const FixedDBWideString<127>& CallsignIdentifier( ) const
+        {
+            return cIdentifier_;
+        }
+        DBInt64 InternationalMaritimeOrganizationNumberIdentifier( ) const
+        {
+            return imonIdentifier_;
+        }
+        DBInt64 MaritimeMobileServiceIdentityIdentifier( ) const
+        {
+            return mmsiIdentifier_;
+        }
+        const FixedDBWideString<100>& NameText( ) const
+        {
+            return nText_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1499,6 +2715,338 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const FixedDBWideString<127>& BaseStationName( ) const
+        {
+            return bsName_;
+        }
+        const DBGuid& BaseStationType( ) const
+        {
+            return bsType_;
+        }
+        const DBGuid& DeviceHost( ) const
+        {
+            return dHost_;
+        }
+        const FixedDBWideString<127>& DeviceName( ) const
+        {
+            return dName_;
+        }
+        const DBWideString& DeviceDescription( ) const
+        {
+            return dDescription_;
+        }
+        const DBGuid& DeviceEnabledTimeseries( ) const
+        {
+            return dEnabledTimeseries_;
+        }
+        const DBGuid& GNSSDeviceLatitudeTimeseries( ) const
+        {
+            return gLatitudeTimeseries_;
+        }
+        const DBGuid& GNSSDeviceLongitudeTimeseries( ) const
+        {
+            return gLongitudeTimeseries_;
+        }
+        const DBGuid& GNSSDeviceAltitudeTimeseries( ) const
+        {
+            return gAltitudeTimeseries_;
+        }
+        const DBGuid& GyroDeviceHeadingTrueNorthTimeseries( ) const
+        {
+            return gdHeadingTrueNorthTimeseries_;
+        }
+        const DBGuid& GyroDeviceHeadingMagneticNorthTimeseries( ) const
+        {
+            return gdHeadingMagneticNorthTimeseries_;
+        }
+        const DBGuid& GyroDevicePitchTimeseries( ) const
+        {
+            return gdPitchTimeseries_;
+        }
+        const DBGuid& GyroDeviceRateOfTurnTimeseries( ) const
+        {
+            return gdRateOfTurnTimeseries_;
+        }
+        const DBGuid& GyroDeviceRollTimeseries( ) const
+        {
+            return gdRollTimeseries_;
+        }
+        const DBGuid& GyroDeviceCourseTimeseries( ) const
+        {
+            return gdCourseTimeseries_;
+        }
+        const DBGuid& GyroDeviceSpeedTimeseries( ) const
+        {
+            return gdSpeedTimeseries_;
+        }
+        const DBGuid& GyroDeviceGNSSDevice( ) const
+        {
+            return gdGNSSDevice_;
+        }
+        const DBGuid& RadomeRadar( ) const
+        {
+            return rdoRadar_;
+        }
+        const DBGuid& RadomePressureTimeseries( ) const
+        {
+            return rdoPressureTimeseries_;
+        }
+        const DBGuid& RadomeTemperatureTimeseries( ) const
+        {
+            return rdoTemperatureTimeseries_;
+        }
+        const DBGuid& RadomeDewPointTimeseries( ) const
+        {
+            return rdoDewPointTimeseries_;
+        }
+        const DBGuid& RadomeStatusTimeseries( ) const
+        {
+            return rdoStatusTimeseries_;
+        }
+        const DBGuid& RadarSaveSettingsTimeseries( ) const
+        {
+            return rSaveSettingsTimeseries_;
+        }
+        const DBGuid& RadarPowerOnTimeseries( ) const
+        {
+            return rPowerOnTimeseries_;
+        }
+        const DBGuid& RadarTrackingOnTimeseries( ) const
+        {
+            return rTrackingOnTimeseries_;
+        }
+        const DBGuid& RadarRadarPulseTimeseries( ) const
+        {
+            return rRadarPulseTimeseries_;
+        }
+        const DBGuid& RadarTuningTimeseries( ) const
+        {
+            return rTuningTimeseries_;
+        }
+        const DBGuid& RadarBlankSector1Timeseries( ) const
+        {
+            return rBlankSector1Timeseries_;
+        }
+        const DBGuid& RadarSector1StartTimeseries( ) const
+        {
+            return rSector1StartTimeseries_;
+        }
+        const DBGuid& RadarSector1EndTimeseries( ) const
+        {
+            return rSector1EndTimeseries_;
+        }
+        const DBGuid& RadarBlankSector2Timeseries( ) const
+        {
+            return rBlankSector2Timeseries_;
+        }
+        const DBGuid& RadarSector2StartTimeseries( ) const
+        {
+            return rSector2StartTimeseries_;
+        }
+        const DBGuid& RadarSector2EndTimeseries( ) const
+        {
+            return rSector2EndTimeseries_;
+        }
+        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseries( ) const
+        {
+            return rEnableAutomaticFrequencyControlTimeseries_;
+        }
+        const DBGuid& RadarAzimuthOffsetTimeseries( ) const
+        {
+            return rAzimuthOffsetTimeseries_;
+        }
+        const DBGuid& RadarEnableSensitivityTimeControlTimeseries( ) const
+        {
+            return rEnableSensitivityTimeControlTimeseries_;
+        }
+        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseries( ) const
+        {
+            return rAutomaticSensitivityTimeControlTimeseries_;
+        }
+        const DBGuid& RadarSensitivityTimeControlLevelTimeseries( ) const
+        {
+            return rSensitivityTimeControlLevelTimeseries_;
+        }
+        const DBGuid& RadarEnableFastTimeConstantTimeseries( ) const
+        {
+            return rEnableFastTimeConstantTimeseries_;
+        }
+        const DBGuid& RadarFastTimeConstantLevelTimeseries( ) const
+        {
+            return rFastTimeConstantLevelTimeseries_;
+        }
+        const DBGuid& RadarFastTimeConstantModeTimeseries( ) const
+        {
+            return rFastTimeConstantModeTimeseries_;
+        }
+        const DBGuid& RadarLatitudeTimeseries( ) const
+        {
+            return rLatitudeTimeseries_;
+        }
+        const DBGuid& RadarLongitudeTimeseries( ) const
+        {
+            return rLongitudeTimeseries_;
+        }
+        const DBGuid& RadarRadome( ) const
+        {
+            return rRadome_;
+        }
+        const DBGuid& RadarGNSSDevice( ) const
+        {
+            return rGNSSDevice_;
+        }
+        const DBGuid& WeatherStationBarometricPressureTimeseries( ) const
+        {
+            return wsBarometricPressureTimeseries_;
+        }
+        const DBGuid& WeatherStationAirTemperatureTimeseries( ) const
+        {
+            return wsAirTemperatureTimeseries_;
+        }
+        const DBGuid& WeatherStationWaterTemperatureTimeseries( ) const
+        {
+            return wsWaterTemperatureTimeseries_;
+        }
+        const DBGuid& WeatherStationRelativeHumidityTimeseries( ) const
+        {
+            return wsRelativeHumidityTimeseries_;
+        }
+        const DBGuid& WeatherStationAbsoluteHumidityTimeseries( ) const
+        {
+            return wsAbsoluteHumidityTimeseries_;
+        }
+        const DBGuid& WeatherStationDewPointTimeseries( ) const
+        {
+            return wsDewPointTimeseries_;
+        }
+        const DBGuid& WeatherStationWindDirectionTimeseries( ) const
+        {
+            return wsWindDirectionTimeseries_;
+        }
+        const DBGuid& WeatherStationWindSpeedTimeseries( ) const
+        {
+            return wsWindSpeedTimeseries_;
+        }
+        const DBGuid& WeatherStationGyro( ) const
+        {
+            return wsGyro_;
+        }
+        const FixedDBWideString<127>& FacilityName( ) const
+        {
+            return fName_;
+        }
+        const DBGuid& FacilityType( ) const
+        {
+            return fType_;
+        }
+        DBDouble FacilityLongitude( ) const
+        {
+            return fLongitude_;
+        }
+        DBDouble FacilityLatitude( ) const
+        {
+            return fLatitude_;
+        }
+        DBDouble FacilityAltitude( ) const
+        {
+            return fAltitude_;
+        }
+        const FixedDBWideString<127>& AircraftName( ) const
+        {
+            return aName_;
+        }
+        const DBGuid& AircraftType( ) const
+        {
+            return aType_;
+        }
+        const FixedDBWideString<127>& AisAidToNavigationName( ) const
+        {
+            return aatnName_;
+        }
+        const DBGuid& AisAidToNavigationMMSI( ) const
+        {
+            return aatnMMSI_;
+        }
+        DBEnum<Data::NavigationalAidType> AisAidToNavigationNavigationalAidType( ) const
+        {
+            return aatnNavigationalAidType_;
+        }
+        const DBGuid& AisAidToNavigationPosition( ) const
+        {
+            return aatnPosition_;
+        }
+        DBBoolean AisAidToNavigationIsVirtual( ) const
+        {
+            return aatnIsVirtual_;
+        }
+        DBInt32 AisAidToNavigationToBow( ) const
+        {
+            return aatnToBow_;
+        }
+        DBInt32 AisAidToNavigationToStern( ) const
+        {
+            return aatnToStern_;
+        }
+        DBInt32 AisAidToNavigationToPort( ) const
+        {
+            return aatnToPort_;
+        }
+        DBInt32 AisAidToNavigationToStarboard( ) const
+        {
+            return aatnToStarboard_;
+        }
+        const DBGuid& AisAidToNavigationOffPositionTimeseries( ) const
+        {
+            return aatnOffPositionTimeseries_;
+        }
+        const FixedDBWideString<127>& VehicleName( ) const
+        {
+            return vName_;
+        }
+        const DBGuid& VehicleType( ) const
+        {
+            return vType_;
+        }
+        const FixedDBWideString<127>& VesselName( ) const
+        {
+            return vslName_;
+        }
+        const DBGuid& VesselType( ) const
+        {
+            return vslType_;
+        }
+        DBInt32 VesselToBow( ) const
+        {
+            return vslToBow_;
+        }
+        DBInt32 VesselToStern( ) const
+        {
+            return vslToStern_;
+        }
+        DBInt32 VesselToPort( ) const
+        {
+            return vslToPort_;
+        }
+        DBInt32 VesselToStarboard( ) const
+        {
+            return vslToStarboard_;
+        }
+        const DBGuid& VesselDraughtTimeseries( ) const
+        {
+            return vslDraughtTimeseries_;
+        }
+        const DBGuid& VesselPersonsOnBoardTimeseries( ) const
+        {
+            return vslPersonsOnBoardTimeseries_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1825,6 +3373,222 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Host( ) const
+        {
+            return host_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
+        const Guid& EnabledTimeseries( ) const
+        {
+            return enabledTimeseries_;
+        }
+        const DBGuid& GNSSDeviceLatitudeTimeseries( ) const
+        {
+            return gLatitudeTimeseries_;
+        }
+        const DBGuid& GNSSDeviceLongitudeTimeseries( ) const
+        {
+            return gLongitudeTimeseries_;
+        }
+        const DBGuid& GNSSDeviceAltitudeTimeseries( ) const
+        {
+            return gAltitudeTimeseries_;
+        }
+        const DBGuid& GyroDeviceHeadingTrueNorthTimeseries( ) const
+        {
+            return gdHeadingTrueNorthTimeseries_;
+        }
+        const DBGuid& GyroDeviceHeadingMagneticNorthTimeseries( ) const
+        {
+            return gdHeadingMagneticNorthTimeseries_;
+        }
+        const DBGuid& GyroDevicePitchTimeseries( ) const
+        {
+            return gdPitchTimeseries_;
+        }
+        const DBGuid& GyroDeviceRateOfTurnTimeseries( ) const
+        {
+            return gdRateOfTurnTimeseries_;
+        }
+        const DBGuid& GyroDeviceRollTimeseries( ) const
+        {
+            return gdRollTimeseries_;
+        }
+        const DBGuid& GyroDeviceCourseTimeseries( ) const
+        {
+            return gdCourseTimeseries_;
+        }
+        const DBGuid& GyroDeviceSpeedTimeseries( ) const
+        {
+            return gdSpeedTimeseries_;
+        }
+        const DBGuid& GyroDeviceGNSSDevice( ) const
+        {
+            return gdGNSSDevice_;
+        }
+        const DBGuid& RadomeRadar( ) const
+        {
+            return rdoRadar_;
+        }
+        const DBGuid& RadomePressureTimeseries( ) const
+        {
+            return rdoPressureTimeseries_;
+        }
+        const DBGuid& RadomeTemperatureTimeseries( ) const
+        {
+            return rdoTemperatureTimeseries_;
+        }
+        const DBGuid& RadomeDewPointTimeseries( ) const
+        {
+            return rdoDewPointTimeseries_;
+        }
+        const DBGuid& RadomeStatusTimeseries( ) const
+        {
+            return rdoStatusTimeseries_;
+        }
+        const DBGuid& RadarSaveSettingsTimeseries( ) const
+        {
+            return rSaveSettingsTimeseries_;
+        }
+        const DBGuid& RadarPowerOnTimeseries( ) const
+        {
+            return rPowerOnTimeseries_;
+        }
+        const DBGuid& RadarTrackingOnTimeseries( ) const
+        {
+            return rTrackingOnTimeseries_;
+        }
+        const DBGuid& RadarRadarPulseTimeseries( ) const
+        {
+            return rRadarPulseTimeseries_;
+        }
+        const DBGuid& RadarTuningTimeseries( ) const
+        {
+            return rTuningTimeseries_;
+        }
+        const DBGuid& RadarBlankSector1Timeseries( ) const
+        {
+            return rBlankSector1Timeseries_;
+        }
+        const DBGuid& RadarSector1StartTimeseries( ) const
+        {
+            return rSector1StartTimeseries_;
+        }
+        const DBGuid& RadarSector1EndTimeseries( ) const
+        {
+            return rSector1EndTimeseries_;
+        }
+        const DBGuid& RadarBlankSector2Timeseries( ) const
+        {
+            return rBlankSector2Timeseries_;
+        }
+        const DBGuid& RadarSector2StartTimeseries( ) const
+        {
+            return rSector2StartTimeseries_;
+        }
+        const DBGuid& RadarSector2EndTimeseries( ) const
+        {
+            return rSector2EndTimeseries_;
+        }
+        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseries( ) const
+        {
+            return rEnableAutomaticFrequencyControlTimeseries_;
+        }
+        const DBGuid& RadarAzimuthOffsetTimeseries( ) const
+        {
+            return rAzimuthOffsetTimeseries_;
+        }
+        const DBGuid& RadarEnableSensitivityTimeControlTimeseries( ) const
+        {
+            return rEnableSensitivityTimeControlTimeseries_;
+        }
+        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseries( ) const
+        {
+            return rAutomaticSensitivityTimeControlTimeseries_;
+        }
+        const DBGuid& RadarSensitivityTimeControlLevelTimeseries( ) const
+        {
+            return rSensitivityTimeControlLevelTimeseries_;
+        }
+        const DBGuid& RadarEnableFastTimeConstantTimeseries( ) const
+        {
+            return rEnableFastTimeConstantTimeseries_;
+        }
+        const DBGuid& RadarFastTimeConstantLevelTimeseries( ) const
+        {
+            return rFastTimeConstantLevelTimeseries_;
+        }
+        const DBGuid& RadarFastTimeConstantModeTimeseries( ) const
+        {
+            return rFastTimeConstantModeTimeseries_;
+        }
+        const DBGuid& RadarLatitudeTimeseries( ) const
+        {
+            return rLatitudeTimeseries_;
+        }
+        const DBGuid& RadarLongitudeTimeseries( ) const
+        {
+            return rLongitudeTimeseries_;
+        }
+        const DBGuid& RadarRadome( ) const
+        {
+            return rRadome_;
+        }
+        const DBGuid& RadarGNSSDevice( ) const
+        {
+            return rGNSSDevice_;
+        }
+        const DBGuid& WeatherStationBarometricPressureTimeseries( ) const
+        {
+            return wsBarometricPressureTimeseries_;
+        }
+        const DBGuid& WeatherStationAirTemperatureTimeseries( ) const
+        {
+            return wsAirTemperatureTimeseries_;
+        }
+        const DBGuid& WeatherStationWaterTemperatureTimeseries( ) const
+        {
+            return wsWaterTemperatureTimeseries_;
+        }
+        const DBGuid& WeatherStationRelativeHumidityTimeseries( ) const
+        {
+            return wsRelativeHumidityTimeseries_;
+        }
+        const DBGuid& WeatherStationAbsoluteHumidityTimeseries( ) const
+        {
+            return wsAbsoluteHumidityTimeseries_;
+        }
+        const DBGuid& WeatherStationDewPointTimeseries( ) const
+        {
+            return wsDewPointTimeseries_;
+        }
+        const DBGuid& WeatherStationWindDirectionTimeseries( ) const
+        {
+            return wsWindDirectionTimeseries_;
+        }
+        const DBGuid& WeatherStationWindSpeedTimeseries( ) const
+        {
+            return wsWindSpeedTimeseries_;
+        }
+        const DBGuid& WeatherStationGyro( ) const
+        {
+            return wsGyro_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1992,6 +3756,122 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Host( ) const
+        {
+            return host_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
+        const Guid& EnabledTimeseries( ) const
+        {
+            return enabledTimeseries_;
+        }
+        const DBGuid& RadarSaveSettingsTimeseries( ) const
+        {
+            return rSaveSettingsTimeseries_;
+        }
+        const DBGuid& RadarPowerOnTimeseries( ) const
+        {
+            return rPowerOnTimeseries_;
+        }
+        const DBGuid& RadarTrackingOnTimeseries( ) const
+        {
+            return rTrackingOnTimeseries_;
+        }
+        const DBGuid& RadarRadarPulseTimeseries( ) const
+        {
+            return rRadarPulseTimeseries_;
+        }
+        const DBGuid& RadarTuningTimeseries( ) const
+        {
+            return rTuningTimeseries_;
+        }
+        const DBGuid& RadarBlankSector1Timeseries( ) const
+        {
+            return rBlankSector1Timeseries_;
+        }
+        const DBGuid& RadarSector1StartTimeseries( ) const
+        {
+            return rSector1StartTimeseries_;
+        }
+        const DBGuid& RadarSector1EndTimeseries( ) const
+        {
+            return rSector1EndTimeseries_;
+        }
+        const DBGuid& RadarBlankSector2Timeseries( ) const
+        {
+            return rBlankSector2Timeseries_;
+        }
+        const DBGuid& RadarSector2StartTimeseries( ) const
+        {
+            return rSector2StartTimeseries_;
+        }
+        const DBGuid& RadarSector2EndTimeseries( ) const
+        {
+            return rSector2EndTimeseries_;
+        }
+        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseries( ) const
+        {
+            return rEnableAutomaticFrequencyControlTimeseries_;
+        }
+        const DBGuid& RadarAzimuthOffsetTimeseries( ) const
+        {
+            return rAzimuthOffsetTimeseries_;
+        }
+        const DBGuid& RadarEnableSensitivityTimeControlTimeseries( ) const
+        {
+            return rEnableSensitivityTimeControlTimeseries_;
+        }
+        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseries( ) const
+        {
+            return rAutomaticSensitivityTimeControlTimeseries_;
+        }
+        const DBGuid& RadarSensitivityTimeControlLevelTimeseries( ) const
+        {
+            return rSensitivityTimeControlLevelTimeseries_;
+        }
+        const DBGuid& RadarEnableFastTimeConstantTimeseries( ) const
+        {
+            return rEnableFastTimeConstantTimeseries_;
+        }
+        const DBGuid& RadarFastTimeConstantLevelTimeseries( ) const
+        {
+            return rFastTimeConstantLevelTimeseries_;
+        }
+        const DBGuid& RadarFastTimeConstantModeTimeseries( ) const
+        {
+            return rFastTimeConstantModeTimeseries_;
+        }
+        const DBGuid& RadarLatitudeTimeseries( ) const
+        {
+            return rLatitudeTimeseries_;
+        }
+        const DBGuid& RadarLongitudeTimeseries( ) const
+        {
+            return rLongitudeTimeseries_;
+        }
+        const DBGuid& RadarRadome( ) const
+        {
+            return rRadome_;
+        }
+        const DBGuid& RadarGNSSDevice( ) const
+        {
+            return rGNSSDevice_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2106,6 +3986,102 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const FixedDBWideString<127>& AircraftName( ) const
+        {
+            return aName_;
+        }
+        const DBGuid& AircraftType( ) const
+        {
+            return aType_;
+        }
+        const FixedDBWideString<127>& AisAidToNavigationName( ) const
+        {
+            return aatnName_;
+        }
+        const DBGuid& AisAidToNavigationMMSI( ) const
+        {
+            return aatnMMSI_;
+        }
+        DBEnum<Data::NavigationalAidType> AisAidToNavigationNavigationalAidType( ) const
+        {
+            return aatnNavigationalAidType_;
+        }
+        const DBGuid& AisAidToNavigationPosition( ) const
+        {
+            return aatnPosition_;
+        }
+        DBBoolean AisAidToNavigationIsVirtual( ) const
+        {
+            return aatnIsVirtual_;
+        }
+        DBInt32 AisAidToNavigationToBow( ) const
+        {
+            return aatnToBow_;
+        }
+        DBInt32 AisAidToNavigationToStern( ) const
+        {
+            return aatnToStern_;
+        }
+        DBInt32 AisAidToNavigationToPort( ) const
+        {
+            return aatnToPort_;
+        }
+        DBInt32 AisAidToNavigationToStarboard( ) const
+        {
+            return aatnToStarboard_;
+        }
+        const DBGuid& AisAidToNavigationOffPositionTimeseries( ) const
+        {
+            return aatnOffPositionTimeseries_;
+        }
+        const FixedDBWideString<127>& VehicleName( ) const
+        {
+            return vName_;
+        }
+        const DBGuid& VehicleType( ) const
+        {
+            return vType_;
+        }
+        const FixedDBWideString<127>& VesselName( ) const
+        {
+            return vslName_;
+        }
+        const DBGuid& VesselType( ) const
+        {
+            return vslType_;
+        }
+        DBInt32 VesselToBow( ) const
+        {
+            return vslToBow_;
+        }
+        DBInt32 VesselToStern( ) const
+        {
+            return vslToStern_;
+        }
+        DBInt32 VesselToPort( ) const
+        {
+            return vslToPort_;
+        }
+        DBInt32 VesselToStarboard( ) const
+        {
+            return vslToStarboard_;
+        }
+        const DBGuid& VesselDraughtTimeseries( ) const
+        {
+            return vslDraughtTimeseries_;
+        }
+        const DBGuid& VesselPersonsOnBoardTimeseries( ) const
+        {
+            return vslPersonsOnBoardTimeseries_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2191,6 +4167,26 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Namespace( ) const
+        {
+            return namespace_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2303,6 +4299,158 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Element( ) const
+        {
+            return element_;
+        }
+        const Guid& Definition( ) const
+        {
+            return definition_;
+        }
+        const DBBinary& BinaryPropertyValue( ) const
+        {
+            return bpValue_;
+        }
+        DBBoolean BooleanPropertyValue( ) const
+        {
+            return bopValue_;
+        }
+        DBByte BytePropertyValue( ) const
+        {
+            return bypValue_;
+        }
+        const DBDateTime& DateTimePropertyValue( ) const
+        {
+            return dtpValue_;
+        }
+        DBDouble DoublePropertyValue( ) const
+        {
+            return dpValue_;
+        }
+        const DBGuid& GuidPropertyValue( ) const
+        {
+            return gpValue_;
+        }
+        DBInt16 Int16PropertyValue( ) const
+        {
+            return i16pValue_;
+        }
+        DBInt32 Int32PropertyValue( ) const
+        {
+            return i32pValue_;
+        }
+        DBInt64 Int64PropertyValue( ) const
+        {
+            return i64pValue_;
+        }
+        const DBGuid& ReferencePropertyValue( ) const
+        {
+            return rpValue_;
+        }
+        DBSByte SBytePropertyValue( ) const
+        {
+            return spValue_;
+        }
+        DBSingle SinglePropertyValue( ) const
+        {
+            return sipValue_;
+        }
+        const FixedDBWideString<100>& StringPropertyValue( ) const
+        {
+            return stpValue_;
+        }
+        const DBGuid& BinaryTimeseriesPropertyTimeseries( ) const
+        {
+            return btpTimeseries_;
+        }
+        const DBGuid& BooleanTimeseriesPropertyTimeseries( ) const
+        {
+            return botpTimeseries_;
+        }
+        const DBGuid& ByteTimeseriesPropertyTimeseries( ) const
+        {
+            return bytpTimeseries_;
+        }
+        const DBGuid& DateTimeTimeseriesPropertyTimeseries( ) const
+        {
+            return dttpTimeseries_;
+        }
+        const DBGuid& DoubleTimeseriesPropertyTimeseries( ) const
+        {
+            return dotpTimeseries_;
+        }
+        const DBGuid& GuidTimeseriesPropertyTimeseries( ) const
+        {
+            return gtpTimeseries_;
+        }
+        const DBGuid& Int16TimeseriesPropertyTimeseries( ) const
+        {
+            return i16tpTimeseries_;
+        }
+        const DBGuid& Int32TimeseriesPropertyTimeseries( ) const
+        {
+            return i32tpTimeseries_;
+        }
+        const DBGuid& Int64TimeseriesPropertyTimeseries( ) const
+        {
+            return i64tpTimeseries_;
+        }
+        const DBGuid& ReferenceTimeseriesPropertyTimeseries( ) const
+        {
+            return rtpTimeseries_;
+        }
+        const DBGuid& SByteTimeseriesPropertyTimeseries( ) const
+        {
+            return sbtpTimeseries_;
+        }
+        const DBGuid& SingleTimeseriesPropertyTimeseries( ) const
+        {
+            return sitpTimeseries_;
+        }
+        const DBGuid& StringTimeseriesPropertyTimeseries( ) const
+        {
+            return sttpTimeseries_;
+        }
+        const DBGuid& TimeSpanTimeseriesPropertyTimeseries( ) const
+        {
+            return tstpTimeseries_;
+        }
+        const DBGuid& UInt16TimeseriesPropertyTimeseries( ) const
+        {
+            return u16tpTimeseries_;
+        }
+        const DBGuid& UInt32TimeseriesPropertyTimeseries( ) const
+        {
+            return u32tpTimeseries_;
+        }
+        const DBGuid& UInt64TimeseriesPropertyTimeseries( ) const
+        {
+            return u64tpTimeseries_;
+        }
+        const DBTimeSpan& TimeSpanPropertyValue( ) const
+        {
+            return tspValue_;
+        }
+        DBUInt16 UInt16PropertyValue( ) const
+        {
+            return u16pValue_;
+        }
+        DBUInt32 UInt32PropertyValue( ) const
+        {
+            return u32pValue_;
+        }
+        DBInt64 UInt64PropertyValue( ) const
+        {
+            return u64pValue_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2552,6 +4700,90 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Element( ) const
+        {
+            return element_;
+        }
+        const Guid& Definition( ) const
+        {
+            return definition_;
+        }
+        const DBGuid& BinaryTimeseriesPropertyTimeseries( ) const
+        {
+            return btpTimeseries_;
+        }
+        const DBGuid& BooleanTimeseriesPropertyTimeseries( ) const
+        {
+            return botpTimeseries_;
+        }
+        const DBGuid& ByteTimeseriesPropertyTimeseries( ) const
+        {
+            return bytpTimeseries_;
+        }
+        const DBGuid& DateTimeTimeseriesPropertyTimeseries( ) const
+        {
+            return dttpTimeseries_;
+        }
+        const DBGuid& DoubleTimeseriesPropertyTimeseries( ) const
+        {
+            return dotpTimeseries_;
+        }
+        const DBGuid& GuidTimeseriesPropertyTimeseries( ) const
+        {
+            return gtpTimeseries_;
+        }
+        const DBGuid& Int16TimeseriesPropertyTimeseries( ) const
+        {
+            return i16tpTimeseries_;
+        }
+        const DBGuid& Int32TimeseriesPropertyTimeseries( ) const
+        {
+            return i32tpTimeseries_;
+        }
+        const DBGuid& Int64TimeseriesPropertyTimeseries( ) const
+        {
+            return i64tpTimeseries_;
+        }
+        const DBGuid& ReferenceTimeseriesPropertyTimeseries( ) const
+        {
+            return rtpTimeseries_;
+        }
+        const DBGuid& SByteTimeseriesPropertyTimeseries( ) const
+        {
+            return sbtpTimeseries_;
+        }
+        const DBGuid& SingleTimeseriesPropertyTimeseries( ) const
+        {
+            return sitpTimeseries_;
+        }
+        const DBGuid& StringTimeseriesPropertyTimeseries( ) const
+        {
+            return sttpTimeseries_;
+        }
+        const DBGuid& TimeSpanTimeseriesPropertyTimeseries( ) const
+        {
+            return tstpTimeseries_;
+        }
+        const DBGuid& UInt16TimeseriesPropertyTimeseries( ) const
+        {
+            return u16tpTimeseries_;
+        }
+        const DBGuid& UInt32TimeseriesPropertyTimeseries( ) const
+        {
+            return u32tpTimeseries_;
+        }
+        const DBGuid& UInt64TimeseriesPropertyTimeseries( ) const
+        {
+            return u64tpTimeseries_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2824,6 +5056,302 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& ElementType( ) const
+        {
+            return elementType_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
+        const DBBinary& BinaryPropertyDefinitionDefaultValue( ) const
+        {
+            return bpdDefaultValue_;
+        }
+        DBBoolean BooleanPropertyDefinitionDefaultValue( ) const
+        {
+            return bopdDefaultValue_;
+        }
+        DBByte BytePropertyDefinitionDefaultValue( ) const
+        {
+            return bypdDefaultValue_;
+        }
+        DBByte BytePropertyDefinitionMinValue( ) const
+        {
+            return bypdMinValue_;
+        }
+        DBByte BytePropertyDefinitionMaxValue( ) const
+        {
+            return bypdMaxValue_;
+        }
+        const FixedDBWideString<100>& DateTimePropertyDefinitionDefaultValue( ) const
+        {
+            return dtpdDefaultValue_;
+        }
+        const FixedDBWideString<100>& DateTimePropertyDefinitionMinValue( ) const
+        {
+            return dtpdMinValue_;
+        }
+        const FixedDBWideString<100>& DateTimePropertyDefinitionMaxValue( ) const
+        {
+            return dtpdMaxValue_;
+        }
+        DBDouble DoublePropertyDefinitionDefaultValue( ) const
+        {
+            return dpdDefaultValue_;
+        }
+        DBDouble DoublePropertyDefinitionMinValue( ) const
+        {
+            return dpdMinValue_;
+        }
+        DBDouble DoublePropertyDefinitionMaxValue( ) const
+        {
+            return dpdMaxValue_;
+        }
+        const DBGuid& GuidPropertyDefinitionDefaultValue( ) const
+        {
+            return gpdDefaultValue_;
+        }
+        DBInt16 Int16PropertyDefinitionDefaultValue( ) const
+        {
+            return i16pdDefaultValue_;
+        }
+        DBInt16 Int16PropertyDefinitionMinValue( ) const
+        {
+            return i16pdMinValue_;
+        }
+        DBInt16 Int16PropertyDefinitionMaxValue( ) const
+        {
+            return i16pdMaxValue_;
+        }
+        DBInt32 Int32PropertyDefinitionDefaultValue( ) const
+        {
+            return i32pdDefaultValue_;
+        }
+        DBInt32 Int32PropertyDefinitionMinValue( ) const
+        {
+            return i32pdMinValue_;
+        }
+        DBInt32 Int32PropertyDefinitionMaxValue( ) const
+        {
+            return i32pdMaxValue_;
+        }
+        DBInt64 Int64PropertyDefinitionDefaultValue( ) const
+        {
+            return i64pdDefaultValue_;
+        }
+        DBInt64 Int64PropertyDefinitionMinValue( ) const
+        {
+            return i64pdMinValue_;
+        }
+        DBInt64 Int64PropertyDefinitionMaxValue( ) const
+        {
+            return i64pdMaxValue_;
+        }
+        const DBGuid& ReferencePropertyDefinitionDefaultValue( ) const
+        {
+            return rpdDefaultValue_;
+        }
+        const DBGuid& ReferencePropertyDefinitionReferencedElementType( ) const
+        {
+            return rpdReferencedElementType_;
+        }
+        DBSByte SBytePropertyDefinitionDefaultValue( ) const
+        {
+            return sbpdDefaultValue_;
+        }
+        DBSByte SBytePropertyDefinitionMinValue( ) const
+        {
+            return sbpdMinValue_;
+        }
+        DBSByte SBytePropertyDefinitionMaxValue( ) const
+        {
+            return sbpdMaxValue_;
+        }
+        DBSingle SinglePropertyDefinitionDefaultValue( ) const
+        {
+            return sipdDefaultValue_;
+        }
+        DBSingle SinglePropertyDefinitionMinValue( ) const
+        {
+            return sipdMinValue_;
+        }
+        DBSingle SinglePropertyDefinitionMaxValue( ) const
+        {
+            return sipdMaxValue_;
+        }
+        const FixedDBWideString<100>& StringPropertyDefinitionDefaultValue( ) const
+        {
+            return stpdDefaultValue_;
+        }
+        const FixedDBWideString<100>& StringPropertyDefinitionPattern( ) const
+        {
+            return stpdPattern_;
+        }
+        DBByte ByteTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return bytpdMinValue_;
+        }
+        DBByte ByteTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return bytpdMaxValue_;
+        }
+        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return dttpdMinValue_;
+        }
+        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return dttpdMaxValue_;
+        }
+        DBDouble DoubleTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return dotpdMinValue_;
+        }
+        DBDouble DoubleTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return dotpdMaxValue_;
+        }
+        DBInt16 Int16TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return i16tpdMinValue_;
+        }
+        DBInt16 Int16TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return i16tpdMaxValue_;
+        }
+        DBInt32 Int32TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return i32tpdMinValue_;
+        }
+        DBInt32 Int32TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return i32tpdMaxValue_;
+        }
+        DBInt64 Int64TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return i64tpdMinValue_;
+        }
+        DBInt64 Int64TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return i64tpdMaxValue_;
+        }
+        const DBGuid& ReferenceTimeseriesPropertyDefinitionReferencedElementType( ) const
+        {
+            return rtpdReferencedElementType_;
+        }
+        DBSByte SByteTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return sbtpdMinValue_;
+        }
+        DBSByte SByteTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return sbtpdMaxValue_;
+        }
+        DBSingle SingleTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return sitpdMinValue_;
+        }
+        DBSingle SingleTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return sitpdMaxValue_;
+        }
+        const FixedDBWideString<100>& StringTimeseriesPropertyDefinitionPattern( ) const
+        {
+            return sttpdPattern_;
+        }
+        const DBTimeSpan& TimeSpanTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return tstpdMinValue_;
+        }
+        const DBTimeSpan& TimeSpanTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return tstpdMaxValue_;
+        }
+        DBUInt16 UInt16TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return u16tpdMinValue_;
+        }
+        DBUInt16 UInt16TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return u16tpdMaxValue_;
+        }
+        DBUInt32 UInt32TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return u32tpdMinValue_;
+        }
+        DBUInt32 UInt32TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return u32tpdMaxValue_;
+        }
+        DBInt64 UInt64TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return u64tpdMinValue_;
+        }
+        DBInt64 UInt64TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return u64tpdMaxValue_;
+        }
+        const DBTimeSpan& TimeSpanPropertyDefinitionDefaultValue( ) const
+        {
+            return tspdDefaultValue_;
+        }
+        const DBTimeSpan& TimeSpanPropertyDefinitionMinValue( ) const
+        {
+            return tspdMinValue_;
+        }
+        const DBTimeSpan& TimeSpanPropertyDefinitionMaxValue( ) const
+        {
+            return tspdMaxValue_;
+        }
+        DBUInt16 UInt16PropertyDefinitionDefaultValue( ) const
+        {
+            return u16pdDefaultValue_;
+        }
+        DBUInt16 UInt16PropertyDefinitionMinValue( ) const
+        {
+            return u16pdMinValue_;
+        }
+        DBUInt16 UInt16PropertyDefinitionMaxValue( ) const
+        {
+            return u16pdMaxValue_;
+        }
+        DBUInt32 UInt32PropertyDefinitionDefaultValue( ) const
+        {
+            return u32pdDefaultValue_;
+        }
+        DBUInt32 UInt32PropertyDefinitionMinValue( ) const
+        {
+            return u32pdMinValue_;
+        }
+        DBUInt32 UInt32PropertyDefinitionMaxValue( ) const
+        {
+            return u32pdMaxValue_;
+        }
+        DBInt64 UInt64PropertyDefinitionDefaultValue( ) const
+        {
+            return u64pdDefaultValue_;
+        }
+        DBInt64 UInt64PropertyDefinitionMinValue( ) const
+        {
+            return u64pdMinValue_;
+        }
+        DBInt64 UInt64PropertyDefinitionMaxValue( ) const
+        {
+            return u64pdMaxValue_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3119,6 +5647,130 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& ElementType( ) const
+        {
+            return elementType_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
+        DBByte ByteTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return bytpdMinValue_;
+        }
+        DBByte ByteTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return bytpdMaxValue_;
+        }
+        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return dttpdMinValue_;
+        }
+        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return dttpdMaxValue_;
+        }
+        DBDouble DoubleTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return dotpdMinValue_;
+        }
+        DBDouble DoubleTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return dotpdMaxValue_;
+        }
+        DBInt16 Int16TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return i16tpdMinValue_;
+        }
+        DBInt16 Int16TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return i16tpdMaxValue_;
+        }
+        DBInt32 Int32TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return i32tpdMinValue_;
+        }
+        DBInt32 Int32TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return i32tpdMaxValue_;
+        }
+        DBInt64 Int64TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return i64tpdMinValue_;
+        }
+        DBInt64 Int64TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return i64tpdMaxValue_;
+        }
+        const DBGuid& ReferenceTimeseriesPropertyDefinitionReferencedElementType( ) const
+        {
+            return rtpdReferencedElementType_;
+        }
+        DBSByte SByteTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return sbtpdMinValue_;
+        }
+        DBSByte SByteTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return sbtpdMaxValue_;
+        }
+        DBSingle SingleTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return sitpdMinValue_;
+        }
+        DBSingle SingleTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return sitpdMaxValue_;
+        }
+        const FixedDBWideString<100>& StringTimeseriesPropertyDefinitionPattern( ) const
+        {
+            return sttpdPattern_;
+        }
+        const DBTimeSpan& TimeSpanTimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return tstpdMinValue_;
+        }
+        const DBTimeSpan& TimeSpanTimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return tstpdMaxValue_;
+        }
+        DBUInt16 UInt16TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return u16tpdMinValue_;
+        }
+        DBUInt16 UInt16TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return u16tpdMaxValue_;
+        }
+        DBUInt32 UInt32TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return u32tpdMinValue_;
+        }
+        DBUInt32 UInt32TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return u32tpdMaxValue_;
+        }
+        DBInt64 UInt64TimeseriesPropertyDefinitionMinValue( ) const
+        {
+            return u64tpdMinValue_;
+        }
+        DBInt64 UInt64TimeseriesPropertyDefinitionMaxValue( ) const
+        {
+            return u64tpdMaxValue_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3253,6 +5905,34 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Radar( ) const
+        {
+            return radar_;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        {
+            return deviceCommandSourceType_;
+        }
+        const Guid& DeviceCommandSourceId( ) const
+        {
+            return deviceCommandSourceId_;
+        }
+        const Guid& Reply( ) const
+        {
+            return reply_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3316,6 +5996,54 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Radar( ) const
+        {
+            return radar_;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        const Guid& Command( ) const
+        {
+            return command_;
+        }
+        Data::DeviceCommandReplyStatus Status( ) const
+        {
+            return status_;
+        }
+        const WideString& Message( ) const
+        {
+            return message_;
+        }
+        DBInt32 RadarCommandReplyGetStatusAzimuthCount( ) const
+        {
+            return rcrgsAzimuthCount_;
+        }
+        DBInt32 RadarCommandReplyGetStatusTriggerCount( ) const
+        {
+            return rcrgsTriggerCount_;
+        }
+        const DBTimeSpan& RadarCommandReplyGetStatusRotationCount( ) const
+        {
+            return rcrgsRotationCount_;
+        }
+        DBEnum<Data::RadarPulse> RadarCommandReplyGetStatusPulse( ) const
+        {
+            return rcrgsPulse_;
+        }
+        DBBoolean RadarCommandReplyGetStatusTx( ) const
+        {
+            return rcrgsTx_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3379,6 +6107,30 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Domain( ) const
+        {
+            return domain_;
+        }
+        const FixedDBWideString<255>& Identity( ) const
+        {
+            return identity_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
+        const FixedDBWideString<127>& SecurityRoleName( ) const
+        {
+            return srName_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3538,6 +6290,238 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const DBTimeSpan& TimeseriesMaxRetention( ) const
+        {
+            return tMaxRetention_;
+        }
+        const DBGuid& AisAidToNavigationOffPositionTimeseriesAidToNavigation( ) const
+        {
+            return aatnoptAidToNavigation_;
+        }
+        const DBGuid& DeviceEnabledTimeseriesDevice( ) const
+        {
+            return detDevice_;
+        }
+        const DBGuid& MediaProxySessionEnabledTimeseriesProxySession( ) const
+        {
+            return mpsetProxySession_;
+        }
+        const DBGuid& MediaServiceEnabledTimeseriesService( ) const
+        {
+            return msetService_;
+        }
+        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseriesRadar( ) const
+        {
+            return rastctRadar_;
+        }
+        const DBGuid& RadarBlankSector1TimeseriesRadar( ) const
+        {
+            return rbs1tRadar_;
+        }
+        const DBGuid& RadarBlankSector2TimeseriesRadar( ) const
+        {
+            return rbs2tRadar_;
+        }
+        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseriesRadar( ) const
+        {
+            return reafctRadar_;
+        }
+        const DBGuid& RadarEnableFastTimeConstantTimeseriesRadar( ) const
+        {
+            return reftctRadar_;
+        }
+        const DBGuid& RadarEnableSensitivityTimeControlTimeseriesRadar( ) const
+        {
+            return restctRadar_;
+        }
+        const DBGuid& RadarPowerOnTimeseriesRadar( ) const
+        {
+            return rpotRadar_;
+        }
+        const DBGuid& RadarSaveSettingsTimeseriesRadar( ) const
+        {
+            return rsstRadar_;
+        }
+        const DBGuid& RadarTrackingTimeseriesRadar( ) const
+        {
+            return rttRadar_;
+        }
+        const DBGuid& GNSSAltitudeTimeseriesGNSSDevice( ) const
+        {
+            return gatsGNSSDevice_;
+        }
+        const DBGuid& GNSSLatitudeTimeseriesGNSSDevice( ) const
+        {
+            return glatsGNSSDevice_;
+        }
+        const DBGuid& GNSSLongitudeTimeseriesGNSSDevice( ) const
+        {
+            return glotsGNSSDevice_;
+        }
+        const DBGuid& GyroCourseTimeseriesGyroDevice( ) const
+        {
+            return gctGyroDevice_;
+        }
+        const DBGuid& GyroHeadingMagneticNorthTimeseriesGyroDevice( ) const
+        {
+            return ghmntGyroDevice_;
+        }
+        const DBGuid& GyroHeadingTrueNorthTimeseriesGyroDevice( ) const
+        {
+            return ghtntGyroDevice_;
+        }
+        const DBGuid& GyroPitchTimeseriesGyroDevice( ) const
+        {
+            return gptGyroDevice_;
+        }
+        const DBGuid& GyroRateOfTurnTimeseriesGyroDevice( ) const
+        {
+            return grottGyroDevice_;
+        }
+        const DBGuid& GyroRollTimeseriesGyroDevice( ) const
+        {
+            return grtGyroDevice_;
+        }
+        const DBGuid& GyroSpeedTimeseriesGyroDevice( ) const
+        {
+            return gstGyroDevice_;
+        }
+        const DBGuid& RadarLatitudeTimeseriesRadar( ) const
+        {
+            return rlatsRadar_;
+        }
+        const DBGuid& RadarLongitudeTimeseriesRadar( ) const
+        {
+            return rlotsRadar_;
+        }
+        const DBGuid& RadomeDewPointTimeseriesRadome( ) const
+        {
+            return rdptRadome_;
+        }
+        const DBGuid& RadomePressureTimeseriesRadome( ) const
+        {
+            return rptRadome_;
+        }
+        const DBGuid& RadomeTemperatureTimeseriesRadome( ) const
+        {
+            return rtetsRadome_;
+        }
+        const DBGuid& VesselDraughtTimeseriesVessel( ) const
+        {
+            return vdtVessel_;
+        }
+        const DBGuid& ViewLatitudeTimeseriesView( ) const
+        {
+            return vlatsView_;
+        }
+        const DBGuid& ViewLongitudeTimeseriesView( ) const
+        {
+            return vlotsView_;
+        }
+        const DBGuid& ViewZoomLevelTimeseriesView( ) const
+        {
+            return vzltView_;
+        }
+        const DBGuid& WeatherStationAbsoluteHumidityTimeseriesWeatherStation( ) const
+        {
+            return wsahtWeatherStation_;
+        }
+        const DBGuid& WeatherStationAirTemperatureTimeseriesWeatherStation( ) const
+        {
+            return wsattWeatherStation_;
+        }
+        const DBGuid& WeatherStationBarometricPressureTimeseriesWeatherStation( ) const
+        {
+            return wsbptWeatherStation_;
+        }
+        const DBGuid& WeatherStationDewPointTimeseriesWeatherStation( ) const
+        {
+            return wsdptWeatherStation_;
+        }
+        const DBGuid& WeatherStationRelativeHumidityTimeseriesWeatherStation( ) const
+        {
+            return wsrhtWeatherStation_;
+        }
+        const DBGuid& WeatherStationWaterTemperatureTimeseriesWeatherStation( ) const
+        {
+            return wswttWeatherStation_;
+        }
+        const DBGuid& WeatherStationWindDirectionTimeseriesWeatherStation( ) const
+        {
+            return wswdtWeatherStation_;
+        }
+        const DBGuid& WeatherStationWindSpeedTimeseriesWeatherStation( ) const
+        {
+            return wswstWeatherStation_;
+        }
+        const DBGuid& AisAidToNavigationPositionTimeseriesAidToNavigation( ) const
+        {
+            return aatnptAidToNavigation_;
+        }
+        const DBGuid& RadarAzimuthOffsetTimeseriesRadar( ) const
+        {
+            return raotRadar_;
+        }
+        const DBGuid& RadarFastTimeConstantLevelTimeseriesRadar( ) const
+        {
+            return rftcltRadar_;
+        }
+        const DBGuid& RadarFastTimeConstantModeTimeseriesRadar( ) const
+        {
+            return rftcmtRadar_;
+        }
+        const DBGuid& RadarPulseTimeseriesRadar( ) const
+        {
+            return raptsRadar_;
+        }
+        const DBGuid& RadarSector1EndTimeseriesRadar( ) const
+        {
+            return rs1etRadar_;
+        }
+        const DBGuid& RadarSector1StartTimeseriesRadar( ) const
+        {
+            return rs1stRadar_;
+        }
+        const DBGuid& RadarSector2EndTimeseriesRadar( ) const
+        {
+            return rs2etRadar_;
+        }
+        const DBGuid& RadarSector2StartTimeseriesRadar( ) const
+        {
+            return rs2stRadar_;
+        }
+        const DBGuid& RadarSensitivityTimeControlLevelTimeseriesRadar( ) const
+        {
+            return rstcltRadar_;
+        }
+        const DBGuid& RadarTuningTimeseriesRadar( ) const
+        {
+            return ratutsRadar_;
+        }
+        const DBGuid& VesselPersonsOnBoardTimeseriesVessel( ) const
+        {
+            return vpobtVessel_;
+        }
+        const DBGuid& RadomeStatusTimeseriesRadome( ) const
+        {
+            return rstRadome_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4114,6 +7098,238 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const TimeSpan& MaxRetention( ) const
+        {
+            return maxRetention_;
+        }
+        const DBGuid& AisAidToNavigationOffPositionTimeseriesAidToNavigation( ) const
+        {
+            return aatnoptAidToNavigation_;
+        }
+        const DBGuid& DeviceEnabledTimeseriesDevice( ) const
+        {
+            return detDevice_;
+        }
+        const DBGuid& MediaProxySessionEnabledTimeseriesProxySession( ) const
+        {
+            return mpsetProxySession_;
+        }
+        const DBGuid& MediaServiceEnabledTimeseriesService( ) const
+        {
+            return msetService_;
+        }
+        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseriesRadar( ) const
+        {
+            return rastctRadar_;
+        }
+        const DBGuid& RadarBlankSector1TimeseriesRadar( ) const
+        {
+            return rbs1tRadar_;
+        }
+        const DBGuid& RadarBlankSector2TimeseriesRadar( ) const
+        {
+            return rbs2tRadar_;
+        }
+        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseriesRadar( ) const
+        {
+            return reafctRadar_;
+        }
+        const DBGuid& RadarEnableFastTimeConstantTimeseriesRadar( ) const
+        {
+            return reftctRadar_;
+        }
+        const DBGuid& RadarEnableSensitivityTimeControlTimeseriesRadar( ) const
+        {
+            return restctRadar_;
+        }
+        const DBGuid& RadarPowerOnTimeseriesRadar( ) const
+        {
+            return rpotRadar_;
+        }
+        const DBGuid& RadarSaveSettingsTimeseriesRadar( ) const
+        {
+            return rsstRadar_;
+        }
+        const DBGuid& RadarTrackingTimeseriesRadar( ) const
+        {
+            return rttRadar_;
+        }
+        const DBGuid& GNSSAltitudeTimeseriesGNSSDevice( ) const
+        {
+            return gatsGNSSDevice_;
+        }
+        const DBGuid& GNSSLatitudeTimeseriesGNSSDevice( ) const
+        {
+            return glatsGNSSDevice_;
+        }
+        const DBGuid& GNSSLongitudeTimeseriesGNSSDevice( ) const
+        {
+            return glotsGNSSDevice_;
+        }
+        const DBGuid& GyroCourseTimeseriesGyroDevice( ) const
+        {
+            return gctGyroDevice_;
+        }
+        const DBGuid& GyroHeadingMagneticNorthTimeseriesGyroDevice( ) const
+        {
+            return ghmntGyroDevice_;
+        }
+        const DBGuid& GyroHeadingTrueNorthTimeseriesGyroDevice( ) const
+        {
+            return ghtntGyroDevice_;
+        }
+        const DBGuid& GyroPitchTimeseriesGyroDevice( ) const
+        {
+            return gptGyroDevice_;
+        }
+        const DBGuid& GyroRateOfTurnTimeseriesGyroDevice( ) const
+        {
+            return grottGyroDevice_;
+        }
+        const DBGuid& GyroRollTimeseriesGyroDevice( ) const
+        {
+            return grtGyroDevice_;
+        }
+        const DBGuid& GyroSpeedTimeseriesGyroDevice( ) const
+        {
+            return gstGyroDevice_;
+        }
+        const DBGuid& RadarLatitudeTimeseriesRadar( ) const
+        {
+            return rlatsRadar_;
+        }
+        const DBGuid& RadarLongitudeTimeseriesRadar( ) const
+        {
+            return rlotsRadar_;
+        }
+        const DBGuid& RadomeDewPointTimeseriesRadome( ) const
+        {
+            return rdptRadome_;
+        }
+        const DBGuid& RadomePressureTimeseriesRadome( ) const
+        {
+            return rptRadome_;
+        }
+        const DBGuid& RadomeTemperatureTimeseriesRadome( ) const
+        {
+            return rtetsRadome_;
+        }
+        const DBGuid& VesselDraughtTimeseriesVessel( ) const
+        {
+            return vdtVessel_;
+        }
+        const DBGuid& ViewLatitudeTimeseriesView( ) const
+        {
+            return vlatsView_;
+        }
+        const DBGuid& ViewLongitudeTimeseriesView( ) const
+        {
+            return vlotsView_;
+        }
+        const DBGuid& ViewZoomLevelTimeseriesView( ) const
+        {
+            return vzltView_;
+        }
+        const DBGuid& WeatherStationAbsoluteHumidityTimeseriesWeatherStation( ) const
+        {
+            return wsahtWeatherStation_;
+        }
+        const DBGuid& WeatherStationAirTemperatureTimeseriesWeatherStation( ) const
+        {
+            return wsattWeatherStation_;
+        }
+        const DBGuid& WeatherStationBarometricPressureTimeseriesWeatherStation( ) const
+        {
+            return wsbptWeatherStation_;
+        }
+        const DBGuid& WeatherStationDewPointTimeseriesWeatherStation( ) const
+        {
+            return wsdptWeatherStation_;
+        }
+        const DBGuid& WeatherStationRelativeHumidityTimeseriesWeatherStation( ) const
+        {
+            return wsrhtWeatherStation_;
+        }
+        const DBGuid& WeatherStationWaterTemperatureTimeseriesWeatherStation( ) const
+        {
+            return wswttWeatherStation_;
+        }
+        const DBGuid& WeatherStationWindDirectionTimeseriesWeatherStation( ) const
+        {
+            return wswdtWeatherStation_;
+        }
+        const DBGuid& WeatherStationWindSpeedTimeseriesWeatherStation( ) const
+        {
+            return wswstWeatherStation_;
+        }
+        const DBGuid& AisAidToNavigationPositionTimeseriesAidToNavigation( ) const
+        {
+            return aatnptAidToNavigation_;
+        }
+        const DBGuid& RadarAzimuthOffsetTimeseriesRadar( ) const
+        {
+            return raotRadar_;
+        }
+        const DBGuid& RadarFastTimeConstantLevelTimeseriesRadar( ) const
+        {
+            return rftcltRadar_;
+        }
+        const DBGuid& RadarFastTimeConstantModeTimeseriesRadar( ) const
+        {
+            return rftcmtRadar_;
+        }
+        const DBGuid& RadarPulseTimeseriesRadar( ) const
+        {
+            return raptsRadar_;
+        }
+        const DBGuid& RadarSector1EndTimeseriesRadar( ) const
+        {
+            return rs1etRadar_;
+        }
+        const DBGuid& RadarSector1StartTimeseriesRadar( ) const
+        {
+            return rs1stRadar_;
+        }
+        const DBGuid& RadarSector2EndTimeseriesRadar( ) const
+        {
+            return rs2etRadar_;
+        }
+        const DBGuid& RadarSector2StartTimeseriesRadar( ) const
+        {
+            return rs2stRadar_;
+        }
+        const DBGuid& RadarSensitivityTimeControlLevelTimeseriesRadar( ) const
+        {
+            return rstcltRadar_;
+        }
+        const DBGuid& RadarTuningTimeseriesRadar( ) const
+        {
+            return ratutsRadar_;
+        }
+        const DBGuid& VesselPersonsOnBoardTimeseriesVessel( ) const
+        {
+            return vpobtVessel_;
+        }
+        const DBGuid& RadomeStatusTimeseriesRadome( ) const
+        {
+            return rstRadome_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4453,6 +7669,78 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const TimeSpan& MaxRetention( ) const
+        {
+            return maxRetention_;
+        }
+        const DBGuid& AisAidToNavigationOffPositionTimeseriesAidToNavigation( ) const
+        {
+            return aatnoptAidToNavigation_;
+        }
+        const DBGuid& DeviceEnabledTimeseriesDevice( ) const
+        {
+            return detDevice_;
+        }
+        const DBGuid& MediaProxySessionEnabledTimeseriesProxySession( ) const
+        {
+            return mpsetProxySession_;
+        }
+        const DBGuid& MediaServiceEnabledTimeseriesService( ) const
+        {
+            return msetService_;
+        }
+        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseriesRadar( ) const
+        {
+            return rastctRadar_;
+        }
+        const DBGuid& RadarBlankSector1TimeseriesRadar( ) const
+        {
+            return rbs1tRadar_;
+        }
+        const DBGuid& RadarBlankSector2TimeseriesRadar( ) const
+        {
+            return rbs2tRadar_;
+        }
+        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseriesRadar( ) const
+        {
+            return reafctRadar_;
+        }
+        const DBGuid& RadarEnableFastTimeConstantTimeseriesRadar( ) const
+        {
+            return reftctRadar_;
+        }
+        const DBGuid& RadarEnableSensitivityTimeControlTimeseriesRadar( ) const
+        {
+            return restctRadar_;
+        }
+        const DBGuid& RadarPowerOnTimeseriesRadar( ) const
+        {
+            return rpotRadar_;
+        }
+        const DBGuid& RadarSaveSettingsTimeseriesRadar( ) const
+        {
+            return rsstRadar_;
+        }
+        const DBGuid& RadarTrackingTimeseriesRadar( ) const
+        {
+            return rttRadar_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4620,6 +7908,134 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const TimeSpan& MaxRetention( ) const
+        {
+            return maxRetention_;
+        }
+        const DBGuid& GNSSAltitudeTimeseriesGNSSDevice( ) const
+        {
+            return gatsGNSSDevice_;
+        }
+        const DBGuid& GNSSLatitudeTimeseriesGNSSDevice( ) const
+        {
+            return glatsGNSSDevice_;
+        }
+        const DBGuid& GNSSLongitudeTimeseriesGNSSDevice( ) const
+        {
+            return glotsGNSSDevice_;
+        }
+        const DBGuid& GyroCourseTimeseriesGyroDevice( ) const
+        {
+            return gctGyroDevice_;
+        }
+        const DBGuid& GyroHeadingMagneticNorthTimeseriesGyroDevice( ) const
+        {
+            return ghmntGyroDevice_;
+        }
+        const DBGuid& GyroHeadingTrueNorthTimeseriesGyroDevice( ) const
+        {
+            return ghtntGyroDevice_;
+        }
+        const DBGuid& GyroPitchTimeseriesGyroDevice( ) const
+        {
+            return gptGyroDevice_;
+        }
+        const DBGuid& GyroRateOfTurnTimeseriesGyroDevice( ) const
+        {
+            return grottGyroDevice_;
+        }
+        const DBGuid& GyroRollTimeseriesGyroDevice( ) const
+        {
+            return grtGyroDevice_;
+        }
+        const DBGuid& GyroSpeedTimeseriesGyroDevice( ) const
+        {
+            return gstGyroDevice_;
+        }
+        const DBGuid& RadarLatitudeTimeseriesRadar( ) const
+        {
+            return rlatsRadar_;
+        }
+        const DBGuid& RadarLongitudeTimeseriesRadar( ) const
+        {
+            return rlotsRadar_;
+        }
+        const DBGuid& RadomeDewPointTimeseriesRadome( ) const
+        {
+            return rdptRadome_;
+        }
+        const DBGuid& RadomePressureTimeseriesRadome( ) const
+        {
+            return rptRadome_;
+        }
+        const DBGuid& RadomeTemperatureTimeseriesRadome( ) const
+        {
+            return rtetsRadome_;
+        }
+        const DBGuid& VesselDraughtTimeseriesVessel( ) const
+        {
+            return vdtVessel_;
+        }
+        const DBGuid& ViewLatitudeTimeseriesView( ) const
+        {
+            return vlatsView_;
+        }
+        const DBGuid& ViewLongitudeTimeseriesView( ) const
+        {
+            return vlotsView_;
+        }
+        const DBGuid& ViewZoomLevelTimeseriesView( ) const
+        {
+            return vzltView_;
+        }
+        const DBGuid& WeatherStationAbsoluteHumidityTimeseriesWeatherStation( ) const
+        {
+            return wsahtWeatherStation_;
+        }
+        const DBGuid& WeatherStationAirTemperatureTimeseriesWeatherStation( ) const
+        {
+            return wsattWeatherStation_;
+        }
+        const DBGuid& WeatherStationBarometricPressureTimeseriesWeatherStation( ) const
+        {
+            return wsbptWeatherStation_;
+        }
+        const DBGuid& WeatherStationDewPointTimeseriesWeatherStation( ) const
+        {
+            return wsdptWeatherStation_;
+        }
+        const DBGuid& WeatherStationRelativeHumidityTimeseriesWeatherStation( ) const
+        {
+            return wsrhtWeatherStation_;
+        }
+        const DBGuid& WeatherStationWaterTemperatureTimeseriesWeatherStation( ) const
+        {
+            return wswttWeatherStation_;
+        }
+        const DBGuid& WeatherStationWindDirectionTimeseriesWeatherStation( ) const
+        {
+            return wswdtWeatherStation_;
+        }
+        const DBGuid& WeatherStationWindSpeedTimeseriesWeatherStation( ) const
+        {
+            return wswstWeatherStation_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4805,6 +8221,30 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const TimeSpan& MaxRetention( ) const
+        {
+            return maxRetention_;
+        }
+        const DBGuid& AisAidToNavigationPositionTimeseriesAidToNavigation( ) const
+        {
+            return aatnptAidToNavigation_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4880,6 +8320,70 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const TimeSpan& MaxRetention( ) const
+        {
+            return maxRetention_;
+        }
+        const DBGuid& RadarAzimuthOffsetTimeseriesRadar( ) const
+        {
+            return raotRadar_;
+        }
+        const DBGuid& RadarFastTimeConstantLevelTimeseriesRadar( ) const
+        {
+            return rftcltRadar_;
+        }
+        const DBGuid& RadarFastTimeConstantModeTimeseriesRadar( ) const
+        {
+            return rftcmtRadar_;
+        }
+        const DBGuid& RadarPulseTimeseriesRadar( ) const
+        {
+            return raptsRadar_;
+        }
+        const DBGuid& RadarSector1EndTimeseriesRadar( ) const
+        {
+            return rs1etRadar_;
+        }
+        const DBGuid& RadarSector1StartTimeseriesRadar( ) const
+        {
+            return rs1stRadar_;
+        }
+        const DBGuid& RadarSector2EndTimeseriesRadar( ) const
+        {
+            return rs2etRadar_;
+        }
+        const DBGuid& RadarSector2StartTimeseriesRadar( ) const
+        {
+            return rs2stRadar_;
+        }
+        const DBGuid& RadarSensitivityTimeControlLevelTimeseriesRadar( ) const
+        {
+            return rstcltRadar_;
+        }
+        const DBGuid& RadarTuningTimeseriesRadar( ) const
+        {
+            return ratutsRadar_;
+        }
+        const DBGuid& VesselPersonsOnBoardTimeseriesVessel( ) const
+        {
+            return vpobtVessel_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4985,6 +8489,30 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Catalog( ) const
+        {
+            return catalog_;
+        }
+        const FixedDBWideString<100>& Name( ) const
+        {
+            return name_;
+        }
+        const TimeSpan& MaxRetention( ) const
+        {
+            return maxRetention_;
+        }
+        const DBGuid& RadomeStatusTimeseriesRadome( ) const
+        {
+            return rstRadome_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5038,6 +8566,26 @@ namespace Barrelman::Database
 
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const Guid& Tracker( ) const
+        {
+            return tracker_;
+        }
+        Int64 TrackNumber( ) const
+        {
+            return trackNumber_;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5100,6 +8648,58 @@ namespace Barrelman::Database
         BARRELMAN_EXPORT void BindColumns( const ODBC::Statement& statement );
 
         BARRELMAN_EXPORT void ReadUnboundData( const ODBC::Statement& statement );
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        const FixedDBWideString<127>& Name( ) const
+        {
+            return name_;
+        }
+        double Longitude( ) const
+        {
+            return longitude_;
+        }
+        double Latitude( ) const
+        {
+            return latitude_;
+        }
+        Data::ZoneAlarmType AlarmType( ) const
+        {
+            return alarmType_;
+        }
+        const TimeSpan& AlarmTime( ) const
+        {
+            return alarmTime_;
+        }
+        const TimeSpan& RadarTrackMinimumLifetime( ) const
+        {
+            return radarTrackMinimumLifetime_;
+        }
+        double Speed( ) const
+        {
+            return speed_;
+        }
+        UInt32 StrokeColor( ) const
+        {
+            return strokeColor_;
+        }
+        UInt32 FillColor( ) const
+        {
+            return fillColor_;
+        }
+        DBDouble CircularZoneRadius( ) const
+        {
+            return czRadius_;
+        }
+        const DBBinary& PolygonZonePolygon( ) const
+        {
+            return pzPolygon_;
+        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {

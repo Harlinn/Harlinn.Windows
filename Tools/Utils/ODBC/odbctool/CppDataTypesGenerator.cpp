@@ -49,7 +49,9 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        requires std::is_enum_v<ObjectT>" );
         WriteLine( L"    using BaseData = Harlinn::Common::Core::Data::BaseData<ObjectT, KeyT>;" );
         WriteLine( );
-
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"    {} std::shared_ptr<BaseData<Kind, Guid>> DataFactory( Kind kind );", dllExport );
+        WriteLine( );
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];

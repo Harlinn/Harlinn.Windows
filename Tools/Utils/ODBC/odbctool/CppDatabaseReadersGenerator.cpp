@@ -32,9 +32,9 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"#ifndef {}", headerGuard );
         WriteLine( L"#define {}", headerGuard );
         WriteLine( );
-        WriteLine( "#include \"Data/Enums.h\"" );
         WriteLine( "#include <HODBC.h>" );
         WriteLine( "#include <HCCData.h>" );
+        WriteLine( "#include \"Data/DataTypes.h\"" );
         WriteLine( );
 
         WriteLine( );
@@ -407,6 +407,7 @@ namespace Harlinn::ODBC::Tool
         CreateBindColumns( classInfo );
         CreateReadUnboundData( classInfo );
         CreateWriteColumns( classInfo );
+        CreateAssignTo( classInfo );
         WriteLine( L"    };" );
         WriteLine( );
         WriteLine( L"    using Simple{}DataReader = SimpleColumnDataReader<{}ColumnData>;", classInfo.Name( ), classInfo.Name( ) );
@@ -572,6 +573,10 @@ namespace Harlinn::ODBC::Tool
         {
             WriteLine( L"            Base::WriteColumns( destination );" );
         }
+        else
+        {
+            WriteLine( L"            WriteColumnValue( destination, Data::Kind::{} );", classInfo.Name() );
+        }
         for ( size_t i = 0; i < memberCount; i++ )
         {
             const auto& member = *members[ i ];
@@ -581,4 +586,32 @@ namespace Harlinn::ODBC::Tool
         }
         WriteLine( L"        }" );
     }
+
+    void CppDatabaseReadersGenerator::CreateAssignTo( const ClassInfo& classInfo )
+    {
+        auto dataClassName = CppHelper::GetDataType( classInfo );
+        auto members = classInfo.OwnPersistentMembers( );
+        auto memberCount = members.size( );
+
+        WriteLine( L"        void AssignTo( Data::{}& destination ) const", dataClassName );
+        WriteLine( L"        {" );
+        if ( classInfo.IsTopLevel( ) == false )
+        {
+            auto baseClass = classInfo.BaseClass( );
+            auto baseDataClassName = CppHelper::GetDataType( *baseClass );
+            WriteLine( L"            Base::AssignTo( static_cast<Data::{}&>( destination ) );", baseDataClassName );
+        }
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto fieldName = CppHelper::GetMemberFieldName( member );
+            auto setterName = CppHelper::GetMemberSetterName( member );
+            
+            WriteLine( L"            destination.{}( {} );", setterName, fieldName );
+
+        }
+        WriteLine( L"        }" );
+
+    }
+
 }
