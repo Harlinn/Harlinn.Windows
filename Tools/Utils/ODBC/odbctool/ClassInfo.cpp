@@ -333,7 +333,16 @@ namespace Harlinn::ODBC::Tool
             }
         }
 
-
+        for ( auto member : members_ )
+        {
+            if ( member->Persistent( ) )
+            {
+                if ( member->PrimaryKey( ) == false || member->Owner( )->IsTopLevel( ) )
+                {
+                    viewMembers_.emplace_back( member );
+                }
+            }
+        }
 
     }
 
@@ -343,6 +352,39 @@ namespace Harlinn::ODBC::Tool
         {
             classList.emplace_back( derivedClass );
             derivedClass->AddDerivedClassesToClassList( classList );
+        }
+    }
+
+    bool ClassInfo::HasDerivedPersistentMembers( ) const
+    {
+        auto allDerivedClasses = AllDerivedClasses( );
+        for ( const auto& derivedClass : allDerivedClasses )
+        {
+            if ( derivedClass->ownPersistentMembers_.size( ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    std::vector<std::shared_ptr<MemberInfo>> ClassInfo::DerivedPersistentMembersUntil( const ClassInfo& classInfo ) const
+    {
+        std::vector<std::shared_ptr<MemberInfo>> result;
+        DerivedPersistentMembersUntil( classInfo, result );
+        return result;
+    }
+    void ClassInfo::DerivedPersistentMembersUntil( const ClassInfo& classInfo, std::vector<std::shared_ptr<MemberInfo>>& result ) const
+    {
+        if ( Id( ) != classInfo.Id( ) )
+        {
+            auto baseClass = BaseClass( );
+            if ( baseClass )
+            {
+                baseClass->DerivedPersistentMembersUntil( classInfo, result );
+            }
+            result.append_range( ownPersistentMembers_ );
         }
     }
 

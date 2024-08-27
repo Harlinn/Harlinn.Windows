@@ -58,6 +58,12 @@ namespace Harlinn::ODBC::Tool
             return owner.Namespace( separator );
         }
 
+        template<typename OwnerT>
+        const WideString& GetDllExport( const OwnerT& owner )
+        {
+            return owner.DllExport( );
+        }
+
     }
 
     template<typename OwnerT>
@@ -99,6 +105,11 @@ namespace Harlinn::ODBC::Tool
             {
                 return Internal::GetNamespace( separator, owner_, outputDirectory_ );
             }
+        }
+
+        const WideString& DllExport( ) const
+        {
+            return Internal::GetDllExport( owner_ );
         }
 
     };
@@ -148,6 +159,11 @@ namespace Harlinn::ODBC::Tool
             {
                 return Internal::GetNamespace( separator, owner_ );
             }
+        }
+
+        const WideString& DllExport( ) const
+        {
+            return Internal::GetDllExport( owner_ );
         }
 
     };
@@ -289,18 +305,51 @@ namespace Harlinn::ODBC::Tool
         { }
     };
 
+    class CppComplexDatabaseReadersOptions : public OptionsFile<CppDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDatabaseOptions>;
+        CppComplexDatabaseReadersOptions( const CppDatabaseOptions& owner )
+            : Base( owner, L"ComplexDatabaseReaders.h" )
+        {
+        }
+    };
+
+    class CppComplexDatabaseReadersSourceOptions : public OptionsFile<CppDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDatabaseOptions>;
+        CppComplexDatabaseReadersSourceOptions( const CppDatabaseOptions& owner )
+            : Base( owner, L"ComplexDatabaseReaders.cpp" )
+        {
+        }
+    };
+
+
     class CppDatabaseOptions : public OptionsContainer<CppOptions>
     {
         CppDatabaseReadersOptions databaseReaders_;
+        CppComplexDatabaseReadersOptions complexDatabaseReaders_;
+        CppComplexDatabaseReadersSourceOptions complexDatabaseReadersSource_;
     public:
         using Base = OptionsContainer<CppOptions>;
         CppDatabaseOptions( const CppOptions& owner )
-            : Base( owner, L"Database" ), databaseReaders_(*this)
+            : Base( owner, L"Database" ), databaseReaders_(*this), complexDatabaseReaders_(*this), complexDatabaseReadersSource_(*this)
         { }
 
         const CppDatabaseReadersOptions& DatabaseReaders( ) const
         {
             return databaseReaders_;
+        }
+
+        const CppComplexDatabaseReadersOptions& ComplexDatabaseReaders( ) const
+        {
+            return complexDatabaseReaders_;
+        }
+
+        const CppComplexDatabaseReadersSourceOptions& ComplexDatabaseReadersSource( ) const
+        {
+            return complexDatabaseReadersSource_;
         }
 
     };
@@ -354,6 +403,7 @@ namespace Harlinn::ODBC::Tool
         const Options& owner_;
         WideString outputDirectory_ = L"%HCC_HOME%\\Examples\\ODBC\\Barrelman\\Generated\\Cpp";
         WideString namespace_ = L"Barrelman";
+        WideString dllexport_ = L"BARRELMAN_EXPORT";
         CppDataOptions data_;
         CppDatabaseOptions database_;
     public:
@@ -376,6 +426,12 @@ namespace Harlinn::ODBC::Tool
         {
             return namespace_;
         }
+
+        const WideString& DllExport( ) const
+        {
+            return dllexport_;
+        }
+
 
         const CppDataOptions& Data( ) const
         {

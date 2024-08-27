@@ -3,6 +3,7 @@
 #define DATA_ENUMS_H_
 
 #include <HCCDef.h>
+#include "BarrelmanExport.h"
 
 namespace Barrelman::Data
 {

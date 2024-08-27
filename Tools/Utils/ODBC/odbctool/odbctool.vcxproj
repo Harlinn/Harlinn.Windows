@@ -156,6 +156,8 @@
     <ClCompile Include="BinaryMemberInfo.cpp" />
     <ClCompile Include="ClassInfo.cpp" />
     <ClCompile Include="CollectionMemberInfo.cpp" />
+    <ClCompile Include="CppComplexDatabaseReadersGenerator.cpp" />
+    <ClCompile Include="CppComplexDatabaseReadersSourceGenerator.cpp" />
     <ClCompile Include="CppDatabaseReadersGenerator.cpp" />
     <ClCompile Include="CppDataTypesGenerator.cpp" />
     <ClCompile Include="CppEnumsGenerator.cpp" />

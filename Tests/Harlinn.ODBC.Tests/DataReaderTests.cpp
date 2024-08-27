@@ -49,8 +49,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetBooleanTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableBooleanTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableBooleanTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBBooleanTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBBooleanTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableBooleanTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableBoolval = reader->GetNullableBoolean( 2 );
+        auto nullableBoolval = reader->GetDBBoolean( 2 );
         BOOST_CHECK( nullableBoolval.has_value( ) );
         BOOST_CHECK( nullableBoolval.value( ) );
     }
@@ -93,8 +93,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetSByteTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableSByteTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableSByteTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBSByteTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBSByteTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableSByteTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableSByte( 2 );
+        auto nullableValue = reader->GetDBSByte( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -137,8 +137,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetByteTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableByteTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableByteTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBByteTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBByteTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableByteTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableByte( 2 );
+        auto nullableValue = reader->GetDBByte( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -181,8 +181,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetInt16Test1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableInt16Test1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableInt16Test1 )
+// --run_test=DataReaderTests/DateReaderGetDBInt16Test1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBInt16Test1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableInt16Test1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableInt16( 2 );
+        auto nullableValue = reader->GetDBInt16( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -224,8 +224,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetUInt16Test1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableUInt16Test1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableUInt16Test1 )
+// --run_test=DataReaderTests/DateReaderGetDBUInt16Test1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBUInt16Test1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableUInt16Test1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableUInt16( 2 );
+        auto nullableValue = reader->GetDBUInt16( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -267,8 +267,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetInt32Test1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableInt32Test1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableInt32Test1 )
+// --run_test=DataReaderTests/DateReaderGetDBInt32Test1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBInt32Test1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableInt32Test1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableInt32( 2 );
+        auto nullableValue = reader->GetDBInt32( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -310,8 +310,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetUInt32Test1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableUInt32Test1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableUInt32Test1 )
+// --run_test=DataReaderTests/DateReaderGetDBUInt32Test1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBUInt32Test1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableUInt32Test1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableUInt32( 2 );
+        auto nullableValue = reader->GetDBUInt32( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -353,8 +353,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetInt64Test1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableInt64Test1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableInt64Test1 )
+// --run_test=DataReaderTests/DateReaderGetDBInt64Test1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBInt64Test1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableInt64Test1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableInt64( 2 );
+        auto nullableValue = reader->GetDBInt64( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -396,8 +396,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetUInt64Test1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableUInt64Test1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableUInt64Test1 )
+// --run_test=DataReaderTests/DateReaderGetDBUInt64Test1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBUInt64Test1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -412,7 +412,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableUInt64Test1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableUInt64( 2 );
+        auto nullableValue = reader->GetDBUInt64( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1 );
     }
@@ -439,8 +439,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDecimalTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableDecimalTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableDecimalTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBDecimalTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBDecimalTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -455,7 +455,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableDecimalTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableDecimal( 2 );
+        auto nullableValue = reader->GetDBDecimal( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ).val[ 0 ] == 1 );
     }
@@ -482,8 +482,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNumericTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableNumericTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableNumericTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBNumericTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBNumericTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -498,7 +498,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableNumericTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableNumeric( 2 );
+        auto nullableValue = reader->GetDBNumeric( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ).val[ 0 ] == 1 );
     }
@@ -525,8 +525,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetSingleTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableSingleTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableSingleTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBSingleTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBSingleTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -541,7 +541,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableSingleTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableSingle( 2 );
+        auto nullableValue = reader->GetDBSingle( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1.0f );
     }
@@ -568,8 +568,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDoubleTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableDoubleTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableDoubleTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBDoubleTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBDoubleTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -584,7 +584,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableDoubleTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableDouble( 2 );
+        auto nullableValue = reader->GetDBDouble( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1.0 );
     }
@@ -611,8 +611,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetCurrencyTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableCurrencyTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableCurrencyTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBCurrencyTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBCurrencyTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -627,7 +627,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableCurrencyTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableCurrency( 2 );
+        auto nullableValue = reader->GetDBCurrency( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1.0 );
     }
@@ -654,8 +654,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetCurrencyTest2 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableCurrencyTest2
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableCurrencyTest2 )
+// --run_test=DataReaderTests/DateReaderGetDBCurrencyTest2
+BOOST_AUTO_TEST_CASE( DateReaderGetDBCurrencyTest2 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -670,7 +670,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableCurrencyTest2 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableCurrency( 2 );
+        auto nullableValue = reader->GetDBCurrency( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == 1.0 );
     }
@@ -699,8 +699,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDateTimeTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableDateTimeTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBDateTimeTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBDateTimeTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -716,7 +716,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest1 )
     if ( found )
     {
         DateTime expected( 2024, 2, 25 );
-        auto nullableValue = reader->GetNullableDateTime( 2 );
+        auto nullableValue = reader->GetDBDateTime( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -745,8 +745,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDateTimeTest2 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableDateTimeTest2
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest2 )
+// --run_test=DataReaderTests/DateReaderGetDBDateTimeTest2
+BOOST_AUTO_TEST_CASE( DateReaderGetDBDateTimeTest2 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -762,7 +762,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest2 )
     if ( found )
     {
         DateTime expected( 2024, 2, 25, 12, 01, 01, 555 );
-        auto nullableValue = reader->GetNullableDateTime( 2 );
+        auto nullableValue = reader->GetDBDateTime( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         auto diff = ( nullableValue.value( ) - expected ).TotalSeconds( );
         BOOST_CHECK( diff < 0.01 );
@@ -792,8 +792,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDateTimeTest3 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableDateTimeTest3
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest3 )
+// --run_test=DataReaderTests/DateReaderGetDBDateTimeTest3
+BOOST_AUTO_TEST_CASE( DateReaderGetDBDateTimeTest3 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -809,7 +809,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest3 )
     if ( found )
     {
         DateTime expected( 2011, 8, 15, 14, 23, 44, 500 );
-        auto nullableValue = reader->GetNullableDateTime( 2 );
+        auto nullableValue = reader->GetDBDateTime( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -838,8 +838,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetDateTimeTest4 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableDateTimeTest4
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest4 )
+// --run_test=DataReaderTests/DateReaderGetDBDateTimeTest4
+BOOST_AUTO_TEST_CASE( DateReaderGetDBDateTimeTest4 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -855,7 +855,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableDateTimeTest4 )
     if ( found )
     {
         DateTime expected( 2010, 12, 31, 23, 59, 0 );
-        auto nullableValue = reader->GetNullableDateTime( 2 );
+        auto nullableValue = reader->GetDBDateTime( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -891,8 +891,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetTimestampOffsetTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableTimestampOffsetTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableTimestampOffsetTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBTimestampOffsetTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBTimestampOffsetTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -907,7 +907,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableTimestampOffsetTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableTimestampOffset( 2 );
+        auto nullableValue = reader->GetDBTimestampOffset( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
 
         BOOST_CHECK( nullableValue.value( ).year == 2011 );
@@ -945,8 +945,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetTimeTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableTimeTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableTimeTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBTimeTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBTimeTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -961,7 +961,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableTimeTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableTime( 2 );
+        auto nullableValue = reader->GetDBTime( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
 
         BOOST_CHECK( nullableValue.value().hour == 23 );
@@ -993,8 +993,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetGuidTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableGuidTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableGuidTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBGuidTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBGuidTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1010,7 +1010,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableGuidTest1 )
     if ( found )
     {
         Guid expected( L"{0E984725-C51C-4BF4-9960-E1C80E27ABA0}" );
-        auto nullableValue = reader->GetNullableGuid( 2 );
+        auto nullableValue = reader->GetDBGuid( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value() == expected );
     }
@@ -1036,8 +1036,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetRowVersionTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableRowVersionTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableRowVersionTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBRowVersionTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBRowVersionTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1052,7 +1052,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableRowVersionTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableRowVersion( 2 );
+        auto nullableValue = reader->GetDBRowVersion( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
     }
 }
@@ -1083,8 +1083,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetBinaryTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableBinaryTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableBinaryTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBBinaryTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBBinaryTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1099,7 +1099,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableBinaryTest1 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableBinary( 2 );
+        auto nullableValue = reader->GetDBBinary( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( )[ 0 ] == 0x0F );
         BOOST_CHECK( nullableValue.value( )[ 1 ] == 0x0F );
@@ -1138,8 +1138,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetBinaryTest2 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableBinaryTest2
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableBinaryTest2 )
+// --run_test=DataReaderTests/DateReaderGetDBBinaryTest2
+BOOST_AUTO_TEST_CASE( DateReaderGetDBBinaryTest2 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1154,7 +1154,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableBinaryTest2 )
     BOOST_CHECK( found );
     if ( found )
     {
-        auto nullableValue = reader->GetNullableBinary( 2 );
+        auto nullableValue = reader->GetDBBinary( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( )[ 0 ] == 0x0F );
         BOOST_CHECK( nullableValue.value( )[ 1 ] == 0xFF );
@@ -1190,8 +1190,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest1 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest1
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest1 )
+// --run_test=DataReaderTests/DateReaderGetDBWideStringTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetDBWideStringTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1207,7 +1207,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest1 )
     if ( found )
     {
         WideString expected( L"abcd" );
-        auto nullableValue = reader->GetNullableWideString( 2 );
+        auto nullableValue = reader->GetDBWideString( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value() == expected );
     }
@@ -1237,8 +1237,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest2 )
 }
 
 
-// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest2
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest2 )
+// --run_test=DataReaderTests/DateReaderGetDBWideStringTest2
+BOOST_AUTO_TEST_CASE( DateReaderGetDBWideStringTest2 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1254,7 +1254,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest2 )
     if ( found )
     {
         WideString expected( L"abcdef" );
-        auto nullableValue = reader->GetNullableWideString( 2 );
+        auto nullableValue = reader->GetDBWideString( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -1284,8 +1284,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest3 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest3
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest3 )
+// --run_test=DataReaderTests/DateReaderGetDBWideStringTest3
+BOOST_AUTO_TEST_CASE( DateReaderGetDBWideStringTest3 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1301,7 +1301,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest3 )
     if ( found )
     {
         WideString expected( L"abcd" );
-        auto nullableValue = reader->GetNullableWideString( 2 );
+        auto nullableValue = reader->GetDBWideString( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -1330,8 +1330,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest4 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest4
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest4 )
+// --run_test=DataReaderTests/DateReaderGetDBWideStringTest4
+BOOST_AUTO_TEST_CASE( DateReaderGetDBWideStringTest4 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1347,7 +1347,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest4 )
     if ( found )
     {
         WideString expected( L"abcdef" );
-        auto nullableValue = reader->GetNullableWideString( 2 );
+        auto nullableValue = reader->GetDBWideString( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -1375,8 +1375,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest5 )
     }
 }
 
-// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest5
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest5 )
+// --run_test=DataReaderTests/DateReaderGetDBWideStringTest5
+BOOST_AUTO_TEST_CASE( DateReaderGetDBWideStringTest5 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1392,7 +1392,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest5 )
     if ( found )
     {
         WideString expected( L"Text" );
-        auto nullableValue = reader->GetNullableWideString( 2 );
+        auto nullableValue = reader->GetDBWideString( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }
@@ -1423,8 +1423,8 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest6 )
 }
 
 
-// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest6
-BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest6 )
+// --run_test=DataReaderTests/DateReaderGetDBWideStringTest6
+BOOST_AUTO_TEST_CASE( DateReaderGetDBWideStringTest6 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
     auto connection = environment.Connect( DataSource );
@@ -1440,7 +1440,7 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest6 )
     if ( found )
     {
         WideString expected( L"NText" );
-        auto nullableValue = reader->GetNullableWideString( 2 );
+        auto nullableValue = reader->GetDBWideString( 2 );
         BOOST_CHECK( nullableValue.has_value( ) );
         BOOST_CHECK( nullableValue.value( ) == expected );
     }

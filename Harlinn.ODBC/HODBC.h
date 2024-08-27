@@ -53,6 +53,23 @@ namespace Harlinn::ODBC
             return *this;
         }
 
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, CharT>
+        FixedDBString& operator = ( const std::optional<T>& str )
+        {
+            if ( str.has_value( ) )
+            {
+                const auto& value = str.value( );
+                Base::Assign( value.data( ), value.size( ) );
+            }
+            else
+            {
+                data( )[ 0 ] = static_cast< CharT >( 0 );
+                Base::size_ = std::bit_cast<size_t>(SQL_NULL_DATA);
+            }
+            return *this;
+        }
+
         SQLLEN* Indicator( )
         {
             auto* ptr = &size_;
@@ -125,6 +142,24 @@ namespace Harlinn::ODBC
             return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
         }
 
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, Byte>
+        FixedDBBinary& operator = ( const std::optional<T>& str )
+        {
+            if ( str.has_value( ) )
+            {
+                const auto& value = str.value( );
+                Base::Assign( value.data( ), value.size( ) );
+            }
+            else
+            {
+                data( )[ 0 ] = static_cast< Byte >( 0 );
+                Base::size_ = std::bit_cast< size_t >( SQL_NULL_DATA );
+            }
+            return *this;
+        }
+
+
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -170,8 +205,17 @@ namespace Harlinn::ODBC
         public:
             constexpr DBValue( ) = default;
 
-            explicit DBValue(const value_type& value) noexcept
+            DBValue(const value_type& value) noexcept
                 : indicator_(0), value_( value )
+            { }
+
+            DBValue( const std::optional<value_type>& value ) noexcept
+                : indicator_( value.has_value( ) ? 0 : SQL_NULL_DATA ), value_( value.has_value( ) ? value.value( ) : value_type{} )
+            {
+            }
+
+            DBValue( nullptr_t ) noexcept
+                : indicator_( SQL_NULL_DATA ), value_{}
             { }
 
             constexpr void reset( ) noexcept
@@ -193,6 +237,21 @@ namespace Harlinn::ODBC
                 return *this;
             }
 
+            constexpr DBValue& operator = ( const std::optional<value_type>& value ) noexcept
+            {
+                if ( value.has_value( ) )
+                {
+                    indicator_ = 0;
+                    value_ = value.value();
+                }
+                else
+                {
+                    reset( );
+                }
+                return *this;
+            }
+
+
             bool operator == ( const DBValue& other ) const
             {
                 return indicator_ == other.indicator_ && value_ == other.value_;
@@ -201,6 +260,15 @@ namespace Harlinn::ODBC
             bool operator != ( const DBValue& other ) const
             {
                 return indicator_ != other.indicator_ || value_ != other.value_;
+            }
+
+            operator std::optional<T> ( ) const
+            {
+                if ( has_value( ) )
+                {
+                    return value_;
+                }
+                return {};
             }
 
 
@@ -234,7 +302,7 @@ namespace Harlinn::ODBC
             }
 
             [[nodiscard]]
-            const value_type& value( ) const noexcept
+            const value_type& value( ) const
             {
                 if ( has_value( ) )
                 {
@@ -291,6 +359,7 @@ namespace Harlinn::ODBC
     using DBGuid = Internal::DBValue<Guid>;
     using DBCurrency = Internal::DBValue<Currency>;
     using DBWideString = Internal::DBValue<WideString>;
+    using DBAnsiString = Internal::DBValue<AnsiString>;
     using DBBinary = Internal::DBValue<Binary>;
 
 
@@ -1665,9 +1734,10 @@ namespace Harlinn::ODBC
             fraction = ( dateTime.Ticks( ) % DateTime::TicksPerSecond ) * 100;
             return *this;
         }
-
-
     };
+
+    using DBTimeStamp = Internal::DBValue<TimeStamp>;
+
 
     class Date : public SQL_DATE_STRUCT
     {
@@ -1693,9 +1763,9 @@ namespace Harlinn::ODBC
             day = d;
             return *this;
         }
-
-
     };
+
+    using DBDate = Internal::DBValue<Date>;
 
     class Time : public SQL_TIME_STRUCT
     {
@@ -1727,6 +1797,9 @@ namespace Harlinn::ODBC
     };
 
 
+    using DBTime = Internal::DBValue<Time>;
+
+
     class Time2 : public MsSql::DBTIME2
     {
     public:
@@ -1756,6 +1829,8 @@ namespace Harlinn::ODBC
             return *this;
         }
     };
+
+    using DBTime2 = Internal::DBValue<Time2>;
 
 
     enum class IntervalType
@@ -1822,9 +1897,9 @@ namespace Harlinn::ODBC
             }
 
         }
-
-
     };
+
+    using DBInterval = Internal::DBValue<Interval>;
 
     struct TimestampOffset
     {
@@ -1839,6 +1914,8 @@ namespace Harlinn::ODBC
         SQLSMALLINT timezoneMinute = 0;
     };
 
+    using DBTimestampOffset = Internal::DBValue<TimestampOffset>;
+
 
     class Numeric : public SQL_NUMERIC_STRUCT
     {
@@ -1851,11 +1928,16 @@ namespace Harlinn::ODBC
         }
     };
 
+    using DBNumeric = Internal::DBValue<Numeric>;
+    using DBDecimal = Internal::DBValue<Numeric>;
+
     struct Money
     {
         LONG moneyHigh = 0;
         ULONG moneyLow = 0;
     };
+
+    using DBMoney = Internal::DBValue<Money>;
 
     struct RowVersion
     {
@@ -1871,6 +1953,8 @@ namespace Harlinn::ODBC
             return *reinterpret_cast< const Int64* >( &value[ 0 ] ) != *reinterpret_cast< const Int64* >( &other.value[ 0 ] );
         }
     };
+
+    using DBRowVersion = Internal::DBValue<RowVersion>;
 
 
     /// <summary>
@@ -2428,174 +2512,174 @@ namespace Harlinn::ODBC
 
     public:
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;bool&gt;.
+        /// Gets the value of the specified column as a DBBoolean.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]] 
-        inline std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const;
+        inline DBBoolean GetDBBoolean( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Byte&gt;.
+        /// Gets the value of the specified column as a DBByte.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]] 
-        inline std::optional<Byte> GetNullableByte( SQLUSMALLINT columnNumber ) const;
+        inline DBByte GetDBByte( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;SByte&gt;.
+        /// Gets the value of the specified column as a DBSByte.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<SByte> GetNullableSByte( SQLUSMALLINT columnNumber ) const;
+        inline DBSByte GetDBSByte( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Int16&gt;.
+        /// Gets the value of the specified column as a DBInt16.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Int16> GetNullableInt16( SQLUSMALLINT columnNumber ) const;
+        inline DBInt16 GetDBInt16( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;UInt16&gt;.
+        /// Gets the value of the specified column as a DBUInt16.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<UInt16> GetNullableUInt16( SQLUSMALLINT columnNumber ) const;
+        inline DBUInt16 GetDBUInt16( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Int32&gt;.
+        /// Gets the value of the specified column as a DBInt32.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Int32> GetNullableInt32( SQLUSMALLINT columnNumber ) const;
+        inline DBInt32 GetDBInt32( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;UInt32&gt;.
+        /// Gets the value of the specified column as a DBUInt32.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<UInt32> GetNullableUInt32( SQLUSMALLINT columnNumber ) const;
+        inline DBUInt32 GetDBUInt32( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Int64&gt;.
+        /// Gets the value of the specified column as a DBInt64.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Int64> GetNullableInt64( SQLUSMALLINT columnNumber ) const;
+        inline DBInt64 GetDBInt64( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;UInt64&gt;.
+        /// Gets the value of the specified column as a DBUInt64.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<UInt64> GetNullableUInt64( SQLUSMALLINT columnNumber ) const;
+        inline DBUInt64 GetDBUInt64( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// Gets the value of the specified column as a DBNumeric.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Numeric> GetNullableNumeric( SQLUSMALLINT columnNumber ) const;
+        inline DBNumeric GetDBNumeric( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// Gets the value of the specified column as a DBDecimal.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Numeric> GetNullableDecimal( SQLUSMALLINT columnNumber ) const;
+        inline DBDecimal GetDBDecimal( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;float&gt;.
+        /// Gets the value of the specified column as a DBSingle.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const;
+        inline DBSingle GetDBSingle( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;double&gt;.
+        /// Gets the value of the specified column as a DBDouble.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<double> GetNullableDouble( SQLUSMALLINT columnNumber ) const;
+        inline DBDouble GetDBDouble( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Currency&gt;.
+        /// Gets the value of the specified column as a DBCurrency.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Currency> GetNullableCurrency( SQLUSMALLINT columnNumber ) const;
+        inline DBCurrency GetDBCurrency( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;DateTime&gt;.
+        /// Gets the value of the specified column as a DBDateTime.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<DateTime> GetNullableDateTime( SQLUSMALLINT columnNumber ) const;
+        inline DBDateTime GetDBDateTime( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;TimestampOffset&gt;.
+        /// Gets the value of the specified column as a DBTimestampOffset.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<TimestampOffset> GetNullableTimestampOffset( SQLUSMALLINT columnNumber ) const;
+        inline DBTimestampOffset GetDBTimestampOffset( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Date&gt;.
+        /// Gets the value of the specified column as a DBDate.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Date> GetNullableDate( SQLUSMALLINT columnNumber ) const;
+        inline DBDate GetDBDate( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Time&gt;.
+        /// Gets the value of the specified column as a DBTime.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Time> GetNullableTime( SQLUSMALLINT columnNumber ) const;
+        inline DBTime GetDBTime( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;TimeSpan&gt;.
+        /// Gets the value of the specified column as a DBTimeSpan.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const;
+        inline DBTimeSpan GetDBTimeSpan( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;WideString&gt;.
+        /// Gets the value of the specified column as a DBWideString.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const;
+        inline DBWideString GetDBWideString( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;AnsiString&gt;.
+        /// Gets the value of the specified column as a DBAnsiString.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const;
+        inline DBAnsiString GetDBAnsiString( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;std::vector&ltByte&gt;&gt;.
+        /// Gets the value of the specified column as a DBBinary.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Binary> GetNullableBinary( SQLUSMALLINT columnNumber ) const;
+        inline DBBinary GetDBBinary( SQLUSMALLINT columnNumber ) const;
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Guid&gt;.
+        /// Gets the value of the specified column as a DBGuid.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const;
+        inline DBGuid GetDBGuid( SQLUSMALLINT columnNumber ) const;
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;RowVersion&gt;.
+        /// Gets the value of the specified column as a DBRowVersion.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        inline std::optional<RowVersion> GetNullableRowVersion( SQLUSMALLINT columnNumber ) const;
+        inline DBRowVersion GetDBRowVersion( SQLUSMALLINT columnNumber ) const;
 
         /// <summary>
         /// Gets the value of the specified column as a bool.
@@ -3914,12 +3998,12 @@ namespace Harlinn::ODBC
 
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;bool&gt;.
+        /// Gets the value of the specified column as a DBBoolean.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const
+        DBBoolean GetDBBoolean( SQLUSMALLINT columnNumber ) const
         {
             bool value;
             SQLLEN indicator;
@@ -3931,12 +4015,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Byte&gt;.
+        /// Gets the value of the specified column as a DBByte.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Byte> GetNullableByte( SQLUSMALLINT columnNumber ) const
+        DBByte GetDBByte( SQLUSMALLINT columnNumber ) const
         {
             Byte value;
             SQLLEN indicator;
@@ -3948,12 +4032,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;SByte&gt;.
+        /// Gets the value of the specified column as a DBSByte.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<SByte> GetNullableSByte( SQLUSMALLINT columnNumber ) const
+        DBSByte GetDBSByte( SQLUSMALLINT columnNumber ) const
         {
             SByte value;
             SQLLEN indicator;
@@ -3966,12 +4050,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Int16&gt;.
+        /// Gets the value of the specified column as a DBInt16.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Int16> GetNullableInt16( SQLUSMALLINT columnNumber ) const
+        DBInt16 GetDBInt16( SQLUSMALLINT columnNumber ) const
         {
             Int16 value;
             SQLLEN indicator;
@@ -3983,12 +4067,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;UInt16&gt;.
+        /// Gets the value of the specified column as a DBUInt16.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<UInt16> GetNullableUInt16( SQLUSMALLINT columnNumber ) const
+        DBUInt16 GetDBUInt16( SQLUSMALLINT columnNumber ) const
         {
             Int16 value;
             SQLLEN indicator;
@@ -4000,12 +4084,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Int32&gt;.
+        /// Gets the value of the specified column as a DBInt32.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Int32> GetNullableInt32( SQLUSMALLINT columnNumber ) const
+        DBInt32 GetDBInt32( SQLUSMALLINT columnNumber ) const
         {
             Int32 value;
             SQLLEN indicator;
@@ -4017,12 +4101,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;UInt32&gt;.
+        /// Gets the value of the specified column as a DBUInt32.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<UInt32> GetNullableUInt32( SQLUSMALLINT columnNumber ) const
+        DBUInt32 GetDBUInt32( SQLUSMALLINT columnNumber ) const
         {
             UInt32 value;
             SQLLEN indicator;
@@ -4034,12 +4118,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Int64&gt;.
+        /// Gets the value of the specified column as a DBInt64.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Int64> GetNullableInt64( SQLUSMALLINT columnNumber ) const
+        DBInt64 GetDBInt64( SQLUSMALLINT columnNumber ) const
         {
             Int64 value;
             SQLLEN indicator;
@@ -4051,12 +4135,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;UInt64&gt;.
+        /// Gets the value of the specified column as a DBUInt64.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<UInt64> GetNullableUInt64( SQLUSMALLINT columnNumber ) const
+        DBUInt64 GetDBUInt64( SQLUSMALLINT columnNumber ) const
         {
             UInt64 value;
             SQLLEN indicator;
@@ -4073,7 +4157,7 @@ namespace Harlinn::ODBC
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Numeric> GetNullableNumeric( SQLUSMALLINT columnNumber ) const
+        DBNumeric GetDBNumeric( SQLUSMALLINT columnNumber ) const
         {
             Numeric value;
             SQLLEN indicator;
@@ -4085,23 +4169,23 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// Gets the value of the specified column as a DBDecimal.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Numeric> GetNullableDecimal( SQLUSMALLINT columnNumber ) const
+        DBDecimal GetDBDecimal( SQLUSMALLINT columnNumber ) const
         {
-            return GetNullableNumeric( columnNumber );
+            return GetDBNumeric( columnNumber );
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;float&gt;.
+        /// Gets the value of the specified column as a DBSingle.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const
+        DBSingle GetDBSingle( SQLUSMALLINT columnNumber ) const
         {
             float value;
             SQLLEN indicator;
@@ -4113,12 +4197,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;double&gt;.
+        /// Gets the value of the specified column as a DBDouble.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<double> GetNullableDouble( SQLUSMALLINT columnNumber ) const
+        DBDouble GetDBDouble( SQLUSMALLINT columnNumber ) const
         {
             double value;
             SQLLEN indicator;
@@ -4131,12 +4215,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Currency&gt;.
+        /// Gets the value of the specified column as a DBCurrency.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Currency> GetNullableCurrency( SQLUSMALLINT columnNumber ) const
+        DBCurrency GetDBCurrency( SQLUSMALLINT columnNumber ) const
         {
             Money value;
             SQLLEN indicator;
@@ -4156,12 +4240,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;DateTime&gt;.
+        /// Gets the value of the specified column as a DBDateTime.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<DateTime> GetNullableDateTime( SQLUSMALLINT columnNumber ) const
+        DBDateTime GetDBDateTime( SQLUSMALLINT columnNumber ) const
         {
             TimeStamp value;
             SQLLEN indicator;
@@ -4174,12 +4258,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;TimestampOffset&gt;.
+        /// Gets the value of the specified column as a DBTimestampOffset.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<TimestampOffset> GetNullableTimestampOffset( SQLUSMALLINT columnNumber ) const
+        DBTimestampOffset GetDBTimestampOffset( SQLUSMALLINT columnNumber ) const
         {
             TimestampOffset value;
             SQLLEN indicator;
@@ -4191,12 +4275,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Date&gt;.
+        /// Gets the value of the specified column as a DBDate.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Date> GetNullableDate( SQLUSMALLINT columnNumber ) const
+        DBDate GetDBDate( SQLUSMALLINT columnNumber ) const
         {
             Date value;
             SQLLEN indicator;
@@ -4208,12 +4292,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Time&gt;.
+        /// Gets the value of the specified column as a DBTime.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Time> GetNullableTime( SQLUSMALLINT columnNumber ) const
+        DBTime GetDBTime( SQLUSMALLINT columnNumber ) const
         {
             Time value;
             SQLLEN indicator;
@@ -4225,12 +4309,12 @@ namespace Harlinn::ODBC
             return value;
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;TimeSpan&gt;.
+        /// Gets the value of the specified column as a DBTimeSpan.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
+        DBTimeSpan GetDBTimeSpan( SQLUSMALLINT columnNumber ) const
         {
             Interval value;
             SQLLEN indicator;
@@ -4242,12 +4326,12 @@ namespace Harlinn::ODBC
             return value.ToTimeSpan( );
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;WideString&gt;.
+        /// Gets the value of the specified column as a DBWideString.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const
+        DBWideString GetDBWideString( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
             constexpr size_t BufferSize = 8192;
@@ -4301,12 +4385,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;AnsiString&gt;.
+        /// Gets the value of the specified column as a DBAnsiString.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const
+        DBAnsiString GetDBAnsiString( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
             constexpr size_t BufferSize = 8192;
@@ -4345,12 +4429,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;std::vector&ltByte&gt;&gt;.
+        /// Gets the value of the specified column as a DBBinary.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Binary> GetNullableBinary( SQLUSMALLINT columnNumber ) const
+        DBBinary GetDBBinary( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
             constexpr size_t BufferSize = 8192;
@@ -4401,12 +4485,12 @@ namespace Harlinn::ODBC
         }
 
         /// <summary>
-        /// Gets the value of the specified column as a std::optional&lt;Guid&gt;.
+        /// Gets the value of the specified column as a DBGuid.
         /// </summary>
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const
+        DBGuid GetDBGuid( SQLUSMALLINT columnNumber ) const
         {
             Guid value;
             SQLLEN indicator;
@@ -4424,7 +4508,7 @@ namespace Harlinn::ODBC
         /// <param name="columnNumber">The one-based column ordinal.</param>
         /// <returns>The value of the column.</returns>
         [[nodiscard]]
-        std::optional<RowVersion> GetNullableRowVersion( SQLUSMALLINT columnNumber ) const
+        DBRowVersion GetDBRowVersion( SQLUSMALLINT columnNumber ) const
         {
             RowVersion value;
             SQLLEN indicator;
@@ -6283,148 +6367,148 @@ namespace Harlinn::ODBC
     }
 
     [[nodiscard]]
-    inline std::optional<bool> DataReader::GetNullableBoolean( SQLUSMALLINT columnNumber ) const
+    inline DBBoolean DataReader::GetDBBoolean( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableBoolean( columnNumber );
+        return statement_->GetDBBoolean( columnNumber );
     }
     [[nodiscard]]
-    inline std::optional<Byte> DataReader::GetNullableByte( SQLUSMALLINT columnNumber ) const
+    inline DBByte DataReader::GetDBByte( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableByte( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<SByte> DataReader::GetNullableSByte( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableSByte( columnNumber );
+        return statement_->GetDBByte( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<Int16> DataReader::GetNullableInt16( SQLUSMALLINT columnNumber ) const
+    inline DBSByte DataReader::GetDBSByte( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableInt16( columnNumber );
+        return statement_->GetDBSByte( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<UInt16> DataReader::GetNullableUInt16( SQLUSMALLINT columnNumber ) const
+    inline DBInt16 DataReader::GetDBInt16( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableUInt16( columnNumber );
+        return statement_->GetDBInt16( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<Int32> DataReader::GetNullableInt32( SQLUSMALLINT columnNumber ) const
+    inline DBUInt16 DataReader::GetDBUInt16( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableInt32( columnNumber );
+        return statement_->GetDBUInt16( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<UInt32> DataReader::GetNullableUInt32( SQLUSMALLINT columnNumber ) const
+    inline DBInt32 DataReader::GetDBInt32( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableUInt32( columnNumber );
+        return statement_->GetDBInt32( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<Int64> DataReader::GetNullableInt64( SQLUSMALLINT columnNumber ) const
+    inline DBUInt32 DataReader::GetDBUInt32( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableInt64( columnNumber );
+        return statement_->GetDBUInt32( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<UInt64> DataReader::GetNullableUInt64( SQLUSMALLINT columnNumber ) const
+    inline DBInt64 DataReader::GetDBInt64( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableUInt64( columnNumber );
+        return statement_->GetDBInt64( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<Numeric> DataReader::GetNullableNumeric( SQLUSMALLINT columnNumber ) const
+    inline DBUInt64 DataReader::GetDBUInt64( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableNumeric( columnNumber );
+        return statement_->GetDBUInt64( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<Numeric> DataReader::GetNullableDecimal( SQLUSMALLINT columnNumber ) const
+    inline DBNumeric DataReader::GetDBNumeric( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableDecimal( columnNumber );
-    }
-
-
-    [[nodiscard]]
-    inline std::optional<float> DataReader::GetNullableSingle( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableSingle( columnNumber );
+        return statement_->GetDBNumeric( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<double> DataReader::GetNullableDouble( SQLUSMALLINT columnNumber ) const
+    inline DBDecimal DataReader::GetDBDecimal( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableDouble( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<Currency> DataReader::GetNullableCurrency( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableCurrency( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<DateTime> DataReader::GetNullableDateTime( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableDateTime( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<TimestampOffset> DataReader::GetNullableTimestampOffset( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableTimestampOffset( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<Date> DataReader::GetNullableDate( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableDate( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<Time> DataReader::GetNullableTime( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableTime( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<TimeSpan> DataReader::GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableTimeSpan( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<WideString> DataReader::GetNullableWideString( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableWideString( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<AnsiString> DataReader::GetNullableAnsiString( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableAnsiString( columnNumber );
-    }
-
-    [[nodiscard]]
-    inline std::optional<Binary> DataReader::GetNullableBinary( SQLUSMALLINT columnNumber ) const
-    {
-        return statement_->GetNullableBinary( columnNumber );
+        return statement_->GetDBDecimal( columnNumber );
     }
 
 
     [[nodiscard]]
-    inline std::optional<Guid> DataReader::GetNullableGuid( SQLUSMALLINT columnNumber ) const
+    inline DBSingle DataReader::GetDBSingle( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableGuid( columnNumber );
+        return statement_->GetDBSingle( columnNumber );
     }
 
     [[nodiscard]]
-    inline std::optional<RowVersion> DataReader::GetNullableRowVersion( SQLUSMALLINT columnNumber ) const
+    inline DBDouble DataReader::GetDBDouble( SQLUSMALLINT columnNumber ) const
     {
-        return statement_->GetNullableRowVersion( columnNumber );
+        return statement_->GetDBDouble( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBCurrency DataReader::GetDBCurrency( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBCurrency( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBDateTime DataReader::GetDBDateTime( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBDateTime( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBTimestampOffset DataReader::GetDBTimestampOffset( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBTimestampOffset( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBDate DataReader::GetDBDate( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBDate( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBTime DataReader::GetDBTime( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBTime( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBTimeSpan DataReader::GetDBTimeSpan( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBTimeSpan( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBWideString DataReader::GetDBWideString( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBWideString( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBAnsiString DataReader::GetDBAnsiString( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBAnsiString( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBBinary DataReader::GetDBBinary( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBBinary( columnNumber );
+    }
+
+
+    [[nodiscard]]
+    inline DBGuid DataReader::GetDBGuid( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBGuid( columnNumber );
+    }
+
+    [[nodiscard]]
+    inline DBRowVersion DataReader::GetDBRowVersion( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetDBRowVersion( columnNumber );
     }
 
     [[nodiscard]]

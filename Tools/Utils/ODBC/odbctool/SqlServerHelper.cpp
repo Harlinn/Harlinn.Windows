@@ -398,6 +398,105 @@ namespace Harlinn::ODBC::Tool
         return sb.ToString( );
     }
 
+    std::vector<std::shared_ptr<MemberInfo>> SqlServerHelper::GetColumnsForComplexSelect( const ClassInfo& classInfo )
+    {
+        std::vector<std::shared_ptr<MemberInfo>> result;
+        const auto& viewMembers = classInfo.ViewMembers( );
+        for ( const auto& member : viewMembers )
+        {
+            if ( CppHelper::IsBindable( *member ) )
+            {
+                result.emplace_back( member );
+            }
+        }
+
+        auto derivedClasses = classInfo.AllDerivedClasses( );
+        for ( const auto& derivedClass : derivedClasses )
+        {
+            auto ownPersistentMembers = derivedClass->OwnPersistentMembers( );
+            for ( const auto& member : ownPersistentMembers )
+            {
+                if ( CppHelper::IsBindable( *member ) )
+                {
+                    result.emplace_back( member );
+                }
+            }
+        }
+
+        for ( const auto& member : viewMembers )
+        {
+            if ( CppHelper::IsBindable( *member ) == false )
+            {
+                result.emplace_back( member );
+            }
+        }
+
+        for ( const auto& derivedClass : derivedClasses )
+        {
+            auto ownPersistentMembers = derivedClass->OwnPersistentMembers( );
+            for ( const auto& member : ownPersistentMembers )
+            {
+                if ( CppHelper::IsBindable( *member ) == false )
+                {
+                    result.emplace_back( member );
+                }
+            }
+        }
+        return result;
+    }
+    std::vector<std::shared_ptr<MemberInfo>> SqlServerHelper::GetBindableColumnsForComplexSelect( const ClassInfo& classInfo )
+    {
+        std::vector<std::shared_ptr<MemberInfo>> result;
+        const auto& viewMembers = classInfo.ViewMembers( );
+        for ( const auto& member : viewMembers )
+        {
+            if ( CppHelper::IsBindable( *member ) )
+            {
+                result.emplace_back( member );
+            }
+        }
+
+        auto derivedClasses = classInfo.AllDerivedClasses( );
+        for ( const auto& derivedClass : derivedClasses )
+        {
+            auto ownPersistentMembers = derivedClass->OwnPersistentMembers( );
+            for ( const auto& member : ownPersistentMembers )
+            {
+                if ( CppHelper::IsBindable( *member ) )
+                {
+                    result.emplace_back( member );
+                }
+            }
+        }
+        return result;
+    }
+    std::vector<std::shared_ptr<MemberInfo>> SqlServerHelper::GetUnboundColumnsForComplexSelect( const ClassInfo& classInfo )
+    {
+        std::vector<std::shared_ptr<MemberInfo>> result;
+        const auto& viewMembers = classInfo.ViewMembers( );
+        for ( const auto& member : viewMembers )
+        {
+            if ( CppHelper::IsBindable( *member ) == false )
+            {
+                result.emplace_back( member );
+            }
+        }
+
+        auto derivedClasses = classInfo.AllDerivedClasses( );
+        for ( const auto& derivedClass : derivedClasses )
+        {
+            auto ownPersistentMembers = derivedClass->OwnPersistentMembers( );
+            for ( const auto& member : ownPersistentMembers )
+            {
+                if ( CppHelper::IsBindable( *member ) == false )
+                {
+                    result.emplace_back( member );
+                }
+            }
+        }
+        return result;
+    }
+
 
     WideString SqlServerHelper::GetInsertProcedureName( const ClassInfo& classInfo )
     {

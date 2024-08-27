@@ -310,9 +310,45 @@ namespace Harlinn::ODBC::Tool
     };
 
 
+    class CppComplexDatabaseReadersGenerator : public CodeGenerator<CppDatabaseGenerator, CppComplexDatabaseReadersOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDatabaseGenerator, CppComplexDatabaseReadersOptions>;
+        CppComplexDatabaseReadersGenerator( const CppDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateColumnDataType( const ClassInfo& classInfo );
+        void CreateQuery( const ClassInfo& classInfo );
+        void CreateFieldIds( const ClassInfo& classInfo );
+        void CreateBindColumns( const ClassInfo& classInfo );
+        void CreateReadUnboundData( const ClassInfo& classInfo );
+        void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member, bool longName = false );
+        void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member, bool longName = false );
+        void CreateWriteColumns( const ClassInfo& classInfo );
+    };
+
+    class CppComplexDatabaseReadersSourceGenerator : public CodeGenerator<CppDatabaseGenerator, CppComplexDatabaseReadersSourceOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDatabaseGenerator, CppComplexDatabaseReadersSourceOptions>;
+        CppComplexDatabaseReadersSourceGenerator( const CppDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateColumnDataType( const ClassInfo& classInfo );
+        void CreateQuery( const ClassInfo& classInfo );
+        
+        void CreateBindColumns( const ClassInfo& classInfo );
+        void CreateReadUnboundData( const ClassInfo& classInfo );
+    };
+
+
     class CppDatabaseGenerator : public GeneratorContainer<CppGenerator, CppDatabaseOptions>
     {
         CppDatabaseReadersGenerator databaseReaders_;
+        CppComplexDatabaseReadersGenerator complexDatabaseReaders_;
+        CppComplexDatabaseReadersSourceGenerator complexDatabaseReadersSource_;
     public:
         using Base = GeneratorContainer<CppGenerator, CppDatabaseOptions>;
         CppDatabaseGenerator( const CppGenerator& owner );
@@ -320,11 +356,25 @@ namespace Harlinn::ODBC::Tool
         void Run( )
         {
             databaseReaders_.Run( );
+            complexDatabaseReaders_.Run( );
+            complexDatabaseReadersSource_.Run( );
         }
     };
 
     inline CppDatabaseReadersGenerator::CppDatabaseReadersGenerator( const CppDatabaseGenerator& owner )
         : Base( owner, owner.Options( ).DatabaseReaders( ) )
+    {
+
+    }
+
+    inline CppComplexDatabaseReadersGenerator::CppComplexDatabaseReadersGenerator( const CppDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).ComplexDatabaseReaders( ) )
+    {
+
+    }
+
+    inline CppComplexDatabaseReadersSourceGenerator::CppComplexDatabaseReadersSourceGenerator( const CppDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).ComplexDatabaseReadersSource( ) )
     {
 
     }
@@ -361,7 +411,7 @@ namespace Harlinn::ODBC::Tool
     { }
 
     inline CppDatabaseGenerator::CppDatabaseGenerator( const CppGenerator& owner )
-        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this)
+        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), complexDatabaseReadersSource_(*this)
     { }
 
 

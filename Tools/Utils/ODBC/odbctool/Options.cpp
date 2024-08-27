@@ -37,6 +37,11 @@ namespace Harlinn::ODBC::Tool
         {
             namespace_ = element.Read<WideString>( L"namespace" );
         }
+        if ( element.HasAttribute( L"dllexport" ) )
+        {
+            dllexport_ = element.Read<WideString>( L"dllexport" );
+        }
+
     }
 
     void CSharpOptions::Load( const XmlElement& element )

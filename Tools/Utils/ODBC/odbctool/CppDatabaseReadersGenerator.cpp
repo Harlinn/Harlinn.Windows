@@ -503,7 +503,7 @@ namespace Harlinn::ODBC::Tool
                     {
                         if ( member->Nullable( ) )
                         {
-                            WriteLine( L"            {} = statement.GetNullableWideString({});", fieldName, fieldId );
+                            WriteLine( L"            {} = statement.GetDBWideString({});", fieldName, fieldId );
                         }
                         else
                         {
@@ -514,7 +514,7 @@ namespace Harlinn::ODBC::Tool
                     {
                         if ( member->Nullable( ) )
                         {
-                            WriteLine( L"            {} = statement.GetNullableBinary({});", fieldName, fieldId );
+                            WriteLine( L"            {} = statement.GetDBBinary({});", fieldName, fieldId );
                         }
                         else
                         {

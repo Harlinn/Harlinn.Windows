@@ -510,6 +510,143 @@ namespace Harlinn::ODBC::Tool
         return result;
     }
 
+    WideString CppHelper::GetMemberNullableFieldType( const MemberInfo& member )
+    {
+        WideString result = L"<unknown>";
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = L"DBBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = L"DBSByte";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = L"DBByte";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = L"DBInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = L"DBUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = L"DBInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = L"DBUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = L"DBInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = L"DBUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast< const EnumMemberInfo& >( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    result = Format( L"DBEnum<Data::{}>", enumType->Name( ) );
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = L"DBSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = L"DBDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = L"DBCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = L"DBDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = L"DBTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = L"DBGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                if ( IsBindable( member ) )
+                {
+                    const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( member );
+                    result = Format( L"FixedDBWideString<{}>", stringMemberInfo.Size( ) );
+                }
+                else
+                {
+                    result = L"DBWideString";
+                }
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                if ( IsBindable( member ) )
+                {
+                    const auto& binaryMemberInfo = static_cast< const StringMemberInfo& >( member );
+                    result = Format( L"FixedDBBinary<{}>", binaryMemberInfo.Size( ) );
+                }
+                else
+                {
+                    result = L"DBBinary";
+                }
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = L"DBInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = L"DBGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = L"DBGuid";
+            }
+            break;
+        }
+
+        return result;
+    }
+
     WideString CppHelper::GetDataMemberFieldType( const MemberInfo& member )
     {
         WideString result = GetBaseType( member );
@@ -520,6 +657,13 @@ namespace Harlinn::ODBC::Tool
     WideString CppHelper::GetMemberFieldName( const MemberInfo& member )
     {
         return Format(L"{}_", member.Name().FirstToLower() );
+    }
+
+    WideString CppHelper::GetLongMemberFieldName( const MemberInfo& member )
+    {
+        auto owner = member.Owner( );
+        auto shortName = owner->ShortName( ).ToLower();
+        return Format( L"{}{}_", shortName, member.Name( ).FirstToUpper( ) );
     }
 
     WideString CppHelper::GetMemberAccessorName( const MemberInfo& member )
@@ -612,6 +756,12 @@ namespace Harlinn::ODBC::Tool
     {
         return Format( L"{}ColumnData", classInfo.Name( ).FirstToUpper( ) );
     }
+
+    WideString CppHelper::GetComplexColumnDataType( const ClassInfo& classInfo )
+    {
+        return Format( L"Complex{}ColumnData", classInfo.Name( ).FirstToUpper( ) );
+    }
+
 
     WideString CppHelper::GetDataType( const ClassInfo& classInfo )
     {

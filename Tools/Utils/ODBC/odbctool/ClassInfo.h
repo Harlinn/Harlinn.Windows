@@ -44,6 +44,8 @@ namespace Harlinn::ODBC::Tool
         std::vector<std::shared_ptr<MemberInfo>> persistentMembers_;
         std::unordered_map<WideString, std::shared_ptr<MemberInfo>> persistentMembersByName_;
 
+        std::vector<std::shared_ptr<MemberInfo>> viewMembers_;
+
         std::vector<std::shared_ptr<ClassInfo>> derivedClasses_;
         std::shared_ptr<MemberInfo> primaryKey_;
         std::shared_ptr<RowVersionMemberInfo> rowVersion_;
@@ -167,6 +169,11 @@ namespace Harlinn::ODBC::Tool
         }
 
 
+        const std::vector<std::shared_ptr<MemberInfo>> ViewMembers( ) const
+        {
+            return viewMembers_;
+        }
+
 
         const std::vector<std::shared_ptr<ClassInfo>>& DerivedClasses( ) const
         {
@@ -220,6 +227,26 @@ namespace Harlinn::ODBC::Tool
         void Load( const XmlElement& classElement );
         void AfterLoad( );
         void AddDerivedClassesToClassList( std::vector<std::shared_ptr<ClassInfo>>& classList ) const;
+
+        bool HasDerivedPersistentMembers( ) const;
+        std::vector<std::shared_ptr<MemberInfo>> DerivedPersistentMembersUntil( const ClassInfo& classInfo ) const;
+        void DerivedPersistentMembersUntil( const ClassInfo& classInfo, std::vector<std::shared_ptr<MemberInfo>>& result ) const;
+
+        bool IsViewMember( const MemberInfo& member ) const
+        {
+            auto owner = member.Owner( );
+            if ( owner->Id( ) == Id( ) )
+            {
+                return true;
+            }
+            auto baseClass = BaseClass( );
+            if ( baseClass )
+            {
+                return baseClass->IsViewMember( member );
+            }
+            return false;
+        }
+
     private:
         void LoadMembers( const XmlElement& membersElement );
         void AddDerivedClass( const std::shared_ptr<ClassInfo>& derivedClass );

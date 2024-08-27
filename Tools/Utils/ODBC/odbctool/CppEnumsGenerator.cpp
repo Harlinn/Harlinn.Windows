@@ -32,6 +32,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"#define {}", headerGuard );
         WriteLine( );
         WriteLine( L"#include <HCCDef.h>" );
+        WriteLine( L"#include \"BarrelmanExport.h\"" );
         WriteLine( );
         WriteLine( L"namespace {}", nspace );
         WriteLine( L"{" );

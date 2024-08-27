@@ -48,6 +48,12 @@
     <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h">
       <Filter>Generated\Cpp\Database</Filter>
     </ClInclude>
+    <ClInclude Include="Generated\Cpp\Database\ComplexDatabaseReaders.h">
+      <Filter>Generated\Cpp\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\BarrelmanExport.h">
+      <Filter>Generated\Cpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -60,6 +66,9 @@
       <Filter>Generated\Cpp\Data</Filter>
     </ClCompile>
     <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp">
+      <Filter>Generated\Cpp\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Database\ComplexDatabaseReaders.cpp">
       <Filter>Generated\Cpp\Database</Filter>
     </ClCompile>
   </ItemGroup>

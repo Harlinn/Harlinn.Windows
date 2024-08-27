@@ -158,6 +158,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Generated\Cpp\BarrelmanExport.h" />
+    <ClInclude Include="Generated\Cpp\Database\ComplexDatabaseReaders.h" />
     <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h" />
     <ClInclude Include="Generated\Cpp\Data\DataTypes.h" />
     <ClInclude Include="Generated\Cpp\Data\Enums.h" />
@@ -165,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Generated\Cpp\Database\ComplexDatabaseReaders.cpp" />
     <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp" />
     <ClCompile Include="Generated\Cpp\Data\DataTypes.cpp" />
     <ClCompile Include="pch.cpp">
