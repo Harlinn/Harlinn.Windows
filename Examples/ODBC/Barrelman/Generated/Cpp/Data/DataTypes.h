@@ -37986,5 +37986,2012 @@ namespace Barrelman::Data
             leaveLongitude_ = leaveLongitude;
         }
     };
+    template<IO::StreamReader StreamT>
+    std::shared_ptr<BaseData<Kind, Guid>> ReadDataFrom( IO::BinaryReader<StreamT>& source )
+    {
+        auto kind = source.Read<Kind>( );
+        auto newObject = DataFactory( kind );
+        switch ( kind )
+        {
+            case Kind::AircraftType:
+                static_cast<AircraftTypeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AidToNavigationReportMessage:
+                static_cast<AidToNavigationReportMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisAddressedSafetyRelatedMessage:
+                static_cast<AisAddressedSafetyRelatedMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisBaseStationReportMessage:
+                static_cast<AisBaseStationReportMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisBinaryAcknowledgeMessage:
+                static_cast<AisBinaryAcknowledgeMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisBinaryAddressedMessage:
+                static_cast<AisBinaryAddressedMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisBinaryBroadcastMessage:
+                static_cast<AisBinaryBroadcastMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisDataLinkManagementMessage:
+                static_cast<AisDataLinkManagementMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisExtendedClassBCsPositionReportMessage:
+                static_cast<AisExtendedClassBCsPositionReportMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisInterrogationMessage:
+                static_cast<AisInterrogationMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisPositionReportClassAAssignedScheduleMessage:
+                static_cast<AisPositionReportClassAAssignedScheduleMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisPositionReportClassAMessage:
+                static_cast<AisPositionReportClassAMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisPositionReportClassAResponseToInterrogationMessage:
+                static_cast<AisPositionReportClassAResponseToInterrogationMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisPositionReportForLongRangeApplicationsMessage:
+                static_cast<AisPositionReportForLongRangeApplicationsMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisSafetyRelatedAcknowledgmentMessage:
+                static_cast<AisSafetyRelatedAcknowledgmentMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisStandardClassBCsPositionReportMessage:
+                static_cast<AisStandardClassBCsPositionReportMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisStandardSarAircraftPositionReportMessage:
+                static_cast<AisStandardSarAircraftPositionReportMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisStaticAndVoyageRelatedDataMessage:
+                static_cast<AisStaticAndVoyageRelatedDataMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisStaticDataReportMessage:
+                static_cast<AisStaticDataReportMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisStaticDataReportPartAMessage:
+                static_cast<AisStaticDataReportPartAMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisStaticDataReportPartBMessage:
+                static_cast<AisStaticDataReportPartBMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisUtcAndDateInquiryMessage:
+                static_cast<AisUtcAndDateInquiryMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisUtcAndDateResponseMessage:
+                static_cast<AisUtcAndDateResponseMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisTransceiverCommand:
+                static_cast<AisTransceiverCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisTransceiverCommandReply:
+                static_cast<AisTransceiverCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisTransceiverConfiguration:
+                static_cast<AisTransceiverConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisTransceiverRawMessage:
+                static_cast<AisTransceiverRawMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisTransceiverRawSentence:
+                static_cast<AisTransceiverRawSentenceData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AlarmStateChange:
+                static_cast<AlarmStateChangeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BaseStationType:
+                static_cast<BaseStationTypeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BinaryTimeseriesValue:
+                static_cast<BinaryTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Bookmark:
+                static_cast<BookmarkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BooleanTimeseriesValue:
+                static_cast<BooleanTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ByteTimeseriesValue:
+                static_cast<ByteTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommand:
+                static_cast<CameraCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandAbsoluteMove:
+                static_cast<CameraCommandAbsoluteMoveData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandAdjustPanTiltZoom:
+                static_cast<CameraCommandAdjustPanTiltZoomData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandContinuousMove:
+                static_cast<CameraCommandContinuousMoveData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandGeoMove:
+                static_cast<CameraCommandGeoMoveData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandRelativeMove:
+                static_cast<CameraCommandRelativeMoveData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandReleasePTZOwnership:
+                static_cast<CameraCommandReleasePTZOwnershipData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandRequestPTZOwnership:
+                static_cast<CameraCommandRequestPTZOwnershipData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandSetAutoFocus:
+                static_cast<CameraCommandSetAutoFocusData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandSetBlackAndWhite:
+                static_cast<CameraCommandSetBlackAndWhiteData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandSetFollowed:
+                static_cast<CameraCommandSetFollowedData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandSetInfraRedLamp:
+                static_cast<CameraCommandSetInfraRedLampData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandSetWasher:
+                static_cast<CameraCommandSetWasherData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandSetWiper:
+                static_cast<CameraCommandSetWiperData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandStop:
+                static_cast<CameraCommandStopData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraCommandReply:
+                static_cast<CameraCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraConfiguration:
+                static_cast<CameraConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraPanCalibration:
+                static_cast<CameraPanCalibrationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraPanCalibrationValue:
+                static_cast<CameraPanCalibrationValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraStatus:
+                static_cast<CameraStatusData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraTiltCalibration:
+                static_cast<CameraTiltCalibrationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraTiltCalibrationValue:
+                static_cast<CameraTiltCalibrationValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraZoomCalibration:
+                static_cast<CameraZoomCalibrationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CameraZoomCalibrationValue:
+                static_cast<CameraZoomCalibrationValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Catalog:
+                static_cast<CatalogData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Element:
+                static_cast<ElementData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CollectionInfo:
+                static_cast<CollectionInfoData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Country:
+                static_cast<CountryData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CursorInfo:
+                static_cast<CursorInfoData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DateTimeTimeseriesValue:
+                static_cast<DateTimeTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DeviceHost:
+                static_cast<DeviceHostData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DeviceHostConfiguration:
+                static_cast<DeviceHostConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DoubleTimeseriesValue:
+                static_cast<DoubleTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::FacilityType:
+                static_cast<FacilityTypeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GeoPosition2DTimeseriesValue:
+                static_cast<GeoPosition2DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GeoPosition3DTimeseriesValue:
+                static_cast<GeoPosition3DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSDeviceCommand:
+                static_cast<GNSSDeviceCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSDeviceCommandReply:
+                static_cast<GNSSDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSDeviceConfiguration:
+                static_cast<GNSSDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GuidTimeseriesValue:
+                static_cast<GuidTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroDeviceCommand:
+                static_cast<GyroDeviceCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroDeviceCommandReply:
+                static_cast<GyroDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroDeviceConfiguration:
+                static_cast<GyroDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Callsign:
+                static_cast<CallsignData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::InternationalMaritimeOrganizationNumber:
+                static_cast<InternationalMaritimeOrganizationNumberData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MaritimeMobileServiceIdentity:
+                static_cast<MaritimeMobileServiceIdentityData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Name:
+                static_cast<NameData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int16TimeseriesValue:
+                static_cast<Int16TimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int32TimeseriesValue:
+                static_cast<Int32TimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int64TimeseriesValue:
+                static_cast<Int64TimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BaseStation:
+                static_cast<BaseStationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Camera:
+                static_cast<CameraData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSDevice:
+                static_cast<GNSSDeviceData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroDevice:
+                static_cast<GyroDeviceData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputDevice:
+                static_cast<LineInputDeviceData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::OilspillDetector:
+                static_cast<OilspillDetectorData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Radio:
+                static_cast<RadioData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Radome:
+                static_cast<RadomeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisTransceiver:
+                static_cast<AisTransceiverData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Radar:
+                static_cast<RadarData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStation:
+                static_cast<WeatherStationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Facility:
+                static_cast<FacilityData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Aircraft:
+                static_cast<AircraftData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisAidToNavigation:
+                static_cast<AisAidToNavigationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Vehicle:
+                static_cast<VehicleData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Vessel:
+                static_cast<VesselData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ItemIdentityLink:
+                static_cast<ItemIdentityLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ItemParentChildLink:
+                static_cast<ItemParentChildLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputDeviceCommand:
+                static_cast<LineInputDeviceCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputDeviceCommandReply:
+                static_cast<LineInputDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputDeviceConfiguration:
+                static_cast<LineInputDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputMessageRouting:
+                static_cast<LineInputMessageRoutingData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputMessageRoutingDestination:
+                static_cast<LineInputMessageRoutingDestinationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LineInputWhiteListEntry:
+                static_cast<LineInputWhiteListEntryData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogApplication:
+                static_cast<LogApplicationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogApplicationConfiguration:
+                static_cast<LogApplicationConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogHost:
+                static_cast<LogHostData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogHostConfiguration:
+                static_cast<LogHostConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogLocation:
+                static_cast<LogLocationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogProcess:
+                static_cast<LogProcessData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogRecord:
+                static_cast<LogRecordData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogThread:
+                static_cast<LogThreadData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::LogTraceEntry:
+                static_cast<LogTraceEntryData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MapElement:
+                static_cast<MapElementData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MapInfo:
+                static_cast<MapInfoData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MapServiceOptions:
+                static_cast<MapServiceOptionsData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MaritimeIdentificationDigits:
+                static_cast<MaritimeIdentificationDigitsData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaProxySession:
+                static_cast<MediaProxySessionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaProxySessionFile:
+                static_cast<MediaProxySessionFileData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaProxySessionOptions:
+                static_cast<MediaProxySessionOptionsData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaService:
+                static_cast<MediaServiceData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaServiceOptions:
+                static_cast<MediaServiceOptionsData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ElementType:
+                static_cast<ElementTypeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Namespace:
+                static_cast<NamespaceData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Oilspill:
+                static_cast<OilspillData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::OilspillDetectorCommand:
+                static_cast<OilspillDetectorCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::OilspillDetectorCommandReply:
+                static_cast<OilspillDetectorCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::OilspillDetectorConfiguration:
+                static_cast<OilspillDetectorConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Position2DTimeseriesValue:
+                static_cast<Position2DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Position3DTimeseriesValue:
+                static_cast<Position3DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ProcessTrackValueResult:
+                static_cast<ProcessTrackValueResultData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BinaryProperty:
+                static_cast<BinaryPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BooleanProperty:
+                static_cast<BooleanPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ByteProperty:
+                static_cast<BytePropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DateTimeProperty:
+                static_cast<DateTimePropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DoubleProperty:
+                static_cast<DoublePropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GuidProperty:
+                static_cast<GuidPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int16Property:
+                static_cast<Int16PropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int32Property:
+                static_cast<Int32PropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int64Property:
+                static_cast<Int64PropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ReferenceProperty:
+                static_cast<ReferencePropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SByteProperty:
+                static_cast<SBytePropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SingleProperty:
+                static_cast<SinglePropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::StringProperty:
+                static_cast<StringPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BinaryTimeseriesProperty:
+                static_cast<BinaryTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BooleanTimeseriesProperty:
+                static_cast<BooleanTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ByteTimeseriesProperty:
+                static_cast<ByteTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DateTimeTimeseriesProperty:
+                static_cast<DateTimeTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DoubleTimeseriesProperty:
+                static_cast<DoubleTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GuidTimeseriesProperty:
+                static_cast<GuidTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int16TimeseriesProperty:
+                static_cast<Int16TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int32TimeseriesProperty:
+                static_cast<Int32TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int64TimeseriesProperty:
+                static_cast<Int64TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ReferenceTimeseriesProperty:
+                static_cast<ReferenceTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SByteTimeseriesProperty:
+                static_cast<SByteTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SingleTimeseriesProperty:
+                static_cast<SingleTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::StringTimeseriesProperty:
+                static_cast<StringTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeSpanTimeseriesProperty:
+                static_cast<TimeSpanTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt16TimeseriesProperty:
+                static_cast<UInt16TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt32TimeseriesProperty:
+                static_cast<UInt32TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt64TimeseriesProperty:
+                static_cast<UInt64TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeSpanProperty:
+                static_cast<TimeSpanPropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt16Property:
+                static_cast<UInt16PropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt32Property:
+                static_cast<UInt32PropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt64Property:
+                static_cast<UInt64PropertyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BinaryPropertyDefinition:
+                static_cast<BinaryPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BooleanPropertyDefinition:
+                static_cast<BooleanPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BytePropertyDefinition:
+                static_cast<BytePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DateTimePropertyDefinition:
+                static_cast<DateTimePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DoublePropertyDefinition:
+                static_cast<DoublePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GuidPropertyDefinition:
+                static_cast<GuidPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int16PropertyDefinition:
+                static_cast<Int16PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int32PropertyDefinition:
+                static_cast<Int32PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int64PropertyDefinition:
+                static_cast<Int64PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ReferencePropertyDefinition:
+                static_cast<ReferencePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SBytePropertyDefinition:
+                static_cast<SBytePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SinglePropertyDefinition:
+                static_cast<SinglePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::StringPropertyDefinition:
+                static_cast<StringPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BinaryTimeseriesPropertyDefinition:
+                static_cast<BinaryTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BooleanTimeseriesPropertyDefinition:
+                static_cast<BooleanTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ByteTimeseriesPropertyDefinition:
+                static_cast<ByteTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DateTimeTimeseriesPropertyDefinition:
+                static_cast<DateTimeTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DoubleTimeseriesPropertyDefinition:
+                static_cast<DoubleTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GuidTimeseriesPropertyDefinition:
+                static_cast<GuidTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int16TimeseriesPropertyDefinition:
+                static_cast<Int16TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int32TimeseriesPropertyDefinition:
+                static_cast<Int32TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int64TimeseriesPropertyDefinition:
+                static_cast<Int64TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ReferenceTimeseriesPropertyDefinition:
+                static_cast<ReferenceTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SByteTimeseriesPropertyDefinition:
+                static_cast<SByteTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SingleTimeseriesPropertyDefinition:
+                static_cast<SingleTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::StringTimeseriesPropertyDefinition:
+                static_cast<StringTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeSpanTimeseriesPropertyDefinition:
+                static_cast<TimeSpanTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt16TimeseriesPropertyDefinition:
+                static_cast<UInt16TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt32TimeseriesPropertyDefinition:
+                static_cast<UInt32TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt64TimeseriesPropertyDefinition:
+                static_cast<UInt64TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeSpanPropertyDefinition:
+                static_cast<TimeSpanPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt16PropertyDefinition:
+                static_cast<UInt16PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt32PropertyDefinition:
+                static_cast<UInt32PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt64PropertyDefinition:
+                static_cast<UInt64PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarAlarmStatus:
+                static_cast<RadarAlarmStatusData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarCommand:
+                static_cast<RadarCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarCommandGetStatus:
+                static_cast<RadarCommandGetStatusData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarCommandReply:
+                static_cast<RadarCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarCommandReplyGetStatus:
+                static_cast<RadarCommandReplyGetStatusData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarConfiguration:
+                static_cast<RadarConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarImage:
+                static_cast<RadarImageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarRawTrackTable:
+                static_cast<RadarRawTrackTableData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarStatus:
+                static_cast<RadarStatusData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadioCommand:
+                static_cast<RadioCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadioCommandReply:
+                static_cast<RadioCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadioConfiguration:
+                static_cast<RadioConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomeCommand:
+                static_cast<RadomeCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomeCommandReply:
+                static_cast<RadomeCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomeConfiguration:
+                static_cast<RadomeConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ReferenceTimeseriesValue:
+                static_cast<ReferenceTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SByteTimeseriesValue:
+                static_cast<SByteTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SecurityDomain:
+                static_cast<SecurityDomainData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SecurityLogin:
+                static_cast<SecurityLoginData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SecurityRole:
+                static_cast<SecurityRoleData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SecurityIdentifierRoleLink:
+                static_cast<SecurityIdentifierRoleLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SecurityLoginSession:
+                static_cast<SecurityLoginSessionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SecurityPermission:
+                static_cast<SecurityPermissionData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SingleTimeseriesValue:
+                static_cast<SingleTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::StringTimeseriesValue:
+                static_cast<StringTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BinaryTimeseries:
+                static_cast<BinaryTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::BooleanTimeseries:
+                static_cast<BooleanTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisAidToNavigationOffPositionTimeseries:
+                static_cast<AisAidToNavigationOffPositionTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DeviceEnabledTimeseries:
+                static_cast<DeviceEnabledTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+                static_cast<RadarAutomaticSensitivityTimeControlTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarBlankSector1Timeseries:
+                static_cast<RadarBlankSector1TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarBlankSector2Timeseries:
+                static_cast<RadarBlankSector2TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+                static_cast<RadarEnableAutomaticFrequencyControlTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarEnableFastTimeConstantTimeseries:
+                static_cast<RadarEnableFastTimeConstantTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarEnableSensitivityTimeControlTimeseries:
+                static_cast<RadarEnableSensitivityTimeControlTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarPowerOnTimeseries:
+                static_cast<RadarPowerOnTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarSaveSettingsTimeseries:
+                static_cast<RadarSaveSettingsTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarTrackingTimeseries:
+                static_cast<RadarTrackingTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaProxySessionEnabledTimeseries:
+                static_cast<MediaProxySessionEnabledTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::MediaServiceEnabledTimeseries:
+                static_cast<MediaServiceEnabledTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ByteTimeseries:
+                static_cast<ByteTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DateTimeTimeseries:
+                static_cast<DateTimeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::DoubleTimeseries:
+                static_cast<DoubleTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSAltitudeTimeseries:
+                static_cast<GNSSAltitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSLatitudeTimeseries:
+                static_cast<GNSSLatitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GNSSLongitudeTimeseries:
+                static_cast<GNSSLongitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroCourseTimeseries:
+                static_cast<GyroCourseTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroHeadingMagneticNorthTimeseries:
+                static_cast<GyroHeadingMagneticNorthTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroHeadingTrueNorthTimeseries:
+                static_cast<GyroHeadingTrueNorthTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroPitchTimeseries:
+                static_cast<GyroPitchTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroRateOfTurnTimeseries:
+                static_cast<GyroRateOfTurnTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroRollTimeseries:
+                static_cast<GyroRollTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GyroSpeedTimeseries:
+                static_cast<GyroSpeedTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarLatitudeTimeseries:
+                static_cast<RadarLatitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarLongitudeTimeseries:
+                static_cast<RadarLongitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomeDewPointTimeseries:
+                static_cast<RadomeDewPointTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomePressureTimeseries:
+                static_cast<RadomePressureTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomeTemperatureTimeseries:
+                static_cast<RadomeTemperatureTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::VesselDraughtTimeseries:
+                static_cast<VesselDraughtTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ViewLatitudeTimeseries:
+                static_cast<ViewLatitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ViewLongitudeTimeseries:
+                static_cast<ViewLongitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ViewZoomLevelTimeseries:
+                static_cast<ViewZoomLevelTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationAbsoluteHumidityTimeseries:
+                static_cast<WeatherStationAbsoluteHumidityTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationAirTemperatureTimeseries:
+                static_cast<WeatherStationAirTemperatureTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationBarometricPressureTimeseries:
+                static_cast<WeatherStationBarometricPressureTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationDewPointTimeseries:
+                static_cast<WeatherStationDewPointTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationRelativeHumidityTimeseries:
+                static_cast<WeatherStationRelativeHumidityTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationWaterTemperatureTimeseries:
+                static_cast<WeatherStationWaterTemperatureTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationWindDirectionTimeseries:
+                static_cast<WeatherStationWindDirectionTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationWindSpeedTimeseries:
+                static_cast<WeatherStationWindSpeedTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GeoPosition2DTimeseries:
+                static_cast<GeoPosition2DTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisAidToNavigationPositionTimeseries:
+                static_cast<AisAidToNavigationPositionTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GeoPosition3DTimeseries:
+                static_cast<GeoPosition3DTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::GuidTimeseries:
+                static_cast<GuidTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int16Timeseries:
+                static_cast<Int16TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int32Timeseries:
+                static_cast<Int32TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarAzimuthOffsetTimeseries:
+                static_cast<RadarAzimuthOffsetTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarFastTimeConstantLevelTimeseries:
+                static_cast<RadarFastTimeConstantLevelTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarFastTimeConstantModeTimeseries:
+                static_cast<RadarFastTimeConstantModeTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarPulseTimeseries:
+                static_cast<RadarPulseTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarSector1EndTimeseries:
+                static_cast<RadarSector1EndTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarSector1StartTimeseries:
+                static_cast<RadarSector1StartTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarSector2EndTimeseries:
+                static_cast<RadarSector2EndTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarSector2StartTimeseries:
+                static_cast<RadarSector2StartTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarSensitivityTimeControlLevelTimeseries:
+                static_cast<RadarSensitivityTimeControlLevelTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadarTuningTimeseries:
+                static_cast<RadarTuningTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::VesselPersonsOnBoardTimeseries:
+                static_cast<VesselPersonsOnBoardTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Int64Timeseries:
+                static_cast<Int64TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Position2DTimeseries:
+                static_cast<Position2DTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Position3DTimeseries:
+                static_cast<Position3DTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ReferenceTimeseries:
+                static_cast<ReferenceTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SByteTimeseries:
+                static_cast<SByteTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::SingleTimeseries:
+                static_cast<SingleTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::StringTimeseries:
+                static_cast<StringTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeSpanTimeseries:
+                static_cast<TimeSpanTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt16Timeseries:
+                static_cast<UInt16TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt32Timeseries:
+                static_cast<UInt32TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::RadomeStatusTimeseries:
+                static_cast<RadomeStatusTimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt64Timeseries:
+                static_cast<UInt64TimeseriesData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeseriesCatalog:
+                static_cast<TimeseriesCatalogData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeseriesInfo:
+                static_cast<TimeseriesInfoData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TimeSpanTimeseriesValue:
+                static_cast<TimeSpanTimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackableItemTrackLink:
+                static_cast<TrackableItemTrackLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Track:
+                static_cast<TrackData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::Track3D:
+                static_cast<Track3DData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackerFilterParameters:
+                static_cast<TrackerFilterParametersData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackerFilterParametersConfiguration:
+                static_cast<TrackerFilterParametersConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackInfo:
+                static_cast<TrackInfoData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackingServiceOptions:
+                static_cast<TrackingServiceOptionsData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackLink:
+                static_cast<TrackLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackValue:
+                static_cast<TrackValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::TrackValue3D:
+                static_cast<TrackValue3DData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt16TimeseriesValue:
+                static_cast<UInt16TimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt32TimeseriesValue:
+                static_cast<UInt32TimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::UInt64TimeseriesValue:
+                static_cast<UInt64TimeseriesValueData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::VehicleType:
+                static_cast<VehicleTypeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::VesselType:
+                static_cast<VesselTypeData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::View:
+                static_cast<ViewData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ViewCameraLink:
+                static_cast<ViewCameraLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ViewTrackerLink:
+                static_cast<ViewTrackerLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationCommand:
+                static_cast<WeatherStationCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationCommandReply:
+                static_cast<WeatherStationCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::WeatherStationConfiguration:
+                static_cast<WeatherStationConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::CircularZone:
+                static_cast<CircularZoneData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::PolygonZone:
+                static_cast<PolygonZoneData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ZoneExceptions:
+                static_cast<ZoneExceptionsData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ZoneExceptionsVesselLink:
+                static_cast<ZoneExceptionsVesselLinkData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::ZoneTrackAlarm:
+                static_cast<ZoneTrackAlarmData&>(*newObject).ReadFrom( source );
+                break;
+        }
+        return newObject;
+    }
+
+    template<IO::StreamWriter StreamT>
+    void WriteDataTo( const BaseData<Kind, Guid>& data, IO::BinaryWriter<StreamT>& destination )
+    {
+        auto kind = data.GetObjectType( );
+        switch ( kind )
+        {
+            case Kind::AircraftType:
+                static_cast<AircraftTypeData&>(data).WriteTo( destination );
+                break;
+            case Kind::AidToNavigationReportMessage:
+                static_cast<AidToNavigationReportMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisAddressedSafetyRelatedMessage:
+                static_cast<AisAddressedSafetyRelatedMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisBaseStationReportMessage:
+                static_cast<AisBaseStationReportMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisBinaryAcknowledgeMessage:
+                static_cast<AisBinaryAcknowledgeMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisBinaryAddressedMessage:
+                static_cast<AisBinaryAddressedMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisBinaryBroadcastMessage:
+                static_cast<AisBinaryBroadcastMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisDataLinkManagementMessage:
+                static_cast<AisDataLinkManagementMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisExtendedClassBCsPositionReportMessage:
+                static_cast<AisExtendedClassBCsPositionReportMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisInterrogationMessage:
+                static_cast<AisInterrogationMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisPositionReportClassAAssignedScheduleMessage:
+                static_cast<AisPositionReportClassAAssignedScheduleMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisPositionReportClassAMessage:
+                static_cast<AisPositionReportClassAMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisPositionReportClassAResponseToInterrogationMessage:
+                static_cast<AisPositionReportClassAResponseToInterrogationMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisPositionReportForLongRangeApplicationsMessage:
+                static_cast<AisPositionReportForLongRangeApplicationsMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisSafetyRelatedAcknowledgmentMessage:
+                static_cast<AisSafetyRelatedAcknowledgmentMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisStandardClassBCsPositionReportMessage:
+                static_cast<AisStandardClassBCsPositionReportMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisStandardSarAircraftPositionReportMessage:
+                static_cast<AisStandardSarAircraftPositionReportMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisStaticAndVoyageRelatedDataMessage:
+                static_cast<AisStaticAndVoyageRelatedDataMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisStaticDataReportMessage:
+                static_cast<AisStaticDataReportMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisStaticDataReportPartAMessage:
+                static_cast<AisStaticDataReportPartAMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisStaticDataReportPartBMessage:
+                static_cast<AisStaticDataReportPartBMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisUtcAndDateInquiryMessage:
+                static_cast<AisUtcAndDateInquiryMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisUtcAndDateResponseMessage:
+                static_cast<AisUtcAndDateResponseMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisTransceiverCommand:
+                static_cast<AisTransceiverCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisTransceiverCommandReply:
+                static_cast<AisTransceiverCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisTransceiverConfiguration:
+                static_cast<AisTransceiverConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisTransceiverRawMessage:
+                static_cast<AisTransceiverRawMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisTransceiverRawSentence:
+                static_cast<AisTransceiverRawSentenceData&>(data).WriteTo( destination );
+                break;
+            case Kind::AlarmStateChange:
+                static_cast<AlarmStateChangeData&>(data).WriteTo( destination );
+                break;
+            case Kind::BaseStationType:
+                static_cast<BaseStationTypeData&>(data).WriteTo( destination );
+                break;
+            case Kind::BinaryTimeseriesValue:
+                static_cast<BinaryTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::Bookmark:
+                static_cast<BookmarkData&>(data).WriteTo( destination );
+                break;
+            case Kind::BooleanTimeseriesValue:
+                static_cast<BooleanTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::ByteTimeseriesValue:
+                static_cast<ByteTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommand:
+                static_cast<CameraCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandAbsoluteMove:
+                static_cast<CameraCommandAbsoluteMoveData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandAdjustPanTiltZoom:
+                static_cast<CameraCommandAdjustPanTiltZoomData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandContinuousMove:
+                static_cast<CameraCommandContinuousMoveData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandGeoMove:
+                static_cast<CameraCommandGeoMoveData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandRelativeMove:
+                static_cast<CameraCommandRelativeMoveData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandReleasePTZOwnership:
+                static_cast<CameraCommandReleasePTZOwnershipData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandRequestPTZOwnership:
+                static_cast<CameraCommandRequestPTZOwnershipData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandSetAutoFocus:
+                static_cast<CameraCommandSetAutoFocusData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandSetBlackAndWhite:
+                static_cast<CameraCommandSetBlackAndWhiteData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandSetFollowed:
+                static_cast<CameraCommandSetFollowedData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandSetInfraRedLamp:
+                static_cast<CameraCommandSetInfraRedLampData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandSetWasher:
+                static_cast<CameraCommandSetWasherData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandSetWiper:
+                static_cast<CameraCommandSetWiperData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandStop:
+                static_cast<CameraCommandStopData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraCommandReply:
+                static_cast<CameraCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraConfiguration:
+                static_cast<CameraConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraPanCalibration:
+                static_cast<CameraPanCalibrationData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraPanCalibrationValue:
+                static_cast<CameraPanCalibrationValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraStatus:
+                static_cast<CameraStatusData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraTiltCalibration:
+                static_cast<CameraTiltCalibrationData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraTiltCalibrationValue:
+                static_cast<CameraTiltCalibrationValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraZoomCalibration:
+                static_cast<CameraZoomCalibrationData&>(data).WriteTo( destination );
+                break;
+            case Kind::CameraZoomCalibrationValue:
+                static_cast<CameraZoomCalibrationValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::Catalog:
+                static_cast<CatalogData&>(data).WriteTo( destination );
+                break;
+            case Kind::Element:
+                static_cast<ElementData&>(data).WriteTo( destination );
+                break;
+            case Kind::CollectionInfo:
+                static_cast<CollectionInfoData&>(data).WriteTo( destination );
+                break;
+            case Kind::Country:
+                static_cast<CountryData&>(data).WriteTo( destination );
+                break;
+            case Kind::CursorInfo:
+                static_cast<CursorInfoData&>(data).WriteTo( destination );
+                break;
+            case Kind::DateTimeTimeseriesValue:
+                static_cast<DateTimeTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::DeviceHost:
+                static_cast<DeviceHostData&>(data).WriteTo( destination );
+                break;
+            case Kind::DeviceHostConfiguration:
+                static_cast<DeviceHostConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::DoubleTimeseriesValue:
+                static_cast<DoubleTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::FacilityType:
+                static_cast<FacilityTypeData&>(data).WriteTo( destination );
+                break;
+            case Kind::GeoPosition2DTimeseriesValue:
+                static_cast<GeoPosition2DTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::GeoPosition3DTimeseriesValue:
+                static_cast<GeoPosition3DTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSDeviceCommand:
+                static_cast<GNSSDeviceCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSDeviceCommandReply:
+                static_cast<GNSSDeviceCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSDeviceConfiguration:
+                static_cast<GNSSDeviceConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::GuidTimeseriesValue:
+                static_cast<GuidTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroDeviceCommand:
+                static_cast<GyroDeviceCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroDeviceCommandReply:
+                static_cast<GyroDeviceCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroDeviceConfiguration:
+                static_cast<GyroDeviceConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::Callsign:
+                static_cast<CallsignData&>(data).WriteTo( destination );
+                break;
+            case Kind::InternationalMaritimeOrganizationNumber:
+                static_cast<InternationalMaritimeOrganizationNumberData&>(data).WriteTo( destination );
+                break;
+            case Kind::MaritimeMobileServiceIdentity:
+                static_cast<MaritimeMobileServiceIdentityData&>(data).WriteTo( destination );
+                break;
+            case Kind::Name:
+                static_cast<NameData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int16TimeseriesValue:
+                static_cast<Int16TimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int32TimeseriesValue:
+                static_cast<Int32TimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int64TimeseriesValue:
+                static_cast<Int64TimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::BaseStation:
+                static_cast<BaseStationData&>(data).WriteTo( destination );
+                break;
+            case Kind::Camera:
+                static_cast<CameraData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSDevice:
+                static_cast<GNSSDeviceData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroDevice:
+                static_cast<GyroDeviceData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputDevice:
+                static_cast<LineInputDeviceData&>(data).WriteTo( destination );
+                break;
+            case Kind::OilspillDetector:
+                static_cast<OilspillDetectorData&>(data).WriteTo( destination );
+                break;
+            case Kind::Radio:
+                static_cast<RadioData&>(data).WriteTo( destination );
+                break;
+            case Kind::Radome:
+                static_cast<RadomeData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisTransceiver:
+                static_cast<AisTransceiverData&>(data).WriteTo( destination );
+                break;
+            case Kind::Radar:
+                static_cast<RadarData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStation:
+                static_cast<WeatherStationData&>(data).WriteTo( destination );
+                break;
+            case Kind::Facility:
+                static_cast<FacilityData&>(data).WriteTo( destination );
+                break;
+            case Kind::Aircraft:
+                static_cast<AircraftData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisAidToNavigation:
+                static_cast<AisAidToNavigationData&>(data).WriteTo( destination );
+                break;
+            case Kind::Vehicle:
+                static_cast<VehicleData&>(data).WriteTo( destination );
+                break;
+            case Kind::Vessel:
+                static_cast<VesselData&>(data).WriteTo( destination );
+                break;
+            case Kind::ItemIdentityLink:
+                static_cast<ItemIdentityLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::ItemParentChildLink:
+                static_cast<ItemParentChildLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputDeviceCommand:
+                static_cast<LineInputDeviceCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputDeviceCommandReply:
+                static_cast<LineInputDeviceCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputDeviceConfiguration:
+                static_cast<LineInputDeviceConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputMessageRouting:
+                static_cast<LineInputMessageRoutingData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputMessageRoutingDestination:
+                static_cast<LineInputMessageRoutingDestinationData&>(data).WriteTo( destination );
+                break;
+            case Kind::LineInputWhiteListEntry:
+                static_cast<LineInputWhiteListEntryData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogApplication:
+                static_cast<LogApplicationData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogApplicationConfiguration:
+                static_cast<LogApplicationConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogHost:
+                static_cast<LogHostData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogHostConfiguration:
+                static_cast<LogHostConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogLocation:
+                static_cast<LogLocationData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogProcess:
+                static_cast<LogProcessData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogRecord:
+                static_cast<LogRecordData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogThread:
+                static_cast<LogThreadData&>(data).WriteTo( destination );
+                break;
+            case Kind::LogTraceEntry:
+                static_cast<LogTraceEntryData&>(data).WriteTo( destination );
+                break;
+            case Kind::MapElement:
+                static_cast<MapElementData&>(data).WriteTo( destination );
+                break;
+            case Kind::MapInfo:
+                static_cast<MapInfoData&>(data).WriteTo( destination );
+                break;
+            case Kind::MapServiceOptions:
+                static_cast<MapServiceOptionsData&>(data).WriteTo( destination );
+                break;
+            case Kind::MaritimeIdentificationDigits:
+                static_cast<MaritimeIdentificationDigitsData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaProxySession:
+                static_cast<MediaProxySessionData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaProxySessionFile:
+                static_cast<MediaProxySessionFileData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaProxySessionOptions:
+                static_cast<MediaProxySessionOptionsData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaService:
+                static_cast<MediaServiceData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaServiceOptions:
+                static_cast<MediaServiceOptionsData&>(data).WriteTo( destination );
+                break;
+            case Kind::ElementType:
+                static_cast<ElementTypeData&>(data).WriteTo( destination );
+                break;
+            case Kind::Namespace:
+                static_cast<NamespaceData&>(data).WriteTo( destination );
+                break;
+            case Kind::Oilspill:
+                static_cast<OilspillData&>(data).WriteTo( destination );
+                break;
+            case Kind::OilspillDetectorCommand:
+                static_cast<OilspillDetectorCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::OilspillDetectorCommandReply:
+                static_cast<OilspillDetectorCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::OilspillDetectorConfiguration:
+                static_cast<OilspillDetectorConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::Position2DTimeseriesValue:
+                static_cast<Position2DTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::Position3DTimeseriesValue:
+                static_cast<Position3DTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::ProcessTrackValueResult:
+                static_cast<ProcessTrackValueResultData&>(data).WriteTo( destination );
+                break;
+            case Kind::BinaryProperty:
+                static_cast<BinaryPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::BooleanProperty:
+                static_cast<BooleanPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::ByteProperty:
+                static_cast<BytePropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::DateTimeProperty:
+                static_cast<DateTimePropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::DoubleProperty:
+                static_cast<DoublePropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::GuidProperty:
+                static_cast<GuidPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int16Property:
+                static_cast<Int16PropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int32Property:
+                static_cast<Int32PropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int64Property:
+                static_cast<Int64PropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::ReferenceProperty:
+                static_cast<ReferencePropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::SByteProperty:
+                static_cast<SBytePropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::SingleProperty:
+                static_cast<SinglePropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::StringProperty:
+                static_cast<StringPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::BinaryTimeseriesProperty:
+                static_cast<BinaryTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::BooleanTimeseriesProperty:
+                static_cast<BooleanTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::ByteTimeseriesProperty:
+                static_cast<ByteTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::DateTimeTimeseriesProperty:
+                static_cast<DateTimeTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::DoubleTimeseriesProperty:
+                static_cast<DoubleTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::GuidTimeseriesProperty:
+                static_cast<GuidTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int16TimeseriesProperty:
+                static_cast<Int16TimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int32TimeseriesProperty:
+                static_cast<Int32TimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int64TimeseriesProperty:
+                static_cast<Int64TimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::ReferenceTimeseriesProperty:
+                static_cast<ReferenceTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::SByteTimeseriesProperty:
+                static_cast<SByteTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::SingleTimeseriesProperty:
+                static_cast<SingleTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::StringTimeseriesProperty:
+                static_cast<StringTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeSpanTimeseriesProperty:
+                static_cast<TimeSpanTimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt16TimeseriesProperty:
+                static_cast<UInt16TimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt32TimeseriesProperty:
+                static_cast<UInt32TimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt64TimeseriesProperty:
+                static_cast<UInt64TimeseriesPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeSpanProperty:
+                static_cast<TimeSpanPropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt16Property:
+                static_cast<UInt16PropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt32Property:
+                static_cast<UInt32PropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt64Property:
+                static_cast<UInt64PropertyData&>(data).WriteTo( destination );
+                break;
+            case Kind::BinaryPropertyDefinition:
+                static_cast<BinaryPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::BooleanPropertyDefinition:
+                static_cast<BooleanPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::BytePropertyDefinition:
+                static_cast<BytePropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::DateTimePropertyDefinition:
+                static_cast<DateTimePropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::DoublePropertyDefinition:
+                static_cast<DoublePropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::GuidPropertyDefinition:
+                static_cast<GuidPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int16PropertyDefinition:
+                static_cast<Int16PropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int32PropertyDefinition:
+                static_cast<Int32PropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int64PropertyDefinition:
+                static_cast<Int64PropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::ReferencePropertyDefinition:
+                static_cast<ReferencePropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::SBytePropertyDefinition:
+                static_cast<SBytePropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::SinglePropertyDefinition:
+                static_cast<SinglePropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::StringPropertyDefinition:
+                static_cast<StringPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::BinaryTimeseriesPropertyDefinition:
+                static_cast<BinaryTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::BooleanTimeseriesPropertyDefinition:
+                static_cast<BooleanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::ByteTimeseriesPropertyDefinition:
+                static_cast<ByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::DateTimeTimeseriesPropertyDefinition:
+                static_cast<DateTimeTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::DoubleTimeseriesPropertyDefinition:
+                static_cast<DoubleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::GuidTimeseriesPropertyDefinition:
+                static_cast<GuidTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int16TimeseriesPropertyDefinition:
+                static_cast<Int16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int32TimeseriesPropertyDefinition:
+                static_cast<Int32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int64TimeseriesPropertyDefinition:
+                static_cast<Int64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::ReferenceTimeseriesPropertyDefinition:
+                static_cast<ReferenceTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::SByteTimeseriesPropertyDefinition:
+                static_cast<SByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::SingleTimeseriesPropertyDefinition:
+                static_cast<SingleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::StringTimeseriesPropertyDefinition:
+                static_cast<StringTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeSpanTimeseriesPropertyDefinition:
+                static_cast<TimeSpanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt16TimeseriesPropertyDefinition:
+                static_cast<UInt16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt32TimeseriesPropertyDefinition:
+                static_cast<UInt32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt64TimeseriesPropertyDefinition:
+                static_cast<UInt64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeSpanPropertyDefinition:
+                static_cast<TimeSpanPropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt16PropertyDefinition:
+                static_cast<UInt16PropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt32PropertyDefinition:
+                static_cast<UInt32PropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt64PropertyDefinition:
+                static_cast<UInt64PropertyDefinitionData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarAlarmStatus:
+                static_cast<RadarAlarmStatusData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarCommand:
+                static_cast<RadarCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarCommandGetStatus:
+                static_cast<RadarCommandGetStatusData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarCommandReply:
+                static_cast<RadarCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarCommandReplyGetStatus:
+                static_cast<RadarCommandReplyGetStatusData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarConfiguration:
+                static_cast<RadarConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarImage:
+                static_cast<RadarImageData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarRawTrackTable:
+                static_cast<RadarRawTrackTableData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarStatus:
+                static_cast<RadarStatusData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadioCommand:
+                static_cast<RadioCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadioCommandReply:
+                static_cast<RadioCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadioConfiguration:
+                static_cast<RadioConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomeCommand:
+                static_cast<RadomeCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomeCommandReply:
+                static_cast<RadomeCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomeConfiguration:
+                static_cast<RadomeConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::ReferenceTimeseriesValue:
+                static_cast<ReferenceTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::SByteTimeseriesValue:
+                static_cast<SByteTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::SecurityDomain:
+                static_cast<SecurityDomainData&>(data).WriteTo( destination );
+                break;
+            case Kind::SecurityLogin:
+                static_cast<SecurityLoginData&>(data).WriteTo( destination );
+                break;
+            case Kind::SecurityRole:
+                static_cast<SecurityRoleData&>(data).WriteTo( destination );
+                break;
+            case Kind::SecurityIdentifierRoleLink:
+                static_cast<SecurityIdentifierRoleLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::SecurityLoginSession:
+                static_cast<SecurityLoginSessionData&>(data).WriteTo( destination );
+                break;
+            case Kind::SecurityPermission:
+                static_cast<SecurityPermissionData&>(data).WriteTo( destination );
+                break;
+            case Kind::SingleTimeseriesValue:
+                static_cast<SingleTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::StringTimeseriesValue:
+                static_cast<StringTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::BinaryTimeseries:
+                static_cast<BinaryTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::BooleanTimeseries:
+                static_cast<BooleanTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisAidToNavigationOffPositionTimeseries:
+                static_cast<AisAidToNavigationOffPositionTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::DeviceEnabledTimeseries:
+                static_cast<DeviceEnabledTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+                static_cast<RadarAutomaticSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarBlankSector1Timeseries:
+                static_cast<RadarBlankSector1TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarBlankSector2Timeseries:
+                static_cast<RadarBlankSector2TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+                static_cast<RadarEnableAutomaticFrequencyControlTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarEnableFastTimeConstantTimeseries:
+                static_cast<RadarEnableFastTimeConstantTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarEnableSensitivityTimeControlTimeseries:
+                static_cast<RadarEnableSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarPowerOnTimeseries:
+                static_cast<RadarPowerOnTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarSaveSettingsTimeseries:
+                static_cast<RadarSaveSettingsTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarTrackingTimeseries:
+                static_cast<RadarTrackingTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaProxySessionEnabledTimeseries:
+                static_cast<MediaProxySessionEnabledTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::MediaServiceEnabledTimeseries:
+                static_cast<MediaServiceEnabledTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::ByteTimeseries:
+                static_cast<ByteTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::DateTimeTimeseries:
+                static_cast<DateTimeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::DoubleTimeseries:
+                static_cast<DoubleTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSAltitudeTimeseries:
+                static_cast<GNSSAltitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSLatitudeTimeseries:
+                static_cast<GNSSLatitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GNSSLongitudeTimeseries:
+                static_cast<GNSSLongitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroCourseTimeseries:
+                static_cast<GyroCourseTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroHeadingMagneticNorthTimeseries:
+                static_cast<GyroHeadingMagneticNorthTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroHeadingTrueNorthTimeseries:
+                static_cast<GyroHeadingTrueNorthTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroPitchTimeseries:
+                static_cast<GyroPitchTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroRateOfTurnTimeseries:
+                static_cast<GyroRateOfTurnTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroRollTimeseries:
+                static_cast<GyroRollTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GyroSpeedTimeseries:
+                static_cast<GyroSpeedTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarLatitudeTimeseries:
+                static_cast<RadarLatitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarLongitudeTimeseries:
+                static_cast<RadarLongitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomeDewPointTimeseries:
+                static_cast<RadomeDewPointTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomePressureTimeseries:
+                static_cast<RadomePressureTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomeTemperatureTimeseries:
+                static_cast<RadomeTemperatureTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::VesselDraughtTimeseries:
+                static_cast<VesselDraughtTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::ViewLatitudeTimeseries:
+                static_cast<ViewLatitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::ViewLongitudeTimeseries:
+                static_cast<ViewLongitudeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::ViewZoomLevelTimeseries:
+                static_cast<ViewZoomLevelTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationAbsoluteHumidityTimeseries:
+                static_cast<WeatherStationAbsoluteHumidityTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationAirTemperatureTimeseries:
+                static_cast<WeatherStationAirTemperatureTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationBarometricPressureTimeseries:
+                static_cast<WeatherStationBarometricPressureTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationDewPointTimeseries:
+                static_cast<WeatherStationDewPointTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationRelativeHumidityTimeseries:
+                static_cast<WeatherStationRelativeHumidityTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationWaterTemperatureTimeseries:
+                static_cast<WeatherStationWaterTemperatureTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationWindDirectionTimeseries:
+                static_cast<WeatherStationWindDirectionTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationWindSpeedTimeseries:
+                static_cast<WeatherStationWindSpeedTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GeoPosition2DTimeseries:
+                static_cast<GeoPosition2DTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisAidToNavigationPositionTimeseries:
+                static_cast<AisAidToNavigationPositionTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GeoPosition3DTimeseries:
+                static_cast<GeoPosition3DTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::GuidTimeseries:
+                static_cast<GuidTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int16Timeseries:
+                static_cast<Int16TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int32Timeseries:
+                static_cast<Int32TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarAzimuthOffsetTimeseries:
+                static_cast<RadarAzimuthOffsetTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarFastTimeConstantLevelTimeseries:
+                static_cast<RadarFastTimeConstantLevelTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarFastTimeConstantModeTimeseries:
+                static_cast<RadarFastTimeConstantModeTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarPulseTimeseries:
+                static_cast<RadarPulseTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarSector1EndTimeseries:
+                static_cast<RadarSector1EndTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarSector1StartTimeseries:
+                static_cast<RadarSector1StartTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarSector2EndTimeseries:
+                static_cast<RadarSector2EndTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarSector2StartTimeseries:
+                static_cast<RadarSector2StartTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarSensitivityTimeControlLevelTimeseries:
+                static_cast<RadarSensitivityTimeControlLevelTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadarTuningTimeseries:
+                static_cast<RadarTuningTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::VesselPersonsOnBoardTimeseries:
+                static_cast<VesselPersonsOnBoardTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::Int64Timeseries:
+                static_cast<Int64TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::Position2DTimeseries:
+                static_cast<Position2DTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::Position3DTimeseries:
+                static_cast<Position3DTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::ReferenceTimeseries:
+                static_cast<ReferenceTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::SByteTimeseries:
+                static_cast<SByteTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::SingleTimeseries:
+                static_cast<SingleTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::StringTimeseries:
+                static_cast<StringTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeSpanTimeseries:
+                static_cast<TimeSpanTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt16Timeseries:
+                static_cast<UInt16TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt32Timeseries:
+                static_cast<UInt32TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::RadomeStatusTimeseries:
+                static_cast<RadomeStatusTimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt64Timeseries:
+                static_cast<UInt64TimeseriesData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeseriesCatalog:
+                static_cast<TimeseriesCatalogData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeseriesInfo:
+                static_cast<TimeseriesInfoData&>(data).WriteTo( destination );
+                break;
+            case Kind::TimeSpanTimeseriesValue:
+                static_cast<TimeSpanTimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackableItemTrackLink:
+                static_cast<TrackableItemTrackLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::Track:
+                static_cast<TrackData&>(data).WriteTo( destination );
+                break;
+            case Kind::Track3D:
+                static_cast<Track3DData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackerFilterParameters:
+                static_cast<TrackerFilterParametersData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackerFilterParametersConfiguration:
+                static_cast<TrackerFilterParametersConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackInfo:
+                static_cast<TrackInfoData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackingServiceOptions:
+                static_cast<TrackingServiceOptionsData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackLink:
+                static_cast<TrackLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackValue:
+                static_cast<TrackValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::TrackValue3D:
+                static_cast<TrackValue3DData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt16TimeseriesValue:
+                static_cast<UInt16TimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt32TimeseriesValue:
+                static_cast<UInt32TimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::UInt64TimeseriesValue:
+                static_cast<UInt64TimeseriesValueData&>(data).WriteTo( destination );
+                break;
+            case Kind::VehicleType:
+                static_cast<VehicleTypeData&>(data).WriteTo( destination );
+                break;
+            case Kind::VesselType:
+                static_cast<VesselTypeData&>(data).WriteTo( destination );
+                break;
+            case Kind::View:
+                static_cast<ViewData&>(data).WriteTo( destination );
+                break;
+            case Kind::ViewCameraLink:
+                static_cast<ViewCameraLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::ViewTrackerLink:
+                static_cast<ViewTrackerLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationCommand:
+                static_cast<WeatherStationCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationCommandReply:
+                static_cast<WeatherStationCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::WeatherStationConfiguration:
+                static_cast<WeatherStationConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::CircularZone:
+                static_cast<CircularZoneData&>(data).WriteTo( destination );
+                break;
+            case Kind::PolygonZone:
+                static_cast<PolygonZoneData&>(data).WriteTo( destination );
+                break;
+            case Kind::ZoneExceptions:
+                static_cast<ZoneExceptionsData&>(data).WriteTo( destination );
+                break;
+            case Kind::ZoneExceptionsVesselLink:
+                static_cast<ZoneExceptionsVesselLinkData&>(data).WriteTo( destination );
+                break;
+            case Kind::ZoneTrackAlarm:
+                static_cast<ZoneTrackAlarmData&>(data).WriteTo( destination );
+                break;
+        }
+    }
+
+
 }
 #endif

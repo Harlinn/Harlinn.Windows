@@ -52,7 +52,6 @@ namespace Harlinn::ODBC::Tool
             const auto& classInfo = *classes[ i ];
             CreateColumnDataType( classInfo );
         }
-
         WriteLine( L"}" );
         WriteLine( L"#endif" );
 
@@ -613,5 +612,8 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
 
     }
+
+    
+
 
 }

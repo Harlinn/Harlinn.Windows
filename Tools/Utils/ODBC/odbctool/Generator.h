@@ -251,6 +251,8 @@ namespace Harlinn::ODBC::Tool
         void CreateDataType( const ClassInfo& classInfo );
         void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateReadDataFrom( );
+        void CreateWriteDataTo( );
     };
 
     class CppDataTypesSourceGenerator : public CodeGenerator<CppDataGenerator, CppDataTypesSourceOptions>
@@ -319,6 +321,7 @@ namespace Harlinn::ODBC::Tool
         void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateWriteColumns( const ClassInfo& classInfo );
         void CreateAssignTo( const ClassInfo& classInfo );
+        
     };
 
 

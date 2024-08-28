@@ -52,12 +52,16 @@ namespace Harlinn::ODBC::Tool
         auto dllExport = Options( ).DllExport( );
         WriteLine( L"    {} std::shared_ptr<BaseData<Kind, Guid>> DataFactory( Kind kind );", dllExport );
         WriteLine( );
+        
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];
             CreateDataType( classInfo );
         }
 
+        CreateReadDataFrom( );
+        CreateWriteDataTo( );
+        WriteLine( );
         WriteLine( L"}" );
         WriteLine( L"#endif" );
 
@@ -250,5 +254,58 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
     }
 
+    void CppDataTypesGenerator::CreateReadDataFrom( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
 
+        WriteLine( L"    template<IO::StreamReader StreamT>" );
+        WriteLine( L"    std::shared_ptr<BaseData<Kind, Guid>> ReadDataFrom( IO::BinaryReader<StreamT>& source )" );
+        WriteLine( L"    {" );
+        WriteLine( L"        auto kind = source.Read<Kind>( );" );
+        WriteLine( L"        auto newObject = DataFactory( kind );" );
+        WriteLine( L"        switch ( kind )" );
+        WriteLine( L"        {" );
+        for ( const auto& classInfo : classes )
+        {
+            if ( classInfo->Abstract( ) == false )
+            {
+                WriteLine( L"            case Kind::{}:", classInfo->Name( ) );
+                auto className = CppHelper::GetDataType( *classInfo );
+                WriteLine( L"                static_cast<{}&>(*newObject).ReadFrom( source );", className );
+                WriteLine( L"                break;" );
+            }
+        }
+        WriteLine( L"        }" );
+        WriteLine( L"        return newObject;" );
+        WriteLine( L"    }" );
+        WriteLine( );
+    }
+
+    void CppDataTypesGenerator::CreateWriteDataTo( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+
+        WriteLine( L"    template<IO::StreamWriter StreamT>");
+        WriteLine( L"    void WriteDataTo( const BaseData<Kind, Guid>& data, IO::BinaryWriter<StreamT>& destination )");
+        WriteLine( L"    {");
+        WriteLine( L"        auto kind = data.GetObjectType( );");
+        WriteLine( L"        switch ( kind )");
+        WriteLine( L"        {");
+        for ( const auto& classInfo : classes )
+        {
+            if ( classInfo->Abstract( ) == false )
+            {
+                WriteLine( L"            case Kind::{}:", classInfo->Name( ) );
+                auto className = CppHelper::GetDataType( *classInfo );
+                WriteLine( L"                static_cast<{}&>(data).WriteTo( destination );", className );
+                WriteLine( L"                break;" );
+            }
+        }
+        WriteLine( L"        }");
+        WriteLine( L"    }" );
+        WriteLine( );
+
+    }
 }
