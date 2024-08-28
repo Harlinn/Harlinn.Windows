@@ -462,6 +462,96 @@ namespace Harlinn::ODBC::Tool
         void Load( const XmlElement& element );
     };
 
+
+    class CppDataTestOptions;
+    class CppDataTypesTestOptions : public OptionsFile<CppDataTestOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDataTestOptions>;
+        CppDataTypesTestOptions( const CppDataTestOptions& owner )
+            : Base( owner, L"DataTypesTests.cpp" )
+        {
+        }
+    };
+
+    class CppTestOptions;
+    class CppDataTestOptions : public OptionsContainer<CppTestOptions>
+    {
+        CppDataTypesTestOptions dataTypes_;
+    public:
+        using Base = OptionsContainer<CppTestOptions>;
+        CppDataTestOptions( const CppTestOptions& owner )
+            : Base( owner, L"Data" ), dataTypes_( *this )
+        {
+        }
+
+        const CppDataTypesTestOptions& DataTypes( ) const
+        {
+            return dataTypes_;
+        }
+    };
+
+    class CppDatabaseTestOptions : public OptionsContainer<CppTestOptions>
+    {
+    public:
+        using Base = OptionsContainer<CppTestOptions>;
+        CppDatabaseTestOptions( const CppTestOptions& owner )
+            : Base( owner, L"Data" )
+        {
+        }
+
+    };
+
+
+    class CppTestOptions
+    {
+        const Options& owner_;
+        WideString outputDirectory_ = L"%HCC_HOME%\\Tests\\ODBC\\Barrelman.Tests\\Generated\\Cpp";
+        WideString namespace_ = L"Barrelman";
+        WideString dllexport_ = L"BARRELMAN_EXPORT";
+        CppDataTestOptions data_;
+        CppDatabaseTestOptions database_;
+    public:
+        using Base = OptionsContainer<Options>;
+        CppTestOptions( const Options& owner )
+            : owner_( owner ), data_( *this ), database_( *this )
+        {
+        }
+
+        const Options& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Harlinn::Common::Core::Environment::Expand( outputDirectory_ );
+        }
+
+        WideString Namespace( const WideString& separator ) const
+        {
+            return namespace_;
+        }
+
+        const WideString& DllExport( ) const
+        {
+            return dllexport_;
+        }
+
+
+        const CppDataTestOptions& Data( ) const
+        {
+            return data_;
+        }
+        const CppDatabaseTestOptions& Database( ) const
+        {
+            return database_;
+        }
+
+        void Load( const XmlElement& element );
+    };
+
+
     class CSharpDataOptions : public OptionsContainer<CSharpOptions>
     {
     public:
@@ -511,10 +601,11 @@ namespace Harlinn::ODBC::Tool
         WideString modelFilename_;
         DatabaseOptions database_;
         CppOptions cpp_;
+        CppTestOptions cppTest_;
         CSharpOptions csharp_;
     public:
         Options()
-            : database_(*this), cpp_(*this), csharp_(*this)
+            : database_(*this), cpp_(*this), cppTest_(*this), csharp_( *this )
         { }
 
         const WideString& ModelFilename( ) const
@@ -530,6 +621,11 @@ namespace Harlinn::ODBC::Tool
         const CppOptions& Cpp( ) const
         {
             return cpp_;
+        }
+
+        const CppTestOptions& CppTest( ) const
+        {
+            return cppTest_;
         }
 
         const CSharpOptions& CSharp( ) const

@@ -328,6 +328,7 @@ namespace Harlinn::ODBC
                 if ( notNull )
                 {
                     value_ = source.Read<value_type>( );
+                    indicator_ = 0;
                 }
                 else
                 {

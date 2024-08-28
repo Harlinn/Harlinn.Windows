@@ -76,7 +76,7 @@ namespace Harlinn::Common::Core::Data
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
-            objectState_ = source.Read<ObjectState>( );
+            objectState_ = source.Read<Data::ObjectState>( );
             id_ = source.Read<KeyType>( );
         }
 

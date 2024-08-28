@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "CppHelper.h"
+#include <HCCStringBuilder.h>
 namespace Harlinn::ODBC::Tool
 {
     WideString CppHelper::GetHeaderGuard( const WideString& filename )
@@ -766,6 +767,170 @@ namespace Harlinn::ODBC::Tool
     WideString CppHelper::GetDataType( const ClassInfo& classInfo )
     {
         return Format( L"{}Data", classInfo.Name( ).FirstToUpper( ) );
+    }
+
+    WideString CppHelper::GetSimpleTestValue( const ClassInfo& classInfo, const MemberInfo& member )
+    {
+        WideString result;
+        auto hashValue = classInfo.Name( ).Hash( );
+        auto memberType = member.Type( );
+        switch ( memberType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = hashValue % 1 ? L"true" : L"false";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = Format(L"{}", static_cast< SByte >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = Format( L"{}", static_cast< Byte >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = Format( L"{}", static_cast< Int16 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = Format( L"{}", static_cast< UInt16 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = Format( L"{}L", static_cast< Int32 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = Format( L"{}UL", static_cast< UInt32 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = Format( L"{}LL", static_cast< Int64 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = Format( L"{}ULL", static_cast< UInt64 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast< const EnumMemberInfo& >( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    const auto& enumValues = enumType->Values( );
+                    const auto& enumValue = enumValues[ hashValue % enumValues.size( ) ];
+                    result = Format( L"{}::{}", enumType->Name( ), enumValue->Name() );
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = Format( L"{}f", static_cast< float >( hashValue ) / 1000.0f );
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = Format( L"{}", static_cast< double >( hashValue ) / 1000.0 );
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = Format( L"Currency({})", static_cast< Int64 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                DateTime dateTime( DateTime::Now( ).Ticks( ) % DateTime::TicksPerDay );
+                result = Format( L"DateTime( {}, {}, {}, {}, {}, {} )", dateTime.Year(), dateTime.Month(), dateTime.Day(), dateTime.Hour(), dateTime.Minute(), dateTime.Second() );
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                TimeSpan timeSpan( static_cast< Int64 >( hashValue ) % TimeSpan::TicksPerDay );
+                result = Format( L"TimeSpan( {}LL )", timeSpan.Ticks() );
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                Guid guid( static_cast< UInt64 >( hashValue ), ReverseBits( static_cast< UInt64 >( hashValue ) ) );
+                result = Format( L"Guid( L\"{}\" )", guid.ToString() );
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                const auto& stringMember = static_cast< const StringMemberInfo& >( member );
+                if ( stringMember.Size( ) )
+                {
+                    auto text = member.Name( ).SubString( 0, stringMember.Size( ) );
+                    result = Format( L"L\"{}\"", text );
+                }
+                else
+                {
+                    result = Format( L"L\"{}\"", member.Name( ) );
+                }
+            }
+            break;
+
+            case MemberInfoType::Binary:
+            {
+                const auto& binaryMember = static_cast< const BinaryMemberInfo& >( member );
+                if ( binaryMember.Size( ) )
+                {
+                    StringBuilder<wchar_t> sb;
+                    auto text = member.Name( ).SubString( 0, binaryMember.Size( ) );
+                    for ( const auto& c : text )
+                    {
+                        sb.Append( L"\'{}\',", c );
+                    }
+                    auto bytes = sb.ToString( );
+                    bytes.SetLength( bytes.Length( ) - 1 );
+
+                    result = Format( L"{{ {{{}}} }}", bytes );
+                }
+                else
+                {
+                    StringBuilder<wchar_t> sb;
+                    auto text = member.Name( );
+                    for ( const auto& c : text )
+                    {
+                        sb.Append( L"\'{}\',", c );
+                    }
+                    auto bytes = sb.ToString( );
+                    bytes.SetLength( bytes.Length( ) - 1 );
+
+                    result = Format( L"{{ {{{}}} }}", bytes );
+                }
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = Format( L"{}LL", static_cast< Int64 >( hashValue ) );
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                Guid guid( static_cast< UInt64 >( hashValue ), ReverseBits( static_cast< UInt64 >( hashValue ) ) );
+                result = Format( L"Guid( L\"{}\" )", guid.ToString( ) );
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                Guid guid( static_cast< UInt64 >( hashValue ), ReverseBits( static_cast< UInt64 >( hashValue ) ) );
+                result = Format( L"Guid( L\"{}\" )", guid.ToString( ) );
+            }
+            break;
+        }
+        return result;
     }
 
 

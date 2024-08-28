@@ -6,6 +6,9 @@
   <cpp outdir="%HCC_HOME%\Examples\ODBC\Barrelman\Generated\Cpp" namespace="Barrelman">
     
   </cpp>
+  <cpptest outdir="%HCC_HOME%\Tests\ODBC\Barrelman.Tests\Generated\Cpp" namespace="Barrelman::Tests">
+
+  </cpptest>
   <csharp outdir="%HCC_HOME%\DotNet\Examples\Barrelman\Barrelman.Data" namespace="Barrelman.Data">
     
   </csharp>

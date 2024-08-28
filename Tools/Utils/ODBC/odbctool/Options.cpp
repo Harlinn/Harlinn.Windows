@@ -44,6 +44,22 @@ namespace Harlinn::ODBC::Tool
 
     }
 
+    void CppTestOptions::Load( const XmlElement& element )
+    {
+        if ( element.HasAttribute( L"outdir" ) )
+        {
+            outputDirectory_ = element.Read<WideString>( L"outdir" );
+        }
+        if ( element.HasAttribute( L"namespace" ) )
+        {
+            namespace_ = element.Read<WideString>( L"namespace" );
+        }
+        if ( element.HasAttribute( L"dllexport" ) )
+        {
+            dllexport_ = element.Read<WideString>( L"dllexport" );
+        }
+    }
+
     void CSharpOptions::Load( const XmlElement& element )
     {
         if ( element.HasAttribute( L"outdir" ) )
@@ -71,6 +87,11 @@ namespace Harlinn::ODBC::Tool
         if ( cppElement )
         {
             cpp_.Load( cppElement );
+        }
+        auto cppTestElement = element.Read<XmlElement>( L"cpptest" );
+        if ( cppTestElement )
+        {
+            cppTest_.Load( cppTestElement );
         }
         auto csharpElement = element.Read<XmlElement>( L"csharp" );
         if ( csharpElement )

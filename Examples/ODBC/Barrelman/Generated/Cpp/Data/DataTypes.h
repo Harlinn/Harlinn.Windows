@@ -38997,997 +38997,997 @@ namespace Barrelman::Data
         switch ( kind )
         {
             case Kind::AircraftType:
-                static_cast<AircraftTypeData&>(data).WriteTo( destination );
+                static_cast<const AircraftTypeData&>(data).WriteTo( destination );
                 break;
             case Kind::AidToNavigationReportMessage:
-                static_cast<AidToNavigationReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AidToNavigationReportMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisAddressedSafetyRelatedMessage:
-                static_cast<AisAddressedSafetyRelatedMessageData&>(data).WriteTo( destination );
+                static_cast<const AisAddressedSafetyRelatedMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisBaseStationReportMessage:
-                static_cast<AisBaseStationReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBaseStationReportMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisBinaryAcknowledgeMessage:
-                static_cast<AisBinaryAcknowledgeMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBinaryAcknowledgeMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisBinaryAddressedMessage:
-                static_cast<AisBinaryAddressedMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBinaryAddressedMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisBinaryBroadcastMessage:
-                static_cast<AisBinaryBroadcastMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBinaryBroadcastMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisDataLinkManagementMessage:
-                static_cast<AisDataLinkManagementMessageData&>(data).WriteTo( destination );
+                static_cast<const AisDataLinkManagementMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisExtendedClassBCsPositionReportMessage:
-                static_cast<AisExtendedClassBCsPositionReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisExtendedClassBCsPositionReportMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisInterrogationMessage:
-                static_cast<AisInterrogationMessageData&>(data).WriteTo( destination );
+                static_cast<const AisInterrogationMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportClassAAssignedScheduleMessage:
-                static_cast<AisPositionReportClassAAssignedScheduleMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportClassAAssignedScheduleMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportClassAMessage:
-                static_cast<AisPositionReportClassAMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportClassAMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportClassAResponseToInterrogationMessage:
-                static_cast<AisPositionReportClassAResponseToInterrogationMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportClassAResponseToInterrogationMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportForLongRangeApplicationsMessage:
-                static_cast<AisPositionReportForLongRangeApplicationsMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportForLongRangeApplicationsMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisSafetyRelatedAcknowledgmentMessage:
-                static_cast<AisSafetyRelatedAcknowledgmentMessageData&>(data).WriteTo( destination );
+                static_cast<const AisSafetyRelatedAcknowledgmentMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisStandardClassBCsPositionReportMessage:
-                static_cast<AisStandardClassBCsPositionReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStandardClassBCsPositionReportMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisStandardSarAircraftPositionReportMessage:
-                static_cast<AisStandardSarAircraftPositionReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStandardSarAircraftPositionReportMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticAndVoyageRelatedDataMessage:
-                static_cast<AisStaticAndVoyageRelatedDataMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticAndVoyageRelatedDataMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticDataReportMessage:
-                static_cast<AisStaticDataReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticDataReportMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticDataReportPartAMessage:
-                static_cast<AisStaticDataReportPartAMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticDataReportPartAMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticDataReportPartBMessage:
-                static_cast<AisStaticDataReportPartBMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticDataReportPartBMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisUtcAndDateInquiryMessage:
-                static_cast<AisUtcAndDateInquiryMessageData&>(data).WriteTo( destination );
+                static_cast<const AisUtcAndDateInquiryMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisUtcAndDateResponseMessage:
-                static_cast<AisUtcAndDateResponseMessageData&>(data).WriteTo( destination );
+                static_cast<const AisUtcAndDateResponseMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisTransceiverCommand:
-                static_cast<AisTransceiverCommandData&>(data).WriteTo( destination );
+                static_cast<const AisTransceiverCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::AisTransceiverCommandReply:
-                static_cast<AisTransceiverCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const AisTransceiverCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::AisTransceiverConfiguration:
-                static_cast<AisTransceiverConfigurationData&>(data).WriteTo( destination );
+                static_cast<const AisTransceiverConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::AisTransceiverRawMessage:
-                static_cast<AisTransceiverRawMessageData&>(data).WriteTo( destination );
+                static_cast<const AisTransceiverRawMessageData&>(data).WriteTo( destination );
                 break;
             case Kind::AisTransceiverRawSentence:
-                static_cast<AisTransceiverRawSentenceData&>(data).WriteTo( destination );
+                static_cast<const AisTransceiverRawSentenceData&>(data).WriteTo( destination );
                 break;
             case Kind::AlarmStateChange:
-                static_cast<AlarmStateChangeData&>(data).WriteTo( destination );
+                static_cast<const AlarmStateChangeData&>(data).WriteTo( destination );
                 break;
             case Kind::BaseStationType:
-                static_cast<BaseStationTypeData&>(data).WriteTo( destination );
+                static_cast<const BaseStationTypeData&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseriesValue:
-                static_cast<BinaryTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::Bookmark:
-                static_cast<BookmarkData&>(data).WriteTo( destination );
+                static_cast<const BookmarkData&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseriesValue:
-                static_cast<BooleanTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseriesValue:
-                static_cast<ByteTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommand:
-                static_cast<CameraCommandData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandAbsoluteMove:
-                static_cast<CameraCommandAbsoluteMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandAbsoluteMoveData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandAdjustPanTiltZoom:
-                static_cast<CameraCommandAdjustPanTiltZoomData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandAdjustPanTiltZoomData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandContinuousMove:
-                static_cast<CameraCommandContinuousMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandContinuousMoveData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandGeoMove:
-                static_cast<CameraCommandGeoMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandGeoMoveData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandRelativeMove:
-                static_cast<CameraCommandRelativeMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandRelativeMoveData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandReleasePTZOwnership:
-                static_cast<CameraCommandReleasePTZOwnershipData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandReleasePTZOwnershipData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandRequestPTZOwnership:
-                static_cast<CameraCommandRequestPTZOwnershipData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandRequestPTZOwnershipData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetAutoFocus:
-                static_cast<CameraCommandSetAutoFocusData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetAutoFocusData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetBlackAndWhite:
-                static_cast<CameraCommandSetBlackAndWhiteData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetBlackAndWhiteData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetFollowed:
-                static_cast<CameraCommandSetFollowedData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetFollowedData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetInfraRedLamp:
-                static_cast<CameraCommandSetInfraRedLampData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetInfraRedLampData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetWasher:
-                static_cast<CameraCommandSetWasherData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetWasherData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetWiper:
-                static_cast<CameraCommandSetWiperData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetWiperData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandStop:
-                static_cast<CameraCommandStopData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandStopData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandReply:
-                static_cast<CameraCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraConfiguration:
-                static_cast<CameraConfigurationData&>(data).WriteTo( destination );
+                static_cast<const CameraConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraPanCalibration:
-                static_cast<CameraPanCalibrationData&>(data).WriteTo( destination );
+                static_cast<const CameraPanCalibrationData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraPanCalibrationValue:
-                static_cast<CameraPanCalibrationValueData&>(data).WriteTo( destination );
+                static_cast<const CameraPanCalibrationValueData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraStatus:
-                static_cast<CameraStatusData&>(data).WriteTo( destination );
+                static_cast<const CameraStatusData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraTiltCalibration:
-                static_cast<CameraTiltCalibrationData&>(data).WriteTo( destination );
+                static_cast<const CameraTiltCalibrationData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraTiltCalibrationValue:
-                static_cast<CameraTiltCalibrationValueData&>(data).WriteTo( destination );
+                static_cast<const CameraTiltCalibrationValueData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraZoomCalibration:
-                static_cast<CameraZoomCalibrationData&>(data).WriteTo( destination );
+                static_cast<const CameraZoomCalibrationData&>(data).WriteTo( destination );
                 break;
             case Kind::CameraZoomCalibrationValue:
-                static_cast<CameraZoomCalibrationValueData&>(data).WriteTo( destination );
+                static_cast<const CameraZoomCalibrationValueData&>(data).WriteTo( destination );
                 break;
             case Kind::Catalog:
-                static_cast<CatalogData&>(data).WriteTo( destination );
+                static_cast<const CatalogData&>(data).WriteTo( destination );
                 break;
             case Kind::Element:
-                static_cast<ElementData&>(data).WriteTo( destination );
+                static_cast<const ElementData&>(data).WriteTo( destination );
                 break;
             case Kind::CollectionInfo:
-                static_cast<CollectionInfoData&>(data).WriteTo( destination );
+                static_cast<const CollectionInfoData&>(data).WriteTo( destination );
                 break;
             case Kind::Country:
-                static_cast<CountryData&>(data).WriteTo( destination );
+                static_cast<const CountryData&>(data).WriteTo( destination );
                 break;
             case Kind::CursorInfo:
-                static_cast<CursorInfoData&>(data).WriteTo( destination );
+                static_cast<const CursorInfoData&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseriesValue:
-                static_cast<DateTimeTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::DeviceHost:
-                static_cast<DeviceHostData&>(data).WriteTo( destination );
+                static_cast<const DeviceHostData&>(data).WriteTo( destination );
                 break;
             case Kind::DeviceHostConfiguration:
-                static_cast<DeviceHostConfigurationData&>(data).WriteTo( destination );
+                static_cast<const DeviceHostConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseriesValue:
-                static_cast<DoubleTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::FacilityType:
-                static_cast<FacilityTypeData&>(data).WriteTo( destination );
+                static_cast<const FacilityTypeData&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition2DTimeseriesValue:
-                static_cast<GeoPosition2DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition2DTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition3DTimeseriesValue:
-                static_cast<GeoPosition3DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition3DTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDeviceCommand:
-                static_cast<GNSSDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDeviceCommandReply:
-                static_cast<GNSSDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDeviceConfiguration:
-                static_cast<GNSSDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseriesValue:
-                static_cast<GuidTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDeviceCommand:
-                static_cast<GyroDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDeviceCommandReply:
-                static_cast<GyroDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDeviceConfiguration:
-                static_cast<GyroDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::Callsign:
-                static_cast<CallsignData&>(data).WriteTo( destination );
+                static_cast<const CallsignData&>(data).WriteTo( destination );
                 break;
             case Kind::InternationalMaritimeOrganizationNumber:
-                static_cast<InternationalMaritimeOrganizationNumberData&>(data).WriteTo( destination );
+                static_cast<const InternationalMaritimeOrganizationNumberData&>(data).WriteTo( destination );
                 break;
             case Kind::MaritimeMobileServiceIdentity:
-                static_cast<MaritimeMobileServiceIdentityData&>(data).WriteTo( destination );
+                static_cast<const MaritimeMobileServiceIdentityData&>(data).WriteTo( destination );
                 break;
             case Kind::Name:
-                static_cast<NameData&>(data).WriteTo( destination );
+                static_cast<const NameData&>(data).WriteTo( destination );
                 break;
             case Kind::Int16TimeseriesValue:
-                static_cast<Int16TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::Int32TimeseriesValue:
-                static_cast<Int32TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::Int64TimeseriesValue:
-                static_cast<Int64TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::BaseStation:
-                static_cast<BaseStationData&>(data).WriteTo( destination );
+                static_cast<const BaseStationData&>(data).WriteTo( destination );
                 break;
             case Kind::Camera:
-                static_cast<CameraData&>(data).WriteTo( destination );
+                static_cast<const CameraData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDevice:
-                static_cast<GNSSDeviceData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDevice:
-                static_cast<GyroDeviceData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDevice:
-                static_cast<LineInputDeviceData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceData&>(data).WriteTo( destination );
                 break;
             case Kind::OilspillDetector:
-                static_cast<OilspillDetectorData&>(data).WriteTo( destination );
+                static_cast<const OilspillDetectorData&>(data).WriteTo( destination );
                 break;
             case Kind::Radio:
-                static_cast<RadioData&>(data).WriteTo( destination );
+                static_cast<const RadioData&>(data).WriteTo( destination );
                 break;
             case Kind::Radome:
-                static_cast<RadomeData&>(data).WriteTo( destination );
+                static_cast<const RadomeData&>(data).WriteTo( destination );
                 break;
             case Kind::AisTransceiver:
-                static_cast<AisTransceiverData&>(data).WriteTo( destination );
+                static_cast<const AisTransceiverData&>(data).WriteTo( destination );
                 break;
             case Kind::Radar:
-                static_cast<RadarData&>(data).WriteTo( destination );
+                static_cast<const RadarData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStation:
-                static_cast<WeatherStationData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationData&>(data).WriteTo( destination );
                 break;
             case Kind::Facility:
-                static_cast<FacilityData&>(data).WriteTo( destination );
+                static_cast<const FacilityData&>(data).WriteTo( destination );
                 break;
             case Kind::Aircraft:
-                static_cast<AircraftData&>(data).WriteTo( destination );
+                static_cast<const AircraftData&>(data).WriteTo( destination );
                 break;
             case Kind::AisAidToNavigation:
-                static_cast<AisAidToNavigationData&>(data).WriteTo( destination );
+                static_cast<const AisAidToNavigationData&>(data).WriteTo( destination );
                 break;
             case Kind::Vehicle:
-                static_cast<VehicleData&>(data).WriteTo( destination );
+                static_cast<const VehicleData&>(data).WriteTo( destination );
                 break;
             case Kind::Vessel:
-                static_cast<VesselData&>(data).WriteTo( destination );
+                static_cast<const VesselData&>(data).WriteTo( destination );
                 break;
             case Kind::ItemIdentityLink:
-                static_cast<ItemIdentityLinkData&>(data).WriteTo( destination );
+                static_cast<const ItemIdentityLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::ItemParentChildLink:
-                static_cast<ItemParentChildLinkData&>(data).WriteTo( destination );
+                static_cast<const ItemParentChildLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDeviceCommand:
-                static_cast<LineInputDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDeviceCommandReply:
-                static_cast<LineInputDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDeviceConfiguration:
-                static_cast<LineInputDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputMessageRouting:
-                static_cast<LineInputMessageRoutingData&>(data).WriteTo( destination );
+                static_cast<const LineInputMessageRoutingData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputMessageRoutingDestination:
-                static_cast<LineInputMessageRoutingDestinationData&>(data).WriteTo( destination );
+                static_cast<const LineInputMessageRoutingDestinationData&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputWhiteListEntry:
-                static_cast<LineInputWhiteListEntryData&>(data).WriteTo( destination );
+                static_cast<const LineInputWhiteListEntryData&>(data).WriteTo( destination );
                 break;
             case Kind::LogApplication:
-                static_cast<LogApplicationData&>(data).WriteTo( destination );
+                static_cast<const LogApplicationData&>(data).WriteTo( destination );
                 break;
             case Kind::LogApplicationConfiguration:
-                static_cast<LogApplicationConfigurationData&>(data).WriteTo( destination );
+                static_cast<const LogApplicationConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::LogHost:
-                static_cast<LogHostData&>(data).WriteTo( destination );
+                static_cast<const LogHostData&>(data).WriteTo( destination );
                 break;
             case Kind::LogHostConfiguration:
-                static_cast<LogHostConfigurationData&>(data).WriteTo( destination );
+                static_cast<const LogHostConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::LogLocation:
-                static_cast<LogLocationData&>(data).WriteTo( destination );
+                static_cast<const LogLocationData&>(data).WriteTo( destination );
                 break;
             case Kind::LogProcess:
-                static_cast<LogProcessData&>(data).WriteTo( destination );
+                static_cast<const LogProcessData&>(data).WriteTo( destination );
                 break;
             case Kind::LogRecord:
-                static_cast<LogRecordData&>(data).WriteTo( destination );
+                static_cast<const LogRecordData&>(data).WriteTo( destination );
                 break;
             case Kind::LogThread:
-                static_cast<LogThreadData&>(data).WriteTo( destination );
+                static_cast<const LogThreadData&>(data).WriteTo( destination );
                 break;
             case Kind::LogTraceEntry:
-                static_cast<LogTraceEntryData&>(data).WriteTo( destination );
+                static_cast<const LogTraceEntryData&>(data).WriteTo( destination );
                 break;
             case Kind::MapElement:
-                static_cast<MapElementData&>(data).WriteTo( destination );
+                static_cast<const MapElementData&>(data).WriteTo( destination );
                 break;
             case Kind::MapInfo:
-                static_cast<MapInfoData&>(data).WriteTo( destination );
+                static_cast<const MapInfoData&>(data).WriteTo( destination );
                 break;
             case Kind::MapServiceOptions:
-                static_cast<MapServiceOptionsData&>(data).WriteTo( destination );
+                static_cast<const MapServiceOptionsData&>(data).WriteTo( destination );
                 break;
             case Kind::MaritimeIdentificationDigits:
-                static_cast<MaritimeIdentificationDigitsData&>(data).WriteTo( destination );
+                static_cast<const MaritimeIdentificationDigitsData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySession:
-                static_cast<MediaProxySessionData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySessionFile:
-                static_cast<MediaProxySessionFileData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionFileData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySessionOptions:
-                static_cast<MediaProxySessionOptionsData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionOptionsData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaService:
-                static_cast<MediaServiceData&>(data).WriteTo( destination );
+                static_cast<const MediaServiceData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaServiceOptions:
-                static_cast<MediaServiceOptionsData&>(data).WriteTo( destination );
+                static_cast<const MediaServiceOptionsData&>(data).WriteTo( destination );
                 break;
             case Kind::ElementType:
-                static_cast<ElementTypeData&>(data).WriteTo( destination );
+                static_cast<const ElementTypeData&>(data).WriteTo( destination );
                 break;
             case Kind::Namespace:
-                static_cast<NamespaceData&>(data).WriteTo( destination );
+                static_cast<const NamespaceData&>(data).WriteTo( destination );
                 break;
             case Kind::Oilspill:
-                static_cast<OilspillData&>(data).WriteTo( destination );
+                static_cast<const OilspillData&>(data).WriteTo( destination );
                 break;
             case Kind::OilspillDetectorCommand:
-                static_cast<OilspillDetectorCommandData&>(data).WriteTo( destination );
+                static_cast<const OilspillDetectorCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::OilspillDetectorCommandReply:
-                static_cast<OilspillDetectorCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const OilspillDetectorCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::OilspillDetectorConfiguration:
-                static_cast<OilspillDetectorConfigurationData&>(data).WriteTo( destination );
+                static_cast<const OilspillDetectorConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::Position2DTimeseriesValue:
-                static_cast<Position2DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Position2DTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::Position3DTimeseriesValue:
-                static_cast<Position3DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Position3DTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::ProcessTrackValueResult:
-                static_cast<ProcessTrackValueResultData&>(data).WriteTo( destination );
+                static_cast<const ProcessTrackValueResultData&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryProperty:
-                static_cast<BinaryPropertyData&>(data).WriteTo( destination );
+                static_cast<const BinaryPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanProperty:
-                static_cast<BooleanPropertyData&>(data).WriteTo( destination );
+                static_cast<const BooleanPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::ByteProperty:
-                static_cast<BytePropertyData&>(data).WriteTo( destination );
+                static_cast<const BytePropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeProperty:
-                static_cast<DateTimePropertyData&>(data).WriteTo( destination );
+                static_cast<const DateTimePropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleProperty:
-                static_cast<DoublePropertyData&>(data).WriteTo( destination );
+                static_cast<const DoublePropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::GuidProperty:
-                static_cast<GuidPropertyData&>(data).WriteTo( destination );
+                static_cast<const GuidPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::Int16Property:
-                static_cast<Int16PropertyData&>(data).WriteTo( destination );
+                static_cast<const Int16PropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::Int32Property:
-                static_cast<Int32PropertyData&>(data).WriteTo( destination );
+                static_cast<const Int32PropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::Int64Property:
-                static_cast<Int64PropertyData&>(data).WriteTo( destination );
+                static_cast<const Int64PropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceProperty:
-                static_cast<ReferencePropertyData&>(data).WriteTo( destination );
+                static_cast<const ReferencePropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::SByteProperty:
-                static_cast<SBytePropertyData&>(data).WriteTo( destination );
+                static_cast<const SBytePropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::SingleProperty:
-                static_cast<SinglePropertyData&>(data).WriteTo( destination );
+                static_cast<const SinglePropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::StringProperty:
-                static_cast<StringPropertyData&>(data).WriteTo( destination );
+                static_cast<const StringPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseriesProperty:
-                static_cast<BinaryTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseriesProperty:
-                static_cast<BooleanTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseriesProperty:
-                static_cast<ByteTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseriesProperty:
-                static_cast<DateTimeTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseriesProperty:
-                static_cast<DoubleTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseriesProperty:
-                static_cast<GuidTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::Int16TimeseriesProperty:
-                static_cast<Int16TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::Int32TimeseriesProperty:
-                static_cast<Int32TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::Int64TimeseriesProperty:
-                static_cast<Int64TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseriesProperty:
-                static_cast<ReferenceTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseriesProperty:
-                static_cast<SByteTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseriesProperty:
-                static_cast<SingleTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseriesProperty:
-                static_cast<StringTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseriesProperty:
-                static_cast<TimeSpanTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16TimeseriesProperty:
-                static_cast<UInt16TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32TimeseriesProperty:
-                static_cast<UInt32TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64TimeseriesProperty:
-                static_cast<UInt64TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanProperty:
-                static_cast<TimeSpanPropertyData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanPropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16Property:
-                static_cast<UInt16PropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt16PropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32Property:
-                static_cast<UInt32PropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt32PropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64Property:
-                static_cast<UInt64PropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt64PropertyData&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryPropertyDefinition:
-                static_cast<BinaryPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BinaryPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanPropertyDefinition:
-                static_cast<BooleanPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BooleanPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::BytePropertyDefinition:
-                static_cast<BytePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BytePropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimePropertyDefinition:
-                static_cast<DateTimePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DateTimePropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::DoublePropertyDefinition:
-                static_cast<DoublePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DoublePropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::GuidPropertyDefinition:
-                static_cast<GuidPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const GuidPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::Int16PropertyDefinition:
-                static_cast<Int16PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int16PropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::Int32PropertyDefinition:
-                static_cast<Int32PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int32PropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::Int64PropertyDefinition:
-                static_cast<Int64PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int64PropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::ReferencePropertyDefinition:
-                static_cast<ReferencePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const ReferencePropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::SBytePropertyDefinition:
-                static_cast<SBytePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SBytePropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::SinglePropertyDefinition:
-                static_cast<SinglePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SinglePropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::StringPropertyDefinition:
-                static_cast<StringPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const StringPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseriesPropertyDefinition:
-                static_cast<BinaryTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseriesPropertyDefinition:
-                static_cast<BooleanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseriesPropertyDefinition:
-                static_cast<ByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseriesPropertyDefinition:
-                static_cast<DateTimeTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseriesPropertyDefinition:
-                static_cast<DoubleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseriesPropertyDefinition:
-                static_cast<GuidTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::Int16TimeseriesPropertyDefinition:
-                static_cast<Int16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::Int32TimeseriesPropertyDefinition:
-                static_cast<Int32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::Int64TimeseriesPropertyDefinition:
-                static_cast<Int64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseriesPropertyDefinition:
-                static_cast<ReferenceTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseriesPropertyDefinition:
-                static_cast<SByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseriesPropertyDefinition:
-                static_cast<SingleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseriesPropertyDefinition:
-                static_cast<StringTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseriesPropertyDefinition:
-                static_cast<TimeSpanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16TimeseriesPropertyDefinition:
-                static_cast<UInt16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32TimeseriesPropertyDefinition:
-                static_cast<UInt32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64TimeseriesPropertyDefinition:
-                static_cast<UInt64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanPropertyDefinition:
-                static_cast<TimeSpanPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanPropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16PropertyDefinition:
-                static_cast<UInt16PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt16PropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32PropertyDefinition:
-                static_cast<UInt32PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt32PropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64PropertyDefinition:
-                static_cast<UInt64PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt64PropertyDefinitionData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarAlarmStatus:
-                static_cast<RadarAlarmStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarAlarmStatusData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommand:
-                static_cast<RadarCommandData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommandGetStatus:
-                static_cast<RadarCommandGetStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandGetStatusData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommandReply:
-                static_cast<RadarCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommandReplyGetStatus:
-                static_cast<RadarCommandReplyGetStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandReplyGetStatusData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarConfiguration:
-                static_cast<RadarConfigurationData&>(data).WriteTo( destination );
+                static_cast<const RadarConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarImage:
-                static_cast<RadarImageData&>(data).WriteTo( destination );
+                static_cast<const RadarImageData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarRawTrackTable:
-                static_cast<RadarRawTrackTableData&>(data).WriteTo( destination );
+                static_cast<const RadarRawTrackTableData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarStatus:
-                static_cast<RadarStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarStatusData&>(data).WriteTo( destination );
                 break;
             case Kind::RadioCommand:
-                static_cast<RadioCommandData&>(data).WriteTo( destination );
+                static_cast<const RadioCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::RadioCommandReply:
-                static_cast<RadioCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const RadioCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::RadioConfiguration:
-                static_cast<RadioConfigurationData&>(data).WriteTo( destination );
+                static_cast<const RadioConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeCommand:
-                static_cast<RadomeCommandData&>(data).WriteTo( destination );
+                static_cast<const RadomeCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeCommandReply:
-                static_cast<RadomeCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const RadomeCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeConfiguration:
-                static_cast<RadomeConfigurationData&>(data).WriteTo( destination );
+                static_cast<const RadomeConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseriesValue:
-                static_cast<ReferenceTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseriesValue:
-                static_cast<SByteTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityDomain:
-                static_cast<SecurityDomainData&>(data).WriteTo( destination );
+                static_cast<const SecurityDomainData&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityLogin:
-                static_cast<SecurityLoginData&>(data).WriteTo( destination );
+                static_cast<const SecurityLoginData&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityRole:
-                static_cast<SecurityRoleData&>(data).WriteTo( destination );
+                static_cast<const SecurityRoleData&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityIdentifierRoleLink:
-                static_cast<SecurityIdentifierRoleLinkData&>(data).WriteTo( destination );
+                static_cast<const SecurityIdentifierRoleLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityLoginSession:
-                static_cast<SecurityLoginSessionData&>(data).WriteTo( destination );
+                static_cast<const SecurityLoginSessionData&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityPermission:
-                static_cast<SecurityPermissionData&>(data).WriteTo( destination );
+                static_cast<const SecurityPermissionData&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseriesValue:
-                static_cast<SingleTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseriesValue:
-                static_cast<StringTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseries:
-                static_cast<BinaryTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseries:
-                static_cast<BooleanTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::AisAidToNavigationOffPositionTimeseries:
-                static_cast<AisAidToNavigationOffPositionTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const AisAidToNavigationOffPositionTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::DeviceEnabledTimeseries:
-                static_cast<DeviceEnabledTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const DeviceEnabledTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
-                static_cast<RadarAutomaticSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarAutomaticSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarBlankSector1Timeseries:
-                static_cast<RadarBlankSector1TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarBlankSector1TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarBlankSector2Timeseries:
-                static_cast<RadarBlankSector2TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarBlankSector2TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
-                static_cast<RadarEnableAutomaticFrequencyControlTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarEnableAutomaticFrequencyControlTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarEnableFastTimeConstantTimeseries:
-                static_cast<RadarEnableFastTimeConstantTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarEnableFastTimeConstantTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarEnableSensitivityTimeControlTimeseries:
-                static_cast<RadarEnableSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarEnableSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarPowerOnTimeseries:
-                static_cast<RadarPowerOnTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarPowerOnTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSaveSettingsTimeseries:
-                static_cast<RadarSaveSettingsTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSaveSettingsTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarTrackingTimeseries:
-                static_cast<RadarTrackingTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarTrackingTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySessionEnabledTimeseries:
-                static_cast<MediaProxySessionEnabledTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionEnabledTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::MediaServiceEnabledTimeseries:
-                static_cast<MediaServiceEnabledTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const MediaServiceEnabledTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseries:
-                static_cast<ByteTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseries:
-                static_cast<DateTimeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseries:
-                static_cast<DoubleTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSAltitudeTimeseries:
-                static_cast<GNSSAltitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GNSSAltitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSLatitudeTimeseries:
-                static_cast<GNSSLatitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GNSSLatitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSLongitudeTimeseries:
-                static_cast<GNSSLongitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GNSSLongitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroCourseTimeseries:
-                static_cast<GyroCourseTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroCourseTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroHeadingMagneticNorthTimeseries:
-                static_cast<GyroHeadingMagneticNorthTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroHeadingMagneticNorthTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroHeadingTrueNorthTimeseries:
-                static_cast<GyroHeadingTrueNorthTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroHeadingTrueNorthTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroPitchTimeseries:
-                static_cast<GyroPitchTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroPitchTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroRateOfTurnTimeseries:
-                static_cast<GyroRateOfTurnTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroRateOfTurnTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroRollTimeseries:
-                static_cast<GyroRollTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroRollTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GyroSpeedTimeseries:
-                static_cast<GyroSpeedTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroSpeedTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarLatitudeTimeseries:
-                static_cast<RadarLatitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarLatitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarLongitudeTimeseries:
-                static_cast<RadarLongitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarLongitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeDewPointTimeseries:
-                static_cast<RadomeDewPointTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomeDewPointTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomePressureTimeseries:
-                static_cast<RadomePressureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomePressureTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeTemperatureTimeseries:
-                static_cast<RadomeTemperatureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomeTemperatureTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::VesselDraughtTimeseries:
-                static_cast<VesselDraughtTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const VesselDraughtTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::ViewLatitudeTimeseries:
-                static_cast<ViewLatitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ViewLatitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::ViewLongitudeTimeseries:
-                static_cast<ViewLongitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ViewLongitudeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::ViewZoomLevelTimeseries:
-                static_cast<ViewZoomLevelTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ViewZoomLevelTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationAbsoluteHumidityTimeseries:
-                static_cast<WeatherStationAbsoluteHumidityTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationAbsoluteHumidityTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationAirTemperatureTimeseries:
-                static_cast<WeatherStationAirTemperatureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationAirTemperatureTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationBarometricPressureTimeseries:
-                static_cast<WeatherStationBarometricPressureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationBarometricPressureTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationDewPointTimeseries:
-                static_cast<WeatherStationDewPointTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationDewPointTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationRelativeHumidityTimeseries:
-                static_cast<WeatherStationRelativeHumidityTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationRelativeHumidityTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationWaterTemperatureTimeseries:
-                static_cast<WeatherStationWaterTemperatureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationWaterTemperatureTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationWindDirectionTimeseries:
-                static_cast<WeatherStationWindDirectionTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationWindDirectionTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationWindSpeedTimeseries:
-                static_cast<WeatherStationWindSpeedTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationWindSpeedTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition2DTimeseries:
-                static_cast<GeoPosition2DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition2DTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::AisAidToNavigationPositionTimeseries:
-                static_cast<AisAidToNavigationPositionTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const AisAidToNavigationPositionTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition3DTimeseries:
-                static_cast<GeoPosition3DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition3DTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseries:
-                static_cast<GuidTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::Int16Timeseries:
-                static_cast<Int16TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::Int32Timeseries:
-                static_cast<Int32TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarAzimuthOffsetTimeseries:
-                static_cast<RadarAzimuthOffsetTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarAzimuthOffsetTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarFastTimeConstantLevelTimeseries:
-                static_cast<RadarFastTimeConstantLevelTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarFastTimeConstantLevelTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarFastTimeConstantModeTimeseries:
-                static_cast<RadarFastTimeConstantModeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarFastTimeConstantModeTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarPulseTimeseries:
-                static_cast<RadarPulseTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarPulseTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector1EndTimeseries:
-                static_cast<RadarSector1EndTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector1EndTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector1StartTimeseries:
-                static_cast<RadarSector1StartTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector1StartTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector2EndTimeseries:
-                static_cast<RadarSector2EndTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector2EndTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector2StartTimeseries:
-                static_cast<RadarSector2StartTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector2StartTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSensitivityTimeControlLevelTimeseries:
-                static_cast<RadarSensitivityTimeControlLevelTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSensitivityTimeControlLevelTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadarTuningTimeseries:
-                static_cast<RadarTuningTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarTuningTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::VesselPersonsOnBoardTimeseries:
-                static_cast<VesselPersonsOnBoardTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const VesselPersonsOnBoardTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::Int64Timeseries:
-                static_cast<Int64TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::Position2DTimeseries:
-                static_cast<Position2DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Position2DTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::Position3DTimeseries:
-                static_cast<Position3DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Position3DTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseries:
-                static_cast<ReferenceTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseries:
-                static_cast<SByteTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseries:
-                static_cast<SingleTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseries:
-                static_cast<StringTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseries:
-                static_cast<TimeSpanTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16Timeseries:
-                static_cast<UInt16TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32Timeseries:
-                static_cast<UInt32TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeStatusTimeseries:
-                static_cast<RadomeStatusTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomeStatusTimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64Timeseries:
-                static_cast<UInt64TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeseriesCatalog:
-                static_cast<TimeseriesCatalogData&>(data).WriteTo( destination );
+                static_cast<const TimeseriesCatalogData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeseriesInfo:
-                static_cast<TimeseriesInfoData&>(data).WriteTo( destination );
+                static_cast<const TimeseriesInfoData&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseriesValue:
-                static_cast<TimeSpanTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackableItemTrackLink:
-                static_cast<TrackableItemTrackLinkData&>(data).WriteTo( destination );
+                static_cast<const TrackableItemTrackLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::Track:
-                static_cast<TrackData&>(data).WriteTo( destination );
+                static_cast<const TrackData&>(data).WriteTo( destination );
                 break;
             case Kind::Track3D:
-                static_cast<Track3DData&>(data).WriteTo( destination );
+                static_cast<const Track3DData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackerFilterParameters:
-                static_cast<TrackerFilterParametersData&>(data).WriteTo( destination );
+                static_cast<const TrackerFilterParametersData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackerFilterParametersConfiguration:
-                static_cast<TrackerFilterParametersConfigurationData&>(data).WriteTo( destination );
+                static_cast<const TrackerFilterParametersConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackInfo:
-                static_cast<TrackInfoData&>(data).WriteTo( destination );
+                static_cast<const TrackInfoData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackingServiceOptions:
-                static_cast<TrackingServiceOptionsData&>(data).WriteTo( destination );
+                static_cast<const TrackingServiceOptionsData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackLink:
-                static_cast<TrackLinkData&>(data).WriteTo( destination );
+                static_cast<const TrackLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackValue:
-                static_cast<TrackValueData&>(data).WriteTo( destination );
+                static_cast<const TrackValueData&>(data).WriteTo( destination );
                 break;
             case Kind::TrackValue3D:
-                static_cast<TrackValue3DData&>(data).WriteTo( destination );
+                static_cast<const TrackValue3DData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16TimeseriesValue:
-                static_cast<UInt16TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32TimeseriesValue:
-                static_cast<UInt32TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64TimeseriesValue:
-                static_cast<UInt64TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesValueData&>(data).WriteTo( destination );
                 break;
             case Kind::VehicleType:
-                static_cast<VehicleTypeData&>(data).WriteTo( destination );
+                static_cast<const VehicleTypeData&>(data).WriteTo( destination );
                 break;
             case Kind::VesselType:
-                static_cast<VesselTypeData&>(data).WriteTo( destination );
+                static_cast<const VesselTypeData&>(data).WriteTo( destination );
                 break;
             case Kind::View:
-                static_cast<ViewData&>(data).WriteTo( destination );
+                static_cast<const ViewData&>(data).WriteTo( destination );
                 break;
             case Kind::ViewCameraLink:
-                static_cast<ViewCameraLinkData&>(data).WriteTo( destination );
+                static_cast<const ViewCameraLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::ViewTrackerLink:
-                static_cast<ViewTrackerLinkData&>(data).WriteTo( destination );
+                static_cast<const ViewTrackerLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationCommand:
-                static_cast<WeatherStationCommandData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationCommandData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationCommandReply:
-                static_cast<WeatherStationCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationCommandReplyData&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationConfiguration:
-                static_cast<WeatherStationConfigurationData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::CircularZone:
-                static_cast<CircularZoneData&>(data).WriteTo( destination );
+                static_cast<const CircularZoneData&>(data).WriteTo( destination );
                 break;
             case Kind::PolygonZone:
-                static_cast<PolygonZoneData&>(data).WriteTo( destination );
+                static_cast<const PolygonZoneData&>(data).WriteTo( destination );
                 break;
             case Kind::ZoneExceptions:
-                static_cast<ZoneExceptionsData&>(data).WriteTo( destination );
+                static_cast<const ZoneExceptionsData&>(data).WriteTo( destination );
                 break;
             case Kind::ZoneExceptionsVesselLink:
-                static_cast<ZoneExceptionsVesselLinkData&>(data).WriteTo( destination );
+                static_cast<const ZoneExceptionsVesselLinkData&>(data).WriteTo( destination );
                 break;
             case Kind::ZoneTrackAlarm:
-                static_cast<ZoneTrackAlarmData&>(data).WriteTo( destination );
+                static_cast<const ZoneTrackAlarmData&>(data).WriteTo( destination );
                 break;
         }
     }

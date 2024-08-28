@@ -6,6 +6,7 @@
  #define BARRELMAN_EXPORT __declspec(dllexport)
 #else
  #define BARRELMAN_EXPORT __declspec(dllimport)
+ #pragma comment(lib,"Barrelman.lib")
 #endif
 
 #endif

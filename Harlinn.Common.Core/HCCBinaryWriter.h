@@ -22,6 +22,7 @@
 #include <HCCGuid.h>
 #include <HCCCurrency.h>
 #include <HCCString.h>
+#include <HCCBinary.h>
 #include <HCCException.h>
 #include <HCCArray.h>
 #include <HCCVector.h>
@@ -267,7 +268,7 @@ namespace Harlinn::Common::Core::IO
 
         template<typename T>
             requires (( IsStdVector<T> && IsBasicType<typename T::value_type> && IsNotBoolean<typename T::value_type> ) || 
-                ( IsBasicType<typename T::value_type> && ( IsArrayContainer<T> || IsCoreVector<T> || IsStdSpan<T> ) ) )
+                ( IsBasicType<typename T::value_type> && ( IsArrayContainer<T> || IsCoreVector<T> || IsStdSpan<T> || std::is_same_v<T,Binary> ) ) )
         void Write( const T& values )
         {
             auto count = static_cast<size_t>( values.size( ) );

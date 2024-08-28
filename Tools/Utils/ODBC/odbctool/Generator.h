@@ -429,6 +429,86 @@ namespace Harlinn::ODBC::Tool
         : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), complexDatabaseReadersSource_(*this)
     { }
 
+    class CppDataTestGenerator;
+    class CppDataTypesTestGenerator : public CodeGenerator<CppDataTestGenerator, CppDataTypesTestOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDataTestGenerator, CppDataTypesTestOptions>;
+        CppDataTypesTestGenerator( const CppDataTestGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateSerializationTest( const ClassInfo& classInfo );
+    };
+
+    class CppTestGenerator;
+    class CppDataTestGenerator : public GeneratorContainer<CppTestGenerator, CppDataTestOptions>
+    {
+        CppDataTypesTestGenerator dataTypes_;
+    public:
+        using Base = GeneratorContainer<CppTestGenerator, CppDataTestOptions>;
+        CppDataTestGenerator( const CppTestGenerator& owner );
+
+        void Run( )
+        {
+            dataTypes_.Run( );
+        }
+    };
+
+    inline CppDataTypesTestGenerator::CppDataTypesTestGenerator( const CppDataTestGenerator& owner )
+        : Base( owner, owner.Options( ).DataTypes( ) )
+    {
+
+    }
+
+
+
+    class CppDatabaseTestGenerator : public GeneratorContainer<CppTestGenerator, CppDatabaseTestOptions>
+    {
+    public:
+        using Base = GeneratorContainer<CppTestGenerator, CppDatabaseTestOptions>;
+        CppDatabaseTestGenerator( const CppTestGenerator& owner );
+
+        void Run( )
+        {
+        }
+    };
+
+    class CppTestGenerator : public GeneratorContainer<Generator, CppTestOptions>
+    {
+        CppDataTestGenerator data_;
+        CppDatabaseTestGenerator database_;
+    public:
+        using Base = GeneratorContainer<Generator, CppTestOptions>;
+        CppTestGenerator( const Generator& owner );
+
+        void Run( )
+        {
+            data_.Run( );
+            database_.Run( );
+        }
+
+        const CppDataTestGenerator& Data( ) const
+        {
+            return data_;
+        }
+        const CppDatabaseTestGenerator& Database( ) const
+        {
+            return database_;
+        }
+
+    };
+
+    inline CppDataTestGenerator::CppDataTestGenerator( const CppTestGenerator& owner )
+        : Base( owner, owner.Options( ).Data( ) ), dataTypes_(*this)
+    {
+    }
+
+    inline CppDatabaseTestGenerator::CppDatabaseTestGenerator( const CppTestGenerator& owner )
+        : Base( owner, owner.Options( ).Database( ) )
+    {
+    }
+
 
     class Generator
     {
@@ -436,9 +516,10 @@ namespace Harlinn::ODBC::Tool
         const ModelInfo& model_;
         DatabaseGenerator database_;
         CppGenerator cpp_;
+        CppTestGenerator cppTest_;
     public:
         Generator( const Tool::Options& options, const ModelInfo& model )
-            : options_( options ), model_( model ), database_( *this ), cpp_(*this)
+            : options_( options ), model_( model ), database_( *this ), cpp_(*this), cppTest_(*this)
         { }
 
         const Tool::Options& Options( ) const
@@ -455,6 +536,7 @@ namespace Harlinn::ODBC::Tool
         {
             database_.Run( );
             cpp_.Run( );
+            cppTest_.Run( );
         }
     };
 
@@ -464,6 +546,10 @@ namespace Harlinn::ODBC::Tool
 
     inline CppGenerator::CppGenerator( const Generator& owner )
         : Base( owner, owner.Options( ).Cpp( ) ), data_(*this), database_(*this)
+    {
+    }
+    inline CppTestGenerator::CppTestGenerator( const Generator& owner )
+        : Base( owner, owner.Options( ).CppTest( ) ), data_( *this ), database_( *this )
     {
     }
 

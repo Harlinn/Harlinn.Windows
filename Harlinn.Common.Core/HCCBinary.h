@@ -486,6 +486,12 @@ namespace Harlinn::Common::Core
             : data_( Initialize( buffer, size ) )
         {
         }
+        template<typename T, size_t N>
+            requires (sizeof(T) == 1)
+        Binary( const T( &array )[ N ] )
+            : data_( Initialize( reinterpret_cast<const Byte*>(array), N ) )
+        {
+        }
 
         template<SimpleSpanLike SpanT>
             requires std::is_same_v<typename SpanT::value_type, Byte>

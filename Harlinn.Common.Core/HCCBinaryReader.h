@@ -22,6 +22,7 @@
 #include <HCCGuid.h>
 #include <HCCCurrency.h>
 #include <HCCString.h>
+#include <HCCBinary.h>
 #include <HCCException.h>
 #include <HCCArray.h>
 #include <HCCVector.h>
@@ -180,7 +181,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<typename T>
-            requires ( IsBasicType<T> && sizeof( std::remove_cvref_t<T> ) > 1 )
+            requires ( (IsBasicType<T> || std::is_enum_v<T> ) && sizeof( std::remove_cvref_t<T> ) > 1 )
         constexpr void Read( T& value )
         {
             using Type = std::remove_cvref_t<T>;
@@ -211,7 +212,7 @@ namespace Harlinn::Common::Core::IO
             }
         }
         template<typename T>
-            requires ( IsBasicType<T> && sizeof( std::remove_cvref_t<T> ) > 1 )
+            requires ( (IsBasicType<T> || std::is_enum_v<T>) && sizeof( std::remove_cvref_t<T> ) > 1 )
         constexpr std::remove_cvref_t<T> Read( )
         {
             using Type = std::remove_cvref_t<T>;
@@ -372,7 +373,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<typename T>
-            requires (( IsStdVector<T> && IsBasicType<typename T::value_type> && IsNotBoolean<typename T::value_type> ) ||
+            requires (( (IsStdVector<T> || std::is_same_v<T,Binary> ) && IsBasicType<typename T::value_type> && IsNotBoolean<typename T::value_type> ) ||
                 ( IsCoreVector<T> && IsBasicType<typename T::value_type> ) )
         void Read( T& result )
         {

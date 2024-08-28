@@ -48,6 +48,7 @@ namespace Harlinn::ODBC::Tool
         static WideString GetColumnDataType( const ClassInfo& classInfo );
         static WideString GetComplexColumnDataType( const ClassInfo& classInfo );
         static WideString GetDataType( const ClassInfo& classInfo );
+        static WideString GetSimpleTestValue( const ClassInfo& classInfo, const MemberInfo& member );
 
     };
 

@@ -299,7 +299,7 @@ namespace Harlinn::ODBC::Tool
             {
                 WriteLine( L"            case Kind::{}:", classInfo->Name( ) );
                 auto className = CppHelper::GetDataType( *classInfo );
-                WriteLine( L"                static_cast<{}&>(data).WriteTo( destination );", className );
+                WriteLine( L"                static_cast<const {}&>(data).WriteTo( destination );", className );
                 WriteLine( L"                break;" );
             }
         }

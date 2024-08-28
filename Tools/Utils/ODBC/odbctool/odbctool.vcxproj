@@ -161,6 +161,7 @@
     <ClCompile Include="CppDatabaseReadersGenerator.cpp" />
     <ClCompile Include="CppDataTypesGenerator.cpp" />
     <ClCompile Include="CppDataTypesSourceGenerator.cpp" />
+    <ClCompile Include="CppDataTypesTestGenerator.cpp" />
     <ClCompile Include="CppEnumsGenerator.cpp" />
     <ClCompile Include="CppHelper.cpp" />
     <ClCompile Include="EnumMemberInfo.cpp" />
