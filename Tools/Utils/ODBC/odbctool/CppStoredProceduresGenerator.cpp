@@ -68,21 +68,21 @@ namespace Harlinn::ODBC::Tool
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetInsertFunctionName( classInfo );
         auto functionParameters = CppHelper::GetInsertFunctionParameters( classInfo );
-        WriteLine( L"    {} void {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
     }
     void CppStoredProceduresGenerator::CreateUpdate( const ClassInfo& classInfo )
     {
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetUpdateFunctionName( classInfo );
         auto functionParameters = CppHelper::GetUpdateFunctionParameters( classInfo );
-        WriteLine( L"    {} void {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
     }
     void CppStoredProceduresGenerator::CreateDelete( const ClassInfo& classInfo )
     {
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetDeleteFunctionName( classInfo );
         auto functionParameters = CppHelper::GetDeleteFunctionParameters( classInfo );
-        WriteLine( L"    {} void {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} );", dllExport, functionName, functionParameters );
     }
 
 }

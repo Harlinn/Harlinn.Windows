@@ -1374,7 +1374,7 @@ namespace Harlinn::ODBC::Tool
     {
         StringBuilder<wchar_t> markers;
 
-        markers.Append( L"?" );
+        markers.Append( L"?, ?" );
         auto rowVersion = classInfo.RowVersion( );
         if ( rowVersion )
         {

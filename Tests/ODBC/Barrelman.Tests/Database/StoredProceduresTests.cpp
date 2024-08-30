@@ -38,25 +38,37 @@ BOOST_AUTO_TEST_CASE( AircraftTypeTest )
     deleteStatement.BindGuidParameter( 1, &id );
     deleteStatement.ExecDirect( L"DELETE FROM AircraftType WHERE Id = ?" );
 
-    Database::InsertAircraftType( connection, id, name1 );
-
+    auto inserted = Database::InsertAircraftType( connection, id, name1 );
+    BOOST_CHECK( inserted );
     auto statementAfterInsert = connection.CreateStatement( );
-
-    auto readerAfterInsert = statementAfterInsert.ExecuteReader<Database::SimpleAircraftTypeDataReader>( Database::SimpleAircraftTypeDataReader::BaseQuery );
-    if ( readerAfterInsert->Read( ) )
+    statementAfterInsert.BindGuidParameter( 1, &id );
+    auto readerAfterInsert = statementAfterInsert.ExecuteReader<Database::SimpleAircraftTypeDataReader>( Database::SimpleAircraftTypeDataReader::BaseQuery + L" WHERE Id = ?" );
+    bool readerAfterInsertHasData = readerAfterInsert->Read( );
+    BOOST_CHECK( readerAfterInsertHasData );
+    if ( readerAfterInsertHasData )
     {
         const auto& name = readerAfterInsert->Name( );
+        bool equal = name == name1;
+        BOOST_CHECK( equal );
         
     }
-    Database::UpdateAircraftType( connection, id, rowVersion, name2 );
-
+    
+    auto updated = Database::UpdateAircraftType( connection, id, rowVersion, name2 );
+    BOOST_CHECK( updated );
     auto statementAfterUpdate = connection.CreateStatement( );
-    auto readerAfterUpdate = statementAfterUpdate.ExecuteReader<Database::SimpleAircraftTypeDataReader>( Database::SimpleAircraftTypeDataReader::BaseQuery );
-    if ( readerAfterUpdate->Read( ) )
+    statementAfterUpdate.BindGuidParameter( 1, &id );
+    auto readerAfterUpdate = statementAfterUpdate.ExecuteReader<Database::SimpleAircraftTypeDataReader>( Database::SimpleAircraftTypeDataReader::BaseQuery + L" WHERE Id = ?" );
+    bool readerAfterUpdateHasData = readerAfterUpdate->Read( );
+    BOOST_CHECK( readerAfterUpdateHasData );
+    if ( readerAfterUpdateHasData )
     {
         const auto& name = readerAfterUpdate->Name( );
-
+        bool equal = name == name2;
+        BOOST_CHECK( equal );
     }
+
+    auto deleted = Database::DeleteAircraftType( connection, id, rowVersion );
+    BOOST_CHECK( deleted );
 
 }
 BOOST_AUTO_TEST_SUITE_END( )

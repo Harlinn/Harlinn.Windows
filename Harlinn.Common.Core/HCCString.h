@@ -4782,13 +4782,15 @@ namespace Harlinn::Common::Core
 
 
 
-    template<typename CharT, size_t maxSize>
+    template<typename CharT, size_t maxSize, bool internalSizeInBytes = false>
         requires std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t>
     class FixedString
     {
     public:
         using value_type = CharT;
         
+        static constexpr bool InternalSizeInBytes = internalSizeInBytes;
+
         using CharType = CharT;
         static constexpr size_t MaxSize = maxSize;
         using ArrayType = std::array<CharType, MaxSize + 1>;
@@ -4816,36 +4818,78 @@ namespace Harlinn::Common::Core
         {
             return Internal::CheckFixedStringSize<MaxSize>( size );
         }
+        static constexpr size_t ConvertSizeToInternalSize( size_t size )
+        {
+            if constexpr ( std::is_same_v<CharType, wchar_t> && InternalSizeInBytes )
+            {
+                return size * sizeof( CharType );
+            }
+            else
+            {
+                return size;
+            }
+        }
+        static constexpr size_t ConvertSizeFromInternalSize( size_t size )
+        {
+            if constexpr ( std::is_same_v<CharType, wchar_t> && InternalSizeInBytes )
+            {
+                return size / sizeof( CharType );
+            }
+            else
+            {
+                return size;
+            }
+        }
+
     public:
         constexpr FixedString( ) noexcept = default;
 
         explicit FixedString( const CharType* str, size_t size )
-            : size_( CheckSize( size ) )
+            : size_( ConvertSizeToInternalSize(CheckSize( size ) ) )
         {
             MemCopy( data_.data( ), str, size );
-            data_[ size_ ] = static_cast< CharType >( 0 );
+            data_[ size ] = static_cast< CharType >( 0 );
         }
 
         explicit FixedString( const CharType* str )
-            : size_( CheckSize( LengthOf( str ) ) )
+            : size_( ConvertSizeToInternalSize( CheckSize( LengthOf( str ) ) ) )
         {
-            MemCopy( data_.data( ), str, size_ );
-            data_[ size_ ] = static_cast< CharType >( 0 );
+            if constexpr ( std::is_same_v<CharType, wchar_t> && InternalSizeInBytes )
+            {
+                auto sz = size_ / sizeof( CharType );
+                MemCopy( data_.data( ), str, sz );
+                data_[ sz ] = static_cast< CharType >( 0 );
+            }
+            else
+            {
+                MemCopy( data_.data( ), str, size_ );
+                data_[ size_ ] = static_cast< CharType >( 0 );
+            }
         }
 
         template<SimpleSpanLike T>
             requires std::is_same_v<typename T::value_type, CharType>
         explicit FixedString( const T& str )
-            : size_( CheckSize( str.size( ) ) )
+            : size_( ConvertSizeToInternalSize( CheckSize( str.size( ) ) ) )
         {
-            MemCopy( data_.data( ), str.data( ), size_ );
+            if constexpr ( std::is_same_v<CharType, wchar_t> && InternalSizeInBytes )
+            {
+                auto sz = size_ / sizeof( CharType );
+                MemCopy( data_.data( ), str.data( ), sz );
+                data_[ sz ] = static_cast< CharType >( 0 );
+            }
+            else
+            {
+                MemCopy( data_.data( ), str.data( ), str.size( ) );
+                data_[ size_ ] = static_cast< CharType >( 0 );
+            }
         }
 
         void Assign( const CharType* str, size_type length )
         {
-            size_ = CheckSize( length );
+            size_ = ConvertSizeToInternalSize( CheckSize( length ) );
             MemCopy( data_.data( ), str, length );
-            data_[ size_ ] = static_cast< CharType >( 0 );
+            data_[ length ] = static_cast< CharType >( 0 );
         }
 
 
@@ -4859,23 +4903,32 @@ namespace Harlinn::Common::Core
 
         FixedString& operator = ( const CharType* str )
         {
-            size_ = CheckSize( LengthOf(str) );
-            MemCopy( data_.data( ), str.data( ), size_ );
-            data_[ size_ ] = static_cast< CharType >( 0 );
+            auto sz = CheckSize( LengthOf(str) );
+            size_ = ConvertSizeToInternalSize( sz );
+            MemCopy( data_.data( ), str.data( ), sz );
+            data_[ sz ] = static_cast< CharType >( 0 );
             return *this;
         }
 
         [[nodiscard]] constexpr size_type size( ) const noexcept
         {
-            return size_ <= MaxSize ? size_ : 0;
+            if constexpr ( std::is_same_v<CharType, wchar_t> && InternalSizeInBytes )
+            {
+                auto sz = ConvertSizeFromInternalSize( size_ );
+                return sz <= MaxSize ? sz : 0;
+            }
+            else
+            {
+                return size_ <= MaxSize ? size_ : 0;
+            }
         }
         [[nodiscard]] constexpr size_type length( ) const noexcept
         {
-            return size_ <= MaxSize ? size_ : 0;
+            return size( );
         }
         [[nodiscard]] constexpr size_type Length( ) const noexcept
         {
-            return size_ <= MaxSize ? size_ : 0;
+            return size( );
         }
 
         [[nodiscard]] constexpr bool empty( ) const noexcept
@@ -4946,11 +4999,11 @@ namespace Harlinn::Common::Core
         {
             if constexpr ( std::is_same_v<CharType, char> )
             {
-                return size_ ? data_.data( ) : "";
+                return size( ) ? data_.data( ) : "";
             }
             else
             {
-                return size_ ? data_.data( ) : L"";
+                return size( ) ? data_.data( ) : L"";
             }
         }
 
@@ -5008,7 +5061,7 @@ namespace Harlinn::Common::Core
         {
             if ( size_ )
             {
-                return StringType( data_.data( ), size_ );
+                return StringType( data_.data( ), size( ) );
             }
             return {};
         }
@@ -5017,7 +5070,7 @@ namespace Harlinn::Common::Core
         {
             if ( size_ )
             {
-                return StringViewType( data_.data( ), size_ );
+                return StringViewType( data_.data( ), size( ) );
             }
             return {};
         }
@@ -5040,13 +5093,13 @@ namespace Harlinn::Common::Core
         }
 
     public:
-        template<size_t M>
-        bool operator == ( const FixedString<CharType,M>& other ) const
+        template<size_t M, bool ist>
+        bool operator == ( const FixedString<CharType,M, ist>& other ) const
         {
             return AreEqual( data( ), size( ), other.data( ), other.size( ) );
         }
-        template<size_t M>
-        bool operator != ( const FixedString<CharType, M>& other ) const
+        template<size_t M, bool ist>
+        bool operator != ( const FixedString<CharType, M,ist>& other ) const
         {
             return AreEqual( data( ), size( ), other.data( ), other.size( ) ) == false;
         }

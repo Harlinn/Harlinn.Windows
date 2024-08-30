@@ -30,15 +30,15 @@ namespace Harlinn::ODBC
 
     template<typename CharT, size_t maxSize>
         requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
-    class FixedDBString : public Harlinn::Common::Core::FixedString<CharT, maxSize>
+    class FixedDBString : public Harlinn::Common::Core::FixedString<CharT, maxSize, true>
     {
         
     public:
-        using Base = Harlinn::Common::Core::FixedString<CharT, maxSize>;
+        using Base = Harlinn::Common::Core::FixedString<CharT, maxSize, true>;
     private:
         using Base::size_;
     public:
-        using Base::CharType;
+        using CharType = CharT;
         using Base::size;
         using Base::data;
         using Base::CheckSize;

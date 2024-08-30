@@ -58,7 +58,7 @@ namespace Harlinn::ODBC::Tool
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetInsertFunctionName( classInfo );
         auto functionParameters = CppHelper::GetInsertFunctionParameters( classInfo );
-        WriteLine( L"    {} void {}( const ODBC::Connection& connection, {} )", dllExport, functionName, functionParameters );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} )", dllExport, functionName, functionParameters );
         WriteLine( L"    {" );
 
         const auto& members = classInfo.PersistentMembers( );
@@ -102,6 +102,9 @@ namespace Harlinn::ODBC::Tool
             }
         }
         WriteLine( L"        statement.ExecDirect( L\"{{ CALL [{}]( {} ) }}\" );", procedureName, parameterMarkers );
+        WriteLine( L"        SQLLEN numberOfRowsInserted = 0;" );
+        WriteLine( L"        statement.RowCount( &numberOfRowsInserted );" );
+        WriteLine( L"        return numberOfRowsInserted > 0;" );
         WriteLine( L"    }" );
     }
     void CppStoredProceduresSourceGenerator::CreateUpdate( const ClassInfo& classInfo )
@@ -109,7 +112,7 @@ namespace Harlinn::ODBC::Tool
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetUpdateFunctionName( classInfo );
         auto functionParameters = CppHelper::GetUpdateFunctionParameters( classInfo );
-        WriteLine( L"    {} void {}( const ODBC::Connection& connection, {} )", dllExport, functionName, functionParameters );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} )", dllExport, functionName, functionParameters );
         WriteLine( L"    {" );
         const auto& members = classInfo.PersistentMembers( );
         size_t membersCount = members.size( );
@@ -138,6 +141,7 @@ namespace Harlinn::ODBC::Tool
                 bindParameterFunctionName = CppHelper::GetBindParameterFunctionName( member );
                 if ( member.Nullable() == false && ( memberType <= MemberInfoType::Double || memberType == MemberInfoType::Guid || memberType == MemberInfoType::Reference || memberType == MemberInfoType::TimeSeries || memberType == MemberInfoType::RowVersion ) )
                 {
+                    /*
                     if ( memberType == MemberInfoType::RowVersion )
                     {
                         WriteLine( L"        statement.{}( {}, &{}, ODBC::ParameterDirection::InputOutput );", bindParameterFunctionName, markerId, variableName );
@@ -146,6 +150,8 @@ namespace Harlinn::ODBC::Tool
                     {
                         WriteLine( L"        statement.{}( {}, &{} );", bindParameterFunctionName, markerId, variableName );
                     }
+                    */
+                    WriteLine( L"        statement.{}( {}, &{} );", bindParameterFunctionName, markerId, variableName );
                 }
                 else
                 {
@@ -155,6 +161,15 @@ namespace Harlinn::ODBC::Tool
             }
         }
         WriteLine( L"        statement.ExecDirect( L\"{{ CALL [{}]( {} ) }}\" );", procedureName, parameterMarkers );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto variableName = CppHelper::GetInputArgumentName( *rowVersion );
+            WriteLine( L"        {}++;", variableName );
+        }
+        WriteLine( L"        SQLLEN numberOfRowsUpdated = 0;" );
+        WriteLine( L"        statement.RowCount( &numberOfRowsUpdated );" );
+        WriteLine( L"        return numberOfRowsUpdated > 0;" );
         WriteLine( L"    }" );
     }
     void CppStoredProceduresSourceGenerator::CreateDelete( const ClassInfo& classInfo )
@@ -162,7 +177,7 @@ namespace Harlinn::ODBC::Tool
         auto dllExport = Options( ).DllExport( );
         auto functionName = CppHelper::GetDeleteFunctionName( classInfo );
         auto functionParameters = CppHelper::GetDeleteFunctionParameters( classInfo );
-        WriteLine( L"    {} void {}( const ODBC::Connection& connection, {} )", dllExport, functionName, functionParameters );
+        WriteLine( L"    {} bool {}( const ODBC::Connection& connection, {} )", dllExport, functionName, functionParameters );
         WriteLine( L"    {" );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = CppHelper::GetInputArgumentName( *primaryKey );
@@ -182,8 +197,14 @@ namespace Harlinn::ODBC::Tool
             auto variableName = CppHelper::GetInputArgumentName( *rowVersion );
             bindParameterFunctionName = CppHelper::GetBindParameterFunctionName( *rowVersion );
             WriteLine( L"        statement.{}( {}, &{} );", bindParameterFunctionName, markerId, variableName );
+            markerId++;
         }
+        WriteLine( L"        Int32 numberOfObjectsDeleted = 0;" );
+        WriteLine( L"        statement.BindInt32Parameter( {}, &numberOfObjectsDeleted, ODBC::ParameterDirection::Output );", markerId );
         WriteLine( L"        statement.ExecDirect( L\"{{ CALL [{}]( {} ) }}\" );", procedureName, parameterMarkers );
+        WriteLine( L"        SQLLEN numberOfRowsDeleted = 0;" );
+        WriteLine( L"        statement.RowCount( &numberOfRowsDeleted );" );
+        WriteLine( L"        return numberOfRowsDeleted > 0;" );
         WriteLine( L"    }" );
     }
 
