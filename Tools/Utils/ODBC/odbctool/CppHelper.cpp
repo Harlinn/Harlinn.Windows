@@ -15,6 +15,7 @@
 */
 #include "CppHelper.h"
 #include <HCCStringBuilder.h>
+
 namespace Harlinn::ODBC::Tool
 {
     WideString CppHelper::GetHeaderGuard( const WideString& filename )
@@ -353,12 +354,42 @@ namespace Harlinn::ODBC::Tool
                 break;
                 case MemberInfoType::String:
                 {
-                    result = L"const WideString&";
+                    if ( IsBindable( member ) )
+                    {
+                        const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( member );
+                        result = Format( L"FixedDBWideString<{}>", stringMemberInfo.Size( ) );
+                    }
+                    else
+                    {
+                        if ( member.Nullable( ) )
+                        {
+                            result = L"const DBWideString&";
+                        }
+                        else
+                        {
+                            result = L"const WideString&";
+                        }
+                    }
                 }
                 break;
                 case MemberInfoType::Binary:
                 {
-                    result = L"const Binary&";
+                    if ( IsBindable( member ) )
+                    {
+                        const auto& binaryMemberInfo = static_cast< const StringMemberInfo& >( member );
+                        result = Format( L"FixedDBBinary<{}>", binaryMemberInfo.Size( ) );
+                    }
+                    else
+                    {
+                        if ( member.Nullable( ) )
+                        {
+                            result = L"const DBBinary&";
+                        }
+                        else
+                        {
+                            result = L"const Binary&";
+                        }
+                    }
                 }
                 break;
                 case MemberInfoType::Reference:
@@ -497,13 +528,138 @@ namespace Harlinn::ODBC::Tool
 
     WideString CppHelper::GetInputArgumentName( const MemberInfo& member )
     {
-        auto result = Format( L"{}", member.Name( ).FirstToLower( ) );
+        auto result = member.Name( ).FirstToLower( );
         if ( IsCppKeyword( result ) )
         {
             return Format( L"{}__", result );
         }
         return result;
     }
+
+    WideString CppHelper::GetBindParameterFunctionName( const MemberInfo& member )
+    {
+        WideString result;
+        auto memberType = member.Type( );
+        switch ( memberType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = L"BindBooleanParameter";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = L"BindSByteParameter";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = L"BindByteParameter";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = L"BindInt16Parameter";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = L"BindUInt16Parameter";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = L"BindInt32Parameter";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = L"BindUInt32Parameter";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = L"BindInt64Parameter";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = L"BindUInt64Parameter";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                result = L"BindEnumParameter";
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = L"BindSingleParameter";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = L"BindDoubleParameter";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = L"BindDateTimeParameter";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = L"BindTimeSpanParameter";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = L"BindGuidParameter";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                if ( IsBindable( member ) )
+                {
+                    result = L"BindFixedDBWideStringParameter";
+                }
+                else
+                {
+                    result = L"BindWideStringParameter";
+                }
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                if ( IsBindable( member ) )
+                {
+                    result = L"BindFixedDBBinaryParameter";
+                }
+                else
+                {
+                    result = L"BindBinaryParameter";
+                }
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = L"BindInt64Parameter";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = L"BindGuidParameter";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = L"BindGuidParameter";
+            }
+            break;
+        }
+        return result;
+    }
+
 
     WideString CppHelper::GetMemberFieldType( const MemberInfo& member )
     {
@@ -931,6 +1087,301 @@ namespace Harlinn::ODBC::Tool
             break;
         }
         return result;
+    }
+
+    WideString CppHelper::GetInsertFunctionName( const ClassInfo& classInfo )
+    {
+        return Format( L"Insert{}", classInfo.Name( ) );
+    }
+    WideString CppHelper::GetUpdateFunctionName( const ClassInfo& classInfo )
+    {
+        return Format( L"Update{}", classInfo.Name( ) );
+    }
+    WideString CppHelper::GetDeleteFunctionName( const ClassInfo& classInfo )
+    {
+        return Format( L"Delete{}", classInfo.Name( ) );
+    }
+
+    WideString CppHelper::GetInsertFunctionParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}& {}", primaryKeyArgumentType, primaryKeyName  );
+
+        if ( membersCount > 0 )
+        {
+            parameters.Append( L"," );
+        }
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    auto variableName = GetInputArgumentName( member );
+                    auto variableType = GetInputArgumentType( member );
+
+                    if ( i < ( membersCount - 1 ) )
+                    {
+                        parameters.Append( L" {} {},", variableType, variableName );
+                    }
+                    else
+                    {
+                        parameters.Append( L" {} {}", variableType, variableName );
+                    }
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CppHelper::GetInsertFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+
+        if ( membersCount > 0 )
+        {
+            parameters.Append( L"," );
+        }
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    auto variableName = GetInputArgumentName( member );
+                    auto variableType = GetInputArgumentType( member );
+
+                    if ( i < ( membersCount - 1 ) )
+                    {
+                        parameters.Append( L" {},", variableName );
+                    }
+                    else
+                    {
+                        parameters.Append( L" {}", variableName );
+                    }
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CppHelper::GetInsertFunctionParameterMarkers( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> markers;
+
+        markers.Append( L"?" );
+
+        if ( membersCount > 0 )
+        {
+            markers.Append( L"," );
+        }
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    if ( i < ( membersCount - 1 ) )
+                    {
+                        markers.Append( L" ?," );
+                    }
+                    else
+                    {
+                        markers.Append( L" ?" );
+                    }
+                }
+            }
+        }
+        return markers.ToString( );
+    }
+
+
+    WideString CppHelper::GetUpdateFunctionParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"const {}& {}", primaryKeyArgumentType, primaryKeyName );
+
+        if ( membersCount > 0 )
+        {
+            parameters.Append( L"," );
+        }
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto variableName = GetInputArgumentName( member );
+                auto variableType = GetInputArgumentType( member );
+
+                if ( i < ( membersCount - 1 ) )
+                {
+                    parameters.Append( L" {} {},", variableType, variableName );
+                }
+                else
+                {
+                    parameters.Append( L" {} {}", variableType, variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CppHelper::GetUpdateFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+
+        if ( membersCount > 0 )
+        {
+            parameters.Append( L"," );
+        }
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto variableName = GetInputArgumentName( member );
+                auto variableType = GetInputArgumentType( member );
+
+                if ( i < ( membersCount - 1 ) )
+                {
+                    parameters.Append( L" {},", variableName );
+                }
+                else
+                {
+                    parameters.Append( L" {}", variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CppHelper::GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+
+        StringBuilder<wchar_t> markers;
+
+        markers.Append( L"?" );
+
+        if ( membersCount > 0 )
+        {
+            markers.Append( L"," );
+        }
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+
+                if ( i < ( membersCount - 1 ) )
+                {
+                    markers.Append( L" ?," );
+                }
+                else
+                {
+                    markers.Append( L" ?" );
+                }
+            }
+        }
+        return markers.ToString( );
+    }
+
+
+    WideString CppHelper::GetDeleteFunctionParameters( const ClassInfo& classInfo )
+    {
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"const {}& {}", primaryKeyArgumentType, primaryKeyName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionName = GetInputArgumentName( *rowVersion );
+            parameters.Append( L", Int64 {}", rowVersionName );
+        }
+        return parameters.ToString( );
+    }
+    WideString CppHelper::GetDeleteFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionName = GetInputArgumentName( *rowVersion );
+            parameters.Append( L", {}", rowVersionName );
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CppHelper::GetDeleteFunctionParameterMarkers( const ClassInfo& classInfo )
+    {
+        StringBuilder<wchar_t> markers;
+
+        markers.Append( L"?" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionName = GetInputArgumentName( *rowVersion );
+            markers.Append( L", ?", rowVersionName );
+        }
+        return markers.ToString( );
     }
 
 

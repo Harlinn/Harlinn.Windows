@@ -29,6 +29,157 @@ ALTER TABLE [dbo].[AircraftType]
 go
 
 /*
+ * AisDeviceCommand
+ *
+ */
+CREATE TABLE [dbo].[AisDeviceCommand]
+(
+  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
+  [RowVersion] [bigint] NOT NULL,
+  [AisDevice] [uniqueidentifier] NOT NULL,
+  [Timestamp] [bigint] NOT NULL,
+  [DeviceCommandSourceType] [int] NOT NULL,
+  [DeviceCommandSourceId] [uniqueidentifier] NOT NULL,
+  [Reply] [uniqueidentifier] NULL,
+  CONSTRAINT [PK_AisDeviceCommand] PRIMARY KEY([Id])
+)
+go
+
+CREATE INDEX [IDX_AisDeviceCommand_AisDevice_Timestamp] ON [dbo].[AisDeviceCommand]([AisDevice],[Timestamp])
+go
+
+CREATE INDEX [IDX_AisDeviceCommand_Timestamp] ON [dbo].[AisDeviceCommand]([Timestamp])
+go
+
+CREATE INDEX [IDX_AisDeviceCommand_Reply] ON [dbo].[AisDeviceCommand]([Reply])
+go
+
+/*
+ * AisDeviceCommandReply
+ *
+ */
+CREATE TABLE [dbo].[AisDeviceCommandReply]
+(
+  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
+  [RowVersion] [bigint] NOT NULL,
+  [AisDevice] [uniqueidentifier] NOT NULL,
+  [Timestamp] [bigint] NOT NULL,
+  [Command] [uniqueidentifier] NOT NULL,
+  [Status] [int] NOT NULL,
+  [Message] [nvarchar](max) NOT NULL,
+  CONSTRAINT [PK_AisDeviceCommandReply] PRIMARY KEY([Id])
+)
+go
+
+CREATE INDEX [IDX_AisDeviceCommandReply_AisDevice_Timestamp] ON [dbo].[AisDeviceCommandReply]([AisDevice],[Timestamp])
+go
+
+CREATE INDEX [IDX_AisDeviceCommandReply_Timestamp] ON [dbo].[AisDeviceCommandReply]([Timestamp])
+go
+
+ALTER TABLE [dbo].[AisDeviceCommandReply]
+  ADD CONSTRAINT [UNQ_AisDeviceCommandReply_Command] UNIQUE([Command])
+go
+
+/*
+ * AisDeviceConfiguration
+ *
+ */
+CREATE TABLE [dbo].[AisDeviceConfiguration]
+(
+  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
+  [RowVersion] [bigint] NOT NULL,
+  [AisDevice] [uniqueidentifier] NOT NULL,
+  [Timestamp] [bigint] NOT NULL,
+  [UserName] [nvarchar](127) NOT NULL,
+  [Password] [nvarchar](127) NOT NULL,
+  [Latitude] [float](53) NOT NULL,
+  [Longitude] [float](53) NOT NULL,
+  [AisProviderLoginURL] [nvarchar](127) NOT NULL,
+  [ComPort] [nvarchar](32) NOT NULL,
+  [BaudRate] [int] NOT NULL,
+  [FilterByArea] [bit] NOT NULL,
+  [UpperLeftCornerLatitude] [float](53) NOT NULL,
+  [UpperLeftCornerLongitude] [float](53) NOT NULL,
+  [BottomRightCornerLatitude] [float](53) NOT NULL,
+  [BottomRightCornerLongitude] [float](53) NOT NULL,
+  [AisProviderIPAddress] [nvarchar](127) NOT NULL,
+  [AisProviderPort] [int] NOT NULL,
+  [UseLogin] [bit] NOT NULL,
+  [AisProviderLoginPort] [int] NOT NULL,
+  [CanSendAISMessage] [bit] NOT NULL,
+  [TextMessageHeader] [nvarchar](max) NOT NULL,
+  [Urls] [nvarchar](max) NOT NULL,
+  [UdpPort] [int] NOT NULL,
+  [ConnectionType] [int] NOT NULL,
+  [EnableRefreshAidToNavigationIn30sec] [bit] NOT NULL,
+  [EnableAidToNavigationFromFile] [bit] NOT NULL,
+  [AidToNavigationHeader] [nvarchar](max) NOT NULL,
+  [SendingMMSI] [bit] NOT NULL,
+  [SourceUpdateRate] [int] NOT NULL,
+  [EnableRefreshStayingStillTargetIn30sec] [bit] NOT NULL,
+  [ExcludeSendAisBaseStation] [nvarchar](max) NOT NULL,
+  [ExcludeSendAisA] [nvarchar](max) NOT NULL,
+  [EnableSendBaseStationAlarms] [bit] NOT NULL,
+  [AisWebConfig] [nvarchar](127) NOT NULL,
+  [StoreReceivedSentences] [bit] NOT NULL,
+  [StoreSentMessages] [bit] NOT NULL,
+  [StoreUnsentMessages] [bit] NOT NULL,
+  CONSTRAINT [PK_AisDeviceConfiguration] PRIMARY KEY([Id])
+)
+go
+
+ALTER TABLE [dbo].[AisDeviceConfiguration]
+  ADD CONSTRAINT [UNQ_AisDeviceConfiguration_AisDevice_Timestamp] UNIQUE([AisDevice],[Timestamp])
+go
+
+CREATE INDEX [IDX_AisDeviceConfiguration_Timestamp] ON [dbo].[AisDeviceConfiguration]([Timestamp])
+go
+
+/*
+ * AisDeviceRawMessage
+ *
+ */
+CREATE TABLE [dbo].[AisDeviceRawMessage]
+(
+  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
+  [RowVersion] [bigint] NOT NULL,
+  [AisDevice] [uniqueidentifier] NOT NULL,
+  [Timestamp] [bigint] NOT NULL,
+  [IsSent] [bit] NOT NULL,
+  [Message] [nvarchar](100) NOT NULL,
+  CONSTRAINT [PK_AisDeviceRawMessage] PRIMARY KEY([Id])
+)
+go
+
+CREATE INDEX [IDX_AisDeviceRawMessage_AisDevice_Timestamp] ON [dbo].[AisDeviceRawMessage]([AisDevice],[Timestamp])
+go
+
+CREATE INDEX [IDX_AisDeviceRawMessage_Timestamp] ON [dbo].[AisDeviceRawMessage]([Timestamp])
+go
+
+/*
+ * AisDeviceRawSentence
+ *
+ */
+CREATE TABLE [dbo].[AisDeviceRawSentence]
+(
+  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
+  [RowVersion] [bigint] NOT NULL,
+  [AisDevice] [uniqueidentifier] NOT NULL,
+  [Timestamp] [bigint] NOT NULL,
+  [Sentence] [nvarchar](1024) NOT NULL,
+  CONSTRAINT [PK_AisDeviceRawSentence] PRIMARY KEY([Id])
+)
+go
+
+CREATE INDEX [IDX_AisDeviceRawSentence_AisDevice_Timestamp] ON [dbo].[AisDeviceRawSentence]([AisDevice],[Timestamp])
+go
+
+CREATE INDEX [IDX_AisDeviceRawSentence_Timestamp] ON [dbo].[AisDeviceRawSentence]([Timestamp])
+go
+
+/*
  * AisMessage
  *
  */
@@ -41,7 +192,7 @@ CREATE TABLE [dbo].[AisMessage]
    */
   [EntityType] [int] NOT NULL,
   [RowVersion] [bigint] NOT NULL,
-  [AisTransceiver] [uniqueidentifier] NOT NULL,
+  [AisDevice] [uniqueidentifier] NOT NULL,
   [ReceivedTimestamp] [bigint] NOT NULL,
   [MessageSequenceNumber] [bigint] NOT NULL,
   [Repeat] [int] NOT NULL,
@@ -52,7 +203,7 @@ CREATE TABLE [dbo].[AisMessage]
 go
 
 ALTER TABLE [dbo].[AisMessage]
-  ADD CONSTRAINT [UNQ_AisMessage_AisTransceiver_ReceivedTimestamp] UNIQUE([AisTransceiver],[ReceivedTimestamp])
+  ADD CONSTRAINT [UNQ_AisMessage_AisDevice_ReceivedTimestamp] UNIQUE([AisDevice],[ReceivedTimestamp])
 go
 
 CREATE INDEX [IDX_AisMessage_ReceivedTimestamp] ON [dbo].[AisMessage]([ReceivedTimestamp])
@@ -165,12 +316,12 @@ CREATE TABLE [dbo].[AisBinaryAcknowledgeMessage]
   [Spare] [int] NOT NULL,
   [SequenceNumber1] [int] NOT NULL,
   [Mmsi1] [uniqueidentifier] NOT NULL,
-  [SequenceNumber2] [int] NOT NULL,
-  [Mmsi2] [uniqueidentifier] NOT NULL,
-  [SequenceNumber3] [int] NOT NULL,
-  [Mmsi3] [uniqueidentifier] NOT NULL,
-  [SequenceNumber4] [int] NOT NULL,
-  [Mmsi4] [uniqueidentifier] NOT NULL,
+  [SequenceNumber2] [int] NULL,
+  [Mmsi2] [uniqueidentifier] NULL,
+  [SequenceNumber3] [int] NULL,
+  [Mmsi3] [uniqueidentifier] NULL,
+  [SequenceNumber4] [int] NULL,
+  [Mmsi4] [uniqueidentifier] NULL,
   CONSTRAINT [FK_AisBinaryAcknowledgeMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
   CONSTRAINT [PK_AisBinaryAcknowledgeMessage] PRIMARY KEY([Id])
 )
@@ -244,18 +395,18 @@ CREATE TABLE [dbo].[AisDataLinkManagementMessage]
   [ReservedSlots1] [int] NOT NULL,
   [Timeout1] [int] NOT NULL,
   [Increment1] [int] NOT NULL,
-  [Offset2] [int] NOT NULL,
-  [ReservedSlots2] [int] NOT NULL,
-  [Timeout2] [int] NOT NULL,
-  [Increment2] [int] NOT NULL,
-  [Offset3] [int] NOT NULL,
-  [ReservedSlots3] [int] NOT NULL,
-  [Timeout3] [int] NOT NULL,
-  [Increment3] [int] NOT NULL,
-  [Offset4] [int] NOT NULL,
-  [ReservedSlots4] [int] NOT NULL,
-  [Timeout4] [int] NOT NULL,
-  [Increment4] [int] NOT NULL,
+  [Offset2] [int] NULL,
+  [ReservedSlots2] [int] NULL,
+  [Timeout2] [int] NULL,
+  [Increment2] [int] NULL,
+  [Offset3] [int] NULL,
+  [ReservedSlots3] [int] NULL,
+  [Timeout3] [int] NULL,
+  [Increment3] [int] NULL,
+  [Offset4] [int] NULL,
+  [ReservedSlots4] [int] NULL,
+  [Timeout4] [int] NULL,
+  [Increment4] [int] NULL,
   CONSTRAINT [FK_AisDataLinkManagementMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
   CONSTRAINT [PK_AisDataLinkManagementMessage] PRIMARY KEY([Id])
 )
@@ -320,7 +471,7 @@ CREATE TABLE [dbo].[AisInterrogationMessage]
   [FirstSlotOffset] [int] NOT NULL,
   [SecondMessageType] [int] NULL,
   [SecondSlotOffset] [int] NULL,
-  [SecondStationInterrogationMmsi] [uniqueidentifier] NOT NULL,
+  [SecondStationInterrogationMmsi] [uniqueidentifier] NULL,
   [SecondStationFirstMessageType] [int] NULL,
   [SecondStationFirstSlotOffset] [int] NULL,
   CONSTRAINT [FK_AisInterrogationMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
@@ -456,12 +607,12 @@ CREATE TABLE [dbo].[AisSafetyRelatedAcknowledgmentMessage]
   [Spare] [int] NOT NULL,
   [SequenceNumber1] [int] NOT NULL,
   [Mmsi1] [uniqueidentifier] NOT NULL,
-  [SequenceNumber2] [int] NOT NULL,
-  [Mmsi2] [uniqueidentifier] NOT NULL,
-  [SequenceNumber3] [int] NOT NULL,
-  [Mmsi3] [uniqueidentifier] NOT NULL,
-  [SequenceNumber4] [int] NOT NULL,
-  [Mmsi4] [uniqueidentifier] NOT NULL,
+  [SequenceNumber2] [int] NULL,
+  [Mmsi2] [uniqueidentifier] NULL,
+  [SequenceNumber3] [int] NULL,
+  [Mmsi3] [uniqueidentifier] NULL,
+  [SequenceNumber4] [int] NULL,
+  [Mmsi4] [uniqueidentifier] NULL,
   CONSTRAINT [FK_AisSafetyRelatedAcknowledgmentMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
   CONSTRAINT [PK_AisSafetyRelatedAcknowledgmentMessage] PRIMARY KEY([Id])
 )
@@ -639,7 +790,7 @@ CREATE TABLE [dbo].[AisStaticDataReportPartBMessage]
   [DimensionToStern] [int] NOT NULL,
   [DimensionToPort] [int] NOT NULL,
   [DimensionToStarboard] [int] NOT NULL,
-  [MothershipMmsi] [uniqueidentifier] NOT NULL,
+  [MothershipMmsi] [uniqueidentifier] NULL,
   [PositionFixType] [int] NOT NULL,
   [Spare] [int] NOT NULL,
   CONSTRAINT [FK_AisStaticDataReportPartBMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisStaticDataReportMessage]([Id]),
@@ -698,157 +849,6 @@ CREATE TABLE [dbo].[AisUtcAndDateResponseMessage]
   CONSTRAINT [FK_AisUtcAndDateResponseMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
   CONSTRAINT [PK_AisUtcAndDateResponseMessage] PRIMARY KEY([Id])
 )
-go
-
-/*
- * AisTransceiverCommand
- *
- */
-CREATE TABLE [dbo].[AisTransceiverCommand]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [RowVersion] [bigint] NOT NULL,
-  [AisTransceiver] [uniqueidentifier] NOT NULL,
-  [Timestamp] [bigint] NOT NULL,
-  [DeviceCommandSourceType] [int] NOT NULL,
-  [DeviceCommandSourceId] [uniqueidentifier] NOT NULL,
-  [Reply] [uniqueidentifier] NOT NULL,
-  CONSTRAINT [PK_AisTransceiverCommand] PRIMARY KEY([Id])
-)
-go
-
-CREATE INDEX [IDX_AisTransceiverCommand_AisTransceiver_Timestamp] ON [dbo].[AisTransceiverCommand]([AisTransceiver],[Timestamp])
-go
-
-CREATE INDEX [IDX_AisTransceiverCommand_Timestamp] ON [dbo].[AisTransceiverCommand]([Timestamp])
-go
-
-CREATE INDEX [IDX_AisTransceiverCommand_Reply] ON [dbo].[AisTransceiverCommand]([Reply])
-go
-
-/*
- * AisTransceiverCommandReply
- *
- */
-CREATE TABLE [dbo].[AisTransceiverCommandReply]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [RowVersion] [bigint] NOT NULL,
-  [AisTransceiver] [uniqueidentifier] NOT NULL,
-  [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
-  [Status] [int] NOT NULL,
-  [Message] [nvarchar](max) NOT NULL,
-  CONSTRAINT [PK_AisTransceiverCommandReply] PRIMARY KEY([Id])
-)
-go
-
-CREATE INDEX [IDX_AisTransceiverCommandReply_AisTransceiver_Timestamp] ON [dbo].[AisTransceiverCommandReply]([AisTransceiver],[Timestamp])
-go
-
-CREATE INDEX [IDX_AisTransceiverCommandReply_Timestamp] ON [dbo].[AisTransceiverCommandReply]([Timestamp])
-go
-
-ALTER TABLE [dbo].[AisTransceiverCommandReply]
-  ADD CONSTRAINT [UNQ_AisTransceiverCommandReply_Command] UNIQUE([Command])
-go
-
-/*
- * AisTransceiverConfiguration
- *
- */
-CREATE TABLE [dbo].[AisTransceiverConfiguration]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [RowVersion] [bigint] NOT NULL,
-  [AisTransceiver] [uniqueidentifier] NOT NULL,
-  [Timestamp] [bigint] NOT NULL,
-  [UserName] [nvarchar](127) NOT NULL,
-  [Password] [nvarchar](127) NOT NULL,
-  [Latitude] [float](53) NOT NULL,
-  [Longitude] [float](53) NOT NULL,
-  [AisProviderLoginURL] [nvarchar](127) NOT NULL,
-  [ComPort] [nvarchar](32) NOT NULL,
-  [BaudRate] [int] NOT NULL,
-  [FilterByArea] [bit] NOT NULL,
-  [UpperLeftCornerLatitude] [float](53) NOT NULL,
-  [UpperLeftCornerLongitude] [float](53) NOT NULL,
-  [BottomRightCornerLatitude] [float](53) NOT NULL,
-  [BottomRightCornerLongitude] [float](53) NOT NULL,
-  [AisProviderIPAddress] [nvarchar](127) NOT NULL,
-  [AisProviderPort] [int] NOT NULL,
-  [UseLogin] [bit] NOT NULL,
-  [AisProviderLoginPort] [int] NOT NULL,
-  [CanSendAISMessage] [bit] NOT NULL,
-  [TextMessageHeader] [nvarchar](max) NOT NULL,
-  [Urls] [nvarchar](max) NOT NULL,
-  [UdpPort] [int] NOT NULL,
-  [ConnectionType] [int] NOT NULL,
-  [EnableRefreshAidToNavigationIn30sec] [bit] NOT NULL,
-  [EnableAidToNavigationFromFile] [bit] NOT NULL,
-  [AidToNavigationHeader] [nvarchar](max) NOT NULL,
-  [SendingMMSI] [bit] NOT NULL,
-  [SourceUpdateRate] [int] NOT NULL,
-  [EnableRefreshStayingStillTargetIn30sec] [bit] NOT NULL,
-  [ExcludeSendAisBaseStation] [nvarchar](max) NOT NULL,
-  [ExcludeSendAisA] [nvarchar](max) NOT NULL,
-  [EnableSendBaseStationAlarms] [bit] NOT NULL,
-  [AisWebConfig] [nvarchar](127) NOT NULL,
-  [StoreReceivedSentences] [bit] NOT NULL,
-  [StoreSentMessages] [bit] NOT NULL,
-  [StoreUnsentMessages] [bit] NOT NULL,
-  CONSTRAINT [PK_AisTransceiverConfiguration] PRIMARY KEY([Id])
-)
-go
-
-ALTER TABLE [dbo].[AisTransceiverConfiguration]
-  ADD CONSTRAINT [UNQ_AisTransceiverConfiguration_AisTransceiver_Timestamp] UNIQUE([AisTransceiver],[Timestamp])
-go
-
-CREATE INDEX [IDX_AisTransceiverConfiguration_Timestamp] ON [dbo].[AisTransceiverConfiguration]([Timestamp])
-go
-
-/*
- * AisTransceiverRawMessage
- *
- */
-CREATE TABLE [dbo].[AisTransceiverRawMessage]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [RowVersion] [bigint] NOT NULL,
-  [AisTransceiver] [uniqueidentifier] NOT NULL,
-  [Timestamp] [bigint] NOT NULL,
-  [IsSent] [bit] NOT NULL,
-  [Message] [nvarchar](100) NOT NULL,
-  CONSTRAINT [PK_AisTransceiverRawMessage] PRIMARY KEY([Id])
-)
-go
-
-CREATE INDEX [IDX_AisTransceiverRawMessage_AisTransceiver_Timestamp] ON [dbo].[AisTransceiverRawMessage]([AisTransceiver],[Timestamp])
-go
-
-CREATE INDEX [IDX_AisTransceiverRawMessage_Timestamp] ON [dbo].[AisTransceiverRawMessage]([Timestamp])
-go
-
-/*
- * AisTransceiverRawSentence
- *
- */
-CREATE TABLE [dbo].[AisTransceiverRawSentence]
-(
-  [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [RowVersion] [bigint] NOT NULL,
-  [AisTransceiver] [uniqueidentifier] NOT NULL,
-  [Timestamp] [bigint] NOT NULL,
-  [Sentence] [nvarchar](1024) NOT NULL,
-  CONSTRAINT [PK_AisTransceiverRawSentence] PRIMARY KEY([Id])
-)
-go
-
-CREATE INDEX [IDX_AisTransceiverRawSentence_AisTransceiver_Timestamp] ON [dbo].[AisTransceiverRawSentence]([AisTransceiver],[Timestamp])
-go
-
-CREATE INDEX [IDX_AisTransceiverRawSentence_Timestamp] ON [dbo].[AisTransceiverRawSentence]([Timestamp])
 go
 
 /*
@@ -2297,20 +2297,20 @@ ALTER TABLE [dbo].[Device]
 go
 
 /*
- * Camera
+ * CameraDevice
  *
- * The Camera entity a descendant of the Device entity.
+ * The CameraDevice entity a descendant of the Device entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[Camera].[Id] field and the
+ * [dbo].[CameraDevice].[Id] field and the
  * [dbo].[Device].[Id] field.
  *
  */
-CREATE TABLE [dbo].[Camera]
+CREATE TABLE [dbo].[CameraDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  CONSTRAINT [FK_Camera_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
-  CONSTRAINT [PK_Camera] PRIMARY KEY([Id])
+  CONSTRAINT [FK_CameraDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
+  CONSTRAINT [PK_CameraDevice] PRIMARY KEY([Id])
 )
 go
 
@@ -2383,58 +2383,58 @@ CREATE TABLE [dbo].[LineInputDevice]
 go
 
 /*
- * OilspillDetector
+ * OilSpillDetectorDevice
  *
- * The OilspillDetector entity a descendant of the Device entity.
+ * The OilSpillDetectorDevice entity a descendant of the Device entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[OilspillDetector].[Id] field and the
+ * [dbo].[OilSpillDetectorDevice].[Id] field and the
  * [dbo].[Device].[Id] field.
  *
  */
-CREATE TABLE [dbo].[OilspillDetector]
+CREATE TABLE [dbo].[OilSpillDetectorDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  CONSTRAINT [FK_OilspillDetector_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
-  CONSTRAINT [PK_OilspillDetector] PRIMARY KEY([Id])
+  CONSTRAINT [FK_OilSpillDetectorDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
+  CONSTRAINT [PK_OilSpillDetectorDevice] PRIMARY KEY([Id])
 )
 go
 
 /*
- * Radio
+ * RadioDevice
  *
- * The Radio entity a descendant of the Device entity.
+ * The RadioDevice entity a descendant of the Device entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[Radio].[Id] field and the
+ * [dbo].[RadioDevice].[Id] field and the
  * [dbo].[Device].[Id] field.
  *
  */
-CREATE TABLE [dbo].[Radio]
+CREATE TABLE [dbo].[RadioDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  CONSTRAINT [FK_Radio_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
-  CONSTRAINT [PK_Radio] PRIMARY KEY([Id])
+  CONSTRAINT [FK_RadioDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
+  CONSTRAINT [PK_RadioDevice] PRIMARY KEY([Id])
 )
 go
 
 /*
- * Radome
+ * RadomeDevice
  *
- * The Radome entity a descendant of the Device entity.
+ * The RadomeDevice entity a descendant of the Device entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[Radome].[Id] field and the
+ * [dbo].[RadomeDevice].[Id] field and the
  * [dbo].[Device].[Id] field.
  *
  */
-CREATE TABLE [dbo].[Radome]
+CREATE TABLE [dbo].[RadomeDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   /*
    * A Radome device.
    */
-  [Radar] [uniqueidentifier] NOT NULL,
+  [Radar] [uniqueidentifier] NULL,
   /*
    * A Radome device.
    */
@@ -2451,61 +2451,61 @@ CREATE TABLE [dbo].[Radome]
    * A Radome device.
    */
   [StatusTimeseries] [uniqueidentifier] NOT NULL,
-  CONSTRAINT [FK_Radome_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
-  CONSTRAINT [PK_Radome] PRIMARY KEY([Id])
+  CONSTRAINT [FK_RadomeDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
+  CONSTRAINT [PK_RadomeDevice] PRIMARY KEY([Id])
 )
 go
 
-CREATE INDEX [IDX_Radome_Radar] ON [dbo].[Radome]([Radar])
+CREATE INDEX [IDX_RadomeDevice_Radar] ON [dbo].[RadomeDevice]([Radar])
 go
 
 /*
- * Tracker
+ * TrackerDevice
  *
- * The Tracker entity a descendant of the Device entity.
+ * The TrackerDevice entity a descendant of the Device entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[Tracker].[Id] field and the
+ * [dbo].[TrackerDevice].[Id] field and the
  * [dbo].[Device].[Id] field.
  *
  */
-CREATE TABLE [dbo].[Tracker]
+CREATE TABLE [dbo].[TrackerDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  CONSTRAINT [FK_Tracker_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
-  CONSTRAINT [PK_Tracker] PRIMARY KEY([Id])
+  CONSTRAINT [FK_TrackerDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
+  CONSTRAINT [PK_TrackerDevice] PRIMARY KEY([Id])
 )
 go
 
 /*
- * AisTransceiver
+ * AisDevice
  *
- * The AisTransceiver entity a descendant of the Tracker entity.
+ * The AisDevice entity a descendant of the TrackerDevice entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[AisTransceiver].[Id] field and the
- * [dbo].[Tracker].[Id] field.
+ * [dbo].[AisDevice].[Id] field and the
+ * [dbo].[TrackerDevice].[Id] field.
  *
  */
-CREATE TABLE [dbo].[AisTransceiver]
+CREATE TABLE [dbo].[AisDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  CONSTRAINT [FK_AisTransceiver_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Tracker]([Id]),
-  CONSTRAINT [PK_AisTransceiver] PRIMARY KEY([Id])
+  CONSTRAINT [FK_AisDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TrackerDevice]([Id]),
+  CONSTRAINT [PK_AisDevice] PRIMARY KEY([Id])
 )
 go
 
 /*
- * Radar
+ * RadarDevice
  *
- * The Radar entity a descendant of the Tracker entity.
+ * The RadarDevice entity a descendant of the TrackerDevice entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[Radar].[Id] field and the
- * [dbo].[Tracker].[Id] field.
+ * [dbo].[RadarDevice].[Id] field and the
+ * [dbo].[TrackerDevice].[Id] field.
  *
  */
-CREATE TABLE [dbo].[Radar]
+CREATE TABLE [dbo].[RadarDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [SaveSettingsTimeseries] [uniqueidentifier] NOT NULL,
@@ -2529,30 +2529,30 @@ CREATE TABLE [dbo].[Radar]
   [FastTimeConstantModeTimeseries] [uniqueidentifier] NOT NULL,
   [LatitudeTimeseries] [uniqueidentifier] NOT NULL,
   [LongitudeTimeseries] [uniqueidentifier] NOT NULL,
-  [Radome] [uniqueidentifier] NOT NULL,
-  [GNSSDevice] [uniqueidentifier] NOT NULL,
-  CONSTRAINT [FK_Radar_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Tracker]([Id]),
-  CONSTRAINT [PK_Radar] PRIMARY KEY([Id])
+  [Radome] [uniqueidentifier] NULL,
+  [GNSSDevice] [uniqueidentifier] NULL,
+  CONSTRAINT [FK_RadarDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TrackerDevice]([Id]),
+  CONSTRAINT [PK_RadarDevice] PRIMARY KEY([Id])
 )
 go
 
-CREATE INDEX [IDX_Radar_Radome] ON [dbo].[Radar]([Radome])
+CREATE INDEX [IDX_RadarDevice_Radome] ON [dbo].[RadarDevice]([Radome])
 go
 
-CREATE INDEX [IDX_Radar_GNSSDevice] ON [dbo].[Radar]([GNSSDevice])
+CREATE INDEX [IDX_RadarDevice_GNSSDevice] ON [dbo].[RadarDevice]([GNSSDevice])
 go
 
 /*
- * WeatherStation
+ * WeatherStationDevice
  *
- * The WeatherStation entity a descendant of the Device entity.
+ * The WeatherStationDevice entity a descendant of the Device entity.
  *
  * Hence the one-to-one relationship between the 
- * [dbo].[WeatherStation].[Id] field and the
+ * [dbo].[WeatherStationDevice].[Id] field and the
  * [dbo].[Device].[Id] field.
  *
  */
-CREATE TABLE [dbo].[WeatherStation]
+CREATE TABLE [dbo].[WeatherStationDevice]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [BarometricPressureTimeseries] [uniqueidentifier] NOT NULL,
@@ -2564,12 +2564,12 @@ CREATE TABLE [dbo].[WeatherStation]
   [WindDirectionTimeseries] [uniqueidentifier] NOT NULL,
   [WindSpeedTimeseries] [uniqueidentifier] NOT NULL,
   [Gyro] [uniqueidentifier] NOT NULL,
-  CONSTRAINT [FK_WeatherStation_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
-  CONSTRAINT [PK_WeatherStation] PRIMARY KEY([Id])
+  CONSTRAINT [FK_WeatherStationDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]),
+  CONSTRAINT [PK_WeatherStationDevice] PRIMARY KEY([Id])
 )
 go
 
-CREATE INDEX [IDX_WeatherStation_Gyro] ON [dbo].[WeatherStation]([Gyro])
+CREATE INDEX [IDX_WeatherStationDevice_Gyro] ON [dbo].[WeatherStationDevice]([Gyro])
 go
 
 /*
@@ -3745,10 +3745,10 @@ CREATE TABLE [dbo].[Namespace]
 go
 
 /*
- * Oilspill
+ * OilSpill
  *
  */
-CREATE TABLE [dbo].[Oilspill]
+CREATE TABLE [dbo].[OilSpill]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
@@ -3759,21 +3759,21 @@ CREATE TABLE [dbo].[Oilspill]
   [BSI] [varbinary](max) NOT NULL,
   [Oil] [varbinary](max) NOT NULL,
   [Trace] [varbinary](max) NOT NULL,
-  CONSTRAINT [PK_Oilspill] PRIMARY KEY([Id])
+  CONSTRAINT [PK_OilSpill] PRIMARY KEY([Id])
 )
 go
 
-CREATE INDEX [IDX_Oilspill_OilSpillDetector_Timestamp] ON [dbo].[Oilspill]([OilSpillDetector],[Timestamp])
+CREATE INDEX [IDX_OilSpill_OilSpillDetector_Timestamp] ON [dbo].[OilSpill]([OilSpillDetector],[Timestamp])
 go
 
-CREATE INDEX [IDX_Oilspill_Timestamp] ON [dbo].[Oilspill]([Timestamp])
+CREATE INDEX [IDX_OilSpill_Timestamp] ON [dbo].[OilSpill]([Timestamp])
 go
 
 /*
- * OilspillDetectorCommand
+ * OilSpillDetectorCommand
  *
  */
-CREATE TABLE [dbo].[OilspillDetectorCommand]
+CREATE TABLE [dbo].[OilSpillDetectorCommand]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
@@ -3782,24 +3782,24 @@ CREATE TABLE [dbo].[OilspillDetectorCommand]
   [DeviceCommandSourceType] [int] NOT NULL,
   [DeviceCommandSourceId] [uniqueidentifier] NOT NULL,
   [Reply] [uniqueidentifier] NOT NULL,
-  CONSTRAINT [PK_OilspillDetectorCommand] PRIMARY KEY([Id])
+  CONSTRAINT [PK_OilSpillDetectorCommand] PRIMARY KEY([Id])
 )
 go
 
-CREATE INDEX [IDX_OilspillDetectorCommand_OilSpillDetector_Timestamp] ON [dbo].[OilspillDetectorCommand]([OilSpillDetector],[Timestamp])
+CREATE INDEX [IDX_OilSpillDetectorCommand_OilSpillDetector_Timestamp] ON [dbo].[OilSpillDetectorCommand]([OilSpillDetector],[Timestamp])
 go
 
-CREATE INDEX [IDX_OilspillDetectorCommand_Timestamp] ON [dbo].[OilspillDetectorCommand]([Timestamp])
+CREATE INDEX [IDX_OilSpillDetectorCommand_Timestamp] ON [dbo].[OilSpillDetectorCommand]([Timestamp])
 go
 
-CREATE INDEX [IDX_OilspillDetectorCommand_Reply] ON [dbo].[OilspillDetectorCommand]([Reply])
+CREATE INDEX [IDX_OilSpillDetectorCommand_Reply] ON [dbo].[OilSpillDetectorCommand]([Reply])
 go
 
 /*
- * OilspillDetectorCommandReply
+ * OilSpillDetectorCommandReply
  *
  */
-CREATE TABLE [dbo].[OilspillDetectorCommandReply]
+CREATE TABLE [dbo].[OilSpillDetectorCommandReply]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
@@ -3808,25 +3808,25 @@ CREATE TABLE [dbo].[OilspillDetectorCommandReply]
   [Command] [uniqueidentifier] NOT NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
-  CONSTRAINT [PK_OilspillDetectorCommandReply] PRIMARY KEY([Id])
+  CONSTRAINT [PK_OilSpillDetectorCommandReply] PRIMARY KEY([Id])
 )
 go
 
-CREATE INDEX [IDX_OilspillDetectorCommandReply_OilSpillDetector_Timestamp] ON [dbo].[OilspillDetectorCommandReply]([OilSpillDetector],[Timestamp])
+CREATE INDEX [IDX_OilSpillDetectorCommandReply_OilSpillDetector_Timestamp] ON [dbo].[OilSpillDetectorCommandReply]([OilSpillDetector],[Timestamp])
 go
 
-CREATE INDEX [IDX_OilspillDetectorCommandReply_Timestamp] ON [dbo].[OilspillDetectorCommandReply]([Timestamp])
+CREATE INDEX [IDX_OilSpillDetectorCommandReply_Timestamp] ON [dbo].[OilSpillDetectorCommandReply]([Timestamp])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorCommandReply]
-  ADD CONSTRAINT [UNQ_OilspillDetectorCommandReply_Command] UNIQUE([Command])
+ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
+  ADD CONSTRAINT [UNQ_OilSpillDetectorCommandReply_Command] UNIQUE([Command])
 go
 
 /*
- * OilspillDetectorConfiguration
+ * OilSpillDetectorConfiguration
  *
  */
-CREATE TABLE [dbo].[OilspillDetectorConfiguration]
+CREATE TABLE [dbo].[OilSpillDetectorConfiguration]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
@@ -3854,18 +3854,18 @@ CREATE TABLE [dbo].[OilspillDetectorConfiguration]
   [TestSourceEnabled] [bit] NOT NULL,
   [ProxyServer] [nvarchar](100) NOT NULL,
   [UseProxyServer] [bit] NOT NULL,
-  CONSTRAINT [PK_OilspillDetectorConfiguration] PRIMARY KEY([Id])
+  CONSTRAINT [PK_OilSpillDetectorConfiguration] PRIMARY KEY([Id])
 )
 go
 
-ALTER TABLE [dbo].[OilspillDetectorConfiguration]
-  ADD CONSTRAINT [UNQ_OilspillDetectorConfiguration_OilSpillDetector_Timestamp] UNIQUE([OilSpillDetector],[Timestamp])
+ALTER TABLE [dbo].[OilSpillDetectorConfiguration]
+  ADD CONSTRAINT [UNQ_OilSpillDetectorConfiguration_OilSpillDetector_Timestamp] UNIQUE([OilSpillDetector],[Timestamp])
 go
 
-CREATE INDEX [IDX_OilspillDetectorConfiguration_Timestamp] ON [dbo].[OilspillDetectorConfiguration]([Timestamp])
+CREATE INDEX [IDX_OilSpillDetectorConfiguration_Timestamp] ON [dbo].[OilSpillDetectorConfiguration]([Timestamp])
 go
 
-CREATE INDEX [IDX_OilspillDetectorConfiguration_TargetMMSI] ON [dbo].[OilspillDetectorConfiguration]([TargetMMSI])
+CREATE INDEX [IDX_OilSpillDetectorConfiguration_TargetMMSI] ON [dbo].[OilSpillDetectorConfiguration]([TargetMMSI])
 go
 
 /*
@@ -8410,8 +8410,36 @@ go
 CREATE INDEX [IDX_ZoneTrackAlarm_Timestamp] ON [dbo].[ZoneTrackAlarm]([Timestamp])
 go
 
+ALTER TABLE [dbo].[AisDeviceCommand]
+  ADD CONSTRAINT [FK_AisDeviceCommand_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
+go
+
+ALTER TABLE [dbo].[AisDeviceCommand]
+  ADD CONSTRAINT [FK_AisDeviceCommand_Reply] FOREIGN KEY([Reply]) REFERENCES [dbo].[AisDeviceCommandReply]([Id])
+go
+
+ALTER TABLE [dbo].[AisDeviceCommandReply]
+  ADD CONSTRAINT [FK_AisDeviceCommandReply_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
+go
+
+ALTER TABLE [dbo].[AisDeviceCommandReply]
+  ADD CONSTRAINT [FK_AisDeviceCommandReply_Command] FOREIGN KEY([Command]) REFERENCES [dbo].[AisDeviceCommand]([Id])
+go
+
+ALTER TABLE [dbo].[AisDeviceConfiguration]
+  ADD CONSTRAINT [FK_AisDeviceConfiguration_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
+go
+
+ALTER TABLE [dbo].[AisDeviceRawMessage]
+  ADD CONSTRAINT [FK_AisDeviceRawMessage_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
+go
+
+ALTER TABLE [dbo].[AisDeviceRawSentence]
+  ADD CONSTRAINT [FK_AisDeviceRawSentence_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
+go
+
 ALTER TABLE [dbo].[AisMessage]
-  ADD CONSTRAINT [FK_AisMessage_AisTransceiver] FOREIGN KEY([AisTransceiver]) REFERENCES [dbo].[AisTransceiver]([Id])
+  ADD CONSTRAINT [FK_AisMessage_AisDevice] FOREIGN KEY([AisDevice]) REFERENCES [dbo].[AisDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisMessage]
@@ -8494,34 +8522,6 @@ ALTER TABLE [dbo].[AisStaticDataReportPartBMessage]
   ADD CONSTRAINT [FK_AisStaticDataReportPartBMessage_MothershipMmsi] FOREIGN KEY([MothershipMmsi]) REFERENCES [dbo].[MaritimeMobileServiceIdentity]([Id])
 go
 
-ALTER TABLE [dbo].[AisTransceiverCommand]
-  ADD CONSTRAINT [FK_AisTransceiverCommand_AisTransceiver] FOREIGN KEY([AisTransceiver]) REFERENCES [dbo].[AisTransceiver]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiverCommand]
-  ADD CONSTRAINT [FK_AisTransceiverCommand_Reply] FOREIGN KEY([Reply]) REFERENCES [dbo].[AisTransceiverCommandReply]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiverCommandReply]
-  ADD CONSTRAINT [FK_AisTransceiverCommandReply_AisTransceiver] FOREIGN KEY([AisTransceiver]) REFERENCES [dbo].[AisTransceiver]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiverCommandReply]
-  ADD CONSTRAINT [FK_AisTransceiverCommandReply_Command] FOREIGN KEY([Command]) REFERENCES [dbo].[AisTransceiverCommand]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiverConfiguration]
-  ADD CONSTRAINT [FK_AisTransceiverConfiguration_AisTransceiver] FOREIGN KEY([AisTransceiver]) REFERENCES [dbo].[AisTransceiver]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiverRawMessage]
-  ADD CONSTRAINT [FK_AisTransceiverRawMessage_AisTransceiver] FOREIGN KEY([AisTransceiver]) REFERENCES [dbo].[AisTransceiver]([Id])
-go
-
-ALTER TABLE [dbo].[AisTransceiverRawSentence]
-  ADD CONSTRAINT [FK_AisTransceiverRawSentence_AisTransceiver] FOREIGN KEY([AisTransceiver]) REFERENCES [dbo].[AisTransceiver]([Id])
-go
-
 ALTER TABLE [dbo].[AlarmStateChange]
   ADD CONSTRAINT [FK_AlarmStateChange_Alarm] FOREIGN KEY([Alarm]) REFERENCES [dbo].[ZoneTrackAlarm]([Id])
 go
@@ -8543,7 +8543,7 @@ ALTER TABLE [dbo].[ByteTimeseriesValue]
 go
 
 ALTER TABLE [dbo].[CameraCommand]
-  ADD CONSTRAINT [FK_CameraCommand_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraCommand_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraCommand]
@@ -8551,7 +8551,7 @@ ALTER TABLE [dbo].[CameraCommand]
 go
 
 ALTER TABLE [dbo].[CameraCommandReply]
-  ADD CONSTRAINT [FK_CameraCommandReply_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraCommandReply_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraCommandReply]
@@ -8559,11 +8559,11 @@ ALTER TABLE [dbo].[CameraCommandReply]
 go
 
 ALTER TABLE [dbo].[CameraConfiguration]
-  ADD CONSTRAINT [FK_CameraConfiguration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraConfiguration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraPanCalibration]
-  ADD CONSTRAINT [FK_CameraPanCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraPanCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraPanCalibrationValue]
@@ -8571,7 +8571,7 @@ ALTER TABLE [dbo].[CameraPanCalibrationValue]
 go
 
 ALTER TABLE [dbo].[CameraStatus]
-  ADD CONSTRAINT [FK_CameraStatus_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraStatus_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraStatus]
@@ -8579,7 +8579,7 @@ ALTER TABLE [dbo].[CameraStatus]
 go
 
 ALTER TABLE [dbo].[CameraTiltCalibration]
-  ADD CONSTRAINT [FK_CameraTiltCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraTiltCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraTiltCalibrationValue]
@@ -8587,7 +8587,7 @@ ALTER TABLE [dbo].[CameraTiltCalibrationValue]
 go
 
 ALTER TABLE [dbo].[CameraZoomCalibration]
-  ADD CONSTRAINT [FK_CameraZoomCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_CameraZoomCalibration_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[CameraZoomCalibrationValue]
@@ -8734,152 +8734,152 @@ ALTER TABLE [dbo].[GyroDevice]
   ADD CONSTRAINT [FK_GyroDevice_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
 go
 
-ALTER TABLE [dbo].[Radome]
-  ADD CONSTRAINT [FK_Radome_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+ALTER TABLE [dbo].[RadomeDevice]
+  ADD CONSTRAINT [FK_RadomeDevice_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
-ALTER TABLE [dbo].[Radome]
-  ADD CONSTRAINT [FK_Radome_PressureTimeseries] FOREIGN KEY([PressureTimeseries]) REFERENCES [dbo].[RadomePressureTimeseries]([Id])
+ALTER TABLE [dbo].[RadomeDevice]
+  ADD CONSTRAINT [FK_RadomeDevice_PressureTimeseries] FOREIGN KEY([PressureTimeseries]) REFERENCES [dbo].[RadomePressureTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radome]
-  ADD CONSTRAINT [FK_Radome_TemperatureTimeseries] FOREIGN KEY([TemperatureTimeseries]) REFERENCES [dbo].[RadomeTemperatureTimeseries]([Id])
+ALTER TABLE [dbo].[RadomeDevice]
+  ADD CONSTRAINT [FK_RadomeDevice_TemperatureTimeseries] FOREIGN KEY([TemperatureTimeseries]) REFERENCES [dbo].[RadomeTemperatureTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radome]
-  ADD CONSTRAINT [FK_Radome_DewPointTimeseries] FOREIGN KEY([DewPointTimeseries]) REFERENCES [dbo].[RadomeDewPointTimeseries]([Id])
+ALTER TABLE [dbo].[RadomeDevice]
+  ADD CONSTRAINT [FK_RadomeDevice_DewPointTimeseries] FOREIGN KEY([DewPointTimeseries]) REFERENCES [dbo].[RadomeDewPointTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radome]
-  ADD CONSTRAINT [FK_Radome_StatusTimeseries] FOREIGN KEY([StatusTimeseries]) REFERENCES [dbo].[RadomeStatusTimeseries]([Id])
+ALTER TABLE [dbo].[RadomeDevice]
+  ADD CONSTRAINT [FK_RadomeDevice_StatusTimeseries] FOREIGN KEY([StatusTimeseries]) REFERENCES [dbo].[RadomeStatusTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_SaveSettingsTimeseries] FOREIGN KEY([SaveSettingsTimeseries]) REFERENCES [dbo].[RadarSaveSettingsTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_SaveSettingsTimeseries] FOREIGN KEY([SaveSettingsTimeseries]) REFERENCES [dbo].[RadarSaveSettingsTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_PowerOnTimeseries] FOREIGN KEY([PowerOnTimeseries]) REFERENCES [dbo].[RadarPowerOnTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_PowerOnTimeseries] FOREIGN KEY([PowerOnTimeseries]) REFERENCES [dbo].[RadarPowerOnTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_TrackingOnTimeseries] FOREIGN KEY([TrackingOnTimeseries]) REFERENCES [dbo].[RadarTrackingTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_TrackingOnTimeseries] FOREIGN KEY([TrackingOnTimeseries]) REFERENCES [dbo].[RadarTrackingTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_RadarPulseTimeseries] FOREIGN KEY([RadarPulseTimeseries]) REFERENCES [dbo].[RadarPulseTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_RadarPulseTimeseries] FOREIGN KEY([RadarPulseTimeseries]) REFERENCES [dbo].[RadarPulseTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_TuningTimeseries] FOREIGN KEY([TuningTimeseries]) REFERENCES [dbo].[RadarTuningTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_TuningTimeseries] FOREIGN KEY([TuningTimeseries]) REFERENCES [dbo].[RadarTuningTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_BlankSector1Timeseries] FOREIGN KEY([BlankSector1Timeseries]) REFERENCES [dbo].[RadarBlankSector1Timeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_BlankSector1Timeseries] FOREIGN KEY([BlankSector1Timeseries]) REFERENCES [dbo].[RadarBlankSector1Timeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_Sector1StartTimeseries] FOREIGN KEY([Sector1StartTimeseries]) REFERENCES [dbo].[RadarSector1StartTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_Sector1StartTimeseries] FOREIGN KEY([Sector1StartTimeseries]) REFERENCES [dbo].[RadarSector1StartTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_Sector1EndTimeseries] FOREIGN KEY([Sector1EndTimeseries]) REFERENCES [dbo].[RadarSector1EndTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_Sector1EndTimeseries] FOREIGN KEY([Sector1EndTimeseries]) REFERENCES [dbo].[RadarSector1EndTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_BlankSector2Timeseries] FOREIGN KEY([BlankSector2Timeseries]) REFERENCES [dbo].[RadarBlankSector2Timeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_BlankSector2Timeseries] FOREIGN KEY([BlankSector2Timeseries]) REFERENCES [dbo].[RadarBlankSector2Timeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_Sector2StartTimeseries] FOREIGN KEY([Sector2StartTimeseries]) REFERENCES [dbo].[RadarSector2StartTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_Sector2StartTimeseries] FOREIGN KEY([Sector2StartTimeseries]) REFERENCES [dbo].[RadarSector2StartTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_Sector2EndTimeseries] FOREIGN KEY([Sector2EndTimeseries]) REFERENCES [dbo].[RadarSector2EndTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_Sector2EndTimeseries] FOREIGN KEY([Sector2EndTimeseries]) REFERENCES [dbo].[RadarSector2EndTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_EnableAutomaticFrequencyControlTimeseries] FOREIGN KEY([EnableAutomaticFrequencyControlTimeseries]) REFERENCES [dbo].[RadarEnableAutomaticFrequencyControlTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_EnableAutomaticFrequencyControlTimeseries] FOREIGN KEY([EnableAutomaticFrequencyControlTimeseries]) REFERENCES [dbo].[RadarEnableAutomaticFrequencyControlTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_AzimuthOffsetTimeseries] FOREIGN KEY([AzimuthOffsetTimeseries]) REFERENCES [dbo].[RadarAzimuthOffsetTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_AzimuthOffsetTimeseries] FOREIGN KEY([AzimuthOffsetTimeseries]) REFERENCES [dbo].[RadarAzimuthOffsetTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_EnableSensitivityTimeControlTimeseries] FOREIGN KEY([EnableSensitivityTimeControlTimeseries]) REFERENCES [dbo].[RadarEnableSensitivityTimeControlTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_EnableSensitivityTimeControlTimeseries] FOREIGN KEY([EnableSensitivityTimeControlTimeseries]) REFERENCES [dbo].[RadarEnableSensitivityTimeControlTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_AutomaticSensitivityTimeControlTimeseries] FOREIGN KEY([AutomaticSensitivityTimeControlTimeseries]) REFERENCES [dbo].[RadarAutomaticSensitivityTimeControlTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_AutomaticSensitivityTimeControlTimeseries] FOREIGN KEY([AutomaticSensitivityTimeControlTimeseries]) REFERENCES [dbo].[RadarAutomaticSensitivityTimeControlTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_SensitivityTimeControlLevelTimeseries] FOREIGN KEY([SensitivityTimeControlLevelTimeseries]) REFERENCES [dbo].[RadarSensitivityTimeControlLevelTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_SensitivityTimeControlLevelTimeseries] FOREIGN KEY([SensitivityTimeControlLevelTimeseries]) REFERENCES [dbo].[RadarSensitivityTimeControlLevelTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_EnableFastTimeConstantTimeseries] FOREIGN KEY([EnableFastTimeConstantTimeseries]) REFERENCES [dbo].[RadarEnableFastTimeConstantTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_EnableFastTimeConstantTimeseries] FOREIGN KEY([EnableFastTimeConstantTimeseries]) REFERENCES [dbo].[RadarEnableFastTimeConstantTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_FastTimeConstantLevelTimeseries] FOREIGN KEY([FastTimeConstantLevelTimeseries]) REFERENCES [dbo].[RadarFastTimeConstantLevelTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_FastTimeConstantLevelTimeseries] FOREIGN KEY([FastTimeConstantLevelTimeseries]) REFERENCES [dbo].[RadarFastTimeConstantLevelTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_FastTimeConstantModeTimeseries] FOREIGN KEY([FastTimeConstantModeTimeseries]) REFERENCES [dbo].[RadarFastTimeConstantModeTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_FastTimeConstantModeTimeseries] FOREIGN KEY([FastTimeConstantModeTimeseries]) REFERENCES [dbo].[RadarFastTimeConstantModeTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_LatitudeTimeseries] FOREIGN KEY([LatitudeTimeseries]) REFERENCES [dbo].[RadarLatitudeTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_LatitudeTimeseries] FOREIGN KEY([LatitudeTimeseries]) REFERENCES [dbo].[RadarLatitudeTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_LongitudeTimeseries] FOREIGN KEY([LongitudeTimeseries]) REFERENCES [dbo].[RadarLongitudeTimeseries]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_LongitudeTimeseries] FOREIGN KEY([LongitudeTimeseries]) REFERENCES [dbo].[RadarLongitudeTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
-ALTER TABLE [dbo].[Radar]
-  ADD CONSTRAINT [FK_Radar_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
+ALTER TABLE [dbo].[RadarDevice]
+  ADD CONSTRAINT [FK_RadarDevice_GNSSDevice] FOREIGN KEY([GNSSDevice]) REFERENCES [dbo].[GNSSDevice]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_BarometricPressureTimeseries] FOREIGN KEY([BarometricPressureTimeseries]) REFERENCES [dbo].[WeatherStationBarometricPressureTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_BarometricPressureTimeseries] FOREIGN KEY([BarometricPressureTimeseries]) REFERENCES [dbo].[WeatherStationBarometricPressureTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_AirTemperatureTimeseries] FOREIGN KEY([AirTemperatureTimeseries]) REFERENCES [dbo].[WeatherStationAirTemperatureTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_AirTemperatureTimeseries] FOREIGN KEY([AirTemperatureTimeseries]) REFERENCES [dbo].[WeatherStationAirTemperatureTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_WaterTemperatureTimeseries] FOREIGN KEY([WaterTemperatureTimeseries]) REFERENCES [dbo].[WeatherStationWaterTemperatureTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_WaterTemperatureTimeseries] FOREIGN KEY([WaterTemperatureTimeseries]) REFERENCES [dbo].[WeatherStationWaterTemperatureTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_RelativeHumidityTimeseries] FOREIGN KEY([RelativeHumidityTimeseries]) REFERENCES [dbo].[WeatherStationRelativeHumidityTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_RelativeHumidityTimeseries] FOREIGN KEY([RelativeHumidityTimeseries]) REFERENCES [dbo].[WeatherStationRelativeHumidityTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_AbsoluteHumidityTimeseries] FOREIGN KEY([AbsoluteHumidityTimeseries]) REFERENCES [dbo].[WeatherStationAbsoluteHumidityTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_AbsoluteHumidityTimeseries] FOREIGN KEY([AbsoluteHumidityTimeseries]) REFERENCES [dbo].[WeatherStationAbsoluteHumidityTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_DewPointTimeseries] FOREIGN KEY([DewPointTimeseries]) REFERENCES [dbo].[WeatherStationDewPointTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_DewPointTimeseries] FOREIGN KEY([DewPointTimeseries]) REFERENCES [dbo].[WeatherStationDewPointTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_WindDirectionTimeseries] FOREIGN KEY([WindDirectionTimeseries]) REFERENCES [dbo].[WeatherStationWindDirectionTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_WindDirectionTimeseries] FOREIGN KEY([WindDirectionTimeseries]) REFERENCES [dbo].[WeatherStationWindDirectionTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_WindSpeedTimeseries] FOREIGN KEY([WindSpeedTimeseries]) REFERENCES [dbo].[WeatherStationWindSpeedTimeseries]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_WindSpeedTimeseries] FOREIGN KEY([WindSpeedTimeseries]) REFERENCES [dbo].[WeatherStationWindSpeedTimeseries]([Id])
 go
 
-ALTER TABLE [dbo].[WeatherStation]
-  ADD CONSTRAINT [FK_WeatherStation_Gyro] FOREIGN KEY([Gyro]) REFERENCES [dbo].[GyroDevice]([Id])
+ALTER TABLE [dbo].[WeatherStationDevice]
+  ADD CONSTRAINT [FK_WeatherStationDevice_Gyro] FOREIGN KEY([Gyro]) REFERENCES [dbo].[GyroDevice]([Id])
 go
 
 ALTER TABLE [dbo].[Facility]
@@ -9042,32 +9042,32 @@ ALTER TABLE [dbo].[NamespaceElement]
   ADD CONSTRAINT [FK_NamespaceElement_Namespace] FOREIGN KEY([Namespace]) REFERENCES [dbo].[Namespace]([Id])
 go
 
-ALTER TABLE [dbo].[Oilspill]
-  ADD CONSTRAINT [FK_Oilspill_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilspillDetector]([Id])
+ALTER TABLE [dbo].[OilSpill]
+  ADD CONSTRAINT [FK_OilSpill_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorCommand]
-  ADD CONSTRAINT [FK_OilspillDetectorCommand_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilspillDetector]([Id])
+ALTER TABLE [dbo].[OilSpillDetectorCommand]
+  ADD CONSTRAINT [FK_OilSpillDetectorCommand_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorCommand]
-  ADD CONSTRAINT [FK_OilspillDetectorCommand_Reply] FOREIGN KEY([Reply]) REFERENCES [dbo].[OilspillDetectorCommandReply]([Id])
+ALTER TABLE [dbo].[OilSpillDetectorCommand]
+  ADD CONSTRAINT [FK_OilSpillDetectorCommand_Reply] FOREIGN KEY([Reply]) REFERENCES [dbo].[OilSpillDetectorCommandReply]([Id])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorCommandReply]
-  ADD CONSTRAINT [FK_OilspillDetectorCommandReply_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilspillDetector]([Id])
+ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
+  ADD CONSTRAINT [FK_OilSpillDetectorCommandReply_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorCommandReply]
-  ADD CONSTRAINT [FK_OilspillDetectorCommandReply_Command] FOREIGN KEY([Command]) REFERENCES [dbo].[OilspillDetectorCommand]([Id])
+ALTER TABLE [dbo].[OilSpillDetectorCommandReply]
+  ADD CONSTRAINT [FK_OilSpillDetectorCommandReply_Command] FOREIGN KEY([Command]) REFERENCES [dbo].[OilSpillDetectorCommand]([Id])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorConfiguration]
-  ADD CONSTRAINT [FK_OilspillDetectorConfiguration_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilspillDetector]([Id])
+ALTER TABLE [dbo].[OilSpillDetectorConfiguration]
+  ADD CONSTRAINT [FK_OilSpillDetectorConfiguration_OilSpillDetector] FOREIGN KEY([OilSpillDetector]) REFERENCES [dbo].[OilSpillDetectorDevice]([Id])
 go
 
-ALTER TABLE [dbo].[OilspillDetectorConfiguration]
-  ADD CONSTRAINT [FK_OilspillDetectorConfiguration_TargetMMSI] FOREIGN KEY([TargetMMSI]) REFERENCES [dbo].[MaritimeMobileServiceIdentity]([Id])
+ALTER TABLE [dbo].[OilSpillDetectorConfiguration]
+  ADD CONSTRAINT [FK_OilSpillDetectorConfiguration_TargetMMSI] FOREIGN KEY([TargetMMSI]) REFERENCES [dbo].[MaritimeMobileServiceIdentity]([Id])
 go
 
 ALTER TABLE [dbo].[Position2DTimeseriesValue]
@@ -9175,11 +9175,11 @@ ALTER TABLE [dbo].[ReferenceTimeseriesPropertyDefinition]
 go
 
 ALTER TABLE [dbo].[RadarAlarmStatus]
-  ADD CONSTRAINT [FK_RadarAlarmStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarAlarmStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarCommand]
-  ADD CONSTRAINT [FK_RadarCommand_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarCommand_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarCommand]
@@ -9187,7 +9187,7 @@ ALTER TABLE [dbo].[RadarCommand]
 go
 
 ALTER TABLE [dbo].[RadarCommandReply]
-  ADD CONSTRAINT [FK_RadarCommandReply_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarCommandReply_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarCommandReply]
@@ -9195,23 +9195,23 @@ ALTER TABLE [dbo].[RadarCommandReply]
 go
 
 ALTER TABLE [dbo].[RadarConfiguration]
-  ADD CONSTRAINT [FK_RadarConfiguration_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarConfiguration_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarImage]
-  ADD CONSTRAINT [FK_RadarImage_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarImage_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarRawTrackTable]
-  ADD CONSTRAINT [FK_RadarRawTrackTable_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarRawTrackTable_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarStatus]
-  ADD CONSTRAINT [FK_RadarStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadioCommand]
-  ADD CONSTRAINT [FK_RadioCommand_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[Radio]([Id])
+  ADD CONSTRAINT [FK_RadioCommand_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadioCommand]
@@ -9219,7 +9219,7 @@ ALTER TABLE [dbo].[RadioCommand]
 go
 
 ALTER TABLE [dbo].[RadioCommandReply]
-  ADD CONSTRAINT [FK_RadioCommandReply_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[Radio]([Id])
+  ADD CONSTRAINT [FK_RadioCommandReply_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadioCommandReply]
@@ -9227,11 +9227,11 @@ ALTER TABLE [dbo].[RadioCommandReply]
 go
 
 ALTER TABLE [dbo].[RadioConfiguration]
-  ADD CONSTRAINT [FK_RadioConfiguration_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[Radio]([Id])
+  ADD CONSTRAINT [FK_RadioConfiguration_Radio] FOREIGN KEY([Radio]) REFERENCES [dbo].[RadioDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeCommand]
-  ADD CONSTRAINT [FK_RadomeCommand_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomeCommand_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeCommand]
@@ -9239,7 +9239,7 @@ ALTER TABLE [dbo].[RadomeCommand]
 go
 
 ALTER TABLE [dbo].[RadomeCommandReply]
-  ADD CONSTRAINT [FK_RadomeCommandReply_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomeCommandReply_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeCommandReply]
@@ -9247,7 +9247,7 @@ ALTER TABLE [dbo].[RadomeCommandReply]
 go
 
 ALTER TABLE [dbo].[RadomeConfiguration]
-  ADD CONSTRAINT [FK_RadomeConfiguration_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomeConfiguration_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[ReferenceTimeseriesValue]
@@ -9303,39 +9303,39 @@ ALTER TABLE [dbo].[DeviceEnabledTimeseries]
 go
 
 ALTER TABLE [dbo].[RadarAutomaticSensitivityTimeControlTimeseries]
-  ADD CONSTRAINT [FK_RadarAutomaticSensitivityTimeControlTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarAutomaticSensitivityTimeControlTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarBlankSector1Timeseries]
-  ADD CONSTRAINT [FK_RadarBlankSector1Timeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarBlankSector1Timeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarBlankSector2Timeseries]
-  ADD CONSTRAINT [FK_RadarBlankSector2Timeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarBlankSector2Timeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarEnableAutomaticFrequencyControlTimeseries]
-  ADD CONSTRAINT [FK_RadarEnableAutomaticFrequencyControlTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarEnableAutomaticFrequencyControlTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarEnableFastTimeConstantTimeseries]
-  ADD CONSTRAINT [FK_RadarEnableFastTimeConstantTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarEnableFastTimeConstantTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarEnableSensitivityTimeControlTimeseries]
-  ADD CONSTRAINT [FK_RadarEnableSensitivityTimeControlTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarEnableSensitivityTimeControlTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarPowerOnTimeseries]
-  ADD CONSTRAINT [FK_RadarPowerOnTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarPowerOnTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarSaveSettingsTimeseries]
-  ADD CONSTRAINT [FK_RadarSaveSettingsTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarSaveSettingsTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarTrackingTimeseries]
-  ADD CONSTRAINT [FK_RadarTrackingTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarTrackingTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[MediaProxySessionEnabledTimeseries]
@@ -9387,23 +9387,23 @@ ALTER TABLE [dbo].[GyroSpeedTimeseries]
 go
 
 ALTER TABLE [dbo].[RadarLatitudeTimeseries]
-  ADD CONSTRAINT [FK_RadarLatitudeTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarLatitudeTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarLongitudeTimeseries]
-  ADD CONSTRAINT [FK_RadarLongitudeTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarLongitudeTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeDewPointTimeseries]
-  ADD CONSTRAINT [FK_RadomeDewPointTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomeDewPointTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomePressureTimeseries]
-  ADD CONSTRAINT [FK_RadomePressureTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomePressureTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadomeTemperatureTimeseries]
-  ADD CONSTRAINT [FK_RadomeTemperatureTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomeTemperatureTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[VesselDraughtTimeseries]
@@ -9423,35 +9423,35 @@ ALTER TABLE [dbo].[ViewZoomLevelTimeseries]
 go
 
 ALTER TABLE [dbo].[WeatherStationAbsoluteHumidityTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationAbsoluteHumidityTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationAbsoluteHumidityTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationAirTemperatureTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationAirTemperatureTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationAirTemperatureTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationBarometricPressureTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationBarometricPressureTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationBarometricPressureTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationDewPointTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationDewPointTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationDewPointTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationRelativeHumidityTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationRelativeHumidityTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationRelativeHumidityTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationWaterTemperatureTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationWaterTemperatureTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationWaterTemperatureTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationWindDirectionTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationWindDirectionTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationWindDirectionTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationWindSpeedTimeseries]
-  ADD CONSTRAINT [FK_WeatherStationWindSpeedTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationWindSpeedTimeseries_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[AisAidToNavigationPositionTimeseries]
@@ -9459,43 +9459,43 @@ ALTER TABLE [dbo].[AisAidToNavigationPositionTimeseries]
 go
 
 ALTER TABLE [dbo].[RadarAzimuthOffsetTimeseries]
-  ADD CONSTRAINT [FK_RadarAzimuthOffsetTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarAzimuthOffsetTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarFastTimeConstantLevelTimeseries]
-  ADD CONSTRAINT [FK_RadarFastTimeConstantLevelTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarFastTimeConstantLevelTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarFastTimeConstantModeTimeseries]
-  ADD CONSTRAINT [FK_RadarFastTimeConstantModeTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarFastTimeConstantModeTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarPulseTimeseries]
-  ADD CONSTRAINT [FK_RadarPulseTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarPulseTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarSector1EndTimeseries]
-  ADD CONSTRAINT [FK_RadarSector1EndTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarSector1EndTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarSector1StartTimeseries]
-  ADD CONSTRAINT [FK_RadarSector1StartTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarSector1StartTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarSector2EndTimeseries]
-  ADD CONSTRAINT [FK_RadarSector2EndTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarSector2EndTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarSector2StartTimeseries]
-  ADD CONSTRAINT [FK_RadarSector2StartTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarSector2StartTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarSensitivityTimeControlLevelTimeseries]
-  ADD CONSTRAINT [FK_RadarSensitivityTimeControlLevelTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarSensitivityTimeControlLevelTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[RadarTuningTimeseries]
-  ADD CONSTRAINT [FK_RadarTuningTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[Radar]([Id])
+  ADD CONSTRAINT [FK_RadarTuningTimeseries_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
 go
 
 ALTER TABLE [dbo].[VesselPersonsOnBoardTimeseries]
@@ -9503,7 +9503,7 @@ ALTER TABLE [dbo].[VesselPersonsOnBoardTimeseries]
 go
 
 ALTER TABLE [dbo].[RadomeStatusTimeseries]
-  ADD CONSTRAINT [FK_RadomeStatusTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[Radome]([Id])
+  ADD CONSTRAINT [FK_RadomeStatusTimeseries_Radome] FOREIGN KEY([Radome]) REFERENCES [dbo].[RadomeDevice]([Id])
 go
 
 ALTER TABLE [dbo].[TimeSpanTimeseriesValue]
@@ -9519,11 +9519,11 @@ ALTER TABLE [dbo].[TrackableItemTrackLink]
 go
 
 ALTER TABLE [dbo].[TrackBase]
-  ADD CONSTRAINT [FK_TrackBase_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[Tracker]([Id])
+  ADD CONSTRAINT [FK_TrackBase_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
 go
 
 ALTER TABLE [dbo].[TrackerFilterParameters]
-  ADD CONSTRAINT [FK_TrackerFilterParameters_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[Tracker]([Id])
+  ADD CONSTRAINT [FK_TrackerFilterParameters_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
 go
 
 ALTER TABLE [dbo].[TrackerFilterParametersConfiguration]
@@ -9575,7 +9575,7 @@ ALTER TABLE [dbo].[ViewCameraLink]
 go
 
 ALTER TABLE [dbo].[ViewCameraLink]
-  ADD CONSTRAINT [FK_ViewCameraLink_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[Camera]([Id])
+  ADD CONSTRAINT [FK_ViewCameraLink_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
 go
 
 ALTER TABLE [dbo].[ViewTrackerLink]
@@ -9583,11 +9583,11 @@ ALTER TABLE [dbo].[ViewTrackerLink]
 go
 
 ALTER TABLE [dbo].[ViewTrackerLink]
-  ADD CONSTRAINT [FK_ViewTrackerLink_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[Tracker]([Id])
+  ADD CONSTRAINT [FK_ViewTrackerLink_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationCommand]
-  ADD CONSTRAINT [FK_WeatherStationCommand_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationCommand_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationCommand]
@@ -9595,7 +9595,7 @@ ALTER TABLE [dbo].[WeatherStationCommand]
 go
 
 ALTER TABLE [dbo].[WeatherStationCommandReply]
-  ADD CONSTRAINT [FK_WeatherStationCommandReply_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationCommandReply_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[WeatherStationCommandReply]
@@ -9603,7 +9603,7 @@ ALTER TABLE [dbo].[WeatherStationCommandReply]
 go
 
 ALTER TABLE [dbo].[WeatherStationConfiguration]
-  ADD CONSTRAINT [FK_WeatherStationConfiguration_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStation]([Id])
+  ADD CONSTRAINT [FK_WeatherStationConfiguration_WeatherStation] FOREIGN KEY([WeatherStation]) REFERENCES [dbo].[WeatherStationDevice]([Id])
 go
 
 ALTER TABLE [dbo].[ZoneExceptions]

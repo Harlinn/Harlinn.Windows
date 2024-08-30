@@ -38,11 +38,26 @@ namespace Harlinn::ODBC
     private:
         using Base::size_;
     public:
+        using Base::CharType;
         using Base::size;
         using Base::data;
         using Base::CheckSize;
     public:
         constexpr FixedDBString( ) noexcept = default;
+
+        explicit FixedDBString( const CharType* str, size_t size )
+            : Base( str, size )
+        { }
+
+        FixedDBString( const CharType* str )
+            : Base( str )
+        { }
+
+        template<SimpleSpanLike T>
+            requires std::is_same_v<typename T::value_type, CharType>
+        explicit FixedDBString( const T& str )
+            : Base( str )
+        { }
 
 
         template<SimpleSpanLike T>
@@ -3089,6 +3104,39 @@ namespace Harlinn::ODBC
 
 
 
+        /// <summary>
+        /// Binds a buffer to a parameter marker in an SQL statement. BindParameter supports 
+        /// binding to a Unicode C data type, even if the underlying driver does not support 
+        /// Unicode data.
+        /// </summary>
+        /// <param name="parameterNumber">
+        /// Parameter number, ordered sequentially in increasing parameter order, starting at 1.
+        /// </param>
+        /// <param name="parameterDirection">
+        /// The direction of the parameter
+        /// </param>
+        /// <param name="valueType">
+        /// The native C data type of the parameter.
+        /// </param>
+        /// <param name="parameterType">
+        /// The SQL data type of the parameter.
+        /// </param>
+        /// <param name="columnSize">
+        /// The size of the column or expression of the corresponding parameter marker. 
+        /// </param>
+        /// <param name="decimalDigits">
+        /// The decimal digits of the column or expression of the corresponding parameter marker.
+        /// </param>
+        /// <param name="parameterValue">
+        /// A pointer to a buffer for the parameter's data.
+        /// </param>
+        /// <param name="parameterValueBufferLength">
+        /// Length of the ParameterValuePtr buffer in bytes.
+        /// </param>
+        /// <param name="lengthOrIndicator">
+        /// A pointer to a buffer for the parameter's length.
+        /// </param>
+        /// <returns></returns>
         Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, NativeType valueType, SqlType parameterType, SQLULEN columnSize, SQLSMALLINT decimalDigits, SQLPOINTER parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
         {
             auto rc = SQLBindParameter( Handle( ), parameterNumber, static_cast<SQLSMALLINT>( parameterDirection ), static_cast< SQLSMALLINT >(valueType), static_cast< SQLSMALLINT >( parameterType ), columnSize, decimalDigits, parameterValue, parameterValueBufferLength, lengthOrIndicator );
@@ -3099,100 +3147,530 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input) const
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, nullIndicator );
+        }
+
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, const bool* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindBooleanParameter( parameterNumber, const_cast<bool*>( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindBooleanParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, const bool* parameterValue ) const
+        {
+            return BindBooleanParameter( parameterNumber, const_cast< bool* >(parameterValue), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, DBBoolean& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindBooleanParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, const DBBoolean& parameterValue ) const
+        {
+            return BindBooleanParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+
+
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, SByte* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
 
-        Result BindSByteParameter( SQLUSMALLINT parameterNumber, SByte* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, const SByte* parameterValue, SQLLEN* nullIndicator ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
+            return BindSByteParameter( parameterNumber, const_cast< SByte* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
-        Result BindByteParameter( SQLUSMALLINT parameterNumber, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, SByte* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return BindSByteParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, const SByte* parameterValue ) const
+        {
+            return BindSByteParameter( parameterNumber, const_cast< SByte* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, DBSByte& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindSByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, const DBSByte& parameterValue ) const
+        {
+            return BindSByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, Byte* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
 
-        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, Int16* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, const Byte* parameterValue, SQLLEN* nullIndicator ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
+            return BindByteParameter( parameterNumber, const_cast< Byte* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, Byte* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindByteParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, const Byte* parameterValue ) const
+        {
+            return BindByteParameter( parameterNumber, const_cast< Byte* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, DBByte& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, const DBByte& parameterValue ) const
+        {
+            return BindByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
-        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, Int16* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
+        }
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, const Int16* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindInt16Parameter( parameterNumber, const_cast< Int16* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, Int16* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindInt16Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, const Int16* parameterValue ) const
+        {
+            return BindInt16Parameter( parameterNumber, const_cast< Int16* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, DBInt16& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, const DBInt16& parameterValue ) const
+        {
+            return BindInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
-        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, Int32* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+
+
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
+        }
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, const UInt16* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindUInt16Parameter( parameterNumber, const_cast< UInt16* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindUInt16Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, const UInt16* parameterValue ) const
+        {
+            return BindUInt16Parameter( parameterNumber, const_cast< UInt16* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, DBUInt16& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindUInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, const DBUInt16& parameterValue ) const
+        {
+            return BindUInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
-        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+
+
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, Int32* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
+        }
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, const Int32* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindInt32Parameter( parameterNumber, const_cast< Int32* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, Int32* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindInt32Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, const Int32* parameterValue ) const
+        {
+            return BindInt32Parameter( parameterNumber, const_cast< Int32* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, DBInt32& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindInt32Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, const DBInt32& parameterValue ) const
+        {
+            return BindInt32Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
-        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, Int64* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt32, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
+        }
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, const UInt32* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindUInt32Parameter( parameterNumber, const_cast< UInt32* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindUInt32Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, const UInt32* parameterValue ) const
+        {
+            return BindUInt32Parameter( parameterNumber, const_cast< UInt32* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, DBUInt32& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindUInt32Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, const DBUInt32& parameterValue ) const
+        {
+            return BindUInt32Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
-        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, UInt64* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, Int64* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
+        }
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, const Int64* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindInt64Parameter( parameterNumber, const_cast< Int64* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, Int64* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindInt64Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, const Int64* parameterValue ) const
+        {
+            return BindInt64Parameter( parameterNumber, const_cast< Int64* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, DBInt64& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindInt64Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, const DBInt64& parameterValue ) const
+        {
+            return BindInt64Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, UInt64* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::Char, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
-
-        Result BindLongParameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, const UInt64* parameterValue, SQLLEN* nullIndicator ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
+            return BindUInt64Parameter( parameterNumber, const_cast< UInt64* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
-        Result BindShortParameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, UInt64* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
+            return BindUInt64Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
-
-        Result BindSingleParameter( SQLUSMALLINT parameterNumber, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, const UInt64* parameterValue ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Single, SqlType::Real, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
+            return BindUInt64Parameter( parameterNumber, const_cast< UInt64* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
-
-        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, DBUInt64& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Double, SqlType::Double, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
+            return BindUInt64Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, const DBUInt64& parameterValue ) const
+        {
+            return BindUInt64Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
         
-        Result BindGuidParameter( SQLUSMALLINT parameterNumber, Guid* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result BindEnumParameter( SQLUSMALLINT parameterNumber, T* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Guid, SqlType::Guid, 0, 0, parameterValue, 0, lengthOrIndicator );
+            using IntegerType = std::underlying_type_t<T>;
+            if constexpr ( std::is_same_v<IntegerType, bool> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, SByte> || std::is_same_v<IntegerType, char> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, Byte> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, Int16> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, UInt16> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, Int32> || std::is_same_v<IntegerType, long> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, UInt32> || std::is_same_v<IntegerType, unsigned long> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::UInt32, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else if constexpr ( std::is_same_v<IntegerType, Int64> )
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
+            }
+            else 
+            {
+                return BindParameter( parameterNumber, parameterDirection, NativeType::UInt64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
+            }
+        }
+
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result BindEnumParameter( SQLUSMALLINT parameterNumber, const T* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindEnumParameter( parameterNumber, const_cast< T* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result BindEnumParameter( SQLUSMALLINT parameterNumber, T* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindEnumParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result BindEnumParameter( SQLUSMALLINT parameterNumber, const T* parameterValue ) const
+        {
+            return BindEnumParameter( parameterNumber, const_cast< T* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result BindEnumParameter( SQLUSMALLINT parameterNumber, DBEnum<T>& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindEnumParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result BindEnumParameter( SQLUSMALLINT parameterNumber, const DBEnum<T>& parameterValue ) const
+        {
+            return BindEnumParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+
+
+        Result BindParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::Char, columnSize, 0, parameterValue, parameterValueBufferLength, nullIndicator );
             return rc;
         }
 
-        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, ODBC::TimeStamp* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindLongParameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, SQLLEN* nullIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindShortParameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* nullIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, float* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Single, SqlType::Real, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, const float* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindSingleParameter( parameterNumber, const_cast< float* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, float* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindSingleParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, const float* parameterValue ) const
+        {
+            return BindSingleParameter( parameterNumber, const_cast< float* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, DBSingle& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindSingleParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, const DBSingle& parameterValue ) const
+        {
+            return BindSingleParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, Double* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Double, SqlType::Double, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, const double* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindDoubleParameter( parameterNumber, const_cast< double* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, double* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindDoubleParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, const double* parameterValue ) const
+        {
+            return BindDoubleParameter( parameterNumber, const_cast< double* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, DBDouble& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindDoubleParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, const DBDouble& parameterValue ) const
+        {
+            return BindDoubleParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+        
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, Guid* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Guid, SqlType::Guid, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, const Guid* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindGuidParameter( parameterNumber, const_cast< Guid* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, Guid* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindGuidParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, const Guid* parameterValue ) const
+        {
+            return BindGuidParameter( parameterNumber, const_cast< Guid* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, DBGuid& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindGuidParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, const DBGuid& parameterValue ) const
+        {
+            return BindGuidParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+
+        Result BindDateTimeParameter( SQLUSMALLINT parameterNumber, DateTime* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindDateTimeParameter( SQLUSMALLINT parameterNumber, const DateTime* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindDateTimeParameter( parameterNumber, const_cast< DateTime* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindDateTimeParameter( SQLUSMALLINT parameterNumber, DateTime* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindDateTimeParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindDateTimeParameter( SQLUSMALLINT parameterNumber, const DateTime* parameterValue ) const
+        {
+            return BindDateTimeParameter( parameterNumber, const_cast< DateTime* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindDateTimeParameter( SQLUSMALLINT parameterNumber, DBDateTime& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindDateTimeParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindDateTimeParameter( SQLUSMALLINT parameterNumber, const DBDateTime& parameterValue ) const
+        {
+            return BindDateTimeParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+        Result BindTimeSpanParameter( SQLUSMALLINT parameterNumber, TimeSpan* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindTimeSpanParameter( SQLUSMALLINT parameterNumber, const TimeSpan* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindTimeSpanParameter( parameterNumber, const_cast< TimeSpan* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindTimeSpanParameter( SQLUSMALLINT parameterNumber, TimeSpan* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindTimeSpanParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindTimeSpanParameter( SQLUSMALLINT parameterNumber, const TimeSpan* parameterValue ) const
+        {
+            return BindTimeSpanParameter( parameterNumber, const_cast< TimeSpan* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindTimeSpanParameter( SQLUSMALLINT parameterNumber, DBTimeSpan& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindTimeSpanParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindTimeSpanParameter( SQLUSMALLINT parameterNumber, const DBTimeSpan& parameterValue ) const
+        {
+            return BindTimeSpanParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+        Result BindCurrencyParameter( SQLUSMALLINT parameterNumber, Currency* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, nullIndicator );
+            return rc;
+        }
+        Result BindCurrencyParameter( SQLUSMALLINT parameterNumber, const Currency* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindCurrencyParameter( parameterNumber, const_cast< Currency* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindCurrencyParameter( SQLUSMALLINT parameterNumber, Currency* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindCurrencyParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindCurrencyParameter( SQLUSMALLINT parameterNumber, const Currency* parameterValue ) const
+        {
+            return BindCurrencyParameter( parameterNumber, const_cast< Currency* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindCurrencyParameter( SQLUSMALLINT parameterNumber, DBCurrency& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindCurrencyParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindCurrencyParameter( SQLUSMALLINT parameterNumber, const DBCurrency& parameterValue ) const
+        {
+            return BindCurrencyParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
+        }
+
+
+
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, ODBC::TimeStamp* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             SQLSMALLINT columnSize = static_cast<SQLSMALLINT>( 20 ) + precisionOfFraction;
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::TypeTimeStamp, SqlType::TimeStamp, columnSize, precisionOfFraction, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::TypeTimeStamp, SqlType::TimeStamp, columnSize, precisionOfFraction, parameterValue, 0, nullIndicator );
             return rc;
+        }
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, const TimeStamp* parameterValue, SQLLEN* nullIndicator ) const
+        {
+            return BindTimeStampParameter( parameterNumber, precisionOfFraction, const_cast< TimeStamp* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+        }
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, TimeStamp* parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            return BindTimeStampParameter( parameterNumber, precisionOfFraction, parameterValue, nullptr, parameterDirection );
+        }
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, const TimeStamp* parameterValue ) const
+        {
+            return BindTimeStampParameter( parameterNumber, precisionOfFraction, const_cast< TimeStamp* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
+        }
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, DBTimeStamp& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
+        {
+            return BindTimeStampParameter( parameterNumber, precisionOfFraction, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
+        }
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, const DBTimeStamp& parameterValue ) const
+        {
+            return BindTimeStampParameter( parameterNumber, precisionOfFraction, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
         Result BindVarCharParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
@@ -3213,6 +3691,20 @@ namespace Harlinn::ODBC
             return rc;
         }
 
+        template<size_t maxSize>
+        Result BindFixedDBAnsiStringParameter( SQLUSMALLINT parameterNumber, FixedDBAnsiString<maxSize>& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::VarChar, maxSize + 1, 0, parameterValue.data( ), parameterValue.size( ), parameterValue.Indicator( ) );
+            return rc;
+        }
+        template<size_t maxSize>
+        Result BindFixedDBAnsiStringParameter( SQLUSMALLINT parameterNumber, const FixedDBAnsiString<maxSize>& parameterValue ) const
+        {
+            auto rc = BindParameter( parameterNumber, ODBC::ParameterDirection::Input, NativeType::Char, SqlType::VarChar, maxSize + 1, 0, const_cast<char*>(parameterValue.data( )), parameterValue.size( ), const_cast< FixedDBAnsiString<maxSize>& >(parameterValue).Indicator( ) );
+            return rc;
+        }
+
+
         Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, wchar_t* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
@@ -3225,6 +3717,19 @@ namespace Harlinn::ODBC
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, maxSize + 1, 0, parameterValue.data(), parameterValue.size(), parameterValue.Indicator() );
             return rc;
         }
+        template<size_t maxSize>
+        Result BindFixedDBWideStringParameter( SQLUSMALLINT parameterNumber, FixedDBWideString<maxSize>& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, maxSize + 1, 0, parameterValue.data( ), parameterValue.size( ), parameterValue.Indicator( ) );
+            return rc;
+        }
+        template<size_t maxSize>
+        Result BindFixedDBWideStringParameter( SQLUSMALLINT parameterNumber, const FixedDBWideString<maxSize>& parameterValue ) const
+        {
+            auto rc = BindParameter( parameterNumber, ODBC::ParameterDirection::Input, NativeType::WideChar, SqlType::WVarChar, maxSize + 1, 0, const_cast<wchar_t*>(parameterValue.data( )), parameterValue.size( )*sizeof(wchar_t), const_cast<FixedDBWideString<maxSize>&>( parameterValue ).Indicator( ) );
+            return rc;
+        }
+
 
 
 
@@ -3251,6 +3756,172 @@ namespace Harlinn::ODBC
             return rc;
         }
 
+        template<size_t maxSize>
+        Result BindFixedDBBinaryParameter( SQLUSMALLINT parameterNumber, FixedDBBinary<maxSize>& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, maxSize, 0, parameterValue.data( ), parameterValue.size( ), parameterValue.Indicator( ) );
+            return rc;
+        }
+        template<size_t maxSize>
+        Result BindFixedDBBinaryParameter( SQLUSMALLINT parameterNumber, const FixedDBBinary<maxSize>& parameterValue ) const
+        {
+            auto rc = BindParameter( parameterNumber, ODBC::ParameterDirection::Input, NativeType::Binary, SqlType::VarBinary, maxSize, 0, const_cast<Byte*>(parameterValue.data( )), parameterValue.size( ), const_cast< FixedDBBinary<maxSize>& >(parameterValue).Indicator( ) );
+            return rc;
+        }
+
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, Binary& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( );
+            auto rc = BindVarBinaryParameter( parameterNumber, columnSize, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
+            return rc;
+        }
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, Binary& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( );
+            auto rc = BindVarBinaryParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
+            return rc;
+        }
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const Binary& parameterValue, SQLLEN* lengthOrIndicator ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( );
+            auto rc = BindVarBinaryParameter( parameterNumber, columnSize, const_cast<Byte*>( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, const Binary& parameterValue, SQLLEN* lengthOrIndicator = nullptr) const
+        {
+            return BindBinaryParameter( parameterNumber, 0, parameterValue, lengthOrIndicator );
+        }
+
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const Binary& parameterValue ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( );
+            auto rc = BindVarBinaryParameter( parameterNumber, columnSize, const_cast< Byte* >( parameterValue.data( ) ), parameterValueBufferLength, nullptr, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBBinary& parameterValue ) const
+        {
+            if ( parameterValue.IsNull( ) )
+            {
+                return BindVarBinaryParameter( parameterNumber, columnSize, nullptr,0, parameterValue.Indicator( ), ODBC::ParameterDirection::Input );
+            }
+            else
+            {
+                const auto& binary = parameterValue.value( );
+                return BindBinaryParameter( parameterNumber, columnSize, binary, parameterValue.Indicator() );
+            }
+        }
+        Result BindBinaryParameter( SQLUSMALLINT parameterNumber, const DBBinary& parameterValue ) const
+        {
+            return BindBinaryParameter( parameterNumber, 0, parameterValue );
+        }
+
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, AnsiString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindVarCharParameter( parameterNumber, columnSize, parameterValue.data(), static_cast<SQLLEN>(parameterValue.size()), lengthOrIndicator, parameterDirection );
+            return rc;
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindVarCharParameter( parameterNumber, columnSize, const_cast<char*>(parameterValue.data( )), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, AnsiString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
+            return rc;
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindVarCharParameter( parameterNumber, 0, const_cast< char* >( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, AnsiString& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, nullptr, parameterDirection );
+            return rc;
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindVarCharParameter( parameterNumber, 0, const_cast< char* >( parameterValue.data( ) ), parameterValueBufferLength, nullptr, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBAnsiString& parameterValue ) const
+        {
+            if ( parameterValue.IsNull( ) )
+            {
+                return BindVarCharParameter( parameterNumber, columnSize, nullptr, 0, parameterValue.Indicator(), ODBC::ParameterDirection::Input );
+            }
+            else
+            {
+                const auto& str = parameterValue.value( );
+                SQLLEN parameterValueBufferLength = str.Length( ) + 1;
+                return BindVarCharParameter( parameterNumber, columnSize, const_cast< char* >( str.data( ) ), parameterValueBufferLength, parameterValue.Indicator( ), ODBC::ParameterDirection::Input );
+            }
+        }
+        Result BindAnsiStringParameter( SQLUSMALLINT parameterNumber, const DBAnsiString& parameterValue ) const
+        {
+            return BindAnsiStringParameter( parameterNumber, 0, parameterValue );
+        }
+
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindNVarCharParameter( parameterNumber, columnSize, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
+            return rc;
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const WideString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindNVarCharParameter( parameterNumber, columnSize, const_cast< wchar_t* >( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindNVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, lengthOrIndicator, parameterDirection );
+            return rc;
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindNVarCharParameter( parameterNumber, 0, const_cast< wchar_t* >( parameterValue.data( ) ), parameterValueBufferLength, lengthOrIndicator, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, WideString& parameterValue, ODBC::ParameterDirection parameterDirection ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindNVarCharParameter( parameterNumber, 0, parameterValue.data( ), parameterValueBufferLength, nullptr, parameterDirection );
+            return rc;
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue ) const
+        {
+            SQLLEN parameterValueBufferLength = parameterValue.Length( ) + 1;
+            auto rc = BindNVarCharParameter( parameterNumber, 0, const_cast< wchar_t* >( parameterValue.data( ) ), parameterValueBufferLength, nullptr, ODBC::ParameterDirection::Input );
+            return rc;
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, const DBWideString& parameterValue ) const
+        {
+            if ( parameterValue.IsNull( ) )
+            {
+                return BindNVarCharParameter( parameterNumber, columnSize, nullptr, 0, parameterValue.Indicator( ), ODBC::ParameterDirection::Input );
+            }
+            else
+            {
+                const auto& str = parameterValue.value( );
+                SQLLEN parameterValueBufferLength = str.Length( ) + 1;
+                return BindNVarCharParameter( parameterNumber, columnSize, const_cast< wchar_t* >( str.data( ) ), parameterValueBufferLength, parameterValue.Indicator( ), ODBC::ParameterDirection::Input );
+            }
+        }
+        Result BindWideStringParameter( SQLUSMALLINT parameterNumber, const DBWideString& parameterValue ) const
+        {
+            return BindWideStringParameter( parameterNumber, 0, parameterValue );
+        }
 
 
         Result BulkOperations( ODBC::BulkOperation bulkOperation ) const
@@ -3831,8 +4502,8 @@ namespace Harlinn::ODBC
         }
 
         template<typename ReaderType>
-        requires std::is_base_of_v<DataReader, ReaderType>
-            std::unique_ptr<ReaderType> CreateReader( ) const
+            requires std::is_base_of_v<DataReader, ReaderType>
+        std::unique_ptr<ReaderType> CreateReader( ) const
         {
             auto result = std::make_unique<ReaderType>( this );
             return result;
@@ -3840,28 +4511,36 @@ namespace Harlinn::ODBC
 
 
         template<typename ReaderType = DataReader>
-        requires std::is_base_of_v<DataReader, ReaderType>
-            std::unique_ptr<ReaderType> ExecuteReader( ) const
+            requires std::is_base_of_v<DataReader, ReaderType>
+        std::unique_ptr<ReaderType> ExecuteReader( ) const
         {
             auto result = CreateReader<ReaderType>( );
             Execute( );
             return result;
         }
         template<typename ReaderType = DataReader>
-        requires std::is_base_of_v<DataReader, ReaderType>
-            std::unique_ptr<ReaderType> ExecuteReader( const SQLWCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
+            requires std::is_base_of_v<DataReader, ReaderType>
+        std::unique_ptr<ReaderType> ExecuteReader( const SQLWCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
             auto result = CreateReader<ReaderType>( );
             ExecDirect( statementText, statementTextLength );
             return result;
         }
+
         template<typename ReaderType = DataReader>
-        requires std::is_base_of_v<DataReader, ReaderType>
-            std::unique_ptr<ReaderType> ExecuteReader( const SQLCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
+            requires std::is_base_of_v<DataReader, ReaderType>
+        std::unique_ptr<ReaderType> ExecuteReader( const SQLCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
             auto result = CreateReader<ReaderType>( );
             ExecDirect( statementText, statementTextLength );
             return result;
+        }
+
+        template<typename ReaderType = DataReader, SimpleStringLike StringT>
+            requires std::is_base_of_v<DataReader, ReaderType>
+        std::unique_ptr<ReaderType> ExecuteReader( const StringT& str ) const
+        {
+            return ExecuteReader<ReaderType>( str.c_str( ), static_cast< SQLINTEGER >( str.size( ) ) );
         }
 
 

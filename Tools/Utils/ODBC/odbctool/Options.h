@@ -305,6 +305,17 @@ namespace Harlinn::ODBC::Tool
         { }
     };
 
+    class CppDatabaseReadersSourceOptions : public OptionsFile<CppDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDatabaseOptions>;
+        CppDatabaseReadersSourceOptions( const CppDatabaseOptions& owner )
+            : Base( owner, L"DatabaseReaders.cpp" )
+        {
+        }
+    };
+
+
     class CppComplexDatabaseReadersOptions : public OptionsFile<CppDatabaseOptions>
     {
     public:
@@ -326,20 +337,49 @@ namespace Harlinn::ODBC::Tool
     };
 
 
+    class CppStoredProceduresOptions : public OptionsFile<CppDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDatabaseOptions>;
+        CppStoredProceduresOptions( const CppDatabaseOptions& owner )
+            : Base( owner, L"StoredProcedures.h" )
+        {
+        }
+    };
+
+    class CppStoredProceduresSourceOptions : public OptionsFile<CppDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDatabaseOptions>;
+        CppStoredProceduresSourceOptions( const CppDatabaseOptions& owner )
+            : Base( owner, L"StoredProcedures.cpp" )
+        {
+        }
+    };
+
+
     class CppDatabaseOptions : public OptionsContainer<CppOptions>
     {
         CppDatabaseReadersOptions databaseReaders_;
+        CppDatabaseReadersSourceOptions databaseReadersSource_;
         CppComplexDatabaseReadersOptions complexDatabaseReaders_;
         CppComplexDatabaseReadersSourceOptions complexDatabaseReadersSource_;
+        CppStoredProceduresOptions storedProcedures_;
+        CppStoredProceduresSourceOptions storedProceduresSource_;
     public:
         using Base = OptionsContainer<CppOptions>;
         CppDatabaseOptions( const CppOptions& owner )
-            : Base( owner, L"Database" ), databaseReaders_(*this), complexDatabaseReaders_(*this), complexDatabaseReadersSource_(*this)
+            : Base( owner, L"Database" ), databaseReaders_(*this), databaseReadersSource_( *this ), complexDatabaseReaders_( *this ), complexDatabaseReadersSource_( *this ), storedProcedures_( *this ), storedProceduresSource_( *this )
         { }
 
         const CppDatabaseReadersOptions& DatabaseReaders( ) const
         {
             return databaseReaders_;
+        }
+
+        const CppDatabaseReadersSourceOptions& DatabaseReadersSource( ) const
+        {
+            return databaseReadersSource_;
         }
 
         const CppComplexDatabaseReadersOptions& ComplexDatabaseReaders( ) const
@@ -350,6 +390,15 @@ namespace Harlinn::ODBC::Tool
         const CppComplexDatabaseReadersSourceOptions& ComplexDatabaseReadersSource( ) const
         {
             return complexDatabaseReadersSource_;
+        }
+
+        const CppStoredProceduresOptions& StoredProcedures( ) const
+        {
+            return storedProcedures_;
+        }
+        const CppStoredProceduresSourceOptions& StoredProceduresSource( ) const
+        {
+            return storedProceduresSource_;
         }
 
     };

@@ -54,6 +54,9 @@
     <ClInclude Include="Generated\Cpp\BarrelmanExport.h">
       <Filter>Generated\Cpp</Filter>
     </ClInclude>
+    <ClInclude Include="Generated\Cpp\Database\StoredProcedures.h">
+      <Filter>Generated\Cpp\Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -69,6 +72,9 @@
       <Filter>Generated\Cpp\Database</Filter>
     </ClCompile>
     <ClCompile Include="Generated\Cpp\Database\ComplexDatabaseReaders.cpp">
+      <Filter>Generated\Cpp\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Database\StoredProcedures.cpp">
       <Filter>Generated\Cpp\Database</Filter>
     </ClCompile>
   </ItemGroup>

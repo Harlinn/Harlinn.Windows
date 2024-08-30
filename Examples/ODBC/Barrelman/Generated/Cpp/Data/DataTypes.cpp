@@ -14,6 +14,21 @@ namespace Barrelman::Data
             case Kind::AircraftType:
                 result = std::make_shared<AircraftTypeData>( );
                 break;
+            case Kind::AisDeviceCommand:
+                result = std::make_shared<AisDeviceCommandData>( );
+                break;
+            case Kind::AisDeviceCommandReply:
+                result = std::make_shared<AisDeviceCommandReplyData>( );
+                break;
+            case Kind::AisDeviceConfiguration:
+                result = std::make_shared<AisDeviceConfigurationData>( );
+                break;
+            case Kind::AisDeviceRawMessage:
+                result = std::make_shared<AisDeviceRawMessageData>( );
+                break;
+            case Kind::AisDeviceRawSentence:
+                result = std::make_shared<AisDeviceRawSentenceData>( );
+                break;
             case Kind::AidToNavigationReportMessage:
                 result = std::make_shared<AidToNavigationReportMessageData>( );
                 break;
@@ -79,21 +94,6 @@ namespace Barrelman::Data
                 break;
             case Kind::AisUtcAndDateResponseMessage:
                 result = std::make_shared<AisUtcAndDateResponseMessageData>( );
-                break;
-            case Kind::AisTransceiverCommand:
-                result = std::make_shared<AisTransceiverCommandData>( );
-                break;
-            case Kind::AisTransceiverCommandReply:
-                result = std::make_shared<AisTransceiverCommandReplyData>( );
-                break;
-            case Kind::AisTransceiverConfiguration:
-                result = std::make_shared<AisTransceiverConfigurationData>( );
-                break;
-            case Kind::AisTransceiverRawMessage:
-                result = std::make_shared<AisTransceiverRawMessageData>( );
-                break;
-            case Kind::AisTransceiverRawSentence:
-                result = std::make_shared<AisTransceiverRawSentenceData>( );
                 break;
             case Kind::AlarmStateChange:
                 result = std::make_shared<AlarmStateChangeData>( );
@@ -266,8 +266,8 @@ namespace Barrelman::Data
             case Kind::BaseStation:
                 result = std::make_shared<BaseStationData>( );
                 break;
-            case Kind::Camera:
-                result = std::make_shared<CameraData>( );
+            case Kind::CameraDevice:
+                result = std::make_shared<CameraDeviceData>( );
                 break;
             case Kind::GNSSDevice:
                 result = std::make_shared<GNSSDeviceData>( );
@@ -278,23 +278,23 @@ namespace Barrelman::Data
             case Kind::LineInputDevice:
                 result = std::make_shared<LineInputDeviceData>( );
                 break;
-            case Kind::OilspillDetector:
-                result = std::make_shared<OilspillDetectorData>( );
+            case Kind::OilSpillDetectorDevice:
+                result = std::make_shared<OilSpillDetectorDeviceData>( );
                 break;
-            case Kind::Radio:
-                result = std::make_shared<RadioData>( );
+            case Kind::RadioDevice:
+                result = std::make_shared<RadioDeviceData>( );
                 break;
-            case Kind::Radome:
-                result = std::make_shared<RadomeData>( );
+            case Kind::RadomeDevice:
+                result = std::make_shared<RadomeDeviceData>( );
                 break;
-            case Kind::AisTransceiver:
-                result = std::make_shared<AisTransceiverData>( );
+            case Kind::AisDevice:
+                result = std::make_shared<AisDeviceData>( );
                 break;
-            case Kind::Radar:
-                result = std::make_shared<RadarData>( );
+            case Kind::RadarDevice:
+                result = std::make_shared<RadarDeviceData>( );
                 break;
-            case Kind::WeatherStation:
-                result = std::make_shared<WeatherStationData>( );
+            case Kind::WeatherStationDevice:
+                result = std::make_shared<WeatherStationDeviceData>( );
                 break;
             case Kind::Facility:
                 result = std::make_shared<FacilityData>( );
@@ -395,17 +395,17 @@ namespace Barrelman::Data
             case Kind::Namespace:
                 result = std::make_shared<NamespaceData>( );
                 break;
-            case Kind::Oilspill:
-                result = std::make_shared<OilspillData>( );
+            case Kind::OilSpill:
+                result = std::make_shared<OilSpillData>( );
                 break;
-            case Kind::OilspillDetectorCommand:
-                result = std::make_shared<OilspillDetectorCommandData>( );
+            case Kind::OilSpillDetectorCommand:
+                result = std::make_shared<OilSpillDetectorCommandData>( );
                 break;
-            case Kind::OilspillDetectorCommandReply:
-                result = std::make_shared<OilspillDetectorCommandReplyData>( );
+            case Kind::OilSpillDetectorCommandReply:
+                result = std::make_shared<OilSpillDetectorCommandReplyData>( );
                 break;
-            case Kind::OilspillDetectorConfiguration:
-                result = std::make_shared<OilspillDetectorConfigurationData>( );
+            case Kind::OilSpillDetectorConfiguration:
+                result = std::make_shared<OilSpillDetectorConfigurationData>( );
                 break;
             case Kind::Position2DTimeseriesValue:
                 result = std::make_shared<Position2DTimeseriesValueData>( );

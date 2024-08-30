@@ -31,6 +31,7 @@ namespace Harlinn::ODBC::Tool
         static WideString GetDefaultValue( const MemberInfo& member );
         static WideString GetInputArgumentType( const MemberInfo& member );
         static WideString GetInputArgumentName( const MemberInfo& member );
+        static WideString GetBindParameterFunctionName( const MemberInfo& member );
         static WideString GetMemberFieldType( const MemberInfo& member );
         static WideString GetMemberNullableFieldType( const MemberInfo& member );
         static WideString GetDataMemberFieldType( const MemberInfo& member );
@@ -49,6 +50,24 @@ namespace Harlinn::ODBC::Tool
         static WideString GetComplexColumnDataType( const ClassInfo& classInfo );
         static WideString GetDataType( const ClassInfo& classInfo );
         static WideString GetSimpleTestValue( const ClassInfo& classInfo, const MemberInfo& member );
+
+        static WideString GetInsertFunctionName( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionName( const ClassInfo& classInfo );
+        static WideString GetDeleteFunctionName( const ClassInfo& classInfo );
+
+        static WideString GetInsertFunctionParameters( const ClassInfo& classInfo );
+        static WideString GetInsertFunctionCallParameters( const ClassInfo& classInfo );
+        static WideString GetInsertFunctionParameterMarkers( const ClassInfo& classInfo );
+
+        static WideString GetUpdateFunctionParameters( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionCallParameters( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionParameterMarkers( const ClassInfo& classInfo );
+
+        static WideString GetDeleteFunctionParameters( const ClassInfo& classInfo );
+        static WideString GetDeleteFunctionCallParameters( const ClassInfo& classInfo );
+        static WideString GetDeleteFunctionParameterMarkers( const ClassInfo& classInfo );
+
+
 
     };
 

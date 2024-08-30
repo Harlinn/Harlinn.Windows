@@ -349,6 +349,10 @@ namespace Harlinn::ODBC::Tool
             {
                 WriteLine( L"        {} {};", primaryKeyTypeName, fieldName );
             }
+            if ( classInfo.HasDescendants( ) )
+            {
+                WriteLine( L"        Data::Kind entityType_ = Data::Kind::Unknown;" );
+            }
         }
 
         const auto& persistentMembers = classInfo.OwnPersistentMembers( );
@@ -378,7 +382,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    public:" );
         WriteLine( L"        using Base = {};", baseClassName );
         WriteLine( );
-        CreateFieldNames( classInfo );
+        CreateQuery( classInfo );
         CreateFieldIds( classInfo );
         WriteLine( L"        {}( ) = default;", className );
         WriteLine( );
@@ -413,12 +417,12 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
-    void CppDatabaseReadersGenerator::CreateFieldNames( const ClassInfo& classInfo )
+    void CppDatabaseReadersGenerator::CreateQuery( const ClassInfo& classInfo )
     {
-        auto fieldNames = SqlServerHelper::GetColumnNamesForSelect( classInfo );
-        WriteLine( L"        static constexpr std::wstring_view FieldNames = L\"{}\";", fieldNames );
-        auto viewName = SqlServerHelper::GetViewName( classInfo );
-        WriteLine( L"        static constexpr std::wstring_view ViewName = L\"{}\";", viewName );
+        auto dllExport = Options( ).DllExport( );
+        WriteLine( L"        static {} WideString BaseQuery;", dllExport );
+        WriteLine( L"        static {} WideString BaseViewName;", dllExport );
+        WriteLine( L"        static {} WideString ViewAliasName;", dllExport );
         WriteLine( );
     }
     void CppDatabaseReadersGenerator::CreateFieldIds( const ClassInfo& classInfo )
@@ -433,6 +437,11 @@ namespace Harlinn::ODBC::Tool
                 {
                     WriteLine( L"        static constexpr SQLUSMALLINT {}_FIELD_ID = {};", member->Name( ).ToUpper( ), id );
                     id++;
+                    if( member->PrimaryKey() && classInfo.HasDescendants() )
+                    { 
+                        WriteLine( L"        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = {};", id );
+                        id++;
+                    }
                 }
             }
             else
@@ -475,6 +484,10 @@ namespace Harlinn::ODBC::Tool
                     auto fieldId = Format( L"{}_FIELD_ID", member->Name( ).ToUpper( ) );
 
                     WriteLine( L"            Bind(statement, {}, {});", fieldId, fieldName );
+                    if ( member->PrimaryKey( ) && classInfo.HasDescendants( ) )
+                    {
+                        WriteLine( L"            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );" );
+                    }
 
                 }
             }
@@ -539,6 +552,13 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        {" );
         WriteLine( L"            return {};", fieldName );
         WriteLine( L"        }" );
+        if ( member.PrimaryKey( ) && classInfo.HasDescendants() )
+        {
+            WriteLine( L"        Data::Kind EntityType( ) const" );
+            WriteLine( L"        {" );
+            WriteLine( L"            return entityType_;" );
+            WriteLine( L"        }" );
+        }
     }
     void CppDatabaseReadersGenerator::CreateSetter( const ClassInfo& classInfo, const MemberInfo& member )
     {

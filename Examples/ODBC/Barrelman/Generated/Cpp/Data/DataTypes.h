@@ -93,9 +93,1131 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
+        }
+    };
+    class AisDeviceCommandData : public BaseData<Kind, Guid>
+    {
+    public:
+        using Base = BaseData<Kind, Guid>;
+        static constexpr Kind KIND = Kind::AisDeviceCommand;
+    private:
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Guid deviceCommandSourceId_;
+        DBGuid reply_;
+    public:
+        AisDeviceCommandData( ) = default;
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write(rowVersion_);
+            destination.Write(aisDevice_);
+            destination.Write(timestamp_);
+            destination.Write(deviceCommandSourceType_);
+            destination.Write(deviceCommandSourceId_);
+            reply_.WriteTo( destination );
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            source.Read(rowVersion_);
+            source.Read(aisDevice_);
+            source.Read(timestamp_);
+            source.Read(deviceCommandSourceType_);
+            source.Read(deviceCommandSourceId_);
+            reply_.ReadFrom( source );
+        }
+        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
+        {
+            return KIND;
+        }
+        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
+        {
+            if ( objectType == KIND )
+            {
+                return true;
+            }
+            return Base::IsOfType( objectType );
+        }
+        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
+        {
+            return std::make_shared<AisDeviceCommandData>( );
+        }
+        virtual void AssignTo( BaseData& target ) const override
+        {
+            Base::AssignTo( target );
+            auto& dest = static_cast<AisDeviceCommandData&>( target );
+        }
+        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
+        {
+            if ( Base::IsEqualTo( other ) )
+            {
+                const auto& dataObject = static_cast< const AisDeviceCommandData& >( other );
+                if ( dataObject.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if ( dataObject.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if ( dataObject.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if ( dataObject.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if ( dataObject.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        {
+            return deviceCommandSourceType_;
+        }
+        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        {
+            deviceCommandSourceType_ = deviceCommandSourceType;
+        }
+        const Guid& DeviceCommandSourceId( ) const
+        {
+            return deviceCommandSourceId_;
+        }
+        void SetDeviceCommandSourceId( const Guid& deviceCommandSourceId )
+        {
+            deviceCommandSourceId_ = deviceCommandSourceId;
+        }
+        const DBGuid& Reply( ) const
+        {
+            return reply_;
+        }
+        void SetReply( const DBGuid& reply )
+        {
+            reply_ = reply;
+        }
+    };
+    class AisDeviceCommandReplyData : public BaseData<Kind, Guid>
+    {
+    public:
+        using Base = BaseData<Kind, Guid>;
+        static constexpr Kind KIND = Kind::AisDeviceCommandReply;
+    private:
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        Guid command_;
+        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        WideString message_;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
+    public:
+        AisDeviceCommandReplyData( ) = default;
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write(rowVersion_);
+            destination.Write(aisDevice_);
+            destination.Write(timestamp_);
+            destination.Write(command_);
+            destination.Write(status_);
+            destination.Write(message_);
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            source.Read(rowVersion_);
+            source.Read(aisDevice_);
+            source.Read(timestamp_);
+            source.Read(command_);
+            source.Read(status_);
+            source.Read(message_);
+        }
+        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
+        {
+            return KIND;
+        }
+        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
+        {
+            if ( objectType == KIND )
+            {
+                return true;
+            }
+            return Base::IsOfType( objectType );
+        }
+        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
+        {
+            return std::make_shared<AisDeviceCommandReplyData>( );
+        }
+        virtual void AssignTo( BaseData& target ) const override
+        {
+            Base::AssignTo( target );
+            auto& dest = static_cast<AisDeviceCommandReplyData&>( target );
+        }
+        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
+        {
+            if ( Base::IsEqualTo( other ) )
+            {
+                const auto& dataObject = static_cast< const AisDeviceCommandReplyData& >( other );
+                if ( dataObject.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if ( dataObject.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if ( dataObject.command_ != command_ )
+                {
+                    return false;
+                }
+                if ( dataObject.status_ != status_ )
+                {
+                    return false;
+                }
+                if ( dataObject.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        const Guid& Command( ) const
+        {
+            return command_;
+        }
+        void SetCommand( const Guid& command )
+        {
+            command_ = command;
+        }
+        Data::DeviceCommandReplyStatus Status( ) const
+        {
+            return status_;
+        }
+        void SetStatus( Data::DeviceCommandReplyStatus status )
+        {
+            status_ = status;
+        }
+        const WideString& Message( ) const
+        {
+            return message_;
+        }
+        void SetMessage( const WideString& message )
+        {
+            message_ = message;
+        }
+    };
+    class AisDeviceConfigurationData : public BaseData<Kind, Guid>
+    {
+    public:
+        using Base = BaseData<Kind, Guid>;
+        static constexpr Kind KIND = Kind::AisDeviceConfiguration;
+    private:
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
+        double latitude_ = 0.0;
+        double longitude_ = 0.0;
+        FixedDBWideString<127> aisProviderLoginURL_;
+        FixedDBWideString<32> comPort_;
+        Int32 baudRate_ = 0;
+        bool filterByArea_ = false;
+        double upperLeftCornerLatitude_ = 0.0;
+        double upperLeftCornerLongitude_ = 0.0;
+        double bottomRightCornerLatitude_ = 0.0;
+        double bottomRightCornerLongitude_ = 0.0;
+        FixedDBWideString<127> aisProviderIPAddress_;
+        Int32 aisProviderPort_ = 0;
+        bool useLogin_ = false;
+        Int32 aisProviderLoginPort_ = 0;
+        bool canSendAISMessage_ = false;
+        WideString textMessageHeader_;
+        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
+        WideString urls_;
+        SQLLEN urlsLength_ = SQL_NULL_DATA;
+        Int32 udpPort_ = 0;
+        Data::AisDeviceConnectionType connectionType_ = Data::AisDeviceConnectionType::Unknown;
+        bool enableRefreshAidToNavigationIn30sec_ = false;
+        bool enableAidToNavigationFromFile_ = false;
+        WideString aidToNavigationHeader_;
+        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
+        bool sendingMMSI_ = false;
+        Int32 sourceUpdateRate_ = 0;
+        bool enableRefreshStayingStillTargetIn30sec_ = false;
+        WideString excludeSendAisBaseStation_;
+        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
+        WideString excludeSendAisA_;
+        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
+        bool enableSendBaseStationAlarms_ = false;
+        FixedDBWideString<127> aisWebConfig_;
+        bool storeReceivedSentences_ = false;
+        bool storeSentMessages_ = false;
+        bool storeUnsentMessages_ = false;
+    public:
+        AisDeviceConfigurationData( ) = default;
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write(rowVersion_);
+            destination.Write(aisDevice_);
+            destination.Write(timestamp_);
+            userName_.WriteTo( destination );
+            password_.WriteTo( destination );
+            destination.Write(latitude_);
+            destination.Write(longitude_);
+            aisProviderLoginURL_.WriteTo( destination );
+            comPort_.WriteTo( destination );
+            destination.Write(baudRate_);
+            destination.Write(filterByArea_);
+            destination.Write(upperLeftCornerLatitude_);
+            destination.Write(upperLeftCornerLongitude_);
+            destination.Write(bottomRightCornerLatitude_);
+            destination.Write(bottomRightCornerLongitude_);
+            aisProviderIPAddress_.WriteTo( destination );
+            destination.Write(aisProviderPort_);
+            destination.Write(useLogin_);
+            destination.Write(aisProviderLoginPort_);
+            destination.Write(canSendAISMessage_);
+            destination.Write(textMessageHeader_);
+            destination.Write(urls_);
+            destination.Write(udpPort_);
+            destination.Write(connectionType_);
+            destination.Write(enableRefreshAidToNavigationIn30sec_);
+            destination.Write(enableAidToNavigationFromFile_);
+            destination.Write(aidToNavigationHeader_);
+            destination.Write(sendingMMSI_);
+            destination.Write(sourceUpdateRate_);
+            destination.Write(enableRefreshStayingStillTargetIn30sec_);
+            destination.Write(excludeSendAisBaseStation_);
+            destination.Write(excludeSendAisA_);
+            destination.Write(enableSendBaseStationAlarms_);
+            aisWebConfig_.WriteTo( destination );
+            destination.Write(storeReceivedSentences_);
+            destination.Write(storeSentMessages_);
+            destination.Write(storeUnsentMessages_);
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            source.Read(rowVersion_);
+            source.Read(aisDevice_);
+            source.Read(timestamp_);
+            userName_.ReadFrom( source );
+            password_.ReadFrom( source );
+            source.Read(latitude_);
+            source.Read(longitude_);
+            aisProviderLoginURL_.ReadFrom( source );
+            comPort_.ReadFrom( source );
+            source.Read(baudRate_);
+            source.Read(filterByArea_);
+            source.Read(upperLeftCornerLatitude_);
+            source.Read(upperLeftCornerLongitude_);
+            source.Read(bottomRightCornerLatitude_);
+            source.Read(bottomRightCornerLongitude_);
+            aisProviderIPAddress_.ReadFrom( source );
+            source.Read(aisProviderPort_);
+            source.Read(useLogin_);
+            source.Read(aisProviderLoginPort_);
+            source.Read(canSendAISMessage_);
+            source.Read(textMessageHeader_);
+            source.Read(urls_);
+            source.Read(udpPort_);
+            source.Read(connectionType_);
+            source.Read(enableRefreshAidToNavigationIn30sec_);
+            source.Read(enableAidToNavigationFromFile_);
+            source.Read(aidToNavigationHeader_);
+            source.Read(sendingMMSI_);
+            source.Read(sourceUpdateRate_);
+            source.Read(enableRefreshStayingStillTargetIn30sec_);
+            source.Read(excludeSendAisBaseStation_);
+            source.Read(excludeSendAisA_);
+            source.Read(enableSendBaseStationAlarms_);
+            aisWebConfig_.ReadFrom( source );
+            source.Read(storeReceivedSentences_);
+            source.Read(storeSentMessages_);
+            source.Read(storeUnsentMessages_);
+        }
+        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
+        {
+            return KIND;
+        }
+        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
+        {
+            if ( objectType == KIND )
+            {
+                return true;
+            }
+            return Base::IsOfType( objectType );
+        }
+        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
+        {
+            return std::make_shared<AisDeviceConfigurationData>( );
+        }
+        virtual void AssignTo( BaseData& target ) const override
+        {
+            Base::AssignTo( target );
+            auto& dest = static_cast<AisDeviceConfigurationData&>( target );
+        }
+        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
+        {
+            if ( Base::IsEqualTo( other ) )
+            {
+                const auto& dataObject = static_cast< const AisDeviceConfigurationData& >( other );
+                if ( dataObject.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if ( dataObject.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if ( dataObject.userName_ != userName_ )
+                {
+                    return false;
+                }
+                if ( dataObject.password_ != password_ )
+                {
+                    return false;
+                }
+                if ( dataObject.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if ( dataObject.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisProviderLoginURL_ != aisProviderLoginURL_ )
+                {
+                    return false;
+                }
+                if ( dataObject.comPort_ != comPort_ )
+                {
+                    return false;
+                }
+                if ( dataObject.baudRate_ != baudRate_ )
+                {
+                    return false;
+                }
+                if ( dataObject.filterByArea_ != filterByArea_ )
+                {
+                    return false;
+                }
+                if ( dataObject.upperLeftCornerLatitude_ != upperLeftCornerLatitude_ )
+                {
+                    return false;
+                }
+                if ( dataObject.upperLeftCornerLongitude_ != upperLeftCornerLongitude_ )
+                {
+                    return false;
+                }
+                if ( dataObject.bottomRightCornerLatitude_ != bottomRightCornerLatitude_ )
+                {
+                    return false;
+                }
+                if ( dataObject.bottomRightCornerLongitude_ != bottomRightCornerLongitude_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisProviderIPAddress_ != aisProviderIPAddress_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisProviderPort_ != aisProviderPort_ )
+                {
+                    return false;
+                }
+                if ( dataObject.useLogin_ != useLogin_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisProviderLoginPort_ != aisProviderLoginPort_ )
+                {
+                    return false;
+                }
+                if ( dataObject.canSendAISMessage_ != canSendAISMessage_ )
+                {
+                    return false;
+                }
+                if ( dataObject.textMessageHeader_ != textMessageHeader_ )
+                {
+                    return false;
+                }
+                if ( dataObject.urls_ != urls_ )
+                {
+                    return false;
+                }
+                if ( dataObject.udpPort_ != udpPort_ )
+                {
+                    return false;
+                }
+                if ( dataObject.connectionType_ != connectionType_ )
+                {
+                    return false;
+                }
+                if ( dataObject.enableRefreshAidToNavigationIn30sec_ != enableRefreshAidToNavigationIn30sec_ )
+                {
+                    return false;
+                }
+                if ( dataObject.enableAidToNavigationFromFile_ != enableAidToNavigationFromFile_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aidToNavigationHeader_ != aidToNavigationHeader_ )
+                {
+                    return false;
+                }
+                if ( dataObject.sendingMMSI_ != sendingMMSI_ )
+                {
+                    return false;
+                }
+                if ( dataObject.sourceUpdateRate_ != sourceUpdateRate_ )
+                {
+                    return false;
+                }
+                if ( dataObject.enableRefreshStayingStillTargetIn30sec_ != enableRefreshStayingStillTargetIn30sec_ )
+                {
+                    return false;
+                }
+                if ( dataObject.excludeSendAisBaseStation_ != excludeSendAisBaseStation_ )
+                {
+                    return false;
+                }
+                if ( dataObject.excludeSendAisA_ != excludeSendAisA_ )
+                {
+                    return false;
+                }
+                if ( dataObject.enableSendBaseStationAlarms_ != enableSendBaseStationAlarms_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisWebConfig_ != aisWebConfig_ )
+                {
+                    return false;
+                }
+                if ( dataObject.storeReceivedSentences_ != storeReceivedSentences_ )
+                {
+                    return false;
+                }
+                if ( dataObject.storeSentMessages_ != storeSentMessages_ )
+                {
+                    return false;
+                }
+                if ( dataObject.storeUnsentMessages_ != storeUnsentMessages_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        const FixedDBWideString<127>& UserName( ) const
+        {
+            return userName_;
+        }
+        void SetUserName( FixedDBWideString<127> userName )
+        {
+            userName_ = userName;
+        }
+        const FixedDBWideString<127>& Password( ) const
+        {
+            return password_;
+        }
+        void SetPassword( FixedDBWideString<127> password )
+        {
+            password_ = password;
+        }
+        double Latitude( ) const
+        {
+            return latitude_;
+        }
+        void SetLatitude( double latitude )
+        {
+            latitude_ = latitude;
+        }
+        double Longitude( ) const
+        {
+            return longitude_;
+        }
+        void SetLongitude( double longitude )
+        {
+            longitude_ = longitude;
+        }
+        const FixedDBWideString<127>& AisProviderLoginURL( ) const
+        {
+            return aisProviderLoginURL_;
+        }
+        void SetAisProviderLoginURL( FixedDBWideString<127> aisProviderLoginURL )
+        {
+            aisProviderLoginURL_ = aisProviderLoginURL;
+        }
+        const FixedDBWideString<32>& ComPort( ) const
+        {
+            return comPort_;
+        }
+        void SetComPort( FixedDBWideString<32> comPort )
+        {
+            comPort_ = comPort;
+        }
+        Int32 BaudRate( ) const
+        {
+            return baudRate_;
+        }
+        void SetBaudRate( Int32 baudRate )
+        {
+            baudRate_ = baudRate;
+        }
+        bool FilterByArea( ) const
+        {
+            return filterByArea_;
+        }
+        void SetFilterByArea( bool filterByArea )
+        {
+            filterByArea_ = filterByArea;
+        }
+        double UpperLeftCornerLatitude( ) const
+        {
+            return upperLeftCornerLatitude_;
+        }
+        void SetUpperLeftCornerLatitude( double upperLeftCornerLatitude )
+        {
+            upperLeftCornerLatitude_ = upperLeftCornerLatitude;
+        }
+        double UpperLeftCornerLongitude( ) const
+        {
+            return upperLeftCornerLongitude_;
+        }
+        void SetUpperLeftCornerLongitude( double upperLeftCornerLongitude )
+        {
+            upperLeftCornerLongitude_ = upperLeftCornerLongitude;
+        }
+        double BottomRightCornerLatitude( ) const
+        {
+            return bottomRightCornerLatitude_;
+        }
+        void SetBottomRightCornerLatitude( double bottomRightCornerLatitude )
+        {
+            bottomRightCornerLatitude_ = bottomRightCornerLatitude;
+        }
+        double BottomRightCornerLongitude( ) const
+        {
+            return bottomRightCornerLongitude_;
+        }
+        void SetBottomRightCornerLongitude( double bottomRightCornerLongitude )
+        {
+            bottomRightCornerLongitude_ = bottomRightCornerLongitude;
+        }
+        const FixedDBWideString<127>& AisProviderIPAddress( ) const
+        {
+            return aisProviderIPAddress_;
+        }
+        void SetAisProviderIPAddress( FixedDBWideString<127> aisProviderIPAddress )
+        {
+            aisProviderIPAddress_ = aisProviderIPAddress;
+        }
+        Int32 AisProviderPort( ) const
+        {
+            return aisProviderPort_;
+        }
+        void SetAisProviderPort( Int32 aisProviderPort )
+        {
+            aisProviderPort_ = aisProviderPort;
+        }
+        bool UseLogin( ) const
+        {
+            return useLogin_;
+        }
+        void SetUseLogin( bool useLogin )
+        {
+            useLogin_ = useLogin;
+        }
+        Int32 AisProviderLoginPort( ) const
+        {
+            return aisProviderLoginPort_;
+        }
+        void SetAisProviderLoginPort( Int32 aisProviderLoginPort )
+        {
+            aisProviderLoginPort_ = aisProviderLoginPort;
+        }
+        bool CanSendAISMessage( ) const
+        {
+            return canSendAISMessage_;
+        }
+        void SetCanSendAISMessage( bool canSendAISMessage )
+        {
+            canSendAISMessage_ = canSendAISMessage;
+        }
+        const WideString& TextMessageHeader( ) const
+        {
+            return textMessageHeader_;
+        }
+        void SetTextMessageHeader( const WideString& textMessageHeader )
+        {
+            textMessageHeader_ = textMessageHeader;
+        }
+        const WideString& Urls( ) const
+        {
+            return urls_;
+        }
+        void SetUrls( const WideString& urls )
+        {
+            urls_ = urls;
+        }
+        Int32 UdpPort( ) const
+        {
+            return udpPort_;
+        }
+        void SetUdpPort( Int32 udpPort )
+        {
+            udpPort_ = udpPort;
+        }
+        Data::AisDeviceConnectionType ConnectionType( ) const
+        {
+            return connectionType_;
+        }
+        void SetConnectionType( Data::AisDeviceConnectionType connectionType )
+        {
+            connectionType_ = connectionType;
+        }
+        bool EnableRefreshAidToNavigationIn30sec( ) const
+        {
+            return enableRefreshAidToNavigationIn30sec_;
+        }
+        void SetEnableRefreshAidToNavigationIn30sec( bool enableRefreshAidToNavigationIn30sec )
+        {
+            enableRefreshAidToNavigationIn30sec_ = enableRefreshAidToNavigationIn30sec;
+        }
+        bool EnableAidToNavigationFromFile( ) const
+        {
+            return enableAidToNavigationFromFile_;
+        }
+        void SetEnableAidToNavigationFromFile( bool enableAidToNavigationFromFile )
+        {
+            enableAidToNavigationFromFile_ = enableAidToNavigationFromFile;
+        }
+        const WideString& AidToNavigationHeader( ) const
+        {
+            return aidToNavigationHeader_;
+        }
+        void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
+        {
+            aidToNavigationHeader_ = aidToNavigationHeader;
+        }
+        bool SendingMMSI( ) const
+        {
+            return sendingMMSI_;
+        }
+        void SetSendingMMSI( bool sendingMMSI )
+        {
+            sendingMMSI_ = sendingMMSI;
+        }
+        Int32 SourceUpdateRate( ) const
+        {
+            return sourceUpdateRate_;
+        }
+        void SetSourceUpdateRate( Int32 sourceUpdateRate )
+        {
+            sourceUpdateRate_ = sourceUpdateRate;
+        }
+        bool EnableRefreshStayingStillTargetIn30sec( ) const
+        {
+            return enableRefreshStayingStillTargetIn30sec_;
+        }
+        void SetEnableRefreshStayingStillTargetIn30sec( bool enableRefreshStayingStillTargetIn30sec )
+        {
+            enableRefreshStayingStillTargetIn30sec_ = enableRefreshStayingStillTargetIn30sec;
+        }
+        const WideString& ExcludeSendAisBaseStation( ) const
+        {
+            return excludeSendAisBaseStation_;
+        }
+        void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
+        {
+            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
+        }
+        const WideString& ExcludeSendAisA( ) const
+        {
+            return excludeSendAisA_;
+        }
+        void SetExcludeSendAisA( const WideString& excludeSendAisA )
+        {
+            excludeSendAisA_ = excludeSendAisA;
+        }
+        bool EnableSendBaseStationAlarms( ) const
+        {
+            return enableSendBaseStationAlarms_;
+        }
+        void SetEnableSendBaseStationAlarms( bool enableSendBaseStationAlarms )
+        {
+            enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
+        }
+        const FixedDBWideString<127>& AisWebConfig( ) const
+        {
+            return aisWebConfig_;
+        }
+        void SetAisWebConfig( FixedDBWideString<127> aisWebConfig )
+        {
+            aisWebConfig_ = aisWebConfig;
+        }
+        bool StoreReceivedSentences( ) const
+        {
+            return storeReceivedSentences_;
+        }
+        void SetStoreReceivedSentences( bool storeReceivedSentences )
+        {
+            storeReceivedSentences_ = storeReceivedSentences;
+        }
+        bool StoreSentMessages( ) const
+        {
+            return storeSentMessages_;
+        }
+        void SetStoreSentMessages( bool storeSentMessages )
+        {
+            storeSentMessages_ = storeSentMessages;
+        }
+        bool StoreUnsentMessages( ) const
+        {
+            return storeUnsentMessages_;
+        }
+        void SetStoreUnsentMessages( bool storeUnsentMessages )
+        {
+            storeUnsentMessages_ = storeUnsentMessages;
+        }
+    };
+    class AisDeviceRawMessageData : public BaseData<Kind, Guid>
+    {
+    public:
+        using Base = BaseData<Kind, Guid>;
+        static constexpr Kind KIND = Kind::AisDeviceRawMessage;
+    private:
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        bool isSent_ = false;
+        FixedDBWideString<100> message_;
+    public:
+        AisDeviceRawMessageData( ) = default;
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write(rowVersion_);
+            destination.Write(aisDevice_);
+            destination.Write(timestamp_);
+            destination.Write(isSent_);
+            message_.WriteTo( destination );
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            source.Read(rowVersion_);
+            source.Read(aisDevice_);
+            source.Read(timestamp_);
+            source.Read(isSent_);
+            message_.ReadFrom( source );
+        }
+        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
+        {
+            return KIND;
+        }
+        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
+        {
+            if ( objectType == KIND )
+            {
+                return true;
+            }
+            return Base::IsOfType( objectType );
+        }
+        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
+        {
+            return std::make_shared<AisDeviceRawMessageData>( );
+        }
+        virtual void AssignTo( BaseData& target ) const override
+        {
+            Base::AssignTo( target );
+            auto& dest = static_cast<AisDeviceRawMessageData&>( target );
+        }
+        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
+        {
+            if ( Base::IsEqualTo( other ) )
+            {
+                const auto& dataObject = static_cast< const AisDeviceRawMessageData& >( other );
+                if ( dataObject.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if ( dataObject.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if ( dataObject.isSent_ != isSent_ )
+                {
+                    return false;
+                }
+                if ( dataObject.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        bool IsSent( ) const
+        {
+            return isSent_;
+        }
+        void SetIsSent( bool isSent )
+        {
+            isSent_ = isSent;
+        }
+        const FixedDBWideString<100>& Message( ) const
+        {
+            return message_;
+        }
+        void SetMessage( FixedDBWideString<100> message )
+        {
+            message_ = message;
+        }
+    };
+    class AisDeviceRawSentenceData : public BaseData<Kind, Guid>
+    {
+    public:
+        using Base = BaseData<Kind, Guid>;
+        static constexpr Kind KIND = Kind::AisDeviceRawSentence;
+    private:
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        WideString sentence_;
+        SQLLEN sentenceLength_ = SQL_NULL_DATA;
+    public:
+        AisDeviceRawSentenceData( ) = default;
+        template<IO::StreamWriter StreamT>
+        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteTo( destination );
+            destination.Write(rowVersion_);
+            destination.Write(aisDevice_);
+            destination.Write(timestamp_);
+            destination.Write(sentence_);
+        }
+        template<IO::StreamReader StreamT>
+        void ReadFrom( IO::BinaryReader<StreamT>& source )
+        {
+            Base::ReadFrom( source );
+            source.Read(rowVersion_);
+            source.Read(aisDevice_);
+            source.Read(timestamp_);
+            source.Read(sentence_);
+        }
+        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
+        {
+            return KIND;
+        }
+        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
+        {
+            if ( objectType == KIND )
+            {
+                return true;
+            }
+            return Base::IsOfType( objectType );
+        }
+        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
+        {
+            return std::make_shared<AisDeviceRawSentenceData>( );
+        }
+        virtual void AssignTo( BaseData& target ) const override
+        {
+            Base::AssignTo( target );
+            auto& dest = static_cast<AisDeviceRawSentenceData&>( target );
+        }
+        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
+        {
+            if ( Base::IsEqualTo( other ) )
+            {
+                const auto& dataObject = static_cast< const AisDeviceRawSentenceData& >( other );
+                if ( dataObject.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if ( dataObject.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if ( dataObject.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if ( dataObject.sentence_ != sentence_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        const WideString& Sentence( ) const
+        {
+            return sentence_;
+        }
+        void SetSentence( const WideString& sentence )
+        {
+            sentence_ = sentence;
         }
     };
     class AisMessageData : public BaseData<Kind, Guid>
@@ -105,7 +1227,7 @@ namespace Barrelman::Data
         static constexpr Kind KIND = Kind::AisMessage;
     private:
         Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
+        Guid aisDevice_;
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
@@ -117,7 +1239,7 @@ namespace Barrelman::Data
         {
             Base::WriteTo( destination );
             destination.Write(rowVersion_);
-            destination.Write(aisTransceiver_);
+            destination.Write(aisDevice_);
             destination.Write(receivedTimestamp_);
             destination.Write(messageSequenceNumber_);
             destination.Write(repeat_);
@@ -128,7 +1250,7 @@ namespace Barrelman::Data
         {
             Base::ReadFrom( source );
             source.Read(rowVersion_);
-            source.Read(aisTransceiver_);
+            source.Read(aisDevice_);
             source.Read(receivedTimestamp_);
             source.Read(messageSequenceNumber_);
             source.Read(repeat_);
@@ -164,7 +1286,7 @@ namespace Barrelman::Data
                 {
                     return false;
                 }
-                if ( dataObject.aisTransceiver_ != aisTransceiver_ )
+                if ( dataObject.aisDevice_ != aisDevice_ )
                 {
                     return false;
                 }
@@ -196,13 +1318,13 @@ namespace Barrelman::Data
         {
             rowVersion_ = rowVersion;
         }
-        const Guid& AisTransceiver( ) const
+        const Guid& AisDevice( ) const
         {
-            return aisTransceiver_;
+            return aisDevice_;
         }
-        void SetAisTransceiver( const Guid& aisTransceiver )
+        void SetAisDevice( const Guid& aisDevice )
         {
-            aisTransceiver_ = aisTransceiver;
+            aisDevice_ = aisDevice;
         }
         const DateTime& ReceivedTimestamp( ) const
         {
@@ -423,7 +1545,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -551,7 +1673,7 @@ namespace Barrelman::Data
         {
             return nameExtension_;
         }
-        void SetNameExtension( const WideString& nameExtension )
+        void SetNameExtension( FixedDBWideString<100> nameExtension )
         {
             nameExtension_ = nameExtension;
         }
@@ -675,7 +1797,7 @@ namespace Barrelman::Data
         {
             return text_;
         }
-        void SetText( const WideString& text )
+        void SetText( FixedDBWideString<100> text )
         {
             text_ = text;
         }
@@ -858,12 +1980,12 @@ namespace Barrelman::Data
         Int32 spare_ = 0;
         Int32 sequenceNumber1_ = 0;
         Guid mmsi1_;
-        Int32 sequenceNumber2_ = 0;
-        Guid mmsi2_;
-        Int32 sequenceNumber3_ = 0;
-        Guid mmsi3_;
-        Int32 sequenceNumber4_ = 0;
-        Guid mmsi4_;
+        DBInt32 sequenceNumber2_;
+        DBGuid mmsi2_;
+        DBInt32 sequenceNumber3_;
+        DBGuid mmsi3_;
+        DBInt32 sequenceNumber4_;
+        DBGuid mmsi4_;
     public:
         AisBinaryAcknowledgeMessageData( ) = default;
         template<IO::StreamWriter StreamT>
@@ -873,12 +1995,12 @@ namespace Barrelman::Data
             destination.Write(spare_);
             destination.Write(sequenceNumber1_);
             destination.Write(mmsi1_);
-            destination.Write(sequenceNumber2_);
-            destination.Write(mmsi2_);
-            destination.Write(sequenceNumber3_);
-            destination.Write(mmsi3_);
-            destination.Write(sequenceNumber4_);
-            destination.Write(mmsi4_);
+            sequenceNumber2_.WriteTo( destination );
+            mmsi2_.WriteTo( destination );
+            sequenceNumber3_.WriteTo( destination );
+            mmsi3_.WriteTo( destination );
+            sequenceNumber4_.WriteTo( destination );
+            mmsi4_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -887,12 +2009,12 @@ namespace Barrelman::Data
             source.Read(spare_);
             source.Read(sequenceNumber1_);
             source.Read(mmsi1_);
-            source.Read(sequenceNumber2_);
-            source.Read(mmsi2_);
-            source.Read(sequenceNumber3_);
-            source.Read(mmsi3_);
-            source.Read(sequenceNumber4_);
-            source.Read(mmsi4_);
+            sequenceNumber2_.ReadFrom( source );
+            mmsi2_.ReadFrom( source );
+            sequenceNumber3_.ReadFrom( source );
+            mmsi3_.ReadFrom( source );
+            sequenceNumber4_.ReadFrom( source );
+            mmsi4_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -984,51 +2106,51 @@ namespace Barrelman::Data
         {
             mmsi1_ = mmsi1;
         }
-        Int32 SequenceNumber2( ) const
+        const DBInt32& SequenceNumber2( ) const
         {
             return sequenceNumber2_;
         }
-        void SetSequenceNumber2( Int32 sequenceNumber2 )
+        void SetSequenceNumber2( const DBInt32& sequenceNumber2 )
         {
             sequenceNumber2_ = sequenceNumber2;
         }
-        const Guid& Mmsi2( ) const
+        const DBGuid& Mmsi2( ) const
         {
             return mmsi2_;
         }
-        void SetMmsi2( const Guid& mmsi2 )
+        void SetMmsi2( const DBGuid& mmsi2 )
         {
             mmsi2_ = mmsi2;
         }
-        Int32 SequenceNumber3( ) const
+        const DBInt32& SequenceNumber3( ) const
         {
             return sequenceNumber3_;
         }
-        void SetSequenceNumber3( Int32 sequenceNumber3 )
+        void SetSequenceNumber3( const DBInt32& sequenceNumber3 )
         {
             sequenceNumber3_ = sequenceNumber3;
         }
-        const Guid& Mmsi3( ) const
+        const DBGuid& Mmsi3( ) const
         {
             return mmsi3_;
         }
-        void SetMmsi3( const Guid& mmsi3 )
+        void SetMmsi3( const DBGuid& mmsi3 )
         {
             mmsi3_ = mmsi3;
         }
-        Int32 SequenceNumber4( ) const
+        const DBInt32& SequenceNumber4( ) const
         {
             return sequenceNumber4_;
         }
-        void SetSequenceNumber4( Int32 sequenceNumber4 )
+        void SetSequenceNumber4( const DBInt32& sequenceNumber4 )
         {
             sequenceNumber4_ = sequenceNumber4;
         }
-        const Guid& Mmsi4( ) const
+        const DBGuid& Mmsi4( ) const
         {
             return mmsi4_;
         }
-        void SetMmsi4( const Guid& mmsi4 )
+        void SetMmsi4( const DBGuid& mmsi4 )
         {
             mmsi4_ = mmsi4;
         }
@@ -1309,18 +2431,18 @@ namespace Barrelman::Data
         Int32 reservedSlots1_ = 0;
         Int32 timeout1_ = 0;
         Int32 increment1_ = 0;
-        Int32 offset2_ = 0;
-        Int32 reservedSlots2_ = 0;
-        Int32 timeout2_ = 0;
-        Int32 increment2_ = 0;
-        Int32 offset3_ = 0;
-        Int32 reservedSlots3_ = 0;
-        Int32 timeout3_ = 0;
-        Int32 increment3_ = 0;
-        Int32 offset4_ = 0;
-        Int32 reservedSlots4_ = 0;
-        Int32 timeout4_ = 0;
-        Int32 increment4_ = 0;
+        DBInt32 offset2_;
+        DBInt32 reservedSlots2_;
+        DBInt32 timeout2_;
+        DBInt32 increment2_;
+        DBInt32 offset3_;
+        DBInt32 reservedSlots3_;
+        DBInt32 timeout3_;
+        DBInt32 increment3_;
+        DBInt32 offset4_;
+        DBInt32 reservedSlots4_;
+        DBInt32 timeout4_;
+        DBInt32 increment4_;
     public:
         AisDataLinkManagementMessageData( ) = default;
         template<IO::StreamWriter StreamT>
@@ -1332,18 +2454,18 @@ namespace Barrelman::Data
             destination.Write(reservedSlots1_);
             destination.Write(timeout1_);
             destination.Write(increment1_);
-            destination.Write(offset2_);
-            destination.Write(reservedSlots2_);
-            destination.Write(timeout2_);
-            destination.Write(increment2_);
-            destination.Write(offset3_);
-            destination.Write(reservedSlots3_);
-            destination.Write(timeout3_);
-            destination.Write(increment3_);
-            destination.Write(offset4_);
-            destination.Write(reservedSlots4_);
-            destination.Write(timeout4_);
-            destination.Write(increment4_);
+            offset2_.WriteTo( destination );
+            reservedSlots2_.WriteTo( destination );
+            timeout2_.WriteTo( destination );
+            increment2_.WriteTo( destination );
+            offset3_.WriteTo( destination );
+            reservedSlots3_.WriteTo( destination );
+            timeout3_.WriteTo( destination );
+            increment3_.WriteTo( destination );
+            offset4_.WriteTo( destination );
+            reservedSlots4_.WriteTo( destination );
+            timeout4_.WriteTo( destination );
+            increment4_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -1354,18 +2476,18 @@ namespace Barrelman::Data
             source.Read(reservedSlots1_);
             source.Read(timeout1_);
             source.Read(increment1_);
-            source.Read(offset2_);
-            source.Read(reservedSlots2_);
-            source.Read(timeout2_);
-            source.Read(increment2_);
-            source.Read(offset3_);
-            source.Read(reservedSlots3_);
-            source.Read(timeout3_);
-            source.Read(increment3_);
-            source.Read(offset4_);
-            source.Read(reservedSlots4_);
-            source.Read(timeout4_);
-            source.Read(increment4_);
+            offset2_.ReadFrom( source );
+            reservedSlots2_.ReadFrom( source );
+            timeout2_.ReadFrom( source );
+            increment2_.ReadFrom( source );
+            offset3_.ReadFrom( source );
+            reservedSlots3_.ReadFrom( source );
+            timeout3_.ReadFrom( source );
+            increment3_.ReadFrom( source );
+            offset4_.ReadFrom( source );
+            reservedSlots4_.ReadFrom( source );
+            timeout4_.ReadFrom( source );
+            increment4_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -1505,99 +2627,99 @@ namespace Barrelman::Data
         {
             increment1_ = increment1;
         }
-        Int32 Offset2( ) const
+        const DBInt32& Offset2( ) const
         {
             return offset2_;
         }
-        void SetOffset2( Int32 offset2 )
+        void SetOffset2( const DBInt32& offset2 )
         {
             offset2_ = offset2;
         }
-        Int32 ReservedSlots2( ) const
+        const DBInt32& ReservedSlots2( ) const
         {
             return reservedSlots2_;
         }
-        void SetReservedSlots2( Int32 reservedSlots2 )
+        void SetReservedSlots2( const DBInt32& reservedSlots2 )
         {
             reservedSlots2_ = reservedSlots2;
         }
-        Int32 Timeout2( ) const
+        const DBInt32& Timeout2( ) const
         {
             return timeout2_;
         }
-        void SetTimeout2( Int32 timeout2 )
+        void SetTimeout2( const DBInt32& timeout2 )
         {
             timeout2_ = timeout2;
         }
-        Int32 Increment2( ) const
+        const DBInt32& Increment2( ) const
         {
             return increment2_;
         }
-        void SetIncrement2( Int32 increment2 )
+        void SetIncrement2( const DBInt32& increment2 )
         {
             increment2_ = increment2;
         }
-        Int32 Offset3( ) const
+        const DBInt32& Offset3( ) const
         {
             return offset3_;
         }
-        void SetOffset3( Int32 offset3 )
+        void SetOffset3( const DBInt32& offset3 )
         {
             offset3_ = offset3;
         }
-        Int32 ReservedSlots3( ) const
+        const DBInt32& ReservedSlots3( ) const
         {
             return reservedSlots3_;
         }
-        void SetReservedSlots3( Int32 reservedSlots3 )
+        void SetReservedSlots3( const DBInt32& reservedSlots3 )
         {
             reservedSlots3_ = reservedSlots3;
         }
-        Int32 Timeout3( ) const
+        const DBInt32& Timeout3( ) const
         {
             return timeout3_;
         }
-        void SetTimeout3( Int32 timeout3 )
+        void SetTimeout3( const DBInt32& timeout3 )
         {
             timeout3_ = timeout3;
         }
-        Int32 Increment3( ) const
+        const DBInt32& Increment3( ) const
         {
             return increment3_;
         }
-        void SetIncrement3( Int32 increment3 )
+        void SetIncrement3( const DBInt32& increment3 )
         {
             increment3_ = increment3;
         }
-        Int32 Offset4( ) const
+        const DBInt32& Offset4( ) const
         {
             return offset4_;
         }
-        void SetOffset4( Int32 offset4 )
+        void SetOffset4( const DBInt32& offset4 )
         {
             offset4_ = offset4;
         }
-        Int32 ReservedSlots4( ) const
+        const DBInt32& ReservedSlots4( ) const
         {
             return reservedSlots4_;
         }
-        void SetReservedSlots4( Int32 reservedSlots4 )
+        void SetReservedSlots4( const DBInt32& reservedSlots4 )
         {
             reservedSlots4_ = reservedSlots4;
         }
-        Int32 Timeout4( ) const
+        const DBInt32& Timeout4( ) const
         {
             return timeout4_;
         }
-        void SetTimeout4( Int32 timeout4 )
+        void SetTimeout4( const DBInt32& timeout4 )
         {
             timeout4_ = timeout4;
         }
-        Int32 Increment4( ) const
+        const DBInt32& Increment4( ) const
         {
             return increment4_;
         }
-        void SetIncrement4( Int32 increment4 )
+        void SetIncrement4( const DBInt32& increment4 )
         {
             increment4_ = increment4;
         }
@@ -1962,7 +3084,7 @@ namespace Barrelman::Data
         Int32 firstSlotOffset_ = 0;
         DBEnum<Data::AisMessageType> secondMessageType_;
         DBInt32 secondSlotOffset_;
-        Guid secondStationInterrogationMmsi_;
+        DBGuid secondStationInterrogationMmsi_;
         DBEnum<Data::AisMessageType> secondStationFirstMessageType_;
         DBInt32 secondStationFirstSlotOffset_;
     public:
@@ -1976,7 +3098,7 @@ namespace Barrelman::Data
             destination.Write(firstSlotOffset_);
             secondMessageType_.WriteTo( destination );
             secondSlotOffset_.WriteTo( destination );
-            destination.Write(secondStationInterrogationMmsi_);
+            secondStationInterrogationMmsi_.WriteTo( destination );
             secondStationFirstMessageType_.WriteTo( destination );
             secondStationFirstSlotOffset_.WriteTo( destination );
         }
@@ -1989,7 +3111,7 @@ namespace Barrelman::Data
             source.Read(firstSlotOffset_);
             secondMessageType_.ReadFrom( source );
             secondSlotOffset_.ReadFrom( source );
-            source.Read(secondStationInterrogationMmsi_);
+            secondStationInterrogationMmsi_.ReadFrom( source );
             secondStationFirstMessageType_.ReadFrom( source );
             secondStationFirstSlotOffset_.ReadFrom( source );
         }
@@ -2095,11 +3217,11 @@ namespace Barrelman::Data
         {
             secondSlotOffset_ = secondSlotOffset;
         }
-        const Guid& SecondStationInterrogationMmsi( ) const
+        const DBGuid& SecondStationInterrogationMmsi( ) const
         {
             return secondStationInterrogationMmsi_;
         }
-        void SetSecondStationInterrogationMmsi( const Guid& secondStationInterrogationMmsi )
+        void SetSecondStationInterrogationMmsi( const DBGuid& secondStationInterrogationMmsi )
         {
             secondStationInterrogationMmsi_ = secondStationInterrogationMmsi;
         }
@@ -2704,12 +3826,12 @@ namespace Barrelman::Data
         Int32 spare_ = 0;
         Int32 sequenceNumber1_ = 0;
         Guid mmsi1_;
-        Int32 sequenceNumber2_ = 0;
-        Guid mmsi2_;
-        Int32 sequenceNumber3_ = 0;
-        Guid mmsi3_;
-        Int32 sequenceNumber4_ = 0;
-        Guid mmsi4_;
+        DBInt32 sequenceNumber2_;
+        DBGuid mmsi2_;
+        DBInt32 sequenceNumber3_;
+        DBGuid mmsi3_;
+        DBInt32 sequenceNumber4_;
+        DBGuid mmsi4_;
     public:
         AisSafetyRelatedAcknowledgmentMessageData( ) = default;
         template<IO::StreamWriter StreamT>
@@ -2719,12 +3841,12 @@ namespace Barrelman::Data
             destination.Write(spare_);
             destination.Write(sequenceNumber1_);
             destination.Write(mmsi1_);
-            destination.Write(sequenceNumber2_);
-            destination.Write(mmsi2_);
-            destination.Write(sequenceNumber3_);
-            destination.Write(mmsi3_);
-            destination.Write(sequenceNumber4_);
-            destination.Write(mmsi4_);
+            sequenceNumber2_.WriteTo( destination );
+            mmsi2_.WriteTo( destination );
+            sequenceNumber3_.WriteTo( destination );
+            mmsi3_.WriteTo( destination );
+            sequenceNumber4_.WriteTo( destination );
+            mmsi4_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -2733,12 +3855,12 @@ namespace Barrelman::Data
             source.Read(spare_);
             source.Read(sequenceNumber1_);
             source.Read(mmsi1_);
-            source.Read(sequenceNumber2_);
-            source.Read(mmsi2_);
-            source.Read(sequenceNumber3_);
-            source.Read(mmsi3_);
-            source.Read(sequenceNumber4_);
-            source.Read(mmsi4_);
+            sequenceNumber2_.ReadFrom( source );
+            mmsi2_.ReadFrom( source );
+            sequenceNumber3_.ReadFrom( source );
+            mmsi3_.ReadFrom( source );
+            sequenceNumber4_.ReadFrom( source );
+            mmsi4_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -2830,51 +3952,51 @@ namespace Barrelman::Data
         {
             mmsi1_ = mmsi1;
         }
-        Int32 SequenceNumber2( ) const
+        const DBInt32& SequenceNumber2( ) const
         {
             return sequenceNumber2_;
         }
-        void SetSequenceNumber2( Int32 sequenceNumber2 )
+        void SetSequenceNumber2( const DBInt32& sequenceNumber2 )
         {
             sequenceNumber2_ = sequenceNumber2;
         }
-        const Guid& Mmsi2( ) const
+        const DBGuid& Mmsi2( ) const
         {
             return mmsi2_;
         }
-        void SetMmsi2( const Guid& mmsi2 )
+        void SetMmsi2( const DBGuid& mmsi2 )
         {
             mmsi2_ = mmsi2;
         }
-        Int32 SequenceNumber3( ) const
+        const DBInt32& SequenceNumber3( ) const
         {
             return sequenceNumber3_;
         }
-        void SetSequenceNumber3( Int32 sequenceNumber3 )
+        void SetSequenceNumber3( const DBInt32& sequenceNumber3 )
         {
             sequenceNumber3_ = sequenceNumber3;
         }
-        const Guid& Mmsi3( ) const
+        const DBGuid& Mmsi3( ) const
         {
             return mmsi3_;
         }
-        void SetMmsi3( const Guid& mmsi3 )
+        void SetMmsi3( const DBGuid& mmsi3 )
         {
             mmsi3_ = mmsi3;
         }
-        Int32 SequenceNumber4( ) const
+        const DBInt32& SequenceNumber4( ) const
         {
             return sequenceNumber4_;
         }
-        void SetSequenceNumber4( Int32 sequenceNumber4 )
+        void SetSequenceNumber4( const DBInt32& sequenceNumber4 )
         {
             sequenceNumber4_ = sequenceNumber4;
         }
-        const Guid& Mmsi4( ) const
+        const DBGuid& Mmsi4( ) const
         {
             return mmsi4_;
         }
-        void SetMmsi4( const Guid& mmsi4 )
+        void SetMmsi4( const DBGuid& mmsi4 )
         {
             mmsi4_ = mmsi4;
         }
@@ -3680,7 +4802,7 @@ namespace Barrelman::Data
         {
             return destination_;
         }
-        void SetDestination( const WideString& destination )
+        void SetDestination( FixedDBWideString<100> destination )
         {
             destination_ = destination;
         }
@@ -3859,7 +4981,7 @@ namespace Barrelman::Data
         Int32 dimensionToStern_ = 0;
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
-        Guid mothershipMmsi_;
+        DBGuid mothershipMmsi_;
         Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
         Int32 spare_ = 0;
     public:
@@ -3877,7 +4999,7 @@ namespace Barrelman::Data
             destination.Write(dimensionToStern_);
             destination.Write(dimensionToPort_);
             destination.Write(dimensionToStarboard_);
-            destination.Write(mothershipMmsi_);
+            mothershipMmsi_.WriteTo( destination );
             destination.Write(positionFixType_);
             destination.Write(spare_);
         }
@@ -3894,7 +5016,7 @@ namespace Barrelman::Data
             source.Read(dimensionToStern_);
             source.Read(dimensionToPort_);
             source.Read(dimensionToStarboard_);
-            source.Read(mothershipMmsi_);
+            mothershipMmsi_.ReadFrom( source );
             source.Read(positionFixType_);
             source.Read(spare_);
         }
@@ -3988,7 +5110,7 @@ namespace Barrelman::Data
         {
             return vendorId_;
         }
-        void SetVendorId( const WideString& vendorId )
+        void SetVendorId( FixedDBWideString<100> vendorId )
         {
             vendorId_ = vendorId;
         }
@@ -4048,11 +5170,11 @@ namespace Barrelman::Data
         {
             dimensionToStarboard_ = dimensionToStarboard;
         }
-        const Guid& MothershipMmsi( ) const
+        const DBGuid& MothershipMmsi( ) const
         {
             return mothershipMmsi_;
         }
-        void SetMothershipMmsi( const Guid& mothershipMmsi )
+        void SetMothershipMmsi( const DBGuid& mothershipMmsi )
         {
             mothershipMmsi_ = mothershipMmsi;
         }
@@ -4336,1128 +5458,6 @@ namespace Barrelman::Data
             radioStatus_ = radioStatus;
         }
     };
-    class AisTransceiverCommandData : public BaseData<Kind, Guid>
-    {
-    public:
-        using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::AisTransceiverCommand;
-    private:
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
-        Guid deviceCommandSourceId_;
-        Guid reply_;
-    public:
-        AisTransceiverCommandData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            destination.Write(rowVersion_);
-            destination.Write(aisTransceiver_);
-            destination.Write(timestamp_);
-            destination.Write(deviceCommandSourceType_);
-            destination.Write(deviceCommandSourceId_);
-            destination.Write(reply_);
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            source.Read(rowVersion_);
-            source.Read(aisTransceiver_);
-            source.Read(timestamp_);
-            source.Read(deviceCommandSourceType_);
-            source.Read(deviceCommandSourceId_);
-            source.Read(reply_);
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<AisTransceiverCommandData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverCommandData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const AisTransceiverCommandData& >( other );
-                if ( dataObject.rowVersion_ != rowVersion_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisTransceiver_ != aisTransceiver_ )
-                {
-                    return false;
-                }
-                if ( dataObject.timestamp_ != timestamp_ )
-                {
-                    return false;
-                }
-                if ( dataObject.deviceCommandSourceType_ != deviceCommandSourceType_ )
-                {
-                    return false;
-                }
-                if ( dataObject.deviceCommandSourceId_ != deviceCommandSourceId_ )
-                {
-                    return false;
-                }
-                if ( dataObject.reply_ != reply_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
-        {
-            return deviceCommandSourceType_;
-        }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
-        {
-            deviceCommandSourceType_ = deviceCommandSourceType;
-        }
-        const Guid& DeviceCommandSourceId( ) const
-        {
-            return deviceCommandSourceId_;
-        }
-        void SetDeviceCommandSourceId( const Guid& deviceCommandSourceId )
-        {
-            deviceCommandSourceId_ = deviceCommandSourceId;
-        }
-        const Guid& Reply( ) const
-        {
-            return reply_;
-        }
-        void SetReply( const Guid& reply )
-        {
-            reply_ = reply;
-        }
-    };
-    class AisTransceiverCommandReplyData : public BaseData<Kind, Guid>
-    {
-    public:
-        using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::AisTransceiverCommandReply;
-    private:
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
-        WideString message_;
-        SQLLEN messageLength_ = SQL_NULL_DATA;
-    public:
-        AisTransceiverCommandReplyData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            destination.Write(rowVersion_);
-            destination.Write(aisTransceiver_);
-            destination.Write(timestamp_);
-            destination.Write(command_);
-            destination.Write(status_);
-            destination.Write(message_);
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            source.Read(rowVersion_);
-            source.Read(aisTransceiver_);
-            source.Read(timestamp_);
-            source.Read(command_);
-            source.Read(status_);
-            source.Read(message_);
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<AisTransceiverCommandReplyData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverCommandReplyData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const AisTransceiverCommandReplyData& >( other );
-                if ( dataObject.rowVersion_ != rowVersion_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisTransceiver_ != aisTransceiver_ )
-                {
-                    return false;
-                }
-                if ( dataObject.timestamp_ != timestamp_ )
-                {
-                    return false;
-                }
-                if ( dataObject.command_ != command_ )
-                {
-                    return false;
-                }
-                if ( dataObject.status_ != status_ )
-                {
-                    return false;
-                }
-                if ( dataObject.message_ != message_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        const Guid& Command( ) const
-        {
-            return command_;
-        }
-        void SetCommand( const Guid& command )
-        {
-            command_ = command;
-        }
-        Data::DeviceCommandReplyStatus Status( ) const
-        {
-            return status_;
-        }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
-        {
-            status_ = status;
-        }
-        const WideString& Message( ) const
-        {
-            return message_;
-        }
-        void SetMessage( const WideString& message )
-        {
-            message_ = message;
-        }
-    };
-    class AisTransceiverConfigurationData : public BaseData<Kind, Guid>
-    {
-    public:
-        using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::AisTransceiverConfiguration;
-    private:
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        FixedDBWideString<127> userName_;
-        FixedDBWideString<127> password_;
-        double latitude_ = 0.0;
-        double longitude_ = 0.0;
-        FixedDBWideString<127> aisProviderLoginURL_;
-        FixedDBWideString<32> comPort_;
-        Int32 baudRate_ = 0;
-        bool filterByArea_ = false;
-        double upperLeftCornerLatitude_ = 0.0;
-        double upperLeftCornerLongitude_ = 0.0;
-        double bottomRightCornerLatitude_ = 0.0;
-        double bottomRightCornerLongitude_ = 0.0;
-        FixedDBWideString<127> aisProviderIPAddress_;
-        Int32 aisProviderPort_ = 0;
-        bool useLogin_ = false;
-        Int32 aisProviderLoginPort_ = 0;
-        bool canSendAISMessage_ = false;
-        WideString textMessageHeader_;
-        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
-        WideString urls_;
-        SQLLEN urlsLength_ = SQL_NULL_DATA;
-        Int32 udpPort_ = 0;
-        Data::AisTransceiverConnectionType connectionType_ = Data::AisTransceiverConnectionType::Unknown;
-        bool enableRefreshAidToNavigationIn30sec_ = false;
-        bool enableAidToNavigationFromFile_ = false;
-        WideString aidToNavigationHeader_;
-        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
-        bool sendingMMSI_ = false;
-        Int32 sourceUpdateRate_ = 0;
-        bool enableRefreshStayingStillTargetIn30sec_ = false;
-        WideString excludeSendAisBaseStation_;
-        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
-        WideString excludeSendAisA_;
-        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
-        bool enableSendBaseStationAlarms_ = false;
-        FixedDBWideString<127> aisWebConfig_;
-        bool storeReceivedSentences_ = false;
-        bool storeSentMessages_ = false;
-        bool storeUnsentMessages_ = false;
-    public:
-        AisTransceiverConfigurationData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            destination.Write(rowVersion_);
-            destination.Write(aisTransceiver_);
-            destination.Write(timestamp_);
-            userName_.WriteTo( destination );
-            password_.WriteTo( destination );
-            destination.Write(latitude_);
-            destination.Write(longitude_);
-            aisProviderLoginURL_.WriteTo( destination );
-            comPort_.WriteTo( destination );
-            destination.Write(baudRate_);
-            destination.Write(filterByArea_);
-            destination.Write(upperLeftCornerLatitude_);
-            destination.Write(upperLeftCornerLongitude_);
-            destination.Write(bottomRightCornerLatitude_);
-            destination.Write(bottomRightCornerLongitude_);
-            aisProviderIPAddress_.WriteTo( destination );
-            destination.Write(aisProviderPort_);
-            destination.Write(useLogin_);
-            destination.Write(aisProviderLoginPort_);
-            destination.Write(canSendAISMessage_);
-            destination.Write(textMessageHeader_);
-            destination.Write(urls_);
-            destination.Write(udpPort_);
-            destination.Write(connectionType_);
-            destination.Write(enableRefreshAidToNavigationIn30sec_);
-            destination.Write(enableAidToNavigationFromFile_);
-            destination.Write(aidToNavigationHeader_);
-            destination.Write(sendingMMSI_);
-            destination.Write(sourceUpdateRate_);
-            destination.Write(enableRefreshStayingStillTargetIn30sec_);
-            destination.Write(excludeSendAisBaseStation_);
-            destination.Write(excludeSendAisA_);
-            destination.Write(enableSendBaseStationAlarms_);
-            aisWebConfig_.WriteTo( destination );
-            destination.Write(storeReceivedSentences_);
-            destination.Write(storeSentMessages_);
-            destination.Write(storeUnsentMessages_);
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            source.Read(rowVersion_);
-            source.Read(aisTransceiver_);
-            source.Read(timestamp_);
-            userName_.ReadFrom( source );
-            password_.ReadFrom( source );
-            source.Read(latitude_);
-            source.Read(longitude_);
-            aisProviderLoginURL_.ReadFrom( source );
-            comPort_.ReadFrom( source );
-            source.Read(baudRate_);
-            source.Read(filterByArea_);
-            source.Read(upperLeftCornerLatitude_);
-            source.Read(upperLeftCornerLongitude_);
-            source.Read(bottomRightCornerLatitude_);
-            source.Read(bottomRightCornerLongitude_);
-            aisProviderIPAddress_.ReadFrom( source );
-            source.Read(aisProviderPort_);
-            source.Read(useLogin_);
-            source.Read(aisProviderLoginPort_);
-            source.Read(canSendAISMessage_);
-            source.Read(textMessageHeader_);
-            source.Read(urls_);
-            source.Read(udpPort_);
-            source.Read(connectionType_);
-            source.Read(enableRefreshAidToNavigationIn30sec_);
-            source.Read(enableAidToNavigationFromFile_);
-            source.Read(aidToNavigationHeader_);
-            source.Read(sendingMMSI_);
-            source.Read(sourceUpdateRate_);
-            source.Read(enableRefreshStayingStillTargetIn30sec_);
-            source.Read(excludeSendAisBaseStation_);
-            source.Read(excludeSendAisA_);
-            source.Read(enableSendBaseStationAlarms_);
-            aisWebConfig_.ReadFrom( source );
-            source.Read(storeReceivedSentences_);
-            source.Read(storeSentMessages_);
-            source.Read(storeUnsentMessages_);
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<AisTransceiverConfigurationData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverConfigurationData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const AisTransceiverConfigurationData& >( other );
-                if ( dataObject.rowVersion_ != rowVersion_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisTransceiver_ != aisTransceiver_ )
-                {
-                    return false;
-                }
-                if ( dataObject.timestamp_ != timestamp_ )
-                {
-                    return false;
-                }
-                if ( dataObject.userName_ != userName_ )
-                {
-                    return false;
-                }
-                if ( dataObject.password_ != password_ )
-                {
-                    return false;
-                }
-                if ( dataObject.latitude_ != latitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.longitude_ != longitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderLoginURL_ != aisProviderLoginURL_ )
-                {
-                    return false;
-                }
-                if ( dataObject.comPort_ != comPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.baudRate_ != baudRate_ )
-                {
-                    return false;
-                }
-                if ( dataObject.filterByArea_ != filterByArea_ )
-                {
-                    return false;
-                }
-                if ( dataObject.upperLeftCornerLatitude_ != upperLeftCornerLatitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.upperLeftCornerLongitude_ != upperLeftCornerLongitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.bottomRightCornerLatitude_ != bottomRightCornerLatitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.bottomRightCornerLongitude_ != bottomRightCornerLongitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderIPAddress_ != aisProviderIPAddress_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderPort_ != aisProviderPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.useLogin_ != useLogin_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderLoginPort_ != aisProviderLoginPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.canSendAISMessage_ != canSendAISMessage_ )
-                {
-                    return false;
-                }
-                if ( dataObject.textMessageHeader_ != textMessageHeader_ )
-                {
-                    return false;
-                }
-                if ( dataObject.urls_ != urls_ )
-                {
-                    return false;
-                }
-                if ( dataObject.udpPort_ != udpPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.connectionType_ != connectionType_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableRefreshAidToNavigationIn30sec_ != enableRefreshAidToNavigationIn30sec_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableAidToNavigationFromFile_ != enableAidToNavigationFromFile_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aidToNavigationHeader_ != aidToNavigationHeader_ )
-                {
-                    return false;
-                }
-                if ( dataObject.sendingMMSI_ != sendingMMSI_ )
-                {
-                    return false;
-                }
-                if ( dataObject.sourceUpdateRate_ != sourceUpdateRate_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableRefreshStayingStillTargetIn30sec_ != enableRefreshStayingStillTargetIn30sec_ )
-                {
-                    return false;
-                }
-                if ( dataObject.excludeSendAisBaseStation_ != excludeSendAisBaseStation_ )
-                {
-                    return false;
-                }
-                if ( dataObject.excludeSendAisA_ != excludeSendAisA_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableSendBaseStationAlarms_ != enableSendBaseStationAlarms_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisWebConfig_ != aisWebConfig_ )
-                {
-                    return false;
-                }
-                if ( dataObject.storeReceivedSentences_ != storeReceivedSentences_ )
-                {
-                    return false;
-                }
-                if ( dataObject.storeSentMessages_ != storeSentMessages_ )
-                {
-                    return false;
-                }
-                if ( dataObject.storeUnsentMessages_ != storeUnsentMessages_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        const FixedDBWideString<127>& UserName( ) const
-        {
-            return userName_;
-        }
-        void SetUserName( const WideString& userName )
-        {
-            userName_ = userName;
-        }
-        const FixedDBWideString<127>& Password( ) const
-        {
-            return password_;
-        }
-        void SetPassword( const WideString& password )
-        {
-            password_ = password;
-        }
-        double Latitude( ) const
-        {
-            return latitude_;
-        }
-        void SetLatitude( double latitude )
-        {
-            latitude_ = latitude;
-        }
-        double Longitude( ) const
-        {
-            return longitude_;
-        }
-        void SetLongitude( double longitude )
-        {
-            longitude_ = longitude;
-        }
-        const FixedDBWideString<127>& AisProviderLoginURL( ) const
-        {
-            return aisProviderLoginURL_;
-        }
-        void SetAisProviderLoginURL( const WideString& aisProviderLoginURL )
-        {
-            aisProviderLoginURL_ = aisProviderLoginURL;
-        }
-        const FixedDBWideString<32>& ComPort( ) const
-        {
-            return comPort_;
-        }
-        void SetComPort( const WideString& comPort )
-        {
-            comPort_ = comPort;
-        }
-        Int32 BaudRate( ) const
-        {
-            return baudRate_;
-        }
-        void SetBaudRate( Int32 baudRate )
-        {
-            baudRate_ = baudRate;
-        }
-        bool FilterByArea( ) const
-        {
-            return filterByArea_;
-        }
-        void SetFilterByArea( bool filterByArea )
-        {
-            filterByArea_ = filterByArea;
-        }
-        double UpperLeftCornerLatitude( ) const
-        {
-            return upperLeftCornerLatitude_;
-        }
-        void SetUpperLeftCornerLatitude( double upperLeftCornerLatitude )
-        {
-            upperLeftCornerLatitude_ = upperLeftCornerLatitude;
-        }
-        double UpperLeftCornerLongitude( ) const
-        {
-            return upperLeftCornerLongitude_;
-        }
-        void SetUpperLeftCornerLongitude( double upperLeftCornerLongitude )
-        {
-            upperLeftCornerLongitude_ = upperLeftCornerLongitude;
-        }
-        double BottomRightCornerLatitude( ) const
-        {
-            return bottomRightCornerLatitude_;
-        }
-        void SetBottomRightCornerLatitude( double bottomRightCornerLatitude )
-        {
-            bottomRightCornerLatitude_ = bottomRightCornerLatitude;
-        }
-        double BottomRightCornerLongitude( ) const
-        {
-            return bottomRightCornerLongitude_;
-        }
-        void SetBottomRightCornerLongitude( double bottomRightCornerLongitude )
-        {
-            bottomRightCornerLongitude_ = bottomRightCornerLongitude;
-        }
-        const FixedDBWideString<127>& AisProviderIPAddress( ) const
-        {
-            return aisProviderIPAddress_;
-        }
-        void SetAisProviderIPAddress( const WideString& aisProviderIPAddress )
-        {
-            aisProviderIPAddress_ = aisProviderIPAddress;
-        }
-        Int32 AisProviderPort( ) const
-        {
-            return aisProviderPort_;
-        }
-        void SetAisProviderPort( Int32 aisProviderPort )
-        {
-            aisProviderPort_ = aisProviderPort;
-        }
-        bool UseLogin( ) const
-        {
-            return useLogin_;
-        }
-        void SetUseLogin( bool useLogin )
-        {
-            useLogin_ = useLogin;
-        }
-        Int32 AisProviderLoginPort( ) const
-        {
-            return aisProviderLoginPort_;
-        }
-        void SetAisProviderLoginPort( Int32 aisProviderLoginPort )
-        {
-            aisProviderLoginPort_ = aisProviderLoginPort;
-        }
-        bool CanSendAISMessage( ) const
-        {
-            return canSendAISMessage_;
-        }
-        void SetCanSendAISMessage( bool canSendAISMessage )
-        {
-            canSendAISMessage_ = canSendAISMessage;
-        }
-        const WideString& TextMessageHeader( ) const
-        {
-            return textMessageHeader_;
-        }
-        void SetTextMessageHeader( const WideString& textMessageHeader )
-        {
-            textMessageHeader_ = textMessageHeader;
-        }
-        const WideString& Urls( ) const
-        {
-            return urls_;
-        }
-        void SetUrls( const WideString& urls )
-        {
-            urls_ = urls;
-        }
-        Int32 UdpPort( ) const
-        {
-            return udpPort_;
-        }
-        void SetUdpPort( Int32 udpPort )
-        {
-            udpPort_ = udpPort;
-        }
-        Data::AisTransceiverConnectionType ConnectionType( ) const
-        {
-            return connectionType_;
-        }
-        void SetConnectionType( Data::AisTransceiverConnectionType connectionType )
-        {
-            connectionType_ = connectionType;
-        }
-        bool EnableRefreshAidToNavigationIn30sec( ) const
-        {
-            return enableRefreshAidToNavigationIn30sec_;
-        }
-        void SetEnableRefreshAidToNavigationIn30sec( bool enableRefreshAidToNavigationIn30sec )
-        {
-            enableRefreshAidToNavigationIn30sec_ = enableRefreshAidToNavigationIn30sec;
-        }
-        bool EnableAidToNavigationFromFile( ) const
-        {
-            return enableAidToNavigationFromFile_;
-        }
-        void SetEnableAidToNavigationFromFile( bool enableAidToNavigationFromFile )
-        {
-            enableAidToNavigationFromFile_ = enableAidToNavigationFromFile;
-        }
-        const WideString& AidToNavigationHeader( ) const
-        {
-            return aidToNavigationHeader_;
-        }
-        void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
-        {
-            aidToNavigationHeader_ = aidToNavigationHeader;
-        }
-        bool SendingMMSI( ) const
-        {
-            return sendingMMSI_;
-        }
-        void SetSendingMMSI( bool sendingMMSI )
-        {
-            sendingMMSI_ = sendingMMSI;
-        }
-        Int32 SourceUpdateRate( ) const
-        {
-            return sourceUpdateRate_;
-        }
-        void SetSourceUpdateRate( Int32 sourceUpdateRate )
-        {
-            sourceUpdateRate_ = sourceUpdateRate;
-        }
-        bool EnableRefreshStayingStillTargetIn30sec( ) const
-        {
-            return enableRefreshStayingStillTargetIn30sec_;
-        }
-        void SetEnableRefreshStayingStillTargetIn30sec( bool enableRefreshStayingStillTargetIn30sec )
-        {
-            enableRefreshStayingStillTargetIn30sec_ = enableRefreshStayingStillTargetIn30sec;
-        }
-        const WideString& ExcludeSendAisBaseStation( ) const
-        {
-            return excludeSendAisBaseStation_;
-        }
-        void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
-        {
-            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
-        }
-        const WideString& ExcludeSendAisA( ) const
-        {
-            return excludeSendAisA_;
-        }
-        void SetExcludeSendAisA( const WideString& excludeSendAisA )
-        {
-            excludeSendAisA_ = excludeSendAisA;
-        }
-        bool EnableSendBaseStationAlarms( ) const
-        {
-            return enableSendBaseStationAlarms_;
-        }
-        void SetEnableSendBaseStationAlarms( bool enableSendBaseStationAlarms )
-        {
-            enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
-        }
-        const FixedDBWideString<127>& AisWebConfig( ) const
-        {
-            return aisWebConfig_;
-        }
-        void SetAisWebConfig( const WideString& aisWebConfig )
-        {
-            aisWebConfig_ = aisWebConfig;
-        }
-        bool StoreReceivedSentences( ) const
-        {
-            return storeReceivedSentences_;
-        }
-        void SetStoreReceivedSentences( bool storeReceivedSentences )
-        {
-            storeReceivedSentences_ = storeReceivedSentences;
-        }
-        bool StoreSentMessages( ) const
-        {
-            return storeSentMessages_;
-        }
-        void SetStoreSentMessages( bool storeSentMessages )
-        {
-            storeSentMessages_ = storeSentMessages;
-        }
-        bool StoreUnsentMessages( ) const
-        {
-            return storeUnsentMessages_;
-        }
-        void SetStoreUnsentMessages( bool storeUnsentMessages )
-        {
-            storeUnsentMessages_ = storeUnsentMessages;
-        }
-    };
-    class AisTransceiverRawMessageData : public BaseData<Kind, Guid>
-    {
-    public:
-        using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::AisTransceiverRawMessage;
-    private:
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        bool isSent_ = false;
-        FixedDBWideString<100> message_;
-    public:
-        AisTransceiverRawMessageData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            destination.Write(rowVersion_);
-            destination.Write(aisTransceiver_);
-            destination.Write(timestamp_);
-            destination.Write(isSent_);
-            message_.WriteTo( destination );
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            source.Read(rowVersion_);
-            source.Read(aisTransceiver_);
-            source.Read(timestamp_);
-            source.Read(isSent_);
-            message_.ReadFrom( source );
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<AisTransceiverRawMessageData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverRawMessageData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const AisTransceiverRawMessageData& >( other );
-                if ( dataObject.rowVersion_ != rowVersion_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisTransceiver_ != aisTransceiver_ )
-                {
-                    return false;
-                }
-                if ( dataObject.timestamp_ != timestamp_ )
-                {
-                    return false;
-                }
-                if ( dataObject.isSent_ != isSent_ )
-                {
-                    return false;
-                }
-                if ( dataObject.message_ != message_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        bool IsSent( ) const
-        {
-            return isSent_;
-        }
-        void SetIsSent( bool isSent )
-        {
-            isSent_ = isSent;
-        }
-        const FixedDBWideString<100>& Message( ) const
-        {
-            return message_;
-        }
-        void SetMessage( const WideString& message )
-        {
-            message_ = message;
-        }
-    };
-    class AisTransceiverRawSentenceData : public BaseData<Kind, Guid>
-    {
-    public:
-        using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::AisTransceiverRawSentence;
-    private:
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        WideString sentence_;
-        SQLLEN sentenceLength_ = SQL_NULL_DATA;
-    public:
-        AisTransceiverRawSentenceData( ) = default;
-        template<IO::StreamWriter StreamT>
-        void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            Base::WriteTo( destination );
-            destination.Write(rowVersion_);
-            destination.Write(aisTransceiver_);
-            destination.Write(timestamp_);
-            destination.Write(sentence_);
-        }
-        template<IO::StreamReader StreamT>
-        void ReadFrom( IO::BinaryReader<StreamT>& source )
-        {
-            Base::ReadFrom( source );
-            source.Read(rowVersion_);
-            source.Read(aisTransceiver_);
-            source.Read(timestamp_);
-            source.Read(sentence_);
-        }
-        virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
-        {
-            return KIND;
-        }
-        virtual [[nodiscard]] bool IsOfType( ObjectType objectType ) const noexcept
-        {
-            if ( objectType == KIND )
-            {
-                return true;
-            }
-            return Base::IsOfType( objectType );
-        }
-        virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
-        {
-            return std::make_shared<AisTransceiverRawSentenceData>( );
-        }
-        virtual void AssignTo( BaseData& target ) const override
-        {
-            Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverRawSentenceData&>( target );
-        }
-        virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
-        {
-            if ( Base::IsEqualTo( other ) )
-            {
-                const auto& dataObject = static_cast< const AisTransceiverRawSentenceData& >( other );
-                if ( dataObject.rowVersion_ != rowVersion_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisTransceiver_ != aisTransceiver_ )
-                {
-                    return false;
-                }
-                if ( dataObject.timestamp_ != timestamp_ )
-                {
-                    return false;
-                }
-                if ( dataObject.sentence_ != sentence_ )
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        const WideString& Sentence( ) const
-        {
-            return sentence_;
-        }
-        void SetSentence( const WideString& sentence )
-        {
-            sentence_ = sentence;
-        }
-    };
     class AlarmStateChangeData : public BaseData<Kind, Guid>
     {
     public:
@@ -5641,7 +5641,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -5873,7 +5873,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -8255,7 +8255,7 @@ namespace Barrelman::Data
         {
             return cameraAddress_;
         }
-        void SetCameraAddress( const WideString& cameraAddress )
+        void SetCameraAddress( FixedDBWideString<127> cameraAddress )
         {
             cameraAddress_ = cameraAddress;
         }
@@ -8271,7 +8271,7 @@ namespace Barrelman::Data
         {
             return cameraControlAddress_;
         }
-        void SetCameraControlAddress( const WideString& cameraControlAddress )
+        void SetCameraControlAddress( FixedDBWideString<127> cameraControlAddress )
         {
             cameraControlAddress_ = cameraControlAddress;
         }
@@ -8287,7 +8287,7 @@ namespace Barrelman::Data
         {
             return cameraUserName_;
         }
-        void SetCameraUserName( const WideString& cameraUserName )
+        void SetCameraUserName( FixedDBWideString<127> cameraUserName )
         {
             cameraUserName_ = cameraUserName;
         }
@@ -8295,7 +8295,7 @@ namespace Barrelman::Data
         {
             return cameraPassword_;
         }
-        void SetCameraPassword( const WideString& cameraPassword )
+        void SetCameraPassword( FixedDBWideString<127> cameraPassword )
         {
             cameraPassword_ = cameraPassword;
         }
@@ -8311,7 +8311,7 @@ namespace Barrelman::Data
         {
             return rtspUriOverride_;
         }
-        void SetRtspUriOverride( const WideString& rtspUriOverride )
+        void SetRtspUriOverride( FixedDBWideString<127> rtspUriOverride )
         {
             rtspUriOverride_ = rtspUriOverride;
         }
@@ -8711,7 +8711,7 @@ namespace Barrelman::Data
         {
             return ptzProfileName_;
         }
-        void SetPtzProfileName( const WideString& ptzProfileName )
+        void SetPtzProfileName( FixedDBWideString<127> ptzProfileName )
         {
             ptzProfileName_ = ptzProfileName;
         }
@@ -8719,7 +8719,7 @@ namespace Barrelman::Data
         {
             return ptzConfigurationToken_;
         }
-        void SetPtzConfigurationToken( const WideString& ptzConfigurationToken )
+        void SetPtzConfigurationToken( FixedDBWideString<127> ptzConfigurationToken )
         {
             ptzConfigurationToken_ = ptzConfigurationToken;
         }
@@ -8727,7 +8727,7 @@ namespace Barrelman::Data
         {
             return videoSourceToken_;
         }
-        void SetVideoSourceToken( const WideString& videoSourceToken )
+        void SetVideoSourceToken( FixedDBWideString<127> videoSourceToken )
         {
             videoSourceToken_ = videoSourceToken;
         }
@@ -9750,7 +9750,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -10042,7 +10042,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -10058,7 +10058,7 @@ namespace Barrelman::Data
         {
             return alpha2_;
         }
-        void SetAlpha2( const WideString& alpha2 )
+        void SetAlpha2( FixedDBWideString<2> alpha2 )
         {
             alpha2_ = alpha2;
         }
@@ -10066,7 +10066,7 @@ namespace Barrelman::Data
         {
             return alpha3_;
         }
-        void SetAlpha3( const WideString& alpha3 )
+        void SetAlpha3( FixedDBWideString<3> alpha3 )
         {
             alpha3_ = alpha3;
         }
@@ -10333,7 +10333,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -10456,7 +10456,7 @@ namespace Barrelman::Data
         {
             return hostname_;
         }
-        void SetHostname( const WideString& hostname )
+        void SetHostname( FixedDBWideString<127> hostname )
         {
             hostname_ = hostname;
         }
@@ -10472,7 +10472,7 @@ namespace Barrelman::Data
         {
             return queueName_;
         }
-        void SetQueueName( const WideString& queueName )
+        void SetQueueName( FixedDBWideString<100> queueName )
         {
             queueName_ = queueName;
         }
@@ -10660,7 +10660,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -11950,7 +11950,7 @@ namespace Barrelman::Data
         {
             return pitchTransducerName_;
         }
-        void SetPitchTransducerName( const WideString& pitchTransducerName )
+        void SetPitchTransducerName( FixedDBWideString<64> pitchTransducerName )
         {
             pitchTransducerName_ = pitchTransducerName;
         }
@@ -11958,7 +11958,7 @@ namespace Barrelman::Data
         {
             return rollTransducerName_;
         }
-        void SetRollTransducerName( const WideString& rollTransducerName )
+        void SetRollTransducerName( FixedDBWideString<64> rollTransducerName )
         {
             rollTransducerName_ = rollTransducerName;
         }
@@ -12086,7 +12086,7 @@ namespace Barrelman::Data
         {
             return identifier_;
         }
-        void SetIdentifier( const WideString& identifier )
+        void SetIdentifier( FixedDBWideString<127> identifier )
         {
             identifier_ = identifier;
         }
@@ -12278,7 +12278,7 @@ namespace Barrelman::Data
         {
             return text_;
         }
-        void SetText( const WideString& text )
+        void SetText( FixedDBWideString<100> text )
         {
             text_ = text;
         }
@@ -12740,7 +12740,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12842,7 +12842,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12863,14 +12863,14 @@ namespace Barrelman::Data
             enabledTimeseries_ = enabledTimeseries;
         }
     };
-    class CameraData : public DeviceData
+    class CameraDeviceData : public DeviceData
     {
     public:
         using Base = DeviceData;
-        static constexpr Kind KIND = Kind::Camera;
+        static constexpr Kind KIND = Kind::CameraDevice;
     private:
     public:
-        CameraData( ) = default;
+        CameraDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12895,18 +12895,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraData>( );
+            return std::make_shared<CameraDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraData&>( target );
+            auto& dest = static_cast<CameraDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraData& >( other );
+                const auto& dataObject = static_cast< const CameraDeviceData& >( other );
                 return true;
             }
             return false;
@@ -13224,14 +13224,14 @@ namespace Barrelman::Data
             return false;
         }
     };
-    class OilspillDetectorData : public DeviceData
+    class OilSpillDetectorDeviceData : public DeviceData
     {
     public:
         using Base = DeviceData;
-        static constexpr Kind KIND = Kind::OilspillDetector;
+        static constexpr Kind KIND = Kind::OilSpillDetectorDevice;
     private:
     public:
-        OilspillDetectorData( ) = default;
+        OilSpillDetectorDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13256,31 +13256,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilspillDetectorData>( );
+            return std::make_shared<OilSpillDetectorDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilspillDetectorData&>( target );
+            auto& dest = static_cast<OilSpillDetectorDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilspillDetectorData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorDeviceData& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadioData : public DeviceData
+    class RadioDeviceData : public DeviceData
     {
     public:
         using Base = DeviceData;
-        static constexpr Kind KIND = Kind::Radio;
+        static constexpr Kind KIND = Kind::RadioDevice;
     private:
     public:
-        RadioData( ) = default;
+        RadioDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13305,41 +13305,41 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadioData>( );
+            return std::make_shared<RadioDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadioData&>( target );
+            auto& dest = static_cast<RadioDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadioData& >( other );
+                const auto& dataObject = static_cast< const RadioDeviceData& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadomeData : public DeviceData
+    class RadomeDeviceData : public DeviceData
     {
     public:
         using Base = DeviceData;
-        static constexpr Kind KIND = Kind::Radome;
+        static constexpr Kind KIND = Kind::RadomeDevice;
     private:
-        Guid radar_;
+        DBGuid radar_;
         Guid pressureTimeseries_;
         Guid temperatureTimeseries_;
         Guid dewPointTimeseries_;
         Guid statusTimeseries_;
     public:
-        RadomeData( ) = default;
+        RadomeDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(radar_);
+            radar_.WriteTo( destination );
             destination.Write(pressureTimeseries_);
             destination.Write(temperatureTimeseries_);
             destination.Write(dewPointTimeseries_);
@@ -13349,7 +13349,7 @@ namespace Barrelman::Data
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(radar_);
+            radar_.ReadFrom( source );
             source.Read(pressureTimeseries_);
             source.Read(temperatureTimeseries_);
             source.Read(dewPointTimeseries_);
@@ -13369,18 +13369,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeData>( );
+            return std::make_shared<RadomeDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeData&>( target );
+            auto& dest = static_cast<RadomeDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeData& >( other );
+                const auto& dataObject = static_cast< const RadomeDeviceData& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -13405,11 +13405,11 @@ namespace Barrelman::Data
             }
             return false;
         }
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -13446,14 +13446,14 @@ namespace Barrelman::Data
             statusTimeseries_ = statusTimeseries;
         }
     };
-    class TrackerData : public DeviceData
+    class TrackerDeviceData : public DeviceData
     {
     public:
         using Base = DeviceData;
-        static constexpr Kind KIND = Kind::Tracker;
+        static constexpr Kind KIND = Kind::TrackerDevice;
     private:
     public:
-        TrackerData( ) = default;
+        TrackerDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13478,31 +13478,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackerData>( );
+            return std::make_shared<TrackerDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackerData&>( target );
+            auto& dest = static_cast<TrackerDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackerData& >( other );
+                const auto& dataObject = static_cast< const TrackerDeviceData& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisTransceiverData : public TrackerData
+    class AisDeviceData : public TrackerDeviceData
     {
     public:
-        using Base = TrackerData;
-        static constexpr Kind KIND = Kind::AisTransceiver;
+        using Base = TrackerDeviceData;
+        static constexpr Kind KIND = Kind::AisDevice;
     private:
     public:
-        AisTransceiverData( ) = default;
+        AisDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13527,28 +13527,28 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisTransceiverData>( );
+            return std::make_shared<AisDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisTransceiverData&>( target );
+            auto& dest = static_cast<AisDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisTransceiverData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceData& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadarData : public TrackerData
+    class RadarDeviceData : public TrackerDeviceData
     {
     public:
-        using Base = TrackerData;
-        static constexpr Kind KIND = Kind::Radar;
+        using Base = TrackerDeviceData;
+        static constexpr Kind KIND = Kind::RadarDevice;
     private:
         Guid saveSettingsTimeseries_;
         Guid powerOnTimeseries_;
@@ -13571,10 +13571,10 @@ namespace Barrelman::Data
         Guid fastTimeConstantModeTimeseries_;
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
-        Guid radome_;
-        Guid gNSSDevice_;
+        DBGuid radome_;
+        DBGuid gNSSDevice_;
     public:
-        RadarData( ) = default;
+        RadarDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13600,8 +13600,8 @@ namespace Barrelman::Data
             destination.Write(fastTimeConstantModeTimeseries_);
             destination.Write(latitudeTimeseries_);
             destination.Write(longitudeTimeseries_);
-            destination.Write(radome_);
-            destination.Write(gNSSDevice_);
+            radome_.WriteTo( destination );
+            gNSSDevice_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -13628,8 +13628,8 @@ namespace Barrelman::Data
             source.Read(fastTimeConstantModeTimeseries_);
             source.Read(latitudeTimeseries_);
             source.Read(longitudeTimeseries_);
-            source.Read(radome_);
-            source.Read(gNSSDevice_);
+            radome_.ReadFrom( source );
+            gNSSDevice_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -13645,18 +13645,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarData>( );
+            return std::make_shared<RadarDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarData&>( target );
+            auto& dest = static_cast<RadarDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarData& >( other );
+                const auto& dataObject = static_cast< const RadarDeviceData& >( other );
                 if ( dataObject.saveSettingsTimeseries_ != saveSettingsTimeseries_ )
                 {
                     return false;
@@ -13921,28 +13921,28 @@ namespace Barrelman::Data
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        const Guid& Radome( ) const
+        const DBGuid& Radome( ) const
         {
             return radome_;
         }
-        void SetRadome( const Guid& radome )
+        void SetRadome( const DBGuid& radome )
         {
             radome_ = radome;
         }
-        const Guid& GNSSDevice( ) const
+        const DBGuid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
-        void SetGNSSDevice( const Guid& gNSSDevice )
+        void SetGNSSDevice( const DBGuid& gNSSDevice )
         {
             gNSSDevice_ = gNSSDevice;
         }
     };
-    class WeatherStationData : public DeviceData
+    class WeatherStationDeviceData : public DeviceData
     {
     public:
         using Base = DeviceData;
-        static constexpr Kind KIND = Kind::WeatherStation;
+        static constexpr Kind KIND = Kind::WeatherStationDevice;
     private:
         Guid barometricPressureTimeseries_;
         Guid airTemperatureTimeseries_;
@@ -13954,7 +13954,7 @@ namespace Barrelman::Data
         Guid windSpeedTimeseries_;
         Guid gyro_;
     public:
-        WeatherStationData( ) = default;
+        WeatherStationDeviceData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13997,18 +13997,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationData>( );
+            return std::make_shared<WeatherStationDeviceData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationData&>( target );
+            auto& dest = static_cast<WeatherStationDeviceData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationDeviceData& >( other );
                 if ( dataObject.barometricPressureTimeseries_ != barometricPressureTimeseries_ )
                 {
                     return false;
@@ -14209,7 +14209,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -14361,7 +14361,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -14496,7 +14496,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -14639,7 +14639,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -14760,7 +14760,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -15717,7 +15717,7 @@ namespace Barrelman::Data
         {
             return udpSendHostname_;
         }
-        void SetUdpSendHostname( const WideString& udpSendHostname )
+        void SetUdpSendHostname( FixedDBWideString<100> udpSendHostname )
         {
             udpSendHostname_ = udpSendHostname;
         }
@@ -15733,7 +15733,7 @@ namespace Barrelman::Data
         {
             return tcpHostname_;
         }
-        void SetTcpHostname( const WideString& tcpHostname )
+        void SetTcpHostname( FixedDBWideString<100> tcpHostname )
         {
             tcpHostname_ = tcpHostname;
         }
@@ -15757,7 +15757,7 @@ namespace Barrelman::Data
         {
             return loginHostname_;
         }
-        void SetLoginHostname( const WideString& loginHostname )
+        void SetLoginHostname( FixedDBWideString<100> loginHostname )
         {
             loginHostname_ = loginHostname;
         }
@@ -15773,7 +15773,7 @@ namespace Barrelman::Data
         {
             return userName_;
         }
-        void SetUserName( const WideString& userName )
+        void SetUserName( FixedDBWideString<100> userName )
         {
             userName_ = userName;
         }
@@ -15781,7 +15781,7 @@ namespace Barrelman::Data
         {
             return password_;
         }
-        void SetPassword( const WideString& password )
+        void SetPassword( FixedDBWideString<100> password )
         {
             password_ = password;
         }
@@ -15789,7 +15789,7 @@ namespace Barrelman::Data
         {
             return comPort_;
         }
-        void SetComPort( const WideString& comPort )
+        void SetComPort( FixedDBWideString<100> comPort )
         {
             comPort_ = comPort;
         }
@@ -15837,7 +15837,7 @@ namespace Barrelman::Data
         {
             return newLine_;
         }
-        void SetNewLine( const WideString& newLine )
+        void SetNewLine( FixedDBWideString<100> newLine )
         {
             newLine_ = newLine;
         }
@@ -15917,7 +15917,7 @@ namespace Barrelman::Data
         {
             return pairedComPort_;
         }
-        void SetPairedComPort( const WideString& pairedComPort )
+        void SetPairedComPort( FixedDBWideString<100> pairedComPort )
         {
             pairedComPort_ = pairedComPort;
         }
@@ -16011,7 +16011,7 @@ namespace Barrelman::Data
         {
             return type_;
         }
-        void SetType( const WideString& type )
+        void SetType( FixedDBWideString<100> type )
         {
             type_ = type;
         }
@@ -16206,7 +16206,7 @@ namespace Barrelman::Data
         {
             return hostName_;
         }
-        void SetHostName( const WideString& hostName )
+        void SetHostName( FixedDBWideString<128> hostName )
         {
             hostName_ = hostName;
         }
@@ -16301,7 +16301,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -16670,7 +16670,7 @@ namespace Barrelman::Data
         {
             return computerName_;
         }
-        void SetComputerName( const WideString& computerName )
+        void SetComputerName( FixedDBWideString<127> computerName )
         {
             computerName_ = computerName;
         }
@@ -17061,7 +17061,7 @@ namespace Barrelman::Data
         {
             return fileName_;
         }
-        void SetFileName( const WideString& fileName )
+        void SetFileName( FixedDBWideString<260> fileName )
         {
             fileName_ = fileName;
         }
@@ -17093,7 +17093,7 @@ namespace Barrelman::Data
         {
             return methodName_;
         }
-        void SetMethodName( const WideString& methodName )
+        void SetMethodName( FixedDBWideString<255> methodName )
         {
             methodName_ = methodName;
         }
@@ -17263,7 +17263,7 @@ namespace Barrelman::Data
         {
             return identity_;
         }
-        void SetIdentity( const WideString& identity )
+        void SetIdentity( FixedDBWideString<127> identity )
         {
             identity_ = identity;
         }
@@ -17604,7 +17604,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -17980,7 +17980,7 @@ namespace Barrelman::Data
         {
             return label_;
         }
-        void SetLabel( const WideString& label )
+        void SetLabel( FixedDBWideString<100> label )
         {
             label_ = label;
         }
@@ -18302,7 +18302,7 @@ namespace Barrelman::Data
         {
             return ipAddress_;
         }
-        void SetIpAddress( const WideString& ipAddress )
+        void SetIpAddress( FixedDBWideString<127> ipAddress )
         {
             ipAddress_ = ipAddress;
         }
@@ -18537,7 +18537,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<128> name )
         {
             name_ = name;
         }
@@ -18654,7 +18654,7 @@ namespace Barrelman::Data
         {
             return streamName_;
         }
-        void SetStreamName( const WideString& streamName )
+        void SetStreamName( FixedDBWideString<100> streamName )
         {
             streamName_ = streamName;
         }
@@ -18833,7 +18833,7 @@ namespace Barrelman::Data
         {
             return sourceStreamUrl_;
         }
-        void SetSourceStreamUrl( const WideString& sourceStreamUrl )
+        void SetSourceStreamUrl( FixedDBWideString<255> sourceStreamUrl )
         {
             sourceStreamUrl_ = sourceStreamUrl;
         }
@@ -18841,7 +18841,7 @@ namespace Barrelman::Data
         {
             return streamName_;
         }
-        void SetStreamName( const WideString& streamName )
+        void SetStreamName( FixedDBWideString<255> streamName )
         {
             streamName_ = streamName;
         }
@@ -18865,7 +18865,7 @@ namespace Barrelman::Data
         {
             return username_;
         }
-        void SetUsername( const WideString& username )
+        void SetUsername( FixedDBWideString<128> username )
         {
             username_ = username;
         }
@@ -18873,7 +18873,7 @@ namespace Barrelman::Data
         {
             return password_;
         }
-        void SetPassword( const WideString& password )
+        void SetPassword( FixedDBWideString<128> password )
         {
             password_ = password;
         }
@@ -18913,7 +18913,7 @@ namespace Barrelman::Data
         {
             return videoDirectory_;
         }
-        void SetVideoDirectory( const WideString& videoDirectory )
+        void SetVideoDirectory( FixedDBWideString<260> videoDirectory )
         {
             videoDirectory_ = videoDirectory;
         }
@@ -19218,7 +19218,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -19329,11 +19329,11 @@ namespace Barrelman::Data
             return false;
         }
     };
-    class OilspillData : public BaseData<Kind, Guid>
+    class OilSpillData : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::Oilspill;
+        static constexpr Kind KIND = Kind::OilSpill;
     private:
         Int64 rowVersion_ = 0;
         Guid oilSpillDetector_;
@@ -19348,7 +19348,7 @@ namespace Barrelman::Data
         Binary trace_;
         SQLLEN traceLength_ = SQL_NULL_DATA;
     public:
-        OilspillData( ) = default;
+        OilSpillData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19389,18 +19389,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilspillData>( );
+            return std::make_shared<OilSpillData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilspillData&>( target );
+            auto& dest = static_cast<OilSpillData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilspillData& >( other );
+                const auto& dataObject = static_cast< const OilSpillData& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19502,11 +19502,11 @@ namespace Barrelman::Data
             trace_ = trace;
         }
     };
-    class OilspillDetectorCommandData : public BaseData<Kind, Guid>
+    class OilSpillDetectorCommandData : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::OilspillDetectorCommand;
+        static constexpr Kind KIND = Kind::OilSpillDetectorCommand;
     private:
         Int64 rowVersion_ = 0;
         Guid oilSpillDetector_;
@@ -19515,7 +19515,7 @@ namespace Barrelman::Data
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        OilspillDetectorCommandData( ) = default;
+        OilSpillDetectorCommandData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19552,18 +19552,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilspillDetectorCommandData>( );
+            return std::make_shared<OilSpillDetectorCommandData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilspillDetectorCommandData&>( target );
+            auto& dest = static_cast<OilSpillDetectorCommandData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilspillDetectorCommandData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorCommandData& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19641,11 +19641,11 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class OilspillDetectorCommandReplyData : public BaseData<Kind, Guid>
+    class OilSpillDetectorCommandReplyData : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::OilspillDetectorCommandReply;
+        static constexpr Kind KIND = Kind::OilSpillDetectorCommandReply;
     private:
         Int64 rowVersion_ = 0;
         Guid oilSpillDetector_;
@@ -19655,7 +19655,7 @@ namespace Barrelman::Data
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        OilspillDetectorCommandReplyData( ) = default;
+        OilSpillDetectorCommandReplyData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19692,18 +19692,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilspillDetectorCommandReplyData>( );
+            return std::make_shared<OilSpillDetectorCommandReplyData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilspillDetectorCommandReplyData&>( target );
+            auto& dest = static_cast<OilSpillDetectorCommandReplyData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilspillDetectorCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorCommandReplyData& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19781,11 +19781,11 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class OilspillDetectorConfigurationData : public BaseData<Kind, Guid>
+    class OilSpillDetectorConfigurationData : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
-        static constexpr Kind KIND = Kind::OilspillDetectorConfiguration;
+        static constexpr Kind KIND = Kind::OilSpillDetectorConfiguration;
     private:
         Int64 rowVersion_ = 0;
         Guid oilSpillDetector_;
@@ -19814,7 +19814,7 @@ namespace Barrelman::Data
         FixedDBWideString<100> proxyServer_;
         bool useProxyServer_ = false;
     public:
-        OilspillDetectorConfigurationData( ) = default;
+        OilSpillDetectorConfigurationData( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19889,18 +19889,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilspillDetectorConfigurationData>( );
+            return std::make_shared<OilSpillDetectorConfigurationData>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilspillDetectorConfigurationData&>( target );
+            auto& dest = static_cast<OilSpillDetectorConfigurationData&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilspillDetectorConfigurationData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorConfigurationData& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -20113,7 +20113,7 @@ namespace Barrelman::Data
         {
             return directory_;
         }
-        void SetDirectory( const WideString& directory )
+        void SetDirectory( FixedDBWideString<100> directory )
         {
             directory_ = directory;
         }
@@ -20153,7 +20153,7 @@ namespace Barrelman::Data
         {
             return targetFilePrefix_;
         }
-        void SetTargetFilePrefix( const WideString& targetFilePrefix )
+        void SetTargetFilePrefix( FixedDBWideString<100> targetFilePrefix )
         {
             targetFilePrefix_ = targetFilePrefix;
         }
@@ -20193,7 +20193,7 @@ namespace Barrelman::Data
         {
             return proxyServer_;
         }
-        void SetProxyServer( const WideString& proxyServer )
+        void SetProxyServer( FixedDBWideString<100> proxyServer )
         {
             proxyServer_ = proxyServer;
         }
@@ -21485,7 +21485,7 @@ namespace Barrelman::Data
         {
             return value_;
         }
-        void SetValue( const WideString& value )
+        void SetValue( FixedDBWideString<100> value )
         {
             value_ = value;
         }
@@ -22980,7 +22980,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -23289,7 +23289,7 @@ namespace Barrelman::Data
         {
             return defaultValue_;
         }
-        void SetDefaultValue( const WideString& defaultValue )
+        void SetDefaultValue( FixedDBWideString<100> defaultValue )
         {
             defaultValue_ = defaultValue;
         }
@@ -23297,7 +23297,7 @@ namespace Barrelman::Data
         {
             return minValue_;
         }
-        void SetMinValue( const WideString& minValue )
+        void SetMinValue( FixedDBWideString<100> minValue )
         {
             minValue_ = minValue;
         }
@@ -23305,7 +23305,7 @@ namespace Barrelman::Data
         {
             return maxValue_;
         }
-        void SetMaxValue( const WideString& maxValue )
+        void SetMaxValue( FixedDBWideString<100> maxValue )
         {
             maxValue_ = maxValue;
         }
@@ -24083,7 +24083,7 @@ namespace Barrelman::Data
         {
             return defaultValue_;
         }
-        void SetDefaultValue( const WideString& defaultValue )
+        void SetDefaultValue( FixedDBWideString<100> defaultValue )
         {
             defaultValue_ = defaultValue;
         }
@@ -24091,7 +24091,7 @@ namespace Barrelman::Data
         {
             return pattern_;
         }
-        void SetPattern( const WideString& pattern )
+        void SetPattern( FixedDBWideString<100> pattern )
         {
             pattern_ = pattern;
         }
@@ -24388,7 +24388,7 @@ namespace Barrelman::Data
         {
             return minValue_;
         }
-        void SetMinValue( const WideString& minValue )
+        void SetMinValue( FixedDBWideString<100> minValue )
         {
             minValue_ = minValue;
         }
@@ -24396,7 +24396,7 @@ namespace Barrelman::Data
         {
             return maxValue_;
         }
-        void SetMaxValue( const WideString& maxValue )
+        void SetMaxValue( FixedDBWideString<100> maxValue )
         {
             maxValue_ = maxValue;
         }
@@ -25047,7 +25047,7 @@ namespace Barrelman::Data
         {
             return pattern_;
         }
-        void SetPattern( const WideString& pattern )
+        void SetPattern( FixedDBWideString<100> pattern )
         {
             pattern_ = pattern;
         }
@@ -26585,7 +26585,7 @@ namespace Barrelman::Data
         {
             return radarIPAddress_;
         }
-        void SetRadarIPAddress( const WideString& radarIPAddress )
+        void SetRadarIPAddress( FixedDBWideString<100> radarIPAddress )
         {
             radarIPAddress_ = radarIPAddress;
         }
@@ -26753,7 +26753,7 @@ namespace Barrelman::Data
         {
             return nmeaReceiverIPAddress_;
         }
-        void SetNmeaReceiverIPAddress( const WideString& nmeaReceiverIPAddress )
+        void SetNmeaReceiverIPAddress( FixedDBWideString<100> nmeaReceiverIPAddress )
         {
             nmeaReceiverIPAddress_ = nmeaReceiverIPAddress;
         }
@@ -26769,7 +26769,7 @@ namespace Barrelman::Data
         {
             return nmeaReceiverSourceId_;
         }
-        void SetNmeaReceiverSourceId( const WideString& nmeaReceiverSourceId )
+        void SetNmeaReceiverSourceId( FixedDBWideString<100> nmeaReceiverSourceId )
         {
             nmeaReceiverSourceId_ = nmeaReceiverSourceId;
         }
@@ -27679,7 +27679,7 @@ namespace Barrelman::Data
         {
             return playbackUrl_;
         }
-        void SetPlaybackUrl( const WideString& playbackUrl )
+        void SetPlaybackUrl( FixedDBWideString<100> playbackUrl )
         {
             playbackUrl_ = playbackUrl;
         }
@@ -27687,7 +27687,7 @@ namespace Barrelman::Data
         {
             return radioIPAddress_;
         }
-        void SetRadioIPAddress( const WideString& radioIPAddress )
+        void SetRadioIPAddress( FixedDBWideString<100> radioIPAddress )
         {
             radioIPAddress_ = radioIPAddress;
         }
@@ -27703,7 +27703,7 @@ namespace Barrelman::Data
         {
             return ed137IPAddress_;
         }
-        void SetEd137IPAddress( const WideString& ed137IPAddress )
+        void SetEd137IPAddress( FixedDBWideString<100> ed137IPAddress )
         {
             ed137IPAddress_ = ed137IPAddress;
         }
@@ -28464,7 +28464,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -28574,7 +28574,7 @@ namespace Barrelman::Data
         {
             return identity_;
         }
-        void SetIdentity( const WideString& identity )
+        void SetIdentity( FixedDBWideString<255> identity )
         {
             identity_ = identity;
         }
@@ -28695,7 +28695,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -28965,7 +28965,7 @@ namespace Barrelman::Data
         {
             return notificationQueueName_;
         }
-        void SetNotificationQueueName( const WideString& notificationQueueName )
+        void SetNotificationQueueName( FixedDBWideString<260> notificationQueueName )
         {
             notificationQueueName_ = notificationQueueName;
         }
@@ -28973,7 +28973,7 @@ namespace Barrelman::Data
         {
             return messageQueueName_;
         }
-        void SetMessageQueueName( const WideString& messageQueueName )
+        void SetMessageQueueName( FixedDBWideString<260> messageQueueName )
         {
             messageQueueName_ = messageQueueName;
         }
@@ -29455,7 +29455,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -34632,7 +34632,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -36262,7 +36262,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -36348,7 +36348,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -36456,7 +36456,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -37341,7 +37341,7 @@ namespace Barrelman::Data
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -37996,6 +37996,21 @@ namespace Barrelman::Data
             case Kind::AircraftType:
                 static_cast<AircraftTypeData&>(*newObject).ReadFrom( source );
                 break;
+            case Kind::AisDeviceCommand:
+                static_cast<AisDeviceCommandData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisDeviceCommandReply:
+                static_cast<AisDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisDeviceConfiguration:
+                static_cast<AisDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisDeviceRawMessage:
+                static_cast<AisDeviceRawMessageData&>(*newObject).ReadFrom( source );
+                break;
+            case Kind::AisDeviceRawSentence:
+                static_cast<AisDeviceRawSentenceData&>(*newObject).ReadFrom( source );
+                break;
             case Kind::AidToNavigationReportMessage:
                 static_cast<AidToNavigationReportMessageData&>(*newObject).ReadFrom( source );
                 break;
@@ -38061,21 +38076,6 @@ namespace Barrelman::Data
                 break;
             case Kind::AisUtcAndDateResponseMessage:
                 static_cast<AisUtcAndDateResponseMessageData&>(*newObject).ReadFrom( source );
-                break;
-            case Kind::AisTransceiverCommand:
-                static_cast<AisTransceiverCommandData&>(*newObject).ReadFrom( source );
-                break;
-            case Kind::AisTransceiverCommandReply:
-                static_cast<AisTransceiverCommandReplyData&>(*newObject).ReadFrom( source );
-                break;
-            case Kind::AisTransceiverConfiguration:
-                static_cast<AisTransceiverConfigurationData&>(*newObject).ReadFrom( source );
-                break;
-            case Kind::AisTransceiverRawMessage:
-                static_cast<AisTransceiverRawMessageData&>(*newObject).ReadFrom( source );
-                break;
-            case Kind::AisTransceiverRawSentence:
-                static_cast<AisTransceiverRawSentenceData&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AlarmStateChange:
                 static_cast<AlarmStateChangeData&>(*newObject).ReadFrom( source );
@@ -38248,8 +38248,8 @@ namespace Barrelman::Data
             case Kind::BaseStation:
                 static_cast<BaseStationData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::Camera:
-                static_cast<CameraData&>(*newObject).ReadFrom( source );
+            case Kind::CameraDevice:
+                static_cast<CameraDeviceData&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSDevice:
                 static_cast<GNSSDeviceData&>(*newObject).ReadFrom( source );
@@ -38260,23 +38260,23 @@ namespace Barrelman::Data
             case Kind::LineInputDevice:
                 static_cast<LineInputDeviceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::OilspillDetector:
-                static_cast<OilspillDetectorData&>(*newObject).ReadFrom( source );
+            case Kind::OilSpillDetectorDevice:
+                static_cast<OilSpillDetectorDeviceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::Radio:
-                static_cast<RadioData&>(*newObject).ReadFrom( source );
+            case Kind::RadioDevice:
+                static_cast<RadioDeviceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::Radome:
-                static_cast<RadomeData&>(*newObject).ReadFrom( source );
+            case Kind::RadomeDevice:
+                static_cast<RadomeDeviceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::AisTransceiver:
-                static_cast<AisTransceiverData&>(*newObject).ReadFrom( source );
+            case Kind::AisDevice:
+                static_cast<AisDeviceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::Radar:
-                static_cast<RadarData&>(*newObject).ReadFrom( source );
+            case Kind::RadarDevice:
+                static_cast<RadarDeviceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::WeatherStation:
-                static_cast<WeatherStationData&>(*newObject).ReadFrom( source );
+            case Kind::WeatherStationDevice:
+                static_cast<WeatherStationDeviceData&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Facility:
                 static_cast<FacilityData&>(*newObject).ReadFrom( source );
@@ -38377,17 +38377,17 @@ namespace Barrelman::Data
             case Kind::Namespace:
                 static_cast<NamespaceData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::Oilspill:
-                static_cast<OilspillData&>(*newObject).ReadFrom( source );
+            case Kind::OilSpill:
+                static_cast<OilSpillData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::OilspillDetectorCommand:
-                static_cast<OilspillDetectorCommandData&>(*newObject).ReadFrom( source );
+            case Kind::OilSpillDetectorCommand:
+                static_cast<OilSpillDetectorCommandData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::OilspillDetectorCommandReply:
-                static_cast<OilspillDetectorCommandReplyData&>(*newObject).ReadFrom( source );
+            case Kind::OilSpillDetectorCommandReply:
+                static_cast<OilSpillDetectorCommandReplyData&>(*newObject).ReadFrom( source );
                 break;
-            case Kind::OilspillDetectorConfiguration:
-                static_cast<OilspillDetectorConfigurationData&>(*newObject).ReadFrom( source );
+            case Kind::OilSpillDetectorConfiguration:
+                static_cast<OilSpillDetectorConfigurationData&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Position2DTimeseriesValue:
                 static_cast<Position2DTimeseriesValueData&>(*newObject).ReadFrom( source );
@@ -38999,6 +38999,21 @@ namespace Barrelman::Data
             case Kind::AircraftType:
                 static_cast<const AircraftTypeData&>(data).WriteTo( destination );
                 break;
+            case Kind::AisDeviceCommand:
+                static_cast<const AisDeviceCommandData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisDeviceCommandReply:
+                static_cast<const AisDeviceCommandReplyData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisDeviceConfiguration:
+                static_cast<const AisDeviceConfigurationData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisDeviceRawMessage:
+                static_cast<const AisDeviceRawMessageData&>(data).WriteTo( destination );
+                break;
+            case Kind::AisDeviceRawSentence:
+                static_cast<const AisDeviceRawSentenceData&>(data).WriteTo( destination );
+                break;
             case Kind::AidToNavigationReportMessage:
                 static_cast<const AidToNavigationReportMessageData&>(data).WriteTo( destination );
                 break;
@@ -39064,21 +39079,6 @@ namespace Barrelman::Data
                 break;
             case Kind::AisUtcAndDateResponseMessage:
                 static_cast<const AisUtcAndDateResponseMessageData&>(data).WriteTo( destination );
-                break;
-            case Kind::AisTransceiverCommand:
-                static_cast<const AisTransceiverCommandData&>(data).WriteTo( destination );
-                break;
-            case Kind::AisTransceiverCommandReply:
-                static_cast<const AisTransceiverCommandReplyData&>(data).WriteTo( destination );
-                break;
-            case Kind::AisTransceiverConfiguration:
-                static_cast<const AisTransceiverConfigurationData&>(data).WriteTo( destination );
-                break;
-            case Kind::AisTransceiverRawMessage:
-                static_cast<const AisTransceiverRawMessageData&>(data).WriteTo( destination );
-                break;
-            case Kind::AisTransceiverRawSentence:
-                static_cast<const AisTransceiverRawSentenceData&>(data).WriteTo( destination );
                 break;
             case Kind::AlarmStateChange:
                 static_cast<const AlarmStateChangeData&>(data).WriteTo( destination );
@@ -39251,8 +39251,8 @@ namespace Barrelman::Data
             case Kind::BaseStation:
                 static_cast<const BaseStationData&>(data).WriteTo( destination );
                 break;
-            case Kind::Camera:
-                static_cast<const CameraData&>(data).WriteTo( destination );
+            case Kind::CameraDevice:
+                static_cast<const CameraDeviceData&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDevice:
                 static_cast<const GNSSDeviceData&>(data).WriteTo( destination );
@@ -39263,23 +39263,23 @@ namespace Barrelman::Data
             case Kind::LineInputDevice:
                 static_cast<const LineInputDeviceData&>(data).WriteTo( destination );
                 break;
-            case Kind::OilspillDetector:
-                static_cast<const OilspillDetectorData&>(data).WriteTo( destination );
+            case Kind::OilSpillDetectorDevice:
+                static_cast<const OilSpillDetectorDeviceData&>(data).WriteTo( destination );
                 break;
-            case Kind::Radio:
-                static_cast<const RadioData&>(data).WriteTo( destination );
+            case Kind::RadioDevice:
+                static_cast<const RadioDeviceData&>(data).WriteTo( destination );
                 break;
-            case Kind::Radome:
-                static_cast<const RadomeData&>(data).WriteTo( destination );
+            case Kind::RadomeDevice:
+                static_cast<const RadomeDeviceData&>(data).WriteTo( destination );
                 break;
-            case Kind::AisTransceiver:
-                static_cast<const AisTransceiverData&>(data).WriteTo( destination );
+            case Kind::AisDevice:
+                static_cast<const AisDeviceData&>(data).WriteTo( destination );
                 break;
-            case Kind::Radar:
-                static_cast<const RadarData&>(data).WriteTo( destination );
+            case Kind::RadarDevice:
+                static_cast<const RadarDeviceData&>(data).WriteTo( destination );
                 break;
-            case Kind::WeatherStation:
-                static_cast<const WeatherStationData&>(data).WriteTo( destination );
+            case Kind::WeatherStationDevice:
+                static_cast<const WeatherStationDeviceData&>(data).WriteTo( destination );
                 break;
             case Kind::Facility:
                 static_cast<const FacilityData&>(data).WriteTo( destination );
@@ -39380,17 +39380,17 @@ namespace Barrelman::Data
             case Kind::Namespace:
                 static_cast<const NamespaceData&>(data).WriteTo( destination );
                 break;
-            case Kind::Oilspill:
-                static_cast<const OilspillData&>(data).WriteTo( destination );
+            case Kind::OilSpill:
+                static_cast<const OilSpillData&>(data).WriteTo( destination );
                 break;
-            case Kind::OilspillDetectorCommand:
-                static_cast<const OilspillDetectorCommandData&>(data).WriteTo( destination );
+            case Kind::OilSpillDetectorCommand:
+                static_cast<const OilSpillDetectorCommandData&>(data).WriteTo( destination );
                 break;
-            case Kind::OilspillDetectorCommandReply:
-                static_cast<const OilspillDetectorCommandReplyData&>(data).WriteTo( destination );
+            case Kind::OilSpillDetectorCommandReply:
+                static_cast<const OilSpillDetectorCommandReplyData&>(data).WriteTo( destination );
                 break;
-            case Kind::OilspillDetectorConfiguration:
-                static_cast<const OilspillDetectorConfigurationData&>(data).WriteTo( destination );
+            case Kind::OilSpillDetectorConfiguration:
+                static_cast<const OilSpillDetectorConfigurationData&>(data).WriteTo( destination );
                 break;
             case Kind::Position2DTimeseriesValue:
                 static_cast<const Position2DTimeseriesValueData&>(data).WriteTo( destination );

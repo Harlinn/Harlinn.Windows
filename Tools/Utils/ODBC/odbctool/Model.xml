@@ -44,7 +44,7 @@
     <value name="MultipleSlotBinaryMessageWithCommunicationsState" value="26"/>
     <value name="PositionReportForLongRangeApplications" value="27"/>
   </enum>
-  <enum name="AisTransceiverConnectionType">
+  <enum name="AisDeviceConnectionType">
     <value name="Unknown" value="0"/>
     <value name="TCP" value="1"/>
     <value name="UDP" value="2"/>
@@ -450,13 +450,13 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="AisTransceiver" type="AisTransceiver"/>
+      <reference name="AisDevice" type="AisDevice"/>
       <datetime name="ReceivedTimestamp"/>
       <int64 name="MessageSequenceNumber"/>
       <int32 name="Repeat" description="The Repeat Indicator is a directive to an AIS transceiver that this message should be rebroadcast. This was intended as a way of getting AIS messages around hills and other obstructions in coastal waters, but is little used as base station coverage is more effective. It is intended that the bit be incremented on each retransmission, to a maximum of three hops. A value of 3 indicates &apos;Do not repeat&apos;."/>
       <reference name="Mmsi" type="MaritimeMobileServiceIdentity" description="The MMSI of the original sender."/>
     </members>
-    <index name="AisTransceiver_ReceivedTimestamp" fields="AisTransceiver;ReceivedTimestamp" range="true" unique="true"/>
+    <index name="AisDevice_ReceivedTimestamp" fields="AisDevice;ReceivedTimestamp" range="true" unique="true"/>
     <index name="ReceivedTimestamp" fields="ReceivedTimestamp" range="true"/>
     <index name="Mmsi_MessageSequenceNumber" fields="Mmsi;MessageSequenceNumber"/>
   </class>
@@ -509,12 +509,12 @@
       <int32 name="Spare"/>
       <int32 name="SequenceNumber1"/>
       <reference name="Mmsi1" type="MaritimeMobileServiceIdentity"/>
-      <int32 name="SequenceNumber2"/>
-      <reference name="Mmsi2" type="MaritimeMobileServiceIdentity"/>
-      <int32 name="SequenceNumber3"/>
-      <reference name="Mmsi3" type="MaritimeMobileServiceIdentity"/>
-      <int32 name="SequenceNumber4"/>
-      <reference name="Mmsi4" type="MaritimeMobileServiceIdentity"/>
+      <int32 name="SequenceNumber2" nullable="true"/>
+      <reference name="Mmsi2" type="MaritimeMobileServiceIdentity" nullable="true"/>
+      <int32 name="SequenceNumber3" nullable="true"/>
+      <reference name="Mmsi3" type="MaritimeMobileServiceIdentity" nullable="true"/>
+      <int32 name="SequenceNumber4" nullable="true"/>
+      <reference name="Mmsi4" type="MaritimeMobileServiceIdentity" nullable="true"/>
     </members>
   </class>
   <class name="AisBinaryAddressedMessage" base="AisMessage">
@@ -544,18 +544,18 @@
       <int32 name="ReservedSlots1"/>
       <int32 name="Timeout1"/>
       <int32 name="Increment1"/>
-      <int32 name="Offset2"/>
-      <int32 name="ReservedSlots2"/>
-      <int32 name="Timeout2"/>
-      <int32 name="Increment2"/>
-      <int32 name="Offset3"/>
-      <int32 name="ReservedSlots3"/>
-      <int32 name="Timeout3"/>
-      <int32 name="Increment3"/>
-      <int32 name="Offset4"/>
-      <int32 name="ReservedSlots4"/>
-      <int32 name="Timeout4"/>
-      <int32 name="Increment4"/>
+      <int32 name="Offset2" nullable="true"/>
+      <int32 name="ReservedSlots2" nullable="true"/>
+      <int32 name="Timeout2" nullable="true"/>
+      <int32 name="Increment2" nullable="true"/>
+      <int32 name="Offset3" nullable="true"/>
+      <int32 name="ReservedSlots3" nullable="true"/>
+      <int32 name="Timeout3" nullable="true"/>
+      <int32 name="Increment3" nullable="true"/>
+      <int32 name="Offset4" nullable="true"/>
+      <int32 name="ReservedSlots4" nullable="true"/>
+      <int32 name="Timeout4" nullable="true"/>
+      <int32 name="Increment4" nullable="true"/>
     </members>
   </class>
   <class name="AisExtendedClassBCsPositionReportMessage" base="AisMessage">
@@ -590,7 +590,7 @@
       <int32 name="FirstSlotOffset"/>
       <enum name="SecondMessageType" type="AisMessageType" nullable="true"/>
       <int32 name="SecondSlotOffset" nullable="true"/>
-      <reference name="SecondStationInterrogationMmsi" type="MaritimeMobileServiceIdentity"/>
+      <reference name="SecondStationInterrogationMmsi" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <enum name="SecondStationFirstMessageType" type="AisMessageType" nullable="true"/>
       <int32 name="SecondStationFirstSlotOffset" nullable="true"/>
     </members>
@@ -642,12 +642,12 @@
       <int32 name="Spare"/>
       <int32 name="SequenceNumber1"/>
       <reference name="Mmsi1" type="MaritimeMobileServiceIdentity"/>
-      <int32 name="SequenceNumber2"/>
-      <reference name="Mmsi2" type="MaritimeMobileServiceIdentity"/>
-      <int32 name="SequenceNumber3"/>
-      <reference name="Mmsi3" type="MaritimeMobileServiceIdentity"/>
-      <int32 name="SequenceNumber4"/>
-      <reference name="Mmsi4" type="MaritimeMobileServiceIdentity"/>
+      <int32 name="SequenceNumber2" nullable="true"/>
+      <reference name="Mmsi2" type="MaritimeMobileServiceIdentity" nullable="true"/>
+      <int32 name="SequenceNumber3" nullable="true"/>
+      <reference name="Mmsi3" type="MaritimeMobileServiceIdentity" nullable="true"/>
+      <int32 name="SequenceNumber4" nullable="true"/>
+      <reference name="Mmsi4" type="MaritimeMobileServiceIdentity" nullable="true"/>
     </members>
   </class>
   <class name="AisStandardClassBCsPositionReportMessage" base="AisMessage">
@@ -733,7 +733,7 @@
       <int32 name="DimensionToStern"/>
       <int32 name="DimensionToPort"/>
       <int32 name="DimensionToStarboard"/>
-      <reference name="MothershipMmsi" type="MaritimeMobileServiceIdentity"/>
+      <reference name="MothershipMmsi" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <enum name="PositionFixType" type="PositionFixType"/>
       <int32 name="Spare"/>
     </members>
@@ -759,39 +759,39 @@
       <int32 name="RadioStatus"/>
     </members>
   </class>
-  <class name="AisTransceiverCommand" displayname="AIS Transceiver Command">
+  <class name="AisDeviceCommand" displayname="AIS Device Command">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="AisTransceiver" type="AisTransceiver"/>
+      <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="AisTransceiverCommandReply"/>
+      <reference name="Reply" type="AisDeviceCommandReply" nullable="true"/>
     </members>
-    <index name="AisTransceiver_Timestamp" fields="AisTransceiver;Timestamp" range="true"/>
+    <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
     <index name="Reply" fields="Reply"/>
   </class>
-  <class name="AisTransceiverCommandReply" displayname="AIS Transceiver Command Reply">
+  <class name="AisDeviceCommandReply" displayname="AIS Device Command Reply">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="AisTransceiver" type="AisTransceiver"/>
+      <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="AisTransceiverCommand"/>
+      <reference name="Command" type="AisDeviceCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
-    <index name="AisTransceiver_Timestamp" fields="AisTransceiver;Timestamp" range="true"/>
+    <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
     <index name="Command" fields="Command" unique="true"/>
   </class>
-  <class name="AisTransceiverConfiguration" displayname="AIS Transceiver Configuration">
+  <class name="AisDeviceConfiguration" displayname="AIS Device Configuration">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="AisTransceiver" type="AisTransceiver" browsable="false"/>
+      <reference name="AisDevice" type="AisDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <string name="UserName" size="127" category="Authentication"/>
       <string name="Password" size="127" category="Authentication"/>
@@ -813,7 +813,7 @@
       <string name="TextMessageHeader" size="unlimited" category="Send"/>
       <string name="Urls" size="unlimited" category="Network"/>
       <int32 name="UdpPort" category="Network"/>
-      <enum name="ConnectionType" type="AisTransceiverConnectionType"/>
+      <enum name="ConnectionType" type="AisDeviceConnectionType"/>
       <boolean name="EnableRefreshAidToNavigationIn30sec"/>
       <boolean name="EnableAidToNavigationFromFile" category="Aid To Navigation"/>
       <string name="AidToNavigationHeader" size="unlimited" category="Aid To Navigation"/>
@@ -828,30 +828,30 @@
       <boolean name="StoreSentMessages"/>
       <boolean name="StoreUnsentMessages"/>
     </members>
-    <index name="AisTransceiver_Timestamp" fields="AisTransceiver;Timestamp" range="true" unique="true"/>
+    <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
   </class>
-  <class name="AisTransceiverRawMessage" displayname="AIS Transceiver Raw Sentence">
+  <class name="AisDeviceRawMessage" displayname="AIS Device Raw Sentence">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="AisTransceiver" type="AisTransceiver"/>
+      <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
       <boolean name="IsSent"/>
       <string name="Message" size="100"/>
     </members>
-    <index name="AisTransceiver_Timestamp" fields="AisTransceiver;Timestamp" range="true"/>
+    <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
   </class>
-  <class name="AisTransceiverRawSentence" displayname="AIS Transceiver Raw Sentence">
+  <class name="AisDeviceRawSentence" displayname="AIS Device Raw Sentence">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="AisTransceiver" type="AisTransceiver"/>
+      <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
       <string name="Sentence" size="1024"/>
     </members>
-    <index name="AisTransceiver_Timestamp" fields="AisTransceiver;Timestamp" range="true"/>
+    <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
   </class>
   <class name="AlarmStateChange">
@@ -924,7 +924,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera"/>
+      <reference name="Camera" type="CameraDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
@@ -1033,7 +1033,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera"/>
+      <reference name="Camera" type="CameraDevice"/>
       <datetime name="Timestamp"/>
       <reference name="Command" type="CameraCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
@@ -1050,7 +1050,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera" browsable="false"/>
+      <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <enum name="CameraControlProtocol" type="CameraControlProtocol"/>
       <string name="CameraAddress" size="127" category="Network"/>
@@ -1121,7 +1121,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera" browsable="false"/>
+      <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <collection name="Values" type="CameraPanCalibrationValue" member="PanCalibration" browsable="false"/>
     </members>
@@ -1142,7 +1142,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera" browsable="false"/>
+      <reference name="Camera" type="CameraDevice" browsable="false"/>
       <reference name="Track" type="TrackBase" browsable="false"/>
       <datetime name="Timestamp"/>
       <enum name="PositionPanTiltMode" type="CameraPanTiltMode" category="Position"/>
@@ -1168,7 +1168,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera" browsable="false"/>
+      <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <collection name="Values" type="CameraTiltCalibrationValue" member="TiltCalibration" browsable="false"/>
     </members>
@@ -1189,7 +1189,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Camera" type="Camera" browsable="false"/>
+      <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <collection name="Values" type="CameraZoomCalibrationValue" member="ZoomCalibration" browsable="false"/>
     </members>
@@ -1466,7 +1466,7 @@
       <collection name="AisBinaryAddressedMessages" type="AisBinaryAddressedMessage" member="DestinationMmsi"/>
       <collection name="AisStaticDataReportPartBMessages" type="AisStaticDataReportPartBMessage" member="MothershipMmsi"/>
       <collection name="AidsToNavigation" type="AisAidToNavigation" member="MMSI"/>
-      <collection name="OilSpillDetectorConfiguration" type="OilspillDetectorConfiguration" member="TargetMMSI"/>
+      <collection name="OilSpillDetectorConfiguration" type="OilSpillDetectorConfiguration" member="TargetMMSI"/>
     </members>
     <index name="Identifier" fields="Identifier" unique="true"/>
   </class>
@@ -1538,7 +1538,7 @@
     <index name="Host" fields="Host"/>
     <index name="Name" fields="Name" unique="true"/>
   </class>
-  <class name="Camera" base="Device">
+  <class name="CameraDevice" base="Device">
     <members>
       <collection name="Commands" type="CameraCommand" member="Camera" browsable="false"/>
       <collection name="CommandReplies" type="CameraCommandReply" member="Camera" browsable="false"/>
@@ -1557,7 +1557,7 @@
       <collection name="Commands" type="GNSSDeviceCommand" member="GNSSDevice"/>
       <collection name="CommandReplies" type="GNSSDeviceCommandReply" member="GNSSDevice"/>
       <collection name="Configuration" type="GNSSDeviceConfiguration" member="GNSSDevice"/>
-      <collection name="Radars" type="Radar" member="GNSSDevice"/>
+      <collection name="Radars" type="RadarDevice" member="GNSSDevice"/>
       <collection name="Gyros" type="GyroDevice" member="GNSSDevice"/>
     </members>
   </class>
@@ -1574,7 +1574,7 @@
       <collection name="Commands" type="GyroDeviceCommand" member="GyroDevice"/>
       <collection name="CommandReplies" type="GyroDeviceCommandReply" member="GyroDevice"/>
       <collection name="Configuration" type="GyroDeviceConfiguration" member="GyroDevice"/>
-      <collection name="WeatherStations" type="WeatherStation" member="Gyro"/>
+      <collection name="WeatherStations" type="WeatherStationDevice" member="Gyro"/>
     </members>
     <index name="GNSSDevice" fields="GNSSDevice"/>
   </class>
@@ -1587,24 +1587,24 @@
       <collection name="WhiteList" type="LineInputWhiteListEntry" member="LineInputDevice"/>
     </members>
   </class>
-  <class name="OilspillDetector" base="Device" displayname="Oil Spill Detector">
+  <class name="OilSpillDetectorDevice" base="Device" displayname="Oil Spill Detector">
     <members>
-      <collection name="OilSpills" type="Oilspill" member="OilSpillDetector"/>
-      <collection name="Commands" type="OilspillDetectorCommand" member="OilSpillDetector"/>
-      <collection name="CommandReplies" type="OilspillDetectorCommandReply" member="OilSpillDetector"/>
-      <collection name="Configuration" type="OilspillDetectorConfiguration" member="OilSpillDetector"/>
+      <collection name="OilSpills" type="OilSpill" member="OilSpillDetector"/>
+      <collection name="Commands" type="OilSpillDetectorCommand" member="OilSpillDetector"/>
+      <collection name="CommandReplies" type="OilSpillDetectorCommandReply" member="OilSpillDetector"/>
+      <collection name="Configuration" type="OilSpillDetectorConfiguration" member="OilSpillDetector"/>
     </members>
   </class>
-  <class name="Radio" base="Device" shortname="RDI">
+  <class name="RadioDevice" base="Device" shortname="RDI">
     <members>
       <collection name="Commands" type="RadioCommand" member="Radio"/>
       <collection name="CommandReplies" type="RadioCommandReply" member="Radio"/>
       <collection name="Configuration" type="RadioConfiguration" member="Radio"/>
     </members>
   </class>
-  <class name="Radome" base="Device" description="A Radome device." shortname="RDO">
+  <class name="RadomeDevice" base="Device" description="A Radome device." shortname="RDO">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice" nullable="true"/>
       <collection name="Commands" type="RadomeCommand" member="Radome"/>
       <collection name="CommandReplies" type="RadomeCommandReply" member="Radome"/>
       <collection name="Configuration" type="RadomeConfiguration" member="Radome"/>
@@ -1615,23 +1615,23 @@
     </members>
     <index name="Radar" fields="Radar"/>
   </class>
-  <class name="Tracker" base="Device" abstract="true">
+  <class name="TrackerDevice" base="Device" abstract="true">
     <members>
       <collection name="Tracks" type="TrackBase" member="Tracker" browsable="false"/>
       <collection name="FilterParameters" type="TrackerFilterParameters" member="Tracker" browsable="false"/>
     </members>
   </class>
-  <class name="AisTransceiver" base="Tracker" displayname="AIS Transceiver">
+  <class name="AisDevice" base="TrackerDevice" displayname="AIS Device">
     <members>
-      <collection name="Messages" type="AisMessage" member="AisTransceiver" browsable="false"/>
-      <collection name="Commands" type="AisTransceiverCommand" member="AisTransceiver" browsable="false"/>
-      <collection name="CommandReplies" type="AisTransceiverCommandReply" member="AisTransceiver" browsable="false"/>
-      <collection name="Configuration" type="AisTransceiverConfiguration" member="AisTransceiver" browsable="false"/>
-      <collection name="ReceivedSentences" type="AisTransceiverRawSentence" member="AisTransceiver" browsable="false"/>
-      <collection name="RawMessages" type="AisTransceiverRawMessage" member="AisTransceiver" browsable="false"/>
+      <collection name="Messages" type="AisMessage" member="AisDevice" browsable="false"/>
+      <collection name="Commands" type="AisDeviceCommand" member="AisDevice" browsable="false"/>
+      <collection name="CommandReplies" type="AisDeviceCommandReply" member="AisDevice" browsable="false"/>
+      <collection name="Configuration" type="AisDeviceConfiguration" member="AisDevice" browsable="false"/>
+      <collection name="ReceivedSentences" type="AisDeviceRawSentence" member="AisDevice" browsable="false"/>
+      <collection name="RawMessages" type="AisDeviceRawMessage" member="AisDevice" browsable="false"/>
     </members>
   </class>
-  <class name="Radar" base="Tracker">
+  <class name="RadarDevice" base="TrackerDevice">
     <members>
       <timeseries name="SaveSettingsTimeseries" type="RadarSaveSettingsTimeseries" propertyname="SaveSettings" propertytype="Boolean" propertynullable="true" browsable="false"/>
       <timeseries name="PowerOnTimeseries" type="RadarPowerOnTimeseries" propertyname="PowerOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
@@ -1654,8 +1654,8 @@
       <timeseries name="FastTimeConstantModeTimeseries" type="RadarFastTimeConstantModeTimeseries" propertyname="FastTimeConstantMode" propertytype="Int32" propertynullable="true" browsable="false"/>
       <timeseries name="LatitudeTimeseries" type="RadarLatitudeTimeseries" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="LongitudeTimeseries" type="RadarLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <reference name="Radome" type="Radome" browsable="false"/>
-      <reference name="GNSSDevice" type="GNSSDevice" browsable="false"/>
+      <reference name="Radome" type="RadomeDevice" browsable="false" nullable="true"/>
+      <reference name="GNSSDevice" type="GNSSDevice" browsable="false" nullable="true"/>
       <collection name="Images" type="RadarImage" member="Radar" browsable="false"/>
       <collection name="TrackTables" type="RadarRawTrackTable" member="Radar" browsable="false"/>
       <collection name="Commands" type="RadarCommand" member="Radar" browsable="false"/>
@@ -1667,7 +1667,7 @@
     <index name="Radome" fields="Radome"/>
     <index name="GNSSDevice" fields="GNSSDevice"/>
   </class>
-  <class name="WeatherStation" base="Device">
+  <class name="WeatherStationDevice" base="Device">
     <members>
       <collection name="Commands" type="WeatherStationCommand" member="WeatherStation"/>
       <collection name="CommandReplies" type="WeatherStationCommandReply" member="WeatherStation"/>
@@ -2160,11 +2160,11 @@
       <collection name="Elements" type="NamespaceElement" member="Namespace"/>
     </members>
   </class>
-  <class name="Oilspill" displayname="Oil Spill">
+  <class name="OilSpill" displayname="Oil Spill">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="OilSpillDetector" type="OilspillDetector"/>
+      <reference name="OilSpillDetector" type="OilSpillDetectorDevice"/>
       <datetime name="Timestamp"/>
       <double name="OilArea"/>
       <binary name="Shape" size="unlimited"/>
@@ -2175,27 +2175,27 @@
     <index name="OilSpillDetector_Timestamp" fields="OilSpillDetector;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
   </class>
-  <class name="OilspillDetectorCommand" displayname="Oil Spill Detector Command">
+  <class name="OilSpillDetectorCommand" displayname="Oil Spill Detector Command">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="OilSpillDetector" type="OilspillDetector"/>
+      <reference name="OilSpillDetector" type="OilSpillDetectorDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="OilspillDetectorCommandReply"/>
+      <reference name="Reply" type="OilSpillDetectorCommandReply"/>
     </members>
     <index name="OilSpillDetector_Timestamp" fields="OilSpillDetector;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
     <index name="Reply" fields="Reply"/>
   </class>
-  <class name="OilspillDetectorCommandReply" displayname="OilspillDetector Command Reply">
+  <class name="OilSpillDetectorCommandReply" displayname="OilSpillDetector Command Reply">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="OilSpillDetector" type="OilspillDetector"/>
+      <reference name="OilSpillDetector" type="OilSpillDetectorDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="OilspillDetectorCommand"/>
+      <reference name="Command" type="OilSpillDetectorCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2203,11 +2203,11 @@
     <index name="Timestamp" fields="Timestamp" range="true"/>
     <index name="Command" fields="Command" unique="true"/>
   </class>
-  <class name="OilspillDetectorConfiguration" displayname="Oil Spill Detector Configuration">
+  <class name="OilSpillDetectorConfiguration" displayname="Oil Spill Detector Configuration">
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="OilSpillDetector" type="OilspillDetector"/>
+      <reference name="OilSpillDetector" type="OilSpillDetectorDevice"/>
       <datetime name="Timestamp"/>
       <double name="Range"/>
       <double name="StartAngle"/>
@@ -2698,7 +2698,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
       <enum name="Type" type="AlarmState"/>
     </members>
@@ -2709,7 +2709,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
@@ -2727,7 +2727,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
       <reference name="Command" type="RadarCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
@@ -2750,7 +2750,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar" browsable="false"/>
+      <reference name="Radar" type="RadarDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <int32 name="RadarProtocolVersion" browsable="false"/>
       <string name="RadarIPAddress" size="100" category="Network" description="Ip address, or hostname, of the radar"/>
@@ -2785,7 +2785,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
       <uint32 name="Depth" description="Color depth (1,4,8,16 bit)"/>
       <int32 name="Resolution" description="Resolution in nanoseconds"/>
@@ -2799,7 +2799,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
       <int32 name="Count"/>
       <binary name="Table" size="unlimited"/>
@@ -2811,7 +2811,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
       <int32 name="AzimuthCount"/>
       <int32 name="TriggerCount"/>
@@ -2827,7 +2827,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radio" type="Radio"/>
+      <reference name="Radio" type="RadioDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
@@ -2841,7 +2841,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radio" type="Radio"/>
+      <reference name="Radio" type="RadioDevice"/>
       <datetime name="Timestamp"/>
       <reference name="Command" type="RadioCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
@@ -2855,7 +2855,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radio" type="Radio"/>
+      <reference name="Radio" type="RadioDevice"/>
       <datetime name="Timestamp"/>
       <double name="Longitude"/>
       <double name="Latitude"/>
@@ -2872,7 +2872,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
@@ -2886,7 +2886,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
       <datetime name="Timestamp"/>
       <reference name="Command" type="RadomeCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
@@ -2900,7 +2900,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
       <datetime name="Timestamp"/>
       <timespan name="Interval"/>
       <double name="LowPressureLimit"/>
@@ -3069,47 +3069,47 @@
   </class>
   <class name="RadarAutomaticSensitivityTimeControlTimeseries" base="BooleanTimeseries" displayname="Automatic Sensitivity Time Control (STC)">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarBlankSector1Timeseries" base="BooleanTimeseries" displayname="Blank Sector 1">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarBlankSector2Timeseries" base="BooleanTimeseries" displayname="Blank Sector 2">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarEnableAutomaticFrequencyControlTimeseries" base="BooleanTimeseries" displayname="Enable Automatic Frequency Control">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarEnableFastTimeConstantTimeseries" base="BooleanTimeseries" displayname="Enable Fast Time Constant (FTC)">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarEnableSensitivityTimeControlTimeseries" base="BooleanTimeseries" displayname="Enable Sensitivity Time Control (STC)">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarPowerOnTimeseries" base="BooleanTimeseries" displayname="Radar Power On">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarSaveSettingsTimeseries" base="BooleanTimeseries" displayname="Save Settings">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarTrackingTimeseries" base="BooleanTimeseries" displayname="Radar Power On">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="MediaProxySessionEnabledTimeseries" base="BooleanTimeseries" displayname="Media Proxy Session Enabled" description="Tracks the Enabled state of a Media Proxy Session.">
@@ -3199,27 +3199,27 @@
   </class>
   <class name="RadarLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude" shortname="RLATS">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude" shortname="RLOTS">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadomeDewPointTimeseries" base="DoubleTimeseries" displayname="Radome Dew Point" description="Tracks the Dew Point of a Radome.">
     <members>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
     </members>
   </class>
   <class name="RadomePressureTimeseries" base="DoubleTimeseries" displayname="Radome Pressure" description="Tracks the Pressure of a Radome.">
     <members>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
     </members>
   </class>
   <class name="RadomeTemperatureTimeseries" base="DoubleTimeseries" displayname="Radome Temperature" description="Tracks the Temperature of a Radome." shortname="RTETS">
     <members>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
     </members>
   </class>
   <class name="VesselDraughtTimeseries" base="DoubleTimeseries">
@@ -3244,49 +3244,49 @@
   </class>
   <class name="WeatherStationAbsoluteHumidityTimeseries" base="DoubleTimeseries" displayname="Absolute Humidity Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationAirTemperatureTimeseries" base="DoubleTimeseries" displayname="Air Temperature Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationBarometricPressureTimeseries" base="DoubleTimeseries" displayname="Barometric Pressure Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationDewPointTimeseries" base="DoubleTimeseries" displayname="Dew Point Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationRelativeHumidityTimeseries" base="DoubleTimeseries" displayname="Relative Humidity Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationWaterTemperatureTimeseries" base="DoubleTimeseries" displayname="Water Temperature Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationWindDirectionTimeseries" base="DoubleTimeseries" displayname="Wind Direction Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationWindSpeedTimeseries" base="DoubleTimeseries" displayname="Wind Speed Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
@@ -3325,52 +3325,52 @@
   </class>
   <class name="RadarAzimuthOffsetTimeseries" base="Int32Timeseries" displayname="Azimuth Offset">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarFastTimeConstantLevelTimeseries" base="Int32Timeseries" displayname="Fast Time Constant (FTC) Level">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarFastTimeConstantModeTimeseries" base="Int32Timeseries" displayname="Fast Time Constant (FTC) Mode">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarPulseTimeseries" base="Int32Timeseries" displayname="Radar Pulse" shortname="RAPTS">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarSector1EndTimeseries" base="Int32Timeseries" displayname="End Sector 1">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarSector1StartTimeseries" base="Int32Timeseries" displayname="Start Sector 1">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarSector2EndTimeseries" base="Int32Timeseries" displayname="End Sector 2">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarSector2StartTimeseries" base="Int32Timeseries" displayname="Start Sector 2">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarSensitivityTimeControlLevelTimeseries" base="Int32Timeseries" displayname="Sensitivity Time Control (STC) Level">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="RadarTuningTimeseries" base="Int32Timeseries" displayname="Blank Tuning" shortname="RATUTS">
     <members>
-      <reference name="Radar" type="Radar"/>
+      <reference name="Radar" type="RadarDevice"/>
     </members>
   </class>
   <class name="VesselPersonsOnBoardTimeseries" base="Int32Timeseries">
@@ -3438,7 +3438,7 @@
   </class>
   <class name="RadomeStatusTimeseries" base="UInt32Timeseries" displayname="Radome Status" description="Tracks the Status of a Radome.">
     <members>
-      <reference name="Radome" type="Radome"/>
+      <reference name="Radome" type="RadomeDevice"/>
     </members>
   </class>
   <class name="UInt64Timeseries" base="Timeseries">
@@ -3491,7 +3491,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Tracker" type="Tracker"/>
+      <reference name="Tracker" type="TrackerDevice"/>
       <int64 name="TrackNumber"/>
       <datetime name="Timestamp"/>
       <collection name="Status" type="CameraStatus" member="Track" browsable="false"/>
@@ -3516,7 +3516,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Tracker" type="Tracker"/>
+      <reference name="Tracker" type="TrackerDevice"/>
       <string name="Name" size="100"/>
       <collection name="Configuration" type="TrackerFilterParametersConfiguration" member="Parameters"/>
     </members>
@@ -3694,7 +3694,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="View" type="View"/>
-      <reference name="Camera" type="Camera"/>
+      <reference name="Camera" type="CameraDevice"/>
       <datetime name="Start"/>
       <datetime name="End" nullable="true"/>
     </members>
@@ -3707,7 +3707,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="View" type="View"/>
-      <reference name="Tracker" type="Tracker"/>
+      <reference name="Tracker" type="TrackerDevice"/>
       <datetime name="Start"/>
       <datetime name="End" nullable="true"/>
     </members>
@@ -3719,7 +3719,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
@@ -3733,7 +3733,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
       <datetime name="Timestamp"/>
       <reference name="Command" type="WeatherStationCommand"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
@@ -3747,7 +3747,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="WeatherStation" type="WeatherStation"/>
+      <reference name="WeatherStation" type="WeatherStationDevice"/>
       <datetime name="Timestamp"/>
       <timespan name="NoDataTimeOut"/>
       <timespan name="SendInterval"/>

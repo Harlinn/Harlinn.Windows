@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Barrelman.Tests.cpp" />
+    <ClCompile Include="Database\StoredProceduresTests.cpp" />
     <ClCompile Include="Generated\Cpp\Data\DataTypesTests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

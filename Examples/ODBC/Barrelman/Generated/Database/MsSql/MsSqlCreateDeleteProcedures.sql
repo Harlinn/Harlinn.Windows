@@ -45,7 +45,54 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageDelete]
+CREATE OR ALTER PROCEDURE [AisDeviceCommandDelete]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint],
+  @RowCount int OUTPUT
+AS
+  BEGIN
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      DELETE FROM [dbo].[AisDeviceCommand] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCount = @@ROWCOUNT;
+      IF @RowCount = 0
+      BEGIN
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10100;
+        RETURN
+      END
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceCommandReplyDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -58,7 +105,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[AidToNavigationReportMessage] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[AisDeviceCommandReply] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -67,6 +114,194 @@ AS
         ELSE
           IF XACT_STATE() <> -1
             ROLLBACK TRANSACTION SavePoint10200;
+        RETURN
+      END
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceConfigurationDelete]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint],
+  @RowCount int OUTPUT
+AS
+  BEGIN
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      DELETE FROM [dbo].[AisDeviceConfiguration] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCount = @@ROWCOUNT;
+      IF @RowCount = 0
+      BEGIN
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10300;
+        RETURN
+      END
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceRawMessageDelete]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint],
+  @RowCount int OUTPUT
+AS
+  BEGIN
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      DELETE FROM [dbo].[AisDeviceRawMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCount = @@ROWCOUNT;
+      IF @RowCount = 0
+      BEGIN
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10400;
+        RETURN
+      END
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceRawSentenceDelete]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint],
+  @RowCount int OUTPUT
+AS
+  BEGIN
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      DELETE FROM [dbo].[AisDeviceRawSentence] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCount = @@ROWCOUNT;
+      IF @RowCount = 0
+      BEGIN
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10500;
+        RETURN
+      END
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageDelete]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint],
+  @RowCount int OUTPUT
+AS
+  BEGIN
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      DELETE FROM [dbo].[AidToNavigationReportMessage] WHERE [Id] = @Id;
+      SET @RowCount = @@ROWCOUNT;
+      IF @RowCount = 0
+      BEGIN
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10700;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -84,7 +319,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10200;
+            ROLLBACK TRANSACTION SavePoint10700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -102,7 +337,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10300;
+      SAVE TRANSACTION SavePoint10800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -114,7 +349,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10300;
+            ROLLBACK TRANSACTION SavePoint10800;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -132,7 +367,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10300;
+            ROLLBACK TRANSACTION SavePoint10800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -150,7 +385,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10400;
+      SAVE TRANSACTION SavePoint10900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -162,7 +397,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10400;
+            ROLLBACK TRANSACTION SavePoint10900;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -180,7 +415,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10400;
+            ROLLBACK TRANSACTION SavePoint10900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -198,7 +433,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10500;
+      SAVE TRANSACTION SavePoint11000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -210,7 +445,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10500;
+            ROLLBACK TRANSACTION SavePoint11000;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -228,7 +463,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10500;
+            ROLLBACK TRANSACTION SavePoint11000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -246,7 +481,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10600;
+      SAVE TRANSACTION SavePoint11100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -258,7 +493,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10600;
+            ROLLBACK TRANSACTION SavePoint11100;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -276,7 +511,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10600;
+            ROLLBACK TRANSACTION SavePoint11100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -294,7 +529,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10700;
+      SAVE TRANSACTION SavePoint11200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -306,7 +541,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10700;
+            ROLLBACK TRANSACTION SavePoint11200;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -324,7 +559,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10700;
+            ROLLBACK TRANSACTION SavePoint11200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -342,7 +577,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10800;
+      SAVE TRANSACTION SavePoint11300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -354,7 +589,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10800;
+            ROLLBACK TRANSACTION SavePoint11300;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -372,7 +607,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10800;
+            ROLLBACK TRANSACTION SavePoint11300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -390,7 +625,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10900;
+      SAVE TRANSACTION SavePoint11400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -402,7 +637,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10900;
+            ROLLBACK TRANSACTION SavePoint11400;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -420,7 +655,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10900;
+            ROLLBACK TRANSACTION SavePoint11400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -438,7 +673,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11000;
+      SAVE TRANSACTION SavePoint11500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -450,7 +685,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11000;
+            ROLLBACK TRANSACTION SavePoint11500;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -468,7 +703,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11000;
+            ROLLBACK TRANSACTION SavePoint11500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -486,7 +721,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11200;
+      SAVE TRANSACTION SavePoint11700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -498,7 +733,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11200;
+            ROLLBACK TRANSACTION SavePoint11700;
         RETURN
       END
       DELETE FROM [dbo].[AisPositionReportClassAMessageBase] WHERE [Id] = @Id;
@@ -517,7 +752,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11200;
+            ROLLBACK TRANSACTION SavePoint11700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -535,7 +770,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11300;
+      SAVE TRANSACTION SavePoint11800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -547,7 +782,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11300;
+            ROLLBACK TRANSACTION SavePoint11800;
         RETURN
       END
       DELETE FROM [dbo].[AisPositionReportClassAMessageBase] WHERE [Id] = @Id;
@@ -566,7 +801,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11300;
+            ROLLBACK TRANSACTION SavePoint11800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -584,7 +819,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11400;
+      SAVE TRANSACTION SavePoint11900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -596,7 +831,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11400;
+            ROLLBACK TRANSACTION SavePoint11900;
         RETURN
       END
       DELETE FROM [dbo].[AisPositionReportClassAMessageBase] WHERE [Id] = @Id;
@@ -615,7 +850,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11400;
+            ROLLBACK TRANSACTION SavePoint11900;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -633,7 +868,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11500;
+      SAVE TRANSACTION SavePoint12000;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -645,7 +880,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11500;
+            ROLLBACK TRANSACTION SavePoint12000;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -663,7 +898,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11500;
+            ROLLBACK TRANSACTION SavePoint12000;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -681,7 +916,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11600;
+      SAVE TRANSACTION SavePoint12100;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -693,7 +928,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11600;
+            ROLLBACK TRANSACTION SavePoint12100;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -711,7 +946,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11600;
+            ROLLBACK TRANSACTION SavePoint12100;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -729,7 +964,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11700;
+      SAVE TRANSACTION SavePoint12200;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -741,7 +976,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11700;
+            ROLLBACK TRANSACTION SavePoint12200;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -759,7 +994,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11700;
+            ROLLBACK TRANSACTION SavePoint12200;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -777,7 +1012,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11800;
+      SAVE TRANSACTION SavePoint12300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -789,7 +1024,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11800;
+            ROLLBACK TRANSACTION SavePoint12300;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -807,7 +1042,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11800;
+            ROLLBACK TRANSACTION SavePoint12300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -825,7 +1060,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11900;
+      SAVE TRANSACTION SavePoint12400;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -837,7 +1072,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11900;
+            ROLLBACK TRANSACTION SavePoint12400;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -855,7 +1090,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11900;
+            ROLLBACK TRANSACTION SavePoint12400;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -873,7 +1108,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12000;
+      SAVE TRANSACTION SavePoint12500;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -885,7 +1120,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12000;
+            ROLLBACK TRANSACTION SavePoint12500;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -903,7 +1138,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12000;
+            ROLLBACK TRANSACTION SavePoint12500;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -921,7 +1156,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12100;
+      SAVE TRANSACTION SavePoint12600;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -933,7 +1168,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12100;
+            ROLLBACK TRANSACTION SavePoint12600;
         RETURN
       END
       DELETE FROM [dbo].[AisStaticDataReportMessage] WHERE [Id] = @Id;
@@ -952,7 +1187,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12100;
+            ROLLBACK TRANSACTION SavePoint12600;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -970,7 +1205,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12200;
+      SAVE TRANSACTION SavePoint12700;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -982,7 +1217,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12200;
+            ROLLBACK TRANSACTION SavePoint12700;
         RETURN
       END
       DELETE FROM [dbo].[AisStaticDataReportMessage] WHERE [Id] = @Id;
@@ -1001,7 +1236,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12200;
+            ROLLBACK TRANSACTION SavePoint12700;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -1019,7 +1254,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12300;
+      SAVE TRANSACTION SavePoint12800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -1031,7 +1266,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12300;
+            ROLLBACK TRANSACTION SavePoint12800;
         RETURN
       END
       DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
@@ -1049,7 +1284,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12300;
+            ROLLBACK TRANSACTION SavePoint12800;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -1067,7 +1302,7 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12400;
+      SAVE TRANSACTION SavePoint12900;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
@@ -1079,245 +1314,10 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12400;
-        RETURN
-      END
-      DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverCommandDelete]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint],
-  @RowCount int OUTPUT
-AS
-  BEGIN
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      DELETE FROM [dbo].[AisTransceiverCommand] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCount = @@ROWCOUNT;
-      IF @RowCount = 0
-      BEGIN
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12500;
-        RETURN
-      END
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverCommandReplyDelete]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint],
-  @RowCount int OUTPUT
-AS
-  BEGIN
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      DELETE FROM [dbo].[AisTransceiverCommandReply] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCount = @@ROWCOUNT;
-      IF @RowCount = 0
-      BEGIN
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12600;
-        RETURN
-      END
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverConfigurationDelete]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint],
-  @RowCount int OUTPUT
-AS
-  BEGIN
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12700;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      DELETE FROM [dbo].[AisTransceiverConfiguration] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCount = @@ROWCOUNT;
-      IF @RowCount = 0
-      BEGIN
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12700;
-        RETURN
-      END
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12700;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverRawMessageDelete]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint],
-  @RowCount int OUTPUT
-AS
-  BEGIN
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12800;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      DELETE FROM [dbo].[AisTransceiverRawMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCount = @@ROWCOUNT;
-      IF @RowCount = 0
-      BEGIN
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12800;
-        RETURN
-      END
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12800;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverRawSentenceDelete]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint],
-  @RowCount int OUTPUT
-AS
-  BEGIN
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12900;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      DELETE FROM [dbo].[AisTransceiverRawSentence] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCount = @@ROWCOUNT;
-      IF @RowCount = 0
-      BEGIN
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
             ROLLBACK TRANSACTION SavePoint12900;
         RETURN
       END
+      DELETE FROM [dbo].[AisMessage] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -4041,7 +4041,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [CameraDelete]
+CREATE OR ALTER PROCEDURE [CameraDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4054,7 +4054,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[Camera] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[CameraDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -4237,7 +4237,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorDelete]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4250,7 +4250,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[OilspillDetector] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[OilSpillDetectorDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -4286,7 +4286,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [RadioDelete]
+CREATE OR ALTER PROCEDURE [RadioDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4299,7 +4299,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[Radio] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[RadioDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -4335,7 +4335,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [RadomeDelete]
+CREATE OR ALTER PROCEDURE [RadomeDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4348,7 +4348,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[Radome] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[RadomeDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -4384,7 +4384,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverDelete]
+CREATE OR ALTER PROCEDURE [AisDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4397,7 +4397,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[AisTransceiver] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[AisDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -4408,7 +4408,7 @@ AS
             ROLLBACK TRANSACTION SavePoint19900;
         RETURN
       END
-      DELETE FROM [dbo].[Tracker] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[TrackerDevice] WHERE [Id] = @Id;
       DELETE FROM [dbo].[Device] WHERE [Id] = @Id;
       DELETE FROM [dbo].[Item] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       IF @TranCounter = 0
@@ -4434,7 +4434,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [RadarDelete]
+CREATE OR ALTER PROCEDURE [RadarDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4447,7 +4447,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[Radar] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[RadarDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -4458,7 +4458,7 @@ AS
             ROLLBACK TRANSACTION SavePoint20000;
         RETURN
       END
-      DELETE FROM [dbo].[Tracker] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[TrackerDevice] WHERE [Id] = @Id;
       DELETE FROM [dbo].[Device] WHERE [Id] = @Id;
       DELETE FROM [dbo].[Item] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       IF @TranCounter = 0
@@ -4484,7 +4484,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [WeatherStationDelete]
+CREATE OR ALTER PROCEDURE [WeatherStationDeviceDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -4497,7 +4497,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[WeatherStation] WHERE [Id] = @Id;
+      DELETE FROM [dbo].[WeatherStationDevice] WHERE [Id] = @Id;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -6095,7 +6095,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDelete]
+CREATE OR ALTER PROCEDURE [OilSpillDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -6108,7 +6108,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[Oilspill] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      DELETE FROM [dbo].[OilSpill] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -6142,7 +6142,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorCommandDelete]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -6155,7 +6155,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[OilspillDetectorCommand] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      DELETE FROM [dbo].[OilSpillDetectorCommand] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -6189,7 +6189,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorCommandReplyDelete]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandReplyDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -6202,7 +6202,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[OilspillDetectorCommandReply] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      DELETE FROM [dbo].[OilSpillDetectorCommandReply] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN
@@ -6236,7 +6236,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorConfigurationDelete]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorConfigurationDelete]
   @Id [uniqueidentifier],
   @RowVersion [bigint],
   @RowCount int OUTPUT
@@ -6249,7 +6249,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      DELETE FROM [dbo].[OilspillDetectorConfiguration] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      DELETE FROM [dbo].[OilSpillDetectorConfiguration] WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCount = @@ROWCOUNT;
       IF @RowCount = 0
       BEGIN

@@ -279,8 +279,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name]";
-        static constexpr std::wstring_view ViewName = L"AircraftTypeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -313,7 +314,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -342,34 +343,35 @@ namespace Barrelman::Database
 
     using SimpleAircraftTypeDataReader = SimpleColumnDataReader<AircraftTypeColumnData>;
 
-    class AisMessageColumnData : public BaseColumnData
+    class AisDeviceCommandColumnData : public BaseColumnData
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime receivedTimestamp_;
-        Int64 messageSequenceNumber_ = 0;
-        Int32 repeat_ = 0;
-        Guid mmsi_;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Guid deviceCommandSourceId_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi]";
-        static constexpr std::wstring_view ViewName = L"AisMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT AISTRANSCEIVER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT RECEIVEDTIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT MESSAGESEQUENCENUMBER_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT REPEAT_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MMSI_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCETYPE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT REPLY_FIELD_ID = 7;
 
-        AisMessageColumnData( ) = default;
+        AisDeviceCommandColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::AisMessage;
+            return Kind::AisDeviceCommand;
         }
 
         const Guid& Id( ) const
@@ -388,13 +390,1025 @@ namespace Barrelman::Database
         {
             rowVersion_ = rowVersion;
         }
-        const Guid& AisTransceiver( ) const
+        const Guid& AisDevice( ) const
         {
-            return aisTransceiver_;
+            return aisDevice_;
         }
-        void SetAisTransceiver( const Guid& aisTransceiver )
+        void SetAisDevice( const Guid& aisDevice )
         {
-            aisTransceiver_ = aisTransceiver;
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        {
+            return deviceCommandSourceType_;
+        }
+        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        {
+            deviceCommandSourceType_ = deviceCommandSourceType;
+        }
+        const Guid& DeviceCommandSourceId( ) const
+        {
+            return deviceCommandSourceId_;
+        }
+        void SetDeviceCommandSourceId( const Guid& deviceCommandSourceId )
+        {
+            deviceCommandSourceId_ = deviceCommandSourceId;
+        }
+        const DBGuid& Reply( ) const
+        {
+            return reply_;
+        }
+        void SetReply( const DBGuid& reply )
+        {
+            reply_ = reply;
+        }
+        void BindColumns( const ODBC::Statement& statement )
+        {
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
+            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
+            Bind(statement, REPLY_FIELD_ID, reply_);
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, Data::Kind::AisDeviceCommand );
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
+        void AssignTo( Data::AisDeviceCommandData& destination ) const
+        {
+            destination.SetId( id_ );
+            destination.SetRowVersion( rowVersion_ );
+            destination.SetAisDevice( aisDevice_ );
+            destination.SetTimestamp( timestamp_ );
+            destination.SetDeviceCommandSourceType( deviceCommandSourceType_ );
+            destination.SetDeviceCommandSourceId( deviceCommandSourceId_ );
+            destination.SetReply( reply_ );
+        }
+    };
+
+    using SimpleAisDeviceCommandDataReader = SimpleColumnDataReader<AisDeviceCommandColumnData>;
+
+    class AisDeviceCommandReplyColumnData : public BaseColumnData
+    {
+        Guid id_;
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        Guid command_;
+        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        WideString message_;
+        SQLLEN messageLength_ = SQL_NULL_DATA;
+    public:
+        using Base = BaseColumnData;
+
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
+
+        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT COMMAND_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT STATUS_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 7;
+
+        AisDeviceCommandReplyColumnData( ) = default;
+
+        virtual Kind GetKind() const override
+        {
+            return Kind::AisDeviceCommandReply;
+        }
+
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        void SetId( const Guid& id )
+        {
+            id_ = id;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        const Guid& Command( ) const
+        {
+            return command_;
+        }
+        void SetCommand( const Guid& command )
+        {
+            command_ = command;
+        }
+        Data::DeviceCommandReplyStatus Status( ) const
+        {
+            return status_;
+        }
+        void SetStatus( Data::DeviceCommandReplyStatus status )
+        {
+            status_ = status;
+        }
+        const WideString& Message( ) const
+        {
+            return message_;
+        }
+        void SetMessage( const WideString& message )
+        {
+            message_ = message;
+        }
+        void BindColumns( const ODBC::Statement& statement )
+        {
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, COMMAND_FIELD_ID, command_);
+            Bind(statement, STATUS_FIELD_ID, status_);
+        }
+
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, Data::Kind::AisDeviceCommandReply );
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_);
+        }
+        void AssignTo( Data::AisDeviceCommandReplyData& destination ) const
+        {
+            destination.SetId( id_ );
+            destination.SetRowVersion( rowVersion_ );
+            destination.SetAisDevice( aisDevice_ );
+            destination.SetTimestamp( timestamp_ );
+            destination.SetCommand( command_ );
+            destination.SetStatus( status_ );
+            destination.SetMessage( message_ );
+        }
+    };
+
+    using SimpleAisDeviceCommandReplyDataReader = SimpleColumnDataReader<AisDeviceCommandReplyColumnData>;
+
+    class AisDeviceConfigurationColumnData : public BaseColumnData
+    {
+        Guid id_;
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
+        double latitude_ = 0.0;
+        double longitude_ = 0.0;
+        FixedDBWideString<127> aisProviderLoginURL_;
+        FixedDBWideString<32> comPort_;
+        Int32 baudRate_ = 0;
+        bool filterByArea_ = false;
+        double upperLeftCornerLatitude_ = 0.0;
+        double upperLeftCornerLongitude_ = 0.0;
+        double bottomRightCornerLatitude_ = 0.0;
+        double bottomRightCornerLongitude_ = 0.0;
+        FixedDBWideString<127> aisProviderIPAddress_;
+        Int32 aisProviderPort_ = 0;
+        bool useLogin_ = false;
+        Int32 aisProviderLoginPort_ = 0;
+        bool canSendAISMessage_ = false;
+        WideString textMessageHeader_;
+        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
+        WideString urls_;
+        SQLLEN urlsLength_ = SQL_NULL_DATA;
+        Int32 udpPort_ = 0;
+        Data::AisDeviceConnectionType connectionType_ = Data::AisDeviceConnectionType::Unknown;
+        bool enableRefreshAidToNavigationIn30sec_ = false;
+        bool enableAidToNavigationFromFile_ = false;
+        WideString aidToNavigationHeader_;
+        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
+        bool sendingMMSI_ = false;
+        Int32 sourceUpdateRate_ = 0;
+        bool enableRefreshStayingStillTargetIn30sec_ = false;
+        WideString excludeSendAisBaseStation_;
+        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
+        WideString excludeSendAisA_;
+        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
+        bool enableSendBaseStationAlarms_ = false;
+        FixedDBWideString<127> aisWebConfig_;
+        bool storeReceivedSentences_ = false;
+        bool storeSentMessages_ = false;
+        bool storeUnsentMessages_ = false;
+    public:
+        using Base = BaseColumnData;
+
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
+
+        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT USERNAME_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT PASSWORD_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT AISPROVIDERLOGINURL_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT COMPORT_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT BAUDRATE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT FILTERBYAREA_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT UPPERLEFTCORNERLATITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT UPPERLEFTCORNERLONGITUDE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT BOTTOMRIGHTCORNERLATITUDE_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT AISPROVIDERIPADDRESS_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT AISPROVIDERPORT_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT USELOGIN_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT AISPROVIDERLOGINPORT_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT CANSENDAISMESSAGE_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT UDPPORT_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT CONNECTIONTYPE_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT SENDINGMMSI_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT SOURCEUPDATERATE_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT ENABLESENDBASESTATIONALARMS_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT AISWEBCONFIG_FIELD_ID = 30;
+        static constexpr SQLUSMALLINT STORERECEIVEDSENTENCES_FIELD_ID = 31;
+        static constexpr SQLUSMALLINT STORESENTMESSAGES_FIELD_ID = 32;
+        static constexpr SQLUSMALLINT STOREUNSENTMESSAGES_FIELD_ID = 33;
+        static constexpr SQLUSMALLINT TEXTMESSAGEHEADER_FIELD_ID = 34;
+        static constexpr SQLUSMALLINT URLS_FIELD_ID = 35;
+        static constexpr SQLUSMALLINT AIDTONAVIGATIONHEADER_FIELD_ID = 36;
+        static constexpr SQLUSMALLINT EXCLUDESENDAISBASESTATION_FIELD_ID = 37;
+        static constexpr SQLUSMALLINT EXCLUDESENDAISA_FIELD_ID = 38;
+
+        AisDeviceConfigurationColumnData( ) = default;
+
+        virtual Kind GetKind() const override
+        {
+            return Kind::AisDeviceConfiguration;
+        }
+
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        void SetId( const Guid& id )
+        {
+            id_ = id;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        const FixedDBWideString<127>& UserName( ) const
+        {
+            return userName_;
+        }
+        void SetUserName( FixedDBWideString<127> userName )
+        {
+            userName_ = userName;
+        }
+        const FixedDBWideString<127>& Password( ) const
+        {
+            return password_;
+        }
+        void SetPassword( FixedDBWideString<127> password )
+        {
+            password_ = password;
+        }
+        double Latitude( ) const
+        {
+            return latitude_;
+        }
+        void SetLatitude( double latitude )
+        {
+            latitude_ = latitude;
+        }
+        double Longitude( ) const
+        {
+            return longitude_;
+        }
+        void SetLongitude( double longitude )
+        {
+            longitude_ = longitude;
+        }
+        const FixedDBWideString<127>& AisProviderLoginURL( ) const
+        {
+            return aisProviderLoginURL_;
+        }
+        void SetAisProviderLoginURL( FixedDBWideString<127> aisProviderLoginURL )
+        {
+            aisProviderLoginURL_ = aisProviderLoginURL;
+        }
+        const FixedDBWideString<32>& ComPort( ) const
+        {
+            return comPort_;
+        }
+        void SetComPort( FixedDBWideString<32> comPort )
+        {
+            comPort_ = comPort;
+        }
+        Int32 BaudRate( ) const
+        {
+            return baudRate_;
+        }
+        void SetBaudRate( Int32 baudRate )
+        {
+            baudRate_ = baudRate;
+        }
+        bool FilterByArea( ) const
+        {
+            return filterByArea_;
+        }
+        void SetFilterByArea( bool filterByArea )
+        {
+            filterByArea_ = filterByArea;
+        }
+        double UpperLeftCornerLatitude( ) const
+        {
+            return upperLeftCornerLatitude_;
+        }
+        void SetUpperLeftCornerLatitude( double upperLeftCornerLatitude )
+        {
+            upperLeftCornerLatitude_ = upperLeftCornerLatitude;
+        }
+        double UpperLeftCornerLongitude( ) const
+        {
+            return upperLeftCornerLongitude_;
+        }
+        void SetUpperLeftCornerLongitude( double upperLeftCornerLongitude )
+        {
+            upperLeftCornerLongitude_ = upperLeftCornerLongitude;
+        }
+        double BottomRightCornerLatitude( ) const
+        {
+            return bottomRightCornerLatitude_;
+        }
+        void SetBottomRightCornerLatitude( double bottomRightCornerLatitude )
+        {
+            bottomRightCornerLatitude_ = bottomRightCornerLatitude;
+        }
+        double BottomRightCornerLongitude( ) const
+        {
+            return bottomRightCornerLongitude_;
+        }
+        void SetBottomRightCornerLongitude( double bottomRightCornerLongitude )
+        {
+            bottomRightCornerLongitude_ = bottomRightCornerLongitude;
+        }
+        const FixedDBWideString<127>& AisProviderIPAddress( ) const
+        {
+            return aisProviderIPAddress_;
+        }
+        void SetAisProviderIPAddress( FixedDBWideString<127> aisProviderIPAddress )
+        {
+            aisProviderIPAddress_ = aisProviderIPAddress;
+        }
+        Int32 AisProviderPort( ) const
+        {
+            return aisProviderPort_;
+        }
+        void SetAisProviderPort( Int32 aisProviderPort )
+        {
+            aisProviderPort_ = aisProviderPort;
+        }
+        bool UseLogin( ) const
+        {
+            return useLogin_;
+        }
+        void SetUseLogin( bool useLogin )
+        {
+            useLogin_ = useLogin;
+        }
+        Int32 AisProviderLoginPort( ) const
+        {
+            return aisProviderLoginPort_;
+        }
+        void SetAisProviderLoginPort( Int32 aisProviderLoginPort )
+        {
+            aisProviderLoginPort_ = aisProviderLoginPort;
+        }
+        bool CanSendAISMessage( ) const
+        {
+            return canSendAISMessage_;
+        }
+        void SetCanSendAISMessage( bool canSendAISMessage )
+        {
+            canSendAISMessage_ = canSendAISMessage;
+        }
+        const WideString& TextMessageHeader( ) const
+        {
+            return textMessageHeader_;
+        }
+        void SetTextMessageHeader( const WideString& textMessageHeader )
+        {
+            textMessageHeader_ = textMessageHeader;
+        }
+        const WideString& Urls( ) const
+        {
+            return urls_;
+        }
+        void SetUrls( const WideString& urls )
+        {
+            urls_ = urls;
+        }
+        Int32 UdpPort( ) const
+        {
+            return udpPort_;
+        }
+        void SetUdpPort( Int32 udpPort )
+        {
+            udpPort_ = udpPort;
+        }
+        Data::AisDeviceConnectionType ConnectionType( ) const
+        {
+            return connectionType_;
+        }
+        void SetConnectionType( Data::AisDeviceConnectionType connectionType )
+        {
+            connectionType_ = connectionType;
+        }
+        bool EnableRefreshAidToNavigationIn30sec( ) const
+        {
+            return enableRefreshAidToNavigationIn30sec_;
+        }
+        void SetEnableRefreshAidToNavigationIn30sec( bool enableRefreshAidToNavigationIn30sec )
+        {
+            enableRefreshAidToNavigationIn30sec_ = enableRefreshAidToNavigationIn30sec;
+        }
+        bool EnableAidToNavigationFromFile( ) const
+        {
+            return enableAidToNavigationFromFile_;
+        }
+        void SetEnableAidToNavigationFromFile( bool enableAidToNavigationFromFile )
+        {
+            enableAidToNavigationFromFile_ = enableAidToNavigationFromFile;
+        }
+        const WideString& AidToNavigationHeader( ) const
+        {
+            return aidToNavigationHeader_;
+        }
+        void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
+        {
+            aidToNavigationHeader_ = aidToNavigationHeader;
+        }
+        bool SendingMMSI( ) const
+        {
+            return sendingMMSI_;
+        }
+        void SetSendingMMSI( bool sendingMMSI )
+        {
+            sendingMMSI_ = sendingMMSI;
+        }
+        Int32 SourceUpdateRate( ) const
+        {
+            return sourceUpdateRate_;
+        }
+        void SetSourceUpdateRate( Int32 sourceUpdateRate )
+        {
+            sourceUpdateRate_ = sourceUpdateRate;
+        }
+        bool EnableRefreshStayingStillTargetIn30sec( ) const
+        {
+            return enableRefreshStayingStillTargetIn30sec_;
+        }
+        void SetEnableRefreshStayingStillTargetIn30sec( bool enableRefreshStayingStillTargetIn30sec )
+        {
+            enableRefreshStayingStillTargetIn30sec_ = enableRefreshStayingStillTargetIn30sec;
+        }
+        const WideString& ExcludeSendAisBaseStation( ) const
+        {
+            return excludeSendAisBaseStation_;
+        }
+        void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
+        {
+            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
+        }
+        const WideString& ExcludeSendAisA( ) const
+        {
+            return excludeSendAisA_;
+        }
+        void SetExcludeSendAisA( const WideString& excludeSendAisA )
+        {
+            excludeSendAisA_ = excludeSendAisA;
+        }
+        bool EnableSendBaseStationAlarms( ) const
+        {
+            return enableSendBaseStationAlarms_;
+        }
+        void SetEnableSendBaseStationAlarms( bool enableSendBaseStationAlarms )
+        {
+            enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
+        }
+        const FixedDBWideString<127>& AisWebConfig( ) const
+        {
+            return aisWebConfig_;
+        }
+        void SetAisWebConfig( FixedDBWideString<127> aisWebConfig )
+        {
+            aisWebConfig_ = aisWebConfig;
+        }
+        bool StoreReceivedSentences( ) const
+        {
+            return storeReceivedSentences_;
+        }
+        void SetStoreReceivedSentences( bool storeReceivedSentences )
+        {
+            storeReceivedSentences_ = storeReceivedSentences;
+        }
+        bool StoreSentMessages( ) const
+        {
+            return storeSentMessages_;
+        }
+        void SetStoreSentMessages( bool storeSentMessages )
+        {
+            storeSentMessages_ = storeSentMessages;
+        }
+        bool StoreUnsentMessages( ) const
+        {
+            return storeUnsentMessages_;
+        }
+        void SetStoreUnsentMessages( bool storeUnsentMessages )
+        {
+            storeUnsentMessages_ = storeUnsentMessages;
+        }
+        void BindColumns( const ODBC::Statement& statement )
+        {
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, USERNAME_FIELD_ID, userName_);
+            Bind(statement, PASSWORD_FIELD_ID, password_);
+            Bind(statement, LATITUDE_FIELD_ID, latitude_);
+            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
+            Bind(statement, AISPROVIDERLOGINURL_FIELD_ID, aisProviderLoginURL_);
+            Bind(statement, COMPORT_FIELD_ID, comPort_);
+            Bind(statement, BAUDRATE_FIELD_ID, baudRate_);
+            Bind(statement, FILTERBYAREA_FIELD_ID, filterByArea_);
+            Bind(statement, UPPERLEFTCORNERLATITUDE_FIELD_ID, upperLeftCornerLatitude_);
+            Bind(statement, UPPERLEFTCORNERLONGITUDE_FIELD_ID, upperLeftCornerLongitude_);
+            Bind(statement, BOTTOMRIGHTCORNERLATITUDE_FIELD_ID, bottomRightCornerLatitude_);
+            Bind(statement, BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID, bottomRightCornerLongitude_);
+            Bind(statement, AISPROVIDERIPADDRESS_FIELD_ID, aisProviderIPAddress_);
+            Bind(statement, AISPROVIDERPORT_FIELD_ID, aisProviderPort_);
+            Bind(statement, USELOGIN_FIELD_ID, useLogin_);
+            Bind(statement, AISPROVIDERLOGINPORT_FIELD_ID, aisProviderLoginPort_);
+            Bind(statement, CANSENDAISMESSAGE_FIELD_ID, canSendAISMessage_);
+            Bind(statement, UDPPORT_FIELD_ID, udpPort_);
+            Bind(statement, CONNECTIONTYPE_FIELD_ID, connectionType_);
+            Bind(statement, ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID, enableRefreshAidToNavigationIn30sec_);
+            Bind(statement, ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID, enableAidToNavigationFromFile_);
+            Bind(statement, SENDINGMMSI_FIELD_ID, sendingMMSI_);
+            Bind(statement, SOURCEUPDATERATE_FIELD_ID, sourceUpdateRate_);
+            Bind(statement, ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID, enableRefreshStayingStillTargetIn30sec_);
+            Bind(statement, ENABLESENDBASESTATIONALARMS_FIELD_ID, enableSendBaseStationAlarms_);
+            Bind(statement, AISWEBCONFIG_FIELD_ID, aisWebConfig_);
+            Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, storeReceivedSentences_);
+            Bind(statement, STORESENTMESSAGES_FIELD_ID, storeSentMessages_);
+            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, storeUnsentMessages_);
+        }
+
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            textMessageHeader_ = statement.GetWideString(TEXTMESSAGEHEADER_FIELD_ID);
+            urls_ = statement.GetWideString(URLS_FIELD_ID);
+            aidToNavigationHeader_ = statement.GetWideString(AIDTONAVIGATIONHEADER_FIELD_ID);
+            excludeSendAisBaseStation_ = statement.GetWideString(EXCLUDESENDAISBASESTATION_FIELD_ID);
+            excludeSendAisA_ = statement.GetWideString(EXCLUDESENDAISA_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, Data::Kind::AisDeviceConfiguration );
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, userName_);
+            WriteColumnValue( destination, password_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, aisProviderLoginURL_);
+            WriteColumnValue( destination, comPort_);
+            WriteColumnValue( destination, baudRate_);
+            WriteColumnValue( destination, filterByArea_);
+            WriteColumnValue( destination, upperLeftCornerLatitude_);
+            WriteColumnValue( destination, upperLeftCornerLongitude_);
+            WriteColumnValue( destination, bottomRightCornerLatitude_);
+            WriteColumnValue( destination, bottomRightCornerLongitude_);
+            WriteColumnValue( destination, aisProviderIPAddress_);
+            WriteColumnValue( destination, aisProviderPort_);
+            WriteColumnValue( destination, useLogin_);
+            WriteColumnValue( destination, aisProviderLoginPort_);
+            WriteColumnValue( destination, canSendAISMessage_);
+            WriteColumnValue( destination, textMessageHeader_);
+            WriteColumnValue( destination, urls_);
+            WriteColumnValue( destination, udpPort_);
+            WriteColumnValue( destination, connectionType_);
+            WriteColumnValue( destination, enableRefreshAidToNavigationIn30sec_);
+            WriteColumnValue( destination, enableAidToNavigationFromFile_);
+            WriteColumnValue( destination, aidToNavigationHeader_);
+            WriteColumnValue( destination, sendingMMSI_);
+            WriteColumnValue( destination, sourceUpdateRate_);
+            WriteColumnValue( destination, enableRefreshStayingStillTargetIn30sec_);
+            WriteColumnValue( destination, excludeSendAisBaseStation_);
+            WriteColumnValue( destination, excludeSendAisA_);
+            WriteColumnValue( destination, enableSendBaseStationAlarms_);
+            WriteColumnValue( destination, aisWebConfig_);
+            WriteColumnValue( destination, storeReceivedSentences_);
+            WriteColumnValue( destination, storeSentMessages_);
+            WriteColumnValue( destination, storeUnsentMessages_);
+        }
+        void AssignTo( Data::AisDeviceConfigurationData& destination ) const
+        {
+            destination.SetId( id_ );
+            destination.SetRowVersion( rowVersion_ );
+            destination.SetAisDevice( aisDevice_ );
+            destination.SetTimestamp( timestamp_ );
+            destination.SetUserName( userName_ );
+            destination.SetPassword( password_ );
+            destination.SetLatitude( latitude_ );
+            destination.SetLongitude( longitude_ );
+            destination.SetAisProviderLoginURL( aisProviderLoginURL_ );
+            destination.SetComPort( comPort_ );
+            destination.SetBaudRate( baudRate_ );
+            destination.SetFilterByArea( filterByArea_ );
+            destination.SetUpperLeftCornerLatitude( upperLeftCornerLatitude_ );
+            destination.SetUpperLeftCornerLongitude( upperLeftCornerLongitude_ );
+            destination.SetBottomRightCornerLatitude( bottomRightCornerLatitude_ );
+            destination.SetBottomRightCornerLongitude( bottomRightCornerLongitude_ );
+            destination.SetAisProviderIPAddress( aisProviderIPAddress_ );
+            destination.SetAisProviderPort( aisProviderPort_ );
+            destination.SetUseLogin( useLogin_ );
+            destination.SetAisProviderLoginPort( aisProviderLoginPort_ );
+            destination.SetCanSendAISMessage( canSendAISMessage_ );
+            destination.SetTextMessageHeader( textMessageHeader_ );
+            destination.SetUrls( urls_ );
+            destination.SetUdpPort( udpPort_ );
+            destination.SetConnectionType( connectionType_ );
+            destination.SetEnableRefreshAidToNavigationIn30sec( enableRefreshAidToNavigationIn30sec_ );
+            destination.SetEnableAidToNavigationFromFile( enableAidToNavigationFromFile_ );
+            destination.SetAidToNavigationHeader( aidToNavigationHeader_ );
+            destination.SetSendingMMSI( sendingMMSI_ );
+            destination.SetSourceUpdateRate( sourceUpdateRate_ );
+            destination.SetEnableRefreshStayingStillTargetIn30sec( enableRefreshStayingStillTargetIn30sec_ );
+            destination.SetExcludeSendAisBaseStation( excludeSendAisBaseStation_ );
+            destination.SetExcludeSendAisA( excludeSendAisA_ );
+            destination.SetEnableSendBaseStationAlarms( enableSendBaseStationAlarms_ );
+            destination.SetAisWebConfig( aisWebConfig_ );
+            destination.SetStoreReceivedSentences( storeReceivedSentences_ );
+            destination.SetStoreSentMessages( storeSentMessages_ );
+            destination.SetStoreUnsentMessages( storeUnsentMessages_ );
+        }
+    };
+
+    using SimpleAisDeviceConfigurationDataReader = SimpleColumnDataReader<AisDeviceConfigurationColumnData>;
+
+    class AisDeviceRawMessageColumnData : public BaseColumnData
+    {
+        Guid id_;
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        bool isSent_ = false;
+        FixedDBWideString<100> message_;
+    public:
+        using Base = BaseColumnData;
+
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
+
+        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT ISSENT_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 6;
+
+        AisDeviceRawMessageColumnData( ) = default;
+
+        virtual Kind GetKind() const override
+        {
+            return Kind::AisDeviceRawMessage;
+        }
+
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        void SetId( const Guid& id )
+        {
+            id_ = id;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        bool IsSent( ) const
+        {
+            return isSent_;
+        }
+        void SetIsSent( bool isSent )
+        {
+            isSent_ = isSent;
+        }
+        const FixedDBWideString<100>& Message( ) const
+        {
+            return message_;
+        }
+        void SetMessage( FixedDBWideString<100> message )
+        {
+            message_ = message;
+        }
+        void BindColumns( const ODBC::Statement& statement )
+        {
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+            Bind(statement, ISSENT_FIELD_ID, isSent_);
+            Bind(statement, MESSAGE_FIELD_ID, message_);
+        }
+
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, Data::Kind::AisDeviceRawMessage );
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, isSent_);
+            WriteColumnValue( destination, message_);
+        }
+        void AssignTo( Data::AisDeviceRawMessageData& destination ) const
+        {
+            destination.SetId( id_ );
+            destination.SetRowVersion( rowVersion_ );
+            destination.SetAisDevice( aisDevice_ );
+            destination.SetTimestamp( timestamp_ );
+            destination.SetIsSent( isSent_ );
+            destination.SetMessage( message_ );
+        }
+    };
+
+    using SimpleAisDeviceRawMessageDataReader = SimpleColumnDataReader<AisDeviceRawMessageColumnData>;
+
+    class AisDeviceRawSentenceColumnData : public BaseColumnData
+    {
+        Guid id_;
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime timestamp_;
+        WideString sentence_;
+        SQLLEN sentenceLength_ = SQL_NULL_DATA;
+    public:
+        using Base = BaseColumnData;
+
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
+
+        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT SENTENCE_FIELD_ID = 5;
+
+        AisDeviceRawSentenceColumnData( ) = default;
+
+        virtual Kind GetKind() const override
+        {
+            return Kind::AisDeviceRawSentence;
+        }
+
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        void SetId( const Guid& id )
+        {
+            id_ = id;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
+        }
+        const DateTime& Timestamp( ) const
+        {
+            return timestamp_;
+        }
+        void SetTimestamp( const DateTime& timestamp )
+        {
+            timestamp_ = timestamp;
+        }
+        const WideString& Sentence( ) const
+        {
+            return sentence_;
+        }
+        void SetSentence( const WideString& sentence )
+        {
+            sentence_ = sentence;
+        }
+        void BindColumns( const ODBC::Statement& statement )
+        {
+            Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
+            Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
+            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
+        }
+
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            sentence_ = statement.GetWideString(SENTENCE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, Data::Kind::AisDeviceRawSentence );
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, sentence_);
+        }
+        void AssignTo( Data::AisDeviceRawSentenceData& destination ) const
+        {
+            destination.SetId( id_ );
+            destination.SetRowVersion( rowVersion_ );
+            destination.SetAisDevice( aisDevice_ );
+            destination.SetTimestamp( timestamp_ );
+            destination.SetSentence( sentence_ );
+        }
+    };
+
+    using SimpleAisDeviceRawSentenceDataReader = SimpleColumnDataReader<AisDeviceRawSentenceColumnData>;
+
+    class AisMessageColumnData : public BaseColumnData
+    {
+        Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
+        Int64 rowVersion_ = 0;
+        Guid aisDevice_;
+        DateTime receivedTimestamp_;
+        Int64 messageSequenceNumber_ = 0;
+        Int32 repeat_ = 0;
+        Guid mmsi_;
+    public:
+        using Base = BaseColumnData;
+
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
+
+        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT RECEIVEDTIMESTAMP_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT MESSAGESEQUENCENUMBER_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT REPEAT_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MMSI_FIELD_ID = 8;
+
+        AisMessageColumnData( ) = default;
+
+        virtual Kind GetKind() const override
+        {
+            return Kind::AisMessage;
+        }
+
+        const Guid& Id( ) const
+        {
+            return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
+        }
+        void SetId( const Guid& id )
+        {
+            id_ = id;
+        }
+        Int64 RowVersion( ) const
+        {
+            return rowVersion_;
+        }
+        void SetRowVersion( const Int64& rowVersion )
+        {
+            rowVersion_ = rowVersion;
+        }
+        const Guid& AisDevice( ) const
+        {
+            return aisDevice_;
+        }
+        void SetAisDevice( const Guid& aisDevice )
+        {
+            aisDevice_ = aisDevice;
         }
         const DateTime& ReceivedTimestamp( ) const
         {
@@ -431,8 +1445,9 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
+            Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
             Bind(statement, RECEIVEDTIMESTAMP_FIELD_ID, receivedTimestamp_);
             Bind(statement, MESSAGESEQUENCENUMBER_FIELD_ID, messageSequenceNumber_);
             Bind(statement, REPEAT_FIELD_ID, repeat_);
@@ -445,7 +1460,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, Data::Kind::AisMessage );
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, aisDevice_);
             WriteColumnValue( destination, receivedTimestamp_);
             WriteColumnValue( destination, messageSequenceNumber_);
             WriteColumnValue( destination, repeat_);
@@ -455,7 +1470,7 @@ namespace Barrelman::Database
         {
             destination.SetId( id_ );
             destination.SetRowVersion( rowVersion_ );
-            destination.SetAisTransceiver( aisTransceiver_ );
+            destination.SetAisDevice( aisDevice_ );
             destination.SetReceivedTimestamp( receivedTimestamp_ );
             destination.SetMessageSequenceNumber( messageSequenceNumber_ );
             destination.SetRepeat( repeat_ );
@@ -488,8 +1503,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[NavigationalAidType],[Name],[PositionAccuracy],[Longitude],[Latitude],[DimensionToBow],[DimensionToStern],[DimensionToPort],[DimensionToStarboard],[PositionFixType],[Timestamp],[OffPosition],[RegionalReserved],[Raim],[VirtualAid],[Assigned],[Spare],[NameExtension]";
-        static constexpr std::wstring_view ViewName = L"AidToNavigationReportMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAVIGATIONALAIDTYPE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 9;
@@ -529,7 +1545,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -657,7 +1673,7 @@ namespace Barrelman::Database
         {
             return nameExtension_;
         }
-        void SetNameExtension( const WideString& nameExtension )
+        void SetNameExtension( FixedDBWideString<100> nameExtension )
         {
             nameExtension_ = nameExtension;
         }
@@ -744,8 +1760,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[SequenceNumber],[DestinationMmsi],[RetransmitFlag],[Spare],[Text]";
-        static constexpr std::wstring_view ViewName = L"AisAddressedSafetyRelatedMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SEQUENCENUMBER_FIELD_ID = 8;
         static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 9;
@@ -796,7 +1813,7 @@ namespace Barrelman::Database
         {
             return text_;
         }
-        void SetText( const WideString& text )
+        void SetText( FixedDBWideString<100> text )
         {
             text_ = text;
         }
@@ -847,8 +1864,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Timestamp],[PositionAccuracy],[Longitude],[Latitude],[PositionFixType],[Spare],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisBaseStationReportMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 8;
         static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 9;
@@ -978,17 +1996,18 @@ namespace Barrelman::Database
         Int32 spare_ = 0;
         Int32 sequenceNumber1_ = 0;
         Guid mmsi1_;
-        Int32 sequenceNumber2_ = 0;
-        Guid mmsi2_;
-        Int32 sequenceNumber3_ = 0;
-        Guid mmsi3_;
-        Int32 sequenceNumber4_ = 0;
-        Guid mmsi4_;
+        DBInt32 sequenceNumber2_;
+        DBGuid mmsi2_;
+        DBInt32 sequenceNumber3_;
+        DBGuid mmsi3_;
+        DBInt32 sequenceNumber4_;
+        DBGuid mmsi4_;
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Spare],[SequenceNumber1],[Mmsi1],[SequenceNumber2],[Mmsi2],[SequenceNumber3],[Mmsi3],[SequenceNumber4],[Mmsi4]";
-        static constexpr std::wstring_view ViewName = L"AisBinaryAcknowledgeMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT SEQUENCENUMBER1_FIELD_ID = 9;
@@ -1031,51 +2050,51 @@ namespace Barrelman::Database
         {
             mmsi1_ = mmsi1;
         }
-        Int32 SequenceNumber2( ) const
+        const DBInt32& SequenceNumber2( ) const
         {
             return sequenceNumber2_;
         }
-        void SetSequenceNumber2( Int32 sequenceNumber2 )
+        void SetSequenceNumber2( const DBInt32& sequenceNumber2 )
         {
             sequenceNumber2_ = sequenceNumber2;
         }
-        const Guid& Mmsi2( ) const
+        const DBGuid& Mmsi2( ) const
         {
             return mmsi2_;
         }
-        void SetMmsi2( const Guid& mmsi2 )
+        void SetMmsi2( const DBGuid& mmsi2 )
         {
             mmsi2_ = mmsi2;
         }
-        Int32 SequenceNumber3( ) const
+        const DBInt32& SequenceNumber3( ) const
         {
             return sequenceNumber3_;
         }
-        void SetSequenceNumber3( Int32 sequenceNumber3 )
+        void SetSequenceNumber3( const DBInt32& sequenceNumber3 )
         {
             sequenceNumber3_ = sequenceNumber3;
         }
-        const Guid& Mmsi3( ) const
+        const DBGuid& Mmsi3( ) const
         {
             return mmsi3_;
         }
-        void SetMmsi3( const Guid& mmsi3 )
+        void SetMmsi3( const DBGuid& mmsi3 )
         {
             mmsi3_ = mmsi3;
         }
-        Int32 SequenceNumber4( ) const
+        const DBInt32& SequenceNumber4( ) const
         {
             return sequenceNumber4_;
         }
-        void SetSequenceNumber4( Int32 sequenceNumber4 )
+        void SetSequenceNumber4( const DBInt32& sequenceNumber4 )
         {
             sequenceNumber4_ = sequenceNumber4;
         }
-        const Guid& Mmsi4( ) const
+        const DBGuid& Mmsi4( ) const
         {
             return mmsi4_;
         }
-        void SetMmsi4( const Guid& mmsi4 )
+        void SetMmsi4( const DBGuid& mmsi4 )
         {
             mmsi4_ = mmsi4;
         }
@@ -1138,8 +2157,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[SequenceNumber],[DestinationMmsi],[RetransmitFlag],[Spare],[DesignatedAreaCode],[FunctionalId],[Data]";
-        static constexpr std::wstring_view ViewName = L"AisBinaryAddressedMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SEQUENCENUMBER_FIELD_ID = 8;
         static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 9;
@@ -1267,8 +2287,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Spare],[DesignatedAreaCode],[FunctionalId],[Data]";
-        static constexpr std::wstring_view ViewName = L"AisBinaryBroadcastMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT DESIGNATEDAREACODE_FIELD_ID = 9;
@@ -1357,23 +2378,24 @@ namespace Barrelman::Database
         Int32 reservedSlots1_ = 0;
         Int32 timeout1_ = 0;
         Int32 increment1_ = 0;
-        Int32 offset2_ = 0;
-        Int32 reservedSlots2_ = 0;
-        Int32 timeout2_ = 0;
-        Int32 increment2_ = 0;
-        Int32 offset3_ = 0;
-        Int32 reservedSlots3_ = 0;
-        Int32 timeout3_ = 0;
-        Int32 increment3_ = 0;
-        Int32 offset4_ = 0;
-        Int32 reservedSlots4_ = 0;
-        Int32 timeout4_ = 0;
-        Int32 increment4_ = 0;
+        DBInt32 offset2_;
+        DBInt32 reservedSlots2_;
+        DBInt32 timeout2_;
+        DBInt32 increment2_;
+        DBInt32 offset3_;
+        DBInt32 reservedSlots3_;
+        DBInt32 timeout3_;
+        DBInt32 increment3_;
+        DBInt32 offset4_;
+        DBInt32 reservedSlots4_;
+        DBInt32 timeout4_;
+        DBInt32 increment4_;
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Spare],[Offset1],[ReservedSlots1],[Timeout1],[Increment1],[Offset2],[ReservedSlots2],[Timeout2],[Increment2],[Offset3],[ReservedSlots3],[Timeout3],[Increment3],[Offset4],[ReservedSlots4],[Timeout4],[Increment4]";
-        static constexpr std::wstring_view ViewName = L"AisDataLinkManagementMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT OFFSET1_FIELD_ID = 9;
@@ -1440,99 +2462,99 @@ namespace Barrelman::Database
         {
             increment1_ = increment1;
         }
-        Int32 Offset2( ) const
+        const DBInt32& Offset2( ) const
         {
             return offset2_;
         }
-        void SetOffset2( Int32 offset2 )
+        void SetOffset2( const DBInt32& offset2 )
         {
             offset2_ = offset2;
         }
-        Int32 ReservedSlots2( ) const
+        const DBInt32& ReservedSlots2( ) const
         {
             return reservedSlots2_;
         }
-        void SetReservedSlots2( Int32 reservedSlots2 )
+        void SetReservedSlots2( const DBInt32& reservedSlots2 )
         {
             reservedSlots2_ = reservedSlots2;
         }
-        Int32 Timeout2( ) const
+        const DBInt32& Timeout2( ) const
         {
             return timeout2_;
         }
-        void SetTimeout2( Int32 timeout2 )
+        void SetTimeout2( const DBInt32& timeout2 )
         {
             timeout2_ = timeout2;
         }
-        Int32 Increment2( ) const
+        const DBInt32& Increment2( ) const
         {
             return increment2_;
         }
-        void SetIncrement2( Int32 increment2 )
+        void SetIncrement2( const DBInt32& increment2 )
         {
             increment2_ = increment2;
         }
-        Int32 Offset3( ) const
+        const DBInt32& Offset3( ) const
         {
             return offset3_;
         }
-        void SetOffset3( Int32 offset3 )
+        void SetOffset3( const DBInt32& offset3 )
         {
             offset3_ = offset3;
         }
-        Int32 ReservedSlots3( ) const
+        const DBInt32& ReservedSlots3( ) const
         {
             return reservedSlots3_;
         }
-        void SetReservedSlots3( Int32 reservedSlots3 )
+        void SetReservedSlots3( const DBInt32& reservedSlots3 )
         {
             reservedSlots3_ = reservedSlots3;
         }
-        Int32 Timeout3( ) const
+        const DBInt32& Timeout3( ) const
         {
             return timeout3_;
         }
-        void SetTimeout3( Int32 timeout3 )
+        void SetTimeout3( const DBInt32& timeout3 )
         {
             timeout3_ = timeout3;
         }
-        Int32 Increment3( ) const
+        const DBInt32& Increment3( ) const
         {
             return increment3_;
         }
-        void SetIncrement3( Int32 increment3 )
+        void SetIncrement3( const DBInt32& increment3 )
         {
             increment3_ = increment3;
         }
-        Int32 Offset4( ) const
+        const DBInt32& Offset4( ) const
         {
             return offset4_;
         }
-        void SetOffset4( Int32 offset4 )
+        void SetOffset4( const DBInt32& offset4 )
         {
             offset4_ = offset4;
         }
-        Int32 ReservedSlots4( ) const
+        const DBInt32& ReservedSlots4( ) const
         {
             return reservedSlots4_;
         }
-        void SetReservedSlots4( Int32 reservedSlots4 )
+        void SetReservedSlots4( const DBInt32& reservedSlots4 )
         {
             reservedSlots4_ = reservedSlots4;
         }
-        Int32 Timeout4( ) const
+        const DBInt32& Timeout4( ) const
         {
             return timeout4_;
         }
-        void SetTimeout4( Int32 timeout4 )
+        void SetTimeout4( const DBInt32& timeout4 )
         {
             timeout4_ = timeout4;
         }
-        Int32 Increment4( ) const
+        const DBInt32& Increment4( ) const
         {
             return increment4_;
         }
-        void SetIncrement4( Int32 increment4 )
+        void SetIncrement4( const DBInt32& increment4 )
         {
             increment4_ = increment4;
         }
@@ -1631,8 +2653,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Reserved],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[TrueHeading],[Timestamp],[RegionalReserved],[Name],[ShipType],[DimensionToBow],[DimensionToStern],[DimensionToPort],[DimensionToStarboard],[PositionFixType],[Raim],[DataTerminalReady],[Assigned],[Spare]";
-        static constexpr std::wstring_view ViewName = L"AisExtendedClassBCsPositionReportMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 8;
         static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 9;
@@ -1908,14 +2931,15 @@ namespace Barrelman::Database
         Int32 firstSlotOffset_ = 0;
         DBEnum<Data::AisMessageType> secondMessageType_;
         DBInt32 secondSlotOffset_;
-        Guid secondStationInterrogationMmsi_;
+        DBGuid secondStationInterrogationMmsi_;
         DBEnum<Data::AisMessageType> secondStationFirstMessageType_;
         DBInt32 secondStationFirstSlotOffset_;
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[InterrogatedMmsi],[FirstMessageType],[FirstSlotOffset],[SecondMessageType],[SecondSlotOffset],[SecondStationInterrogationMmsi],[SecondStationFirstMessageType],[SecondStationFirstSlotOffset]";
-        static constexpr std::wstring_view ViewName = L"AisInterrogationMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT INTERROGATEDMMSI_FIELD_ID = 8;
         static constexpr SQLUSMALLINT FIRSTMESSAGETYPE_FIELD_ID = 9;
@@ -1973,11 +2997,11 @@ namespace Barrelman::Database
         {
             secondSlotOffset_ = secondSlotOffset;
         }
-        const Guid& SecondStationInterrogationMmsi( ) const
+        const DBGuid& SecondStationInterrogationMmsi( ) const
         {
             return secondStationInterrogationMmsi_;
         }
-        void SetSecondStationInterrogationMmsi( const Guid& secondStationInterrogationMmsi )
+        void SetSecondStationInterrogationMmsi( const DBGuid& secondStationInterrogationMmsi )
         {
             secondStationInterrogationMmsi_ = secondStationInterrogationMmsi;
         }
@@ -2058,8 +3082,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[NavigationStatus],[RateOfTurn],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[TrueHeading],[Timestamp],[ManeuverIndicator],[Spare],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisPositionReportClassAMessageBaseView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAVIGATIONSTATUS_FIELD_ID = 8;
         static constexpr SQLUSMALLINT RATEOFTURN_FIELD_ID = 9;
@@ -2249,8 +3274,9 @@ namespace Barrelman::Database
     public:
         using Base = AisPositionReportClassAMessageBaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[NavigationStatus],[RateOfTurn],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[TrueHeading],[Timestamp],[ManeuverIndicator],[Spare],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisPositionReportClassAAssignedScheduleMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         AisPositionReportClassAAssignedScheduleMessageColumnData( ) = default;
 
@@ -2277,8 +3303,9 @@ namespace Barrelman::Database
     public:
         using Base = AisPositionReportClassAMessageBaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[NavigationStatus],[RateOfTurn],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[TrueHeading],[Timestamp],[ManeuverIndicator],[Spare],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisPositionReportClassAMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         AisPositionReportClassAMessageColumnData( ) = default;
 
@@ -2305,8 +3332,9 @@ namespace Barrelman::Database
     public:
         using Base = AisPositionReportClassAMessageBaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[NavigationStatus],[RateOfTurn],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[TrueHeading],[Timestamp],[ManeuverIndicator],[Spare],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisPositionReportClassAResponseToInterrogationMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         AisPositionReportClassAResponseToInterrogationMessageColumnData( ) = default;
 
@@ -2342,8 +3370,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[PositionAccuracy],[Raim],[NavigationStatus],[Longitude],[Latitude],[SpeedOverGround],[CourseOverGround],[GnssPositionStatus],[Spare]";
-        static constexpr std::wstring_view ViewName = L"AisPositionReportForLongRangeApplicationsMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 8;
         static constexpr SQLUSMALLINT RAIM_FIELD_ID = 9;
@@ -2485,17 +3514,18 @@ namespace Barrelman::Database
         Int32 spare_ = 0;
         Int32 sequenceNumber1_ = 0;
         Guid mmsi1_;
-        Int32 sequenceNumber2_ = 0;
-        Guid mmsi2_;
-        Int32 sequenceNumber3_ = 0;
-        Guid mmsi3_;
-        Int32 sequenceNumber4_ = 0;
-        Guid mmsi4_;
+        DBInt32 sequenceNumber2_;
+        DBGuid mmsi2_;
+        DBInt32 sequenceNumber3_;
+        DBGuid mmsi3_;
+        DBInt32 sequenceNumber4_;
+        DBGuid mmsi4_;
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Spare],[SequenceNumber1],[Mmsi1],[SequenceNumber2],[Mmsi2],[SequenceNumber3],[Mmsi3],[SequenceNumber4],[Mmsi4]";
-        static constexpr std::wstring_view ViewName = L"AisSafetyRelatedAcknowledgmentMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SPARE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT SEQUENCENUMBER1_FIELD_ID = 9;
@@ -2538,51 +3568,51 @@ namespace Barrelman::Database
         {
             mmsi1_ = mmsi1;
         }
-        Int32 SequenceNumber2( ) const
+        const DBInt32& SequenceNumber2( ) const
         {
             return sequenceNumber2_;
         }
-        void SetSequenceNumber2( Int32 sequenceNumber2 )
+        void SetSequenceNumber2( const DBInt32& sequenceNumber2 )
         {
             sequenceNumber2_ = sequenceNumber2;
         }
-        const Guid& Mmsi2( ) const
+        const DBGuid& Mmsi2( ) const
         {
             return mmsi2_;
         }
-        void SetMmsi2( const Guid& mmsi2 )
+        void SetMmsi2( const DBGuid& mmsi2 )
         {
             mmsi2_ = mmsi2;
         }
-        Int32 SequenceNumber3( ) const
+        const DBInt32& SequenceNumber3( ) const
         {
             return sequenceNumber3_;
         }
-        void SetSequenceNumber3( Int32 sequenceNumber3 )
+        void SetSequenceNumber3( const DBInt32& sequenceNumber3 )
         {
             sequenceNumber3_ = sequenceNumber3;
         }
-        const Guid& Mmsi3( ) const
+        const DBGuid& Mmsi3( ) const
         {
             return mmsi3_;
         }
-        void SetMmsi3( const Guid& mmsi3 )
+        void SetMmsi3( const DBGuid& mmsi3 )
         {
             mmsi3_ = mmsi3;
         }
-        Int32 SequenceNumber4( ) const
+        const DBInt32& SequenceNumber4( ) const
         {
             return sequenceNumber4_;
         }
-        void SetSequenceNumber4( Int32 sequenceNumber4 )
+        void SetSequenceNumber4( const DBInt32& sequenceNumber4 )
         {
             sequenceNumber4_ = sequenceNumber4;
         }
-        const Guid& Mmsi4( ) const
+        const DBGuid& Mmsi4( ) const
         {
             return mmsi4_;
         }
-        void SetMmsi4( const Guid& mmsi4 )
+        void SetMmsi4( const DBGuid& mmsi4 )
         {
             mmsi4_ = mmsi4;
         }
@@ -2654,8 +3684,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Reserved],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[TrueHeading],[Timestamp],[RegionalReserved],[IsCsUnit],[HasDisplay],[HasDscCapability],[Band],[CanAcceptMessage22],[Assigned],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisStandardClassBCsPositionReportMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RESERVED_FIELD_ID = 8;
         static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 9;
@@ -2906,8 +3937,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Altitude],[SpeedOverGround],[PositionAccuracy],[Longitude],[Latitude],[CourseOverGround],[Timestamp],[Reserved],[DataTerminalReady],[Spare],[Assigned],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisStandardSarAircraftPositionReportMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT SPEEDOVERGROUND_FIELD_ID = 9;
@@ -3112,8 +4144,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[AisVersion],[ImoNumber],[Callsign],[ShipName],[ShipType],[DimensionToBow],[DimensionToStern],[DimensionToPort],[DimensionToStarboard],[PositionFixType],[EstimatedTimeOfArrival],[Draught],[Destination],[DataTerminalReady],[Spare]";
-        static constexpr std::wstring_view ViewName = L"AisStaticAndVoyageRelatedDataMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT AISVERSION_FIELD_ID = 8;
         static constexpr SQLUSMALLINT IMONUMBER_FIELD_ID = 9;
@@ -3238,7 +4271,7 @@ namespace Barrelman::Database
         {
             return destination_;
         }
-        void SetDestination( const WideString& destination )
+        void SetDestination( FixedDBWideString<100> destination )
         {
             destination_ = destination;
         }
@@ -3328,8 +4361,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[PartNumber]";
-        static constexpr std::wstring_view ViewName = L"AisStaticDataReportMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT PARTNUMBER_FIELD_ID = 8;
 
@@ -3377,8 +4411,9 @@ namespace Barrelman::Database
     public:
         using Base = AisStaticDataReportMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[PartNumber],[ShipName],[Spare]";
-        static constexpr std::wstring_view ViewName = L"AisStaticDataReportPartAMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SHIPNAME_FIELD_ID = 9;
         static constexpr SQLUSMALLINT SPARE_FIELD_ID = 10;
@@ -3442,14 +4477,15 @@ namespace Barrelman::Database
         Int32 dimensionToStern_ = 0;
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
-        Guid mothershipMmsi_;
+        DBGuid mothershipMmsi_;
         Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
         Int32 spare_ = 0;
     public:
         using Base = AisStaticDataReportMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[PartNumber],[ShipType],[VendorId],[UnitModelCode],[SerialNumber],[Callsign],[DimensionToBow],[DimensionToStern],[DimensionToPort],[DimensionToStarboard],[MothershipMmsi],[PositionFixType],[Spare]";
-        static constexpr std::wstring_view ViewName = L"AisStaticDataReportPartBMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SHIPTYPE_FIELD_ID = 9;
         static constexpr SQLUSMALLINT VENDORID_FIELD_ID = 10;
@@ -3483,7 +4519,7 @@ namespace Barrelman::Database
         {
             return vendorId_;
         }
-        void SetVendorId( const WideString& vendorId )
+        void SetVendorId( FixedDBWideString<100> vendorId )
         {
             vendorId_ = vendorId;
         }
@@ -3543,11 +4579,11 @@ namespace Barrelman::Database
         {
             dimensionToStarboard_ = dimensionToStarboard;
         }
-        const Guid& MothershipMmsi( ) const
+        const DBGuid& MothershipMmsi( ) const
         {
             return mothershipMmsi_;
         }
-        void SetMothershipMmsi( const Guid& mothershipMmsi )
+        void SetMothershipMmsi( const DBGuid& mothershipMmsi )
         {
             mothershipMmsi_ = mothershipMmsi;
         }
@@ -3630,8 +4666,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Spare1],[DestinationMmsi],[Spare2]";
-        static constexpr std::wstring_view ViewName = L"AisUtcAndDateInquiryMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SPARE1_FIELD_ID = 8;
         static constexpr SQLUSMALLINT DESTINATIONMMSI_FIELD_ID = 9;
@@ -3709,8 +4746,9 @@ namespace Barrelman::Database
     public:
         using Base = AisMessageColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[ReceivedTimestamp],[MessageSequenceNumber],[Repeat],[Mmsi],[Datetime],[PositionAccuracy],[Longitude],[Latitude],[PositionFixType],[Spare],[Raim],[RadioStatus]";
-        static constexpr std::wstring_view ViewName = L"AisUtcAndDateResponseMessageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DATETIME_FIELD_ID = 8;
         static constexpr SQLUSMALLINT POSITIONACCURACY_FIELD_ID = 9;
@@ -3835,1007 +4873,6 @@ namespace Barrelman::Database
 
     using SimpleAisUtcAndDateResponseMessageDataReader = SimpleColumnDataReader<AisUtcAndDateResponseMessageColumnData>;
 
-    class AisTransceiverCommandColumnData : public BaseColumnData
-    {
-        Guid id_;
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
-        Guid deviceCommandSourceId_;
-        Guid reply_;
-    public:
-        using Base = BaseColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverCommandView";
-
-        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT AISTRANSCEIVER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCETYPE_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT REPLY_FIELD_ID = 7;
-
-        AisTransceiverCommandColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::AisTransceiverCommand;
-        }
-
-        const Guid& Id( ) const
-        {
-            return id_;
-        }
-        void SetId( const Guid& id )
-        {
-            id_ = id;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
-        {
-            return deviceCommandSourceType_;
-        }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
-        {
-            deviceCommandSourceType_ = deviceCommandSourceType;
-        }
-        const Guid& DeviceCommandSourceId( ) const
-        {
-            return deviceCommandSourceId_;
-        }
-        void SetDeviceCommandSourceId( const Guid& deviceCommandSourceId )
-        {
-            deviceCommandSourceId_ = deviceCommandSourceId;
-        }
-        const Guid& Reply( ) const
-        {
-            return reply_;
-        }
-        void SetReply( const Guid& reply )
-        {
-            reply_ = reply;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Bind(statement, ID_FIELD_ID, id_);
-            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
-            Bind(statement, DEVICECOMMANDSOURCETYPE_FIELD_ID, deviceCommandSourceType_);
-            Bind(statement, DEVICECOMMANDSOURCEID_FIELD_ID, deviceCommandSourceId_);
-            Bind(statement, REPLY_FIELD_ID, reply_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            WriteColumnValue( destination, Data::Kind::AisTransceiverCommand );
-            WriteColumnValue( destination, id_);
-            WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
-            WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, deviceCommandSourceType_);
-            WriteColumnValue( destination, deviceCommandSourceId_);
-            WriteColumnValue( destination, reply_);
-        }
-        void AssignTo( Data::AisTransceiverCommandData& destination ) const
-        {
-            destination.SetId( id_ );
-            destination.SetRowVersion( rowVersion_ );
-            destination.SetAisTransceiver( aisTransceiver_ );
-            destination.SetTimestamp( timestamp_ );
-            destination.SetDeviceCommandSourceType( deviceCommandSourceType_ );
-            destination.SetDeviceCommandSourceId( deviceCommandSourceId_ );
-            destination.SetReply( reply_ );
-        }
-    };
-
-    using SimpleAisTransceiverCommandDataReader = SimpleColumnDataReader<AisTransceiverCommandColumnData>;
-
-    class AisTransceiverCommandReplyColumnData : public BaseColumnData
-    {
-        Guid id_;
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
-        WideString message_;
-        SQLLEN messageLength_ = SQL_NULL_DATA;
-    public:
-        using Base = BaseColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverCommandReplyView";
-
-        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT AISTRANSCEIVER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT COMMAND_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT STATUS_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 7;
-
-        AisTransceiverCommandReplyColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::AisTransceiverCommandReply;
-        }
-
-        const Guid& Id( ) const
-        {
-            return id_;
-        }
-        void SetId( const Guid& id )
-        {
-            id_ = id;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        const Guid& Command( ) const
-        {
-            return command_;
-        }
-        void SetCommand( const Guid& command )
-        {
-            command_ = command;
-        }
-        Data::DeviceCommandReplyStatus Status( ) const
-        {
-            return status_;
-        }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
-        {
-            status_ = status;
-        }
-        const WideString& Message( ) const
-        {
-            return message_;
-        }
-        void SetMessage( const WideString& message )
-        {
-            message_ = message;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Bind(statement, ID_FIELD_ID, id_);
-            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
-            Bind(statement, COMMAND_FIELD_ID, command_);
-            Bind(statement, STATUS_FIELD_ID, status_);
-        }
-
-        void ReadUnboundData( const ODBC::Statement& statement )
-        {
-            Base::ReadUnboundData( statement );
-
-            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
-        }
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            WriteColumnValue( destination, Data::Kind::AisTransceiverCommandReply );
-            WriteColumnValue( destination, id_);
-            WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
-            WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, command_);
-            WriteColumnValue( destination, status_);
-            WriteColumnValue( destination, message_);
-        }
-        void AssignTo( Data::AisTransceiverCommandReplyData& destination ) const
-        {
-            destination.SetId( id_ );
-            destination.SetRowVersion( rowVersion_ );
-            destination.SetAisTransceiver( aisTransceiver_ );
-            destination.SetTimestamp( timestamp_ );
-            destination.SetCommand( command_ );
-            destination.SetStatus( status_ );
-            destination.SetMessage( message_ );
-        }
-    };
-
-    using SimpleAisTransceiverCommandReplyDataReader = SimpleColumnDataReader<AisTransceiverCommandReplyColumnData>;
-
-    class AisTransceiverConfigurationColumnData : public BaseColumnData
-    {
-        Guid id_;
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        FixedDBWideString<127> userName_;
-        FixedDBWideString<127> password_;
-        double latitude_ = 0.0;
-        double longitude_ = 0.0;
-        FixedDBWideString<127> aisProviderLoginURL_;
-        FixedDBWideString<32> comPort_;
-        Int32 baudRate_ = 0;
-        bool filterByArea_ = false;
-        double upperLeftCornerLatitude_ = 0.0;
-        double upperLeftCornerLongitude_ = 0.0;
-        double bottomRightCornerLatitude_ = 0.0;
-        double bottomRightCornerLongitude_ = 0.0;
-        FixedDBWideString<127> aisProviderIPAddress_;
-        Int32 aisProviderPort_ = 0;
-        bool useLogin_ = false;
-        Int32 aisProviderLoginPort_ = 0;
-        bool canSendAISMessage_ = false;
-        WideString textMessageHeader_;
-        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
-        WideString urls_;
-        SQLLEN urlsLength_ = SQL_NULL_DATA;
-        Int32 udpPort_ = 0;
-        Data::AisTransceiverConnectionType connectionType_ = Data::AisTransceiverConnectionType::Unknown;
-        bool enableRefreshAidToNavigationIn30sec_ = false;
-        bool enableAidToNavigationFromFile_ = false;
-        WideString aidToNavigationHeader_;
-        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
-        bool sendingMMSI_ = false;
-        Int32 sourceUpdateRate_ = 0;
-        bool enableRefreshStayingStillTargetIn30sec_ = false;
-        WideString excludeSendAisBaseStation_;
-        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
-        WideString excludeSendAisA_;
-        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
-        bool enableSendBaseStationAlarms_ = false;
-        FixedDBWideString<127> aisWebConfig_;
-        bool storeReceivedSentences_ = false;
-        bool storeSentMessages_ = false;
-        bool storeUnsentMessages_ = false;
-    public:
-        using Base = BaseColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[UserName],[Password],[Latitude],[Longitude],[AisProviderLoginURL],[ComPort],[BaudRate],[FilterByArea],[UpperLeftCornerLatitude],[UpperLeftCornerLongitude],[BottomRightCornerLatitude],[BottomRightCornerLongitude],[AisProviderIPAddress],[AisProviderPort],[UseLogin],[AisProviderLoginPort],[CanSendAISMessage],[UdpPort],[ConnectionType],[EnableRefreshAidToNavigationIn30sec],[EnableAidToNavigationFromFile],[SendingMMSI],[SourceUpdateRate],[EnableRefreshStayingStillTargetIn30sec],[EnableSendBaseStationAlarms],[AisWebConfig],[StoreReceivedSentences],[StoreSentMessages],[StoreUnsentMessages],[TextMessageHeader],[Urls],[AidToNavigationHeader],[ExcludeSendAisBaseStation],[ExcludeSendAisA]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverConfigurationView";
-
-        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT AISTRANSCEIVER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT USERNAME_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT PASSWORD_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT AISPROVIDERLOGINURL_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT COMPORT_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT BAUDRATE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT FILTERBYAREA_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT UPPERLEFTCORNERLATITUDE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT UPPERLEFTCORNERLONGITUDE_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT BOTTOMRIGHTCORNERLATITUDE_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT AISPROVIDERIPADDRESS_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT AISPROVIDERPORT_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT USELOGIN_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT AISPROVIDERLOGINPORT_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT CANSENDAISMESSAGE_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT UDPPORT_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT CONNECTIONTYPE_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT SENDINGMMSI_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT SOURCEUPDATERATE_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT ENABLESENDBASESTATIONALARMS_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT AISWEBCONFIG_FIELD_ID = 30;
-        static constexpr SQLUSMALLINT STORERECEIVEDSENTENCES_FIELD_ID = 31;
-        static constexpr SQLUSMALLINT STORESENTMESSAGES_FIELD_ID = 32;
-        static constexpr SQLUSMALLINT STOREUNSENTMESSAGES_FIELD_ID = 33;
-        static constexpr SQLUSMALLINT TEXTMESSAGEHEADER_FIELD_ID = 34;
-        static constexpr SQLUSMALLINT URLS_FIELD_ID = 35;
-        static constexpr SQLUSMALLINT AIDTONAVIGATIONHEADER_FIELD_ID = 36;
-        static constexpr SQLUSMALLINT EXCLUDESENDAISBASESTATION_FIELD_ID = 37;
-        static constexpr SQLUSMALLINT EXCLUDESENDAISA_FIELD_ID = 38;
-
-        AisTransceiverConfigurationColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::AisTransceiverConfiguration;
-        }
-
-        const Guid& Id( ) const
-        {
-            return id_;
-        }
-        void SetId( const Guid& id )
-        {
-            id_ = id;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        const FixedDBWideString<127>& UserName( ) const
-        {
-            return userName_;
-        }
-        void SetUserName( const WideString& userName )
-        {
-            userName_ = userName;
-        }
-        const FixedDBWideString<127>& Password( ) const
-        {
-            return password_;
-        }
-        void SetPassword( const WideString& password )
-        {
-            password_ = password;
-        }
-        double Latitude( ) const
-        {
-            return latitude_;
-        }
-        void SetLatitude( double latitude )
-        {
-            latitude_ = latitude;
-        }
-        double Longitude( ) const
-        {
-            return longitude_;
-        }
-        void SetLongitude( double longitude )
-        {
-            longitude_ = longitude;
-        }
-        const FixedDBWideString<127>& AisProviderLoginURL( ) const
-        {
-            return aisProviderLoginURL_;
-        }
-        void SetAisProviderLoginURL( const WideString& aisProviderLoginURL )
-        {
-            aisProviderLoginURL_ = aisProviderLoginURL;
-        }
-        const FixedDBWideString<32>& ComPort( ) const
-        {
-            return comPort_;
-        }
-        void SetComPort( const WideString& comPort )
-        {
-            comPort_ = comPort;
-        }
-        Int32 BaudRate( ) const
-        {
-            return baudRate_;
-        }
-        void SetBaudRate( Int32 baudRate )
-        {
-            baudRate_ = baudRate;
-        }
-        bool FilterByArea( ) const
-        {
-            return filterByArea_;
-        }
-        void SetFilterByArea( bool filterByArea )
-        {
-            filterByArea_ = filterByArea;
-        }
-        double UpperLeftCornerLatitude( ) const
-        {
-            return upperLeftCornerLatitude_;
-        }
-        void SetUpperLeftCornerLatitude( double upperLeftCornerLatitude )
-        {
-            upperLeftCornerLatitude_ = upperLeftCornerLatitude;
-        }
-        double UpperLeftCornerLongitude( ) const
-        {
-            return upperLeftCornerLongitude_;
-        }
-        void SetUpperLeftCornerLongitude( double upperLeftCornerLongitude )
-        {
-            upperLeftCornerLongitude_ = upperLeftCornerLongitude;
-        }
-        double BottomRightCornerLatitude( ) const
-        {
-            return bottomRightCornerLatitude_;
-        }
-        void SetBottomRightCornerLatitude( double bottomRightCornerLatitude )
-        {
-            bottomRightCornerLatitude_ = bottomRightCornerLatitude;
-        }
-        double BottomRightCornerLongitude( ) const
-        {
-            return bottomRightCornerLongitude_;
-        }
-        void SetBottomRightCornerLongitude( double bottomRightCornerLongitude )
-        {
-            bottomRightCornerLongitude_ = bottomRightCornerLongitude;
-        }
-        const FixedDBWideString<127>& AisProviderIPAddress( ) const
-        {
-            return aisProviderIPAddress_;
-        }
-        void SetAisProviderIPAddress( const WideString& aisProviderIPAddress )
-        {
-            aisProviderIPAddress_ = aisProviderIPAddress;
-        }
-        Int32 AisProviderPort( ) const
-        {
-            return aisProviderPort_;
-        }
-        void SetAisProviderPort( Int32 aisProviderPort )
-        {
-            aisProviderPort_ = aisProviderPort;
-        }
-        bool UseLogin( ) const
-        {
-            return useLogin_;
-        }
-        void SetUseLogin( bool useLogin )
-        {
-            useLogin_ = useLogin;
-        }
-        Int32 AisProviderLoginPort( ) const
-        {
-            return aisProviderLoginPort_;
-        }
-        void SetAisProviderLoginPort( Int32 aisProviderLoginPort )
-        {
-            aisProviderLoginPort_ = aisProviderLoginPort;
-        }
-        bool CanSendAISMessage( ) const
-        {
-            return canSendAISMessage_;
-        }
-        void SetCanSendAISMessage( bool canSendAISMessage )
-        {
-            canSendAISMessage_ = canSendAISMessage;
-        }
-        const WideString& TextMessageHeader( ) const
-        {
-            return textMessageHeader_;
-        }
-        void SetTextMessageHeader( const WideString& textMessageHeader )
-        {
-            textMessageHeader_ = textMessageHeader;
-        }
-        const WideString& Urls( ) const
-        {
-            return urls_;
-        }
-        void SetUrls( const WideString& urls )
-        {
-            urls_ = urls;
-        }
-        Int32 UdpPort( ) const
-        {
-            return udpPort_;
-        }
-        void SetUdpPort( Int32 udpPort )
-        {
-            udpPort_ = udpPort;
-        }
-        Data::AisTransceiverConnectionType ConnectionType( ) const
-        {
-            return connectionType_;
-        }
-        void SetConnectionType( Data::AisTransceiverConnectionType connectionType )
-        {
-            connectionType_ = connectionType;
-        }
-        bool EnableRefreshAidToNavigationIn30sec( ) const
-        {
-            return enableRefreshAidToNavigationIn30sec_;
-        }
-        void SetEnableRefreshAidToNavigationIn30sec( bool enableRefreshAidToNavigationIn30sec )
-        {
-            enableRefreshAidToNavigationIn30sec_ = enableRefreshAidToNavigationIn30sec;
-        }
-        bool EnableAidToNavigationFromFile( ) const
-        {
-            return enableAidToNavigationFromFile_;
-        }
-        void SetEnableAidToNavigationFromFile( bool enableAidToNavigationFromFile )
-        {
-            enableAidToNavigationFromFile_ = enableAidToNavigationFromFile;
-        }
-        const WideString& AidToNavigationHeader( ) const
-        {
-            return aidToNavigationHeader_;
-        }
-        void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
-        {
-            aidToNavigationHeader_ = aidToNavigationHeader;
-        }
-        bool SendingMMSI( ) const
-        {
-            return sendingMMSI_;
-        }
-        void SetSendingMMSI( bool sendingMMSI )
-        {
-            sendingMMSI_ = sendingMMSI;
-        }
-        Int32 SourceUpdateRate( ) const
-        {
-            return sourceUpdateRate_;
-        }
-        void SetSourceUpdateRate( Int32 sourceUpdateRate )
-        {
-            sourceUpdateRate_ = sourceUpdateRate;
-        }
-        bool EnableRefreshStayingStillTargetIn30sec( ) const
-        {
-            return enableRefreshStayingStillTargetIn30sec_;
-        }
-        void SetEnableRefreshStayingStillTargetIn30sec( bool enableRefreshStayingStillTargetIn30sec )
-        {
-            enableRefreshStayingStillTargetIn30sec_ = enableRefreshStayingStillTargetIn30sec;
-        }
-        const WideString& ExcludeSendAisBaseStation( ) const
-        {
-            return excludeSendAisBaseStation_;
-        }
-        void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
-        {
-            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
-        }
-        const WideString& ExcludeSendAisA( ) const
-        {
-            return excludeSendAisA_;
-        }
-        void SetExcludeSendAisA( const WideString& excludeSendAisA )
-        {
-            excludeSendAisA_ = excludeSendAisA;
-        }
-        bool EnableSendBaseStationAlarms( ) const
-        {
-            return enableSendBaseStationAlarms_;
-        }
-        void SetEnableSendBaseStationAlarms( bool enableSendBaseStationAlarms )
-        {
-            enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
-        }
-        const FixedDBWideString<127>& AisWebConfig( ) const
-        {
-            return aisWebConfig_;
-        }
-        void SetAisWebConfig( const WideString& aisWebConfig )
-        {
-            aisWebConfig_ = aisWebConfig;
-        }
-        bool StoreReceivedSentences( ) const
-        {
-            return storeReceivedSentences_;
-        }
-        void SetStoreReceivedSentences( bool storeReceivedSentences )
-        {
-            storeReceivedSentences_ = storeReceivedSentences;
-        }
-        bool StoreSentMessages( ) const
-        {
-            return storeSentMessages_;
-        }
-        void SetStoreSentMessages( bool storeSentMessages )
-        {
-            storeSentMessages_ = storeSentMessages;
-        }
-        bool StoreUnsentMessages( ) const
-        {
-            return storeUnsentMessages_;
-        }
-        void SetStoreUnsentMessages( bool storeUnsentMessages )
-        {
-            storeUnsentMessages_ = storeUnsentMessages;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Bind(statement, ID_FIELD_ID, id_);
-            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
-            Bind(statement, USERNAME_FIELD_ID, userName_);
-            Bind(statement, PASSWORD_FIELD_ID, password_);
-            Bind(statement, LATITUDE_FIELD_ID, latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
-            Bind(statement, AISPROVIDERLOGINURL_FIELD_ID, aisProviderLoginURL_);
-            Bind(statement, COMPORT_FIELD_ID, comPort_);
-            Bind(statement, BAUDRATE_FIELD_ID, baudRate_);
-            Bind(statement, FILTERBYAREA_FIELD_ID, filterByArea_);
-            Bind(statement, UPPERLEFTCORNERLATITUDE_FIELD_ID, upperLeftCornerLatitude_);
-            Bind(statement, UPPERLEFTCORNERLONGITUDE_FIELD_ID, upperLeftCornerLongitude_);
-            Bind(statement, BOTTOMRIGHTCORNERLATITUDE_FIELD_ID, bottomRightCornerLatitude_);
-            Bind(statement, BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID, bottomRightCornerLongitude_);
-            Bind(statement, AISPROVIDERIPADDRESS_FIELD_ID, aisProviderIPAddress_);
-            Bind(statement, AISPROVIDERPORT_FIELD_ID, aisProviderPort_);
-            Bind(statement, USELOGIN_FIELD_ID, useLogin_);
-            Bind(statement, AISPROVIDERLOGINPORT_FIELD_ID, aisProviderLoginPort_);
-            Bind(statement, CANSENDAISMESSAGE_FIELD_ID, canSendAISMessage_);
-            Bind(statement, UDPPORT_FIELD_ID, udpPort_);
-            Bind(statement, CONNECTIONTYPE_FIELD_ID, connectionType_);
-            Bind(statement, ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID, enableRefreshAidToNavigationIn30sec_);
-            Bind(statement, ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID, enableAidToNavigationFromFile_);
-            Bind(statement, SENDINGMMSI_FIELD_ID, sendingMMSI_);
-            Bind(statement, SOURCEUPDATERATE_FIELD_ID, sourceUpdateRate_);
-            Bind(statement, ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID, enableRefreshStayingStillTargetIn30sec_);
-            Bind(statement, ENABLESENDBASESTATIONALARMS_FIELD_ID, enableSendBaseStationAlarms_);
-            Bind(statement, AISWEBCONFIG_FIELD_ID, aisWebConfig_);
-            Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, storeReceivedSentences_);
-            Bind(statement, STORESENTMESSAGES_FIELD_ID, storeSentMessages_);
-            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, storeUnsentMessages_);
-        }
-
-        void ReadUnboundData( const ODBC::Statement& statement )
-        {
-            Base::ReadUnboundData( statement );
-
-            textMessageHeader_ = statement.GetWideString(TEXTMESSAGEHEADER_FIELD_ID);
-            urls_ = statement.GetWideString(URLS_FIELD_ID);
-            aidToNavigationHeader_ = statement.GetWideString(AIDTONAVIGATIONHEADER_FIELD_ID);
-            excludeSendAisBaseStation_ = statement.GetWideString(EXCLUDESENDAISBASESTATION_FIELD_ID);
-            excludeSendAisA_ = statement.GetWideString(EXCLUDESENDAISA_FIELD_ID);
-        }
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            WriteColumnValue( destination, Data::Kind::AisTransceiverConfiguration );
-            WriteColumnValue( destination, id_);
-            WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
-            WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, userName_);
-            WriteColumnValue( destination, password_);
-            WriteColumnValue( destination, latitude_);
-            WriteColumnValue( destination, longitude_);
-            WriteColumnValue( destination, aisProviderLoginURL_);
-            WriteColumnValue( destination, comPort_);
-            WriteColumnValue( destination, baudRate_);
-            WriteColumnValue( destination, filterByArea_);
-            WriteColumnValue( destination, upperLeftCornerLatitude_);
-            WriteColumnValue( destination, upperLeftCornerLongitude_);
-            WriteColumnValue( destination, bottomRightCornerLatitude_);
-            WriteColumnValue( destination, bottomRightCornerLongitude_);
-            WriteColumnValue( destination, aisProviderIPAddress_);
-            WriteColumnValue( destination, aisProviderPort_);
-            WriteColumnValue( destination, useLogin_);
-            WriteColumnValue( destination, aisProviderLoginPort_);
-            WriteColumnValue( destination, canSendAISMessage_);
-            WriteColumnValue( destination, textMessageHeader_);
-            WriteColumnValue( destination, urls_);
-            WriteColumnValue( destination, udpPort_);
-            WriteColumnValue( destination, connectionType_);
-            WriteColumnValue( destination, enableRefreshAidToNavigationIn30sec_);
-            WriteColumnValue( destination, enableAidToNavigationFromFile_);
-            WriteColumnValue( destination, aidToNavigationHeader_);
-            WriteColumnValue( destination, sendingMMSI_);
-            WriteColumnValue( destination, sourceUpdateRate_);
-            WriteColumnValue( destination, enableRefreshStayingStillTargetIn30sec_);
-            WriteColumnValue( destination, excludeSendAisBaseStation_);
-            WriteColumnValue( destination, excludeSendAisA_);
-            WriteColumnValue( destination, enableSendBaseStationAlarms_);
-            WriteColumnValue( destination, aisWebConfig_);
-            WriteColumnValue( destination, storeReceivedSentences_);
-            WriteColumnValue( destination, storeSentMessages_);
-            WriteColumnValue( destination, storeUnsentMessages_);
-        }
-        void AssignTo( Data::AisTransceiverConfigurationData& destination ) const
-        {
-            destination.SetId( id_ );
-            destination.SetRowVersion( rowVersion_ );
-            destination.SetAisTransceiver( aisTransceiver_ );
-            destination.SetTimestamp( timestamp_ );
-            destination.SetUserName( userName_ );
-            destination.SetPassword( password_ );
-            destination.SetLatitude( latitude_ );
-            destination.SetLongitude( longitude_ );
-            destination.SetAisProviderLoginURL( aisProviderLoginURL_ );
-            destination.SetComPort( comPort_ );
-            destination.SetBaudRate( baudRate_ );
-            destination.SetFilterByArea( filterByArea_ );
-            destination.SetUpperLeftCornerLatitude( upperLeftCornerLatitude_ );
-            destination.SetUpperLeftCornerLongitude( upperLeftCornerLongitude_ );
-            destination.SetBottomRightCornerLatitude( bottomRightCornerLatitude_ );
-            destination.SetBottomRightCornerLongitude( bottomRightCornerLongitude_ );
-            destination.SetAisProviderIPAddress( aisProviderIPAddress_ );
-            destination.SetAisProviderPort( aisProviderPort_ );
-            destination.SetUseLogin( useLogin_ );
-            destination.SetAisProviderLoginPort( aisProviderLoginPort_ );
-            destination.SetCanSendAISMessage( canSendAISMessage_ );
-            destination.SetTextMessageHeader( textMessageHeader_ );
-            destination.SetUrls( urls_ );
-            destination.SetUdpPort( udpPort_ );
-            destination.SetConnectionType( connectionType_ );
-            destination.SetEnableRefreshAidToNavigationIn30sec( enableRefreshAidToNavigationIn30sec_ );
-            destination.SetEnableAidToNavigationFromFile( enableAidToNavigationFromFile_ );
-            destination.SetAidToNavigationHeader( aidToNavigationHeader_ );
-            destination.SetSendingMMSI( sendingMMSI_ );
-            destination.SetSourceUpdateRate( sourceUpdateRate_ );
-            destination.SetEnableRefreshStayingStillTargetIn30sec( enableRefreshStayingStillTargetIn30sec_ );
-            destination.SetExcludeSendAisBaseStation( excludeSendAisBaseStation_ );
-            destination.SetExcludeSendAisA( excludeSendAisA_ );
-            destination.SetEnableSendBaseStationAlarms( enableSendBaseStationAlarms_ );
-            destination.SetAisWebConfig( aisWebConfig_ );
-            destination.SetStoreReceivedSentences( storeReceivedSentences_ );
-            destination.SetStoreSentMessages( storeSentMessages_ );
-            destination.SetStoreUnsentMessages( storeUnsentMessages_ );
-        }
-    };
-
-    using SimpleAisTransceiverConfigurationDataReader = SimpleColumnDataReader<AisTransceiverConfigurationColumnData>;
-
-    class AisTransceiverRawMessageColumnData : public BaseColumnData
-    {
-        Guid id_;
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        bool isSent_ = false;
-        FixedDBWideString<100> message_;
-    public:
-        using Base = BaseColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[IsSent],[Message]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverRawMessageView";
-
-        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT AISTRANSCEIVER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT ISSENT_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 6;
-
-        AisTransceiverRawMessageColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::AisTransceiverRawMessage;
-        }
-
-        const Guid& Id( ) const
-        {
-            return id_;
-        }
-        void SetId( const Guid& id )
-        {
-            id_ = id;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        bool IsSent( ) const
-        {
-            return isSent_;
-        }
-        void SetIsSent( bool isSent )
-        {
-            isSent_ = isSent;
-        }
-        const FixedDBWideString<100>& Message( ) const
-        {
-            return message_;
-        }
-        void SetMessage( const WideString& message )
-        {
-            message_ = message;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Bind(statement, ID_FIELD_ID, id_);
-            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
-            Bind(statement, ISSENT_FIELD_ID, isSent_);
-            Bind(statement, MESSAGE_FIELD_ID, message_);
-        }
-
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            WriteColumnValue( destination, Data::Kind::AisTransceiverRawMessage );
-            WriteColumnValue( destination, id_);
-            WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
-            WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, isSent_);
-            WriteColumnValue( destination, message_);
-        }
-        void AssignTo( Data::AisTransceiverRawMessageData& destination ) const
-        {
-            destination.SetId( id_ );
-            destination.SetRowVersion( rowVersion_ );
-            destination.SetAisTransceiver( aisTransceiver_ );
-            destination.SetTimestamp( timestamp_ );
-            destination.SetIsSent( isSent_ );
-            destination.SetMessage( message_ );
-        }
-    };
-
-    using SimpleAisTransceiverRawMessageDataReader = SimpleColumnDataReader<AisTransceiverRawMessageColumnData>;
-
-    class AisTransceiverRawSentenceColumnData : public BaseColumnData
-    {
-        Guid id_;
-        Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
-        DateTime timestamp_;
-        WideString sentence_;
-        SQLLEN sentenceLength_ = SQL_NULL_DATA;
-    public:
-        using Base = BaseColumnData;
-
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[AisTransceiver],[Timestamp],[Sentence]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverRawSentenceView";
-
-        static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT AISTRANSCEIVER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT SENTENCE_FIELD_ID = 5;
-
-        AisTransceiverRawSentenceColumnData( ) = default;
-
-        virtual Kind GetKind() const override
-        {
-            return Kind::AisTransceiverRawSentence;
-        }
-
-        const Guid& Id( ) const
-        {
-            return id_;
-        }
-        void SetId( const Guid& id )
-        {
-            id_ = id;
-        }
-        Int64 RowVersion( ) const
-        {
-            return rowVersion_;
-        }
-        void SetRowVersion( const Int64& rowVersion )
-        {
-            rowVersion_ = rowVersion;
-        }
-        const Guid& AisTransceiver( ) const
-        {
-            return aisTransceiver_;
-        }
-        void SetAisTransceiver( const Guid& aisTransceiver )
-        {
-            aisTransceiver_ = aisTransceiver;
-        }
-        const DateTime& Timestamp( ) const
-        {
-            return timestamp_;
-        }
-        void SetTimestamp( const DateTime& timestamp )
-        {
-            timestamp_ = timestamp;
-        }
-        const WideString& Sentence( ) const
-        {
-            return sentence_;
-        }
-        void SetSentence( const WideString& sentence )
-        {
-            sentence_ = sentence;
-        }
-        void BindColumns( const ODBC::Statement& statement )
-        {
-            Bind(statement, ID_FIELD_ID, id_);
-            Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
-            Bind(statement, AISTRANSCEIVER_FIELD_ID, aisTransceiver_);
-            Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
-        }
-
-        void ReadUnboundData( const ODBC::Statement& statement )
-        {
-            Base::ReadUnboundData( statement );
-
-            sentence_ = statement.GetWideString(SENTENCE_FIELD_ID);
-        }
-        template<IO::StreamWriter StreamT>
-        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
-        {
-            WriteColumnValue( destination, Data::Kind::AisTransceiverRawSentence );
-            WriteColumnValue( destination, id_);
-            WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
-            WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, sentence_);
-        }
-        void AssignTo( Data::AisTransceiverRawSentenceData& destination ) const
-        {
-            destination.SetId( id_ );
-            destination.SetRowVersion( rowVersion_ );
-            destination.SetAisTransceiver( aisTransceiver_ );
-            destination.SetTimestamp( timestamp_ );
-            destination.SetSentence( sentence_ );
-        }
-    };
-
-    using SimpleAisTransceiverRawSentenceDataReader = SimpleColumnDataReader<AisTransceiverRawSentenceColumnData>;
-
     class AlarmStateChangeColumnData : public BaseColumnData
     {
         Guid id_;
@@ -4846,8 +4883,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Alarm],[Timestamp],[State]";
-        static constexpr std::wstring_view ViewName = L"AlarmStateChangeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -4941,8 +4979,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name]";
-        static constexpr std::wstring_view ViewName = L"BaseStationTypeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -4975,7 +5014,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -5015,8 +5054,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"BinaryTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -5120,8 +5160,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[View],[Name],[Timestamp],[Latitude],[Longitude],[ZoomLevel]";
-        static constexpr std::wstring_view ViewName = L"BookmarkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -5167,7 +5208,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -5253,8 +5294,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"BooleanTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -5350,8 +5392,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"ByteTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -5440,6 +5483,7 @@ namespace Barrelman::Database
     class CameraCommandColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
@@ -5449,16 +5493,18 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT CAMERA_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCETYPE_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT REPLY_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT CAMERA_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCETYPE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT REPLY_FIELD_ID = 8;
 
         CameraCommandColumnData( ) = default;
 
@@ -5470,6 +5516,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -5526,6 +5576,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, CAMERA_FIELD_ID, camera_);
             Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
@@ -5575,8 +5626,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[PositionPanTiltMode],[PanAngle],[TiltAngle],[PositionFocalLengthMode],[FocalLength],[SpeedPanTiltMode],[PanSpeed],[TiltSpeed],[SpeedFocalLengthMode],[ZoomSpeed]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandAbsoluteMoveView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT POSITIONPANTILTMODE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT PANANGLE_FIELD_ID = 9;
@@ -5733,8 +5785,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[X],[Y],[Z]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandAdjustPanTiltZoomView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT X_FIELD_ID = 8;
         static constexpr SQLUSMALLINT Y_FIELD_ID = 9;
@@ -5809,8 +5862,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Normalized],[PanVelocity],[TiltVelocity],[ZoomVelocity],[Duration]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandContinuousMoveView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NORMALIZED_FIELD_ID = 8;
         static constexpr SQLUSMALLINT PANVELOCITY_FIELD_ID = 9;
@@ -5909,8 +5963,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Latitude],[Longitude],[Altitude],[ViewportWidth],[ViewportHeight]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandGeoMoveView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 8;
         static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 9;
@@ -6011,8 +6066,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Normalized],[PanAngle],[TiltAngle],[FocalLength],[PanSpeed],[TiltSpeed],[ZoomSpeed]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandRelativeMoveView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NORMALIZED_FIELD_ID = 8;
         static constexpr SQLUSMALLINT PANANGLE_FIELD_ID = 9;
@@ -6130,8 +6186,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandReleasePTZOwnershipView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         CameraCommandReleasePTZOwnershipColumnData( ) = default;
 
@@ -6158,8 +6215,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandRequestPTZOwnershipView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         CameraCommandRequestPTZOwnershipColumnData( ) = default;
 
@@ -6187,8 +6245,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Enabled]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandSetAutoFocusView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
 
@@ -6235,8 +6294,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Enabled]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandSetBlackAndWhiteView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
 
@@ -6284,8 +6344,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[TrackId],[Reason]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandSetFollowedView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TRACKID_FIELD_ID = 8;
         static constexpr SQLUSMALLINT REASON_FIELD_ID = 9;
@@ -6344,8 +6405,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Enabled]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandSetInfraRedLampView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
 
@@ -6392,8 +6454,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Enabled]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandSetWasherView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
 
@@ -6440,8 +6503,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[Enabled]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandSetWiperView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ENABLED_FIELD_ID = 8;
 
@@ -6489,8 +6553,9 @@ namespace Barrelman::Database
     public:
         using Base = CameraCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply],[PanTilt],[Zoom]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandStopView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT PANTILT_FIELD_ID = 8;
         static constexpr SQLUSMALLINT ZOOM_FIELD_ID = 9;
@@ -6559,8 +6624,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[Command],[Status],[PanAngle],[TiltAngle],[FocalLength],[Message]";
-        static constexpr std::wstring_view ViewName = L"CameraCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -6781,8 +6847,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp],[CameraControlProtocol],[CameraAddress],[CameraPort],[CameraControlAddress],[CameraControlPort],[CameraUserName],[CameraPassword],[UseRtspUriOverride],[RtspUriOverride],[Latitude],[Longitude],[Altitude],[UseRelativePosition],[AzimuthFromGPS],[DistanceFromGPS],[PanTiltMode],[MinTiltAngle],[MaxTiltAngle],[MinTiltScaleAngle],[MaxTiltScaleAngle],[UseReverseTiltAngle],[UseReverseNormalizedTiltAngle],[MinTiltVelocity],[MaxTiltVelocity],[MinTiltSpeed],[MaxTiltSpeed],[MinPanAngle],[MaxPanAngle],[MinPanScaleAngle],[MaxPanScaleAngle],[UseReversePanAngle],[UseReverseNormalizedPanAngle],[MinPanVelocity],[MaxPanVelocity],[MinPanSpeed],[MaxPanSpeed],[FocalLengthMode],[MinFocalLength],[MaxFocalLength],[MinFocalLengthScale],[MaxFocalLengthScale],[MinZoomVelocity],[MaxZoomVelocity],[MinZoomSpeed],[MaxZoomSpeed],[ImageSensorWidth],[ImageSensorHeight],[HomePanAngle],[HomeTiltAngle],[HomeFocalLength],[PanOffset],[TiltOffset],[AimAltitude],[MinimumTargetWidth],[TargetLockTimeout],[UpdateStatusInterval],[ReadTimeout],[MoveCommandStatusDelay],[PtzProfileName],[PtzConfigurationToken],[VideoSourceToken]";
-        static constexpr std::wstring_view ViewName = L"CameraConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -6901,7 +6968,7 @@ namespace Barrelman::Database
         {
             return cameraAddress_;
         }
-        void SetCameraAddress( const WideString& cameraAddress )
+        void SetCameraAddress( FixedDBWideString<127> cameraAddress )
         {
             cameraAddress_ = cameraAddress;
         }
@@ -6917,7 +6984,7 @@ namespace Barrelman::Database
         {
             return cameraControlAddress_;
         }
-        void SetCameraControlAddress( const WideString& cameraControlAddress )
+        void SetCameraControlAddress( FixedDBWideString<127> cameraControlAddress )
         {
             cameraControlAddress_ = cameraControlAddress;
         }
@@ -6933,7 +7000,7 @@ namespace Barrelman::Database
         {
             return cameraUserName_;
         }
-        void SetCameraUserName( const WideString& cameraUserName )
+        void SetCameraUserName( FixedDBWideString<127> cameraUserName )
         {
             cameraUserName_ = cameraUserName;
         }
@@ -6941,7 +7008,7 @@ namespace Barrelman::Database
         {
             return cameraPassword_;
         }
-        void SetCameraPassword( const WideString& cameraPassword )
+        void SetCameraPassword( FixedDBWideString<127> cameraPassword )
         {
             cameraPassword_ = cameraPassword;
         }
@@ -6957,7 +7024,7 @@ namespace Barrelman::Database
         {
             return rtspUriOverride_;
         }
-        void SetRtspUriOverride( const WideString& rtspUriOverride )
+        void SetRtspUriOverride( FixedDBWideString<127> rtspUriOverride )
         {
             rtspUriOverride_ = rtspUriOverride;
         }
@@ -7357,7 +7424,7 @@ namespace Barrelman::Database
         {
             return ptzProfileName_;
         }
-        void SetPtzProfileName( const WideString& ptzProfileName )
+        void SetPtzProfileName( FixedDBWideString<127> ptzProfileName )
         {
             ptzProfileName_ = ptzProfileName;
         }
@@ -7365,7 +7432,7 @@ namespace Barrelman::Database
         {
             return ptzConfigurationToken_;
         }
-        void SetPtzConfigurationToken( const WideString& ptzConfigurationToken )
+        void SetPtzConfigurationToken( FixedDBWideString<127> ptzConfigurationToken )
         {
             ptzConfigurationToken_ = ptzConfigurationToken;
         }
@@ -7373,7 +7440,7 @@ namespace Barrelman::Database
         {
             return videoSourceToken_;
         }
-        void SetVideoSourceToken( const WideString& videoSourceToken )
+        void SetVideoSourceToken( FixedDBWideString<127> videoSourceToken )
         {
             videoSourceToken_ = videoSourceToken;
         }
@@ -7597,8 +7664,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"CameraPanCalibrationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -7682,8 +7750,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[PanCalibration],[PanAngle],[PanOffset]";
-        static constexpr std::wstring_view ViewName = L"CameraPanCalibrationValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -7794,8 +7863,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Track],[Timestamp],[PositionPanTiltMode],[PanAngle],[TiltAngle],[PositionFocalLengthMode],[FocalLength],[PanTiltMoveStatus],[ZoomMoveStatus],[VelocityPanTiltMode],[PanVelocity],[TiltVelocity],[VelocityFocalLengthMode],[ZoomVelocity],[ActiveFeatures],[Error]";
-        static constexpr std::wstring_view ViewName = L"CameraStatusView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8063,8 +8133,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"CameraTiltCalibrationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8148,8 +8219,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[TiltCalibration],[PanAngle],[TiltOffset]";
-        static constexpr std::wstring_view ViewName = L"CameraTiltCalibrationValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8244,8 +8316,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Camera],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"CameraZoomCalibrationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8329,8 +8402,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ZoomCalibration],[FocalLength],[FocalLengthOffset]";
-        static constexpr std::wstring_view ViewName = L"CameraZoomCalibrationValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8419,19 +8493,22 @@ namespace Barrelman::Database
     class CatalogElementColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid catalog_;
         FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name]";
-        static constexpr std::wstring_view ViewName = L"CatalogElementView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT CATALOG_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT CATALOG_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 5;
 
         CatalogElementColumnData( ) = default;
 
@@ -8443,6 +8520,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -8468,13 +8549,14 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, CATALOG_FIELD_ID, catalog_);
             Bind(statement, NAME_FIELD_ID, name_);
@@ -8505,8 +8587,9 @@ namespace Barrelman::Database
     public:
         using Base = CatalogElementColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name]";
-        static constexpr std::wstring_view ViewName = L"CatalogView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         CatalogColumnData( ) = default;
 
@@ -8534,8 +8617,9 @@ namespace Barrelman::Database
     public:
         using Base = CatalogElementColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[ElementType]";
-        static constexpr std::wstring_view ViewName = L"ElementView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ELEMENTTYPE_FIELD_ID = 5;
 
@@ -8584,8 +8668,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Count]";
-        static constexpr std::wstring_view ViewName = L"CollectionInfoView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8658,8 +8743,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Code],[Alpha2],[Alpha3]";
-        static constexpr std::wstring_view ViewName = L"CountryView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8695,7 +8781,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -8711,7 +8797,7 @@ namespace Barrelman::Database
         {
             return alpha2_;
         }
-        void SetAlpha2( const WideString& alpha2 )
+        void SetAlpha2( FixedDBWideString<2> alpha2 )
         {
             alpha2_ = alpha2;
         }
@@ -8719,7 +8805,7 @@ namespace Barrelman::Database
         {
             return alpha3_;
         }
-        void SetAlpha3( const WideString& alpha3 )
+        void SetAlpha3( FixedDBWideString<3> alpha3 )
         {
             alpha3_ = alpha3;
         }
@@ -8765,8 +8851,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[TypeCode]";
-        static constexpr std::wstring_view ViewName = L"CursorInfoView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8838,8 +8925,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"DateTimeTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8933,8 +9021,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name]";
-        static constexpr std::wstring_view ViewName = L"DeviceHostView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -8967,7 +9056,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -9008,8 +9097,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Timestamp],[Hostname],[Port],[QueueName]";
-        static constexpr std::wstring_view ViewName = L"DeviceHostConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9062,7 +9152,7 @@ namespace Barrelman::Database
         {
             return hostname_;
         }
-        void SetHostname( const WideString& hostname )
+        void SetHostname( FixedDBWideString<127> hostname )
         {
             hostname_ = hostname;
         }
@@ -9078,7 +9168,7 @@ namespace Barrelman::Database
         {
             return queueName_;
         }
-        void SetQueueName( const WideString& queueName )
+        void SetQueueName( FixedDBWideString<100> queueName )
         {
             queueName_ = queueName;
         }
@@ -9129,8 +9219,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"DoubleTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9224,8 +9315,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name]";
-        static constexpr std::wstring_view ViewName = L"FacilityTypeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9258,7 +9350,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -9298,8 +9390,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Latitude],[Longitude]";
-        static constexpr std::wstring_view ViewName = L"GeoPosition2DTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9409,8 +9502,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Latitude],[Longitude],[Altitude]";
-        static constexpr std::wstring_view ViewName = L"GeoPosition3DTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9532,8 +9626,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[GNSSDevice],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"GNSSDeviceCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9656,8 +9751,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[GNSSDevice],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"GNSSDeviceCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9787,8 +9883,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[GNSSDevice],[Timestamp],[DefaultLatitude],[DefaultLongitude],[DefaultAltitude],[LatitudeOffset],[LongitudeOffset],[AltitudeOffset]";
-        static constexpr std::wstring_view ViewName = L"GNSSDeviceConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -9944,8 +10041,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"GuidTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10043,8 +10141,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[GyroDevice],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"GyroDeviceCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10167,8 +10266,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[GyroDevice],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"GyroDeviceCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10298,8 +10398,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[GyroDevice],[Timestamp],[DefaultHeadingTrueNorth],[DefaultMagneticTrueNorth],[HeadingTrueNorthOffset],[HeadingMagneticNorthOffset],[PitchTransducerName],[RollTransducerName]";
-        static constexpr std::wstring_view ViewName = L"GyroDeviceConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10387,7 +10488,7 @@ namespace Barrelman::Database
         {
             return pitchTransducerName_;
         }
-        void SetPitchTransducerName( const WideString& pitchTransducerName )
+        void SetPitchTransducerName( FixedDBWideString<64> pitchTransducerName )
         {
             pitchTransducerName_ = pitchTransducerName;
         }
@@ -10395,7 +10496,7 @@ namespace Barrelman::Database
         {
             return rollTransducerName_;
         }
-        void SetRollTransducerName( const WideString& rollTransducerName )
+        void SetRollTransducerName( FixedDBWideString<64> rollTransducerName )
         {
             rollTransducerName_ = rollTransducerName;
         }
@@ -10448,15 +10549,18 @@ namespace Barrelman::Database
     class IdentityColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion]";
-        static constexpr std::wstring_view ViewName = L"IdentityView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
 
         IdentityColumnData( ) = default;
 
@@ -10468,6 +10572,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -10484,6 +10592,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
         }
 
@@ -10509,8 +10618,9 @@ namespace Barrelman::Database
     public:
         using Base = IdentityColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Identifier]";
-        static constexpr std::wstring_view ViewName = L"CallsignView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 3;
 
@@ -10525,7 +10635,7 @@ namespace Barrelman::Database
         {
             return identifier_;
         }
-        void SetIdentifier( const WideString& identifier )
+        void SetIdentifier( FixedDBWideString<127> identifier )
         {
             identifier_ = identifier;
         }
@@ -10557,8 +10667,9 @@ namespace Barrelman::Database
     public:
         using Base = IdentityColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Identifier]";
-        static constexpr std::wstring_view ViewName = L"InternationalMaritimeOrganizationNumberView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 3;
 
@@ -10605,8 +10716,9 @@ namespace Barrelman::Database
     public:
         using Base = IdentityColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Identifier]";
-        static constexpr std::wstring_view ViewName = L"MaritimeMobileServiceIdentityView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT IDENTIFIER_FIELD_ID = 3;
 
@@ -10653,8 +10765,9 @@ namespace Barrelman::Database
     public:
         using Base = IdentityColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Text]";
-        static constexpr std::wstring_view ViewName = L"NameView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TEXT_FIELD_ID = 3;
 
@@ -10669,7 +10782,7 @@ namespace Barrelman::Database
         {
             return text_;
         }
-        void SetText( const WideString& text )
+        void SetText( FixedDBWideString<100> text )
         {
             text_ = text;
         }
@@ -10705,8 +10818,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"Int16TimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10802,8 +10916,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"Int32TimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10899,8 +11014,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"Int64TimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -10989,15 +11105,18 @@ namespace Barrelman::Database
     class ItemColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion]";
-        static constexpr std::wstring_view ViewName = L"ItemView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
 
         ItemColumnData( ) = default;
 
@@ -11009,6 +11128,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -11025,6 +11148,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
         }
 
@@ -11051,8 +11175,9 @@ namespace Barrelman::Database
     public:
         using Base = ItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Type]";
-        static constexpr std::wstring_view ViewName = L"BaseStationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
@@ -11068,7 +11193,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -11115,8 +11240,9 @@ namespace Barrelman::Database
     public:
         using Base = ItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"DeviceView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT HOST_FIELD_ID = 3;
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
@@ -11142,7 +11268,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -11198,19 +11324,20 @@ namespace Barrelman::Database
 
     using SimpleDeviceDataReader = SimpleColumnDataReader<DeviceColumnData>;
 
-    class CameraColumnData : public DeviceColumnData
+    class CameraDeviceColumnData : public DeviceColumnData
     {
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"CameraView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        CameraColumnData( ) = default;
+        CameraDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::Camera;
+            return Kind::CameraDevice;
         }
 
         template<IO::StreamWriter StreamT>
@@ -11218,13 +11345,13 @@ namespace Barrelman::Database
         {
             Base::WriteColumns( destination );
         }
-        void AssignTo( Data::CameraData& destination ) const
+        void AssignTo( Data::CameraDeviceData& destination ) const
         {
             Base::AssignTo( static_cast<Data::DeviceData&>( destination ) );
         }
     };
 
-    using SimpleCameraDataReader = SimpleColumnDataReader<CameraColumnData>;
+    using SimpleCameraDeviceDataReader = SimpleColumnDataReader<CameraDeviceColumnData>;
 
     class GNSSDeviceColumnData : public DeviceColumnData
     {
@@ -11234,8 +11361,9 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[LatitudeTimeseries],[LongitudeTimeseries],[AltitudeTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"GNSSDeviceView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT LATITUDETIMESERIES_FIELD_ID = 7;
         static constexpr SQLUSMALLINT LONGITUDETIMESERIES_FIELD_ID = 8;
@@ -11313,8 +11441,9 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[HeadingTrueNorthTimeseries],[HeadingMagneticNorthTimeseries],[PitchTimeseries],[RateOfTurnTimeseries],[RollTimeseries],[CourseTimeseries],[SpeedTimeseries],[GNSSDevice],[Description]";
-        static constexpr std::wstring_view ViewName = L"GyroDeviceView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT HEADINGTRUENORTHTIMESERIES_FIELD_ID = 7;
         static constexpr SQLUSMALLINT HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID = 8;
@@ -11444,8 +11573,9 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"LineInputDeviceView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         LineInputDeviceColumnData( ) = default;
 
@@ -11467,19 +11597,20 @@ namespace Barrelman::Database
 
     using SimpleLineInputDeviceDataReader = SimpleColumnDataReader<LineInputDeviceColumnData>;
 
-    class OilspillDetectorColumnData : public DeviceColumnData
+    class OilSpillDetectorDeviceColumnData : public DeviceColumnData
     {
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"OilspillDetectorView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        OilspillDetectorColumnData( ) = default;
+        OilSpillDetectorDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::OilspillDetector;
+            return Kind::OilSpillDetectorDevice;
         }
 
         template<IO::StreamWriter StreamT>
@@ -11487,27 +11618,28 @@ namespace Barrelman::Database
         {
             Base::WriteColumns( destination );
         }
-        void AssignTo( Data::OilspillDetectorData& destination ) const
+        void AssignTo( Data::OilSpillDetectorDeviceData& destination ) const
         {
             Base::AssignTo( static_cast<Data::DeviceData&>( destination ) );
         }
     };
 
-    using SimpleOilspillDetectorDataReader = SimpleColumnDataReader<OilspillDetectorColumnData>;
+    using SimpleOilSpillDetectorDeviceDataReader = SimpleColumnDataReader<OilSpillDetectorDeviceColumnData>;
 
-    class RadioColumnData : public DeviceColumnData
+    class RadioDeviceColumnData : public DeviceColumnData
     {
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"RadioView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        RadioColumnData( ) = default;
+        RadioDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::Radio;
+            return Kind::RadioDevice;
         }
 
         template<IO::StreamWriter StreamT>
@@ -11515,17 +11647,17 @@ namespace Barrelman::Database
         {
             Base::WriteColumns( destination );
         }
-        void AssignTo( Data::RadioData& destination ) const
+        void AssignTo( Data::RadioDeviceData& destination ) const
         {
             Base::AssignTo( static_cast<Data::DeviceData&>( destination ) );
         }
     };
 
-    using SimpleRadioDataReader = SimpleColumnDataReader<RadioColumnData>;
+    using SimpleRadioDeviceDataReader = SimpleColumnDataReader<RadioDeviceColumnData>;
 
-    class RadomeColumnData : public DeviceColumnData
+    class RadomeDeviceColumnData : public DeviceColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
         Guid pressureTimeseries_;
         Guid temperatureTimeseries_;
         Guid dewPointTimeseries_;
@@ -11533,8 +11665,9 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Radar],[PressureTimeseries],[TemperatureTimeseries],[DewPointTimeseries],[StatusTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"RadomeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 7;
         static constexpr SQLUSMALLINT PRESSURETIMESERIES_FIELD_ID = 8;
@@ -11542,18 +11675,18 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT DEWPOINTTIMESERIES_FIELD_ID = 10;
         static constexpr SQLUSMALLINT STATUSTIMESERIES_FIELD_ID = 11;
 
-        RadomeColumnData( ) = default;
+        RadomeDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::Radome;
+            return Kind::RadomeDevice;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -11610,7 +11743,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, dewPointTimeseries_);
             WriteColumnValue( destination, statusTimeseries_);
         }
-        void AssignTo( Data::RadomeData& destination ) const
+        void AssignTo( Data::RadomeDeviceData& destination ) const
         {
             Base::AssignTo( static_cast<Data::DeviceData&>( destination ) );
             destination.SetRadar( radar_ );
@@ -11621,21 +11754,22 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleRadomeDataReader = SimpleColumnDataReader<RadomeColumnData>;
+    using SimpleRadomeDeviceDataReader = SimpleColumnDataReader<RadomeDeviceColumnData>;
 
-    class TrackerColumnData : public DeviceColumnData
+    class TrackerDeviceColumnData : public DeviceColumnData
     {
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"TrackerView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        TrackerColumnData( ) = default;
+        TrackerDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::Tracker;
+            return Kind::TrackerDevice;
         }
 
         template<IO::StreamWriter StreamT>
@@ -11643,27 +11777,28 @@ namespace Barrelman::Database
         {
             Base::WriteColumns( destination );
         }
-        void AssignTo( Data::TrackerData& destination ) const
+        void AssignTo( Data::TrackerDeviceData& destination ) const
         {
             Base::AssignTo( static_cast<Data::DeviceData&>( destination ) );
         }
     };
 
-    using SimpleTrackerDataReader = SimpleColumnDataReader<TrackerColumnData>;
+    using SimpleTrackerDeviceDataReader = SimpleColumnDataReader<TrackerDeviceColumnData>;
 
-    class AisTransceiverColumnData : public TrackerColumnData
+    class AisDeviceColumnData : public TrackerDeviceColumnData
     {
     public:
-        using Base = TrackerColumnData;
+        using Base = TrackerDeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[Description]";
-        static constexpr std::wstring_view ViewName = L"AisTransceiverView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        AisTransceiverColumnData( ) = default;
+        AisDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::AisTransceiver;
+            return Kind::AisDevice;
         }
 
         template<IO::StreamWriter StreamT>
@@ -11671,15 +11806,15 @@ namespace Barrelman::Database
         {
             Base::WriteColumns( destination );
         }
-        void AssignTo( Data::AisTransceiverData& destination ) const
+        void AssignTo( Data::AisDeviceData& destination ) const
         {
-            Base::AssignTo( static_cast<Data::TrackerData&>( destination ) );
+            Base::AssignTo( static_cast<Data::TrackerDeviceData&>( destination ) );
         }
     };
 
-    using SimpleAisTransceiverDataReader = SimpleColumnDataReader<AisTransceiverColumnData>;
+    using SimpleAisDeviceDataReader = SimpleColumnDataReader<AisDeviceColumnData>;
 
-    class RadarColumnData : public TrackerColumnData
+    class RadarDeviceColumnData : public TrackerDeviceColumnData
     {
         Guid saveSettingsTimeseries_;
         Guid powerOnTimeseries_;
@@ -11702,13 +11837,14 @@ namespace Barrelman::Database
         Guid fastTimeConstantModeTimeseries_;
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
-        Guid radome_;
-        Guid gNSSDevice_;
+        DBGuid radome_;
+        DBGuid gNSSDevice_;
     public:
-        using Base = TrackerColumnData;
+        using Base = TrackerDeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[SaveSettingsTimeseries],[PowerOnTimeseries],[TrackingOnTimeseries],[RadarPulseTimeseries],[TuningTimeseries],[BlankSector1Timeseries],[Sector1StartTimeseries],[Sector1EndTimeseries],[BlankSector2Timeseries],[Sector2StartTimeseries],[Sector2EndTimeseries],[EnableAutomaticFrequencyControlTimeseries],[AzimuthOffsetTimeseries],[EnableSensitivityTimeControlTimeseries],[AutomaticSensitivityTimeControlTimeseries],[SensitivityTimeControlLevelTimeseries],[EnableFastTimeConstantTimeseries],[FastTimeConstantLevelTimeseries],[FastTimeConstantModeTimeseries],[LatitudeTimeseries],[LongitudeTimeseries],[Radome],[GNSSDevice],[Description]";
-        static constexpr std::wstring_view ViewName = L"RadarView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SAVESETTINGSTIMESERIES_FIELD_ID = 7;
         static constexpr SQLUSMALLINT POWERONTIMESERIES_FIELD_ID = 8;
@@ -11734,11 +11870,11 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT RADOME_FIELD_ID = 28;
         static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 29;
 
-        RadarColumnData( ) = default;
+        RadarDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::Radar;
+            return Kind::RadarDevice;
         }
 
         const Guid& SaveSettingsTimeseries( ) const
@@ -11909,19 +12045,19 @@ namespace Barrelman::Database
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        const Guid& Radome( ) const
+        const DBGuid& Radome( ) const
         {
             return radome_;
         }
-        void SetRadome( const Guid& radome )
+        void SetRadome( const DBGuid& radome )
         {
             radome_ = radome;
         }
-        const Guid& GNSSDevice( ) const
+        const DBGuid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
-        void SetGNSSDevice( const Guid& gNSSDevice )
+        void SetGNSSDevice( const DBGuid& gNSSDevice )
         {
             gNSSDevice_ = gNSSDevice;
         }
@@ -11982,9 +12118,9 @@ namespace Barrelman::Database
             WriteColumnValue( destination, radome_);
             WriteColumnValue( destination, gNSSDevice_);
         }
-        void AssignTo( Data::RadarData& destination ) const
+        void AssignTo( Data::RadarDeviceData& destination ) const
         {
-            Base::AssignTo( static_cast<Data::TrackerData&>( destination ) );
+            Base::AssignTo( static_cast<Data::TrackerDeviceData&>( destination ) );
             destination.SetSaveSettingsTimeseries( saveSettingsTimeseries_ );
             destination.SetPowerOnTimeseries( powerOnTimeseries_ );
             destination.SetTrackingOnTimeseries( trackingOnTimeseries_ );
@@ -12011,9 +12147,9 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleRadarDataReader = SimpleColumnDataReader<RadarColumnData>;
+    using SimpleRadarDeviceDataReader = SimpleColumnDataReader<RadarDeviceColumnData>;
 
-    class WeatherStationColumnData : public DeviceColumnData
+    class WeatherStationDeviceColumnData : public DeviceColumnData
     {
         Guid barometricPressureTimeseries_;
         Guid airTemperatureTimeseries_;
@@ -12027,8 +12163,9 @@ namespace Barrelman::Database
     public:
         using Base = DeviceColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Name],[EnabledTimeseries],[BarometricPressureTimeseries],[AirTemperatureTimeseries],[WaterTemperatureTimeseries],[RelativeHumidityTimeseries],[AbsoluteHumidityTimeseries],[DewPointTimeseries],[WindDirectionTimeseries],[WindSpeedTimeseries],[Gyro],[Description]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT BAROMETRICPRESSURETIMESERIES_FIELD_ID = 7;
         static constexpr SQLUSMALLINT AIRTEMPERATURETIMESERIES_FIELD_ID = 8;
@@ -12040,11 +12177,11 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT WINDSPEEDTIMESERIES_FIELD_ID = 14;
         static constexpr SQLUSMALLINT GYRO_FIELD_ID = 15;
 
-        WeatherStationColumnData( ) = default;
+        WeatherStationDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::WeatherStation;
+            return Kind::WeatherStationDevice;
         }
 
         const Guid& BarometricPressureTimeseries( ) const
@@ -12148,7 +12285,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, windSpeedTimeseries_);
             WriteColumnValue( destination, gyro_);
         }
-        void AssignTo( Data::WeatherStationData& destination ) const
+        void AssignTo( Data::WeatherStationDeviceData& destination ) const
         {
             Base::AssignTo( static_cast<Data::DeviceData&>( destination ) );
             destination.SetBarometricPressureTimeseries( barometricPressureTimeseries_ );
@@ -12163,7 +12300,7 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleWeatherStationDataReader = SimpleColumnDataReader<WeatherStationColumnData>;
+    using SimpleWeatherStationDeviceDataReader = SimpleColumnDataReader<WeatherStationDeviceColumnData>;
 
     class FacilityColumnData : public ItemColumnData
     {
@@ -12175,8 +12312,9 @@ namespace Barrelman::Database
     public:
         using Base = ItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Type],[Longitude],[Latitude],[Altitude]";
-        static constexpr std::wstring_view ViewName = L"FacilityView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
@@ -12195,7 +12333,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12270,8 +12408,9 @@ namespace Barrelman::Database
     public:
         using Base = ItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion]";
-        static constexpr std::wstring_view ViewName = L"TrackableItemView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         TrackableItemColumnData( ) = default;
 
@@ -12300,8 +12439,9 @@ namespace Barrelman::Database
     public:
         using Base = TrackableItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Type]";
-        static constexpr std::wstring_view ViewName = L"AircraftView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
@@ -12317,7 +12457,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12369,8 +12509,9 @@ namespace Barrelman::Database
     public:
         using Base = TrackableItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[MMSI],[NavigationalAidType],[Position],[IsVirtual],[ToBow],[ToStern],[ToPort],[ToStarboard],[OffPositionTimeseries]";
-        static constexpr std::wstring_view ViewName = L"AisAidToNavigationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
         static constexpr SQLUSMALLINT MMSI_FIELD_ID = 4;
@@ -12394,7 +12535,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12526,8 +12667,9 @@ namespace Barrelman::Database
     public:
         using Base = TrackableItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Type]";
-        static constexpr std::wstring_view ViewName = L"VehicleView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
@@ -12543,7 +12685,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12593,8 +12735,9 @@ namespace Barrelman::Database
     public:
         using Base = TrackableItemColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Type],[ToBow],[ToStern],[ToPort],[ToStarboard],[DraughtTimeseries],[PersonsOnBoardTimeseries]";
-        static constexpr std::wstring_view ViewName = L"VesselView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TYPE_FIELD_ID = 4;
@@ -12616,7 +12759,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -12730,8 +12873,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Item],[Identity],[Start],[End]";
-        static constexpr std::wstring_view ViewName = L"ItemIdentityLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -12839,8 +12983,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Parent],[Child],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"ItemParentChildLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -12938,8 +13083,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[LineInputDevice],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"LineInputDeviceCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -13062,8 +13208,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[LineInputDevice],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"LineInputDeviceCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -13220,8 +13367,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[LineInputDevice],[Timestamp],[StoreReceivedSentences],[StoreSentMessages],[StoreUnsentMessages],[NMEA],[StrictNMEA],[ConnectionType],[UdpReceivePort],[UdpSendHostname],[UdpSendPort],[TcpHostname],[TcpPort],[UseHttpLogin],[LoginHostname],[LoginPort],[UserName],[Password],[ComPort],[BaudRate],[DataBits],[DiscardNull],[DtrEnable],[Handshake],[NewLine],[Parity],[ParityReplace],[ReadBufferSize],[ReadTimeout],[ReceivedBytesThreshold],[RtsEnable],[StopBits],[WriteBufferSize],[WriteTimeout],[PairedComPort]";
-        static constexpr std::wstring_view ViewName = L"LineInputDeviceConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -13360,7 +13508,7 @@ namespace Barrelman::Database
         {
             return udpSendHostname_;
         }
-        void SetUdpSendHostname( const WideString& udpSendHostname )
+        void SetUdpSendHostname( FixedDBWideString<100> udpSendHostname )
         {
             udpSendHostname_ = udpSendHostname;
         }
@@ -13376,7 +13524,7 @@ namespace Barrelman::Database
         {
             return tcpHostname_;
         }
-        void SetTcpHostname( const WideString& tcpHostname )
+        void SetTcpHostname( FixedDBWideString<100> tcpHostname )
         {
             tcpHostname_ = tcpHostname;
         }
@@ -13400,7 +13548,7 @@ namespace Barrelman::Database
         {
             return loginHostname_;
         }
-        void SetLoginHostname( const WideString& loginHostname )
+        void SetLoginHostname( FixedDBWideString<100> loginHostname )
         {
             loginHostname_ = loginHostname;
         }
@@ -13416,7 +13564,7 @@ namespace Barrelman::Database
         {
             return userName_;
         }
-        void SetUserName( const WideString& userName )
+        void SetUserName( FixedDBWideString<100> userName )
         {
             userName_ = userName;
         }
@@ -13424,7 +13572,7 @@ namespace Barrelman::Database
         {
             return password_;
         }
-        void SetPassword( const WideString& password )
+        void SetPassword( FixedDBWideString<100> password )
         {
             password_ = password;
         }
@@ -13432,7 +13580,7 @@ namespace Barrelman::Database
         {
             return comPort_;
         }
-        void SetComPort( const WideString& comPort )
+        void SetComPort( FixedDBWideString<100> comPort )
         {
             comPort_ = comPort;
         }
@@ -13480,7 +13628,7 @@ namespace Barrelman::Database
         {
             return newLine_;
         }
-        void SetNewLine( const WideString& newLine )
+        void SetNewLine( FixedDBWideString<100> newLine )
         {
             newLine_ = newLine;
         }
@@ -13560,7 +13708,7 @@ namespace Barrelman::Database
         {
             return pairedComPort_;
         }
-        void SetPairedComPort( const WideString& pairedComPort )
+        void SetPairedComPort( FixedDBWideString<100> pairedComPort )
         {
             pairedComPort_ = pairedComPort;
         }
@@ -13700,8 +13848,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[LineInputDevice],[Type]";
-        static constexpr std::wstring_view ViewName = L"LineInputMessageRoutingView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -13743,7 +13892,7 @@ namespace Barrelman::Database
         {
             return type_;
         }
-        void SetType( const WideString& type )
+        void SetType( FixedDBWideString<100> type )
         {
             type_ = type;
         }
@@ -13784,8 +13933,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Routing],[Listener]";
-        static constexpr std::wstring_view ViewName = L"LineInputMessageRoutingDestinationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -13869,8 +14019,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[LineInputDevice],[HostName],[Port]";
-        static constexpr std::wstring_view ViewName = L"LineInputWhiteListEntryView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -13913,7 +14064,7 @@ namespace Barrelman::Database
         {
             return hostName_;
         }
-        void SetHostName( const WideString& hostName )
+        void SetHostName( FixedDBWideString<128> hostName )
         {
             hostName_ = hostName;
         }
@@ -13966,8 +14117,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"LogApplicationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -14001,7 +14153,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -14067,8 +14219,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Application],[Timestamp],[Finest],[Finer],[Fine],[Info],[Notice],[Warn],[Error],[Severe],[Critical],[Alert],[Fatal],[Emergency]";
-        static constexpr std::wstring_view ViewName = L"LogApplicationConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -14296,8 +14449,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ComputerName],[Description]";
-        static constexpr std::wstring_view ViewName = L"LogHostView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -14331,7 +14485,7 @@ namespace Barrelman::Database
         {
             return computerName_;
         }
-        void SetComputerName( const WideString& computerName )
+        void SetComputerName( FixedDBWideString<127> computerName )
         {
             computerName_ = computerName;
         }
@@ -14397,8 +14551,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Host],[Timestamp],[Finest],[Finer],[Fine],[Info],[Notice],[Warn],[Error],[Severe],[Critical],[Alert],[Fatal],[Emergency]";
-        static constexpr std::wstring_view ViewName = L"LogHostConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -14630,8 +14785,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[FileName],[LineNumber],[MethodName],[Namespace],[ClassName]";
-        static constexpr std::wstring_view ViewName = L"LogLocationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -14668,7 +14824,7 @@ namespace Barrelman::Database
         {
             return fileName_;
         }
-        void SetFileName( const WideString& fileName )
+        void SetFileName( FixedDBWideString<260> fileName )
         {
             fileName_ = fileName;
         }
@@ -14700,7 +14856,7 @@ namespace Barrelman::Database
         {
             return methodName_;
         }
-        void SetMethodName( const WideString& methodName )
+        void SetMethodName( FixedDBWideString<255> methodName )
         {
             methodName_ = methodName;
         }
@@ -14761,8 +14917,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Application],[Host],[Started],[Stopped],[ProcessId],[Identity],[Path]";
-        static constexpr std::wstring_view ViewName = L"LogProcessView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -14849,7 +15006,7 @@ namespace Barrelman::Database
         {
             return identity_;
         }
-        void SetIdentity( const WideString& identity )
+        void SetIdentity( FixedDBWideString<127> identity )
         {
             identity_ = identity;
         }
@@ -14920,8 +15077,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Thread],[SequenceNumber],[Level],[Timestamp],[Depth],[Location],[Message],[ExceptionString],[PropertiesData]";
-        static constexpr std::wstring_view ViewName = L"LogRecordView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15096,8 +15254,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Process],[Started],[Stopped],[ThreadId],[Name]";
-        static constexpr std::wstring_view ViewName = L"LogThreadView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15166,7 +15325,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -15220,8 +15379,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Thread],[SequenceNumber],[Location],[Depth],[Entered],[Ended]";
-        static constexpr std::wstring_view ViewName = L"LogTraceEntryView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15362,8 +15522,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Item],[ElementType],[Latitude],[Longitude],[Angle],[Left],[Top],[Width],[Height],[Label],[Data]";
-        static constexpr std::wstring_view ViewName = L"MapElementView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15478,7 +15639,7 @@ namespace Barrelman::Database
         {
             return label_;
         }
-        void SetLabel( const WideString& label )
+        void SetLabel( FixedDBWideString<100> label )
         {
             label_ = label;
         }
@@ -15566,8 +15727,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Scale],[Latitude],[Longitude],[NorthWestLatitude],[NorthWestLongitude],[SouthEastLatitude],[SouthEastLongitude],[Image]";
-        static constexpr std::wstring_view ViewName = L"MapInfoView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15732,8 +15894,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timestamp],[IpAddress],[Port],[ImageScaleFactorX],[ImageOffsetX],[ImageScaleFactorY],[ImageOffsetY]";
-        static constexpr std::wstring_view ViewName = L"MapServiceOptionsView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15780,7 +15943,7 @@ namespace Barrelman::Database
         {
             return ipAddress_;
         }
-        void SetIpAddress( const WideString& ipAddress )
+        void SetIpAddress( FixedDBWideString<127> ipAddress )
         {
             ipAddress_ = ipAddress;
         }
@@ -15876,8 +16039,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Code],[Country]";
-        static constexpr std::wstring_view ViewName = L"MaritimeIdentificationDigitsView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -15961,8 +16125,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Service],[Name],[EnabledTimeseries]";
-        static constexpr std::wstring_view ViewName = L"MediaProxySessionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16005,7 +16170,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<128> name )
         {
             name_ = name;
         }
@@ -16058,8 +16223,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ProxySession],[Timestamp],[StreamName]";
-        static constexpr std::wstring_view ViewName = L"MediaProxySessionFileView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16110,7 +16276,7 @@ namespace Barrelman::Database
         {
             return streamName_;
         }
-        void SetStreamName( const WideString& streamName )
+        void SetStreamName( FixedDBWideString<100> streamName )
         {
             streamName_ = streamName;
         }
@@ -16165,8 +16331,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ProxySession],[Timestamp],[SourceStreamUrl],[StreamName],[Mode],[TunnelOverHTTPPortNumber],[Username],[Password],[RecorderPortNumber],[SessionType],[MaxFileTime],[MaxFileRetention],[VideoDirectory]";
-        static constexpr std::wstring_view ViewName = L"MediaProxySessionOptionsView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16227,7 +16394,7 @@ namespace Barrelman::Database
         {
             return sourceStreamUrl_;
         }
-        void SetSourceStreamUrl( const WideString& sourceStreamUrl )
+        void SetSourceStreamUrl( FixedDBWideString<255> sourceStreamUrl )
         {
             sourceStreamUrl_ = sourceStreamUrl;
         }
@@ -16235,7 +16402,7 @@ namespace Barrelman::Database
         {
             return streamName_;
         }
-        void SetStreamName( const WideString& streamName )
+        void SetStreamName( FixedDBWideString<255> streamName )
         {
             streamName_ = streamName;
         }
@@ -16259,7 +16426,7 @@ namespace Barrelman::Database
         {
             return username_;
         }
-        void SetUsername( const WideString& username )
+        void SetUsername( FixedDBWideString<128> username )
         {
             username_ = username;
         }
@@ -16267,7 +16434,7 @@ namespace Barrelman::Database
         {
             return password_;
         }
-        void SetPassword( const WideString& password )
+        void SetPassword( FixedDBWideString<128> password )
         {
             password_ = password;
         }
@@ -16307,7 +16474,7 @@ namespace Barrelman::Database
         {
             return videoDirectory_;
         }
-        void SetVideoDirectory( const WideString& videoDirectory )
+        void SetVideoDirectory( FixedDBWideString<260> videoDirectory )
         {
             videoDirectory_ = videoDirectory;
         }
@@ -16380,8 +16547,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[EnabledTimeseries]";
-        static constexpr std::wstring_view ViewName = L"MediaServiceView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16454,8 +16622,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[MediaService],[Timestamp],[RtspPortNumber],[HttpPortNumber]";
-        static constexpr std::wstring_view ViewName = L"MediaServiceOptionsView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16556,6 +16725,7 @@ namespace Barrelman::Database
     class NamespaceElementColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid namespace_;
         FixedDBWideString<127> name_;
@@ -16564,14 +16734,16 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Namespace],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"NamespaceElementView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT NAMESPACE_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT NAMESPACE_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 6;
 
         NamespaceElementColumnData( ) = default;
 
@@ -16583,6 +16755,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -16608,7 +16784,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -16623,6 +16799,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, NAMESPACE_FIELD_ID, namespace_);
             Bind(statement, NAME_FIELD_ID, name_);
@@ -16661,8 +16838,9 @@ namespace Barrelman::Database
     public:
         using Base = NamespaceElementColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Namespace],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"ElementTypeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         ElementTypeColumnData( ) = default;
 
@@ -16689,8 +16867,9 @@ namespace Barrelman::Database
     public:
         using Base = NamespaceElementColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Namespace],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"NamespaceView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         NamespaceColumnData( ) = default;
 
@@ -16712,7 +16891,7 @@ namespace Barrelman::Database
 
     using SimpleNamespaceDataReader = SimpleColumnDataReader<NamespaceColumnData>;
 
-    class OilspillColumnData : public BaseColumnData
+    class OilSpillColumnData : public BaseColumnData
     {
         Guid id_;
         Int64 rowVersion_ = 0;
@@ -16730,8 +16909,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[OilSpillDetector],[Timestamp],[OilArea],[Shape],[BSI],[Oil],[Trace]";
-        static constexpr std::wstring_view ViewName = L"OilspillView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16743,11 +16923,11 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT OIL_FIELD_ID = 8;
         static constexpr SQLUSMALLINT TRACE_FIELD_ID = 9;
 
-        OilspillColumnData( ) = default;
+        OilSpillColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::Oilspill;
+            return Kind::OilSpill;
         }
 
         const Guid& Id( ) const
@@ -16843,7 +17023,7 @@ namespace Barrelman::Database
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
-            WriteColumnValue( destination, Data::Kind::Oilspill );
+            WriteColumnValue( destination, Data::Kind::OilSpill );
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, oilSpillDetector_);
@@ -16854,7 +17034,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, oil_);
             WriteColumnValue( destination, trace_);
         }
-        void AssignTo( Data::OilspillData& destination ) const
+        void AssignTo( Data::OilSpillData& destination ) const
         {
             destination.SetId( id_ );
             destination.SetRowVersion( rowVersion_ );
@@ -16868,9 +17048,9 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleOilspillDataReader = SimpleColumnDataReader<OilspillColumnData>;
+    using SimpleOilSpillDataReader = SimpleColumnDataReader<OilSpillColumnData>;
 
-    class OilspillDetectorCommandColumnData : public BaseColumnData
+    class OilSpillDetectorCommandColumnData : public BaseColumnData
     {
         Guid id_;
         Int64 rowVersion_ = 0;
@@ -16882,8 +17062,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[OilSpillDetector],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"OilspillDetectorCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -16893,11 +17074,11 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 6;
         static constexpr SQLUSMALLINT REPLY_FIELD_ID = 7;
 
-        OilspillDetectorCommandColumnData( ) = default;
+        OilSpillDetectorCommandColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::OilspillDetectorCommand;
+            return Kind::OilSpillDetectorCommand;
         }
 
         const Guid& Id( ) const
@@ -16970,7 +17151,7 @@ namespace Barrelman::Database
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
-            WriteColumnValue( destination, Data::Kind::OilspillDetectorCommand );
+            WriteColumnValue( destination, Data::Kind::OilSpillDetectorCommand );
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, oilSpillDetector_);
@@ -16979,7 +17160,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, deviceCommandSourceId_);
             WriteColumnValue( destination, reply_);
         }
-        void AssignTo( Data::OilspillDetectorCommandData& destination ) const
+        void AssignTo( Data::OilSpillDetectorCommandData& destination ) const
         {
             destination.SetId( id_ );
             destination.SetRowVersion( rowVersion_ );
@@ -16991,9 +17172,9 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleOilspillDetectorCommandDataReader = SimpleColumnDataReader<OilspillDetectorCommandColumnData>;
+    using SimpleOilSpillDetectorCommandDataReader = SimpleColumnDataReader<OilSpillDetectorCommandColumnData>;
 
-    class OilspillDetectorCommandReplyColumnData : public BaseColumnData
+    class OilSpillDetectorCommandReplyColumnData : public BaseColumnData
     {
         Guid id_;
         Int64 rowVersion_ = 0;
@@ -17006,8 +17187,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[OilSpillDetector],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"OilspillDetectorCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -17017,11 +17199,11 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT STATUS_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 7;
 
-        OilspillDetectorCommandReplyColumnData( ) = default;
+        OilSpillDetectorCommandReplyColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::OilspillDetectorCommandReply;
+            return Kind::OilSpillDetectorCommandReply;
         }
 
         const Guid& Id( ) const
@@ -17099,7 +17281,7 @@ namespace Barrelman::Database
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
-            WriteColumnValue( destination, Data::Kind::OilspillDetectorCommandReply );
+            WriteColumnValue( destination, Data::Kind::OilSpillDetectorCommandReply );
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, oilSpillDetector_);
@@ -17108,7 +17290,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, status_);
             WriteColumnValue( destination, message_);
         }
-        void AssignTo( Data::OilspillDetectorCommandReplyData& destination ) const
+        void AssignTo( Data::OilSpillDetectorCommandReplyData& destination ) const
         {
             destination.SetId( id_ );
             destination.SetRowVersion( rowVersion_ );
@@ -17120,9 +17302,9 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleOilspillDetectorCommandReplyDataReader = SimpleColumnDataReader<OilspillDetectorCommandReplyColumnData>;
+    using SimpleOilSpillDetectorCommandReplyDataReader = SimpleColumnDataReader<OilSpillDetectorCommandReplyColumnData>;
 
-    class OilspillDetectorConfigurationColumnData : public BaseColumnData
+    class OilSpillDetectorConfigurationColumnData : public BaseColumnData
     {
         Guid id_;
         Int64 rowVersion_ = 0;
@@ -17154,8 +17336,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[OilSpillDetector],[Timestamp],[Range],[StartAngle],[EndAngle],[StartRange],[EndRange],[UpdateRate],[StatusSendTime],[DrawBorder],[SendToServer],[Directory],[TransparentWater],[SavePictures],[SendAsTarget],[WriteLog],[TargetFilePrefix],[TargetMMSI],[Latitude],[Longitude],[TestSourceEnabled],[ProxyServer],[UseProxyServer],[Colors]";
-        static constexpr std::wstring_view ViewName = L"OilspillDetectorConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -17184,11 +17367,11 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT USEPROXYSERVER_FIELD_ID = 25;
         static constexpr SQLUSMALLINT COLORS_FIELD_ID = 26;
 
-        OilspillDetectorConfigurationColumnData( ) = default;
+        OilSpillDetectorConfigurationColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
-            return Kind::OilspillDetectorConfiguration;
+            return Kind::OilSpillDetectorConfiguration;
         }
 
         const Guid& Id( ) const
@@ -17307,7 +17490,7 @@ namespace Barrelman::Database
         {
             return directory_;
         }
-        void SetDirectory( const WideString& directory )
+        void SetDirectory( FixedDBWideString<100> directory )
         {
             directory_ = directory;
         }
@@ -17347,7 +17530,7 @@ namespace Barrelman::Database
         {
             return targetFilePrefix_;
         }
-        void SetTargetFilePrefix( const WideString& targetFilePrefix )
+        void SetTargetFilePrefix( FixedDBWideString<100> targetFilePrefix )
         {
             targetFilePrefix_ = targetFilePrefix;
         }
@@ -17387,7 +17570,7 @@ namespace Barrelman::Database
         {
             return proxyServer_;
         }
-        void SetProxyServer( const WideString& proxyServer )
+        void SetProxyServer( FixedDBWideString<100> proxyServer )
         {
             proxyServer_ = proxyServer;
         }
@@ -17437,7 +17620,7 @@ namespace Barrelman::Database
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
-            WriteColumnValue( destination, Data::Kind::OilspillDetectorConfiguration );
+            WriteColumnValue( destination, Data::Kind::OilSpillDetectorConfiguration );
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, oilSpillDetector_);
@@ -17465,7 +17648,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, proxyServer_);
             WriteColumnValue( destination, useProxyServer_);
         }
-        void AssignTo( Data::OilspillDetectorConfigurationData& destination ) const
+        void AssignTo( Data::OilSpillDetectorConfigurationData& destination ) const
         {
             destination.SetId( id_ );
             destination.SetRowVersion( rowVersion_ );
@@ -17496,7 +17679,7 @@ namespace Barrelman::Database
         }
     };
 
-    using SimpleOilspillDetectorConfigurationDataReader = SimpleColumnDataReader<OilspillDetectorConfigurationColumnData>;
+    using SimpleOilSpillDetectorConfigurationDataReader = SimpleColumnDataReader<OilSpillDetectorConfigurationColumnData>;
 
     class Position2DTimeseriesValueColumnData : public BaseColumnData
     {
@@ -17509,8 +17692,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[X],[Y]";
-        static constexpr std::wstring_view ViewName = L"Position2DTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -17620,8 +17804,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[X],[Y],[Z]";
-        static constexpr std::wstring_view ViewName = L"Position3DTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -17740,8 +17925,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[CreatedNewTrack],[TrackId]";
-        static constexpr std::wstring_view ViewName = L"ProcessTrackValueResultView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -17818,19 +18004,22 @@ namespace Barrelman::Database
     class PropertyColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid element_;
         Guid definition_;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition]";
-        static constexpr std::wstring_view ViewName = L"PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT ELEMENT_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT DEFINITION_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT ELEMENT_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT DEFINITION_FIELD_ID = 5;
 
         PropertyColumnData( ) = default;
 
@@ -17842,6 +18031,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -17874,6 +18067,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, ELEMENT_FIELD_ID, element_);
             Bind(statement, DEFINITION_FIELD_ID, definition_);
@@ -17906,8 +18100,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"BinaryPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -17959,8 +18154,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"BooleanPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18007,8 +18203,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"BytePropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18055,8 +18252,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"DateTimePropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18103,8 +18301,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"DoublePropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18151,8 +18350,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"GuidPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18199,8 +18399,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"Int16PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18247,8 +18448,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"Int32PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18295,8 +18497,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"Int64PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18343,8 +18546,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"ReferencePropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18391,8 +18595,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"SBytePropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18439,8 +18644,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"SinglePropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18487,8 +18693,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"StringPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -18503,7 +18710,7 @@ namespace Barrelman::Database
         {
             return value_;
         }
-        void SetValue( const WideString& value )
+        void SetValue( FixedDBWideString<100> value )
         {
             value_ = value;
         }
@@ -18534,8 +18741,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition]";
-        static constexpr std::wstring_view ViewName = L"TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         TimeseriesPropertyColumnData( ) = default;
 
@@ -18563,8 +18771,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"BinaryTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18611,8 +18820,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"BooleanTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18659,8 +18869,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"ByteTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18707,8 +18918,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"DateTimeTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18755,8 +18967,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"DoubleTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18803,8 +19016,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"GuidTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18851,8 +19065,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"Int16TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18899,8 +19114,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"Int32TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18947,8 +19163,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"Int64TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -18995,8 +19212,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"ReferenceTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19043,8 +19261,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"SByteTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19091,8 +19310,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"SingleTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19139,8 +19359,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"StringTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19187,8 +19408,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"TimeSpanTimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19235,8 +19457,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"UInt16TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19283,8 +19506,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"UInt32TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19331,8 +19555,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Timeseries]";
-        static constexpr std::wstring_view ViewName = L"UInt64TimeseriesPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TIMESERIES_FIELD_ID = 5;
 
@@ -19379,8 +19604,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"TimeSpanPropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -19427,8 +19653,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"UInt16PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -19475,8 +19702,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"UInt32PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -19523,8 +19751,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Element],[Definition],[Value]";
-        static constexpr std::wstring_view ViewName = L"UInt64PropertyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VALUE_FIELD_ID = 5;
 
@@ -19568,6 +19797,7 @@ namespace Barrelman::Database
     class PropertyDefinitionColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid elementType_;
         FixedDBWideString<127> name_;
@@ -19576,14 +19806,16 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT ELEMENTTYPE_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT ELEMENTTYPE_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 6;
 
         PropertyDefinitionColumnData( ) = default;
 
@@ -19595,6 +19827,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -19620,7 +19856,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -19635,6 +19871,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, ELEMENTTYPE_FIELD_ID, elementType_);
             Bind(statement, NAME_FIELD_ID, name_);
@@ -19675,8 +19912,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Description],[DefaultValue]";
-        static constexpr std::wstring_view ViewName = L"BinaryPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
 
@@ -19728,8 +19966,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"BooleanPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
 
@@ -19778,8 +20017,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"BytePropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -19852,8 +20092,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"DateTimePropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -19870,7 +20111,7 @@ namespace Barrelman::Database
         {
             return defaultValue_;
         }
-        void SetDefaultValue( const WideString& defaultValue )
+        void SetDefaultValue( FixedDBWideString<100> defaultValue )
         {
             defaultValue_ = defaultValue;
         }
@@ -19878,7 +20119,7 @@ namespace Barrelman::Database
         {
             return minValue_;
         }
-        void SetMinValue( const WideString& minValue )
+        void SetMinValue( FixedDBWideString<100> minValue )
         {
             minValue_ = minValue;
         }
@@ -19886,7 +20127,7 @@ namespace Barrelman::Database
         {
             return maxValue_;
         }
-        void SetMaxValue( const WideString& maxValue )
+        void SetMaxValue( FixedDBWideString<100> maxValue )
         {
             maxValue_ = maxValue;
         }
@@ -19926,8 +20167,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"DoublePropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -19998,8 +20240,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"GuidPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
 
@@ -20048,8 +20291,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"Int16PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -20122,8 +20366,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"Int32PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -20196,8 +20441,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"Int64PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -20269,8 +20515,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[ReferencedElementType],[Description]";
-        static constexpr std::wstring_view ViewName = L"ReferencePropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT REFERENCEDELEMENTTYPE_FIELD_ID = 7;
@@ -20331,8 +20578,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"SBytePropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -20405,8 +20653,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"SinglePropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -20478,8 +20727,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[Pattern],[Description]";
-        static constexpr std::wstring_view ViewName = L"StringPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT PATTERN_FIELD_ID = 7;
@@ -20495,7 +20745,7 @@ namespace Barrelman::Database
         {
             return defaultValue_;
         }
-        void SetDefaultValue( const WideString& defaultValue )
+        void SetDefaultValue( FixedDBWideString<100> defaultValue )
         {
             defaultValue_ = defaultValue;
         }
@@ -20503,7 +20753,7 @@ namespace Barrelman::Database
         {
             return pattern_;
         }
-        void SetPattern( const WideString& pattern )
+        void SetPattern( FixedDBWideString<100> pattern )
         {
             pattern_ = pattern;
         }
@@ -20537,8 +20787,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         TimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20565,8 +20816,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"BinaryTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         BinaryTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20593,8 +20845,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"BooleanTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         BooleanTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20623,8 +20876,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"ByteTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -20684,8 +20938,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"DateTimeTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -20701,7 +20956,7 @@ namespace Barrelman::Database
         {
             return minValue_;
         }
-        void SetMinValue( const WideString& minValue )
+        void SetMinValue( FixedDBWideString<100> minValue )
         {
             minValue_ = minValue;
         }
@@ -20709,7 +20964,7 @@ namespace Barrelman::Database
         {
             return maxValue_;
         }
-        void SetMaxValue( const WideString& maxValue )
+        void SetMaxValue( FixedDBWideString<100> maxValue )
         {
             maxValue_ = maxValue;
         }
@@ -20745,8 +21000,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"DoubleTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -20804,8 +21060,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"GuidTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         GuidTimeseriesPropertyDefinitionColumnData( ) = default;
 
@@ -20834,8 +21091,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"Int16TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -20895,8 +21153,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"Int32TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -20956,8 +21215,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"Int64TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21016,8 +21276,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[ReferencedElementType],[Description]";
-        static constexpr std::wstring_view ViewName = L"ReferenceTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT REFERENCEDELEMENTTYPE_FIELD_ID = 6;
 
@@ -21065,8 +21326,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"SByteTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21126,8 +21388,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"SingleTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21186,8 +21449,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[Pattern],[Description]";
-        static constexpr std::wstring_view ViewName = L"StringTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT PATTERN_FIELD_ID = 6;
 
@@ -21202,7 +21466,7 @@ namespace Barrelman::Database
         {
             return pattern_;
         }
-        void SetPattern( const WideString& pattern )
+        void SetPattern( FixedDBWideString<100> pattern )
         {
             pattern_ = pattern;
         }
@@ -21235,8 +21499,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"TimeSpanTimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21296,8 +21561,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"UInt16TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21357,8 +21623,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"UInt32TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21418,8 +21685,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"UInt64TimeseriesPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MAXVALUE_FIELD_ID = 7;
@@ -21480,8 +21748,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"TimeSpanPropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -21554,8 +21823,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"UInt16PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -21628,8 +21898,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"UInt32PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -21702,8 +21973,9 @@ namespace Barrelman::Database
     public:
         using Base = PropertyDefinitionColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ElementType],[Name],[DefaultValue],[MinValue],[MaxValue],[Description]";
-        static constexpr std::wstring_view ViewName = L"UInt64PropertyDefinitionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEFAULTVALUE_FIELD_ID = 6;
         static constexpr SQLUSMALLINT MINVALUE_FIELD_ID = 7;
@@ -21778,8 +22050,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[Type]";
-        static constexpr std::wstring_view ViewName = L"RadarAlarmStatusView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -21868,6 +22141,7 @@ namespace Barrelman::Database
     class RadarCommandColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
@@ -21877,16 +22151,18 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"RadarCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCETYPE_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT REPLY_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCETYPE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT DEVICECOMMANDSOURCEID_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT REPLY_FIELD_ID = 8;
 
         RadarCommandColumnData( ) = default;
 
@@ -21898,6 +22174,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -21954,6 +22234,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, RADAR_FIELD_ID, radar_);
             Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
@@ -21993,8 +22274,9 @@ namespace Barrelman::Database
     public:
         using Base = RadarCommandColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"RadarCommandGetStatusView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         RadarCommandGetStatusColumnData( ) = default;
 
@@ -22019,6 +22301,7 @@ namespace Barrelman::Database
     class RadarCommandReplyColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
@@ -22029,16 +22312,18 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"RadarCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT COMMAND_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT STATUS_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT RADAR_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT COMMAND_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT STATUS_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT MESSAGE_FIELD_ID = 8;
 
         RadarCommandReplyColumnData( ) = default;
 
@@ -22050,6 +22335,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -22106,6 +22395,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, RADAR_FIELD_ID, radar_);
             Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
@@ -22155,8 +22445,9 @@ namespace Barrelman::Database
     public:
         using Base = RadarCommandReplyColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[Command],[Status],[AzimuthCount],[TriggerCount],[RotationCount],[Pulse],[Tx],[Message]";
-        static constexpr std::wstring_view ViewName = L"RadarCommandReplyGetStatusView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT AZIMUTHCOUNT_FIELD_ID = 8;
         static constexpr SQLUSMALLINT TRIGGERCOUNT_FIELD_ID = 9;
@@ -22279,8 +22570,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[RadarProtocolVersion],[RadarIPAddress],[RadarPort],[RadarConfigurationPort],[SkipMagicTimeout],[ReadTimeout],[SynchronizationInterval],[TargetsRefreshRate],[Range],[SectorCount],[SectorOffset],[ImageColor],[ImageSubstitutionColor],[TransparentColor],[ImageScaleFactorX],[ImageOffsetX],[ImageScaleFactorY],[ImageOffsetY],[RadarImageType],[TrackColor],[VectorColor],[EnableNmea],[NmeaReceiverIPAddress],[NmeaReceiverPort],[NmeaReceiverSourceId]";
-        static constexpr std::wstring_view ViewName = L"RadarConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -22363,7 +22655,7 @@ namespace Barrelman::Database
         {
             return radarIPAddress_;
         }
-        void SetRadarIPAddress( const WideString& radarIPAddress )
+        void SetRadarIPAddress( FixedDBWideString<100> radarIPAddress )
         {
             radarIPAddress_ = radarIPAddress;
         }
@@ -22531,7 +22823,7 @@ namespace Barrelman::Database
         {
             return nmeaReceiverIPAddress_;
         }
-        void SetNmeaReceiverIPAddress( const WideString& nmeaReceiverIPAddress )
+        void SetNmeaReceiverIPAddress( FixedDBWideString<100> nmeaReceiverIPAddress )
         {
             nmeaReceiverIPAddress_ = nmeaReceiverIPAddress;
         }
@@ -22547,7 +22839,7 @@ namespace Barrelman::Database
         {
             return nmeaReceiverSourceId_;
         }
-        void SetNmeaReceiverSourceId( const WideString& nmeaReceiverSourceId )
+        void SetNmeaReceiverSourceId( FixedDBWideString<100> nmeaReceiverSourceId )
         {
             nmeaReceiverSourceId_ = nmeaReceiverSourceId;
         }
@@ -22668,8 +22960,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[Depth],[Resolution],[Range],[Image]";
-        static constexpr std::wstring_view ViewName = L"RadarImageView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -22808,8 +23101,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[Count],[Table]";
-        static constexpr std::wstring_view ViewName = L"RadarRawTrackTableView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -22927,8 +23221,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radar],[Timestamp],[AzimuthCount],[TriggerCount],[RotationTime],[Pulse],[Tx],[Tracking]";
-        static constexpr std::wstring_view ViewName = L"RadarStatusView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23086,8 +23381,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radio],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"RadioCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23210,8 +23506,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radio],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"RadioCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23342,8 +23639,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radio],[Timestamp],[Longitude],[Latitude],[PlaybackUrl],[RadioIPAddress],[RadioPort],[Ed137IPAddress],[Ed137Port]";
-        static constexpr std::wstring_view ViewName = L"RadioConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23416,7 +23714,7 @@ namespace Barrelman::Database
         {
             return playbackUrl_;
         }
-        void SetPlaybackUrl( const WideString& playbackUrl )
+        void SetPlaybackUrl( FixedDBWideString<100> playbackUrl )
         {
             playbackUrl_ = playbackUrl;
         }
@@ -23424,7 +23722,7 @@ namespace Barrelman::Database
         {
             return radioIPAddress_;
         }
-        void SetRadioIPAddress( const WideString& radioIPAddress )
+        void SetRadioIPAddress( FixedDBWideString<100> radioIPAddress )
         {
             radioIPAddress_ = radioIPAddress;
         }
@@ -23440,7 +23738,7 @@ namespace Barrelman::Database
         {
             return ed137IPAddress_;
         }
-        void SetEd137IPAddress( const WideString& ed137IPAddress )
+        void SetEd137IPAddress( FixedDBWideString<100> ed137IPAddress )
         {
             ed137IPAddress_ = ed137IPAddress;
         }
@@ -23513,8 +23811,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radome],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"RadomeCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23637,8 +23936,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radome],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"RadomeCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23767,8 +24067,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Radome],[Timestamp],[Interval],[LowPressureLimit],[HighPressureLimit],[LowTemperatureLimit],[HighTemperatureLimit]";
-        static constexpr std::wstring_view ViewName = L"RadomeConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -23912,8 +24213,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"ReferenceTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24009,8 +24311,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"SByteTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24106,8 +24409,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"SecurityDomainView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24141,7 +24445,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -24189,6 +24493,7 @@ namespace Barrelman::Database
     class SecurityIdentifierColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid domain_;
         FixedDBWideString<255> identity_;
@@ -24197,14 +24502,16 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Domain],[Identity],[Description]";
-        static constexpr std::wstring_view ViewName = L"SecurityIdentifierView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT DOMAIN_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT IDENTITY_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT DOMAIN_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT IDENTITY_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT DESCRIPTION_FIELD_ID = 6;
 
         SecurityIdentifierColumnData( ) = default;
 
@@ -24216,6 +24523,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -24241,7 +24552,7 @@ namespace Barrelman::Database
         {
             return identity_;
         }
-        void SetIdentity( const WideString& identity )
+        void SetIdentity( FixedDBWideString<255> identity )
         {
             identity_ = identity;
         }
@@ -24256,6 +24567,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, DOMAIN_FIELD_ID, domain_);
             Bind(statement, IDENTITY_FIELD_ID, identity_);
@@ -24294,8 +24606,9 @@ namespace Barrelman::Database
     public:
         using Base = SecurityIdentifierColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Domain],[Identity],[Description]";
-        static constexpr std::wstring_view ViewName = L"SecurityLoginView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         SecurityLoginColumnData( ) = default;
 
@@ -24323,8 +24636,9 @@ namespace Barrelman::Database
     public:
         using Base = SecurityIdentifierColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Domain],[Identity],[Name],[Description]";
-        static constexpr std::wstring_view ViewName = L"SecurityRoleView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NAME_FIELD_ID = 6;
 
@@ -24339,7 +24653,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -24376,8 +24690,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Member],[Role],[Start],[End]";
-        static constexpr std::wstring_view ViewName = L"SecurityIdentifierRoleLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24488,8 +24803,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Login],[FromTime],[ThroughTime],[ClientSession],[NotificationQueueName],[MessageQueueName]";
-        static constexpr std::wstring_view ViewName = L"SecurityLoginSessionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24559,7 +24875,7 @@ namespace Barrelman::Database
         {
             return notificationQueueName_;
         }
-        void SetNotificationQueueName( const WideString& notificationQueueName )
+        void SetNotificationQueueName( FixedDBWideString<260> notificationQueueName )
         {
             notificationQueueName_ = notificationQueueName;
         }
@@ -24567,7 +24883,7 @@ namespace Barrelman::Database
         {
             return messageQueueName_;
         }
-        void SetMessageQueueName( const WideString& messageQueueName )
+        void SetMessageQueueName( FixedDBWideString<260> messageQueueName )
         {
             messageQueueName_ = messageQueueName;
         }
@@ -24625,8 +24941,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Identifier],[Timestamp],[TypeCode],[CanCreate],[CanRead],[CanUpdate],[CanDelete]";
-        static constexpr std::wstring_view ViewName = L"SecurityPermissionView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24770,8 +25087,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"SingleTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24868,8 +25186,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"StringTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -24963,19 +25282,22 @@ namespace Barrelman::Database
     class TimeseriesCatalogElementColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid catalog_;
         FixedDBWideString<100> name_;
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name]";
-        static constexpr std::wstring_view ViewName = L"TimeseriesCatalogElementView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT CATALOG_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT CATALOG_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 5;
 
         TimeseriesCatalogElementColumnData( ) = default;
 
@@ -24987,6 +25309,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -25012,13 +25338,14 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, CATALOG_FIELD_ID, catalog_);
             Bind(statement, NAME_FIELD_ID, name_);
@@ -25050,8 +25377,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesCatalogElementColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT MAXRETENTION_FIELD_ID = 5;
 
@@ -25097,8 +25425,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"BinaryTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         BinaryTimeseriesColumnData( ) = default;
 
@@ -25125,8 +25454,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"BooleanTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         BooleanTimeseriesColumnData( ) = default;
 
@@ -25154,8 +25484,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[AidToNavigation]";
-        static constexpr std::wstring_view ViewName = L"AisAidToNavigationOffPositionTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT AIDTONAVIGATION_FIELD_ID = 6;
 
@@ -25202,8 +25533,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Device]";
-        static constexpr std::wstring_view ViewName = L"DeviceEnabledTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DEVICE_FIELD_ID = 6;
 
@@ -25250,8 +25582,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarAutomaticSensitivityTimeControlTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25298,8 +25631,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarBlankSector1TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25346,8 +25680,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarBlankSector2TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25394,8 +25729,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarEnableAutomaticFrequencyControlTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25442,8 +25778,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarEnableFastTimeConstantTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25490,8 +25827,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarEnableSensitivityTimeControlTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25538,8 +25876,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarPowerOnTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25586,8 +25925,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarSaveSettingsTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25634,8 +25974,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarTrackingTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -25682,8 +26023,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[ProxySession]";
-        static constexpr std::wstring_view ViewName = L"MediaProxySessionEnabledTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT PROXYSESSION_FIELD_ID = 6;
 
@@ -25730,8 +26072,9 @@ namespace Barrelman::Database
     public:
         using Base = BooleanTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Service]";
-        static constexpr std::wstring_view ViewName = L"MediaServiceEnabledTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SERVICE_FIELD_ID = 6;
 
@@ -25777,8 +26120,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"ByteTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         ByteTimeseriesColumnData( ) = default;
 
@@ -25805,8 +26149,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"DateTimeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         DateTimeTimeseriesColumnData( ) = default;
 
@@ -25833,8 +26178,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"DoubleTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         DoubleTimeseriesColumnData( ) = default;
 
@@ -25862,8 +26208,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GNSSDevice]";
-        static constexpr std::wstring_view ViewName = L"GNSSAltitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 6;
 
@@ -25910,8 +26257,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GNSSDevice]";
-        static constexpr std::wstring_view ViewName = L"GNSSLatitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 6;
 
@@ -25958,8 +26306,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GNSSDevice]";
-        static constexpr std::wstring_view ViewName = L"GNSSLongitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GNSSDEVICE_FIELD_ID = 6;
 
@@ -26006,8 +26355,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroCourseTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26054,8 +26404,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroHeadingMagneticNorthTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26102,8 +26453,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroHeadingTrueNorthTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26150,8 +26502,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroPitchTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26198,8 +26551,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroRateOfTurnTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26246,8 +26600,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroRollTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26294,8 +26649,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[GyroDevice]";
-        static constexpr std::wstring_view ViewName = L"GyroSpeedTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GYRODEVICE_FIELD_ID = 6;
 
@@ -26342,8 +26698,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarLatitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -26390,8 +26747,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarLongitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -26438,8 +26796,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radome]";
-        static constexpr std::wstring_view ViewName = L"RadomeDewPointTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
 
@@ -26486,8 +26845,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radome]";
-        static constexpr std::wstring_view ViewName = L"RadomePressureTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
 
@@ -26534,8 +26894,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radome]";
-        static constexpr std::wstring_view ViewName = L"RadomeTemperatureTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
 
@@ -26582,8 +26943,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Vessel]";
-        static constexpr std::wstring_view ViewName = L"VesselDraughtTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VESSEL_FIELD_ID = 6;
 
@@ -26630,8 +26992,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[View]";
-        static constexpr std::wstring_view ViewName = L"ViewLatitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VIEW_FIELD_ID = 6;
 
@@ -26678,8 +27041,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[View]";
-        static constexpr std::wstring_view ViewName = L"ViewLongitudeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VIEW_FIELD_ID = 6;
 
@@ -26726,8 +27090,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[View]";
-        static constexpr std::wstring_view ViewName = L"ViewZoomLevelTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VIEW_FIELD_ID = 6;
 
@@ -26774,8 +27139,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationAbsoluteHumidityTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -26822,8 +27188,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationAirTemperatureTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -26870,8 +27237,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationBarometricPressureTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -26918,8 +27286,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationDewPointTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -26966,8 +27335,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationRelativeHumidityTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -27014,8 +27384,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationWaterTemperatureTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -27062,8 +27433,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationWindDirectionTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -27110,8 +27482,9 @@ namespace Barrelman::Database
     public:
         using Base = DoubleTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[WeatherStation]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationWindSpeedTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT WEATHERSTATION_FIELD_ID = 6;
 
@@ -27157,8 +27530,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"GeoPosition2DTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         GeoPosition2DTimeseriesColumnData( ) = default;
 
@@ -27186,8 +27560,9 @@ namespace Barrelman::Database
     public:
         using Base = GeoPosition2DTimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[AidToNavigation]";
-        static constexpr std::wstring_view ViewName = L"AisAidToNavigationPositionTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT AIDTONAVIGATION_FIELD_ID = 6;
 
@@ -27233,8 +27608,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"GeoPosition3DTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         GeoPosition3DTimeseriesColumnData( ) = default;
 
@@ -27261,8 +27637,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"GuidTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         GuidTimeseriesColumnData( ) = default;
 
@@ -27289,8 +27666,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"Int16TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         Int16TimeseriesColumnData( ) = default;
 
@@ -27317,8 +27695,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"Int32TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         Int32TimeseriesColumnData( ) = default;
 
@@ -27346,8 +27725,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarAzimuthOffsetTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27394,8 +27774,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarFastTimeConstantLevelTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27442,8 +27823,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarFastTimeConstantModeTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27490,8 +27872,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarPulseTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27538,8 +27921,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarSector1EndTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27586,8 +27970,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarSector1StartTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27634,8 +28019,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarSector2EndTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27682,8 +28068,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarSector2StartTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27730,8 +28117,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarSensitivityTimeControlLevelTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27778,8 +28166,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radar]";
-        static constexpr std::wstring_view ViewName = L"RadarTuningTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADAR_FIELD_ID = 6;
 
@@ -27826,8 +28215,9 @@ namespace Barrelman::Database
     public:
         using Base = Int32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Vessel]";
-        static constexpr std::wstring_view ViewName = L"VesselPersonsOnBoardTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT VESSEL_FIELD_ID = 6;
 
@@ -27873,8 +28263,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"Int64TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         Int64TimeseriesColumnData( ) = default;
 
@@ -27901,8 +28292,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"Position2DTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         Position2DTimeseriesColumnData( ) = default;
 
@@ -27929,8 +28321,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"Position3DTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         Position3DTimeseriesColumnData( ) = default;
 
@@ -27957,8 +28350,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"ReferenceTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         ReferenceTimeseriesColumnData( ) = default;
 
@@ -27985,8 +28379,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"SByteTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         SByteTimeseriesColumnData( ) = default;
 
@@ -28013,8 +28408,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"SingleTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         SingleTimeseriesColumnData( ) = default;
 
@@ -28041,8 +28437,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"StringTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         StringTimeseriesColumnData( ) = default;
 
@@ -28069,8 +28466,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"TimeSpanTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         TimeSpanTimeseriesColumnData( ) = default;
 
@@ -28097,8 +28495,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"UInt16TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         UInt16TimeseriesColumnData( ) = default;
 
@@ -28125,8 +28524,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"UInt32TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         UInt32TimeseriesColumnData( ) = default;
 
@@ -28154,8 +28554,9 @@ namespace Barrelman::Database
     public:
         using Base = UInt32TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention],[Radome]";
-        static constexpr std::wstring_view ViewName = L"RadomeStatusTimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADOME_FIELD_ID = 6;
 
@@ -28201,8 +28602,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name],[MaxRetention]";
-        static constexpr std::wstring_view ViewName = L"UInt64TimeseriesView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         UInt64TimeseriesColumnData( ) = default;
 
@@ -28229,8 +28631,9 @@ namespace Barrelman::Database
     public:
         using Base = TimeseriesCatalogElementColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Catalog],[Name]";
-        static constexpr std::wstring_view ViewName = L"TimeseriesCatalogView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         TimeseriesCatalogColumnData( ) = default;
 
@@ -28262,8 +28665,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[FirstTimestamp],[LastTimestamp],[Count]";
-        static constexpr std::wstring_view ViewName = L"TimeseriesInfoView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -28359,8 +28763,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"TimeSpanTimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -28457,8 +28862,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Item],[Track],[Start],[End]";
-        static constexpr std::wstring_view ViewName = L"TrackableItemTrackLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -28559,6 +28965,7 @@ namespace Barrelman::Database
     class TrackBaseColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid tracker_;
         Int64 trackNumber_ = 0;
@@ -28566,14 +28973,16 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Tracker],[TrackNumber],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"TrackBaseView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT TRACKER_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT TRACKNUMBER_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TRACKER_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TRACKNUMBER_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 6;
 
         TrackBaseColumnData( ) = default;
 
@@ -28585,6 +28994,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -28625,6 +29038,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, TRACKER_FIELD_ID, tracker_);
             Bind(statement, TRACKNUMBER_FIELD_ID, trackNumber_);
@@ -28658,8 +29072,9 @@ namespace Barrelman::Database
     public:
         using Base = TrackBaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Tracker],[TrackNumber],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"TrackView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         TrackColumnData( ) = default;
 
@@ -28686,8 +29101,9 @@ namespace Barrelman::Database
     public:
         using Base = TrackBaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Tracker],[TrackNumber],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"Track3DView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         Track3DColumnData( ) = default;
 
@@ -28718,8 +29134,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Tracker],[Name]";
-        static constexpr std::wstring_view ViewName = L"TrackerFilterParametersView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -28761,7 +29178,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<100> name )
         {
             name_ = name;
         }
@@ -28815,8 +29232,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Parameters],[Timestamp],[UseNaivePredictor],[NumberOfPoints],[WindowSize],[StabilizeCount],[MaxBadPoints],[ModelType],[SigmaR],[SigmaAcc],[TauVel],[TauAcc],[DeltaRMin],[DeltaVMax],[DeltaAMax]";
-        static constexpr std::wstring_view ViewName = L"TrackerFilterParametersConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29060,8 +29478,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[FirstTimestamp],[LastTimestamp],[Count],[NorthWestLatitude],[NorthWestLongitude],[SouthEastLatitude],[SouthEastLongitude]";
-        static constexpr std::wstring_view ViewName = L"TrackInfoView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29213,8 +29632,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timestamp],[TimerInterval],[MaxAgeOfCurrentTrackValue],[FalseThreshold],[DistanceThreshold],[DistanceUnmergeThreshold],[UnmergeLatency],[KalmanFiltering],[MaxCourseDeviation],[MaxSpeedDeviation],[MinimumSpeedThreshold]";
-        static constexpr std::wstring_view ViewName = L"TrackingServiceOptionsView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29407,8 +29827,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Primary],[Secondary],[Start],[End]";
-        static constexpr std::wstring_view ViewName = L"TrackLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29522,8 +29943,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Track],[Timestamp],[Flags],[Status],[Latitude],[Longitude],[Speed],[Course],[Heading]";
-        static constexpr std::wstring_view ViewName = L"TrackValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29698,8 +30120,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Track],[Timestamp],[Flags],[Status],[Latitude],[Longitude],[Altitude],[Speed],[Course],[RateOfClimb]";
-        static constexpr std::wstring_view ViewName = L"TrackValue3DView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29879,8 +30302,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"UInt16TimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -29976,8 +30400,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"UInt32TimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30073,8 +30498,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Timeseries],[Timestamp],[Value]";
-        static constexpr std::wstring_view ViewName = L"UInt64TimeseriesValueView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30168,8 +30594,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name]";
-        static constexpr std::wstring_view ViewName = L"VehicleTypeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30202,7 +30629,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -30240,8 +30667,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Code]";
-        static constexpr std::wstring_view ViewName = L"VesselTypeView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30275,7 +30703,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -30326,8 +30754,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[LatitudeTimeseries],[LongitudeTimeseries],[ZoomLevelTimeseries]";
-        static constexpr std::wstring_view ViewName = L"ViewView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30363,7 +30792,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -30436,8 +30865,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[View],[Camera],[Start],[End]";
-        static constexpr std::wstring_view ViewName = L"ViewCameraLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30546,8 +30976,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[View],[Tracker],[Start],[End]";
-        static constexpr std::wstring_view ViewName = L"ViewTrackerLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30657,8 +31088,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[WeatherStation],[Timestamp],[DeviceCommandSourceType],[DeviceCommandSourceId],[Reply]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationCommandView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30781,8 +31213,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[WeatherStation],[Timestamp],[Command],[Status],[Message]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationCommandReplyView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -30913,8 +31346,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[WeatherStation],[Timestamp],[NoDataTimeOut],[SendInterval],[Latitude],[Longitude],[GyroOffset],[EnableAveraging],[AveragingInterval]";
-        static constexpr std::wstring_view ViewName = L"WeatherStationConfigurationView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -31075,6 +31509,7 @@ namespace Barrelman::Database
     class ZoneColumnData : public BaseColumnData
     {
         Guid id_;
+        Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
         double longitude_ = 0.0;
@@ -31088,20 +31523,22 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Longitude],[Latitude],[AlarmType],[AlarmTime],[RadarTrackMinimumLifetime],[Speed],[StrokeColor],[FillColor]";
-        static constexpr std::wstring_view ViewName = L"ZoneView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
-        static constexpr SQLUSMALLINT NAME_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT ALARMTYPE_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT ALARMTIME_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT RADARTRACKMINIMUMLIFETIME_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT SPEED_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT STROKECOLOR_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT FILLCOLOR_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT ENTITYTYPE_FIELD_ID = 2;
+        static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT NAME_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT ALARMTYPE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT ALARMTIME_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT RADARTRACKMINIMUMLIFETIME_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT SPEED_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT STROKECOLOR_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT FILLCOLOR_FIELD_ID = 12;
 
         ZoneColumnData( ) = default;
 
@@ -31113,6 +31550,10 @@ namespace Barrelman::Database
         const Guid& Id( ) const
         {
             return id_;
+        }
+        Data::Kind EntityType( ) const
+        {
+            return entityType_;
         }
         void SetId( const Guid& id )
         {
@@ -31130,7 +31571,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( const WideString& name )
+        void SetName( FixedDBWideString<127> name )
         {
             name_ = name;
         }
@@ -31201,6 +31642,7 @@ namespace Barrelman::Database
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
+            Bind(statement, ENTITYTYPE_FIELD_ID, entityType_ );
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, NAME_FIELD_ID, name_);
             Bind(statement, LONGITUDE_FIELD_ID, longitude_);
@@ -31253,8 +31695,9 @@ namespace Barrelman::Database
     public:
         using Base = ZoneColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Longitude],[Latitude],[AlarmType],[AlarmTime],[RadarTrackMinimumLifetime],[Speed],[StrokeColor],[FillColor],[Radius]";
-        static constexpr std::wstring_view ViewName = L"CircularZoneView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RADIUS_FIELD_ID = 12;
 
@@ -31302,8 +31745,9 @@ namespace Barrelman::Database
     public:
         using Base = ZoneColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Name],[Longitude],[Latitude],[AlarmType],[AlarmTime],[RadarTrackMinimumLifetime],[Speed],[StrokeColor],[FillColor],[Polygon]";
-        static constexpr std::wstring_view ViewName = L"PolygonZoneView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT POLYGON_FIELD_ID = 12;
 
@@ -31358,8 +31802,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Zone],[Timestamp]";
-        static constexpr std::wstring_view ViewName = L"ZoneExceptionsView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -31442,8 +31887,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[ZoneExceptions],[Vessel]";
-        static constexpr std::wstring_view ViewName = L"ZoneExceptionsVesselLinkView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
@@ -31537,8 +31983,9 @@ namespace Barrelman::Database
     public:
         using Base = BaseColumnData;
 
-        static constexpr std::wstring_view FieldNames = L"[Id],[RowVersion],[Track],[Zone],[RadarTrack],[Timestamp],[Latitude],[Longitude],[Speed],[Course],[Heading],[EnterLatitude],[EnterLongitude],[LeaveLatitude],[LeaveLongitude]";
-        static constexpr std::wstring_view ViewName = L"ZoneTrackAlarmView";
+        static BARRELMAN_EXPORT WideString BaseQuery;
+        static BARRELMAN_EXPORT WideString BaseViewName;
+        static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;

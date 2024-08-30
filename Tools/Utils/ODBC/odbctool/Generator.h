@@ -313,7 +313,7 @@ namespace Harlinn::ODBC::Tool
     private:
         void CreateBaseClass( );
         void CreateColumnDataType( const ClassInfo& classInfo );
-        void CreateFieldNames( const ClassInfo& classInfo );
+        void CreateQuery( const ClassInfo& classInfo );
         void CreateFieldIds( const ClassInfo& classInfo );
         void CreateBindColumns( const ClassInfo& classInfo );
         void CreateReadUnboundData( const ClassInfo& classInfo );
@@ -322,6 +322,19 @@ namespace Harlinn::ODBC::Tool
         void CreateWriteColumns( const ClassInfo& classInfo );
         void CreateAssignTo( const ClassInfo& classInfo );
         
+    };
+
+    class CppDatabaseReadersSourceGenerator : public CodeGenerator<CppDatabaseGenerator, CppDatabaseReadersSourceOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDatabaseGenerator, CppDatabaseReadersSourceOptions>;
+        CppDatabaseReadersSourceGenerator( const CppDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateColumnDataType( const ClassInfo& classInfo );
+        void CreateQuery( const ClassInfo& classInfo );
+
     };
 
 
@@ -358,12 +371,42 @@ namespace Harlinn::ODBC::Tool
         void CreateReadUnboundData( const ClassInfo& classInfo );
     };
 
+    class CppStoredProceduresGenerator : public CodeGenerator<CppDatabaseGenerator, CppStoredProceduresOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDatabaseGenerator, CppStoredProceduresOptions>;
+        CppStoredProceduresGenerator( const CppDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateInsert( const ClassInfo& classInfo );
+        void CreateUpdate( const ClassInfo& classInfo );
+        void CreateDelete( const ClassInfo& classInfo );
+    };
+
+    class CppStoredProceduresSourceGenerator : public CodeGenerator<CppDatabaseGenerator, CppStoredProceduresSourceOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDatabaseGenerator, CppStoredProceduresSourceOptions>;
+        CppStoredProceduresSourceGenerator( const CppDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateInsert( const ClassInfo& classInfo );
+        void CreateUpdate( const ClassInfo& classInfo );
+        void CreateDelete( const ClassInfo& classInfo );
+    };
+
+
 
     class CppDatabaseGenerator : public GeneratorContainer<CppGenerator, CppDatabaseOptions>
     {
         CppDatabaseReadersGenerator databaseReaders_;
+        CppDatabaseReadersSourceGenerator databaseReadersSource_;
         CppComplexDatabaseReadersGenerator complexDatabaseReaders_;
         CppComplexDatabaseReadersSourceGenerator complexDatabaseReadersSource_;
+        CppStoredProceduresGenerator storedProcedures_;
+        CppStoredProceduresSourceGenerator storedProceduresSource_;
     public:
         using Base = GeneratorContainer<CppGenerator, CppDatabaseOptions>;
         CppDatabaseGenerator( const CppGenerator& owner );
@@ -371,13 +414,22 @@ namespace Harlinn::ODBC::Tool
         void Run( )
         {
             databaseReaders_.Run( );
+            databaseReadersSource_.Run( );
             complexDatabaseReaders_.Run( );
             complexDatabaseReadersSource_.Run( );
+            storedProcedures_.Run( );
+            storedProceduresSource_.Run( );
         }
     };
 
     inline CppDatabaseReadersGenerator::CppDatabaseReadersGenerator( const CppDatabaseGenerator& owner )
         : Base( owner, owner.Options( ).DatabaseReaders( ) )
+    {
+
+    }
+
+    inline CppDatabaseReadersSourceGenerator::CppDatabaseReadersSourceGenerator( const CppDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).DatabaseReadersSource( ) )
     {
 
     }
@@ -390,6 +442,18 @@ namespace Harlinn::ODBC::Tool
 
     inline CppComplexDatabaseReadersSourceGenerator::CppComplexDatabaseReadersSourceGenerator( const CppDatabaseGenerator& owner )
         : Base( owner, owner.Options( ).ComplexDatabaseReadersSource( ) )
+    {
+
+    }
+
+    inline CppStoredProceduresGenerator::CppStoredProceduresGenerator( const CppDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).StoredProcedures( ) )
+    {
+
+    }
+
+    inline CppStoredProceduresSourceGenerator::CppStoredProceduresSourceGenerator( const CppDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).StoredProceduresSource( ) )
     {
 
     }
@@ -426,7 +490,7 @@ namespace Harlinn::ODBC::Tool
     { }
 
     inline CppDatabaseGenerator::CppDatabaseGenerator( const CppGenerator& owner )
-        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), complexDatabaseReadersSource_(*this)
+        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this), databaseReadersSource_(*this), complexDatabaseReaders_( *this ), complexDatabaseReadersSource_( *this ), storedProcedures_( *this ), storedProceduresSource_( *this )
     { }
 
     class CppDataTestGenerator;

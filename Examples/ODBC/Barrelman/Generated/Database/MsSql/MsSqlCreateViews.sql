@@ -8,13 +8,111 @@ AS
 
 go 
 
+CREATE OR ALTER VIEW AisDeviceCommandView
+AS
+ SELECT
+  [AisDeviceCommand].[Id],
+  [AisDeviceCommand].[RowVersion],
+  [AisDeviceCommand].[AisDevice],
+  [AisDeviceCommand].[Timestamp],
+  [AisDeviceCommand].[DeviceCommandSourceType],
+  [AisDeviceCommand].[DeviceCommandSourceId],
+  [AisDeviceCommand].[Reply]
+ FROM [AisDeviceCommand]
+
+go 
+
+CREATE OR ALTER VIEW AisDeviceCommandReplyView
+AS
+ SELECT
+  [AisDeviceCommandReply].[Id],
+  [AisDeviceCommandReply].[RowVersion],
+  [AisDeviceCommandReply].[AisDevice],
+  [AisDeviceCommandReply].[Timestamp],
+  [AisDeviceCommandReply].[Command],
+  [AisDeviceCommandReply].[Status],
+  [AisDeviceCommandReply].[Message]
+ FROM [AisDeviceCommandReply]
+
+go 
+
+CREATE OR ALTER VIEW AisDeviceConfigurationView
+AS
+ SELECT
+  [AisDeviceConfiguration].[Id],
+  [AisDeviceConfiguration].[RowVersion],
+  [AisDeviceConfiguration].[AisDevice],
+  [AisDeviceConfiguration].[Timestamp],
+  [AisDeviceConfiguration].[UserName],
+  [AisDeviceConfiguration].[Password],
+  [AisDeviceConfiguration].[Latitude],
+  [AisDeviceConfiguration].[Longitude],
+  [AisDeviceConfiguration].[AisProviderLoginURL],
+  [AisDeviceConfiguration].[ComPort],
+  [AisDeviceConfiguration].[BaudRate],
+  [AisDeviceConfiguration].[FilterByArea],
+  [AisDeviceConfiguration].[UpperLeftCornerLatitude],
+  [AisDeviceConfiguration].[UpperLeftCornerLongitude],
+  [AisDeviceConfiguration].[BottomRightCornerLatitude],
+  [AisDeviceConfiguration].[BottomRightCornerLongitude],
+  [AisDeviceConfiguration].[AisProviderIPAddress],
+  [AisDeviceConfiguration].[AisProviderPort],
+  [AisDeviceConfiguration].[UseLogin],
+  [AisDeviceConfiguration].[AisProviderLoginPort],
+  [AisDeviceConfiguration].[CanSendAISMessage],
+  [AisDeviceConfiguration].[TextMessageHeader],
+  [AisDeviceConfiguration].[Urls],
+  [AisDeviceConfiguration].[UdpPort],
+  [AisDeviceConfiguration].[ConnectionType],
+  [AisDeviceConfiguration].[EnableRefreshAidToNavigationIn30sec],
+  [AisDeviceConfiguration].[EnableAidToNavigationFromFile],
+  [AisDeviceConfiguration].[AidToNavigationHeader],
+  [AisDeviceConfiguration].[SendingMMSI],
+  [AisDeviceConfiguration].[SourceUpdateRate],
+  [AisDeviceConfiguration].[EnableRefreshStayingStillTargetIn30sec],
+  [AisDeviceConfiguration].[ExcludeSendAisBaseStation],
+  [AisDeviceConfiguration].[ExcludeSendAisA],
+  [AisDeviceConfiguration].[EnableSendBaseStationAlarms],
+  [AisDeviceConfiguration].[AisWebConfig],
+  [AisDeviceConfiguration].[StoreReceivedSentences],
+  [AisDeviceConfiguration].[StoreSentMessages],
+  [AisDeviceConfiguration].[StoreUnsentMessages]
+ FROM [AisDeviceConfiguration]
+
+go 
+
+CREATE OR ALTER VIEW AisDeviceRawMessageView
+AS
+ SELECT
+  [AisDeviceRawMessage].[Id],
+  [AisDeviceRawMessage].[RowVersion],
+  [AisDeviceRawMessage].[AisDevice],
+  [AisDeviceRawMessage].[Timestamp],
+  [AisDeviceRawMessage].[IsSent],
+  [AisDeviceRawMessage].[Message]
+ FROM [AisDeviceRawMessage]
+
+go 
+
+CREATE OR ALTER VIEW AisDeviceRawSentenceView
+AS
+ SELECT
+  [AisDeviceRawSentence].[Id],
+  [AisDeviceRawSentence].[RowVersion],
+  [AisDeviceRawSentence].[AisDevice],
+  [AisDeviceRawSentence].[Timestamp],
+  [AisDeviceRawSentence].[Sentence]
+ FROM [AisDeviceRawSentence]
+
+go 
+
 CREATE OR ALTER VIEW AisMessageView
 AS
  SELECT
   [AisMessage].[Id],
   [AisMessage].[EntityType],
   [AisMessage].[RowVersion],
-  [AisMessage].[AisTransceiver],
+  [AisMessage].[AisDevice],
   [AisMessage].[ReceivedTimestamp],
   [AisMessage].[MessageSequenceNumber],
   [AisMessage].[Repeat],
@@ -425,104 +523,6 @@ AS
   [AisUtcAndDateResponseMessage].[RadioStatus]
  FROM [AisUtcAndDateResponseMessage]
  JOIN AisMessageView ON ([AisMessageView].Id = [AisUtcAndDateResponseMessage].Id)
-
-go 
-
-CREATE OR ALTER VIEW AisTransceiverCommandView
-AS
- SELECT
-  [AisTransceiverCommand].[Id],
-  [AisTransceiverCommand].[RowVersion],
-  [AisTransceiverCommand].[AisTransceiver],
-  [AisTransceiverCommand].[Timestamp],
-  [AisTransceiverCommand].[DeviceCommandSourceType],
-  [AisTransceiverCommand].[DeviceCommandSourceId],
-  [AisTransceiverCommand].[Reply]
- FROM [AisTransceiverCommand]
-
-go 
-
-CREATE OR ALTER VIEW AisTransceiverCommandReplyView
-AS
- SELECT
-  [AisTransceiverCommandReply].[Id],
-  [AisTransceiverCommandReply].[RowVersion],
-  [AisTransceiverCommandReply].[AisTransceiver],
-  [AisTransceiverCommandReply].[Timestamp],
-  [AisTransceiverCommandReply].[Command],
-  [AisTransceiverCommandReply].[Status],
-  [AisTransceiverCommandReply].[Message]
- FROM [AisTransceiverCommandReply]
-
-go 
-
-CREATE OR ALTER VIEW AisTransceiverConfigurationView
-AS
- SELECT
-  [AisTransceiverConfiguration].[Id],
-  [AisTransceiverConfiguration].[RowVersion],
-  [AisTransceiverConfiguration].[AisTransceiver],
-  [AisTransceiverConfiguration].[Timestamp],
-  [AisTransceiverConfiguration].[UserName],
-  [AisTransceiverConfiguration].[Password],
-  [AisTransceiverConfiguration].[Latitude],
-  [AisTransceiverConfiguration].[Longitude],
-  [AisTransceiverConfiguration].[AisProviderLoginURL],
-  [AisTransceiverConfiguration].[ComPort],
-  [AisTransceiverConfiguration].[BaudRate],
-  [AisTransceiverConfiguration].[FilterByArea],
-  [AisTransceiverConfiguration].[UpperLeftCornerLatitude],
-  [AisTransceiverConfiguration].[UpperLeftCornerLongitude],
-  [AisTransceiverConfiguration].[BottomRightCornerLatitude],
-  [AisTransceiverConfiguration].[BottomRightCornerLongitude],
-  [AisTransceiverConfiguration].[AisProviderIPAddress],
-  [AisTransceiverConfiguration].[AisProviderPort],
-  [AisTransceiverConfiguration].[UseLogin],
-  [AisTransceiverConfiguration].[AisProviderLoginPort],
-  [AisTransceiverConfiguration].[CanSendAISMessage],
-  [AisTransceiverConfiguration].[TextMessageHeader],
-  [AisTransceiverConfiguration].[Urls],
-  [AisTransceiverConfiguration].[UdpPort],
-  [AisTransceiverConfiguration].[ConnectionType],
-  [AisTransceiverConfiguration].[EnableRefreshAidToNavigationIn30sec],
-  [AisTransceiverConfiguration].[EnableAidToNavigationFromFile],
-  [AisTransceiverConfiguration].[AidToNavigationHeader],
-  [AisTransceiverConfiguration].[SendingMMSI],
-  [AisTransceiverConfiguration].[SourceUpdateRate],
-  [AisTransceiverConfiguration].[EnableRefreshStayingStillTargetIn30sec],
-  [AisTransceiverConfiguration].[ExcludeSendAisBaseStation],
-  [AisTransceiverConfiguration].[ExcludeSendAisA],
-  [AisTransceiverConfiguration].[EnableSendBaseStationAlarms],
-  [AisTransceiverConfiguration].[AisWebConfig],
-  [AisTransceiverConfiguration].[StoreReceivedSentences],
-  [AisTransceiverConfiguration].[StoreSentMessages],
-  [AisTransceiverConfiguration].[StoreUnsentMessages]
- FROM [AisTransceiverConfiguration]
-
-go 
-
-CREATE OR ALTER VIEW AisTransceiverRawMessageView
-AS
- SELECT
-  [AisTransceiverRawMessage].[Id],
-  [AisTransceiverRawMessage].[RowVersion],
-  [AisTransceiverRawMessage].[AisTransceiver],
-  [AisTransceiverRawMessage].[Timestamp],
-  [AisTransceiverRawMessage].[IsSent],
-  [AisTransceiverRawMessage].[Message]
- FROM [AisTransceiverRawMessage]
-
-go 
-
-CREATE OR ALTER VIEW AisTransceiverRawSentenceView
-AS
- SELECT
-  [AisTransceiverRawSentence].[Id],
-  [AisTransceiverRawSentence].[RowVersion],
-  [AisTransceiverRawSentence].[AisTransceiver],
-  [AisTransceiverRawSentence].[Timestamp],
-  [AisTransceiverRawSentence].[Sentence]
- FROM [AisTransceiverRawSentence]
 
 go 
 
@@ -1334,12 +1334,12 @@ AS
 
 go 
 
-CREATE OR ALTER VIEW CameraView
+CREATE OR ALTER VIEW CameraDeviceView
 AS
  SELECT
   DeviceView.*
- FROM [Camera]
- JOIN DeviceView ON ([DeviceView].Id = [Camera].Id)
+ FROM [CameraDevice]
+ JOIN DeviceView ON ([DeviceView].Id = [CameraDevice].Id)
 
 go 
 
@@ -1381,103 +1381,103 @@ AS
 
 go 
 
-CREATE OR ALTER VIEW OilspillDetectorView
+CREATE OR ALTER VIEW OilSpillDetectorDeviceView
 AS
  SELECT
   DeviceView.*
- FROM [OilspillDetector]
- JOIN DeviceView ON ([DeviceView].Id = [OilspillDetector].Id)
+ FROM [OilSpillDetectorDevice]
+ JOIN DeviceView ON ([DeviceView].Id = [OilSpillDetectorDevice].Id)
 
 go 
 
-CREATE OR ALTER VIEW RadioView
+CREATE OR ALTER VIEW RadioDeviceView
 AS
  SELECT
   DeviceView.*
- FROM [Radio]
- JOIN DeviceView ON ([DeviceView].Id = [Radio].Id)
+ FROM [RadioDevice]
+ JOIN DeviceView ON ([DeviceView].Id = [RadioDevice].Id)
 
 go 
 
-CREATE OR ALTER VIEW RadomeView
+CREATE OR ALTER VIEW RadomeDeviceView
 AS
  SELECT
   DeviceView.*,
-  [Radome].[Radar],
-  [Radome].[PressureTimeseries],
-  [Radome].[TemperatureTimeseries],
-  [Radome].[DewPointTimeseries],
-  [Radome].[StatusTimeseries]
- FROM [Radome]
- JOIN DeviceView ON ([DeviceView].Id = [Radome].Id)
+  [RadomeDevice].[Radar],
+  [RadomeDevice].[PressureTimeseries],
+  [RadomeDevice].[TemperatureTimeseries],
+  [RadomeDevice].[DewPointTimeseries],
+  [RadomeDevice].[StatusTimeseries]
+ FROM [RadomeDevice]
+ JOIN DeviceView ON ([DeviceView].Id = [RadomeDevice].Id)
 
 go 
 
-CREATE OR ALTER VIEW TrackerView
+CREATE OR ALTER VIEW TrackerDeviceView
 AS
  SELECT
   DeviceView.*
- FROM [Tracker]
- JOIN DeviceView ON ([DeviceView].Id = [Tracker].Id)
+ FROM [TrackerDevice]
+ JOIN DeviceView ON ([DeviceView].Id = [TrackerDevice].Id)
 
 go 
 
-CREATE OR ALTER VIEW AisTransceiverView
+CREATE OR ALTER VIEW AisDeviceView
 AS
  SELECT
-  TrackerView.*
- FROM [AisTransceiver]
- JOIN TrackerView ON ([TrackerView].Id = [AisTransceiver].Id)
+  TrackerDeviceView.*
+ FROM [AisDevice]
+ JOIN TrackerDeviceView ON ([TrackerDeviceView].Id = [AisDevice].Id)
 
 go 
 
-CREATE OR ALTER VIEW RadarView
+CREATE OR ALTER VIEW RadarDeviceView
 AS
  SELECT
-  TrackerView.*,
-  [Radar].[SaveSettingsTimeseries],
-  [Radar].[PowerOnTimeseries],
-  [Radar].[TrackingOnTimeseries],
-  [Radar].[RadarPulseTimeseries],
-  [Radar].[TuningTimeseries],
-  [Radar].[BlankSector1Timeseries],
-  [Radar].[Sector1StartTimeseries],
-  [Radar].[Sector1EndTimeseries],
-  [Radar].[BlankSector2Timeseries],
-  [Radar].[Sector2StartTimeseries],
-  [Radar].[Sector2EndTimeseries],
-  [Radar].[EnableAutomaticFrequencyControlTimeseries],
-  [Radar].[AzimuthOffsetTimeseries],
-  [Radar].[EnableSensitivityTimeControlTimeseries],
-  [Radar].[AutomaticSensitivityTimeControlTimeseries],
-  [Radar].[SensitivityTimeControlLevelTimeseries],
-  [Radar].[EnableFastTimeConstantTimeseries],
-  [Radar].[FastTimeConstantLevelTimeseries],
-  [Radar].[FastTimeConstantModeTimeseries],
-  [Radar].[LatitudeTimeseries],
-  [Radar].[LongitudeTimeseries],
-  [Radar].[Radome],
-  [Radar].[GNSSDevice]
- FROM [Radar]
- JOIN TrackerView ON ([TrackerView].Id = [Radar].Id)
+  TrackerDeviceView.*,
+  [RadarDevice].[SaveSettingsTimeseries],
+  [RadarDevice].[PowerOnTimeseries],
+  [RadarDevice].[TrackingOnTimeseries],
+  [RadarDevice].[RadarPulseTimeseries],
+  [RadarDevice].[TuningTimeseries],
+  [RadarDevice].[BlankSector1Timeseries],
+  [RadarDevice].[Sector1StartTimeseries],
+  [RadarDevice].[Sector1EndTimeseries],
+  [RadarDevice].[BlankSector2Timeseries],
+  [RadarDevice].[Sector2StartTimeseries],
+  [RadarDevice].[Sector2EndTimeseries],
+  [RadarDevice].[EnableAutomaticFrequencyControlTimeseries],
+  [RadarDevice].[AzimuthOffsetTimeseries],
+  [RadarDevice].[EnableSensitivityTimeControlTimeseries],
+  [RadarDevice].[AutomaticSensitivityTimeControlTimeseries],
+  [RadarDevice].[SensitivityTimeControlLevelTimeseries],
+  [RadarDevice].[EnableFastTimeConstantTimeseries],
+  [RadarDevice].[FastTimeConstantLevelTimeseries],
+  [RadarDevice].[FastTimeConstantModeTimeseries],
+  [RadarDevice].[LatitudeTimeseries],
+  [RadarDevice].[LongitudeTimeseries],
+  [RadarDevice].[Radome],
+  [RadarDevice].[GNSSDevice]
+ FROM [RadarDevice]
+ JOIN TrackerDeviceView ON ([TrackerDeviceView].Id = [RadarDevice].Id)
 
 go 
 
-CREATE OR ALTER VIEW WeatherStationView
+CREATE OR ALTER VIEW WeatherStationDeviceView
 AS
  SELECT
   DeviceView.*,
-  [WeatherStation].[BarometricPressureTimeseries],
-  [WeatherStation].[AirTemperatureTimeseries],
-  [WeatherStation].[WaterTemperatureTimeseries],
-  [WeatherStation].[RelativeHumidityTimeseries],
-  [WeatherStation].[AbsoluteHumidityTimeseries],
-  [WeatherStation].[DewPointTimeseries],
-  [WeatherStation].[WindDirectionTimeseries],
-  [WeatherStation].[WindSpeedTimeseries],
-  [WeatherStation].[Gyro]
- FROM [WeatherStation]
- JOIN DeviceView ON ([DeviceView].Id = [WeatherStation].Id)
+  [WeatherStationDevice].[BarometricPressureTimeseries],
+  [WeatherStationDevice].[AirTemperatureTimeseries],
+  [WeatherStationDevice].[WaterTemperatureTimeseries],
+  [WeatherStationDevice].[RelativeHumidityTimeseries],
+  [WeatherStationDevice].[AbsoluteHumidityTimeseries],
+  [WeatherStationDevice].[DewPointTimeseries],
+  [WeatherStationDevice].[WindDirectionTimeseries],
+  [WeatherStationDevice].[WindSpeedTimeseries],
+  [WeatherStationDevice].[Gyro]
+ FROM [WeatherStationDevice]
+ JOIN DeviceView ON ([DeviceView].Id = [WeatherStationDevice].Id)
 
 go 
 
@@ -2002,80 +2002,80 @@ AS
 
 go 
 
-CREATE OR ALTER VIEW OilspillView
+CREATE OR ALTER VIEW OilSpillView
 AS
  SELECT
-  [Oilspill].[Id],
-  [Oilspill].[RowVersion],
-  [Oilspill].[OilSpillDetector],
-  [Oilspill].[Timestamp],
-  [Oilspill].[OilArea],
-  [Oilspill].[Shape],
-  [Oilspill].[BSI],
-  [Oilspill].[Oil],
-  [Oilspill].[Trace]
- FROM [Oilspill]
+  [OilSpill].[Id],
+  [OilSpill].[RowVersion],
+  [OilSpill].[OilSpillDetector],
+  [OilSpill].[Timestamp],
+  [OilSpill].[OilArea],
+  [OilSpill].[Shape],
+  [OilSpill].[BSI],
+  [OilSpill].[Oil],
+  [OilSpill].[Trace]
+ FROM [OilSpill]
 
 go 
 
-CREATE OR ALTER VIEW OilspillDetectorCommandView
+CREATE OR ALTER VIEW OilSpillDetectorCommandView
 AS
  SELECT
-  [OilspillDetectorCommand].[Id],
-  [OilspillDetectorCommand].[RowVersion],
-  [OilspillDetectorCommand].[OilSpillDetector],
-  [OilspillDetectorCommand].[Timestamp],
-  [OilspillDetectorCommand].[DeviceCommandSourceType],
-  [OilspillDetectorCommand].[DeviceCommandSourceId],
-  [OilspillDetectorCommand].[Reply]
- FROM [OilspillDetectorCommand]
+  [OilSpillDetectorCommand].[Id],
+  [OilSpillDetectorCommand].[RowVersion],
+  [OilSpillDetectorCommand].[OilSpillDetector],
+  [OilSpillDetectorCommand].[Timestamp],
+  [OilSpillDetectorCommand].[DeviceCommandSourceType],
+  [OilSpillDetectorCommand].[DeviceCommandSourceId],
+  [OilSpillDetectorCommand].[Reply]
+ FROM [OilSpillDetectorCommand]
 
 go 
 
-CREATE OR ALTER VIEW OilspillDetectorCommandReplyView
+CREATE OR ALTER VIEW OilSpillDetectorCommandReplyView
 AS
  SELECT
-  [OilspillDetectorCommandReply].[Id],
-  [OilspillDetectorCommandReply].[RowVersion],
-  [OilspillDetectorCommandReply].[OilSpillDetector],
-  [OilspillDetectorCommandReply].[Timestamp],
-  [OilspillDetectorCommandReply].[Command],
-  [OilspillDetectorCommandReply].[Status],
-  [OilspillDetectorCommandReply].[Message]
- FROM [OilspillDetectorCommandReply]
+  [OilSpillDetectorCommandReply].[Id],
+  [OilSpillDetectorCommandReply].[RowVersion],
+  [OilSpillDetectorCommandReply].[OilSpillDetector],
+  [OilSpillDetectorCommandReply].[Timestamp],
+  [OilSpillDetectorCommandReply].[Command],
+  [OilSpillDetectorCommandReply].[Status],
+  [OilSpillDetectorCommandReply].[Message]
+ FROM [OilSpillDetectorCommandReply]
 
 go 
 
-CREATE OR ALTER VIEW OilspillDetectorConfigurationView
+CREATE OR ALTER VIEW OilSpillDetectorConfigurationView
 AS
  SELECT
-  [OilspillDetectorConfiguration].[Id],
-  [OilspillDetectorConfiguration].[RowVersion],
-  [OilspillDetectorConfiguration].[OilSpillDetector],
-  [OilspillDetectorConfiguration].[Timestamp],
-  [OilspillDetectorConfiguration].[Range],
-  [OilspillDetectorConfiguration].[StartAngle],
-  [OilspillDetectorConfiguration].[EndAngle],
-  [OilspillDetectorConfiguration].[StartRange],
-  [OilspillDetectorConfiguration].[EndRange],
-  [OilspillDetectorConfiguration].[UpdateRate],
-  [OilspillDetectorConfiguration].[StatusSendTime],
-  [OilspillDetectorConfiguration].[DrawBorder],
-  [OilspillDetectorConfiguration].[Colors],
-  [OilspillDetectorConfiguration].[SendToServer],
-  [OilspillDetectorConfiguration].[Directory],
-  [OilspillDetectorConfiguration].[TransparentWater],
-  [OilspillDetectorConfiguration].[SavePictures],
-  [OilspillDetectorConfiguration].[SendAsTarget],
-  [OilspillDetectorConfiguration].[WriteLog],
-  [OilspillDetectorConfiguration].[TargetFilePrefix],
-  [OilspillDetectorConfiguration].[TargetMMSI],
-  [OilspillDetectorConfiguration].[Latitude],
-  [OilspillDetectorConfiguration].[Longitude],
-  [OilspillDetectorConfiguration].[TestSourceEnabled],
-  [OilspillDetectorConfiguration].[ProxyServer],
-  [OilspillDetectorConfiguration].[UseProxyServer]
- FROM [OilspillDetectorConfiguration]
+  [OilSpillDetectorConfiguration].[Id],
+  [OilSpillDetectorConfiguration].[RowVersion],
+  [OilSpillDetectorConfiguration].[OilSpillDetector],
+  [OilSpillDetectorConfiguration].[Timestamp],
+  [OilSpillDetectorConfiguration].[Range],
+  [OilSpillDetectorConfiguration].[StartAngle],
+  [OilSpillDetectorConfiguration].[EndAngle],
+  [OilSpillDetectorConfiguration].[StartRange],
+  [OilSpillDetectorConfiguration].[EndRange],
+  [OilSpillDetectorConfiguration].[UpdateRate],
+  [OilSpillDetectorConfiguration].[StatusSendTime],
+  [OilSpillDetectorConfiguration].[DrawBorder],
+  [OilSpillDetectorConfiguration].[Colors],
+  [OilSpillDetectorConfiguration].[SendToServer],
+  [OilSpillDetectorConfiguration].[Directory],
+  [OilSpillDetectorConfiguration].[TransparentWater],
+  [OilSpillDetectorConfiguration].[SavePictures],
+  [OilSpillDetectorConfiguration].[SendAsTarget],
+  [OilSpillDetectorConfiguration].[WriteLog],
+  [OilSpillDetectorConfiguration].[TargetFilePrefix],
+  [OilSpillDetectorConfiguration].[TargetMMSI],
+  [OilSpillDetectorConfiguration].[Latitude],
+  [OilSpillDetectorConfiguration].[Longitude],
+  [OilSpillDetectorConfiguration].[TestSourceEnabled],
+  [OilSpillDetectorConfiguration].[ProxyServer],
+  [OilSpillDetectorConfiguration].[UseProxyServer]
+ FROM [OilSpillDetectorConfiguration]
 
 go 
 

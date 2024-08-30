@@ -16,7 +16,7 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
+        Guid aisDevice_;
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
@@ -229,7 +229,7 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT AM_ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT AM_KIND_FIELD_ID = 1;
         static constexpr SQLUSMALLINT AM_ROWVERSION_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT AM_AISTRANSCEIVER_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT AM_AISDEVICE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT AM_RECEIVEDTIMESTAMP_FIELD_ID = 5;
         static constexpr SQLUSMALLINT AM_MESSAGESEQUENCENUMBER_FIELD_ID = 6;
         static constexpr SQLUSMALLINT AM_REPEAT_FIELD_ID = 7;
@@ -451,9 +451,9 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& AisTransceiver( ) const
+        const Guid& AisDevice( ) const
         {
-            return aisTransceiver_;
+            return aisDevice_;
         }
         const DateTime& ReceivedTimestamp( ) const
         {
@@ -1269,7 +1269,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, kind_);
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, aisDevice_);
             WriteColumnValue( destination, receivedTimestamp_);
             WriteColumnValue( destination, messageSequenceNumber_);
             WriteColumnValue( destination, repeat_);
@@ -1601,7 +1601,7 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
+        Guid aisDevice_;
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
@@ -1629,7 +1629,7 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT APRCAB_ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT APRCAB_KIND_FIELD_ID = 1;
         static constexpr SQLUSMALLINT APRCAB_ROWVERSION_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT APRCAB_AISTRANSCEIVER_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT APRCAB_AISDEVICE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT APRCAB_RECEIVEDTIMESTAMP_FIELD_ID = 5;
         static constexpr SQLUSMALLINT APRCAB_MESSAGESEQUENCENUMBER_FIELD_ID = 6;
         static constexpr SQLUSMALLINT APRCAB_REPEAT_FIELD_ID = 7;
@@ -1665,9 +1665,9 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& AisTransceiver( ) const
+        const Guid& AisDevice( ) const
         {
-            return aisTransceiver_;
+            return aisDevice_;
         }
         const DateTime& ReceivedTimestamp( ) const
         {
@@ -1743,7 +1743,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, kind_);
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, aisDevice_);
             WriteColumnValue( destination, receivedTimestamp_);
             WriteColumnValue( destination, messageSequenceNumber_);
             WriteColumnValue( destination, repeat_);
@@ -1771,7 +1771,7 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid aisTransceiver_;
+        Guid aisDevice_;
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
@@ -1801,7 +1801,7 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT ASDRM_ID_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ASDRM_KIND_FIELD_ID = 1;
         static constexpr SQLUSMALLINT ASDRM_ROWVERSION_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT ASDRM_AISTRANSCEIVER_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT ASDRM_AISDEVICE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT ASDRM_RECEIVEDTIMESTAMP_FIELD_ID = 5;
         static constexpr SQLUSMALLINT ASDRM_MESSAGESEQUENCENUMBER_FIELD_ID = 6;
         static constexpr SQLUSMALLINT ASDRM_REPEAT_FIELD_ID = 7;
@@ -1839,9 +1839,9 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& AisTransceiver( ) const
+        const Guid& AisDevice( ) const
         {
-            return aisTransceiver_;
+            return aisDevice_;
         }
         const DateTime& ReceivedTimestamp( ) const
         {
@@ -1925,7 +1925,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, kind_);
             WriteColumnValue( destination, id_);
             WriteColumnValue( destination, rowVersion_);
-            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, aisDevice_);
             WriteColumnValue( destination, receivedTimestamp_);
             WriteColumnValue( destination, messageSequenceNumber_);
             WriteColumnValue( destination, repeat_);
@@ -2554,38 +2554,38 @@ namespace Barrelman::Database
         DBGuid rdoTemperatureTimeseries_;
         DBGuid rdoDewPointTimeseries_;
         DBGuid rdoStatusTimeseries_;
-        DBGuid rSaveSettingsTimeseries_;
-        DBGuid rPowerOnTimeseries_;
-        DBGuid rTrackingOnTimeseries_;
-        DBGuid rRadarPulseTimeseries_;
-        DBGuid rTuningTimeseries_;
-        DBGuid rBlankSector1Timeseries_;
-        DBGuid rSector1StartTimeseries_;
-        DBGuid rSector1EndTimeseries_;
-        DBGuid rBlankSector2Timeseries_;
-        DBGuid rSector2StartTimeseries_;
-        DBGuid rSector2EndTimeseries_;
-        DBGuid rEnableAutomaticFrequencyControlTimeseries_;
-        DBGuid rAzimuthOffsetTimeseries_;
-        DBGuid rEnableSensitivityTimeControlTimeseries_;
-        DBGuid rAutomaticSensitivityTimeControlTimeseries_;
-        DBGuid rSensitivityTimeControlLevelTimeseries_;
-        DBGuid rEnableFastTimeConstantTimeseries_;
-        DBGuid rFastTimeConstantLevelTimeseries_;
-        DBGuid rFastTimeConstantModeTimeseries_;
-        DBGuid rLatitudeTimeseries_;
-        DBGuid rLongitudeTimeseries_;
-        DBGuid rRadome_;
-        DBGuid rGNSSDevice_;
-        DBGuid wsBarometricPressureTimeseries_;
-        DBGuid wsAirTemperatureTimeseries_;
-        DBGuid wsWaterTemperatureTimeseries_;
-        DBGuid wsRelativeHumidityTimeseries_;
-        DBGuid wsAbsoluteHumidityTimeseries_;
-        DBGuid wsDewPointTimeseries_;
-        DBGuid wsWindDirectionTimeseries_;
-        DBGuid wsWindSpeedTimeseries_;
-        DBGuid wsGyro_;
+        DBGuid rdSaveSettingsTimeseries_;
+        DBGuid rdPowerOnTimeseries_;
+        DBGuid rdTrackingOnTimeseries_;
+        DBGuid rdRadarPulseTimeseries_;
+        DBGuid rdTuningTimeseries_;
+        DBGuid rdBlankSector1Timeseries_;
+        DBGuid rdSector1StartTimeseries_;
+        DBGuid rdSector1EndTimeseries_;
+        DBGuid rdBlankSector2Timeseries_;
+        DBGuid rdSector2StartTimeseries_;
+        DBGuid rdSector2EndTimeseries_;
+        DBGuid rdEnableAutomaticFrequencyControlTimeseries_;
+        DBGuid rdAzimuthOffsetTimeseries_;
+        DBGuid rdEnableSensitivityTimeControlTimeseries_;
+        DBGuid rdAutomaticSensitivityTimeControlTimeseries_;
+        DBGuid rdSensitivityTimeControlLevelTimeseries_;
+        DBGuid rdEnableFastTimeConstantTimeseries_;
+        DBGuid rdFastTimeConstantLevelTimeseries_;
+        DBGuid rdFastTimeConstantModeTimeseries_;
+        DBGuid rdLatitudeTimeseries_;
+        DBGuid rdLongitudeTimeseries_;
+        DBGuid rdRadome_;
+        DBGuid rdGNSSDevice_;
+        DBGuid wsdBarometricPressureTimeseries_;
+        DBGuid wsdAirTemperatureTimeseries_;
+        DBGuid wsdWaterTemperatureTimeseries_;
+        DBGuid wsdRelativeHumidityTimeseries_;
+        DBGuid wsdAbsoluteHumidityTimeseries_;
+        DBGuid wsdDewPointTimeseries_;
+        DBGuid wsdWindDirectionTimeseries_;
+        DBGuid wsdWindSpeedTimeseries_;
+        DBGuid wsdGyro_;
         FixedDBWideString<127> fName_;
         DBGuid fType_;
         DBDouble fLongitude_;
@@ -2644,38 +2644,38 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT RDO_TEMPERATURETIMESERIES_FIELD_ID = 22;
         static constexpr SQLUSMALLINT RDO_DEWPOINTTIMESERIES_FIELD_ID = 23;
         static constexpr SQLUSMALLINT RDO_STATUSTIMESERIES_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT R_SAVESETTINGSTIMESERIES_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT R_POWERONTIMESERIES_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT R_TRACKINGONTIMESERIES_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT R_RADARPULSETIMESERIES_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT R_TUNINGTIMESERIES_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT R_BLANKSECTOR1TIMESERIES_FIELD_ID = 30;
-        static constexpr SQLUSMALLINT R_SECTOR1STARTTIMESERIES_FIELD_ID = 31;
-        static constexpr SQLUSMALLINT R_SECTOR1ENDTIMESERIES_FIELD_ID = 32;
-        static constexpr SQLUSMALLINT R_BLANKSECTOR2TIMESERIES_FIELD_ID = 33;
-        static constexpr SQLUSMALLINT R_SECTOR2STARTTIMESERIES_FIELD_ID = 34;
-        static constexpr SQLUSMALLINT R_SECTOR2ENDTIMESERIES_FIELD_ID = 35;
-        static constexpr SQLUSMALLINT R_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 36;
-        static constexpr SQLUSMALLINT R_AZIMUTHOFFSETTIMESERIES_FIELD_ID = 37;
-        static constexpr SQLUSMALLINT R_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 38;
-        static constexpr SQLUSMALLINT R_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 39;
-        static constexpr SQLUSMALLINT R_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 40;
-        static constexpr SQLUSMALLINT R_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 41;
-        static constexpr SQLUSMALLINT R_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 42;
-        static constexpr SQLUSMALLINT R_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 43;
-        static constexpr SQLUSMALLINT R_LATITUDETIMESERIES_FIELD_ID = 44;
-        static constexpr SQLUSMALLINT R_LONGITUDETIMESERIES_FIELD_ID = 45;
-        static constexpr SQLUSMALLINT R_RADOME_FIELD_ID = 46;
-        static constexpr SQLUSMALLINT R_GNSSDEVICE_FIELD_ID = 47;
-        static constexpr SQLUSMALLINT WS_BAROMETRICPRESSURETIMESERIES_FIELD_ID = 48;
-        static constexpr SQLUSMALLINT WS_AIRTEMPERATURETIMESERIES_FIELD_ID = 49;
-        static constexpr SQLUSMALLINT WS_WATERTEMPERATURETIMESERIES_FIELD_ID = 50;
-        static constexpr SQLUSMALLINT WS_RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 51;
-        static constexpr SQLUSMALLINT WS_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 52;
-        static constexpr SQLUSMALLINT WS_DEWPOINTTIMESERIES_FIELD_ID = 53;
-        static constexpr SQLUSMALLINT WS_WINDDIRECTIONTIMESERIES_FIELD_ID = 54;
-        static constexpr SQLUSMALLINT WS_WINDSPEEDTIMESERIES_FIELD_ID = 55;
-        static constexpr SQLUSMALLINT WS_GYRO_FIELD_ID = 56;
+        static constexpr SQLUSMALLINT RD_SAVESETTINGSTIMESERIES_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT RD_POWERONTIMESERIES_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT RD_TRACKINGONTIMESERIES_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT RD_RADARPULSETIMESERIES_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT RD_TUNINGTIMESERIES_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT RD_BLANKSECTOR1TIMESERIES_FIELD_ID = 30;
+        static constexpr SQLUSMALLINT RD_SECTOR1STARTTIMESERIES_FIELD_ID = 31;
+        static constexpr SQLUSMALLINT RD_SECTOR1ENDTIMESERIES_FIELD_ID = 32;
+        static constexpr SQLUSMALLINT RD_BLANKSECTOR2TIMESERIES_FIELD_ID = 33;
+        static constexpr SQLUSMALLINT RD_SECTOR2STARTTIMESERIES_FIELD_ID = 34;
+        static constexpr SQLUSMALLINT RD_SECTOR2ENDTIMESERIES_FIELD_ID = 35;
+        static constexpr SQLUSMALLINT RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 36;
+        static constexpr SQLUSMALLINT RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID = 37;
+        static constexpr SQLUSMALLINT RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 38;
+        static constexpr SQLUSMALLINT RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 39;
+        static constexpr SQLUSMALLINT RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 40;
+        static constexpr SQLUSMALLINT RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 41;
+        static constexpr SQLUSMALLINT RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 42;
+        static constexpr SQLUSMALLINT RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 43;
+        static constexpr SQLUSMALLINT RD_LATITUDETIMESERIES_FIELD_ID = 44;
+        static constexpr SQLUSMALLINT RD_LONGITUDETIMESERIES_FIELD_ID = 45;
+        static constexpr SQLUSMALLINT RD_RADOME_FIELD_ID = 46;
+        static constexpr SQLUSMALLINT RD_GNSSDEVICE_FIELD_ID = 47;
+        static constexpr SQLUSMALLINT WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID = 48;
+        static constexpr SQLUSMALLINT WSD_AIRTEMPERATURETIMESERIES_FIELD_ID = 49;
+        static constexpr SQLUSMALLINT WSD_WATERTEMPERATURETIMESERIES_FIELD_ID = 50;
+        static constexpr SQLUSMALLINT WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 51;
+        static constexpr SQLUSMALLINT WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 52;
+        static constexpr SQLUSMALLINT WSD_DEWPOINTTIMESERIES_FIELD_ID = 53;
+        static constexpr SQLUSMALLINT WSD_WINDDIRECTIONTIMESERIES_FIELD_ID = 54;
+        static constexpr SQLUSMALLINT WSD_WINDSPEEDTIMESERIES_FIELD_ID = 55;
+        static constexpr SQLUSMALLINT WSD_GYRO_FIELD_ID = 56;
         static constexpr SQLUSMALLINT F_NAME_FIELD_ID = 57;
         static constexpr SQLUSMALLINT F_TYPE_FIELD_ID = 58;
         static constexpr SQLUSMALLINT F_LONGITUDE_FIELD_ID = 59;
@@ -2791,153 +2791,153 @@ namespace Barrelman::Database
         {
             return gdGNSSDevice_;
         }
-        const DBGuid& RadomeRadar( ) const
+        const DBGuid& RadomeDeviceRadar( ) const
         {
             return rdoRadar_;
         }
-        const DBGuid& RadomePressureTimeseries( ) const
+        const DBGuid& RadomeDevicePressureTimeseries( ) const
         {
             return rdoPressureTimeseries_;
         }
-        const DBGuid& RadomeTemperatureTimeseries( ) const
+        const DBGuid& RadomeDeviceTemperatureTimeseries( ) const
         {
             return rdoTemperatureTimeseries_;
         }
-        const DBGuid& RadomeDewPointTimeseries( ) const
+        const DBGuid& RadomeDeviceDewPointTimeseries( ) const
         {
             return rdoDewPointTimeseries_;
         }
-        const DBGuid& RadomeStatusTimeseries( ) const
+        const DBGuid& RadomeDeviceStatusTimeseries( ) const
         {
             return rdoStatusTimeseries_;
         }
-        const DBGuid& RadarSaveSettingsTimeseries( ) const
+        const DBGuid& RadarDeviceSaveSettingsTimeseries( ) const
         {
-            return rSaveSettingsTimeseries_;
+            return rdSaveSettingsTimeseries_;
         }
-        const DBGuid& RadarPowerOnTimeseries( ) const
+        const DBGuid& RadarDevicePowerOnTimeseries( ) const
         {
-            return rPowerOnTimeseries_;
+            return rdPowerOnTimeseries_;
         }
-        const DBGuid& RadarTrackingOnTimeseries( ) const
+        const DBGuid& RadarDeviceTrackingOnTimeseries( ) const
         {
-            return rTrackingOnTimeseries_;
+            return rdTrackingOnTimeseries_;
         }
-        const DBGuid& RadarRadarPulseTimeseries( ) const
+        const DBGuid& RadarDeviceRadarPulseTimeseries( ) const
         {
-            return rRadarPulseTimeseries_;
+            return rdRadarPulseTimeseries_;
         }
-        const DBGuid& RadarTuningTimeseries( ) const
+        const DBGuid& RadarDeviceTuningTimeseries( ) const
         {
-            return rTuningTimeseries_;
+            return rdTuningTimeseries_;
         }
-        const DBGuid& RadarBlankSector1Timeseries( ) const
+        const DBGuid& RadarDeviceBlankSector1Timeseries( ) const
         {
-            return rBlankSector1Timeseries_;
+            return rdBlankSector1Timeseries_;
         }
-        const DBGuid& RadarSector1StartTimeseries( ) const
+        const DBGuid& RadarDeviceSector1StartTimeseries( ) const
         {
-            return rSector1StartTimeseries_;
+            return rdSector1StartTimeseries_;
         }
-        const DBGuid& RadarSector1EndTimeseries( ) const
+        const DBGuid& RadarDeviceSector1EndTimeseries( ) const
         {
-            return rSector1EndTimeseries_;
+            return rdSector1EndTimeseries_;
         }
-        const DBGuid& RadarBlankSector2Timeseries( ) const
+        const DBGuid& RadarDeviceBlankSector2Timeseries( ) const
         {
-            return rBlankSector2Timeseries_;
+            return rdBlankSector2Timeseries_;
         }
-        const DBGuid& RadarSector2StartTimeseries( ) const
+        const DBGuid& RadarDeviceSector2StartTimeseries( ) const
         {
-            return rSector2StartTimeseries_;
+            return rdSector2StartTimeseries_;
         }
-        const DBGuid& RadarSector2EndTimeseries( ) const
+        const DBGuid& RadarDeviceSector2EndTimeseries( ) const
         {
-            return rSector2EndTimeseries_;
+            return rdSector2EndTimeseries_;
         }
-        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseries( ) const
+        const DBGuid& RadarDeviceEnableAutomaticFrequencyControlTimeseries( ) const
         {
-            return rEnableAutomaticFrequencyControlTimeseries_;
+            return rdEnableAutomaticFrequencyControlTimeseries_;
         }
-        const DBGuid& RadarAzimuthOffsetTimeseries( ) const
+        const DBGuid& RadarDeviceAzimuthOffsetTimeseries( ) const
         {
-            return rAzimuthOffsetTimeseries_;
+            return rdAzimuthOffsetTimeseries_;
         }
-        const DBGuid& RadarEnableSensitivityTimeControlTimeseries( ) const
+        const DBGuid& RadarDeviceEnableSensitivityTimeControlTimeseries( ) const
         {
-            return rEnableSensitivityTimeControlTimeseries_;
+            return rdEnableSensitivityTimeControlTimeseries_;
         }
-        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseries( ) const
+        const DBGuid& RadarDeviceAutomaticSensitivityTimeControlTimeseries( ) const
         {
-            return rAutomaticSensitivityTimeControlTimeseries_;
+            return rdAutomaticSensitivityTimeControlTimeseries_;
         }
-        const DBGuid& RadarSensitivityTimeControlLevelTimeseries( ) const
+        const DBGuid& RadarDeviceSensitivityTimeControlLevelTimeseries( ) const
         {
-            return rSensitivityTimeControlLevelTimeseries_;
+            return rdSensitivityTimeControlLevelTimeseries_;
         }
-        const DBGuid& RadarEnableFastTimeConstantTimeseries( ) const
+        const DBGuid& RadarDeviceEnableFastTimeConstantTimeseries( ) const
         {
-            return rEnableFastTimeConstantTimeseries_;
+            return rdEnableFastTimeConstantTimeseries_;
         }
-        const DBGuid& RadarFastTimeConstantLevelTimeseries( ) const
+        const DBGuid& RadarDeviceFastTimeConstantLevelTimeseries( ) const
         {
-            return rFastTimeConstantLevelTimeseries_;
+            return rdFastTimeConstantLevelTimeseries_;
         }
-        const DBGuid& RadarFastTimeConstantModeTimeseries( ) const
+        const DBGuid& RadarDeviceFastTimeConstantModeTimeseries( ) const
         {
-            return rFastTimeConstantModeTimeseries_;
+            return rdFastTimeConstantModeTimeseries_;
         }
-        const DBGuid& RadarLatitudeTimeseries( ) const
+        const DBGuid& RadarDeviceLatitudeTimeseries( ) const
         {
-            return rLatitudeTimeseries_;
+            return rdLatitudeTimeseries_;
         }
-        const DBGuid& RadarLongitudeTimeseries( ) const
+        const DBGuid& RadarDeviceLongitudeTimeseries( ) const
         {
-            return rLongitudeTimeseries_;
+            return rdLongitudeTimeseries_;
         }
-        const DBGuid& RadarRadome( ) const
+        const DBGuid& RadarDeviceRadome( ) const
         {
-            return rRadome_;
+            return rdRadome_;
         }
-        const DBGuid& RadarGNSSDevice( ) const
+        const DBGuid& RadarDeviceGNSSDevice( ) const
         {
-            return rGNSSDevice_;
+            return rdGNSSDevice_;
         }
-        const DBGuid& WeatherStationBarometricPressureTimeseries( ) const
+        const DBGuid& WeatherStationDeviceBarometricPressureTimeseries( ) const
         {
-            return wsBarometricPressureTimeseries_;
+            return wsdBarometricPressureTimeseries_;
         }
-        const DBGuid& WeatherStationAirTemperatureTimeseries( ) const
+        const DBGuid& WeatherStationDeviceAirTemperatureTimeseries( ) const
         {
-            return wsAirTemperatureTimeseries_;
+            return wsdAirTemperatureTimeseries_;
         }
-        const DBGuid& WeatherStationWaterTemperatureTimeseries( ) const
+        const DBGuid& WeatherStationDeviceWaterTemperatureTimeseries( ) const
         {
-            return wsWaterTemperatureTimeseries_;
+            return wsdWaterTemperatureTimeseries_;
         }
-        const DBGuid& WeatherStationRelativeHumidityTimeseries( ) const
+        const DBGuid& WeatherStationDeviceRelativeHumidityTimeseries( ) const
         {
-            return wsRelativeHumidityTimeseries_;
+            return wsdRelativeHumidityTimeseries_;
         }
-        const DBGuid& WeatherStationAbsoluteHumidityTimeseries( ) const
+        const DBGuid& WeatherStationDeviceAbsoluteHumidityTimeseries( ) const
         {
-            return wsAbsoluteHumidityTimeseries_;
+            return wsdAbsoluteHumidityTimeseries_;
         }
-        const DBGuid& WeatherStationDewPointTimeseries( ) const
+        const DBGuid& WeatherStationDeviceDewPointTimeseries( ) const
         {
-            return wsDewPointTimeseries_;
+            return wsdDewPointTimeseries_;
         }
-        const DBGuid& WeatherStationWindDirectionTimeseries( ) const
+        const DBGuid& WeatherStationDeviceWindDirectionTimeseries( ) const
         {
-            return wsWindDirectionTimeseries_;
+            return wsdWindDirectionTimeseries_;
         }
-        const DBGuid& WeatherStationWindSpeedTimeseries( ) const
+        const DBGuid& WeatherStationDeviceWindSpeedTimeseries( ) const
         {
-            return wsWindSpeedTimeseries_;
+            return wsdWindSpeedTimeseries_;
         }
-        const DBGuid& WeatherStationGyro( ) const
+        const DBGuid& WeatherStationDeviceGyro( ) const
         {
-            return wsGyro_;
+            return wsdGyro_;
         }
         const FixedDBWideString<127>& FacilityName( ) const
         {
@@ -3061,7 +3061,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, bsType_);
                 }
                 break;
-                case Data::Kind::Camera:
+                case Data::Kind::CameraDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3104,7 +3104,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::OilspillDetector:
+                case Data::Kind::OilSpillDetectorDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3112,7 +3112,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::Radio:
+                case Data::Kind::RadioDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3120,7 +3120,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::Radome:
+                case Data::Kind::RadomeDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3133,7 +3133,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, rdoStatusTimeseries_);
                 }
                 break;
-                case Data::Kind::AisTransceiver:
+                case Data::Kind::AisDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3141,52 +3141,52 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::Radar:
+                case Data::Kind::RadarDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
                     WriteColumnValue( destination, dDescription_);
                     WriteColumnValue( destination, dEnabledTimeseries_);
-                    WriteColumnValue( destination, rSaveSettingsTimeseries_);
-                    WriteColumnValue( destination, rPowerOnTimeseries_);
-                    WriteColumnValue( destination, rTrackingOnTimeseries_);
-                    WriteColumnValue( destination, rRadarPulseTimeseries_);
-                    WriteColumnValue( destination, rTuningTimeseries_);
-                    WriteColumnValue( destination, rBlankSector1Timeseries_);
-                    WriteColumnValue( destination, rSector1StartTimeseries_);
-                    WriteColumnValue( destination, rSector1EndTimeseries_);
-                    WriteColumnValue( destination, rBlankSector2Timeseries_);
-                    WriteColumnValue( destination, rSector2StartTimeseries_);
-                    WriteColumnValue( destination, rSector2EndTimeseries_);
-                    WriteColumnValue( destination, rEnableAutomaticFrequencyControlTimeseries_);
-                    WriteColumnValue( destination, rAzimuthOffsetTimeseries_);
-                    WriteColumnValue( destination, rEnableSensitivityTimeControlTimeseries_);
-                    WriteColumnValue( destination, rAutomaticSensitivityTimeControlTimeseries_);
-                    WriteColumnValue( destination, rSensitivityTimeControlLevelTimeseries_);
-                    WriteColumnValue( destination, rEnableFastTimeConstantTimeseries_);
-                    WriteColumnValue( destination, rFastTimeConstantLevelTimeseries_);
-                    WriteColumnValue( destination, rFastTimeConstantModeTimeseries_);
-                    WriteColumnValue( destination, rLatitudeTimeseries_);
-                    WriteColumnValue( destination, rLongitudeTimeseries_);
-                    WriteColumnValue( destination, rRadome_);
-                    WriteColumnValue( destination, rGNSSDevice_);
+                    WriteColumnValue( destination, rdSaveSettingsTimeseries_);
+                    WriteColumnValue( destination, rdPowerOnTimeseries_);
+                    WriteColumnValue( destination, rdTrackingOnTimeseries_);
+                    WriteColumnValue( destination, rdRadarPulseTimeseries_);
+                    WriteColumnValue( destination, rdTuningTimeseries_);
+                    WriteColumnValue( destination, rdBlankSector1Timeseries_);
+                    WriteColumnValue( destination, rdSector1StartTimeseries_);
+                    WriteColumnValue( destination, rdSector1EndTimeseries_);
+                    WriteColumnValue( destination, rdBlankSector2Timeseries_);
+                    WriteColumnValue( destination, rdSector2StartTimeseries_);
+                    WriteColumnValue( destination, rdSector2EndTimeseries_);
+                    WriteColumnValue( destination, rdEnableAutomaticFrequencyControlTimeseries_);
+                    WriteColumnValue( destination, rdAzimuthOffsetTimeseries_);
+                    WriteColumnValue( destination, rdEnableSensitivityTimeControlTimeseries_);
+                    WriteColumnValue( destination, rdAutomaticSensitivityTimeControlTimeseries_);
+                    WriteColumnValue( destination, rdSensitivityTimeControlLevelTimeseries_);
+                    WriteColumnValue( destination, rdEnableFastTimeConstantTimeseries_);
+                    WriteColumnValue( destination, rdFastTimeConstantLevelTimeseries_);
+                    WriteColumnValue( destination, rdFastTimeConstantModeTimeseries_);
+                    WriteColumnValue( destination, rdLatitudeTimeseries_);
+                    WriteColumnValue( destination, rdLongitudeTimeseries_);
+                    WriteColumnValue( destination, rdRadome_);
+                    WriteColumnValue( destination, rdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::WeatherStation:
+                case Data::Kind::WeatherStationDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
                     WriteColumnValue( destination, dDescription_);
                     WriteColumnValue( destination, dEnabledTimeseries_);
-                    WriteColumnValue( destination, wsBarometricPressureTimeseries_);
-                    WriteColumnValue( destination, wsAirTemperatureTimeseries_);
-                    WriteColumnValue( destination, wsWaterTemperatureTimeseries_);
-                    WriteColumnValue( destination, wsRelativeHumidityTimeseries_);
-                    WriteColumnValue( destination, wsAbsoluteHumidityTimeseries_);
-                    WriteColumnValue( destination, wsDewPointTimeseries_);
-                    WriteColumnValue( destination, wsWindDirectionTimeseries_);
-                    WriteColumnValue( destination, wsWindSpeedTimeseries_);
-                    WriteColumnValue( destination, wsGyro_);
+                    WriteColumnValue( destination, wsdBarometricPressureTimeseries_);
+                    WriteColumnValue( destination, wsdAirTemperatureTimeseries_);
+                    WriteColumnValue( destination, wsdWaterTemperatureTimeseries_);
+                    WriteColumnValue( destination, wsdRelativeHumidityTimeseries_);
+                    WriteColumnValue( destination, wsdAbsoluteHumidityTimeseries_);
+                    WriteColumnValue( destination, wsdDewPointTimeseries_);
+                    WriteColumnValue( destination, wsdWindDirectionTimeseries_);
+                    WriteColumnValue( destination, wsdWindSpeedTimeseries_);
+                    WriteColumnValue( destination, wsdGyro_);
                 }
                 break;
                 case Data::Kind::Facility:
@@ -3268,38 +3268,38 @@ namespace Barrelman::Database
         DBGuid rdoTemperatureTimeseries_;
         DBGuid rdoDewPointTimeseries_;
         DBGuid rdoStatusTimeseries_;
-        DBGuid rSaveSettingsTimeseries_;
-        DBGuid rPowerOnTimeseries_;
-        DBGuid rTrackingOnTimeseries_;
-        DBGuid rRadarPulseTimeseries_;
-        DBGuid rTuningTimeseries_;
-        DBGuid rBlankSector1Timeseries_;
-        DBGuid rSector1StartTimeseries_;
-        DBGuid rSector1EndTimeseries_;
-        DBGuid rBlankSector2Timeseries_;
-        DBGuid rSector2StartTimeseries_;
-        DBGuid rSector2EndTimeseries_;
-        DBGuid rEnableAutomaticFrequencyControlTimeseries_;
-        DBGuid rAzimuthOffsetTimeseries_;
-        DBGuid rEnableSensitivityTimeControlTimeseries_;
-        DBGuid rAutomaticSensitivityTimeControlTimeseries_;
-        DBGuid rSensitivityTimeControlLevelTimeseries_;
-        DBGuid rEnableFastTimeConstantTimeseries_;
-        DBGuid rFastTimeConstantLevelTimeseries_;
-        DBGuid rFastTimeConstantModeTimeseries_;
-        DBGuid rLatitudeTimeseries_;
-        DBGuid rLongitudeTimeseries_;
-        DBGuid rRadome_;
-        DBGuid rGNSSDevice_;
-        DBGuid wsBarometricPressureTimeseries_;
-        DBGuid wsAirTemperatureTimeseries_;
-        DBGuid wsWaterTemperatureTimeseries_;
-        DBGuid wsRelativeHumidityTimeseries_;
-        DBGuid wsAbsoluteHumidityTimeseries_;
-        DBGuid wsDewPointTimeseries_;
-        DBGuid wsWindDirectionTimeseries_;
-        DBGuid wsWindSpeedTimeseries_;
-        DBGuid wsGyro_;
+        DBGuid rdSaveSettingsTimeseries_;
+        DBGuid rdPowerOnTimeseries_;
+        DBGuid rdTrackingOnTimeseries_;
+        DBGuid rdRadarPulseTimeseries_;
+        DBGuid rdTuningTimeseries_;
+        DBGuid rdBlankSector1Timeseries_;
+        DBGuid rdSector1StartTimeseries_;
+        DBGuid rdSector1EndTimeseries_;
+        DBGuid rdBlankSector2Timeseries_;
+        DBGuid rdSector2StartTimeseries_;
+        DBGuid rdSector2EndTimeseries_;
+        DBGuid rdEnableAutomaticFrequencyControlTimeseries_;
+        DBGuid rdAzimuthOffsetTimeseries_;
+        DBGuid rdEnableSensitivityTimeControlTimeseries_;
+        DBGuid rdAutomaticSensitivityTimeControlTimeseries_;
+        DBGuid rdSensitivityTimeControlLevelTimeseries_;
+        DBGuid rdEnableFastTimeConstantTimeseries_;
+        DBGuid rdFastTimeConstantLevelTimeseries_;
+        DBGuid rdFastTimeConstantModeTimeseries_;
+        DBGuid rdLatitudeTimeseries_;
+        DBGuid rdLongitudeTimeseries_;
+        DBGuid rdRadome_;
+        DBGuid rdGNSSDevice_;
+        DBGuid wsdBarometricPressureTimeseries_;
+        DBGuid wsdAirTemperatureTimeseries_;
+        DBGuid wsdWaterTemperatureTimeseries_;
+        DBGuid wsdRelativeHumidityTimeseries_;
+        DBGuid wsdAbsoluteHumidityTimeseries_;
+        DBGuid wsdDewPointTimeseries_;
+        DBGuid wsdWindDirectionTimeseries_;
+        DBGuid wsdWindSpeedTimeseries_;
+        DBGuid wsdGyro_;
     public:
         using Base = BaseColumnData;
 
@@ -3329,38 +3329,38 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT RDO_TEMPERATURETIMESERIES_FIELD_ID = 20;
         static constexpr SQLUSMALLINT RDO_DEWPOINTTIMESERIES_FIELD_ID = 21;
         static constexpr SQLUSMALLINT RDO_STATUSTIMESERIES_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT R_SAVESETTINGSTIMESERIES_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT R_POWERONTIMESERIES_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT R_TRACKINGONTIMESERIES_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT R_RADARPULSETIMESERIES_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT R_TUNINGTIMESERIES_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT R_BLANKSECTOR1TIMESERIES_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT R_SECTOR1STARTTIMESERIES_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT R_SECTOR1ENDTIMESERIES_FIELD_ID = 30;
-        static constexpr SQLUSMALLINT R_BLANKSECTOR2TIMESERIES_FIELD_ID = 31;
-        static constexpr SQLUSMALLINT R_SECTOR2STARTTIMESERIES_FIELD_ID = 32;
-        static constexpr SQLUSMALLINT R_SECTOR2ENDTIMESERIES_FIELD_ID = 33;
-        static constexpr SQLUSMALLINT R_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 34;
-        static constexpr SQLUSMALLINT R_AZIMUTHOFFSETTIMESERIES_FIELD_ID = 35;
-        static constexpr SQLUSMALLINT R_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 36;
-        static constexpr SQLUSMALLINT R_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 37;
-        static constexpr SQLUSMALLINT R_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 38;
-        static constexpr SQLUSMALLINT R_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 39;
-        static constexpr SQLUSMALLINT R_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 40;
-        static constexpr SQLUSMALLINT R_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 41;
-        static constexpr SQLUSMALLINT R_LATITUDETIMESERIES_FIELD_ID = 42;
-        static constexpr SQLUSMALLINT R_LONGITUDETIMESERIES_FIELD_ID = 43;
-        static constexpr SQLUSMALLINT R_RADOME_FIELD_ID = 44;
-        static constexpr SQLUSMALLINT R_GNSSDEVICE_FIELD_ID = 45;
-        static constexpr SQLUSMALLINT WS_BAROMETRICPRESSURETIMESERIES_FIELD_ID = 46;
-        static constexpr SQLUSMALLINT WS_AIRTEMPERATURETIMESERIES_FIELD_ID = 47;
-        static constexpr SQLUSMALLINT WS_WATERTEMPERATURETIMESERIES_FIELD_ID = 48;
-        static constexpr SQLUSMALLINT WS_RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 49;
-        static constexpr SQLUSMALLINT WS_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 50;
-        static constexpr SQLUSMALLINT WS_DEWPOINTTIMESERIES_FIELD_ID = 51;
-        static constexpr SQLUSMALLINT WS_WINDDIRECTIONTIMESERIES_FIELD_ID = 52;
-        static constexpr SQLUSMALLINT WS_WINDSPEEDTIMESERIES_FIELD_ID = 53;
-        static constexpr SQLUSMALLINT WS_GYRO_FIELD_ID = 54;
+        static constexpr SQLUSMALLINT RD_SAVESETTINGSTIMESERIES_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT RD_POWERONTIMESERIES_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT RD_TRACKINGONTIMESERIES_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT RD_RADARPULSETIMESERIES_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT RD_TUNINGTIMESERIES_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT RD_BLANKSECTOR1TIMESERIES_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT RD_SECTOR1STARTTIMESERIES_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT RD_SECTOR1ENDTIMESERIES_FIELD_ID = 30;
+        static constexpr SQLUSMALLINT RD_BLANKSECTOR2TIMESERIES_FIELD_ID = 31;
+        static constexpr SQLUSMALLINT RD_SECTOR2STARTTIMESERIES_FIELD_ID = 32;
+        static constexpr SQLUSMALLINT RD_SECTOR2ENDTIMESERIES_FIELD_ID = 33;
+        static constexpr SQLUSMALLINT RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 34;
+        static constexpr SQLUSMALLINT RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID = 35;
+        static constexpr SQLUSMALLINT RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 36;
+        static constexpr SQLUSMALLINT RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 37;
+        static constexpr SQLUSMALLINT RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 38;
+        static constexpr SQLUSMALLINT RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 39;
+        static constexpr SQLUSMALLINT RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 40;
+        static constexpr SQLUSMALLINT RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 41;
+        static constexpr SQLUSMALLINT RD_LATITUDETIMESERIES_FIELD_ID = 42;
+        static constexpr SQLUSMALLINT RD_LONGITUDETIMESERIES_FIELD_ID = 43;
+        static constexpr SQLUSMALLINT RD_RADOME_FIELD_ID = 44;
+        static constexpr SQLUSMALLINT RD_GNSSDEVICE_FIELD_ID = 45;
+        static constexpr SQLUSMALLINT WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID = 46;
+        static constexpr SQLUSMALLINT WSD_AIRTEMPERATURETIMESERIES_FIELD_ID = 47;
+        static constexpr SQLUSMALLINT WSD_WATERTEMPERATURETIMESERIES_FIELD_ID = 48;
+        static constexpr SQLUSMALLINT WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID = 49;
+        static constexpr SQLUSMALLINT WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID = 50;
+        static constexpr SQLUSMALLINT WSD_DEWPOINTTIMESERIES_FIELD_ID = 51;
+        static constexpr SQLUSMALLINT WSD_WINDDIRECTIONTIMESERIES_FIELD_ID = 52;
+        static constexpr SQLUSMALLINT WSD_WINDSPEEDTIMESERIES_FIELD_ID = 53;
+        static constexpr SQLUSMALLINT WSD_GYRO_FIELD_ID = 54;
         static constexpr SQLUSMALLINT D_DESCRIPTION_FIELD_ID = 55;
 
         ComplexDeviceColumnData( ) = default;
@@ -3441,153 +3441,153 @@ namespace Barrelman::Database
         {
             return gdGNSSDevice_;
         }
-        const DBGuid& RadomeRadar( ) const
+        const DBGuid& RadomeDeviceRadar( ) const
         {
             return rdoRadar_;
         }
-        const DBGuid& RadomePressureTimeseries( ) const
+        const DBGuid& RadomeDevicePressureTimeseries( ) const
         {
             return rdoPressureTimeseries_;
         }
-        const DBGuid& RadomeTemperatureTimeseries( ) const
+        const DBGuid& RadomeDeviceTemperatureTimeseries( ) const
         {
             return rdoTemperatureTimeseries_;
         }
-        const DBGuid& RadomeDewPointTimeseries( ) const
+        const DBGuid& RadomeDeviceDewPointTimeseries( ) const
         {
             return rdoDewPointTimeseries_;
         }
-        const DBGuid& RadomeStatusTimeseries( ) const
+        const DBGuid& RadomeDeviceStatusTimeseries( ) const
         {
             return rdoStatusTimeseries_;
         }
-        const DBGuid& RadarSaveSettingsTimeseries( ) const
+        const DBGuid& RadarDeviceSaveSettingsTimeseries( ) const
         {
-            return rSaveSettingsTimeseries_;
+            return rdSaveSettingsTimeseries_;
         }
-        const DBGuid& RadarPowerOnTimeseries( ) const
+        const DBGuid& RadarDevicePowerOnTimeseries( ) const
         {
-            return rPowerOnTimeseries_;
+            return rdPowerOnTimeseries_;
         }
-        const DBGuid& RadarTrackingOnTimeseries( ) const
+        const DBGuid& RadarDeviceTrackingOnTimeseries( ) const
         {
-            return rTrackingOnTimeseries_;
+            return rdTrackingOnTimeseries_;
         }
-        const DBGuid& RadarRadarPulseTimeseries( ) const
+        const DBGuid& RadarDeviceRadarPulseTimeseries( ) const
         {
-            return rRadarPulseTimeseries_;
+            return rdRadarPulseTimeseries_;
         }
-        const DBGuid& RadarTuningTimeseries( ) const
+        const DBGuid& RadarDeviceTuningTimeseries( ) const
         {
-            return rTuningTimeseries_;
+            return rdTuningTimeseries_;
         }
-        const DBGuid& RadarBlankSector1Timeseries( ) const
+        const DBGuid& RadarDeviceBlankSector1Timeseries( ) const
         {
-            return rBlankSector1Timeseries_;
+            return rdBlankSector1Timeseries_;
         }
-        const DBGuid& RadarSector1StartTimeseries( ) const
+        const DBGuid& RadarDeviceSector1StartTimeseries( ) const
         {
-            return rSector1StartTimeseries_;
+            return rdSector1StartTimeseries_;
         }
-        const DBGuid& RadarSector1EndTimeseries( ) const
+        const DBGuid& RadarDeviceSector1EndTimeseries( ) const
         {
-            return rSector1EndTimeseries_;
+            return rdSector1EndTimeseries_;
         }
-        const DBGuid& RadarBlankSector2Timeseries( ) const
+        const DBGuid& RadarDeviceBlankSector2Timeseries( ) const
         {
-            return rBlankSector2Timeseries_;
+            return rdBlankSector2Timeseries_;
         }
-        const DBGuid& RadarSector2StartTimeseries( ) const
+        const DBGuid& RadarDeviceSector2StartTimeseries( ) const
         {
-            return rSector2StartTimeseries_;
+            return rdSector2StartTimeseries_;
         }
-        const DBGuid& RadarSector2EndTimeseries( ) const
+        const DBGuid& RadarDeviceSector2EndTimeseries( ) const
         {
-            return rSector2EndTimeseries_;
+            return rdSector2EndTimeseries_;
         }
-        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseries( ) const
+        const DBGuid& RadarDeviceEnableAutomaticFrequencyControlTimeseries( ) const
         {
-            return rEnableAutomaticFrequencyControlTimeseries_;
+            return rdEnableAutomaticFrequencyControlTimeseries_;
         }
-        const DBGuid& RadarAzimuthOffsetTimeseries( ) const
+        const DBGuid& RadarDeviceAzimuthOffsetTimeseries( ) const
         {
-            return rAzimuthOffsetTimeseries_;
+            return rdAzimuthOffsetTimeseries_;
         }
-        const DBGuid& RadarEnableSensitivityTimeControlTimeseries( ) const
+        const DBGuid& RadarDeviceEnableSensitivityTimeControlTimeseries( ) const
         {
-            return rEnableSensitivityTimeControlTimeseries_;
+            return rdEnableSensitivityTimeControlTimeseries_;
         }
-        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseries( ) const
+        const DBGuid& RadarDeviceAutomaticSensitivityTimeControlTimeseries( ) const
         {
-            return rAutomaticSensitivityTimeControlTimeseries_;
+            return rdAutomaticSensitivityTimeControlTimeseries_;
         }
-        const DBGuid& RadarSensitivityTimeControlLevelTimeseries( ) const
+        const DBGuid& RadarDeviceSensitivityTimeControlLevelTimeseries( ) const
         {
-            return rSensitivityTimeControlLevelTimeseries_;
+            return rdSensitivityTimeControlLevelTimeseries_;
         }
-        const DBGuid& RadarEnableFastTimeConstantTimeseries( ) const
+        const DBGuid& RadarDeviceEnableFastTimeConstantTimeseries( ) const
         {
-            return rEnableFastTimeConstantTimeseries_;
+            return rdEnableFastTimeConstantTimeseries_;
         }
-        const DBGuid& RadarFastTimeConstantLevelTimeseries( ) const
+        const DBGuid& RadarDeviceFastTimeConstantLevelTimeseries( ) const
         {
-            return rFastTimeConstantLevelTimeseries_;
+            return rdFastTimeConstantLevelTimeseries_;
         }
-        const DBGuid& RadarFastTimeConstantModeTimeseries( ) const
+        const DBGuid& RadarDeviceFastTimeConstantModeTimeseries( ) const
         {
-            return rFastTimeConstantModeTimeseries_;
+            return rdFastTimeConstantModeTimeseries_;
         }
-        const DBGuid& RadarLatitudeTimeseries( ) const
+        const DBGuid& RadarDeviceLatitudeTimeseries( ) const
         {
-            return rLatitudeTimeseries_;
+            return rdLatitudeTimeseries_;
         }
-        const DBGuid& RadarLongitudeTimeseries( ) const
+        const DBGuid& RadarDeviceLongitudeTimeseries( ) const
         {
-            return rLongitudeTimeseries_;
+            return rdLongitudeTimeseries_;
         }
-        const DBGuid& RadarRadome( ) const
+        const DBGuid& RadarDeviceRadome( ) const
         {
-            return rRadome_;
+            return rdRadome_;
         }
-        const DBGuid& RadarGNSSDevice( ) const
+        const DBGuid& RadarDeviceGNSSDevice( ) const
         {
-            return rGNSSDevice_;
+            return rdGNSSDevice_;
         }
-        const DBGuid& WeatherStationBarometricPressureTimeseries( ) const
+        const DBGuid& WeatherStationDeviceBarometricPressureTimeseries( ) const
         {
-            return wsBarometricPressureTimeseries_;
+            return wsdBarometricPressureTimeseries_;
         }
-        const DBGuid& WeatherStationAirTemperatureTimeseries( ) const
+        const DBGuid& WeatherStationDeviceAirTemperatureTimeseries( ) const
         {
-            return wsAirTemperatureTimeseries_;
+            return wsdAirTemperatureTimeseries_;
         }
-        const DBGuid& WeatherStationWaterTemperatureTimeseries( ) const
+        const DBGuid& WeatherStationDeviceWaterTemperatureTimeseries( ) const
         {
-            return wsWaterTemperatureTimeseries_;
+            return wsdWaterTemperatureTimeseries_;
         }
-        const DBGuid& WeatherStationRelativeHumidityTimeseries( ) const
+        const DBGuid& WeatherStationDeviceRelativeHumidityTimeseries( ) const
         {
-            return wsRelativeHumidityTimeseries_;
+            return wsdRelativeHumidityTimeseries_;
         }
-        const DBGuid& WeatherStationAbsoluteHumidityTimeseries( ) const
+        const DBGuid& WeatherStationDeviceAbsoluteHumidityTimeseries( ) const
         {
-            return wsAbsoluteHumidityTimeseries_;
+            return wsdAbsoluteHumidityTimeseries_;
         }
-        const DBGuid& WeatherStationDewPointTimeseries( ) const
+        const DBGuid& WeatherStationDeviceDewPointTimeseries( ) const
         {
-            return wsDewPointTimeseries_;
+            return wsdDewPointTimeseries_;
         }
-        const DBGuid& WeatherStationWindDirectionTimeseries( ) const
+        const DBGuid& WeatherStationDeviceWindDirectionTimeseries( ) const
         {
-            return wsWindDirectionTimeseries_;
+            return wsdWindDirectionTimeseries_;
         }
-        const DBGuid& WeatherStationWindSpeedTimeseries( ) const
+        const DBGuid& WeatherStationDeviceWindSpeedTimeseries( ) const
         {
-            return wsWindSpeedTimeseries_;
+            return wsdWindSpeedTimeseries_;
         }
-        const DBGuid& WeatherStationGyro( ) const
+        const DBGuid& WeatherStationDeviceGyro( ) const
         {
-            return wsGyro_;
+            return wsdGyro_;
         }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
@@ -3620,7 +3620,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, gdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::Radome:
+                case Data::Kind::RadomeDevice:
                 {
                     WriteColumnValue( destination, rdoRadar_);
                     WriteColumnValue( destination, rdoPressureTimeseries_);
@@ -3629,44 +3629,44 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, rdoStatusTimeseries_);
                 }
                 break;
-                case Data::Kind::Radar:
+                case Data::Kind::RadarDevice:
                 {
-                    WriteColumnValue( destination, rSaveSettingsTimeseries_);
-                    WriteColumnValue( destination, rPowerOnTimeseries_);
-                    WriteColumnValue( destination, rTrackingOnTimeseries_);
-                    WriteColumnValue( destination, rRadarPulseTimeseries_);
-                    WriteColumnValue( destination, rTuningTimeseries_);
-                    WriteColumnValue( destination, rBlankSector1Timeseries_);
-                    WriteColumnValue( destination, rSector1StartTimeseries_);
-                    WriteColumnValue( destination, rSector1EndTimeseries_);
-                    WriteColumnValue( destination, rBlankSector2Timeseries_);
-                    WriteColumnValue( destination, rSector2StartTimeseries_);
-                    WriteColumnValue( destination, rSector2EndTimeseries_);
-                    WriteColumnValue( destination, rEnableAutomaticFrequencyControlTimeseries_);
-                    WriteColumnValue( destination, rAzimuthOffsetTimeseries_);
-                    WriteColumnValue( destination, rEnableSensitivityTimeControlTimeseries_);
-                    WriteColumnValue( destination, rAutomaticSensitivityTimeControlTimeseries_);
-                    WriteColumnValue( destination, rSensitivityTimeControlLevelTimeseries_);
-                    WriteColumnValue( destination, rEnableFastTimeConstantTimeseries_);
-                    WriteColumnValue( destination, rFastTimeConstantLevelTimeseries_);
-                    WriteColumnValue( destination, rFastTimeConstantModeTimeseries_);
-                    WriteColumnValue( destination, rLatitudeTimeseries_);
-                    WriteColumnValue( destination, rLongitudeTimeseries_);
-                    WriteColumnValue( destination, rRadome_);
-                    WriteColumnValue( destination, rGNSSDevice_);
+                    WriteColumnValue( destination, rdSaveSettingsTimeseries_);
+                    WriteColumnValue( destination, rdPowerOnTimeseries_);
+                    WriteColumnValue( destination, rdTrackingOnTimeseries_);
+                    WriteColumnValue( destination, rdRadarPulseTimeseries_);
+                    WriteColumnValue( destination, rdTuningTimeseries_);
+                    WriteColumnValue( destination, rdBlankSector1Timeseries_);
+                    WriteColumnValue( destination, rdSector1StartTimeseries_);
+                    WriteColumnValue( destination, rdSector1EndTimeseries_);
+                    WriteColumnValue( destination, rdBlankSector2Timeseries_);
+                    WriteColumnValue( destination, rdSector2StartTimeseries_);
+                    WriteColumnValue( destination, rdSector2EndTimeseries_);
+                    WriteColumnValue( destination, rdEnableAutomaticFrequencyControlTimeseries_);
+                    WriteColumnValue( destination, rdAzimuthOffsetTimeseries_);
+                    WriteColumnValue( destination, rdEnableSensitivityTimeControlTimeseries_);
+                    WriteColumnValue( destination, rdAutomaticSensitivityTimeControlTimeseries_);
+                    WriteColumnValue( destination, rdSensitivityTimeControlLevelTimeseries_);
+                    WriteColumnValue( destination, rdEnableFastTimeConstantTimeseries_);
+                    WriteColumnValue( destination, rdFastTimeConstantLevelTimeseries_);
+                    WriteColumnValue( destination, rdFastTimeConstantModeTimeseries_);
+                    WriteColumnValue( destination, rdLatitudeTimeseries_);
+                    WriteColumnValue( destination, rdLongitudeTimeseries_);
+                    WriteColumnValue( destination, rdRadome_);
+                    WriteColumnValue( destination, rdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::WeatherStation:
+                case Data::Kind::WeatherStationDevice:
                 {
-                    WriteColumnValue( destination, wsBarometricPressureTimeseries_);
-                    WriteColumnValue( destination, wsAirTemperatureTimeseries_);
-                    WriteColumnValue( destination, wsWaterTemperatureTimeseries_);
-                    WriteColumnValue( destination, wsRelativeHumidityTimeseries_);
-                    WriteColumnValue( destination, wsAbsoluteHumidityTimeseries_);
-                    WriteColumnValue( destination, wsDewPointTimeseries_);
-                    WriteColumnValue( destination, wsWindDirectionTimeseries_);
-                    WriteColumnValue( destination, wsWindSpeedTimeseries_);
-                    WriteColumnValue( destination, wsGyro_);
+                    WriteColumnValue( destination, wsdBarometricPressureTimeseries_);
+                    WriteColumnValue( destination, wsdAirTemperatureTimeseries_);
+                    WriteColumnValue( destination, wsdWaterTemperatureTimeseries_);
+                    WriteColumnValue( destination, wsdRelativeHumidityTimeseries_);
+                    WriteColumnValue( destination, wsdAbsoluteHumidityTimeseries_);
+                    WriteColumnValue( destination, wsdDewPointTimeseries_);
+                    WriteColumnValue( destination, wsdWindDirectionTimeseries_);
+                    WriteColumnValue( destination, wsdWindSpeedTimeseries_);
+                    WriteColumnValue( destination, wsdGyro_);
                 }
                 break;
             }
@@ -3675,7 +3675,7 @@ namespace Barrelman::Database
 
     using ComplexDeviceDataReader = SimpleColumnDataReader<ComplexDeviceColumnData>;
 
-    class ComplexTrackerColumnData : public BaseColumnData
+    class ComplexTrackerDeviceColumnData : public BaseColumnData
     {
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
@@ -3685,29 +3685,29 @@ namespace Barrelman::Database
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
         Guid enabledTimeseries_;
-        DBGuid rSaveSettingsTimeseries_;
-        DBGuid rPowerOnTimeseries_;
-        DBGuid rTrackingOnTimeseries_;
-        DBGuid rRadarPulseTimeseries_;
-        DBGuid rTuningTimeseries_;
-        DBGuid rBlankSector1Timeseries_;
-        DBGuid rSector1StartTimeseries_;
-        DBGuid rSector1EndTimeseries_;
-        DBGuid rBlankSector2Timeseries_;
-        DBGuid rSector2StartTimeseries_;
-        DBGuid rSector2EndTimeseries_;
-        DBGuid rEnableAutomaticFrequencyControlTimeseries_;
-        DBGuid rAzimuthOffsetTimeseries_;
-        DBGuid rEnableSensitivityTimeControlTimeseries_;
-        DBGuid rAutomaticSensitivityTimeControlTimeseries_;
-        DBGuid rSensitivityTimeControlLevelTimeseries_;
-        DBGuid rEnableFastTimeConstantTimeseries_;
-        DBGuid rFastTimeConstantLevelTimeseries_;
-        DBGuid rFastTimeConstantModeTimeseries_;
-        DBGuid rLatitudeTimeseries_;
-        DBGuid rLongitudeTimeseries_;
-        DBGuid rRadome_;
-        DBGuid rGNSSDevice_;
+        DBGuid rdSaveSettingsTimeseries_;
+        DBGuid rdPowerOnTimeseries_;
+        DBGuid rdTrackingOnTimeseries_;
+        DBGuid rdRadarPulseTimeseries_;
+        DBGuid rdTuningTimeseries_;
+        DBGuid rdBlankSector1Timeseries_;
+        DBGuid rdSector1StartTimeseries_;
+        DBGuid rdSector1EndTimeseries_;
+        DBGuid rdBlankSector2Timeseries_;
+        DBGuid rdSector2StartTimeseries_;
+        DBGuid rdSector2EndTimeseries_;
+        DBGuid rdEnableAutomaticFrequencyControlTimeseries_;
+        DBGuid rdAzimuthOffsetTimeseries_;
+        DBGuid rdEnableSensitivityTimeControlTimeseries_;
+        DBGuid rdAutomaticSensitivityTimeControlTimeseries_;
+        DBGuid rdSensitivityTimeControlLevelTimeseries_;
+        DBGuid rdEnableFastTimeConstantTimeseries_;
+        DBGuid rdFastTimeConstantLevelTimeseries_;
+        DBGuid rdFastTimeConstantModeTimeseries_;
+        DBGuid rdLatitudeTimeseries_;
+        DBGuid rdLongitudeTimeseries_;
+        DBGuid rdRadome_;
+        DBGuid rdGNSSDevice_;
     public:
         using Base = BaseColumnData;
 
@@ -3715,38 +3715,38 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString BaseViewName;
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
-        static constexpr SQLUSMALLINT T_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT T_KIND_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT T_ROWVERSION_FIELD_ID = 3;
-        static constexpr SQLUSMALLINT T_HOST_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT T_NAME_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT T_ENABLEDTIMESERIES_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT R_SAVESETTINGSTIMESERIES_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT R_POWERONTIMESERIES_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT R_TRACKINGONTIMESERIES_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT R_RADARPULSETIMESERIES_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT R_TUNINGTIMESERIES_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT R_BLANKSECTOR1TIMESERIES_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT R_SECTOR1STARTTIMESERIES_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT R_SECTOR1ENDTIMESERIES_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT R_BLANKSECTOR2TIMESERIES_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT R_SECTOR2STARTTIMESERIES_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT R_SECTOR2ENDTIMESERIES_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT R_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT R_AZIMUTHOFFSETTIMESERIES_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT R_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT R_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT R_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT R_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT R_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT R_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT R_LATITUDETIMESERIES_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT R_LONGITUDETIMESERIES_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT R_RADOME_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT R_GNSSDEVICE_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT T_DESCRIPTION_FIELD_ID = 30;
+        static constexpr SQLUSMALLINT TD_ID_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TD_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TD_ROWVERSION_FIELD_ID = 3;
+        static constexpr SQLUSMALLINT TD_HOST_FIELD_ID = 4;
+        static constexpr SQLUSMALLINT TD_NAME_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT TD_ENABLEDTIMESERIES_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT RD_SAVESETTINGSTIMESERIES_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT RD_POWERONTIMESERIES_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT RD_TRACKINGONTIMESERIES_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT RD_RADARPULSETIMESERIES_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RD_TUNINGTIMESERIES_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT RD_BLANKSECTOR1TIMESERIES_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT RD_SECTOR1STARTTIMESERIES_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT RD_SECTOR1ENDTIMESERIES_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT RD_BLANKSECTOR2TIMESERIES_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT RD_SECTOR2STARTTIMESERIES_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT RD_SECTOR2ENDTIMESERIES_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT RD_LATITUDETIMESERIES_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT RD_LONGITUDETIMESERIES_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT RD_RADOME_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT RD_GNSSDEVICE_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT TD_DESCRIPTION_FIELD_ID = 30;
 
-        ComplexTrackerColumnData( ) = default;
+        ComplexTrackerDeviceColumnData( ) = default;
 
         virtual Kind GetKind() const override
         {
@@ -3780,97 +3780,97 @@ namespace Barrelman::Database
         {
             return enabledTimeseries_;
         }
-        const DBGuid& RadarSaveSettingsTimeseries( ) const
+        const DBGuid& RadarDeviceSaveSettingsTimeseries( ) const
         {
-            return rSaveSettingsTimeseries_;
+            return rdSaveSettingsTimeseries_;
         }
-        const DBGuid& RadarPowerOnTimeseries( ) const
+        const DBGuid& RadarDevicePowerOnTimeseries( ) const
         {
-            return rPowerOnTimeseries_;
+            return rdPowerOnTimeseries_;
         }
-        const DBGuid& RadarTrackingOnTimeseries( ) const
+        const DBGuid& RadarDeviceTrackingOnTimeseries( ) const
         {
-            return rTrackingOnTimeseries_;
+            return rdTrackingOnTimeseries_;
         }
-        const DBGuid& RadarRadarPulseTimeseries( ) const
+        const DBGuid& RadarDeviceRadarPulseTimeseries( ) const
         {
-            return rRadarPulseTimeseries_;
+            return rdRadarPulseTimeseries_;
         }
-        const DBGuid& RadarTuningTimeseries( ) const
+        const DBGuid& RadarDeviceTuningTimeseries( ) const
         {
-            return rTuningTimeseries_;
+            return rdTuningTimeseries_;
         }
-        const DBGuid& RadarBlankSector1Timeseries( ) const
+        const DBGuid& RadarDeviceBlankSector1Timeseries( ) const
         {
-            return rBlankSector1Timeseries_;
+            return rdBlankSector1Timeseries_;
         }
-        const DBGuid& RadarSector1StartTimeseries( ) const
+        const DBGuid& RadarDeviceSector1StartTimeseries( ) const
         {
-            return rSector1StartTimeseries_;
+            return rdSector1StartTimeseries_;
         }
-        const DBGuid& RadarSector1EndTimeseries( ) const
+        const DBGuid& RadarDeviceSector1EndTimeseries( ) const
         {
-            return rSector1EndTimeseries_;
+            return rdSector1EndTimeseries_;
         }
-        const DBGuid& RadarBlankSector2Timeseries( ) const
+        const DBGuid& RadarDeviceBlankSector2Timeseries( ) const
         {
-            return rBlankSector2Timeseries_;
+            return rdBlankSector2Timeseries_;
         }
-        const DBGuid& RadarSector2StartTimeseries( ) const
+        const DBGuid& RadarDeviceSector2StartTimeseries( ) const
         {
-            return rSector2StartTimeseries_;
+            return rdSector2StartTimeseries_;
         }
-        const DBGuid& RadarSector2EndTimeseries( ) const
+        const DBGuid& RadarDeviceSector2EndTimeseries( ) const
         {
-            return rSector2EndTimeseries_;
+            return rdSector2EndTimeseries_;
         }
-        const DBGuid& RadarEnableAutomaticFrequencyControlTimeseries( ) const
+        const DBGuid& RadarDeviceEnableAutomaticFrequencyControlTimeseries( ) const
         {
-            return rEnableAutomaticFrequencyControlTimeseries_;
+            return rdEnableAutomaticFrequencyControlTimeseries_;
         }
-        const DBGuid& RadarAzimuthOffsetTimeseries( ) const
+        const DBGuid& RadarDeviceAzimuthOffsetTimeseries( ) const
         {
-            return rAzimuthOffsetTimeseries_;
+            return rdAzimuthOffsetTimeseries_;
         }
-        const DBGuid& RadarEnableSensitivityTimeControlTimeseries( ) const
+        const DBGuid& RadarDeviceEnableSensitivityTimeControlTimeseries( ) const
         {
-            return rEnableSensitivityTimeControlTimeseries_;
+            return rdEnableSensitivityTimeControlTimeseries_;
         }
-        const DBGuid& RadarAutomaticSensitivityTimeControlTimeseries( ) const
+        const DBGuid& RadarDeviceAutomaticSensitivityTimeControlTimeseries( ) const
         {
-            return rAutomaticSensitivityTimeControlTimeseries_;
+            return rdAutomaticSensitivityTimeControlTimeseries_;
         }
-        const DBGuid& RadarSensitivityTimeControlLevelTimeseries( ) const
+        const DBGuid& RadarDeviceSensitivityTimeControlLevelTimeseries( ) const
         {
-            return rSensitivityTimeControlLevelTimeseries_;
+            return rdSensitivityTimeControlLevelTimeseries_;
         }
-        const DBGuid& RadarEnableFastTimeConstantTimeseries( ) const
+        const DBGuid& RadarDeviceEnableFastTimeConstantTimeseries( ) const
         {
-            return rEnableFastTimeConstantTimeseries_;
+            return rdEnableFastTimeConstantTimeseries_;
         }
-        const DBGuid& RadarFastTimeConstantLevelTimeseries( ) const
+        const DBGuid& RadarDeviceFastTimeConstantLevelTimeseries( ) const
         {
-            return rFastTimeConstantLevelTimeseries_;
+            return rdFastTimeConstantLevelTimeseries_;
         }
-        const DBGuid& RadarFastTimeConstantModeTimeseries( ) const
+        const DBGuid& RadarDeviceFastTimeConstantModeTimeseries( ) const
         {
-            return rFastTimeConstantModeTimeseries_;
+            return rdFastTimeConstantModeTimeseries_;
         }
-        const DBGuid& RadarLatitudeTimeseries( ) const
+        const DBGuid& RadarDeviceLatitudeTimeseries( ) const
         {
-            return rLatitudeTimeseries_;
+            return rdLatitudeTimeseries_;
         }
-        const DBGuid& RadarLongitudeTimeseries( ) const
+        const DBGuid& RadarDeviceLongitudeTimeseries( ) const
         {
-            return rLongitudeTimeseries_;
+            return rdLongitudeTimeseries_;
         }
-        const DBGuid& RadarRadome( ) const
+        const DBGuid& RadarDeviceRadome( ) const
         {
-            return rRadome_;
+            return rdRadome_;
         }
-        const DBGuid& RadarGNSSDevice( ) const
+        const DBGuid& RadarDeviceGNSSDevice( ) const
         {
-            return rGNSSDevice_;
+            return rdGNSSDevice_;
         }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
@@ -3884,38 +3884,38 @@ namespace Barrelman::Database
             WriteColumnValue( destination, enabledTimeseries_);
             switch( kind_ )
             {
-                case Data::Kind::Radar:
+                case Data::Kind::RadarDevice:
                 {
-                    WriteColumnValue( destination, rSaveSettingsTimeseries_);
-                    WriteColumnValue( destination, rPowerOnTimeseries_);
-                    WriteColumnValue( destination, rTrackingOnTimeseries_);
-                    WriteColumnValue( destination, rRadarPulseTimeseries_);
-                    WriteColumnValue( destination, rTuningTimeseries_);
-                    WriteColumnValue( destination, rBlankSector1Timeseries_);
-                    WriteColumnValue( destination, rSector1StartTimeseries_);
-                    WriteColumnValue( destination, rSector1EndTimeseries_);
-                    WriteColumnValue( destination, rBlankSector2Timeseries_);
-                    WriteColumnValue( destination, rSector2StartTimeseries_);
-                    WriteColumnValue( destination, rSector2EndTimeseries_);
-                    WriteColumnValue( destination, rEnableAutomaticFrequencyControlTimeseries_);
-                    WriteColumnValue( destination, rAzimuthOffsetTimeseries_);
-                    WriteColumnValue( destination, rEnableSensitivityTimeControlTimeseries_);
-                    WriteColumnValue( destination, rAutomaticSensitivityTimeControlTimeseries_);
-                    WriteColumnValue( destination, rSensitivityTimeControlLevelTimeseries_);
-                    WriteColumnValue( destination, rEnableFastTimeConstantTimeseries_);
-                    WriteColumnValue( destination, rFastTimeConstantLevelTimeseries_);
-                    WriteColumnValue( destination, rFastTimeConstantModeTimeseries_);
-                    WriteColumnValue( destination, rLatitudeTimeseries_);
-                    WriteColumnValue( destination, rLongitudeTimeseries_);
-                    WriteColumnValue( destination, rRadome_);
-                    WriteColumnValue( destination, rGNSSDevice_);
+                    WriteColumnValue( destination, rdSaveSettingsTimeseries_);
+                    WriteColumnValue( destination, rdPowerOnTimeseries_);
+                    WriteColumnValue( destination, rdTrackingOnTimeseries_);
+                    WriteColumnValue( destination, rdRadarPulseTimeseries_);
+                    WriteColumnValue( destination, rdTuningTimeseries_);
+                    WriteColumnValue( destination, rdBlankSector1Timeseries_);
+                    WriteColumnValue( destination, rdSector1StartTimeseries_);
+                    WriteColumnValue( destination, rdSector1EndTimeseries_);
+                    WriteColumnValue( destination, rdBlankSector2Timeseries_);
+                    WriteColumnValue( destination, rdSector2StartTimeseries_);
+                    WriteColumnValue( destination, rdSector2EndTimeseries_);
+                    WriteColumnValue( destination, rdEnableAutomaticFrequencyControlTimeseries_);
+                    WriteColumnValue( destination, rdAzimuthOffsetTimeseries_);
+                    WriteColumnValue( destination, rdEnableSensitivityTimeControlTimeseries_);
+                    WriteColumnValue( destination, rdAutomaticSensitivityTimeControlTimeseries_);
+                    WriteColumnValue( destination, rdSensitivityTimeControlLevelTimeseries_);
+                    WriteColumnValue( destination, rdEnableFastTimeConstantTimeseries_);
+                    WriteColumnValue( destination, rdFastTimeConstantLevelTimeseries_);
+                    WriteColumnValue( destination, rdFastTimeConstantModeTimeseries_);
+                    WriteColumnValue( destination, rdLatitudeTimeseries_);
+                    WriteColumnValue( destination, rdLongitudeTimeseries_);
+                    WriteColumnValue( destination, rdRadome_);
+                    WriteColumnValue( destination, rdGNSSDevice_);
                 }
                 break;
             }
         }
     };
 
-    using ComplexTrackerDataReader = SimpleColumnDataReader<ComplexTrackerColumnData>;
+    using ComplexTrackerDeviceDataReader = SimpleColumnDataReader<ComplexTrackerDeviceColumnData>;
 
     class ComplexTrackableItemColumnData : public BaseColumnData
     {

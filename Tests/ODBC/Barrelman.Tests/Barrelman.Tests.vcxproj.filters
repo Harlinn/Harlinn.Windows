@@ -22,6 +22,9 @@
     <Filter Include="Generated\Cpp\Data">
       <UniqueIdentifier>{5e1bc5a2-7b62-484f-a874-20a8de010fed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{bbd834eb-6839-42c0-af15-f50282ac541a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Barrelman.Tests.cpp">
@@ -29,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="Generated\Cpp\Data\DataTypesTests.cpp">
       <Filter>Generated\Cpp\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\StoredProceduresTests.cpp">
+      <Filter>Database</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

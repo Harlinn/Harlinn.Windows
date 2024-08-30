@@ -159,11 +159,14 @@
     <ClCompile Include="CppComplexDatabaseReadersGenerator.cpp" />
     <ClCompile Include="CppComplexDatabaseReadersSourceGenerator.cpp" />
     <ClCompile Include="CppDatabaseReadersGenerator.cpp" />
+    <ClCompile Include="CppDatabaseReadersSourceGenerator.cpp" />
     <ClCompile Include="CppDataTypesGenerator.cpp" />
     <ClCompile Include="CppDataTypesSourceGenerator.cpp" />
     <ClCompile Include="CppDataTypesTestGenerator.cpp" />
     <ClCompile Include="CppEnumsGenerator.cpp" />
     <ClCompile Include="CppHelper.cpp" />
+    <ClCompile Include="CppStoredProceduresGenerator.cpp" />
+    <ClCompile Include="CppStoredProceduresSourceGenerator.cpp" />
     <ClCompile Include="EnumMemberInfo.cpp" />
     <ClCompile Include="IndexInfo.cpp" />
     <ClCompile Include="MemberInfo.cpp" />

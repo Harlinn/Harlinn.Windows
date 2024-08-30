@@ -47,32 +47,67 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageUpdate]
+CREATE OR ALTER PROCEDURE [AisDeviceCommandUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationalAidType [int],
-  @Name [nvarchar](100),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @PositionFixType [int],
-  @Timestamp [int],
-  @OffPosition [bit],
-  @RegionalReserved [int],
-  @Raim [int],
-  @VirtualAid [bit],
-  @Assigned [bit],
-  @Spare [int],
-  @NameExtension [nvarchar](100)
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Reply [uniqueidentifier]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU10100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisDeviceCommand] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[Timestamp] = @Timestamp,[DeviceCommandSourceType] = @DeviceCommandSourceType,[DeviceCommandSourceId] = @DeviceCommandSourceId,[Reply] = @Reply
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceCommandReplyUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Command [uniqueidentifier],
+  @Status [int],
+  @Message [nvarchar](max)
 
 AS
   BEGIN
@@ -85,7 +120,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+      UPDATE [AisDeviceCommandReply] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[Timestamp] = @Timestamp,[Command] = @Command,[Status] = @Status,[Message] = @Message
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -94,14 +129,6 @@ AS
           RAISERROR('Row not found or concurrency error',16,1);
         END
       SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AidToNavigationReportMessage] SET [NavigationalAidType] = @NavigationalAidType,[Name] = @Name,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[PositionFixType] = @PositionFixType,[Timestamp] = @Timestamp,[OffPosition] = @OffPosition,[RegionalReserved] = @RegionalReserved,[Raim] = @Raim,[VirtualAid] = @VirtualAid,[Assigned] = @Assigned,[Spare] = @Spare,[NameExtension] = @NameExtension
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
 
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -126,1621 +153,10 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageUpdate]
+CREATE OR ALTER PROCEDURE [AisDeviceConfigurationUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @SequenceNumber [int],
-  @DestinationMmsi [uniqueidentifier],
-  @RetransmitFlag [bit],
-  @Spare [int],
-  @Text [nvarchar](100)
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisAddressedSafetyRelatedMessage] SET [SequenceNumber] = @SequenceNumber,[DestinationMmsi] = @DestinationMmsi,[RetransmitFlag] = @RetransmitFlag,[Spare] = @Spare,[Text] = @Text
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisBaseStationReportMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Timestamp [bigint],
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @PositionFixType [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisBaseStationReportMessage] SET [Timestamp] = @Timestamp,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[PositionFixType] = @PositionFixType,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisBinaryAcknowledgeMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @SequenceNumber1 [int],
-  @Mmsi1 [uniqueidentifier],
-  @SequenceNumber2 [int],
-  @Mmsi2 [uniqueidentifier],
-  @SequenceNumber3 [int],
-  @Mmsi3 [uniqueidentifier],
-  @SequenceNumber4 [int],
-  @Mmsi4 [uniqueidentifier]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisBinaryAcknowledgeMessage] SET [Spare] = @Spare,[SequenceNumber1] = @SequenceNumber1,[Mmsi1] = @Mmsi1,[SequenceNumber2] = @SequenceNumber2,[Mmsi2] = @Mmsi2,[SequenceNumber3] = @SequenceNumber3,[Mmsi3] = @Mmsi3,[SequenceNumber4] = @SequenceNumber4,[Mmsi4] = @Mmsi4
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisBinaryAddressedMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @SequenceNumber [int],
-  @DestinationMmsi [uniqueidentifier],
-  @RetransmitFlag [bit],
-  @Spare [int],
-  @DesignatedAreaCode [int],
-  @FunctionalId [int],
-  @Data [nvarchar](max)
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisBinaryAddressedMessage] SET [SequenceNumber] = @SequenceNumber,[DestinationMmsi] = @DestinationMmsi,[RetransmitFlag] = @RetransmitFlag,[Spare] = @Spare,[DesignatedAreaCode] = @DesignatedAreaCode,[FunctionalId] = @FunctionalId,[Data] = @Data
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisBinaryBroadcastMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @DesignatedAreaCode [int],
-  @FunctionalId [int],
-  @Data [nvarchar](max)
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10700;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisBinaryBroadcastMessage] SET [Spare] = @Spare,[DesignatedAreaCode] = @DesignatedAreaCode,[FunctionalId] = @FunctionalId,[Data] = @Data
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10700;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisDataLinkManagementMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @Offset1 [int],
-  @ReservedSlots1 [int],
-  @Timeout1 [int],
-  @Increment1 [int],
-  @Offset2 [int],
-  @ReservedSlots2 [int],
-  @Timeout2 [int],
-  @Increment2 [int],
-  @Offset3 [int],
-  @ReservedSlots3 [int],
-  @Timeout3 [int],
-  @Increment3 [int],
-  @Offset4 [int],
-  @ReservedSlots4 [int],
-  @Timeout4 [int],
-  @Increment4 [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10800;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisDataLinkManagementMessage] SET [Spare] = @Spare,[Offset1] = @Offset1,[ReservedSlots1] = @ReservedSlots1,[Timeout1] = @Timeout1,[Increment1] = @Increment1,[Offset2] = @Offset2,[ReservedSlots2] = @ReservedSlots2,[Timeout2] = @Timeout2,[Increment2] = @Increment2,[Offset3] = @Offset3,[ReservedSlots3] = @ReservedSlots3,[Timeout3] = @Timeout3,[Increment3] = @Increment3,[Offset4] = @Offset4,[ReservedSlots4] = @ReservedSlots4,[Timeout4] = @Timeout4,[Increment4] = @Increment4
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10800;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisExtendedClassBCsPositionReportMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Reserved [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @RegionalReserved [int],
-  @Name [uniqueidentifier],
-  @ShipType [int],
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @PositionFixType [int],
-  @Raim [int],
-  @DataTerminalReady [bit],
-  @Assigned [bit],
-  @Spare [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU10900;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisExtendedClassBCsPositionReportMessage] SET [Reserved] = @Reserved,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[RegionalReserved] = @RegionalReserved,[Name] = @Name,[ShipType] = @ShipType,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[PositionFixType] = @PositionFixType,[Raim] = @Raim,[DataTerminalReady] = @DataTerminalReady,[Assigned] = @Assigned,[Spare] = @Spare
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU10900;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisInterrogationMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @InterrogatedMmsi [uniqueidentifier],
-  @FirstMessageType [int],
-  @FirstSlotOffset [int],
-  @SecondMessageType [int],
-  @SecondSlotOffset [int],
-  @SecondStationInterrogationMmsi [uniqueidentifier],
-  @SecondStationFirstMessageType [int],
-  @SecondStationFirstSlotOffset [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11000;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisInterrogationMessage] SET [InterrogatedMmsi] = @InterrogatedMmsi,[FirstMessageType] = @FirstMessageType,[FirstSlotOffset] = @FirstSlotOffset,[SecondMessageType] = @SecondMessageType,[SecondSlotOffset] = @SecondSlotOffset,[SecondStationInterrogationMmsi] = @SecondStationInterrogationMmsi,[SecondStationFirstMessageType] = @SecondStationFirstMessageType,[SecondStationFirstSlotOffset] = @SecondStationFirstSlotOffset
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11000;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportClassAAssignedScheduleMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationStatus [int],
-  @RateOfTurn [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @ManeuverIndicator [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11200;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisPositionReportClassAMessageBase] SET [NavigationStatus] = @NavigationStatus,[RateOfTurn] = @RateOfTurn,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[ManeuverIndicator] = @ManeuverIndicator,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11200;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportClassAMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationStatus [int],
-  @RateOfTurn [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @ManeuverIndicator [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisPositionReportClassAMessageBase] SET [NavigationStatus] = @NavigationStatus,[RateOfTurn] = @RateOfTurn,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[ManeuverIndicator] = @ManeuverIndicator,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportClassAResponseToInterrogationMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationStatus [int],
-  @RateOfTurn [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @ManeuverIndicator [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisPositionReportClassAMessageBase] SET [NavigationStatus] = @NavigationStatus,[RateOfTurn] = @RateOfTurn,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[ManeuverIndicator] = @ManeuverIndicator,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportForLongRangeApplicationsMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PositionAccuracy [int],
-  @Raim [int],
-  @NavigationStatus [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @SpeedOverGround [float](53),
-  @CourseOverGround [float](53),
-  @GnssPositionStatus [int],
-  @Spare [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisPositionReportForLongRangeApplicationsMessage] SET [PositionAccuracy] = @PositionAccuracy,[Raim] = @Raim,[NavigationStatus] = @NavigationStatus,[Longitude] = @Longitude,[Latitude] = @Latitude,[SpeedOverGround] = @SpeedOverGround,[CourseOverGround] = @CourseOverGround,[GnssPositionStatus] = @GnssPositionStatus,[Spare] = @Spare
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisSafetyRelatedAcknowledgmentMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @SequenceNumber1 [int],
-  @Mmsi1 [uniqueidentifier],
-  @SequenceNumber2 [int],
-  @Mmsi2 [uniqueidentifier],
-  @SequenceNumber3 [int],
-  @Mmsi3 [uniqueidentifier],
-  @SequenceNumber4 [int],
-  @Mmsi4 [uniqueidentifier]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisSafetyRelatedAcknowledgmentMessage] SET [Spare] = @Spare,[SequenceNumber1] = @SequenceNumber1,[Mmsi1] = @Mmsi1,[SequenceNumber2] = @SequenceNumber2,[Mmsi2] = @Mmsi2,[SequenceNumber3] = @SequenceNumber3,[Mmsi3] = @Mmsi3,[SequenceNumber4] = @SequenceNumber4,[Mmsi4] = @Mmsi4
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisStandardClassBCsPositionReportMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Reserved [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @RegionalReserved [int],
-  @IsCsUnit [bit],
-  @HasDisplay [bit],
-  @HasDscCapability [bit],
-  @Band [bit],
-  @CanAcceptMessage22 [bit],
-  @Assigned [bit],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11700;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisStandardClassBCsPositionReportMessage] SET [Reserved] = @Reserved,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[RegionalReserved] = @RegionalReserved,[IsCsUnit] = @IsCsUnit,[HasDisplay] = @HasDisplay,[HasDscCapability] = @HasDscCapability,[Band] = @Band,[CanAcceptMessage22] = @CanAcceptMessage22,[Assigned] = @Assigned,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11700;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisStandardSarAircraftPositionReportMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Altitude [int],
-  @SpeedOverGround [int],
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @Timestamp [int],
-  @Reserved [int],
-  @DataTerminalReady [bit],
-  @Spare [int],
-  @Assigned [bit],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11800;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisStandardSarAircraftPositionReportMessage] SET [Altitude] = @Altitude,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[Timestamp] = @Timestamp,[Reserved] = @Reserved,[DataTerminalReady] = @DataTerminalReady,[Spare] = @Spare,[Assigned] = @Assigned,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11800;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @AisVersion [int],
-  @ImoNumber [uniqueidentifier],
-  @Callsign [uniqueidentifier],
-  @ShipName [uniqueidentifier],
-  @ShipType [int],
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @PositionFixType [int],
-  @EstimatedTimeOfArrival [bigint],
-  @Draught [float](53),
-  @Destination [nvarchar](100),
-  @DataTerminalReady [bit],
-  @Spare [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU11900;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisStaticAndVoyageRelatedDataMessage] SET [AisVersion] = @AisVersion,[ImoNumber] = @ImoNumber,[Callsign] = @Callsign,[ShipName] = @ShipName,[ShipType] = @ShipType,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[PositionFixType] = @PositionFixType,[EstimatedTimeOfArrival] = @EstimatedTimeOfArrival,[Draught] = @Draught,[Destination] = @Destination,[DataTerminalReady] = @DataTerminalReady,[Spare] = @Spare
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU11900;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticDataReportMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PartNumber [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12000;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisStaticDataReportMessage] SET [PartNumber] = @PartNumber
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12000;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticDataReportPartAMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PartNumber [int],
-  @ShipName [uniqueidentifier],
-  @Spare [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12100;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisStaticDataReportMessage] SET [PartNumber] = @PartNumber
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      UPDATE [AisStaticDataReportPartAMessage] SET [ShipName] = @ShipName,[Spare] = @Spare
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12100;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PartNumber [int],
-  @ShipType [int],
-  @VendorId [nvarchar](100),
-  @UnitModelCode [int],
-  @SerialNumber [int],
-  @Callsign [uniqueidentifier],
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @MothershipMmsi [uniqueidentifier],
-  @PositionFixType [int],
-  @Spare [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12200;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisStaticDataReportMessage] SET [PartNumber] = @PartNumber
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      UPDATE [AisStaticDataReportPartBMessage] SET [ShipType] = @ShipType,[VendorId] = @VendorId,[UnitModelCode] = @UnitModelCode,[SerialNumber] = @SerialNumber,[Callsign] = @Callsign,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[MothershipMmsi] = @MothershipMmsi,[PositionFixType] = @PositionFixType,[Spare] = @Spare
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12200;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare1 [int],
-  @DestinationMmsi [int],
-  @Spare2 [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisUtcAndDateInquiryMessage] SET [Spare1] = @Spare1,[DestinationMmsi] = @DestinationMmsi,[Spare2] = @Spare2
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisUtcAndDateResponseMessageUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Datetime [bigint],
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @PositionFixType [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      UPDATE [AisUtcAndDateResponseMessage] SET [Datetime] = @Datetime,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[PositionFixType] = @PositionFixType,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
-          WHERE [Id] = @Id
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found',16,1);
-        END
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverCommandUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @DeviceCommandSourceType [int],
-  @DeviceCommandSourceId [uniqueidentifier],
-  @Reply [uniqueidentifier]
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisTransceiverCommand] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[DeviceCommandSourceType] = @DeviceCommandSourceType,[DeviceCommandSourceId] = @DeviceCommandSourceId,[Reply] = @Reply
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverCommandReplyUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @Command [uniqueidentifier],
-  @Status [int],
-  @Message [nvarchar](max)
-
-AS
-  BEGIN
-    DECLARE @RowCnt INT;
-    DECLARE @MyTableVar table(RowVersion INT);
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      UPDATE [AisTransceiverCommandReply] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[Command] = @Command,[Status] = @Status,[Message] = @Message
-          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
-          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
-      SET @RowCnt = @@RowCount;
-      IF @RowCnt = 0
-        BEGIN
-          RAISERROR('Row not found or concurrency error',16,1);
-        END
-      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
-
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePointU12600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverConfigurationUpdate]
-  @Id [uniqueidentifier],
-  @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
+  @AisDevice [uniqueidentifier],
   @Timestamp [bigint],
   @UserName [nvarchar](127),
   @Password [nvarchar](127),
@@ -1784,11 +200,11 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePointU12700;
+      SAVE TRANSACTION SavePointU10300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [AisTransceiverConfiguration] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[UserName] = @UserName,[Password] = @Password,[Latitude] = @Latitude,[Longitude] = @Longitude,[AisProviderLoginURL] = @AisProviderLoginURL,[ComPort] = @ComPort,[BaudRate] = @BaudRate,[FilterByArea] = @FilterByArea,[UpperLeftCornerLatitude] = @UpperLeftCornerLatitude,[UpperLeftCornerLongitude] = @UpperLeftCornerLongitude,[BottomRightCornerLatitude] = @BottomRightCornerLatitude,[BottomRightCornerLongitude] = @BottomRightCornerLongitude,[AisProviderIPAddress] = @AisProviderIPAddress,[AisProviderPort] = @AisProviderPort,[UseLogin] = @UseLogin,[AisProviderLoginPort] = @AisProviderLoginPort,[CanSendAISMessage] = @CanSendAISMessage,[TextMessageHeader] = @TextMessageHeader,[Urls] = @Urls,[UdpPort] = @UdpPort,[ConnectionType] = @ConnectionType,[EnableRefreshAidToNavigationIn30sec] = @EnableRefreshAidToNavigationIn30sec,[EnableAidToNavigationFromFile] = @EnableAidToNavigationFromFile,[AidToNavigationHeader] = @AidToNavigationHeader,[SendingMMSI] = @SendingMMSI,[SourceUpdateRate] = @SourceUpdateRate,[EnableRefreshStayingStillTargetIn30sec] = @EnableRefreshStayingStillTargetIn30sec,[ExcludeSendAisBaseStation] = @ExcludeSendAisBaseStation,[ExcludeSendAisA] = @ExcludeSendAisA,[EnableSendBaseStationAlarms] = @EnableSendBaseStationAlarms,[AisWebConfig] = @AisWebConfig,[StoreReceivedSentences] = @StoreReceivedSentences,[StoreSentMessages] = @StoreSentMessages,[StoreUnsentMessages] = @StoreUnsentMessages
+      UPDATE [AisDeviceConfiguration] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[Timestamp] = @Timestamp,[UserName] = @UserName,[Password] = @Password,[Latitude] = @Latitude,[Longitude] = @Longitude,[AisProviderLoginURL] = @AisProviderLoginURL,[ComPort] = @ComPort,[BaudRate] = @BaudRate,[FilterByArea] = @FilterByArea,[UpperLeftCornerLatitude] = @UpperLeftCornerLatitude,[UpperLeftCornerLongitude] = @UpperLeftCornerLongitude,[BottomRightCornerLatitude] = @BottomRightCornerLatitude,[BottomRightCornerLongitude] = @BottomRightCornerLongitude,[AisProviderIPAddress] = @AisProviderIPAddress,[AisProviderPort] = @AisProviderPort,[UseLogin] = @UseLogin,[AisProviderLoginPort] = @AisProviderLoginPort,[CanSendAISMessage] = @CanSendAISMessage,[TextMessageHeader] = @TextMessageHeader,[Urls] = @Urls,[UdpPort] = @UdpPort,[ConnectionType] = @ConnectionType,[EnableRefreshAidToNavigationIn30sec] = @EnableRefreshAidToNavigationIn30sec,[EnableAidToNavigationFromFile] = @EnableAidToNavigationFromFile,[AidToNavigationHeader] = @AidToNavigationHeader,[SendingMMSI] = @SendingMMSI,[SourceUpdateRate] = @SourceUpdateRate,[EnableRefreshStayingStillTargetIn30sec] = @EnableRefreshStayingStillTargetIn30sec,[ExcludeSendAisBaseStation] = @ExcludeSendAisBaseStation,[ExcludeSendAisA] = @ExcludeSendAisA,[EnableSendBaseStationAlarms] = @EnableSendBaseStationAlarms,[AisWebConfig] = @AisWebConfig,[StoreReceivedSentences] = @StoreReceivedSentences,[StoreSentMessages] = @StoreSentMessages,[StoreUnsentMessages] = @StoreUnsentMessages
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -1797,6 +213,1560 @@ AS
           RAISERROR('Row not found or concurrency error',16,1);
         END
       SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceRawMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @IsSent [bit],
+  @Message [nvarchar](100)
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU10400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisDeviceRawMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[Timestamp] = @Timestamp,[IsSent] = @IsSent,[Message] = @Message
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceRawSentenceUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Sentence [nvarchar](1024)
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU10500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisDeviceRawSentence] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[Timestamp] = @Timestamp,[Sentence] = @Sentence
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationalAidType [int],
+  @Name [nvarchar](100),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Timestamp [int],
+  @OffPosition [bit],
+  @RegionalReserved [int],
+  @Raim [int],
+  @VirtualAid [bit],
+  @Assigned [bit],
+  @Spare [int],
+  @NameExtension [nvarchar](100)
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU10700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AidToNavigationReportMessage] SET [NavigationalAidType] = @NavigationalAidType,[Name] = @Name,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[PositionFixType] = @PositionFixType,[Timestamp] = @Timestamp,[OffPosition] = @OffPosition,[RegionalReserved] = @RegionalReserved,[Raim] = @Raim,[VirtualAid] = @VirtualAid,[Assigned] = @Assigned,[Spare] = @Spare,[NameExtension] = @NameExtension
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @SequenceNumber [int],
+  @DestinationMmsi [uniqueidentifier],
+  @RetransmitFlag [bit],
+  @Spare [int],
+  @Text [nvarchar](100)
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU10800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisAddressedSafetyRelatedMessage] SET [SequenceNumber] = @SequenceNumber,[DestinationMmsi] = @DestinationMmsi,[RetransmitFlag] = @RetransmitFlag,[Spare] = @Spare,[Text] = @Text
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisBaseStationReportMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Timestamp [bigint],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @PositionFixType [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU10900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisBaseStationReportMessage] SET [Timestamp] = @Timestamp,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[PositionFixType] = @PositionFixType,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU10900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryAcknowledgeMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @SequenceNumber1 [int],
+  @Mmsi1 [uniqueidentifier],
+  @SequenceNumber2 [int],
+  @Mmsi2 [uniqueidentifier],
+  @SequenceNumber3 [int],
+  @Mmsi3 [uniqueidentifier],
+  @SequenceNumber4 [int],
+  @Mmsi4 [uniqueidentifier]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisBinaryAcknowledgeMessage] SET [Spare] = @Spare,[SequenceNumber1] = @SequenceNumber1,[Mmsi1] = @Mmsi1,[SequenceNumber2] = @SequenceNumber2,[Mmsi2] = @Mmsi2,[SequenceNumber3] = @SequenceNumber3,[Mmsi3] = @Mmsi3,[SequenceNumber4] = @SequenceNumber4,[Mmsi4] = @Mmsi4
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryAddressedMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @SequenceNumber [int],
+  @DestinationMmsi [uniqueidentifier],
+  @RetransmitFlag [bit],
+  @Spare [int],
+  @DesignatedAreaCode [int],
+  @FunctionalId [int],
+  @Data [nvarchar](max)
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisBinaryAddressedMessage] SET [SequenceNumber] = @SequenceNumber,[DestinationMmsi] = @DestinationMmsi,[RetransmitFlag] = @RetransmitFlag,[Spare] = @Spare,[DesignatedAreaCode] = @DesignatedAreaCode,[FunctionalId] = @FunctionalId,[Data] = @Data
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryBroadcastMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @DesignatedAreaCode [int],
+  @FunctionalId [int],
+  @Data [nvarchar](max)
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisBinaryBroadcastMessage] SET [Spare] = @Spare,[DesignatedAreaCode] = @DesignatedAreaCode,[FunctionalId] = @FunctionalId,[Data] = @Data
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisDataLinkManagementMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @Offset1 [int],
+  @ReservedSlots1 [int],
+  @Timeout1 [int],
+  @Increment1 [int],
+  @Offset2 [int],
+  @ReservedSlots2 [int],
+  @Timeout2 [int],
+  @Increment2 [int],
+  @Offset3 [int],
+  @ReservedSlots3 [int],
+  @Timeout3 [int],
+  @Increment3 [int],
+  @Offset4 [int],
+  @ReservedSlots4 [int],
+  @Timeout4 [int],
+  @Increment4 [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisDataLinkManagementMessage] SET [Spare] = @Spare,[Offset1] = @Offset1,[ReservedSlots1] = @ReservedSlots1,[Timeout1] = @Timeout1,[Increment1] = @Increment1,[Offset2] = @Offset2,[ReservedSlots2] = @ReservedSlots2,[Timeout2] = @Timeout2,[Increment2] = @Increment2,[Offset3] = @Offset3,[ReservedSlots3] = @ReservedSlots3,[Timeout3] = @Timeout3,[Increment3] = @Increment3,[Offset4] = @Offset4,[ReservedSlots4] = @ReservedSlots4,[Timeout4] = @Timeout4,[Increment4] = @Increment4
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisExtendedClassBCsPositionReportMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Reserved [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @RegionalReserved [int],
+  @Name [uniqueidentifier],
+  @ShipType [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Raim [int],
+  @DataTerminalReady [bit],
+  @Assigned [bit],
+  @Spare [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisExtendedClassBCsPositionReportMessage] SET [Reserved] = @Reserved,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[RegionalReserved] = @RegionalReserved,[Name] = @Name,[ShipType] = @ShipType,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[PositionFixType] = @PositionFixType,[Raim] = @Raim,[DataTerminalReady] = @DataTerminalReady,[Assigned] = @Assigned,[Spare] = @Spare
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisInterrogationMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @InterrogatedMmsi [uniqueidentifier],
+  @FirstMessageType [int],
+  @FirstSlotOffset [int],
+  @SecondMessageType [int],
+  @SecondSlotOffset [int],
+  @SecondStationInterrogationMmsi [uniqueidentifier],
+  @SecondStationFirstMessageType [int],
+  @SecondStationFirstSlotOffset [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisInterrogationMessage] SET [InterrogatedMmsi] = @InterrogatedMmsi,[FirstMessageType] = @FirstMessageType,[FirstSlotOffset] = @FirstSlotOffset,[SecondMessageType] = @SecondMessageType,[SecondSlotOffset] = @SecondSlotOffset,[SecondStationInterrogationMmsi] = @SecondStationInterrogationMmsi,[SecondStationFirstMessageType] = @SecondStationFirstMessageType,[SecondStationFirstSlotOffset] = @SecondStationFirstSlotOffset
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAAssignedScheduleMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisPositionReportClassAMessageBase] SET [NavigationStatus] = @NavigationStatus,[RateOfTurn] = @RateOfTurn,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[ManeuverIndicator] = @ManeuverIndicator,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisPositionReportClassAMessageBase] SET [NavigationStatus] = @NavigationStatus,[RateOfTurn] = @RateOfTurn,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[ManeuverIndicator] = @ManeuverIndicator,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAResponseToInterrogationMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU11900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisPositionReportClassAMessageBase] SET [NavigationStatus] = @NavigationStatus,[RateOfTurn] = @RateOfTurn,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[ManeuverIndicator] = @ManeuverIndicator,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU11900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportForLongRangeApplicationsMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PositionAccuracy [int],
+  @Raim [int],
+  @NavigationStatus [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @SpeedOverGround [float](53),
+  @CourseOverGround [float](53),
+  @GnssPositionStatus [int],
+  @Spare [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisPositionReportForLongRangeApplicationsMessage] SET [PositionAccuracy] = @PositionAccuracy,[Raim] = @Raim,[NavigationStatus] = @NavigationStatus,[Longitude] = @Longitude,[Latitude] = @Latitude,[SpeedOverGround] = @SpeedOverGround,[CourseOverGround] = @CourseOverGround,[GnssPositionStatus] = @GnssPositionStatus,[Spare] = @Spare
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisSafetyRelatedAcknowledgmentMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @SequenceNumber1 [int],
+  @Mmsi1 [uniqueidentifier],
+  @SequenceNumber2 [int],
+  @Mmsi2 [uniqueidentifier],
+  @SequenceNumber3 [int],
+  @Mmsi3 [uniqueidentifier],
+  @SequenceNumber4 [int],
+  @Mmsi4 [uniqueidentifier]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisSafetyRelatedAcknowledgmentMessage] SET [Spare] = @Spare,[SequenceNumber1] = @SequenceNumber1,[Mmsi1] = @Mmsi1,[SequenceNumber2] = @SequenceNumber2,[Mmsi2] = @Mmsi2,[SequenceNumber3] = @SequenceNumber3,[Mmsi3] = @Mmsi3,[SequenceNumber4] = @SequenceNumber4,[Mmsi4] = @Mmsi4
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisStandardClassBCsPositionReportMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Reserved [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @RegionalReserved [int],
+  @IsCsUnit [bit],
+  @HasDisplay [bit],
+  @HasDscCapability [bit],
+  @Band [bit],
+  @CanAcceptMessage22 [bit],
+  @Assigned [bit],
+  @Raim [int],
+  @RadioStatus [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisStandardClassBCsPositionReportMessage] SET [Reserved] = @Reserved,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[TrueHeading] = @TrueHeading,[Timestamp] = @Timestamp,[RegionalReserved] = @RegionalReserved,[IsCsUnit] = @IsCsUnit,[HasDisplay] = @HasDisplay,[HasDscCapability] = @HasDscCapability,[Band] = @Band,[CanAcceptMessage22] = @CanAcceptMessage22,[Assigned] = @Assigned,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisStandardSarAircraftPositionReportMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Altitude [int],
+  @SpeedOverGround [int],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @Timestamp [int],
+  @Reserved [int],
+  @DataTerminalReady [bit],
+  @Spare [int],
+  @Assigned [bit],
+  @Raim [int],
+  @RadioStatus [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisStandardSarAircraftPositionReportMessage] SET [Altitude] = @Altitude,[SpeedOverGround] = @SpeedOverGround,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[CourseOverGround] = @CourseOverGround,[Timestamp] = @Timestamp,[Reserved] = @Reserved,[DataTerminalReady] = @DataTerminalReady,[Spare] = @Spare,[Assigned] = @Assigned,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @AisVersion [int],
+  @ImoNumber [uniqueidentifier],
+  @Callsign [uniqueidentifier],
+  @ShipName [uniqueidentifier],
+  @ShipType [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @EstimatedTimeOfArrival [bigint],
+  @Draught [float](53),
+  @Destination [nvarchar](100),
+  @DataTerminalReady [bit],
+  @Spare [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisStaticAndVoyageRelatedDataMessage] SET [AisVersion] = @AisVersion,[ImoNumber] = @ImoNumber,[Callsign] = @Callsign,[ShipName] = @ShipName,[ShipType] = @ShipType,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[PositionFixType] = @PositionFixType,[EstimatedTimeOfArrival] = @EstimatedTimeOfArrival,[Draught] = @Draught,[Destination] = @Destination,[DataTerminalReady] = @DataTerminalReady,[Spare] = @Spare
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PartNumber [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisStaticDataReportMessage] SET [PartNumber] = @PartNumber
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportPartAMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PartNumber [int],
+  @ShipName [uniqueidentifier],
+  @Spare [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisStaticDataReportMessage] SET [PartNumber] = @PartNumber
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      UPDATE [AisStaticDataReportPartAMessage] SET [ShipName] = @ShipName,[Spare] = @Spare
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePointU12600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageUpdate]
+  @Id [uniqueidentifier],
+  @RowVersion [bigint] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PartNumber [int],
+  @ShipType [int],
+  @VendorId [nvarchar](100),
+  @UnitModelCode [int],
+  @SerialNumber [int],
+  @Callsign [uniqueidentifier],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @MothershipMmsi [uniqueidentifier],
+  @PositionFixType [int],
+  @Spare [int]
+
+AS
+  BEGIN
+    DECLARE @RowCnt INT;
+    DECLARE @MyTableVar table(RowVersion INT);
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePointU12700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
+          OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
+          WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found or concurrency error',16,1);
+        END
+      SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisStaticDataReportMessage] SET [PartNumber] = @PartNumber
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
+
+      UPDATE [AisStaticDataReportPartBMessage] SET [ShipType] = @ShipType,[VendorId] = @VendorId,[UnitModelCode] = @UnitModelCode,[SerialNumber] = @SerialNumber,[Callsign] = @Callsign,[DimensionToBow] = @DimensionToBow,[DimensionToStern] = @DimensionToStern,[DimensionToPort] = @DimensionToPort,[DimensionToStarboard] = @DimensionToStarboard,[MothershipMmsi] = @MothershipMmsi,[PositionFixType] = @PositionFixType,[Spare] = @Spare
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
 
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -1821,13 +1791,17 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverRawMessageUpdate]
+CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @IsSent [bit],
-  @Message [nvarchar](100)
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare1 [int],
+  @DestinationMmsi [int],
+  @Spare2 [int]
 
 AS
   BEGIN
@@ -1840,7 +1814,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [AisTransceiverRawMessage] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[IsSent] = @IsSent,[Message] = @Message
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -1849,6 +1823,14 @@ AS
           RAISERROR('Row not found or concurrency error',16,1);
         END
       SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisUtcAndDateInquiryMessage] SET [Spare1] = @Spare1,[DestinationMmsi] = @DestinationMmsi,[Spare2] = @Spare2
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
 
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -1873,12 +1855,22 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverRawSentenceUpdate]
+CREATE OR ALTER PROCEDURE [AisUtcAndDateResponseMessageUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @Sentence [nvarchar](1024)
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Datetime [bigint],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @PositionFixType [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
 
 AS
   BEGIN
@@ -1891,7 +1883,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [AisTransceiverRawSentence] SET [RowVersion] = [RowVersion] + 1,[AisTransceiver] = @AisTransceiver,[Timestamp] = @Timestamp,[Sentence] = @Sentence
+      UPDATE [AisMessage] SET [RowVersion] = [RowVersion] + 1,[AisDevice] = @AisDevice,[ReceivedTimestamp] = @ReceivedTimestamp,[MessageSequenceNumber] = @MessageSequenceNumber,[Repeat] = @Repeat,[Mmsi] = @Mmsi
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -1900,6 +1892,14 @@ AS
           RAISERROR('Row not found or concurrency error',16,1);
         END
       SET @RowVersion  = ( SELECT TOP 1 [RowVersion] FROM @MyTableVar);
+
+      UPDATE [AisUtcAndDateResponseMessage] SET [Datetime] = @Datetime,[PositionAccuracy] = @PositionAccuracy,[Longitude] = @Longitude,[Latitude] = @Latitude,[PositionFixType] = @PositionFixType,[Spare] = @Spare,[Raim] = @Raim,[RadioStatus] = @RadioStatus
+          WHERE [Id] = @Id
+      SET @RowCnt = @@RowCount;
+      IF @RowCnt = 0
+        BEGIN
+          RAISERROR('Row not found',16,1);
+        END
 
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -5127,7 +5127,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [CameraUpdate]
+CREATE OR ALTER PROCEDURE [CameraDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5394,7 +5394,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorUpdate]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5454,7 +5454,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [RadioUpdate]
+CREATE OR ALTER PROCEDURE [RadioDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5514,7 +5514,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [RadomeUpdate]
+CREATE OR ALTER PROCEDURE [RadomeDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5556,7 +5556,7 @@ AS
           RAISERROR('Row not found',16,1);
         END
 
-      UPDATE [Radome] SET [Radar] = @Radar,[PressureTimeseries] = @PressureTimeseries,[TemperatureTimeseries] = @TemperatureTimeseries,[DewPointTimeseries] = @DewPointTimeseries,[StatusTimeseries] = @StatusTimeseries
+      UPDATE [RadomeDevice] SET [Radar] = @Radar,[PressureTimeseries] = @PressureTimeseries,[TemperatureTimeseries] = @TemperatureTimeseries,[DewPointTimeseries] = @DewPointTimeseries,[StatusTimeseries] = @StatusTimeseries
           WHERE [Id] = @Id
       SET @RowCnt = @@RowCount;
       IF @RowCnt = 0
@@ -5587,7 +5587,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverUpdate]
+CREATE OR ALTER PROCEDURE [AisDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5647,7 +5647,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [RadarUpdate]
+CREATE OR ALTER PROCEDURE [RadarDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5707,7 +5707,7 @@ AS
           RAISERROR('Row not found',16,1);
         END
 
-      UPDATE [Radar] SET [SaveSettingsTimeseries] = @SaveSettingsTimeseries,[PowerOnTimeseries] = @PowerOnTimeseries,[TrackingOnTimeseries] = @TrackingOnTimeseries,[RadarPulseTimeseries] = @RadarPulseTimeseries,[TuningTimeseries] = @TuningTimeseries,[BlankSector1Timeseries] = @BlankSector1Timeseries,[Sector1StartTimeseries] = @Sector1StartTimeseries,[Sector1EndTimeseries] = @Sector1EndTimeseries,[BlankSector2Timeseries] = @BlankSector2Timeseries,[Sector2StartTimeseries] = @Sector2StartTimeseries,[Sector2EndTimeseries] = @Sector2EndTimeseries,[EnableAutomaticFrequencyControlTimeseries] = @EnableAutomaticFrequencyControlTimeseries,[AzimuthOffsetTimeseries] = @AzimuthOffsetTimeseries,[EnableSensitivityTimeControlTimeseries] = @EnableSensitivityTimeControlTimeseries,[AutomaticSensitivityTimeControlTimeseries] = @AutomaticSensitivityTimeControlTimeseries,[SensitivityTimeControlLevelTimeseries] = @SensitivityTimeControlLevelTimeseries,[EnableFastTimeConstantTimeseries] = @EnableFastTimeConstantTimeseries,[FastTimeConstantLevelTimeseries] = @FastTimeConstantLevelTimeseries,[FastTimeConstantModeTimeseries] = @FastTimeConstantModeTimeseries,[LatitudeTimeseries] = @LatitudeTimeseries,[LongitudeTimeseries] = @LongitudeTimeseries,[Radome] = @Radome,[GNSSDevice] = @GNSSDevice
+      UPDATE [RadarDevice] SET [SaveSettingsTimeseries] = @SaveSettingsTimeseries,[PowerOnTimeseries] = @PowerOnTimeseries,[TrackingOnTimeseries] = @TrackingOnTimeseries,[RadarPulseTimeseries] = @RadarPulseTimeseries,[TuningTimeseries] = @TuningTimeseries,[BlankSector1Timeseries] = @BlankSector1Timeseries,[Sector1StartTimeseries] = @Sector1StartTimeseries,[Sector1EndTimeseries] = @Sector1EndTimeseries,[BlankSector2Timeseries] = @BlankSector2Timeseries,[Sector2StartTimeseries] = @Sector2StartTimeseries,[Sector2EndTimeseries] = @Sector2EndTimeseries,[EnableAutomaticFrequencyControlTimeseries] = @EnableAutomaticFrequencyControlTimeseries,[AzimuthOffsetTimeseries] = @AzimuthOffsetTimeseries,[EnableSensitivityTimeControlTimeseries] = @EnableSensitivityTimeControlTimeseries,[AutomaticSensitivityTimeControlTimeseries] = @AutomaticSensitivityTimeControlTimeseries,[SensitivityTimeControlLevelTimeseries] = @SensitivityTimeControlLevelTimeseries,[EnableFastTimeConstantTimeseries] = @EnableFastTimeConstantTimeseries,[FastTimeConstantLevelTimeseries] = @FastTimeConstantLevelTimeseries,[FastTimeConstantModeTimeseries] = @FastTimeConstantModeTimeseries,[LatitudeTimeseries] = @LatitudeTimeseries,[LongitudeTimeseries] = @LongitudeTimeseries,[Radome] = @Radome,[GNSSDevice] = @GNSSDevice
           WHERE [Id] = @Id
       SET @RowCnt = @@RowCount;
       IF @RowCnt = 0
@@ -5738,7 +5738,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [WeatherStationUpdate]
+CREATE OR ALTER PROCEDURE [WeatherStationDeviceUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Host [uniqueidentifier],
@@ -5784,7 +5784,7 @@ AS
           RAISERROR('Row not found',16,1);
         END
 
-      UPDATE [WeatherStation] SET [BarometricPressureTimeseries] = @BarometricPressureTimeseries,[AirTemperatureTimeseries] = @AirTemperatureTimeseries,[WaterTemperatureTimeseries] = @WaterTemperatureTimeseries,[RelativeHumidityTimeseries] = @RelativeHumidityTimeseries,[AbsoluteHumidityTimeseries] = @AbsoluteHumidityTimeseries,[DewPointTimeseries] = @DewPointTimeseries,[WindDirectionTimeseries] = @WindDirectionTimeseries,[WindSpeedTimeseries] = @WindSpeedTimeseries,[Gyro] = @Gyro
+      UPDATE [WeatherStationDevice] SET [BarometricPressureTimeseries] = @BarometricPressureTimeseries,[AirTemperatureTimeseries] = @AirTemperatureTimeseries,[WaterTemperatureTimeseries] = @WaterTemperatureTimeseries,[RelativeHumidityTimeseries] = @RelativeHumidityTimeseries,[AbsoluteHumidityTimeseries] = @AbsoluteHumidityTimeseries,[DewPointTimeseries] = @DewPointTimeseries,[WindDirectionTimeseries] = @WindDirectionTimeseries,[WindSpeedTimeseries] = @WindSpeedTimeseries,[Gyro] = @Gyro
           WHERE [Id] = @Id
       SET @RowCnt = @@RowCount;
       IF @RowCnt = 0
@@ -7647,7 +7647,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillUpdate]
+CREATE OR ALTER PROCEDURE [OilSpillUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
@@ -7669,7 +7669,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [Oilspill] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[OilArea] = @OilArea,[Shape] = @Shape,[BSI] = @BSI,[Oil] = @Oil,[Trace] = @Trace
+      UPDATE [OilSpill] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[OilArea] = @OilArea,[Shape] = @Shape,[BSI] = @BSI,[Oil] = @Oil,[Trace] = @Trace
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -7702,7 +7702,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorCommandUpdate]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
@@ -7722,7 +7722,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [OilspillDetectorCommand] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[DeviceCommandSourceType] = @DeviceCommandSourceType,[DeviceCommandSourceId] = @DeviceCommandSourceId,[Reply] = @Reply
+      UPDATE [OilSpillDetectorCommand] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[DeviceCommandSourceType] = @DeviceCommandSourceType,[DeviceCommandSourceId] = @DeviceCommandSourceId,[Reply] = @Reply
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -7755,7 +7755,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorCommandReplyUpdate]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandReplyUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
@@ -7775,7 +7775,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [OilspillDetectorCommandReply] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[Command] = @Command,[Status] = @Status,[Message] = @Message
+      UPDATE [OilSpillDetectorCommandReply] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[Command] = @Command,[Status] = @Status,[Message] = @Message
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;
@@ -7808,7 +7808,7 @@ AS
   END
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorConfigurationUpdate]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorConfigurationUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
@@ -7847,7 +7847,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      UPDATE [OilspillDetectorConfiguration] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[Range] = @Range,[StartAngle] = @StartAngle,[EndAngle] = @EndAngle,[StartRange] = @StartRange,[EndRange] = @EndRange,[UpdateRate] = @UpdateRate,[StatusSendTime] = @StatusSendTime,[DrawBorder] = @DrawBorder,[Colors] = @Colors,[SendToServer] = @SendToServer,[Directory] = @Directory,[TransparentWater] = @TransparentWater,[SavePictures] = @SavePictures,[SendAsTarget] = @SendAsTarget,[WriteLog] = @WriteLog,[TargetFilePrefix] = @TargetFilePrefix,[TargetMMSI] = @TargetMMSI,[Latitude] = @Latitude,[Longitude] = @Longitude,[TestSourceEnabled] = @TestSourceEnabled,[ProxyServer] = @ProxyServer,[UseProxyServer] = @UseProxyServer
+      UPDATE [OilSpillDetectorConfiguration] SET [RowVersion] = [RowVersion] + 1,[OilSpillDetector] = @OilSpillDetector,[Timestamp] = @Timestamp,[Range] = @Range,[StartAngle] = @StartAngle,[EndAngle] = @EndAngle,[StartRange] = @StartRange,[EndRange] = @EndRange,[UpdateRate] = @UpdateRate,[StatusSendTime] = @StatusSendTime,[DrawBorder] = @DrawBorder,[Colors] = @Colors,[SendToServer] = @SendToServer,[Directory] = @Directory,[TransparentWater] = @TransparentWater,[SavePictures] = @SavePictures,[SendAsTarget] = @SendAsTarget,[WriteLog] = @WriteLog,[TargetFilePrefix] = @TargetFilePrefix,[TargetMMSI] = @TargetMMSI,[Latitude] = @Latitude,[Longitude] = @Longitude,[TestSourceEnabled] = @TestSourceEnabled,[ProxyServer] = @ProxyServer,[UseProxyServer] = @UseProxyServer
           OUTPUT INSERTED.[RowVersion] INTO @MyTableVar 
           WHERE [Id] = @Id AND [RowVersion] = @RowVersion;
       SET @RowCnt = @@RowCount;

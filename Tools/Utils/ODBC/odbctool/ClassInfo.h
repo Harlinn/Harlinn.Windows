@@ -220,6 +220,7 @@ namespace Harlinn::ODBC::Tool
         }
 
 
+        std::shared_ptr<ClassInfo> TopLevelClass( ) const;
         std::vector<std::shared_ptr<ClassInfo>> BaseClasses( ) const;
         std::vector<std::shared_ptr<ClassInfo>> BaseClassesAndSelf( ) const;
         std::vector<std::shared_ptr<ClassInfo>> AllDerivedClasses( ) const;

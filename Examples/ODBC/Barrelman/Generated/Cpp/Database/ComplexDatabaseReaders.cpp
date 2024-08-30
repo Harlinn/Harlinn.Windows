@@ -10,7 +10,7 @@ namespace Barrelman::Database
         L"  am.[Id], \r\n"
         L"  am.[EntityType], \r\n"
         L"  am.[RowVersion], \r\n"
-        L"  am.[AisTransceiver], \r\n"
+        L"  am.[AisDevice], \r\n"
         L"  am.[ReceivedTimestamp], \r\n"
         L"  am.[MessageSequenceNumber], \r\n"
         L"  am.[Repeat], \r\n"
@@ -245,7 +245,7 @@ namespace Barrelman::Database
         Bind( statement, AM_ID_FIELD_ID, id_ );
         Bind( statement, AM_KIND_FIELD_ID, kind_ );
         Bind( statement, AM_ROWVERSION_FIELD_ID, rowVersion_ );
-        Bind( statement, AM_AISTRANSCEIVER_FIELD_ID, aisTransceiver_ );
+        Bind( statement, AM_AISDEVICE_FIELD_ID, aisDevice_ );
         Bind( statement, AM_RECEIVEDTIMESTAMP_FIELD_ID, receivedTimestamp_ );
         Bind( statement, AM_MESSAGESEQUENCENUMBER_FIELD_ID, messageSequenceNumber_ );
         Bind( statement, AM_REPEAT_FIELD_ID, repeat_ );
@@ -458,7 +458,7 @@ namespace Barrelman::Database
         L"  aprcab.[Id], \r\n"
         L"  aprcab.[EntityType], \r\n"
         L"  aprcab.[RowVersion], \r\n"
-        L"  aprcab.[AisTransceiver], \r\n"
+        L"  aprcab.[AisDevice], \r\n"
         L"  aprcab.[ReceivedTimestamp], \r\n"
         L"  aprcab.[MessageSequenceNumber], \r\n"
         L"  aprcab.[Repeat], \r\n"
@@ -488,7 +488,7 @@ namespace Barrelman::Database
         Bind( statement, APRCAB_ID_FIELD_ID, id_ );
         Bind( statement, APRCAB_KIND_FIELD_ID, kind_ );
         Bind( statement, APRCAB_ROWVERSION_FIELD_ID, rowVersion_ );
-        Bind( statement, APRCAB_AISTRANSCEIVER_FIELD_ID, aisTransceiver_ );
+        Bind( statement, APRCAB_AISDEVICE_FIELD_ID, aisDevice_ );
         Bind( statement, APRCAB_RECEIVEDTIMESTAMP_FIELD_ID, receivedTimestamp_ );
         Bind( statement, APRCAB_MESSAGESEQUENCENUMBER_FIELD_ID, messageSequenceNumber_ );
         Bind( statement, APRCAB_REPEAT_FIELD_ID, repeat_ );
@@ -513,7 +513,7 @@ namespace Barrelman::Database
         L"  asdrm.[Id], \r\n"
         L"  asdrm.[EntityType], \r\n"
         L"  asdrm.[RowVersion], \r\n"
-        L"  asdrm.[AisTransceiver], \r\n"
+        L"  asdrm.[AisDevice], \r\n"
         L"  asdrm.[ReceivedTimestamp], \r\n"
         L"  asdrm.[MessageSequenceNumber], \r\n"
         L"  asdrm.[Repeat], \r\n"
@@ -544,7 +544,7 @@ namespace Barrelman::Database
         Bind( statement, ASDRM_ID_FIELD_ID, id_ );
         Bind( statement, ASDRM_KIND_FIELD_ID, kind_ );
         Bind( statement, ASDRM_ROWVERSION_FIELD_ID, rowVersion_ );
-        Bind( statement, ASDRM_AISTRANSCEIVER_FIELD_ID, aisTransceiver_ );
+        Bind( statement, ASDRM_AISDEVICE_FIELD_ID, aisDevice_ );
         Bind( statement, ASDRM_RECEIVEDTIMESTAMP_FIELD_ID, receivedTimestamp_ );
         Bind( statement, ASDRM_MESSAGESEQUENCENUMBER_FIELD_ID, messageSequenceNumber_ );
         Bind( statement, ASDRM_REPEAT_FIELD_ID, repeat_ );
@@ -762,38 +762,38 @@ namespace Barrelman::Database
         L"  rdo.[TemperatureTimeseries], \r\n"
         L"  rdo.[DewPointTimeseries], \r\n"
         L"  rdo.[StatusTimeseries], \r\n"
-        L"  r.[SaveSettingsTimeseries], \r\n"
-        L"  r.[PowerOnTimeseries], \r\n"
-        L"  r.[TrackingOnTimeseries], \r\n"
-        L"  r.[RadarPulseTimeseries], \r\n"
-        L"  r.[TuningTimeseries], \r\n"
-        L"  r.[BlankSector1Timeseries], \r\n"
-        L"  r.[Sector1StartTimeseries], \r\n"
-        L"  r.[Sector1EndTimeseries], \r\n"
-        L"  r.[BlankSector2Timeseries], \r\n"
-        L"  r.[Sector2StartTimeseries], \r\n"
-        L"  r.[Sector2EndTimeseries], \r\n"
-        L"  r.[EnableAutomaticFrequencyControlTimeseries], \r\n"
-        L"  r.[AzimuthOffsetTimeseries], \r\n"
-        L"  r.[EnableSensitivityTimeControlTimeseries], \r\n"
-        L"  r.[AutomaticSensitivityTimeControlTimeseries], \r\n"
-        L"  r.[SensitivityTimeControlLevelTimeseries], \r\n"
-        L"  r.[EnableFastTimeConstantTimeseries], \r\n"
-        L"  r.[FastTimeConstantLevelTimeseries], \r\n"
-        L"  r.[FastTimeConstantModeTimeseries], \r\n"
-        L"  r.[LatitudeTimeseries], \r\n"
-        L"  r.[LongitudeTimeseries], \r\n"
-        L"  r.[Radome], \r\n"
-        L"  r.[GNSSDevice], \r\n"
-        L"  ws.[BarometricPressureTimeseries], \r\n"
-        L"  ws.[AirTemperatureTimeseries], \r\n"
-        L"  ws.[WaterTemperatureTimeseries], \r\n"
-        L"  ws.[RelativeHumidityTimeseries], \r\n"
-        L"  ws.[AbsoluteHumidityTimeseries], \r\n"
-        L"  ws.[DewPointTimeseries], \r\n"
-        L"  ws.[WindDirectionTimeseries], \r\n"
-        L"  ws.[WindSpeedTimeseries], \r\n"
-        L"  ws.[Gyro], \r\n"
+        L"  rd.[SaveSettingsTimeseries], \r\n"
+        L"  rd.[PowerOnTimeseries], \r\n"
+        L"  rd.[TrackingOnTimeseries], \r\n"
+        L"  rd.[RadarPulseTimeseries], \r\n"
+        L"  rd.[TuningTimeseries], \r\n"
+        L"  rd.[BlankSector1Timeseries], \r\n"
+        L"  rd.[Sector1StartTimeseries], \r\n"
+        L"  rd.[Sector1EndTimeseries], \r\n"
+        L"  rd.[BlankSector2Timeseries], \r\n"
+        L"  rd.[Sector2StartTimeseries], \r\n"
+        L"  rd.[Sector2EndTimeseries], \r\n"
+        L"  rd.[EnableAutomaticFrequencyControlTimeseries], \r\n"
+        L"  rd.[AzimuthOffsetTimeseries], \r\n"
+        L"  rd.[EnableSensitivityTimeControlTimeseries], \r\n"
+        L"  rd.[AutomaticSensitivityTimeControlTimeseries], \r\n"
+        L"  rd.[SensitivityTimeControlLevelTimeseries], \r\n"
+        L"  rd.[EnableFastTimeConstantTimeseries], \r\n"
+        L"  rd.[FastTimeConstantLevelTimeseries], \r\n"
+        L"  rd.[FastTimeConstantModeTimeseries], \r\n"
+        L"  rd.[LatitudeTimeseries], \r\n"
+        L"  rd.[LongitudeTimeseries], \r\n"
+        L"  rd.[Radome], \r\n"
+        L"  rd.[GNSSDevice], \r\n"
+        L"  wsd.[BarometricPressureTimeseries], \r\n"
+        L"  wsd.[AirTemperatureTimeseries], \r\n"
+        L"  wsd.[WaterTemperatureTimeseries], \r\n"
+        L"  wsd.[RelativeHumidityTimeseries], \r\n"
+        L"  wsd.[AbsoluteHumidityTimeseries], \r\n"
+        L"  wsd.[DewPointTimeseries], \r\n"
+        L"  wsd.[WindDirectionTimeseries], \r\n"
+        L"  wsd.[WindSpeedTimeseries], \r\n"
+        L"  wsd.[Gyro], \r\n"
         L"  f.[Name], \r\n"
         L"  f.[Type], \r\n"
         L"  f.[Longitude], \r\n"
@@ -825,17 +825,17 @@ namespace Barrelman::Database
         L"FROM [ItemView] i \r\n"
         L"  LEFT JOIN [BaseStation] bs ON(i.[Id] = bs.[Id] ) \r\n"
         L"  LEFT JOIN [Device] d ON(i.[Id] = d.[Id] ) \r\n"
-        L"  LEFT JOIN [Camera] c ON(i.[Id] = c.[Id] ) \r\n"
+        L"  LEFT JOIN [CameraDevice] cd ON(i.[Id] = cd.[Id] ) \r\n"
         L"  LEFT JOIN [GNSSDevice] g ON(i.[Id] = g.[Id] ) \r\n"
         L"  LEFT JOIN [GyroDevice] gd ON(i.[Id] = gd.[Id] ) \r\n"
         L"  LEFT JOIN [LineInputDevice] lid ON(i.[Id] = lid.[Id] ) \r\n"
-        L"  LEFT JOIN [OilspillDetector] od ON(i.[Id] = od.[Id] ) \r\n"
-        L"  LEFT JOIN [Radio] rdi ON(i.[Id] = rdi.[Id] ) \r\n"
-        L"  LEFT JOIN [Radome] rdo ON(i.[Id] = rdo.[Id] ) \r\n"
-        L"  LEFT JOIN [Tracker] t ON(i.[Id] = t.[Id] ) \r\n"
-        L"  LEFT JOIN [AisTransceiver] at ON(i.[Id] = at.[Id] ) \r\n"
-        L"  LEFT JOIN [Radar] r ON(i.[Id] = r.[Id] ) \r\n"
-        L"  LEFT JOIN [WeatherStation] ws ON(i.[Id] = ws.[Id] ) \r\n"
+        L"  LEFT JOIN [OilSpillDetectorDevice] osdd ON(i.[Id] = osdd.[Id] ) \r\n"
+        L"  LEFT JOIN [RadioDevice] rdi ON(i.[Id] = rdi.[Id] ) \r\n"
+        L"  LEFT JOIN [RadomeDevice] rdo ON(i.[Id] = rdo.[Id] ) \r\n"
+        L"  LEFT JOIN [TrackerDevice] td ON(i.[Id] = td.[Id] ) \r\n"
+        L"  LEFT JOIN [AisDevice] ad ON(i.[Id] = ad.[Id] ) \r\n"
+        L"  LEFT JOIN [RadarDevice] rd ON(i.[Id] = rd.[Id] ) \r\n"
+        L"  LEFT JOIN [WeatherStationDevice] wsd ON(i.[Id] = wsd.[Id] ) \r\n"
         L"  LEFT JOIN [Facility] f ON(i.[Id] = f.[Id] ) \r\n"
         L"  LEFT JOIN [TrackableItem] ti ON(i.[Id] = ti.[Id] ) \r\n"
         L"  LEFT JOIN [Aircraft] a ON(i.[Id] = a.[Id] ) \r\n"
@@ -871,38 +871,38 @@ namespace Barrelman::Database
         Bind( statement, RDO_TEMPERATURETIMESERIES_FIELD_ID, rdoTemperatureTimeseries_ );
         Bind( statement, RDO_DEWPOINTTIMESERIES_FIELD_ID, rdoDewPointTimeseries_ );
         Bind( statement, RDO_STATUSTIMESERIES_FIELD_ID, rdoStatusTimeseries_ );
-        Bind( statement, R_SAVESETTINGSTIMESERIES_FIELD_ID, rSaveSettingsTimeseries_ );
-        Bind( statement, R_POWERONTIMESERIES_FIELD_ID, rPowerOnTimeseries_ );
-        Bind( statement, R_TRACKINGONTIMESERIES_FIELD_ID, rTrackingOnTimeseries_ );
-        Bind( statement, R_RADARPULSETIMESERIES_FIELD_ID, rRadarPulseTimeseries_ );
-        Bind( statement, R_TUNINGTIMESERIES_FIELD_ID, rTuningTimeseries_ );
-        Bind( statement, R_BLANKSECTOR1TIMESERIES_FIELD_ID, rBlankSector1Timeseries_ );
-        Bind( statement, R_SECTOR1STARTTIMESERIES_FIELD_ID, rSector1StartTimeseries_ );
-        Bind( statement, R_SECTOR1ENDTIMESERIES_FIELD_ID, rSector1EndTimeseries_ );
-        Bind( statement, R_BLANKSECTOR2TIMESERIES_FIELD_ID, rBlankSector2Timeseries_ );
-        Bind( statement, R_SECTOR2STARTTIMESERIES_FIELD_ID, rSector2StartTimeseries_ );
-        Bind( statement, R_SECTOR2ENDTIMESERIES_FIELD_ID, rSector2EndTimeseries_ );
-        Bind( statement, R_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, rEnableAutomaticFrequencyControlTimeseries_ );
-        Bind( statement, R_AZIMUTHOFFSETTIMESERIES_FIELD_ID, rAzimuthOffsetTimeseries_ );
-        Bind( statement, R_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rEnableSensitivityTimeControlTimeseries_ );
-        Bind( statement, R_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rAutomaticSensitivityTimeControlTimeseries_ );
-        Bind( statement, R_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, rSensitivityTimeControlLevelTimeseries_ );
-        Bind( statement, R_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, rEnableFastTimeConstantTimeseries_ );
-        Bind( statement, R_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, rFastTimeConstantLevelTimeseries_ );
-        Bind( statement, R_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, rFastTimeConstantModeTimeseries_ );
-        Bind( statement, R_LATITUDETIMESERIES_FIELD_ID, rLatitudeTimeseries_ );
-        Bind( statement, R_LONGITUDETIMESERIES_FIELD_ID, rLongitudeTimeseries_ );
-        Bind( statement, R_RADOME_FIELD_ID, rRadome_ );
-        Bind( statement, R_GNSSDEVICE_FIELD_ID, rGNSSDevice_ );
-        Bind( statement, WS_BAROMETRICPRESSURETIMESERIES_FIELD_ID, wsBarometricPressureTimeseries_ );
-        Bind( statement, WS_AIRTEMPERATURETIMESERIES_FIELD_ID, wsAirTemperatureTimeseries_ );
-        Bind( statement, WS_WATERTEMPERATURETIMESERIES_FIELD_ID, wsWaterTemperatureTimeseries_ );
-        Bind( statement, WS_RELATIVEHUMIDITYTIMESERIES_FIELD_ID, wsRelativeHumidityTimeseries_ );
-        Bind( statement, WS_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID, wsAbsoluteHumidityTimeseries_ );
-        Bind( statement, WS_DEWPOINTTIMESERIES_FIELD_ID, wsDewPointTimeseries_ );
-        Bind( statement, WS_WINDDIRECTIONTIMESERIES_FIELD_ID, wsWindDirectionTimeseries_ );
-        Bind( statement, WS_WINDSPEEDTIMESERIES_FIELD_ID, wsWindSpeedTimeseries_ );
-        Bind( statement, WS_GYRO_FIELD_ID, wsGyro_ );
+        Bind( statement, RD_SAVESETTINGSTIMESERIES_FIELD_ID, rdSaveSettingsTimeseries_ );
+        Bind( statement, RD_POWERONTIMESERIES_FIELD_ID, rdPowerOnTimeseries_ );
+        Bind( statement, RD_TRACKINGONTIMESERIES_FIELD_ID, rdTrackingOnTimeseries_ );
+        Bind( statement, RD_RADARPULSETIMESERIES_FIELD_ID, rdRadarPulseTimeseries_ );
+        Bind( statement, RD_TUNINGTIMESERIES_FIELD_ID, rdTuningTimeseries_ );
+        Bind( statement, RD_BLANKSECTOR1TIMESERIES_FIELD_ID, rdBlankSector1Timeseries_ );
+        Bind( statement, RD_SECTOR1STARTTIMESERIES_FIELD_ID, rdSector1StartTimeseries_ );
+        Bind( statement, RD_SECTOR1ENDTIMESERIES_FIELD_ID, rdSector1EndTimeseries_ );
+        Bind( statement, RD_BLANKSECTOR2TIMESERIES_FIELD_ID, rdBlankSector2Timeseries_ );
+        Bind( statement, RD_SECTOR2STARTTIMESERIES_FIELD_ID, rdSector2StartTimeseries_ );
+        Bind( statement, RD_SECTOR2ENDTIMESERIES_FIELD_ID, rdSector2EndTimeseries_ );
+        Bind( statement, RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, rdEnableAutomaticFrequencyControlTimeseries_ );
+        Bind( statement, RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID, rdAzimuthOffsetTimeseries_ );
+        Bind( statement, RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rdEnableSensitivityTimeControlTimeseries_ );
+        Bind( statement, RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rdAutomaticSensitivityTimeControlTimeseries_ );
+        Bind( statement, RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, rdSensitivityTimeControlLevelTimeseries_ );
+        Bind( statement, RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, rdEnableFastTimeConstantTimeseries_ );
+        Bind( statement, RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, rdFastTimeConstantLevelTimeseries_ );
+        Bind( statement, RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, rdFastTimeConstantModeTimeseries_ );
+        Bind( statement, RD_LATITUDETIMESERIES_FIELD_ID, rdLatitudeTimeseries_ );
+        Bind( statement, RD_LONGITUDETIMESERIES_FIELD_ID, rdLongitudeTimeseries_ );
+        Bind( statement, RD_RADOME_FIELD_ID, rdRadome_ );
+        Bind( statement, RD_GNSSDEVICE_FIELD_ID, rdGNSSDevice_ );
+        Bind( statement, WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID, wsdBarometricPressureTimeseries_ );
+        Bind( statement, WSD_AIRTEMPERATURETIMESERIES_FIELD_ID, wsdAirTemperatureTimeseries_ );
+        Bind( statement, WSD_WATERTEMPERATURETIMESERIES_FIELD_ID, wsdWaterTemperatureTimeseries_ );
+        Bind( statement, WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID, wsdRelativeHumidityTimeseries_ );
+        Bind( statement, WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID, wsdAbsoluteHumidityTimeseries_ );
+        Bind( statement, WSD_DEWPOINTTIMESERIES_FIELD_ID, wsdDewPointTimeseries_ );
+        Bind( statement, WSD_WINDDIRECTIONTIMESERIES_FIELD_ID, wsdWindDirectionTimeseries_ );
+        Bind( statement, WSD_WINDSPEEDTIMESERIES_FIELD_ID, wsdWindSpeedTimeseries_ );
+        Bind( statement, WSD_GYRO_FIELD_ID, wsdGyro_ );
         Bind( statement, F_NAME_FIELD_ID, fName_ );
         Bind( statement, F_TYPE_FIELD_ID, fType_ );
         Bind( statement, F_LONGITUDE_FIELD_ID, fLongitude_ );
@@ -960,51 +960,51 @@ namespace Barrelman::Database
         L"  rdo.[TemperatureTimeseries], \r\n"
         L"  rdo.[DewPointTimeseries], \r\n"
         L"  rdo.[StatusTimeseries], \r\n"
-        L"  r.[SaveSettingsTimeseries], \r\n"
-        L"  r.[PowerOnTimeseries], \r\n"
-        L"  r.[TrackingOnTimeseries], \r\n"
-        L"  r.[RadarPulseTimeseries], \r\n"
-        L"  r.[TuningTimeseries], \r\n"
-        L"  r.[BlankSector1Timeseries], \r\n"
-        L"  r.[Sector1StartTimeseries], \r\n"
-        L"  r.[Sector1EndTimeseries], \r\n"
-        L"  r.[BlankSector2Timeseries], \r\n"
-        L"  r.[Sector2StartTimeseries], \r\n"
-        L"  r.[Sector2EndTimeseries], \r\n"
-        L"  r.[EnableAutomaticFrequencyControlTimeseries], \r\n"
-        L"  r.[AzimuthOffsetTimeseries], \r\n"
-        L"  r.[EnableSensitivityTimeControlTimeseries], \r\n"
-        L"  r.[AutomaticSensitivityTimeControlTimeseries], \r\n"
-        L"  r.[SensitivityTimeControlLevelTimeseries], \r\n"
-        L"  r.[EnableFastTimeConstantTimeseries], \r\n"
-        L"  r.[FastTimeConstantLevelTimeseries], \r\n"
-        L"  r.[FastTimeConstantModeTimeseries], \r\n"
-        L"  r.[LatitudeTimeseries], \r\n"
-        L"  r.[LongitudeTimeseries], \r\n"
-        L"  r.[Radome], \r\n"
-        L"  r.[GNSSDevice], \r\n"
-        L"  ws.[BarometricPressureTimeseries], \r\n"
-        L"  ws.[AirTemperatureTimeseries], \r\n"
-        L"  ws.[WaterTemperatureTimeseries], \r\n"
-        L"  ws.[RelativeHumidityTimeseries], \r\n"
-        L"  ws.[AbsoluteHumidityTimeseries], \r\n"
-        L"  ws.[DewPointTimeseries], \r\n"
-        L"  ws.[WindDirectionTimeseries], \r\n"
-        L"  ws.[WindSpeedTimeseries], \r\n"
-        L"  ws.[Gyro], \r\n"
+        L"  rd.[SaveSettingsTimeseries], \r\n"
+        L"  rd.[PowerOnTimeseries], \r\n"
+        L"  rd.[TrackingOnTimeseries], \r\n"
+        L"  rd.[RadarPulseTimeseries], \r\n"
+        L"  rd.[TuningTimeseries], \r\n"
+        L"  rd.[BlankSector1Timeseries], \r\n"
+        L"  rd.[Sector1StartTimeseries], \r\n"
+        L"  rd.[Sector1EndTimeseries], \r\n"
+        L"  rd.[BlankSector2Timeseries], \r\n"
+        L"  rd.[Sector2StartTimeseries], \r\n"
+        L"  rd.[Sector2EndTimeseries], \r\n"
+        L"  rd.[EnableAutomaticFrequencyControlTimeseries], \r\n"
+        L"  rd.[AzimuthOffsetTimeseries], \r\n"
+        L"  rd.[EnableSensitivityTimeControlTimeseries], \r\n"
+        L"  rd.[AutomaticSensitivityTimeControlTimeseries], \r\n"
+        L"  rd.[SensitivityTimeControlLevelTimeseries], \r\n"
+        L"  rd.[EnableFastTimeConstantTimeseries], \r\n"
+        L"  rd.[FastTimeConstantLevelTimeseries], \r\n"
+        L"  rd.[FastTimeConstantModeTimeseries], \r\n"
+        L"  rd.[LatitudeTimeseries], \r\n"
+        L"  rd.[LongitudeTimeseries], \r\n"
+        L"  rd.[Radome], \r\n"
+        L"  rd.[GNSSDevice], \r\n"
+        L"  wsd.[BarometricPressureTimeseries], \r\n"
+        L"  wsd.[AirTemperatureTimeseries], \r\n"
+        L"  wsd.[WaterTemperatureTimeseries], \r\n"
+        L"  wsd.[RelativeHumidityTimeseries], \r\n"
+        L"  wsd.[AbsoluteHumidityTimeseries], \r\n"
+        L"  wsd.[DewPointTimeseries], \r\n"
+        L"  wsd.[WindDirectionTimeseries], \r\n"
+        L"  wsd.[WindSpeedTimeseries], \r\n"
+        L"  wsd.[Gyro], \r\n"
         L"  d.[Description] \r\n"
         L"FROM [DeviceView] d \r\n"
-        L"  LEFT JOIN [Camera] c ON(d.[Id] = c.[Id] ) \r\n"
+        L"  LEFT JOIN [CameraDevice] cd ON(d.[Id] = cd.[Id] ) \r\n"
         L"  LEFT JOIN [GNSSDevice] g ON(d.[Id] = g.[Id] ) \r\n"
         L"  LEFT JOIN [GyroDevice] gd ON(d.[Id] = gd.[Id] ) \r\n"
         L"  LEFT JOIN [LineInputDevice] lid ON(d.[Id] = lid.[Id] ) \r\n"
-        L"  LEFT JOIN [OilspillDetector] od ON(d.[Id] = od.[Id] ) \r\n"
-        L"  LEFT JOIN [Radio] rdi ON(d.[Id] = rdi.[Id] ) \r\n"
-        L"  LEFT JOIN [Radome] rdo ON(d.[Id] = rdo.[Id] ) \r\n"
-        L"  LEFT JOIN [Tracker] t ON(d.[Id] = t.[Id] ) \r\n"
-        L"  LEFT JOIN [AisTransceiver] at ON(d.[Id] = at.[Id] ) \r\n"
-        L"  LEFT JOIN [Radar] r ON(d.[Id] = r.[Id] ) \r\n"
-        L"  LEFT JOIN [WeatherStation] ws ON(d.[Id] = ws.[Id] )";
+        L"  LEFT JOIN [OilSpillDetectorDevice] osdd ON(d.[Id] = osdd.[Id] ) \r\n"
+        L"  LEFT JOIN [RadioDevice] rdi ON(d.[Id] = rdi.[Id] ) \r\n"
+        L"  LEFT JOIN [RadomeDevice] rdo ON(d.[Id] = rdo.[Id] ) \r\n"
+        L"  LEFT JOIN [TrackerDevice] td ON(d.[Id] = td.[Id] ) \r\n"
+        L"  LEFT JOIN [AisDevice] ad ON(d.[Id] = ad.[Id] ) \r\n"
+        L"  LEFT JOIN [RadarDevice] rd ON(d.[Id] = rd.[Id] ) \r\n"
+        L"  LEFT JOIN [WeatherStationDevice] wsd ON(d.[Id] = wsd.[Id] )";
     WideString ComplexDeviceColumnData::BaseViewName = L"DeviceView";
     WideString ComplexDeviceColumnData::ViewAliasName = L"d";
 
@@ -1032,38 +1032,38 @@ namespace Barrelman::Database
         Bind( statement, RDO_TEMPERATURETIMESERIES_FIELD_ID, rdoTemperatureTimeseries_ );
         Bind( statement, RDO_DEWPOINTTIMESERIES_FIELD_ID, rdoDewPointTimeseries_ );
         Bind( statement, RDO_STATUSTIMESERIES_FIELD_ID, rdoStatusTimeseries_ );
-        Bind( statement, R_SAVESETTINGSTIMESERIES_FIELD_ID, rSaveSettingsTimeseries_ );
-        Bind( statement, R_POWERONTIMESERIES_FIELD_ID, rPowerOnTimeseries_ );
-        Bind( statement, R_TRACKINGONTIMESERIES_FIELD_ID, rTrackingOnTimeseries_ );
-        Bind( statement, R_RADARPULSETIMESERIES_FIELD_ID, rRadarPulseTimeseries_ );
-        Bind( statement, R_TUNINGTIMESERIES_FIELD_ID, rTuningTimeseries_ );
-        Bind( statement, R_BLANKSECTOR1TIMESERIES_FIELD_ID, rBlankSector1Timeseries_ );
-        Bind( statement, R_SECTOR1STARTTIMESERIES_FIELD_ID, rSector1StartTimeseries_ );
-        Bind( statement, R_SECTOR1ENDTIMESERIES_FIELD_ID, rSector1EndTimeseries_ );
-        Bind( statement, R_BLANKSECTOR2TIMESERIES_FIELD_ID, rBlankSector2Timeseries_ );
-        Bind( statement, R_SECTOR2STARTTIMESERIES_FIELD_ID, rSector2StartTimeseries_ );
-        Bind( statement, R_SECTOR2ENDTIMESERIES_FIELD_ID, rSector2EndTimeseries_ );
-        Bind( statement, R_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, rEnableAutomaticFrequencyControlTimeseries_ );
-        Bind( statement, R_AZIMUTHOFFSETTIMESERIES_FIELD_ID, rAzimuthOffsetTimeseries_ );
-        Bind( statement, R_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rEnableSensitivityTimeControlTimeseries_ );
-        Bind( statement, R_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rAutomaticSensitivityTimeControlTimeseries_ );
-        Bind( statement, R_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, rSensitivityTimeControlLevelTimeseries_ );
-        Bind( statement, R_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, rEnableFastTimeConstantTimeseries_ );
-        Bind( statement, R_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, rFastTimeConstantLevelTimeseries_ );
-        Bind( statement, R_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, rFastTimeConstantModeTimeseries_ );
-        Bind( statement, R_LATITUDETIMESERIES_FIELD_ID, rLatitudeTimeseries_ );
-        Bind( statement, R_LONGITUDETIMESERIES_FIELD_ID, rLongitudeTimeseries_ );
-        Bind( statement, R_RADOME_FIELD_ID, rRadome_ );
-        Bind( statement, R_GNSSDEVICE_FIELD_ID, rGNSSDevice_ );
-        Bind( statement, WS_BAROMETRICPRESSURETIMESERIES_FIELD_ID, wsBarometricPressureTimeseries_ );
-        Bind( statement, WS_AIRTEMPERATURETIMESERIES_FIELD_ID, wsAirTemperatureTimeseries_ );
-        Bind( statement, WS_WATERTEMPERATURETIMESERIES_FIELD_ID, wsWaterTemperatureTimeseries_ );
-        Bind( statement, WS_RELATIVEHUMIDITYTIMESERIES_FIELD_ID, wsRelativeHumidityTimeseries_ );
-        Bind( statement, WS_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID, wsAbsoluteHumidityTimeseries_ );
-        Bind( statement, WS_DEWPOINTTIMESERIES_FIELD_ID, wsDewPointTimeseries_ );
-        Bind( statement, WS_WINDDIRECTIONTIMESERIES_FIELD_ID, wsWindDirectionTimeseries_ );
-        Bind( statement, WS_WINDSPEEDTIMESERIES_FIELD_ID, wsWindSpeedTimeseries_ );
-        Bind( statement, WS_GYRO_FIELD_ID, wsGyro_ );
+        Bind( statement, RD_SAVESETTINGSTIMESERIES_FIELD_ID, rdSaveSettingsTimeseries_ );
+        Bind( statement, RD_POWERONTIMESERIES_FIELD_ID, rdPowerOnTimeseries_ );
+        Bind( statement, RD_TRACKINGONTIMESERIES_FIELD_ID, rdTrackingOnTimeseries_ );
+        Bind( statement, RD_RADARPULSETIMESERIES_FIELD_ID, rdRadarPulseTimeseries_ );
+        Bind( statement, RD_TUNINGTIMESERIES_FIELD_ID, rdTuningTimeseries_ );
+        Bind( statement, RD_BLANKSECTOR1TIMESERIES_FIELD_ID, rdBlankSector1Timeseries_ );
+        Bind( statement, RD_SECTOR1STARTTIMESERIES_FIELD_ID, rdSector1StartTimeseries_ );
+        Bind( statement, RD_SECTOR1ENDTIMESERIES_FIELD_ID, rdSector1EndTimeseries_ );
+        Bind( statement, RD_BLANKSECTOR2TIMESERIES_FIELD_ID, rdBlankSector2Timeseries_ );
+        Bind( statement, RD_SECTOR2STARTTIMESERIES_FIELD_ID, rdSector2StartTimeseries_ );
+        Bind( statement, RD_SECTOR2ENDTIMESERIES_FIELD_ID, rdSector2EndTimeseries_ );
+        Bind( statement, RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, rdEnableAutomaticFrequencyControlTimeseries_ );
+        Bind( statement, RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID, rdAzimuthOffsetTimeseries_ );
+        Bind( statement, RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rdEnableSensitivityTimeControlTimeseries_ );
+        Bind( statement, RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rdAutomaticSensitivityTimeControlTimeseries_ );
+        Bind( statement, RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, rdSensitivityTimeControlLevelTimeseries_ );
+        Bind( statement, RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, rdEnableFastTimeConstantTimeseries_ );
+        Bind( statement, RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, rdFastTimeConstantLevelTimeseries_ );
+        Bind( statement, RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, rdFastTimeConstantModeTimeseries_ );
+        Bind( statement, RD_LATITUDETIMESERIES_FIELD_ID, rdLatitudeTimeseries_ );
+        Bind( statement, RD_LONGITUDETIMESERIES_FIELD_ID, rdLongitudeTimeseries_ );
+        Bind( statement, RD_RADOME_FIELD_ID, rdRadome_ );
+        Bind( statement, RD_GNSSDEVICE_FIELD_ID, rdGNSSDevice_ );
+        Bind( statement, WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID, wsdBarometricPressureTimeseries_ );
+        Bind( statement, WSD_AIRTEMPERATURETIMESERIES_FIELD_ID, wsdAirTemperatureTimeseries_ );
+        Bind( statement, WSD_WATERTEMPERATURETIMESERIES_FIELD_ID, wsdWaterTemperatureTimeseries_ );
+        Bind( statement, WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID, wsdRelativeHumidityTimeseries_ );
+        Bind( statement, WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID, wsdAbsoluteHumidityTimeseries_ );
+        Bind( statement, WSD_DEWPOINTTIMESERIES_FIELD_ID, wsdDewPointTimeseries_ );
+        Bind( statement, WSD_WINDDIRECTIONTIMESERIES_FIELD_ID, wsdWindDirectionTimeseries_ );
+        Bind( statement, WSD_WINDSPEEDTIMESERIES_FIELD_ID, wsdWindSpeedTimeseries_ );
+        Bind( statement, WSD_GYRO_FIELD_ID, wsdGyro_ );
     }
 
     void ComplexDeviceColumnData::ReadUnboundData( const ODBC::Statement& statement )
@@ -1071,79 +1071,79 @@ namespace Barrelman::Database
             description_ = statement.GetWideString(D_DESCRIPTION_FIELD_ID);
     }
 
-    WideString ComplexTrackerColumnData::BaseQuery = L"SELECT \r\n"
-        L"  t.[Id], \r\n"
-        L"  t.[EntityType], \r\n"
-        L"  t.[RowVersion], \r\n"
-        L"  t.[Host], \r\n"
-        L"  t.[Name], \r\n"
-        L"  t.[EnabledTimeseries], \r\n"
-        L"  r.[SaveSettingsTimeseries], \r\n"
-        L"  r.[PowerOnTimeseries], \r\n"
-        L"  r.[TrackingOnTimeseries], \r\n"
-        L"  r.[RadarPulseTimeseries], \r\n"
-        L"  r.[TuningTimeseries], \r\n"
-        L"  r.[BlankSector1Timeseries], \r\n"
-        L"  r.[Sector1StartTimeseries], \r\n"
-        L"  r.[Sector1EndTimeseries], \r\n"
-        L"  r.[BlankSector2Timeseries], \r\n"
-        L"  r.[Sector2StartTimeseries], \r\n"
-        L"  r.[Sector2EndTimeseries], \r\n"
-        L"  r.[EnableAutomaticFrequencyControlTimeseries], \r\n"
-        L"  r.[AzimuthOffsetTimeseries], \r\n"
-        L"  r.[EnableSensitivityTimeControlTimeseries], \r\n"
-        L"  r.[AutomaticSensitivityTimeControlTimeseries], \r\n"
-        L"  r.[SensitivityTimeControlLevelTimeseries], \r\n"
-        L"  r.[EnableFastTimeConstantTimeseries], \r\n"
-        L"  r.[FastTimeConstantLevelTimeseries], \r\n"
-        L"  r.[FastTimeConstantModeTimeseries], \r\n"
-        L"  r.[LatitudeTimeseries], \r\n"
-        L"  r.[LongitudeTimeseries], \r\n"
-        L"  r.[Radome], \r\n"
-        L"  r.[GNSSDevice], \r\n"
-        L"  t.[Description] \r\n"
-        L"FROM [TrackerView] t \r\n"
-        L"  LEFT JOIN [AisTransceiver] at ON(t.[Id] = at.[Id] ) \r\n"
-        L"  LEFT JOIN [Radar] r ON(t.[Id] = r.[Id] )";
-    WideString ComplexTrackerColumnData::BaseViewName = L"TrackerView";
-    WideString ComplexTrackerColumnData::ViewAliasName = L"t";
+    WideString ComplexTrackerDeviceColumnData::BaseQuery = L"SELECT \r\n"
+        L"  td.[Id], \r\n"
+        L"  td.[EntityType], \r\n"
+        L"  td.[RowVersion], \r\n"
+        L"  td.[Host], \r\n"
+        L"  td.[Name], \r\n"
+        L"  td.[EnabledTimeseries], \r\n"
+        L"  rd.[SaveSettingsTimeseries], \r\n"
+        L"  rd.[PowerOnTimeseries], \r\n"
+        L"  rd.[TrackingOnTimeseries], \r\n"
+        L"  rd.[RadarPulseTimeseries], \r\n"
+        L"  rd.[TuningTimeseries], \r\n"
+        L"  rd.[BlankSector1Timeseries], \r\n"
+        L"  rd.[Sector1StartTimeseries], \r\n"
+        L"  rd.[Sector1EndTimeseries], \r\n"
+        L"  rd.[BlankSector2Timeseries], \r\n"
+        L"  rd.[Sector2StartTimeseries], \r\n"
+        L"  rd.[Sector2EndTimeseries], \r\n"
+        L"  rd.[EnableAutomaticFrequencyControlTimeseries], \r\n"
+        L"  rd.[AzimuthOffsetTimeseries], \r\n"
+        L"  rd.[EnableSensitivityTimeControlTimeseries], \r\n"
+        L"  rd.[AutomaticSensitivityTimeControlTimeseries], \r\n"
+        L"  rd.[SensitivityTimeControlLevelTimeseries], \r\n"
+        L"  rd.[EnableFastTimeConstantTimeseries], \r\n"
+        L"  rd.[FastTimeConstantLevelTimeseries], \r\n"
+        L"  rd.[FastTimeConstantModeTimeseries], \r\n"
+        L"  rd.[LatitudeTimeseries], \r\n"
+        L"  rd.[LongitudeTimeseries], \r\n"
+        L"  rd.[Radome], \r\n"
+        L"  rd.[GNSSDevice], \r\n"
+        L"  td.[Description] \r\n"
+        L"FROM [TrackerDeviceView] td \r\n"
+        L"  LEFT JOIN [AisDevice] ad ON(td.[Id] = ad.[Id] ) \r\n"
+        L"  LEFT JOIN [RadarDevice] rd ON(td.[Id] = rd.[Id] )";
+    WideString ComplexTrackerDeviceColumnData::BaseViewName = L"TrackerDeviceView";
+    WideString ComplexTrackerDeviceColumnData::ViewAliasName = L"td";
 
-    void ComplexTrackerColumnData::BindColumns( const ODBC::Statement& statement )
+    void ComplexTrackerDeviceColumnData::BindColumns( const ODBC::Statement& statement )
     {
-        Bind( statement, T_ID_FIELD_ID, id_ );
-        Bind( statement, T_KIND_FIELD_ID, kind_ );
-        Bind( statement, T_ROWVERSION_FIELD_ID, rowVersion_ );
-        Bind( statement, T_HOST_FIELD_ID, host_ );
-        Bind( statement, T_NAME_FIELD_ID, name_ );
-        Bind( statement, T_ENABLEDTIMESERIES_FIELD_ID, enabledTimeseries_ );
-        Bind( statement, R_SAVESETTINGSTIMESERIES_FIELD_ID, rSaveSettingsTimeseries_ );
-        Bind( statement, R_POWERONTIMESERIES_FIELD_ID, rPowerOnTimeseries_ );
-        Bind( statement, R_TRACKINGONTIMESERIES_FIELD_ID, rTrackingOnTimeseries_ );
-        Bind( statement, R_RADARPULSETIMESERIES_FIELD_ID, rRadarPulseTimeseries_ );
-        Bind( statement, R_TUNINGTIMESERIES_FIELD_ID, rTuningTimeseries_ );
-        Bind( statement, R_BLANKSECTOR1TIMESERIES_FIELD_ID, rBlankSector1Timeseries_ );
-        Bind( statement, R_SECTOR1STARTTIMESERIES_FIELD_ID, rSector1StartTimeseries_ );
-        Bind( statement, R_SECTOR1ENDTIMESERIES_FIELD_ID, rSector1EndTimeseries_ );
-        Bind( statement, R_BLANKSECTOR2TIMESERIES_FIELD_ID, rBlankSector2Timeseries_ );
-        Bind( statement, R_SECTOR2STARTTIMESERIES_FIELD_ID, rSector2StartTimeseries_ );
-        Bind( statement, R_SECTOR2ENDTIMESERIES_FIELD_ID, rSector2EndTimeseries_ );
-        Bind( statement, R_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, rEnableAutomaticFrequencyControlTimeseries_ );
-        Bind( statement, R_AZIMUTHOFFSETTIMESERIES_FIELD_ID, rAzimuthOffsetTimeseries_ );
-        Bind( statement, R_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rEnableSensitivityTimeControlTimeseries_ );
-        Bind( statement, R_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rAutomaticSensitivityTimeControlTimeseries_ );
-        Bind( statement, R_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, rSensitivityTimeControlLevelTimeseries_ );
-        Bind( statement, R_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, rEnableFastTimeConstantTimeseries_ );
-        Bind( statement, R_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, rFastTimeConstantLevelTimeseries_ );
-        Bind( statement, R_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, rFastTimeConstantModeTimeseries_ );
-        Bind( statement, R_LATITUDETIMESERIES_FIELD_ID, rLatitudeTimeseries_ );
-        Bind( statement, R_LONGITUDETIMESERIES_FIELD_ID, rLongitudeTimeseries_ );
-        Bind( statement, R_RADOME_FIELD_ID, rRadome_ );
-        Bind( statement, R_GNSSDEVICE_FIELD_ID, rGNSSDevice_ );
+        Bind( statement, TD_ID_FIELD_ID, id_ );
+        Bind( statement, TD_KIND_FIELD_ID, kind_ );
+        Bind( statement, TD_ROWVERSION_FIELD_ID, rowVersion_ );
+        Bind( statement, TD_HOST_FIELD_ID, host_ );
+        Bind( statement, TD_NAME_FIELD_ID, name_ );
+        Bind( statement, TD_ENABLEDTIMESERIES_FIELD_ID, enabledTimeseries_ );
+        Bind( statement, RD_SAVESETTINGSTIMESERIES_FIELD_ID, rdSaveSettingsTimeseries_ );
+        Bind( statement, RD_POWERONTIMESERIES_FIELD_ID, rdPowerOnTimeseries_ );
+        Bind( statement, RD_TRACKINGONTIMESERIES_FIELD_ID, rdTrackingOnTimeseries_ );
+        Bind( statement, RD_RADARPULSETIMESERIES_FIELD_ID, rdRadarPulseTimeseries_ );
+        Bind( statement, RD_TUNINGTIMESERIES_FIELD_ID, rdTuningTimeseries_ );
+        Bind( statement, RD_BLANKSECTOR1TIMESERIES_FIELD_ID, rdBlankSector1Timeseries_ );
+        Bind( statement, RD_SECTOR1STARTTIMESERIES_FIELD_ID, rdSector1StartTimeseries_ );
+        Bind( statement, RD_SECTOR1ENDTIMESERIES_FIELD_ID, rdSector1EndTimeseries_ );
+        Bind( statement, RD_BLANKSECTOR2TIMESERIES_FIELD_ID, rdBlankSector2Timeseries_ );
+        Bind( statement, RD_SECTOR2STARTTIMESERIES_FIELD_ID, rdSector2StartTimeseries_ );
+        Bind( statement, RD_SECTOR2ENDTIMESERIES_FIELD_ID, rdSector2EndTimeseries_ );
+        Bind( statement, RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID, rdEnableAutomaticFrequencyControlTimeseries_ );
+        Bind( statement, RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID, rdAzimuthOffsetTimeseries_ );
+        Bind( statement, RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rdEnableSensitivityTimeControlTimeseries_ );
+        Bind( statement, RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID, rdAutomaticSensitivityTimeControlTimeseries_ );
+        Bind( statement, RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID, rdSensitivityTimeControlLevelTimeseries_ );
+        Bind( statement, RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID, rdEnableFastTimeConstantTimeseries_ );
+        Bind( statement, RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID, rdFastTimeConstantLevelTimeseries_ );
+        Bind( statement, RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID, rdFastTimeConstantModeTimeseries_ );
+        Bind( statement, RD_LATITUDETIMESERIES_FIELD_ID, rdLatitudeTimeseries_ );
+        Bind( statement, RD_LONGITUDETIMESERIES_FIELD_ID, rdLongitudeTimeseries_ );
+        Bind( statement, RD_RADOME_FIELD_ID, rdRadome_ );
+        Bind( statement, RD_GNSSDEVICE_FIELD_ID, rdGNSSDevice_ );
     }
 
-    void ComplexTrackerColumnData::ReadUnboundData( const ODBC::Statement& statement )
+    void ComplexTrackerDeviceColumnData::ReadUnboundData( const ODBC::Statement& statement )
     {
-            description_ = statement.GetWideString(T_DESCRIPTION_FIELD_ID);
+            description_ = statement.GetWideString(TD_DESCRIPTION_FIELD_ID);
     }
 
     WideString ComplexTrackableItemColumnData::BaseQuery = L"SELECT \r\n"

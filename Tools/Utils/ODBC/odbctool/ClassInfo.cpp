@@ -46,6 +46,18 @@ namespace Harlinn::ODBC::Tool
         return shortName_;
     }
 
+    std::shared_ptr<ClassInfo> ClassInfo::TopLevelClass( ) const
+    {
+        std::shared_ptr<ClassInfo> result = const_cast< ClassInfo* >(this)->shared_from_this( );
+        auto baseClass = BaseClass( );
+        while ( baseClass )
+        {
+            result = baseClass;
+            baseClass = baseClass->BaseClass( );
+        }
+        return result;
+    }
+
     std::vector<std::shared_ptr<ClassInfo>> ClassInfo::BaseClasses( ) const
     {
         std::vector<std::shared_ptr<ClassInfo>> result;

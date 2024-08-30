@@ -73,39 +73,114 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageInsert]
+CREATE OR ALTER PROCEDURE [AisDeviceCommandInsert]
   @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationalAidType [int],
-  @Name [nvarchar](100),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @PositionFixType [int],
-  @Timestamp [int],
-  @OffPosition [bit],
-  @RegionalReserved [int],
-  @Raim [int],
-  @VirtualAid [bit],
-  @Assigned [bit],
-  @Spare [int],
-  @NameExtension [nvarchar](100)
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @DeviceCommandSourceType [int],
+  @DeviceCommandSourceId [uniqueidentifier],
+  @Reply [uniqueidentifier]
 AS
   BEGIN
     IF @Id IS NULL
     BEGIN
       SET @Id = NEWID()
     END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisDeviceCommand]([Id], [RowVersion], [AisDevice], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisDeviceCommandInsertTrigger]
+ON [AisDeviceCommandView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [Timestamp],
+        [DeviceCommandSourceType],
+        [DeviceCommandSourceId],
+        [Reply]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @Timestamp [bigint]
+    DECLARE @DeviceCommandSourceType [int]
+    DECLARE @DeviceCommandSourceId [uniqueidentifier]
+    DECLARE @Reply [uniqueidentifier]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @Timestamp,
+        @DeviceCommandSourceType,
+        @DeviceCommandSourceId,
+        @Reply
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisDeviceCommandInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@DeviceCommandSourceType,@DeviceCommandSourceId,@Reply
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @Timestamp,
+            @DeviceCommandSourceType,
+            @DeviceCommandSourceId,
+            @Reply
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceCommandReplyInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Command [uniqueidentifier],
+  @Status [int],
+  @Message [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
@@ -113,10 +188,8 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AidToNavigationReportMessage]([Id], [NavigationalAidType], [Name], [PositionAccuracy], [Longitude], [Latitude], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Timestamp], [OffPosition], [RegionalReserved], [Raim], [VirtualAid], [Assigned], [Spare], [NameExtension])
-          VALUES(@Id, @NavigationalAidType, @Name, @PositionAccuracy, @Longitude, @Latitude, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Timestamp, @OffPosition, @RegionalReserved, @Raim, @VirtualAid, @Assigned, @Spare, @NameExtension);
+      INSERT INTO [AisDeviceCommandReply]([Id], [RowVersion], [AisDevice], [Timestamp], [Command], [Status], [Message])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @Command, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -141,8 +214,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [AidToNavigationReportMessageInsertTrigger]
-ON [AidToNavigationReportMessageView]
+CREATE OR ALTER TRIGGER [AisDeviceCommandReplyInsertTrigger]
+ON [AisDeviceCommandReplyView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -150,3398 +223,7 @@ INSTEAD OF INSERT AS
       SELECT
         [Id],
         [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [NavigationalAidType],
-        [Name],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [DimensionToBow],
-        [DimensionToStern],
-        [DimensionToPort],
-        [DimensionToStarboard],
-        [PositionFixType],
-        [Timestamp],
-        [OffPosition],
-        [RegionalReserved],
-        [Raim],
-        [VirtualAid],
-        [Assigned],
-        [Spare],
-        [NameExtension]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @NavigationalAidType [int]
-    DECLARE @Name [nvarchar](100)
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @DimensionToBow [int]
-    DECLARE @DimensionToStern [int]
-    DECLARE @DimensionToPort [int]
-    DECLARE @DimensionToStarboard [int]
-    DECLARE @PositionFixType [int]
-    DECLARE @Timestamp [int]
-    DECLARE @OffPosition [bit]
-    DECLARE @RegionalReserved [int]
-    DECLARE @Raim [int]
-    DECLARE @VirtualAid [bit]
-    DECLARE @Assigned [bit]
-    DECLARE @Spare [int]
-    DECLARE @NameExtension [nvarchar](100)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @NavigationalAidType,
-        @Name,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @DimensionToBow,
-        @DimensionToStern,
-        @DimensionToPort,
-        @DimensionToStarboard,
-        @PositionFixType,
-        @Timestamp,
-        @OffPosition,
-        @RegionalReserved,
-        @Raim,
-        @VirtualAid,
-        @Assigned,
-        @Spare,
-        @NameExtension
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AidToNavigationReportMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationalAidType,@Name,@PositionAccuracy,@Longitude,@Latitude,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@PositionFixType,@Timestamp,@OffPosition,@RegionalReserved,@Raim,@VirtualAid,@Assigned,@Spare,@NameExtension
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @NavigationalAidType,
-            @Name,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @DimensionToBow,
-            @DimensionToStern,
-            @DimensionToPort,
-            @DimensionToStarboard,
-            @PositionFixType,
-            @Timestamp,
-            @OffPosition,
-            @RegionalReserved,
-            @Raim,
-            @VirtualAid,
-            @Assigned,
-            @Spare,
-            @NameExtension
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @SequenceNumber [int],
-  @DestinationMmsi [uniqueidentifier],
-  @RetransmitFlag [bit],
-  @Spare [int],
-  @Text [nvarchar](100)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10300;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisAddressedSafetyRelatedMessage]([Id], [SequenceNumber], [DestinationMmsi], [RetransmitFlag], [Spare], [Text])
-          VALUES(@Id, @SequenceNumber, @DestinationMmsi, @RetransmitFlag, @Spare, @Text);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisAddressedSafetyRelatedMessageInsertTrigger]
-ON [AisAddressedSafetyRelatedMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [SequenceNumber],
-        [DestinationMmsi],
-        [RetransmitFlag],
-        [Spare],
-        [Text]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @SequenceNumber [int]
-    DECLARE @DestinationMmsi [uniqueidentifier]
-    DECLARE @RetransmitFlag [bit]
-    DECLARE @Spare [int]
-    DECLARE @Text [nvarchar](100)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @SequenceNumber,
-        @DestinationMmsi,
-        @RetransmitFlag,
-        @Spare,
-        @Text
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisAddressedSafetyRelatedMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@SequenceNumber,@DestinationMmsi,@RetransmitFlag,@Spare,@Text
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @SequenceNumber,
-            @DestinationMmsi,
-            @RetransmitFlag,
-            @Spare,
-            @Text
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisBaseStationReportMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Timestamp [bigint],
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @PositionFixType [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10400;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisBaseStationReportMessage]([Id], [Timestamp], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
-          VALUES(@Id, @Timestamp, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisBaseStationReportMessageInsertTrigger]
-ON [AisBaseStationReportMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Timestamp],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [PositionFixType],
-        [Spare],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Timestamp [bigint]
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @PositionFixType [int]
-    DECLARE @Spare [int]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Timestamp,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @PositionFixType,
-        @Spare,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisBaseStationReportMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Timestamp,@PositionAccuracy,@Longitude,@Latitude,@PositionFixType,@Spare,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Timestamp,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @PositionFixType,
-            @Spare,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisBinaryAcknowledgeMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @SequenceNumber1 [int],
-  @Mmsi1 [uniqueidentifier],
-  @SequenceNumber2 [int],
-  @Mmsi2 [uniqueidentifier],
-  @SequenceNumber3 [int],
-  @Mmsi3 [uniqueidentifier],
-  @SequenceNumber4 [int],
-  @Mmsi4 [uniqueidentifier]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10500;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisBinaryAcknowledgeMessage]([Id], [Spare], [SequenceNumber1], [Mmsi1], [SequenceNumber2], [Mmsi2], [SequenceNumber3], [Mmsi3], [SequenceNumber4], [Mmsi4])
-          VALUES(@Id, @Spare, @SequenceNumber1, @Mmsi1, @SequenceNumber2, @Mmsi2, @SequenceNumber3, @Mmsi3, @SequenceNumber4, @Mmsi4);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisBinaryAcknowledgeMessageInsertTrigger]
-ON [AisBinaryAcknowledgeMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Spare],
-        [SequenceNumber1],
-        [Mmsi1],
-        [SequenceNumber2],
-        [Mmsi2],
-        [SequenceNumber3],
-        [Mmsi3],
-        [SequenceNumber4],
-        [Mmsi4]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Spare [int]
-    DECLARE @SequenceNumber1 [int]
-    DECLARE @Mmsi1 [uniqueidentifier]
-    DECLARE @SequenceNumber2 [int]
-    DECLARE @Mmsi2 [uniqueidentifier]
-    DECLARE @SequenceNumber3 [int]
-    DECLARE @Mmsi3 [uniqueidentifier]
-    DECLARE @SequenceNumber4 [int]
-    DECLARE @Mmsi4 [uniqueidentifier]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Spare,
-        @SequenceNumber1,
-        @Mmsi1,
-        @SequenceNumber2,
-        @Mmsi2,
-        @SequenceNumber3,
-        @Mmsi3,
-        @SequenceNumber4,
-        @Mmsi4
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisBinaryAcknowledgeMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@SequenceNumber1,@Mmsi1,@SequenceNumber2,@Mmsi2,@SequenceNumber3,@Mmsi3,@SequenceNumber4,@Mmsi4
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Spare,
-            @SequenceNumber1,
-            @Mmsi1,
-            @SequenceNumber2,
-            @Mmsi2,
-            @SequenceNumber3,
-            @Mmsi3,
-            @SequenceNumber4,
-            @Mmsi4
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisBinaryAddressedMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @SequenceNumber [int],
-  @DestinationMmsi [uniqueidentifier],
-  @RetransmitFlag [bit],
-  @Spare [int],
-  @DesignatedAreaCode [int],
-  @FunctionalId [int],
-  @Data [nvarchar](max)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10600;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisBinaryAddressedMessage]([Id], [SequenceNumber], [DestinationMmsi], [RetransmitFlag], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
-          VALUES(@Id, @SequenceNumber, @DestinationMmsi, @RetransmitFlag, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisBinaryAddressedMessageInsertTrigger]
-ON [AisBinaryAddressedMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [SequenceNumber],
-        [DestinationMmsi],
-        [RetransmitFlag],
-        [Spare],
-        [DesignatedAreaCode],
-        [FunctionalId],
-        [Data]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @SequenceNumber [int]
-    DECLARE @DestinationMmsi [uniqueidentifier]
-    DECLARE @RetransmitFlag [bit]
-    DECLARE @Spare [int]
-    DECLARE @DesignatedAreaCode [int]
-    DECLARE @FunctionalId [int]
-    DECLARE @Data [nvarchar](max)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @SequenceNumber,
-        @DestinationMmsi,
-        @RetransmitFlag,
-        @Spare,
-        @DesignatedAreaCode,
-        @FunctionalId,
-        @Data
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisBinaryAddressedMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@SequenceNumber,@DestinationMmsi,@RetransmitFlag,@Spare,@DesignatedAreaCode,@FunctionalId,@Data
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @SequenceNumber,
-            @DestinationMmsi,
-            @RetransmitFlag,
-            @Spare,
-            @DesignatedAreaCode,
-            @FunctionalId,
-            @Data
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisBinaryBroadcastMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @DesignatedAreaCode [int],
-  @FunctionalId [int],
-  @Data [nvarchar](max)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10700;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10700;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisBinaryBroadcastMessage]([Id], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
-          VALUES(@Id, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10700;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisBinaryBroadcastMessageInsertTrigger]
-ON [AisBinaryBroadcastMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Spare],
-        [DesignatedAreaCode],
-        [FunctionalId],
-        [Data]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Spare [int]
-    DECLARE @DesignatedAreaCode [int]
-    DECLARE @FunctionalId [int]
-    DECLARE @Data [nvarchar](max)
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Spare,
-        @DesignatedAreaCode,
-        @FunctionalId,
-        @Data
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisBinaryBroadcastMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@DesignatedAreaCode,@FunctionalId,@Data
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Spare,
-            @DesignatedAreaCode,
-            @FunctionalId,
-            @Data
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisDataLinkManagementMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @Offset1 [int],
-  @ReservedSlots1 [int],
-  @Timeout1 [int],
-  @Increment1 [int],
-  @Offset2 [int],
-  @ReservedSlots2 [int],
-  @Timeout2 [int],
-  @Increment2 [int],
-  @Offset3 [int],
-  @ReservedSlots3 [int],
-  @Timeout3 [int],
-  @Increment3 [int],
-  @Offset4 [int],
-  @ReservedSlots4 [int],
-  @Timeout4 [int],
-  @Increment4 [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10800;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10800;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisDataLinkManagementMessage]([Id], [Spare], [Offset1], [ReservedSlots1], [Timeout1], [Increment1], [Offset2], [ReservedSlots2], [Timeout2], [Increment2], [Offset3], [ReservedSlots3], [Timeout3], [Increment3], [Offset4], [ReservedSlots4], [Timeout4], [Increment4])
-          VALUES(@Id, @Spare, @Offset1, @ReservedSlots1, @Timeout1, @Increment1, @Offset2, @ReservedSlots2, @Timeout2, @Increment2, @Offset3, @ReservedSlots3, @Timeout3, @Increment3, @Offset4, @ReservedSlots4, @Timeout4, @Increment4);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10800;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisDataLinkManagementMessageInsertTrigger]
-ON [AisDataLinkManagementMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Spare],
-        [Offset1],
-        [ReservedSlots1],
-        [Timeout1],
-        [Increment1],
-        [Offset2],
-        [ReservedSlots2],
-        [Timeout2],
-        [Increment2],
-        [Offset3],
-        [ReservedSlots3],
-        [Timeout3],
-        [Increment3],
-        [Offset4],
-        [ReservedSlots4],
-        [Timeout4],
-        [Increment4]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Spare [int]
-    DECLARE @Offset1 [int]
-    DECLARE @ReservedSlots1 [int]
-    DECLARE @Timeout1 [int]
-    DECLARE @Increment1 [int]
-    DECLARE @Offset2 [int]
-    DECLARE @ReservedSlots2 [int]
-    DECLARE @Timeout2 [int]
-    DECLARE @Increment2 [int]
-    DECLARE @Offset3 [int]
-    DECLARE @ReservedSlots3 [int]
-    DECLARE @Timeout3 [int]
-    DECLARE @Increment3 [int]
-    DECLARE @Offset4 [int]
-    DECLARE @ReservedSlots4 [int]
-    DECLARE @Timeout4 [int]
-    DECLARE @Increment4 [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Spare,
-        @Offset1,
-        @ReservedSlots1,
-        @Timeout1,
-        @Increment1,
-        @Offset2,
-        @ReservedSlots2,
-        @Timeout2,
-        @Increment2,
-        @Offset3,
-        @ReservedSlots3,
-        @Timeout3,
-        @Increment3,
-        @Offset4,
-        @ReservedSlots4,
-        @Timeout4,
-        @Increment4
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisDataLinkManagementMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@Offset1,@ReservedSlots1,@Timeout1,@Increment1,@Offset2,@ReservedSlots2,@Timeout2,@Increment2,@Offset3,@ReservedSlots3,@Timeout3,@Increment3,@Offset4,@ReservedSlots4,@Timeout4,@Increment4
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Spare,
-            @Offset1,
-            @ReservedSlots1,
-            @Timeout1,
-            @Increment1,
-            @Offset2,
-            @ReservedSlots2,
-            @Timeout2,
-            @Increment2,
-            @Offset3,
-            @ReservedSlots3,
-            @Timeout3,
-            @Increment3,
-            @Offset4,
-            @ReservedSlots4,
-            @Timeout4,
-            @Increment4
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisExtendedClassBCsPositionReportMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Reserved [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @RegionalReserved [int],
-  @Name [uniqueidentifier],
-  @ShipType [int],
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @PositionFixType [int],
-  @Raim [int],
-  @DataTerminalReady [bit],
-  @Assigned [bit],
-  @Spare [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 10900;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint10900;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisExtendedClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [Name], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Raim], [DataTerminalReady], [Assigned], [Spare])
-          VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @Name, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Raim, @DataTerminalReady, @Assigned, @Spare);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint10900;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisExtendedClassBCsPositionReportMessageInsertTrigger]
-ON [AisExtendedClassBCsPositionReportMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Reserved],
-        [SpeedOverGround],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [CourseOverGround],
-        [TrueHeading],
-        [Timestamp],
-        [RegionalReserved],
-        [Name],
-        [ShipType],
-        [DimensionToBow],
-        [DimensionToStern],
-        [DimensionToPort],
-        [DimensionToStarboard],
-        [PositionFixType],
-        [Raim],
-        [DataTerminalReady],
-        [Assigned],
-        [Spare]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Reserved [int]
-    DECLARE @SpeedOverGround [float](53)
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @TrueHeading [int]
-    DECLARE @Timestamp [int]
-    DECLARE @RegionalReserved [int]
-    DECLARE @Name [uniqueidentifier]
-    DECLARE @ShipType [int]
-    DECLARE @DimensionToBow [int]
-    DECLARE @DimensionToStern [int]
-    DECLARE @DimensionToPort [int]
-    DECLARE @DimensionToStarboard [int]
-    DECLARE @PositionFixType [int]
-    DECLARE @Raim [int]
-    DECLARE @DataTerminalReady [bit]
-    DECLARE @Assigned [bit]
-    DECLARE @Spare [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Reserved,
-        @SpeedOverGround,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @CourseOverGround,
-        @TrueHeading,
-        @Timestamp,
-        @RegionalReserved,
-        @Name,
-        @ShipType,
-        @DimensionToBow,
-        @DimensionToStern,
-        @DimensionToPort,
-        @DimensionToStarboard,
-        @PositionFixType,
-        @Raim,
-        @DataTerminalReady,
-        @Assigned,
-        @Spare
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisExtendedClassBCsPositionReportMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Reserved,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@RegionalReserved,@Name,@ShipType,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@PositionFixType,@Raim,@DataTerminalReady,@Assigned,@Spare
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Reserved,
-            @SpeedOverGround,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @CourseOverGround,
-            @TrueHeading,
-            @Timestamp,
-            @RegionalReserved,
-            @Name,
-            @ShipType,
-            @DimensionToBow,
-            @DimensionToStern,
-            @DimensionToPort,
-            @DimensionToStarboard,
-            @PositionFixType,
-            @Raim,
-            @DataTerminalReady,
-            @Assigned,
-            @Spare
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisInterrogationMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @InterrogatedMmsi [uniqueidentifier],
-  @FirstMessageType [int],
-  @FirstSlotOffset [int],
-  @SecondMessageType [int],
-  @SecondSlotOffset [int],
-  @SecondStationInterrogationMmsi [uniqueidentifier],
-  @SecondStationFirstMessageType [int],
-  @SecondStationFirstSlotOffset [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11000;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11000;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisInterrogationMessage]([Id], [InterrogatedMmsi], [FirstMessageType], [FirstSlotOffset], [SecondMessageType], [SecondSlotOffset], [SecondStationInterrogationMmsi], [SecondStationFirstMessageType], [SecondStationFirstSlotOffset])
-          VALUES(@Id, @InterrogatedMmsi, @FirstMessageType, @FirstSlotOffset, @SecondMessageType, @SecondSlotOffset, @SecondStationInterrogationMmsi, @SecondStationFirstMessageType, @SecondStationFirstSlotOffset);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11000;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisInterrogationMessageInsertTrigger]
-ON [AisInterrogationMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [InterrogatedMmsi],
-        [FirstMessageType],
-        [FirstSlotOffset],
-        [SecondMessageType],
-        [SecondSlotOffset],
-        [SecondStationInterrogationMmsi],
-        [SecondStationFirstMessageType],
-        [SecondStationFirstSlotOffset]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @InterrogatedMmsi [uniqueidentifier]
-    DECLARE @FirstMessageType [int]
-    DECLARE @FirstSlotOffset [int]
-    DECLARE @SecondMessageType [int]
-    DECLARE @SecondSlotOffset [int]
-    DECLARE @SecondStationInterrogationMmsi [uniqueidentifier]
-    DECLARE @SecondStationFirstMessageType [int]
-    DECLARE @SecondStationFirstSlotOffset [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @InterrogatedMmsi,
-        @FirstMessageType,
-        @FirstSlotOffset,
-        @SecondMessageType,
-        @SecondSlotOffset,
-        @SecondStationInterrogationMmsi,
-        @SecondStationFirstMessageType,
-        @SecondStationFirstSlotOffset
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisInterrogationMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@InterrogatedMmsi,@FirstMessageType,@FirstSlotOffset,@SecondMessageType,@SecondSlotOffset,@SecondStationInterrogationMmsi,@SecondStationFirstMessageType,@SecondStationFirstSlotOffset
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @InterrogatedMmsi,
-            @FirstMessageType,
-            @FirstSlotOffset,
-            @SecondMessageType,
-            @SecondSlotOffset,
-            @SecondStationInterrogationMmsi,
-            @SecondStationFirstMessageType,
-            @SecondStationFirstSlotOffset
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportClassAAssignedScheduleMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationStatus [int],
-  @RateOfTurn [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @ManeuverIndicator [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11200;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11200;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
-          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
-      INSERT INTO [AisPositionReportClassAAssignedScheduleMessage]([Id])
-          VALUES(@Id);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11200;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisPositionReportClassAAssignedScheduleMessageInsertTrigger]
-ON [AisPositionReportClassAAssignedScheduleMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [NavigationStatus],
-        [RateOfTurn],
-        [SpeedOverGround],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [CourseOverGround],
-        [TrueHeading],
-        [Timestamp],
-        [ManeuverIndicator],
-        [Spare],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @NavigationStatus [int]
-    DECLARE @RateOfTurn [int]
-    DECLARE @SpeedOverGround [float](53)
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @TrueHeading [int]
-    DECLARE @Timestamp [int]
-    DECLARE @ManeuverIndicator [int]
-    DECLARE @Spare [int]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @NavigationStatus,
-        @RateOfTurn,
-        @SpeedOverGround,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @CourseOverGround,
-        @TrueHeading,
-        @Timestamp,
-        @ManeuverIndicator,
-        @Spare,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisPositionReportClassAAssignedScheduleMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationStatus,@RateOfTurn,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@ManeuverIndicator,@Spare,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @NavigationStatus,
-            @RateOfTurn,
-            @SpeedOverGround,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @CourseOverGround,
-            @TrueHeading,
-            @Timestamp,
-            @ManeuverIndicator,
-            @Spare,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportClassAMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationStatus [int],
-  @RateOfTurn [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @ManeuverIndicator [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11300;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
-          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
-      INSERT INTO [AisPositionReportClassAMessage]([Id])
-          VALUES(@Id);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisPositionReportClassAMessageInsertTrigger]
-ON [AisPositionReportClassAMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [NavigationStatus],
-        [RateOfTurn],
-        [SpeedOverGround],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [CourseOverGround],
-        [TrueHeading],
-        [Timestamp],
-        [ManeuverIndicator],
-        [Spare],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @NavigationStatus [int]
-    DECLARE @RateOfTurn [int]
-    DECLARE @SpeedOverGround [float](53)
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @TrueHeading [int]
-    DECLARE @Timestamp [int]
-    DECLARE @ManeuverIndicator [int]
-    DECLARE @Spare [int]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @NavigationStatus,
-        @RateOfTurn,
-        @SpeedOverGround,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @CourseOverGround,
-        @TrueHeading,
-        @Timestamp,
-        @ManeuverIndicator,
-        @Spare,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisPositionReportClassAMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationStatus,@RateOfTurn,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@ManeuverIndicator,@Spare,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @NavigationStatus,
-            @RateOfTurn,
-            @SpeedOverGround,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @CourseOverGround,
-            @TrueHeading,
-            @Timestamp,
-            @ManeuverIndicator,
-            @Spare,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportClassAResponseToInterrogationMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @NavigationStatus [int],
-  @RateOfTurn [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @ManeuverIndicator [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11400;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
-          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
-      INSERT INTO [AisPositionReportClassAResponseToInterrogationMessage]([Id])
-          VALUES(@Id);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisPositionReportClassAResponseToInterrogationMessageInsertTrigger]
-ON [AisPositionReportClassAResponseToInterrogationMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [NavigationStatus],
-        [RateOfTurn],
-        [SpeedOverGround],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [CourseOverGround],
-        [TrueHeading],
-        [Timestamp],
-        [ManeuverIndicator],
-        [Spare],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @NavigationStatus [int]
-    DECLARE @RateOfTurn [int]
-    DECLARE @SpeedOverGround [float](53)
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @TrueHeading [int]
-    DECLARE @Timestamp [int]
-    DECLARE @ManeuverIndicator [int]
-    DECLARE @Spare [int]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @NavigationStatus,
-        @RateOfTurn,
-        @SpeedOverGround,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @CourseOverGround,
-        @TrueHeading,
-        @Timestamp,
-        @ManeuverIndicator,
-        @Spare,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisPositionReportClassAResponseToInterrogationMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationStatus,@RateOfTurn,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@ManeuverIndicator,@Spare,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @NavigationStatus,
-            @RateOfTurn,
-            @SpeedOverGround,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @CourseOverGround,
-            @TrueHeading,
-            @Timestamp,
-            @ManeuverIndicator,
-            @Spare,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisPositionReportForLongRangeApplicationsMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PositionAccuracy [int],
-  @Raim [int],
-  @NavigationStatus [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @SpeedOverGround [float](53),
-  @CourseOverGround [float](53),
-  @GnssPositionStatus [int],
-  @Spare [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11500;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisPositionReportForLongRangeApplicationsMessage]([Id], [PositionAccuracy], [Raim], [NavigationStatus], [Longitude], [Latitude], [SpeedOverGround], [CourseOverGround], [GnssPositionStatus], [Spare])
-          VALUES(@Id, @PositionAccuracy, @Raim, @NavigationStatus, @Longitude, @Latitude, @SpeedOverGround, @CourseOverGround, @GnssPositionStatus, @Spare);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisPositionReportForLongRangeApplicationsMessageInsertTrigger]
-ON [AisPositionReportForLongRangeApplicationsMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [PositionAccuracy],
-        [Raim],
-        [NavigationStatus],
-        [Longitude],
-        [Latitude],
-        [SpeedOverGround],
-        [CourseOverGround],
-        [GnssPositionStatus],
-        [Spare]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Raim [int]
-    DECLARE @NavigationStatus [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @SpeedOverGround [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @GnssPositionStatus [int]
-    DECLARE @Spare [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @PositionAccuracy,
-        @Raim,
-        @NavigationStatus,
-        @Longitude,
-        @Latitude,
-        @SpeedOverGround,
-        @CourseOverGround,
-        @GnssPositionStatus,
-        @Spare
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisPositionReportForLongRangeApplicationsMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PositionAccuracy,@Raim,@NavigationStatus,@Longitude,@Latitude,@SpeedOverGround,@CourseOverGround,@GnssPositionStatus,@Spare
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @PositionAccuracy,
-            @Raim,
-            @NavigationStatus,
-            @Longitude,
-            @Latitude,
-            @SpeedOverGround,
-            @CourseOverGround,
-            @GnssPositionStatus,
-            @Spare
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisSafetyRelatedAcknowledgmentMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare [int],
-  @SequenceNumber1 [int],
-  @Mmsi1 [uniqueidentifier],
-  @SequenceNumber2 [int],
-  @Mmsi2 [uniqueidentifier],
-  @SequenceNumber3 [int],
-  @Mmsi3 [uniqueidentifier],
-  @SequenceNumber4 [int],
-  @Mmsi4 [uniqueidentifier]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11600;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisSafetyRelatedAcknowledgmentMessage]([Id], [Spare], [SequenceNumber1], [Mmsi1], [SequenceNumber2], [Mmsi2], [SequenceNumber3], [Mmsi3], [SequenceNumber4], [Mmsi4])
-          VALUES(@Id, @Spare, @SequenceNumber1, @Mmsi1, @SequenceNumber2, @Mmsi2, @SequenceNumber3, @Mmsi3, @SequenceNumber4, @Mmsi4);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisSafetyRelatedAcknowledgmentMessageInsertTrigger]
-ON [AisSafetyRelatedAcknowledgmentMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Spare],
-        [SequenceNumber1],
-        [Mmsi1],
-        [SequenceNumber2],
-        [Mmsi2],
-        [SequenceNumber3],
-        [Mmsi3],
-        [SequenceNumber4],
-        [Mmsi4]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Spare [int]
-    DECLARE @SequenceNumber1 [int]
-    DECLARE @Mmsi1 [uniqueidentifier]
-    DECLARE @SequenceNumber2 [int]
-    DECLARE @Mmsi2 [uniqueidentifier]
-    DECLARE @SequenceNumber3 [int]
-    DECLARE @Mmsi3 [uniqueidentifier]
-    DECLARE @SequenceNumber4 [int]
-    DECLARE @Mmsi4 [uniqueidentifier]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Spare,
-        @SequenceNumber1,
-        @Mmsi1,
-        @SequenceNumber2,
-        @Mmsi2,
-        @SequenceNumber3,
-        @Mmsi3,
-        @SequenceNumber4,
-        @Mmsi4
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisSafetyRelatedAcknowledgmentMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@SequenceNumber1,@Mmsi1,@SequenceNumber2,@Mmsi2,@SequenceNumber3,@Mmsi3,@SequenceNumber4,@Mmsi4
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Spare,
-            @SequenceNumber1,
-            @Mmsi1,
-            @SequenceNumber2,
-            @Mmsi2,
-            @SequenceNumber3,
-            @Mmsi3,
-            @SequenceNumber4,
-            @Mmsi4
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisStandardClassBCsPositionReportMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Reserved [int],
-  @SpeedOverGround [float](53),
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @TrueHeading [int],
-  @Timestamp [int],
-  @RegionalReserved [int],
-  @IsCsUnit [bit],
-  @HasDisplay [bit],
-  @HasDscCapability [bit],
-  @Band [bit],
-  @CanAcceptMessage22 [bit],
-  @Assigned [bit],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11700;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11700;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisStandardClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [IsCsUnit], [HasDisplay], [HasDscCapability], [Band], [CanAcceptMessage22], [Assigned], [Raim], [RadioStatus])
-          VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @IsCsUnit, @HasDisplay, @HasDscCapability, @Band, @CanAcceptMessage22, @Assigned, @Raim, @RadioStatus);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11700;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisStandardClassBCsPositionReportMessageInsertTrigger]
-ON [AisStandardClassBCsPositionReportMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Reserved],
-        [SpeedOverGround],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [CourseOverGround],
-        [TrueHeading],
-        [Timestamp],
-        [RegionalReserved],
-        [IsCsUnit],
-        [HasDisplay],
-        [HasDscCapability],
-        [Band],
-        [CanAcceptMessage22],
-        [Assigned],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Reserved [int]
-    DECLARE @SpeedOverGround [float](53)
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @TrueHeading [int]
-    DECLARE @Timestamp [int]
-    DECLARE @RegionalReserved [int]
-    DECLARE @IsCsUnit [bit]
-    DECLARE @HasDisplay [bit]
-    DECLARE @HasDscCapability [bit]
-    DECLARE @Band [bit]
-    DECLARE @CanAcceptMessage22 [bit]
-    DECLARE @Assigned [bit]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Reserved,
-        @SpeedOverGround,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @CourseOverGround,
-        @TrueHeading,
-        @Timestamp,
-        @RegionalReserved,
-        @IsCsUnit,
-        @HasDisplay,
-        @HasDscCapability,
-        @Band,
-        @CanAcceptMessage22,
-        @Assigned,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisStandardClassBCsPositionReportMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Reserved,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@RegionalReserved,@IsCsUnit,@HasDisplay,@HasDscCapability,@Band,@CanAcceptMessage22,@Assigned,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Reserved,
-            @SpeedOverGround,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @CourseOverGround,
-            @TrueHeading,
-            @Timestamp,
-            @RegionalReserved,
-            @IsCsUnit,
-            @HasDisplay,
-            @HasDscCapability,
-            @Band,
-            @CanAcceptMessage22,
-            @Assigned,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisStandardSarAircraftPositionReportMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Altitude [int],
-  @SpeedOverGround [int],
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @CourseOverGround [float](53),
-  @Timestamp [int],
-  @Reserved [int],
-  @DataTerminalReady [bit],
-  @Spare [int],
-  @Assigned [bit],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11800;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11800;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisStandardSarAircraftPositionReportMessage]([Id], [Altitude], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [Timestamp], [Reserved], [DataTerminalReady], [Spare], [Assigned], [Raim], [RadioStatus])
-          VALUES(@Id, @Altitude, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @Timestamp, @Reserved, @DataTerminalReady, @Spare, @Assigned, @Raim, @RadioStatus);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11800;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisStandardSarAircraftPositionReportMessageInsertTrigger]
-ON [AisStandardSarAircraftPositionReportMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Altitude],
-        [SpeedOverGround],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [CourseOverGround],
-        [Timestamp],
-        [Reserved],
-        [DataTerminalReady],
-        [Spare],
-        [Assigned],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Altitude [int]
-    DECLARE @SpeedOverGround [int]
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @CourseOverGround [float](53)
-    DECLARE @Timestamp [int]
-    DECLARE @Reserved [int]
-    DECLARE @DataTerminalReady [bit]
-    DECLARE @Spare [int]
-    DECLARE @Assigned [bit]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Altitude,
-        @SpeedOverGround,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @CourseOverGround,
-        @Timestamp,
-        @Reserved,
-        @DataTerminalReady,
-        @Spare,
-        @Assigned,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisStandardSarAircraftPositionReportMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Altitude,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@Timestamp,@Reserved,@DataTerminalReady,@Spare,@Assigned,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Altitude,
-            @SpeedOverGround,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @CourseOverGround,
-            @Timestamp,
-            @Reserved,
-            @DataTerminalReady,
-            @Spare,
-            @Assigned,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @AisVersion [int],
-  @ImoNumber [uniqueidentifier],
-  @Callsign [uniqueidentifier],
-  @ShipName [uniqueidentifier],
-  @ShipType [int],
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @PositionFixType [int],
-  @EstimatedTimeOfArrival [bigint],
-  @Draught [float](53),
-  @Destination [nvarchar](100),
-  @DataTerminalReady [bit],
-  @Spare [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 11900;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint11900;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisStaticAndVoyageRelatedDataMessage]([Id], [AisVersion], [ImoNumber], [Callsign], [ShipName], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [EstimatedTimeOfArrival], [Draught], [Destination], [DataTerminalReady], [Spare])
-          VALUES(@Id, @AisVersion, @ImoNumber, @Callsign, @ShipName, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @EstimatedTimeOfArrival, @Draught, @Destination, @DataTerminalReady, @Spare);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint11900;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisStaticAndVoyageRelatedDataMessageInsertTrigger]
-ON [AisStaticAndVoyageRelatedDataMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [AisVersion],
-        [ImoNumber],
-        [Callsign],
-        [ShipName],
-        [ShipType],
-        [DimensionToBow],
-        [DimensionToStern],
-        [DimensionToPort],
-        [DimensionToStarboard],
-        [PositionFixType],
-        [EstimatedTimeOfArrival],
-        [Draught],
-        [Destination],
-        [DataTerminalReady],
-        [Spare]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @AisVersion [int]
-    DECLARE @ImoNumber [uniqueidentifier]
-    DECLARE @Callsign [uniqueidentifier]
-    DECLARE @ShipName [uniqueidentifier]
-    DECLARE @ShipType [int]
-    DECLARE @DimensionToBow [int]
-    DECLARE @DimensionToStern [int]
-    DECLARE @DimensionToPort [int]
-    DECLARE @DimensionToStarboard [int]
-    DECLARE @PositionFixType [int]
-    DECLARE @EstimatedTimeOfArrival [bigint]
-    DECLARE @Draught [float](53)
-    DECLARE @Destination [nvarchar](100)
-    DECLARE @DataTerminalReady [bit]
-    DECLARE @Spare [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @AisVersion,
-        @ImoNumber,
-        @Callsign,
-        @ShipName,
-        @ShipType,
-        @DimensionToBow,
-        @DimensionToStern,
-        @DimensionToPort,
-        @DimensionToStarboard,
-        @PositionFixType,
-        @EstimatedTimeOfArrival,
-        @Draught,
-        @Destination,
-        @DataTerminalReady,
-        @Spare
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisStaticAndVoyageRelatedDataMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@AisVersion,@ImoNumber,@Callsign,@ShipName,@ShipType,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@PositionFixType,@EstimatedTimeOfArrival,@Draught,@Destination,@DataTerminalReady,@Spare
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @AisVersion,
-            @ImoNumber,
-            @Callsign,
-            @ShipName,
-            @ShipType,
-            @DimensionToBow,
-            @DimensionToStern,
-            @DimensionToPort,
-            @DimensionToStarboard,
-            @PositionFixType,
-            @EstimatedTimeOfArrival,
-            @Draught,
-            @Destination,
-            @DataTerminalReady,
-            @Spare
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticDataReportMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PartNumber [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 12000;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12000;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
-          VALUES(@Id, @PartNumber);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12000;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisStaticDataReportMessageInsertTrigger]
-ON [AisStaticDataReportMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [PartNumber]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @PartNumber [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @PartNumber
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisStaticDataReportMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PartNumber
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @PartNumber
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticDataReportPartAMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PartNumber [int],
-  @ShipName [uniqueidentifier],
-  @Spare [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 12100;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12100;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
-          VALUES(@Id, @PartNumber);
-      INSERT INTO [AisStaticDataReportPartAMessage]([Id], [ShipName], [Spare])
-          VALUES(@Id, @ShipName, @Spare);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12100;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisStaticDataReportPartAMessageInsertTrigger]
-ON [AisStaticDataReportPartAMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [PartNumber],
-        [ShipName],
-        [Spare]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @PartNumber [int]
-    DECLARE @ShipName [uniqueidentifier]
-    DECLARE @Spare [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @PartNumber,
-        @ShipName,
-        @Spare
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisStaticDataReportPartAMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PartNumber,@ShipName,@Spare
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @PartNumber,
-            @ShipName,
-            @Spare
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @PartNumber [int],
-  @ShipType [int],
-  @VendorId [nvarchar](100),
-  @UnitModelCode [int],
-  @SerialNumber [int],
-  @Callsign [uniqueidentifier],
-  @DimensionToBow [int],
-  @DimensionToStern [int],
-  @DimensionToPort [int],
-  @DimensionToStarboard [int],
-  @MothershipMmsi [uniqueidentifier],
-  @PositionFixType [int],
-  @Spare [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 12200;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12200;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
-          VALUES(@Id, @PartNumber);
-      INSERT INTO [AisStaticDataReportPartBMessage]([Id], [ShipType], [VendorId], [UnitModelCode], [SerialNumber], [Callsign], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [MothershipMmsi], [PositionFixType], [Spare])
-          VALUES(@Id, @ShipType, @VendorId, @UnitModelCode, @SerialNumber, @Callsign, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @MothershipMmsi, @PositionFixType, @Spare);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12200;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisStaticDataReportPartBMessageInsertTrigger]
-ON [AisStaticDataReportPartBMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [PartNumber],
-        [ShipType],
-        [VendorId],
-        [UnitModelCode],
-        [SerialNumber],
-        [Callsign],
-        [DimensionToBow],
-        [DimensionToStern],
-        [DimensionToPort],
-        [DimensionToStarboard],
-        [MothershipMmsi],
-        [PositionFixType],
-        [Spare]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @PartNumber [int]
-    DECLARE @ShipType [int]
-    DECLARE @VendorId [nvarchar](100)
-    DECLARE @UnitModelCode [int]
-    DECLARE @SerialNumber [int]
-    DECLARE @Callsign [uniqueidentifier]
-    DECLARE @DimensionToBow [int]
-    DECLARE @DimensionToStern [int]
-    DECLARE @DimensionToPort [int]
-    DECLARE @DimensionToStarboard [int]
-    DECLARE @MothershipMmsi [uniqueidentifier]
-    DECLARE @PositionFixType [int]
-    DECLARE @Spare [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @PartNumber,
-        @ShipType,
-        @VendorId,
-        @UnitModelCode,
-        @SerialNumber,
-        @Callsign,
-        @DimensionToBow,
-        @DimensionToStern,
-        @DimensionToPort,
-        @DimensionToStarboard,
-        @MothershipMmsi,
-        @PositionFixType,
-        @Spare
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisStaticDataReportPartBMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PartNumber,@ShipType,@VendorId,@UnitModelCode,@SerialNumber,@Callsign,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@MothershipMmsi,@PositionFixType,@Spare
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @PartNumber,
-            @ShipType,
-            @VendorId,
-            @UnitModelCode,
-            @SerialNumber,
-            @Callsign,
-            @DimensionToBow,
-            @DimensionToStern,
-            @DimensionToPort,
-            @DimensionToStarboard,
-            @MothershipMmsi,
-            @PositionFixType,
-            @Spare
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Spare1 [int],
-  @DestinationMmsi [int],
-  @Spare2 [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 12300;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12300;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisUtcAndDateInquiryMessage]([Id], [Spare1], [DestinationMmsi], [Spare2])
-          VALUES(@Id, @Spare1, @DestinationMmsi, @Spare2);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12300;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisUtcAndDateInquiryMessageInsertTrigger]
-ON [AisUtcAndDateInquiryMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Spare1],
-        [DestinationMmsi],
-        [Spare2]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Spare1 [int]
-    DECLARE @DestinationMmsi [int]
-    DECLARE @Spare2 [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Spare1,
-        @DestinationMmsi,
-        @Spare2
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisUtcAndDateInquiryMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare1,@DestinationMmsi,@Spare2
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Spare1,
-            @DestinationMmsi,
-            @Spare2
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisUtcAndDateResponseMessageInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @ReceivedTimestamp [bigint],
-  @MessageSequenceNumber [bigint],
-  @Repeat [int],
-  @Mmsi [uniqueidentifier],
-  @Datetime [bigint],
-  @PositionAccuracy [int],
-  @Longitude [float](53),
-  @Latitude [float](53),
-  @PositionFixType [int],
-  @Spare [int],
-  @Raim [int],
-  @RadioStatus [int]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @EntityType INT;
-    SET @EntityType = 12400;
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12400;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisTransceiver], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
-          VALUES(@Id, @EntityType, 0, @AisTransceiver, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
-      INSERT INTO [AisUtcAndDateResponseMessage]([Id], [Datetime], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
-          VALUES(@Id, @Datetime, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12400;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisUtcAndDateResponseMessageInsertTrigger]
-ON [AisUtcAndDateResponseMessageView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [ReceivedTimestamp],
-        [MessageSequenceNumber],
-        [Repeat],
-        [Mmsi],
-        [Datetime],
-        [PositionAccuracy],
-        [Longitude],
-        [Latitude],
-        [PositionFixType],
-        [Spare],
-        [Raim],
-        [RadioStatus]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @ReceivedTimestamp [bigint]
-    DECLARE @MessageSequenceNumber [bigint]
-    DECLARE @Repeat [int]
-    DECLARE @Mmsi [uniqueidentifier]
-    DECLARE @Datetime [bigint]
-    DECLARE @PositionAccuracy [int]
-    DECLARE @Longitude [float](53)
-    DECLARE @Latitude [float](53)
-    DECLARE @PositionFixType [int]
-    DECLARE @Spare [int]
-    DECLARE @Raim [int]
-    DECLARE @RadioStatus [int]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @ReceivedTimestamp,
-        @MessageSequenceNumber,
-        @Repeat,
-        @Mmsi,
-        @Datetime,
-        @PositionAccuracy,
-        @Longitude,
-        @Latitude,
-        @PositionFixType,
-        @Spare,
-        @Raim,
-        @RadioStatus
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisUtcAndDateResponseMessageInsert] @Id,@RowVersion,@AisTransceiver,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Datetime,@PositionAccuracy,@Longitude,@Latitude,@PositionFixType,@Spare,@Raim,@RadioStatus
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @ReceivedTimestamp,
-            @MessageSequenceNumber,
-            @Repeat,
-            @Mmsi,
-            @Datetime,
-            @PositionAccuracy,
-            @Longitude,
-            @Latitude,
-            @PositionFixType,
-            @Spare,
-            @Raim,
-            @RadioStatus
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverCommandInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @DeviceCommandSourceType [int],
-  @DeviceCommandSourceId [uniqueidentifier],
-  @Reply [uniqueidentifier]
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12500;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisTransceiverCommand]([Id], [RowVersion], [AisTransceiver], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
-          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12500;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisTransceiverCommandInsertTrigger]
-ON [AisTransceiverCommandView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
-        [Timestamp],
-        [DeviceCommandSourceType],
-        [DeviceCommandSourceId],
-        [Reply]
-      FROM inserted
-    OPEN @cur
-    DECLARE @Id [uniqueidentifier]
-    DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @Timestamp [bigint]
-    DECLARE @DeviceCommandSourceType [int]
-    DECLARE @DeviceCommandSourceId [uniqueidentifier]
-    DECLARE @Reply [uniqueidentifier]
-    FETCH NEXT FROM @cur INTO
-        @Id,
-        @RowVersion,
-        @AisTransceiver,
-        @Timestamp,
-        @DeviceCommandSourceType,
-        @DeviceCommandSourceId,
-        @Reply
-    WHILE(@@fetch_status <> -1)
-      BEGIN
-        EXEC [AisTransceiverCommandInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@DeviceCommandSourceType,@DeviceCommandSourceId,@Reply
-        FETCH NEXT FROM @cur INTO
-            @Id,
-            @RowVersion,
-            @AisTransceiver,
-            @Timestamp,
-            @DeviceCommandSourceType,
-            @DeviceCommandSourceId,
-            @Reply
-      END
-    CLOSE @cur
-    DEALLOCATE @cur
-  END
-
-GO
-
-CREATE OR ALTER PROCEDURE [AisTransceiverCommandReplyInsert]
-  @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @Command [uniqueidentifier],
-  @Status [int],
-  @Message [nvarchar](max)
-AS
-  BEGIN
-    IF @Id IS NULL
-    BEGIN
-      SET @Id = NEWID()
-    END
-    DECLARE @TranCounter INT;
-    SET @TranCounter = @@TRANCOUNT;
-    IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12600;
-    ELSE
-      BEGIN TRANSACTION;
-    BEGIN TRY
-      INSERT INTO [AisTransceiverCommandReply]([Id], [RowVersion], [AisTransceiver], [Timestamp], [Command], [Status], [Message])
-          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @Command, @Status, @Message);
-      IF @TranCounter = 0
-          COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        DECLARE @ErrorMessage NVARCHAR(4000);
-        DECLARE @ErrorSeverity INT;
-        DECLARE @ErrorState INT;
-        SELECT @ErrorMessage = ERROR_MESSAGE(),
-            @ErrorSeverity = ERROR_SEVERITY(),
-            @ErrorState = ERROR_STATE();
-        IF @TranCounter = 0
-          ROLLBACK TRANSACTION;
-        ELSE
-          IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12600;
-        RAISERROR(
-            @ErrorMessage,
-            @ErrorSeverity,
-            @ErrorState);
-    END CATCH
-  END
-
-GO
-
-CREATE OR ALTER TRIGGER [AisTransceiverCommandReplyInsertTrigger]
-ON [AisTransceiverCommandReplyView]
-INSTEAD OF INSERT AS
-  BEGIN
-    DECLARE @cur CURSOR
-    SET @cur = CURSOR FOR
-      SELECT
-        [Id],
-        [RowVersion],
-        [AisTransceiver],
+        [AisDevice],
         [Timestamp],
         [Command],
         [Status],
@@ -3550,7 +232,7 @@ INSTEAD OF INSERT AS
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
+    DECLARE @AisDevice [uniqueidentifier]
     DECLARE @Timestamp [bigint]
     DECLARE @Command [uniqueidentifier]
     DECLARE @Status [int]
@@ -3558,18 +240,18 @@ INSTEAD OF INSERT AS
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
-        @AisTransceiver,
+        @AisDevice,
         @Timestamp,
         @Command,
         @Status,
         @Message
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverCommandReplyInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@Command,@Status,@Message
+        EXEC [AisDeviceCommandReplyInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@Command,@Status,@Message
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
-            @AisTransceiver,
+            @AisDevice,
             @Timestamp,
             @Command,
             @Status,
@@ -3581,9 +263,9 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverConfigurationInsert]
+CREATE OR ALTER PROCEDURE [AisDeviceConfigurationInsert]
   @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
+  @AisDevice [uniqueidentifier],
   @Timestamp [bigint],
   @UserName [nvarchar](127),
   @Password [nvarchar](127),
@@ -3628,12 +310,12 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
-      SAVE TRANSACTION SavePoint12700;
+      SAVE TRANSACTION SavePoint10300;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [AisTransceiverConfiguration]([Id], [RowVersion], [AisTransceiver], [Timestamp], [UserName], [Password], [Latitude], [Longitude], [AisProviderLoginURL], [ComPort], [BaudRate], [FilterByArea], [UpperLeftCornerLatitude], [UpperLeftCornerLongitude], [BottomRightCornerLatitude], [BottomRightCornerLongitude], [AisProviderIPAddress], [AisProviderPort], [UseLogin], [AisProviderLoginPort], [CanSendAISMessage], [TextMessageHeader], [Urls], [UdpPort], [ConnectionType], [EnableRefreshAidToNavigationIn30sec], [EnableAidToNavigationFromFile], [AidToNavigationHeader], [SendingMMSI], [SourceUpdateRate], [EnableRefreshStayingStillTargetIn30sec], [ExcludeSendAisBaseStation], [ExcludeSendAisA], [EnableSendBaseStationAlarms], [AisWebConfig], [StoreReceivedSentences], [StoreSentMessages], [StoreUnsentMessages])
-          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @UserName, @Password, @Latitude, @Longitude, @AisProviderLoginURL, @ComPort, @BaudRate, @FilterByArea, @UpperLeftCornerLatitude, @UpperLeftCornerLongitude, @BottomRightCornerLatitude, @BottomRightCornerLongitude, @AisProviderIPAddress, @AisProviderPort, @UseLogin, @AisProviderLoginPort, @CanSendAISMessage, @TextMessageHeader, @Urls, @UdpPort, @ConnectionType, @EnableRefreshAidToNavigationIn30sec, @EnableAidToNavigationFromFile, @AidToNavigationHeader, @SendingMMSI, @SourceUpdateRate, @EnableRefreshStayingStillTargetIn30sec, @ExcludeSendAisBaseStation, @ExcludeSendAisA, @EnableSendBaseStationAlarms, @AisWebConfig, @StoreReceivedSentences, @StoreSentMessages, @StoreUnsentMessages);
+      INSERT INTO [AisDeviceConfiguration]([Id], [RowVersion], [AisDevice], [Timestamp], [UserName], [Password], [Latitude], [Longitude], [AisProviderLoginURL], [ComPort], [BaudRate], [FilterByArea], [UpperLeftCornerLatitude], [UpperLeftCornerLongitude], [BottomRightCornerLatitude], [BottomRightCornerLongitude], [AisProviderIPAddress], [AisProviderPort], [UseLogin], [AisProviderLoginPort], [CanSendAISMessage], [TextMessageHeader], [Urls], [UdpPort], [ConnectionType], [EnableRefreshAidToNavigationIn30sec], [EnableAidToNavigationFromFile], [AidToNavigationHeader], [SendingMMSI], [SourceUpdateRate], [EnableRefreshStayingStillTargetIn30sec], [ExcludeSendAisBaseStation], [ExcludeSendAisA], [EnableSendBaseStationAlarms], [AisWebConfig], [StoreReceivedSentences], [StoreSentMessages], [StoreUnsentMessages])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @UserName, @Password, @Latitude, @Longitude, @AisProviderLoginURL, @ComPort, @BaudRate, @FilterByArea, @UpperLeftCornerLatitude, @UpperLeftCornerLongitude, @BottomRightCornerLatitude, @BottomRightCornerLongitude, @AisProviderIPAddress, @AisProviderPort, @UseLogin, @AisProviderLoginPort, @CanSendAISMessage, @TextMessageHeader, @Urls, @UdpPort, @ConnectionType, @EnableRefreshAidToNavigationIn30sec, @EnableAidToNavigationFromFile, @AidToNavigationHeader, @SendingMMSI, @SourceUpdateRate, @EnableRefreshStayingStillTargetIn30sec, @ExcludeSendAisBaseStation, @ExcludeSendAisA, @EnableSendBaseStationAlarms, @AisWebConfig, @StoreReceivedSentences, @StoreSentMessages, @StoreUnsentMessages);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3648,7 +330,7 @@ AS
           ROLLBACK TRANSACTION;
         ELSE
           IF XACT_STATE() <> -1
-            ROLLBACK TRANSACTION SavePoint12700;
+            ROLLBACK TRANSACTION SavePoint10300;
         RAISERROR(
             @ErrorMessage,
             @ErrorSeverity,
@@ -3658,8 +340,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [AisTransceiverConfigurationInsertTrigger]
-ON [AisTransceiverConfigurationView]
+CREATE OR ALTER TRIGGER [AisDeviceConfigurationInsertTrigger]
+ON [AisDeviceConfigurationView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -3667,7 +349,7 @@ INSTEAD OF INSERT AS
       SELECT
         [Id],
         [RowVersion],
-        [AisTransceiver],
+        [AisDevice],
         [Timestamp],
         [UserName],
         [Password],
@@ -3707,7 +389,7 @@ INSTEAD OF INSERT AS
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
+    DECLARE @AisDevice [uniqueidentifier]
     DECLARE @Timestamp [bigint]
     DECLARE @UserName [nvarchar](127)
     DECLARE @Password [nvarchar](127)
@@ -3746,7 +428,7 @@ INSTEAD OF INSERT AS
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
-        @AisTransceiver,
+        @AisDevice,
         @Timestamp,
         @UserName,
         @Password,
@@ -3784,11 +466,11 @@ INSTEAD OF INSERT AS
         @StoreUnsentMessages
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverConfigurationInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@UserName,@Password,@Latitude,@Longitude,@AisProviderLoginURL,@ComPort,@BaudRate,@FilterByArea,@UpperLeftCornerLatitude,@UpperLeftCornerLongitude,@BottomRightCornerLatitude,@BottomRightCornerLongitude,@AisProviderIPAddress,@AisProviderPort,@UseLogin,@AisProviderLoginPort,@CanSendAISMessage,@TextMessageHeader,@Urls,@UdpPort,@ConnectionType,@EnableRefreshAidToNavigationIn30sec,@EnableAidToNavigationFromFile,@AidToNavigationHeader,@SendingMMSI,@SourceUpdateRate,@EnableRefreshStayingStillTargetIn30sec,@ExcludeSendAisBaseStation,@ExcludeSendAisA,@EnableSendBaseStationAlarms,@AisWebConfig,@StoreReceivedSentences,@StoreSentMessages,@StoreUnsentMessages
+        EXEC [AisDeviceConfigurationInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@UserName,@Password,@Latitude,@Longitude,@AisProviderLoginURL,@ComPort,@BaudRate,@FilterByArea,@UpperLeftCornerLatitude,@UpperLeftCornerLongitude,@BottomRightCornerLatitude,@BottomRightCornerLongitude,@AisProviderIPAddress,@AisProviderPort,@UseLogin,@AisProviderLoginPort,@CanSendAISMessage,@TextMessageHeader,@Urls,@UdpPort,@ConnectionType,@EnableRefreshAidToNavigationIn30sec,@EnableAidToNavigationFromFile,@AidToNavigationHeader,@SendingMMSI,@SourceUpdateRate,@EnableRefreshStayingStillTargetIn30sec,@ExcludeSendAisBaseStation,@ExcludeSendAisA,@EnableSendBaseStationAlarms,@AisWebConfig,@StoreReceivedSentences,@StoreSentMessages,@StoreUnsentMessages
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
-            @AisTransceiver,
+            @AisDevice,
             @Timestamp,
             @UserName,
             @Password,
@@ -3831,9 +513,9 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverRawMessageInsert]
+CREATE OR ALTER PROCEDURE [AisDeviceRawMessageInsert]
   @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
+  @AisDevice [uniqueidentifier],
   @Timestamp [bigint],
   @IsSent [bit],
   @Message [nvarchar](100)
@@ -3846,12 +528,3260 @@ AS
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisDeviceRawMessage]([Id], [RowVersion], [AisDevice], [Timestamp], [IsSent], [Message])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @IsSent, @Message);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisDeviceRawMessageInsertTrigger]
+ON [AisDeviceRawMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [Timestamp],
+        [IsSent],
+        [Message]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @Timestamp [bigint]
+    DECLARE @IsSent [bit]
+    DECLARE @Message [nvarchar](100)
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @Timestamp,
+        @IsSent,
+        @Message
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisDeviceRawMessageInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@IsSent,@Message
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @Timestamp,
+            @IsSent,
+            @Message
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisDeviceRawSentenceInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @Timestamp [bigint],
+  @Sentence [nvarchar](1024)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisDeviceRawSentence]([Id], [RowVersion], [AisDevice], [Timestamp], [Sentence])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @Sentence);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisDeviceRawSentenceInsertTrigger]
+ON [AisDeviceRawSentenceView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [Timestamp],
+        [Sentence]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @Timestamp [bigint]
+    DECLARE @Sentence [nvarchar](1024)
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @Timestamp,
+        @Sentence
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisDeviceRawSentenceInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@Sentence
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @Timestamp,
+            @Sentence
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationalAidType [int],
+  @Name [nvarchar](100),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Timestamp [int],
+  @OffPosition [bit],
+  @RegionalReserved [int],
+  @Raim [int],
+  @VirtualAid [bit],
+  @Assigned [bit],
+  @Spare [int],
+  @NameExtension [nvarchar](100)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 10700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AidToNavigationReportMessage]([Id], [NavigationalAidType], [Name], [PositionAccuracy], [Longitude], [Latitude], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Timestamp], [OffPosition], [RegionalReserved], [Raim], [VirtualAid], [Assigned], [Spare], [NameExtension])
+          VALUES(@Id, @NavigationalAidType, @Name, @PositionAccuracy, @Longitude, @Latitude, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Timestamp, @OffPosition, @RegionalReserved, @Raim, @VirtualAid, @Assigned, @Spare, @NameExtension);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AidToNavigationReportMessageInsertTrigger]
+ON [AidToNavigationReportMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [NavigationalAidType],
+        [Name],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [DimensionToBow],
+        [DimensionToStern],
+        [DimensionToPort],
+        [DimensionToStarboard],
+        [PositionFixType],
+        [Timestamp],
+        [OffPosition],
+        [RegionalReserved],
+        [Raim],
+        [VirtualAid],
+        [Assigned],
+        [Spare],
+        [NameExtension]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @NavigationalAidType [int]
+    DECLARE @Name [nvarchar](100)
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @DimensionToBow [int]
+    DECLARE @DimensionToStern [int]
+    DECLARE @DimensionToPort [int]
+    DECLARE @DimensionToStarboard [int]
+    DECLARE @PositionFixType [int]
+    DECLARE @Timestamp [int]
+    DECLARE @OffPosition [bit]
+    DECLARE @RegionalReserved [int]
+    DECLARE @Raim [int]
+    DECLARE @VirtualAid [bit]
+    DECLARE @Assigned [bit]
+    DECLARE @Spare [int]
+    DECLARE @NameExtension [nvarchar](100)
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @NavigationalAidType,
+        @Name,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @DimensionToBow,
+        @DimensionToStern,
+        @DimensionToPort,
+        @DimensionToStarboard,
+        @PositionFixType,
+        @Timestamp,
+        @OffPosition,
+        @RegionalReserved,
+        @Raim,
+        @VirtualAid,
+        @Assigned,
+        @Spare,
+        @NameExtension
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AidToNavigationReportMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationalAidType,@Name,@PositionAccuracy,@Longitude,@Latitude,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@PositionFixType,@Timestamp,@OffPosition,@RegionalReserved,@Raim,@VirtualAid,@Assigned,@Spare,@NameExtension
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @NavigationalAidType,
+            @Name,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @DimensionToBow,
+            @DimensionToStern,
+            @DimensionToPort,
+            @DimensionToStarboard,
+            @PositionFixType,
+            @Timestamp,
+            @OffPosition,
+            @RegionalReserved,
+            @Raim,
+            @VirtualAid,
+            @Assigned,
+            @Spare,
+            @NameExtension
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @SequenceNumber [int],
+  @DestinationMmsi [uniqueidentifier],
+  @RetransmitFlag [bit],
+  @Spare [int],
+  @Text [nvarchar](100)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 10800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisAddressedSafetyRelatedMessage]([Id], [SequenceNumber], [DestinationMmsi], [RetransmitFlag], [Spare], [Text])
+          VALUES(@Id, @SequenceNumber, @DestinationMmsi, @RetransmitFlag, @Spare, @Text);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisAddressedSafetyRelatedMessageInsertTrigger]
+ON [AisAddressedSafetyRelatedMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [SequenceNumber],
+        [DestinationMmsi],
+        [RetransmitFlag],
+        [Spare],
+        [Text]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @SequenceNumber [int]
+    DECLARE @DestinationMmsi [uniqueidentifier]
+    DECLARE @RetransmitFlag [bit]
+    DECLARE @Spare [int]
+    DECLARE @Text [nvarchar](100)
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @SequenceNumber,
+        @DestinationMmsi,
+        @RetransmitFlag,
+        @Spare,
+        @Text
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisAddressedSafetyRelatedMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@SequenceNumber,@DestinationMmsi,@RetransmitFlag,@Spare,@Text
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @SequenceNumber,
+            @DestinationMmsi,
+            @RetransmitFlag,
+            @Spare,
+            @Text
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisBaseStationReportMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Timestamp [bigint],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @PositionFixType [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 10900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint10900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisBaseStationReportMessage]([Id], [Timestamp], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @Timestamp, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint10900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisBaseStationReportMessageInsertTrigger]
+ON [AisBaseStationReportMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Timestamp],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [PositionFixType],
+        [Spare],
+        [Raim],
+        [RadioStatus]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Timestamp [bigint]
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @PositionFixType [int]
+    DECLARE @Spare [int]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Timestamp,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @PositionFixType,
+        @Spare,
+        @Raim,
+        @RadioStatus
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisBaseStationReportMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Timestamp,@PositionAccuracy,@Longitude,@Latitude,@PositionFixType,@Spare,@Raim,@RadioStatus
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Timestamp,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @PositionFixType,
+            @Spare,
+            @Raim,
+            @RadioStatus
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryAcknowledgeMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @SequenceNumber1 [int],
+  @Mmsi1 [uniqueidentifier],
+  @SequenceNumber2 [int],
+  @Mmsi2 [uniqueidentifier],
+  @SequenceNumber3 [int],
+  @Mmsi3 [uniqueidentifier],
+  @SequenceNumber4 [int],
+  @Mmsi4 [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisBinaryAcknowledgeMessage]([Id], [Spare], [SequenceNumber1], [Mmsi1], [SequenceNumber2], [Mmsi2], [SequenceNumber3], [Mmsi3], [SequenceNumber4], [Mmsi4])
+          VALUES(@Id, @Spare, @SequenceNumber1, @Mmsi1, @SequenceNumber2, @Mmsi2, @SequenceNumber3, @Mmsi3, @SequenceNumber4, @Mmsi4);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisBinaryAcknowledgeMessageInsertTrigger]
+ON [AisBinaryAcknowledgeMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Spare],
+        [SequenceNumber1],
+        [Mmsi1],
+        [SequenceNumber2],
+        [Mmsi2],
+        [SequenceNumber3],
+        [Mmsi3],
+        [SequenceNumber4],
+        [Mmsi4]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Spare [int]
+    DECLARE @SequenceNumber1 [int]
+    DECLARE @Mmsi1 [uniqueidentifier]
+    DECLARE @SequenceNumber2 [int]
+    DECLARE @Mmsi2 [uniqueidentifier]
+    DECLARE @SequenceNumber3 [int]
+    DECLARE @Mmsi3 [uniqueidentifier]
+    DECLARE @SequenceNumber4 [int]
+    DECLARE @Mmsi4 [uniqueidentifier]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Spare,
+        @SequenceNumber1,
+        @Mmsi1,
+        @SequenceNumber2,
+        @Mmsi2,
+        @SequenceNumber3,
+        @Mmsi3,
+        @SequenceNumber4,
+        @Mmsi4
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisBinaryAcknowledgeMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@SequenceNumber1,@Mmsi1,@SequenceNumber2,@Mmsi2,@SequenceNumber3,@Mmsi3,@SequenceNumber4,@Mmsi4
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Spare,
+            @SequenceNumber1,
+            @Mmsi1,
+            @SequenceNumber2,
+            @Mmsi2,
+            @SequenceNumber3,
+            @Mmsi3,
+            @SequenceNumber4,
+            @Mmsi4
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryAddressedMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @SequenceNumber [int],
+  @DestinationMmsi [uniqueidentifier],
+  @RetransmitFlag [bit],
+  @Spare [int],
+  @DesignatedAreaCode [int],
+  @FunctionalId [int],
+  @Data [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisBinaryAddressedMessage]([Id], [SequenceNumber], [DestinationMmsi], [RetransmitFlag], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
+          VALUES(@Id, @SequenceNumber, @DestinationMmsi, @RetransmitFlag, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisBinaryAddressedMessageInsertTrigger]
+ON [AisBinaryAddressedMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [SequenceNumber],
+        [DestinationMmsi],
+        [RetransmitFlag],
+        [Spare],
+        [DesignatedAreaCode],
+        [FunctionalId],
+        [Data]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @SequenceNumber [int]
+    DECLARE @DestinationMmsi [uniqueidentifier]
+    DECLARE @RetransmitFlag [bit]
+    DECLARE @Spare [int]
+    DECLARE @DesignatedAreaCode [int]
+    DECLARE @FunctionalId [int]
+    DECLARE @Data [nvarchar](max)
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @SequenceNumber,
+        @DestinationMmsi,
+        @RetransmitFlag,
+        @Spare,
+        @DesignatedAreaCode,
+        @FunctionalId,
+        @Data
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisBinaryAddressedMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@SequenceNumber,@DestinationMmsi,@RetransmitFlag,@Spare,@DesignatedAreaCode,@FunctionalId,@Data
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @SequenceNumber,
+            @DestinationMmsi,
+            @RetransmitFlag,
+            @Spare,
+            @DesignatedAreaCode,
+            @FunctionalId,
+            @Data
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisBinaryBroadcastMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @DesignatedAreaCode [int],
+  @FunctionalId [int],
+  @Data [nvarchar](max)
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisBinaryBroadcastMessage]([Id], [Spare], [DesignatedAreaCode], [FunctionalId], [Data])
+          VALUES(@Id, @Spare, @DesignatedAreaCode, @FunctionalId, @Data);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisBinaryBroadcastMessageInsertTrigger]
+ON [AisBinaryBroadcastMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Spare],
+        [DesignatedAreaCode],
+        [FunctionalId],
+        [Data]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Spare [int]
+    DECLARE @DesignatedAreaCode [int]
+    DECLARE @FunctionalId [int]
+    DECLARE @Data [nvarchar](max)
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Spare,
+        @DesignatedAreaCode,
+        @FunctionalId,
+        @Data
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisBinaryBroadcastMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@DesignatedAreaCode,@FunctionalId,@Data
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Spare,
+            @DesignatedAreaCode,
+            @FunctionalId,
+            @Data
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisDataLinkManagementMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @Offset1 [int],
+  @ReservedSlots1 [int],
+  @Timeout1 [int],
+  @Increment1 [int],
+  @Offset2 [int],
+  @ReservedSlots2 [int],
+  @Timeout2 [int],
+  @Increment2 [int],
+  @Offset3 [int],
+  @ReservedSlots3 [int],
+  @Timeout3 [int],
+  @Increment3 [int],
+  @Offset4 [int],
+  @ReservedSlots4 [int],
+  @Timeout4 [int],
+  @Increment4 [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisDataLinkManagementMessage]([Id], [Spare], [Offset1], [ReservedSlots1], [Timeout1], [Increment1], [Offset2], [ReservedSlots2], [Timeout2], [Increment2], [Offset3], [ReservedSlots3], [Timeout3], [Increment3], [Offset4], [ReservedSlots4], [Timeout4], [Increment4])
+          VALUES(@Id, @Spare, @Offset1, @ReservedSlots1, @Timeout1, @Increment1, @Offset2, @ReservedSlots2, @Timeout2, @Increment2, @Offset3, @ReservedSlots3, @Timeout3, @Increment3, @Offset4, @ReservedSlots4, @Timeout4, @Increment4);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisDataLinkManagementMessageInsertTrigger]
+ON [AisDataLinkManagementMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Spare],
+        [Offset1],
+        [ReservedSlots1],
+        [Timeout1],
+        [Increment1],
+        [Offset2],
+        [ReservedSlots2],
+        [Timeout2],
+        [Increment2],
+        [Offset3],
+        [ReservedSlots3],
+        [Timeout3],
+        [Increment3],
+        [Offset4],
+        [ReservedSlots4],
+        [Timeout4],
+        [Increment4]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Spare [int]
+    DECLARE @Offset1 [int]
+    DECLARE @ReservedSlots1 [int]
+    DECLARE @Timeout1 [int]
+    DECLARE @Increment1 [int]
+    DECLARE @Offset2 [int]
+    DECLARE @ReservedSlots2 [int]
+    DECLARE @Timeout2 [int]
+    DECLARE @Increment2 [int]
+    DECLARE @Offset3 [int]
+    DECLARE @ReservedSlots3 [int]
+    DECLARE @Timeout3 [int]
+    DECLARE @Increment3 [int]
+    DECLARE @Offset4 [int]
+    DECLARE @ReservedSlots4 [int]
+    DECLARE @Timeout4 [int]
+    DECLARE @Increment4 [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Spare,
+        @Offset1,
+        @ReservedSlots1,
+        @Timeout1,
+        @Increment1,
+        @Offset2,
+        @ReservedSlots2,
+        @Timeout2,
+        @Increment2,
+        @Offset3,
+        @ReservedSlots3,
+        @Timeout3,
+        @Increment3,
+        @Offset4,
+        @ReservedSlots4,
+        @Timeout4,
+        @Increment4
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisDataLinkManagementMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@Offset1,@ReservedSlots1,@Timeout1,@Increment1,@Offset2,@ReservedSlots2,@Timeout2,@Increment2,@Offset3,@ReservedSlots3,@Timeout3,@Increment3,@Offset4,@ReservedSlots4,@Timeout4,@Increment4
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Spare,
+            @Offset1,
+            @ReservedSlots1,
+            @Timeout1,
+            @Increment1,
+            @Offset2,
+            @ReservedSlots2,
+            @Timeout2,
+            @Increment2,
+            @Offset3,
+            @ReservedSlots3,
+            @Timeout3,
+            @Increment3,
+            @Offset4,
+            @ReservedSlots4,
+            @Timeout4,
+            @Increment4
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisExtendedClassBCsPositionReportMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Reserved [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @RegionalReserved [int],
+  @Name [uniqueidentifier],
+  @ShipType [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @Raim [int],
+  @DataTerminalReady [bit],
+  @Assigned [bit],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisExtendedClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [Name], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [Raim], [DataTerminalReady], [Assigned], [Spare])
+          VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @Name, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @Raim, @DataTerminalReady, @Assigned, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisExtendedClassBCsPositionReportMessageInsertTrigger]
+ON [AisExtendedClassBCsPositionReportMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Reserved],
+        [SpeedOverGround],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [CourseOverGround],
+        [TrueHeading],
+        [Timestamp],
+        [RegionalReserved],
+        [Name],
+        [ShipType],
+        [DimensionToBow],
+        [DimensionToStern],
+        [DimensionToPort],
+        [DimensionToStarboard],
+        [PositionFixType],
+        [Raim],
+        [DataTerminalReady],
+        [Assigned],
+        [Spare]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Reserved [int]
+    DECLARE @SpeedOverGround [float](53)
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @TrueHeading [int]
+    DECLARE @Timestamp [int]
+    DECLARE @RegionalReserved [int]
+    DECLARE @Name [uniqueidentifier]
+    DECLARE @ShipType [int]
+    DECLARE @DimensionToBow [int]
+    DECLARE @DimensionToStern [int]
+    DECLARE @DimensionToPort [int]
+    DECLARE @DimensionToStarboard [int]
+    DECLARE @PositionFixType [int]
+    DECLARE @Raim [int]
+    DECLARE @DataTerminalReady [bit]
+    DECLARE @Assigned [bit]
+    DECLARE @Spare [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Reserved,
+        @SpeedOverGround,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @CourseOverGround,
+        @TrueHeading,
+        @Timestamp,
+        @RegionalReserved,
+        @Name,
+        @ShipType,
+        @DimensionToBow,
+        @DimensionToStern,
+        @DimensionToPort,
+        @DimensionToStarboard,
+        @PositionFixType,
+        @Raim,
+        @DataTerminalReady,
+        @Assigned,
+        @Spare
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisExtendedClassBCsPositionReportMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Reserved,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@RegionalReserved,@Name,@ShipType,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@PositionFixType,@Raim,@DataTerminalReady,@Assigned,@Spare
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Reserved,
+            @SpeedOverGround,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @CourseOverGround,
+            @TrueHeading,
+            @Timestamp,
+            @RegionalReserved,
+            @Name,
+            @ShipType,
+            @DimensionToBow,
+            @DimensionToStern,
+            @DimensionToPort,
+            @DimensionToStarboard,
+            @PositionFixType,
+            @Raim,
+            @DataTerminalReady,
+            @Assigned,
+            @Spare
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisInterrogationMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @InterrogatedMmsi [uniqueidentifier],
+  @FirstMessageType [int],
+  @FirstSlotOffset [int],
+  @SecondMessageType [int],
+  @SecondSlotOffset [int],
+  @SecondStationInterrogationMmsi [uniqueidentifier],
+  @SecondStationFirstMessageType [int],
+  @SecondStationFirstSlotOffset [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisInterrogationMessage]([Id], [InterrogatedMmsi], [FirstMessageType], [FirstSlotOffset], [SecondMessageType], [SecondSlotOffset], [SecondStationInterrogationMmsi], [SecondStationFirstMessageType], [SecondStationFirstSlotOffset])
+          VALUES(@Id, @InterrogatedMmsi, @FirstMessageType, @FirstSlotOffset, @SecondMessageType, @SecondSlotOffset, @SecondStationInterrogationMmsi, @SecondStationFirstMessageType, @SecondStationFirstSlotOffset);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisInterrogationMessageInsertTrigger]
+ON [AisInterrogationMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [InterrogatedMmsi],
+        [FirstMessageType],
+        [FirstSlotOffset],
+        [SecondMessageType],
+        [SecondSlotOffset],
+        [SecondStationInterrogationMmsi],
+        [SecondStationFirstMessageType],
+        [SecondStationFirstSlotOffset]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @InterrogatedMmsi [uniqueidentifier]
+    DECLARE @FirstMessageType [int]
+    DECLARE @FirstSlotOffset [int]
+    DECLARE @SecondMessageType [int]
+    DECLARE @SecondSlotOffset [int]
+    DECLARE @SecondStationInterrogationMmsi [uniqueidentifier]
+    DECLARE @SecondStationFirstMessageType [int]
+    DECLARE @SecondStationFirstSlotOffset [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @InterrogatedMmsi,
+        @FirstMessageType,
+        @FirstSlotOffset,
+        @SecondMessageType,
+        @SecondSlotOffset,
+        @SecondStationInterrogationMmsi,
+        @SecondStationFirstMessageType,
+        @SecondStationFirstSlotOffset
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisInterrogationMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@InterrogatedMmsi,@FirstMessageType,@FirstSlotOffset,@SecondMessageType,@SecondSlotOffset,@SecondStationInterrogationMmsi,@SecondStationFirstMessageType,@SecondStationFirstSlotOffset
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @InterrogatedMmsi,
+            @FirstMessageType,
+            @FirstSlotOffset,
+            @SecondMessageType,
+            @SecondSlotOffset,
+            @SecondStationInterrogationMmsi,
+            @SecondStationFirstMessageType,
+            @SecondStationFirstSlotOffset
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAAssignedScheduleMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
+      INSERT INTO [AisPositionReportClassAAssignedScheduleMessage]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisPositionReportClassAAssignedScheduleMessageInsertTrigger]
+ON [AisPositionReportClassAAssignedScheduleMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [NavigationStatus],
+        [RateOfTurn],
+        [SpeedOverGround],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [CourseOverGround],
+        [TrueHeading],
+        [Timestamp],
+        [ManeuverIndicator],
+        [Spare],
+        [Raim],
+        [RadioStatus]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @NavigationStatus [int]
+    DECLARE @RateOfTurn [int]
+    DECLARE @SpeedOverGround [float](53)
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @TrueHeading [int]
+    DECLARE @Timestamp [int]
+    DECLARE @ManeuverIndicator [int]
+    DECLARE @Spare [int]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @NavigationStatus,
+        @RateOfTurn,
+        @SpeedOverGround,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @CourseOverGround,
+        @TrueHeading,
+        @Timestamp,
+        @ManeuverIndicator,
+        @Spare,
+        @Raim,
+        @RadioStatus
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisPositionReportClassAAssignedScheduleMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationStatus,@RateOfTurn,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@ManeuverIndicator,@Spare,@Raim,@RadioStatus
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @NavigationStatus,
+            @RateOfTurn,
+            @SpeedOverGround,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @CourseOverGround,
+            @TrueHeading,
+            @Timestamp,
+            @ManeuverIndicator,
+            @Spare,
+            @Raim,
+            @RadioStatus
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11800;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
+      INSERT INTO [AisPositionReportClassAMessage]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11800;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisPositionReportClassAMessageInsertTrigger]
+ON [AisPositionReportClassAMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [NavigationStatus],
+        [RateOfTurn],
+        [SpeedOverGround],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [CourseOverGround],
+        [TrueHeading],
+        [Timestamp],
+        [ManeuverIndicator],
+        [Spare],
+        [Raim],
+        [RadioStatus]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @NavigationStatus [int]
+    DECLARE @RateOfTurn [int]
+    DECLARE @SpeedOverGround [float](53)
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @TrueHeading [int]
+    DECLARE @Timestamp [int]
+    DECLARE @ManeuverIndicator [int]
+    DECLARE @Spare [int]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @NavigationStatus,
+        @RateOfTurn,
+        @SpeedOverGround,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @CourseOverGround,
+        @TrueHeading,
+        @Timestamp,
+        @ManeuverIndicator,
+        @Spare,
+        @Raim,
+        @RadioStatus
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisPositionReportClassAMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationStatus,@RateOfTurn,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@ManeuverIndicator,@Spare,@Raim,@RadioStatus
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @NavigationStatus,
+            @RateOfTurn,
+            @SpeedOverGround,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @CourseOverGround,
+            @TrueHeading,
+            @Timestamp,
+            @ManeuverIndicator,
+            @Spare,
+            @Raim,
+            @RadioStatus
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportClassAResponseToInterrogationMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @NavigationStatus [int],
+  @RateOfTurn [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @ManeuverIndicator [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 11900;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint11900;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisPositionReportClassAMessageBase]([Id], [NavigationStatus], [RateOfTurn], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [ManeuverIndicator], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @NavigationStatus, @RateOfTurn, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @ManeuverIndicator, @Spare, @Raim, @RadioStatus);
+      INSERT INTO [AisPositionReportClassAResponseToInterrogationMessage]([Id])
+          VALUES(@Id);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint11900;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisPositionReportClassAResponseToInterrogationMessageInsertTrigger]
+ON [AisPositionReportClassAResponseToInterrogationMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [NavigationStatus],
+        [RateOfTurn],
+        [SpeedOverGround],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [CourseOverGround],
+        [TrueHeading],
+        [Timestamp],
+        [ManeuverIndicator],
+        [Spare],
+        [Raim],
+        [RadioStatus]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @NavigationStatus [int]
+    DECLARE @RateOfTurn [int]
+    DECLARE @SpeedOverGround [float](53)
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @TrueHeading [int]
+    DECLARE @Timestamp [int]
+    DECLARE @ManeuverIndicator [int]
+    DECLARE @Spare [int]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @NavigationStatus,
+        @RateOfTurn,
+        @SpeedOverGround,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @CourseOverGround,
+        @TrueHeading,
+        @Timestamp,
+        @ManeuverIndicator,
+        @Spare,
+        @Raim,
+        @RadioStatus
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisPositionReportClassAResponseToInterrogationMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@NavigationStatus,@RateOfTurn,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@ManeuverIndicator,@Spare,@Raim,@RadioStatus
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @NavigationStatus,
+            @RateOfTurn,
+            @SpeedOverGround,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @CourseOverGround,
+            @TrueHeading,
+            @Timestamp,
+            @ManeuverIndicator,
+            @Spare,
+            @Raim,
+            @RadioStatus
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisPositionReportForLongRangeApplicationsMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PositionAccuracy [int],
+  @Raim [int],
+  @NavigationStatus [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @SpeedOverGround [float](53),
+  @CourseOverGround [float](53),
+  @GnssPositionStatus [int],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12000;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12000;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisPositionReportForLongRangeApplicationsMessage]([Id], [PositionAccuracy], [Raim], [NavigationStatus], [Longitude], [Latitude], [SpeedOverGround], [CourseOverGround], [GnssPositionStatus], [Spare])
+          VALUES(@Id, @PositionAccuracy, @Raim, @NavigationStatus, @Longitude, @Latitude, @SpeedOverGround, @CourseOverGround, @GnssPositionStatus, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12000;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisPositionReportForLongRangeApplicationsMessageInsertTrigger]
+ON [AisPositionReportForLongRangeApplicationsMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [PositionAccuracy],
+        [Raim],
+        [NavigationStatus],
+        [Longitude],
+        [Latitude],
+        [SpeedOverGround],
+        [CourseOverGround],
+        [GnssPositionStatus],
+        [Spare]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Raim [int]
+    DECLARE @NavigationStatus [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @SpeedOverGround [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @GnssPositionStatus [int]
+    DECLARE @Spare [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @PositionAccuracy,
+        @Raim,
+        @NavigationStatus,
+        @Longitude,
+        @Latitude,
+        @SpeedOverGround,
+        @CourseOverGround,
+        @GnssPositionStatus,
+        @Spare
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisPositionReportForLongRangeApplicationsMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PositionAccuracy,@Raim,@NavigationStatus,@Longitude,@Latitude,@SpeedOverGround,@CourseOverGround,@GnssPositionStatus,@Spare
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @PositionAccuracy,
+            @Raim,
+            @NavigationStatus,
+            @Longitude,
+            @Latitude,
+            @SpeedOverGround,
+            @CourseOverGround,
+            @GnssPositionStatus,
+            @Spare
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisSafetyRelatedAcknowledgmentMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare [int],
+  @SequenceNumber1 [int],
+  @Mmsi1 [uniqueidentifier],
+  @SequenceNumber2 [int],
+  @Mmsi2 [uniqueidentifier],
+  @SequenceNumber3 [int],
+  @Mmsi3 [uniqueidentifier],
+  @SequenceNumber4 [int],
+  @Mmsi4 [uniqueidentifier]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12100;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12100;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisSafetyRelatedAcknowledgmentMessage]([Id], [Spare], [SequenceNumber1], [Mmsi1], [SequenceNumber2], [Mmsi2], [SequenceNumber3], [Mmsi3], [SequenceNumber4], [Mmsi4])
+          VALUES(@Id, @Spare, @SequenceNumber1, @Mmsi1, @SequenceNumber2, @Mmsi2, @SequenceNumber3, @Mmsi3, @SequenceNumber4, @Mmsi4);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12100;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisSafetyRelatedAcknowledgmentMessageInsertTrigger]
+ON [AisSafetyRelatedAcknowledgmentMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Spare],
+        [SequenceNumber1],
+        [Mmsi1],
+        [SequenceNumber2],
+        [Mmsi2],
+        [SequenceNumber3],
+        [Mmsi3],
+        [SequenceNumber4],
+        [Mmsi4]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Spare [int]
+    DECLARE @SequenceNumber1 [int]
+    DECLARE @Mmsi1 [uniqueidentifier]
+    DECLARE @SequenceNumber2 [int]
+    DECLARE @Mmsi2 [uniqueidentifier]
+    DECLARE @SequenceNumber3 [int]
+    DECLARE @Mmsi3 [uniqueidentifier]
+    DECLARE @SequenceNumber4 [int]
+    DECLARE @Mmsi4 [uniqueidentifier]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Spare,
+        @SequenceNumber1,
+        @Mmsi1,
+        @SequenceNumber2,
+        @Mmsi2,
+        @SequenceNumber3,
+        @Mmsi3,
+        @SequenceNumber4,
+        @Mmsi4
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisSafetyRelatedAcknowledgmentMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare,@SequenceNumber1,@Mmsi1,@SequenceNumber2,@Mmsi2,@SequenceNumber3,@Mmsi3,@SequenceNumber4,@Mmsi4
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Spare,
+            @SequenceNumber1,
+            @Mmsi1,
+            @SequenceNumber2,
+            @Mmsi2,
+            @SequenceNumber3,
+            @Mmsi3,
+            @SequenceNumber4,
+            @Mmsi4
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStandardClassBCsPositionReportMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Reserved [int],
+  @SpeedOverGround [float](53),
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @TrueHeading [int],
+  @Timestamp [int],
+  @RegionalReserved [int],
+  @IsCsUnit [bit],
+  @HasDisplay [bit],
+  @HasDscCapability [bit],
+  @Band [bit],
+  @CanAcceptMessage22 [bit],
+  @Assigned [bit],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12200;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12200;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStandardClassBCsPositionReportMessage]([Id], [Reserved], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [TrueHeading], [Timestamp], [RegionalReserved], [IsCsUnit], [HasDisplay], [HasDscCapability], [Band], [CanAcceptMessage22], [Assigned], [Raim], [RadioStatus])
+          VALUES(@Id, @Reserved, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @TrueHeading, @Timestamp, @RegionalReserved, @IsCsUnit, @HasDisplay, @HasDscCapability, @Band, @CanAcceptMessage22, @Assigned, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12200;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisStandardClassBCsPositionReportMessageInsertTrigger]
+ON [AisStandardClassBCsPositionReportMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Reserved],
+        [SpeedOverGround],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [CourseOverGround],
+        [TrueHeading],
+        [Timestamp],
+        [RegionalReserved],
+        [IsCsUnit],
+        [HasDisplay],
+        [HasDscCapability],
+        [Band],
+        [CanAcceptMessage22],
+        [Assigned],
+        [Raim],
+        [RadioStatus]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Reserved [int]
+    DECLARE @SpeedOverGround [float](53)
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @TrueHeading [int]
+    DECLARE @Timestamp [int]
+    DECLARE @RegionalReserved [int]
+    DECLARE @IsCsUnit [bit]
+    DECLARE @HasDisplay [bit]
+    DECLARE @HasDscCapability [bit]
+    DECLARE @Band [bit]
+    DECLARE @CanAcceptMessage22 [bit]
+    DECLARE @Assigned [bit]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Reserved,
+        @SpeedOverGround,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @CourseOverGround,
+        @TrueHeading,
+        @Timestamp,
+        @RegionalReserved,
+        @IsCsUnit,
+        @HasDisplay,
+        @HasDscCapability,
+        @Band,
+        @CanAcceptMessage22,
+        @Assigned,
+        @Raim,
+        @RadioStatus
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisStandardClassBCsPositionReportMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Reserved,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@TrueHeading,@Timestamp,@RegionalReserved,@IsCsUnit,@HasDisplay,@HasDscCapability,@Band,@CanAcceptMessage22,@Assigned,@Raim,@RadioStatus
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Reserved,
+            @SpeedOverGround,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @CourseOverGround,
+            @TrueHeading,
+            @Timestamp,
+            @RegionalReserved,
+            @IsCsUnit,
+            @HasDisplay,
+            @HasDscCapability,
+            @Band,
+            @CanAcceptMessage22,
+            @Assigned,
+            @Raim,
+            @RadioStatus
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStandardSarAircraftPositionReportMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Altitude [int],
+  @SpeedOverGround [int],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @CourseOverGround [float](53),
+  @Timestamp [int],
+  @Reserved [int],
+  @DataTerminalReady [bit],
+  @Spare [int],
+  @Assigned [bit],
+  @Raim [int],
+  @RadioStatus [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12300;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12300;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStandardSarAircraftPositionReportMessage]([Id], [Altitude], [SpeedOverGround], [PositionAccuracy], [Longitude], [Latitude], [CourseOverGround], [Timestamp], [Reserved], [DataTerminalReady], [Spare], [Assigned], [Raim], [RadioStatus])
+          VALUES(@Id, @Altitude, @SpeedOverGround, @PositionAccuracy, @Longitude, @Latitude, @CourseOverGround, @Timestamp, @Reserved, @DataTerminalReady, @Spare, @Assigned, @Raim, @RadioStatus);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12300;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisStandardSarAircraftPositionReportMessageInsertTrigger]
+ON [AisStandardSarAircraftPositionReportMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Altitude],
+        [SpeedOverGround],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [CourseOverGround],
+        [Timestamp],
+        [Reserved],
+        [DataTerminalReady],
+        [Spare],
+        [Assigned],
+        [Raim],
+        [RadioStatus]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Altitude [int]
+    DECLARE @SpeedOverGround [int]
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @CourseOverGround [float](53)
+    DECLARE @Timestamp [int]
+    DECLARE @Reserved [int]
+    DECLARE @DataTerminalReady [bit]
+    DECLARE @Spare [int]
+    DECLARE @Assigned [bit]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Altitude,
+        @SpeedOverGround,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @CourseOverGround,
+        @Timestamp,
+        @Reserved,
+        @DataTerminalReady,
+        @Spare,
+        @Assigned,
+        @Raim,
+        @RadioStatus
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisStandardSarAircraftPositionReportMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Altitude,@SpeedOverGround,@PositionAccuracy,@Longitude,@Latitude,@CourseOverGround,@Timestamp,@Reserved,@DataTerminalReady,@Spare,@Assigned,@Raim,@RadioStatus
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Altitude,
+            @SpeedOverGround,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @CourseOverGround,
+            @Timestamp,
+            @Reserved,
+            @DataTerminalReady,
+            @Spare,
+            @Assigned,
+            @Raim,
+            @RadioStatus
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @AisVersion [int],
+  @ImoNumber [uniqueidentifier],
+  @Callsign [uniqueidentifier],
+  @ShipName [uniqueidentifier],
+  @ShipType [int],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @PositionFixType [int],
+  @EstimatedTimeOfArrival [bigint],
+  @Draught [float](53),
+  @Destination [nvarchar](100),
+  @DataTerminalReady [bit],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12400;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12400;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStaticAndVoyageRelatedDataMessage]([Id], [AisVersion], [ImoNumber], [Callsign], [ShipName], [ShipType], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [PositionFixType], [EstimatedTimeOfArrival], [Draught], [Destination], [DataTerminalReady], [Spare])
+          VALUES(@Id, @AisVersion, @ImoNumber, @Callsign, @ShipName, @ShipType, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @PositionFixType, @EstimatedTimeOfArrival, @Draught, @Destination, @DataTerminalReady, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12400;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisStaticAndVoyageRelatedDataMessageInsertTrigger]
+ON [AisStaticAndVoyageRelatedDataMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [AisVersion],
+        [ImoNumber],
+        [Callsign],
+        [ShipName],
+        [ShipType],
+        [DimensionToBow],
+        [DimensionToStern],
+        [DimensionToPort],
+        [DimensionToStarboard],
+        [PositionFixType],
+        [EstimatedTimeOfArrival],
+        [Draught],
+        [Destination],
+        [DataTerminalReady],
+        [Spare]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @AisVersion [int]
+    DECLARE @ImoNumber [uniqueidentifier]
+    DECLARE @Callsign [uniqueidentifier]
+    DECLARE @ShipName [uniqueidentifier]
+    DECLARE @ShipType [int]
+    DECLARE @DimensionToBow [int]
+    DECLARE @DimensionToStern [int]
+    DECLARE @DimensionToPort [int]
+    DECLARE @DimensionToStarboard [int]
+    DECLARE @PositionFixType [int]
+    DECLARE @EstimatedTimeOfArrival [bigint]
+    DECLARE @Draught [float](53)
+    DECLARE @Destination [nvarchar](100)
+    DECLARE @DataTerminalReady [bit]
+    DECLARE @Spare [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @AisVersion,
+        @ImoNumber,
+        @Callsign,
+        @ShipName,
+        @ShipType,
+        @DimensionToBow,
+        @DimensionToStern,
+        @DimensionToPort,
+        @DimensionToStarboard,
+        @PositionFixType,
+        @EstimatedTimeOfArrival,
+        @Draught,
+        @Destination,
+        @DataTerminalReady,
+        @Spare
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisStaticAndVoyageRelatedDataMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@AisVersion,@ImoNumber,@Callsign,@ShipName,@ShipType,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@PositionFixType,@EstimatedTimeOfArrival,@Draught,@Destination,@DataTerminalReady,@Spare
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @AisVersion,
+            @ImoNumber,
+            @Callsign,
+            @ShipName,
+            @ShipType,
+            @DimensionToBow,
+            @DimensionToStern,
+            @DimensionToPort,
+            @DimensionToStarboard,
+            @PositionFixType,
+            @EstimatedTimeOfArrival,
+            @Draught,
+            @Destination,
+            @DataTerminalReady,
+            @Spare
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PartNumber [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12500;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12500;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
+          VALUES(@Id, @PartNumber);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12500;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisStaticDataReportMessageInsertTrigger]
+ON [AisStaticDataReportMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [PartNumber]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @PartNumber [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @PartNumber
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisStaticDataReportMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PartNumber
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @PartNumber
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportPartAMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PartNumber [int],
+  @ShipName [uniqueidentifier],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12600;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12600;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
+          VALUES(@Id, @PartNumber);
+      INSERT INTO [AisStaticDataReportPartAMessage]([Id], [ShipName], [Spare])
+          VALUES(@Id, @ShipName, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12600;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisStaticDataReportPartAMessageInsertTrigger]
+ON [AisStaticDataReportPartAMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [PartNumber],
+        [ShipName],
+        [Spare]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @PartNumber [int]
+    DECLARE @ShipName [uniqueidentifier]
+    DECLARE @Spare [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @PartNumber,
+        @ShipName,
+        @Spare
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisStaticDataReportPartAMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PartNumber,@ShipName,@Spare
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @PartNumber,
+            @ShipName,
+            @Spare
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @PartNumber [int],
+  @ShipType [int],
+  @VendorId [nvarchar](100),
+  @UnitModelCode [int],
+  @SerialNumber [int],
+  @Callsign [uniqueidentifier],
+  @DimensionToBow [int],
+  @DimensionToStern [int],
+  @DimensionToPort [int],
+  @DimensionToStarboard [int],
+  @MothershipMmsi [uniqueidentifier],
+  @PositionFixType [int],
+  @Spare [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12700;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
+      SAVE TRANSACTION SavePoint12700;
+    ELSE
+      BEGIN TRANSACTION;
+    BEGIN TRY
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisStaticDataReportMessage]([Id], [PartNumber])
+          VALUES(@Id, @PartNumber);
+      INSERT INTO [AisStaticDataReportPartBMessage]([Id], [ShipType], [VendorId], [UnitModelCode], [SerialNumber], [Callsign], [DimensionToBow], [DimensionToStern], [DimensionToPort], [DimensionToStarboard], [MothershipMmsi], [PositionFixType], [Spare])
+          VALUES(@Id, @ShipType, @VendorId, @UnitModelCode, @SerialNumber, @Callsign, @DimensionToBow, @DimensionToStern, @DimensionToPort, @DimensionToStarboard, @MothershipMmsi, @PositionFixType, @Spare);
+      IF @TranCounter = 0
+          COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000);
+        DECLARE @ErrorSeverity INT;
+        DECLARE @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        IF @TranCounter = 0
+          ROLLBACK TRANSACTION;
+        ELSE
+          IF XACT_STATE() <> -1
+            ROLLBACK TRANSACTION SavePoint12700;
+        RAISERROR(
+            @ErrorMessage,
+            @ErrorSeverity,
+            @ErrorState);
+    END CATCH
+  END
+
+GO
+
+CREATE OR ALTER TRIGGER [AisStaticDataReportPartBMessageInsertTrigger]
+ON [AisStaticDataReportPartBMessageView]
+INSTEAD OF INSERT AS
+  BEGIN
+    DECLARE @cur CURSOR
+    SET @cur = CURSOR FOR
+      SELECT
+        [Id],
+        [RowVersion],
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [PartNumber],
+        [ShipType],
+        [VendorId],
+        [UnitModelCode],
+        [SerialNumber],
+        [Callsign],
+        [DimensionToBow],
+        [DimensionToStern],
+        [DimensionToPort],
+        [DimensionToStarboard],
+        [MothershipMmsi],
+        [PositionFixType],
+        [Spare]
+      FROM inserted
+    OPEN @cur
+    DECLARE @Id [uniqueidentifier]
+    DECLARE @RowVersion [bigint]
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @PartNumber [int]
+    DECLARE @ShipType [int]
+    DECLARE @VendorId [nvarchar](100)
+    DECLARE @UnitModelCode [int]
+    DECLARE @SerialNumber [int]
+    DECLARE @Callsign [uniqueidentifier]
+    DECLARE @DimensionToBow [int]
+    DECLARE @DimensionToStern [int]
+    DECLARE @DimensionToPort [int]
+    DECLARE @DimensionToStarboard [int]
+    DECLARE @MothershipMmsi [uniqueidentifier]
+    DECLARE @PositionFixType [int]
+    DECLARE @Spare [int]
+    FETCH NEXT FROM @cur INTO
+        @Id,
+        @RowVersion,
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @PartNumber,
+        @ShipType,
+        @VendorId,
+        @UnitModelCode,
+        @SerialNumber,
+        @Callsign,
+        @DimensionToBow,
+        @DimensionToStern,
+        @DimensionToPort,
+        @DimensionToStarboard,
+        @MothershipMmsi,
+        @PositionFixType,
+        @Spare
+    WHILE(@@fetch_status <> -1)
+      BEGIN
+        EXEC [AisStaticDataReportPartBMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@PartNumber,@ShipType,@VendorId,@UnitModelCode,@SerialNumber,@Callsign,@DimensionToBow,@DimensionToStern,@DimensionToPort,@DimensionToStarboard,@MothershipMmsi,@PositionFixType,@Spare
+        FETCH NEXT FROM @cur INTO
+            @Id,
+            @RowVersion,
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @PartNumber,
+            @ShipType,
+            @VendorId,
+            @UnitModelCode,
+            @SerialNumber,
+            @Callsign,
+            @DimensionToBow,
+            @DimensionToStern,
+            @DimensionToPort,
+            @DimensionToStarboard,
+            @MothershipMmsi,
+            @PositionFixType,
+            @Spare
+      END
+    CLOSE @cur
+    DEALLOCATE @cur
+  END
+
+GO
+
+CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageInsert]
+  @Id [uniqueidentifier] OUTPUT,
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Spare1 [int],
+  @DestinationMmsi [int],
+  @Spare2 [int]
+AS
+  BEGIN
+    IF @Id IS NULL
+    BEGIN
+      SET @Id = NEWID()
+    END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12800;
+    DECLARE @TranCounter INT;
+    SET @TranCounter = @@TRANCOUNT;
+    IF @TranCounter > 0
       SAVE TRANSACTION SavePoint12800;
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [AisTransceiverRawMessage]([Id], [RowVersion], [AisTransceiver], [Timestamp], [IsSent], [Message])
-          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @IsSent, @Message);
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisUtcAndDateInquiryMessage]([Id], [Spare1], [DestinationMmsi], [Spare2])
+          VALUES(@Id, @Spare1, @DestinationMmsi, @Spare2);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3876,8 +3806,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [AisTransceiverRawMessageInsertTrigger]
-ON [AisTransceiverRawMessageView]
+CREATE OR ALTER TRIGGER [AisUtcAndDateInquiryMessageInsertTrigger]
+ON [AisUtcAndDateInquiryMessageView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -3885,35 +3815,51 @@ INSTEAD OF INSERT AS
       SELECT
         [Id],
         [RowVersion],
-        [AisTransceiver],
-        [Timestamp],
-        [IsSent],
-        [Message]
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Spare1],
+        [DestinationMmsi],
+        [Spare2]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @Timestamp [bigint]
-    DECLARE @IsSent [bit]
-    DECLARE @Message [nvarchar](100)
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Spare1 [int]
+    DECLARE @DestinationMmsi [int]
+    DECLARE @Spare2 [int]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
-        @AisTransceiver,
-        @Timestamp,
-        @IsSent,
-        @Message
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Spare1,
+        @DestinationMmsi,
+        @Spare2
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverRawMessageInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@IsSent,@Message
+        EXEC [AisUtcAndDateInquiryMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Spare1,@DestinationMmsi,@Spare2
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
-            @AisTransceiver,
-            @Timestamp,
-            @IsSent,
-            @Message
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Spare1,
+            @DestinationMmsi,
+            @Spare2
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -3921,17 +3867,29 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverRawSentenceInsert]
+CREATE OR ALTER PROCEDURE [AisUtcAndDateResponseMessageInsert]
   @Id [uniqueidentifier] OUTPUT,
-  @AisTransceiver [uniqueidentifier],
-  @Timestamp [bigint],
-  @Sentence [nvarchar](1024)
+  @AisDevice [uniqueidentifier],
+  @ReceivedTimestamp [bigint],
+  @MessageSequenceNumber [bigint],
+  @Repeat [int],
+  @Mmsi [uniqueidentifier],
+  @Datetime [bigint],
+  @PositionAccuracy [int],
+  @Longitude [float](53),
+  @Latitude [float](53),
+  @PositionFixType [int],
+  @Spare [int],
+  @Raim [int],
+  @RadioStatus [int]
 AS
   BEGIN
     IF @Id IS NULL
     BEGIN
       SET @Id = NEWID()
     END
+    DECLARE @EntityType INT;
+    SET @EntityType = 12900;
     DECLARE @TranCounter INT;
     SET @TranCounter = @@TRANCOUNT;
     IF @TranCounter > 0
@@ -3939,8 +3897,10 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [AisTransceiverRawSentence]([Id], [RowVersion], [AisTransceiver], [Timestamp], [Sentence])
-          VALUES(@Id, 0, @AisTransceiver, @Timestamp, @Sentence);
+      INSERT INTO [AisMessage]([Id], [EntityType], [RowVersion], [AisDevice], [ReceivedTimestamp], [MessageSequenceNumber], [Repeat], [Mmsi])
+          VALUES(@Id, @EntityType, 0, @AisDevice, @ReceivedTimestamp, @MessageSequenceNumber, @Repeat, @Mmsi);
+      INSERT INTO [AisUtcAndDateResponseMessage]([Id], [Datetime], [PositionAccuracy], [Longitude], [Latitude], [PositionFixType], [Spare], [Raim], [RadioStatus])
+          VALUES(@Id, @Datetime, @PositionAccuracy, @Longitude, @Latitude, @PositionFixType, @Spare, @Raim, @RadioStatus);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -3965,8 +3925,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [AisTransceiverRawSentenceInsertTrigger]
-ON [AisTransceiverRawSentenceView]
+CREATE OR ALTER TRIGGER [AisUtcAndDateResponseMessageInsertTrigger]
+ON [AisUtcAndDateResponseMessageView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -3974,31 +3934,71 @@ INSTEAD OF INSERT AS
       SELECT
         [Id],
         [RowVersion],
-        [AisTransceiver],
-        [Timestamp],
-        [Sentence]
+        [AisDevice],
+        [ReceivedTimestamp],
+        [MessageSequenceNumber],
+        [Repeat],
+        [Mmsi],
+        [Datetime],
+        [PositionAccuracy],
+        [Longitude],
+        [Latitude],
+        [PositionFixType],
+        [Spare],
+        [Raim],
+        [RadioStatus]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
-    DECLARE @AisTransceiver [uniqueidentifier]
-    DECLARE @Timestamp [bigint]
-    DECLARE @Sentence [nvarchar](1024)
+    DECLARE @AisDevice [uniqueidentifier]
+    DECLARE @ReceivedTimestamp [bigint]
+    DECLARE @MessageSequenceNumber [bigint]
+    DECLARE @Repeat [int]
+    DECLARE @Mmsi [uniqueidentifier]
+    DECLARE @Datetime [bigint]
+    DECLARE @PositionAccuracy [int]
+    DECLARE @Longitude [float](53)
+    DECLARE @Latitude [float](53)
+    DECLARE @PositionFixType [int]
+    DECLARE @Spare [int]
+    DECLARE @Raim [int]
+    DECLARE @RadioStatus [int]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
-        @AisTransceiver,
-        @Timestamp,
-        @Sentence
+        @AisDevice,
+        @ReceivedTimestamp,
+        @MessageSequenceNumber,
+        @Repeat,
+        @Mmsi,
+        @Datetime,
+        @PositionAccuracy,
+        @Longitude,
+        @Latitude,
+        @PositionFixType,
+        @Spare,
+        @Raim,
+        @RadioStatus
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverRawSentenceInsert] @Id,@RowVersion,@AisTransceiver,@Timestamp,@Sentence
+        EXEC [AisUtcAndDateResponseMessageInsert] @Id,@RowVersion,@AisDevice,@ReceivedTimestamp,@MessageSequenceNumber,@Repeat,@Mmsi,@Datetime,@PositionAccuracy,@Longitude,@Latitude,@PositionFixType,@Spare,@Raim,@RadioStatus
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
-            @AisTransceiver,
-            @Timestamp,
-            @Sentence
+            @AisDevice,
+            @ReceivedTimestamp,
+            @MessageSequenceNumber,
+            @Repeat,
+            @Mmsi,
+            @Datetime,
+            @PositionAccuracy,
+            @Longitude,
+            @Latitude,
+            @PositionFixType,
+            @Spare,
+            @Raim,
+            @RadioStatus
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -9697,7 +9697,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [CameraInsert]
+CREATE OR ALTER PROCEDURE [CameraDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -9722,7 +9722,7 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Camera]([Id])
+      INSERT INTO [CameraDevice]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -9748,8 +9748,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [CameraInsertTrigger]
-ON [CameraView]
+CREATE OR ALTER TRIGGER [CameraDeviceInsertTrigger]
+ON [CameraDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -9778,7 +9778,7 @@ INSTEAD OF INSERT AS
         @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [CameraInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
+        EXEC [CameraDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10136,7 +10136,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorInsert]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -10161,7 +10161,7 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [OilspillDetector]([Id])
+      INSERT INTO [OilSpillDetectorDevice]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -10187,8 +10187,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [OilspillDetectorInsertTrigger]
-ON [OilspillDetectorView]
+CREATE OR ALTER TRIGGER [OilSpillDetectorDeviceInsertTrigger]
+ON [OilSpillDetectorDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -10217,7 +10217,7 @@ INSTEAD OF INSERT AS
         @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [OilspillDetectorInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
+        EXEC [OilSpillDetectorDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10232,7 +10232,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [RadioInsert]
+CREATE OR ALTER PROCEDURE [RadioDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -10257,7 +10257,7 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Radio]([Id])
+      INSERT INTO [RadioDevice]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -10283,8 +10283,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [RadioInsertTrigger]
-ON [RadioView]
+CREATE OR ALTER TRIGGER [RadioDeviceInsertTrigger]
+ON [RadioDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -10313,7 +10313,7 @@ INSTEAD OF INSERT AS
         @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [RadioInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
+        EXEC [RadioDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10328,7 +10328,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [RadomeInsert]
+CREATE OR ALTER PROCEDURE [RadomeDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -10358,7 +10358,7 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Radome]([Id], [Radar], [PressureTimeseries], [TemperatureTimeseries], [DewPointTimeseries], [StatusTimeseries])
+      INSERT INTO [RadomeDevice]([Id], [Radar], [PressureTimeseries], [TemperatureTimeseries], [DewPointTimeseries], [StatusTimeseries])
           VALUES(@Id, @Radar, @PressureTimeseries, @TemperatureTimeseries, @DewPointTimeseries, @StatusTimeseries);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -10384,8 +10384,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [RadomeInsertTrigger]
-ON [RadomeView]
+CREATE OR ALTER TRIGGER [RadomeDeviceInsertTrigger]
+ON [RadomeDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -10429,7 +10429,7 @@ INSTEAD OF INSERT AS
         @StatusTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [RadomeInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Radar,@PressureTimeseries,@TemperatureTimeseries,@DewPointTimeseries,@StatusTimeseries
+        EXEC [RadomeDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@Radar,@PressureTimeseries,@TemperatureTimeseries,@DewPointTimeseries,@StatusTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10449,7 +10449,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [AisTransceiverInsert]
+CREATE OR ALTER PROCEDURE [AisDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -10474,9 +10474,9 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Tracker]([Id])
+      INSERT INTO [TrackerDevice]([Id])
           VALUES(@Id);
-      INSERT INTO [AisTransceiver]([Id])
+      INSERT INTO [AisDevice]([Id])
           VALUES(@Id);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -10502,8 +10502,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [AisTransceiverInsertTrigger]
-ON [AisTransceiverView]
+CREATE OR ALTER TRIGGER [AisDeviceInsertTrigger]
+ON [AisDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -10532,7 +10532,7 @@ INSTEAD OF INSERT AS
         @EnabledTimeseries
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisTransceiverInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
+        EXEC [AisDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10547,7 +10547,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [RadarInsert]
+CREATE OR ALTER PROCEDURE [RadarDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -10595,9 +10595,9 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [Tracker]([Id])
+      INSERT INTO [TrackerDevice]([Id])
           VALUES(@Id);
-      INSERT INTO [Radar]([Id], [SaveSettingsTimeseries], [PowerOnTimeseries], [TrackingOnTimeseries], [RadarPulseTimeseries], [TuningTimeseries], [BlankSector1Timeseries], [Sector1StartTimeseries], [Sector1EndTimeseries], [BlankSector2Timeseries], [Sector2StartTimeseries], [Sector2EndTimeseries], [EnableAutomaticFrequencyControlTimeseries], [AzimuthOffsetTimeseries], [EnableSensitivityTimeControlTimeseries], [AutomaticSensitivityTimeControlTimeseries], [SensitivityTimeControlLevelTimeseries], [EnableFastTimeConstantTimeseries], [FastTimeConstantLevelTimeseries], [FastTimeConstantModeTimeseries], [LatitudeTimeseries], [LongitudeTimeseries], [Radome], [GNSSDevice])
+      INSERT INTO [RadarDevice]([Id], [SaveSettingsTimeseries], [PowerOnTimeseries], [TrackingOnTimeseries], [RadarPulseTimeseries], [TuningTimeseries], [BlankSector1Timeseries], [Sector1StartTimeseries], [Sector1EndTimeseries], [BlankSector2Timeseries], [Sector2StartTimeseries], [Sector2EndTimeseries], [EnableAutomaticFrequencyControlTimeseries], [AzimuthOffsetTimeseries], [EnableSensitivityTimeControlTimeseries], [AutomaticSensitivityTimeControlTimeseries], [SensitivityTimeControlLevelTimeseries], [EnableFastTimeConstantTimeseries], [FastTimeConstantLevelTimeseries], [FastTimeConstantModeTimeseries], [LatitudeTimeseries], [LongitudeTimeseries], [Radome], [GNSSDevice])
           VALUES(@Id, @SaveSettingsTimeseries, @PowerOnTimeseries, @TrackingOnTimeseries, @RadarPulseTimeseries, @TuningTimeseries, @BlankSector1Timeseries, @Sector1StartTimeseries, @Sector1EndTimeseries, @BlankSector2Timeseries, @Sector2StartTimeseries, @Sector2EndTimeseries, @EnableAutomaticFrequencyControlTimeseries, @AzimuthOffsetTimeseries, @EnableSensitivityTimeControlTimeseries, @AutomaticSensitivityTimeControlTimeseries, @SensitivityTimeControlLevelTimeseries, @EnableFastTimeConstantTimeseries, @FastTimeConstantLevelTimeseries, @FastTimeConstantModeTimeseries, @LatitudeTimeseries, @LongitudeTimeseries, @Radome, @GNSSDevice);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -10623,8 +10623,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [RadarInsertTrigger]
-ON [RadarView]
+CREATE OR ALTER TRIGGER [RadarDeviceInsertTrigger]
+ON [RadarDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -10722,7 +10722,7 @@ INSTEAD OF INSERT AS
         @GNSSDevice
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [RadarInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@SaveSettingsTimeseries,@PowerOnTimeseries,@TrackingOnTimeseries,@RadarPulseTimeseries,@TuningTimeseries,@BlankSector1Timeseries,@Sector1StartTimeseries,@Sector1EndTimeseries,@BlankSector2Timeseries,@Sector2StartTimeseries,@Sector2EndTimeseries,@EnableAutomaticFrequencyControlTimeseries,@AzimuthOffsetTimeseries,@EnableSensitivityTimeControlTimeseries,@AutomaticSensitivityTimeControlTimeseries,@SensitivityTimeControlLevelTimeseries,@EnableFastTimeConstantTimeseries,@FastTimeConstantLevelTimeseries,@FastTimeConstantModeTimeseries,@LatitudeTimeseries,@LongitudeTimeseries,@Radome,@GNSSDevice
+        EXEC [RadarDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@SaveSettingsTimeseries,@PowerOnTimeseries,@TrackingOnTimeseries,@RadarPulseTimeseries,@TuningTimeseries,@BlankSector1Timeseries,@Sector1StartTimeseries,@Sector1EndTimeseries,@BlankSector2Timeseries,@Sector2StartTimeseries,@Sector2EndTimeseries,@EnableAutomaticFrequencyControlTimeseries,@AzimuthOffsetTimeseries,@EnableSensitivityTimeControlTimeseries,@AutomaticSensitivityTimeControlTimeseries,@SensitivityTimeControlLevelTimeseries,@EnableFastTimeConstantTimeseries,@FastTimeConstantLevelTimeseries,@FastTimeConstantModeTimeseries,@LatitudeTimeseries,@LongitudeTimeseries,@Radome,@GNSSDevice
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -10760,7 +10760,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [WeatherStationInsert]
+CREATE OR ALTER PROCEDURE [WeatherStationDeviceInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Host [uniqueidentifier],
   @Name [nvarchar](127),
@@ -10794,7 +10794,7 @@ AS
           VALUES(@Id, @EntityType, 0);
       INSERT INTO [Device]([Id], [Host], [Name], [Description], [EnabledTimeseries])
           VALUES(@Id, @Host, @Name, @Description, @EnabledTimeseries);
-      INSERT INTO [WeatherStation]([Id], [BarometricPressureTimeseries], [AirTemperatureTimeseries], [WaterTemperatureTimeseries], [RelativeHumidityTimeseries], [AbsoluteHumidityTimeseries], [DewPointTimeseries], [WindDirectionTimeseries], [WindSpeedTimeseries], [Gyro])
+      INSERT INTO [WeatherStationDevice]([Id], [BarometricPressureTimeseries], [AirTemperatureTimeseries], [WaterTemperatureTimeseries], [RelativeHumidityTimeseries], [AbsoluteHumidityTimeseries], [DewPointTimeseries], [WindDirectionTimeseries], [WindSpeedTimeseries], [Gyro])
           VALUES(@Id, @BarometricPressureTimeseries, @AirTemperatureTimeseries, @WaterTemperatureTimeseries, @RelativeHumidityTimeseries, @AbsoluteHumidityTimeseries, @DewPointTimeseries, @WindDirectionTimeseries, @WindSpeedTimeseries, @Gyro);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -10820,8 +10820,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [WeatherStationInsertTrigger]
-ON [WeatherStationView]
+CREATE OR ALTER TRIGGER [WeatherStationDeviceInsertTrigger]
+ON [WeatherStationDeviceView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -10877,7 +10877,7 @@ INSTEAD OF INSERT AS
         @Gyro
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [WeatherStationInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@BarometricPressureTimeseries,@AirTemperatureTimeseries,@WaterTemperatureTimeseries,@RelativeHumidityTimeseries,@AbsoluteHumidityTimeseries,@DewPointTimeseries,@WindDirectionTimeseries,@WindSpeedTimeseries,@Gyro
+        EXEC [WeatherStationDeviceInsert] @Id,@RowVersion,@Host,@Name,@Description,@EnabledTimeseries,@BarometricPressureTimeseries,@AirTemperatureTimeseries,@WaterTemperatureTimeseries,@RelativeHumidityTimeseries,@AbsoluteHumidityTimeseries,@DewPointTimeseries,@WindDirectionTimeseries,@WindSpeedTimeseries,@Gyro
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -14287,7 +14287,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillInsert]
+CREATE OR ALTER PROCEDURE [OilSpillInsert]
   @Id [uniqueidentifier] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
   @Timestamp [bigint],
@@ -14309,7 +14309,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [Oilspill]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [OilArea], [Shape], [BSI], [Oil], [Trace])
+      INSERT INTO [OilSpill]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [OilArea], [Shape], [BSI], [Oil], [Trace])
           VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @OilArea, @Shape, @BSI, @Oil, @Trace);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -14335,8 +14335,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [OilspillInsertTrigger]
-ON [OilspillView]
+CREATE OR ALTER TRIGGER [OilSpillInsertTrigger]
+ON [OilSpillView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -14374,7 +14374,7 @@ INSTEAD OF INSERT AS
         @Trace
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [OilspillInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@OilArea,@Shape,@BSI,@Oil,@Trace
+        EXEC [OilSpillInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@OilArea,@Shape,@BSI,@Oil,@Trace
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -14392,7 +14392,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorCommandInsert]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandInsert]
   @Id [uniqueidentifier] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
   @Timestamp [bigint],
@@ -14412,7 +14412,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [OilspillDetectorCommand]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
+      INSERT INTO [OilSpillDetectorCommand]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [DeviceCommandSourceType], [DeviceCommandSourceId], [Reply])
           VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @DeviceCommandSourceType, @DeviceCommandSourceId, @Reply);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -14438,8 +14438,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [OilspillDetectorCommandInsertTrigger]
-ON [OilspillDetectorCommandView]
+CREATE OR ALTER TRIGGER [OilSpillDetectorCommandInsertTrigger]
+ON [OilSpillDetectorCommandView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -14471,7 +14471,7 @@ INSTEAD OF INSERT AS
         @Reply
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [OilspillDetectorCommandInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@DeviceCommandSourceType,@DeviceCommandSourceId,@Reply
+        EXEC [OilSpillDetectorCommandInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@DeviceCommandSourceType,@DeviceCommandSourceId,@Reply
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -14487,7 +14487,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorCommandReplyInsert]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorCommandReplyInsert]
   @Id [uniqueidentifier] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
   @Timestamp [bigint],
@@ -14507,7 +14507,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [OilspillDetectorCommandReply]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Command], [Status], [Message])
+      INSERT INTO [OilSpillDetectorCommandReply]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Command], [Status], [Message])
           VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @Command, @Status, @Message);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -14533,8 +14533,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [OilspillDetectorCommandReplyInsertTrigger]
-ON [OilspillDetectorCommandReplyView]
+CREATE OR ALTER TRIGGER [OilSpillDetectorCommandReplyInsertTrigger]
+ON [OilSpillDetectorCommandReplyView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -14566,7 +14566,7 @@ INSTEAD OF INSERT AS
         @Message
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [OilspillDetectorCommandReplyInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@Command,@Status,@Message
+        EXEC [OilSpillDetectorCommandReplyInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@Command,@Status,@Message
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
@@ -14582,7 +14582,7 @@ INSTEAD OF INSERT AS
 
 GO
 
-CREATE OR ALTER PROCEDURE [OilspillDetectorConfigurationInsert]
+CREATE OR ALTER PROCEDURE [OilSpillDetectorConfigurationInsert]
   @Id [uniqueidentifier] OUTPUT,
   @OilSpillDetector [uniqueidentifier],
   @Timestamp [bigint],
@@ -14621,7 +14621,7 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [OilspillDetectorConfiguration]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Range], [StartAngle], [EndAngle], [StartRange], [EndRange], [UpdateRate], [StatusSendTime], [DrawBorder], [Colors], [SendToServer], [Directory], [TransparentWater], [SavePictures], [SendAsTarget], [WriteLog], [TargetFilePrefix], [TargetMMSI], [Latitude], [Longitude], [TestSourceEnabled], [ProxyServer], [UseProxyServer])
+      INSERT INTO [OilSpillDetectorConfiguration]([Id], [RowVersion], [OilSpillDetector], [Timestamp], [Range], [StartAngle], [EndAngle], [StartRange], [EndRange], [UpdateRate], [StatusSendTime], [DrawBorder], [Colors], [SendToServer], [Directory], [TransparentWater], [SavePictures], [SendAsTarget], [WriteLog], [TargetFilePrefix], [TargetMMSI], [Latitude], [Longitude], [TestSourceEnabled], [ProxyServer], [UseProxyServer])
           VALUES(@Id, 0, @OilSpillDetector, @Timestamp, @Range, @StartAngle, @EndAngle, @StartRange, @EndRange, @UpdateRate, @StatusSendTime, @DrawBorder, @Colors, @SendToServer, @Directory, @TransparentWater, @SavePictures, @SendAsTarget, @WriteLog, @TargetFilePrefix, @TargetMMSI, @Latitude, @Longitude, @TestSourceEnabled, @ProxyServer, @UseProxyServer);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
@@ -14647,8 +14647,8 @@ AS
 
 GO
 
-CREATE OR ALTER TRIGGER [OilspillDetectorConfigurationInsertTrigger]
-ON [OilspillDetectorConfigurationView]
+CREATE OR ALTER TRIGGER [OilSpillDetectorConfigurationInsertTrigger]
+ON [OilSpillDetectorConfigurationView]
 INSTEAD OF INSERT AS
   BEGIN
     DECLARE @cur CURSOR
@@ -14737,7 +14737,7 @@ INSTEAD OF INSERT AS
         @UseProxyServer
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [OilspillDetectorConfigurationInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@Range,@StartAngle,@EndAngle,@StartRange,@EndRange,@UpdateRate,@StatusSendTime,@DrawBorder,@Colors,@SendToServer,@Directory,@TransparentWater,@SavePictures,@SendAsTarget,@WriteLog,@TargetFilePrefix,@TargetMMSI,@Latitude,@Longitude,@TestSourceEnabled,@ProxyServer,@UseProxyServer
+        EXEC [OilSpillDetectorConfigurationInsert] @Id,@RowVersion,@OilSpillDetector,@Timestamp,@Range,@StartAngle,@EndAngle,@StartRange,@EndRange,@UpdateRate,@StatusSendTime,@DrawBorder,@Colors,@SendToServer,@Directory,@TransparentWater,@SavePictures,@SendAsTarget,@WriteLog,@TargetFilePrefix,@TargetMMSI,@Latitude,@Longitude,@TestSourceEnabled,@ProxyServer,@UseProxyServer
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
