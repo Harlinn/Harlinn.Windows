@@ -314,7 +314,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -731,7 +731,7 @@ namespace Barrelman::Database
         {
             return userName_;
         }
-        void SetUserName( FixedDBWideString<127> userName )
+        void SetUserName( const FixedDBWideString<127>& userName )
         {
             userName_ = userName;
         }
@@ -739,7 +739,7 @@ namespace Barrelman::Database
         {
             return password_;
         }
-        void SetPassword( FixedDBWideString<127> password )
+        void SetPassword( const FixedDBWideString<127>& password )
         {
             password_ = password;
         }
@@ -763,7 +763,7 @@ namespace Barrelman::Database
         {
             return aisProviderLoginURL_;
         }
-        void SetAisProviderLoginURL( FixedDBWideString<127> aisProviderLoginURL )
+        void SetAisProviderLoginURL( const FixedDBWideString<127>& aisProviderLoginURL )
         {
             aisProviderLoginURL_ = aisProviderLoginURL;
         }
@@ -771,7 +771,7 @@ namespace Barrelman::Database
         {
             return comPort_;
         }
-        void SetComPort( FixedDBWideString<32> comPort )
+        void SetComPort( const FixedDBWideString<32>& comPort )
         {
             comPort_ = comPort;
         }
@@ -827,7 +827,7 @@ namespace Barrelman::Database
         {
             return aisProviderIPAddress_;
         }
-        void SetAisProviderIPAddress( FixedDBWideString<127> aisProviderIPAddress )
+        void SetAisProviderIPAddress( const FixedDBWideString<127>& aisProviderIPAddress )
         {
             aisProviderIPAddress_ = aisProviderIPAddress;
         }
@@ -971,7 +971,7 @@ namespace Barrelman::Database
         {
             return aisWebConfig_;
         }
-        void SetAisWebConfig( FixedDBWideString<127> aisWebConfig )
+        void SetAisWebConfig( const FixedDBWideString<127>& aisWebConfig )
         {
             aisWebConfig_ = aisWebConfig;
         }
@@ -1141,7 +1141,7 @@ namespace Barrelman::Database
         Guid aisDevice_;
         DateTime timestamp_;
         bool isSent_ = false;
-        FixedDBWideString<100> message_;
+        FixedDBWideString<127> message_;
     public:
         using Base = BaseColumnData;
 
@@ -1203,11 +1203,11 @@ namespace Barrelman::Database
         {
             isSent_ = isSent;
         }
-        const FixedDBWideString<100>& Message( ) const
+        const FixedDBWideString<127>& Message( ) const
         {
             return message_;
         }
-        void SetMessage( FixedDBWideString<100> message )
+        void SetMessage( const FixedDBWideString<127>& message )
         {
             message_ = message;
         }
@@ -1483,7 +1483,7 @@ namespace Barrelman::Database
     class AidToNavigationReportMessageColumnData : public AisMessageColumnData
     {
         Data::NavigationalAidType navigationalAidType_ = Data::NavigationalAidType::NotSpecified;
-        FixedDBWideString<100> name_;
+        FixedDBWideString<127> name_;
         Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
@@ -1499,7 +1499,7 @@ namespace Barrelman::Database
         bool virtualAid_ = false;
         bool assigned_ = false;
         Int32 spare_ = 0;
-        FixedDBWideString<100> nameExtension_;
+        FixedDBWideString<127> nameExtension_;
     public:
         using Base = AisMessageColumnData;
 
@@ -1541,11 +1541,11 @@ namespace Barrelman::Database
         {
             navigationalAidType_ = navigationalAidType;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
-        void SetName( FixedDBWideString<100> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -1669,11 +1669,11 @@ namespace Barrelman::Database
         {
             spare_ = spare;
         }
-        const FixedDBWideString<100>& NameExtension( ) const
+        const FixedDBWideString<127>& NameExtension( ) const
         {
             return nameExtension_;
         }
-        void SetNameExtension( FixedDBWideString<100> nameExtension )
+        void SetNameExtension( const FixedDBWideString<127>& nameExtension )
         {
             nameExtension_ = nameExtension;
         }
@@ -1756,7 +1756,7 @@ namespace Barrelman::Database
         Guid destinationMmsi_;
         bool retransmitFlag_ = false;
         Int32 spare_ = 0;
-        FixedDBWideString<100> text_;
+        FixedDBWideString<127> text_;
     public:
         using Base = AisMessageColumnData;
 
@@ -1809,11 +1809,11 @@ namespace Barrelman::Database
         {
             spare_ = spare;
         }
-        const FixedDBWideString<100>& Text( ) const
+        const FixedDBWideString<127>& Text( ) const
         {
             return text_;
         }
-        void SetText( FixedDBWideString<100> text )
+        void SetText( const FixedDBWideString<127>& text )
         {
             text_ = text;
         }
@@ -4138,7 +4138,7 @@ namespace Barrelman::Database
         Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
         DBDateTime estimatedTimeOfArrival_;
         double draught_ = 0.0;
-        FixedDBWideString<100> destination_;
+        FixedDBWideString<127> destination_;
         bool dataTerminalReady_ = false;
         Int32 spare_ = 0;
     public:
@@ -4267,11 +4267,11 @@ namespace Barrelman::Database
         {
             draught_ = draught;
         }
-        const FixedDBWideString<100>& Destination( ) const
+        const FixedDBWideString<127>& Destination( ) const
         {
             return destination_;
         }
-        void SetDestination( FixedDBWideString<100> destination )
+        void SetDestination( const FixedDBWideString<127>& destination )
         {
             destination_ = destination;
         }
@@ -4469,7 +4469,7 @@ namespace Barrelman::Database
     class AisStaticDataReportPartBMessageColumnData : public AisStaticDataReportMessageColumnData
     {
         Data::ShipType shipType_ = Data::ShipType::NotAvailable;
-        FixedDBWideString<100> vendorId_;
+        FixedDBWideString<127> vendorId_;
         Int32 unitModelCode_ = 0;
         Int32 serialNumber_ = 0;
         Guid callsign_;
@@ -4515,11 +4515,11 @@ namespace Barrelman::Database
         {
             shipType_ = shipType;
         }
-        const FixedDBWideString<100>& VendorId( ) const
+        const FixedDBWideString<127>& VendorId( ) const
         {
             return vendorId_;
         }
-        void SetVendorId( FixedDBWideString<100> vendorId )
+        void SetVendorId( const FixedDBWideString<127>& vendorId )
         {
             vendorId_ = vendorId;
         }
@@ -5014,7 +5014,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -5152,7 +5152,7 @@ namespace Barrelman::Database
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid view_;
-        FixedDBWideString<100> name_;
+        FixedDBWideString<127> name_;
         DBDateTime timestamp_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
@@ -5204,11 +5204,11 @@ namespace Barrelman::Database
         {
             view_ = view;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
-        void SetName( FixedDBWideString<100> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -6968,7 +6968,7 @@ namespace Barrelman::Database
         {
             return cameraAddress_;
         }
-        void SetCameraAddress( FixedDBWideString<127> cameraAddress )
+        void SetCameraAddress( const FixedDBWideString<127>& cameraAddress )
         {
             cameraAddress_ = cameraAddress;
         }
@@ -6984,7 +6984,7 @@ namespace Barrelman::Database
         {
             return cameraControlAddress_;
         }
-        void SetCameraControlAddress( FixedDBWideString<127> cameraControlAddress )
+        void SetCameraControlAddress( const FixedDBWideString<127>& cameraControlAddress )
         {
             cameraControlAddress_ = cameraControlAddress;
         }
@@ -7000,7 +7000,7 @@ namespace Barrelman::Database
         {
             return cameraUserName_;
         }
-        void SetCameraUserName( FixedDBWideString<127> cameraUserName )
+        void SetCameraUserName( const FixedDBWideString<127>& cameraUserName )
         {
             cameraUserName_ = cameraUserName;
         }
@@ -7008,7 +7008,7 @@ namespace Barrelman::Database
         {
             return cameraPassword_;
         }
-        void SetCameraPassword( FixedDBWideString<127> cameraPassword )
+        void SetCameraPassword( const FixedDBWideString<127>& cameraPassword )
         {
             cameraPassword_ = cameraPassword;
         }
@@ -7024,7 +7024,7 @@ namespace Barrelman::Database
         {
             return rtspUriOverride_;
         }
-        void SetRtspUriOverride( FixedDBWideString<127> rtspUriOverride )
+        void SetRtspUriOverride( const FixedDBWideString<127>& rtspUriOverride )
         {
             rtspUriOverride_ = rtspUriOverride;
         }
@@ -7424,7 +7424,7 @@ namespace Barrelman::Database
         {
             return ptzProfileName_;
         }
-        void SetPtzProfileName( FixedDBWideString<127> ptzProfileName )
+        void SetPtzProfileName( const FixedDBWideString<127>& ptzProfileName )
         {
             ptzProfileName_ = ptzProfileName;
         }
@@ -7432,7 +7432,7 @@ namespace Barrelman::Database
         {
             return ptzConfigurationToken_;
         }
-        void SetPtzConfigurationToken( FixedDBWideString<127> ptzConfigurationToken )
+        void SetPtzConfigurationToken( const FixedDBWideString<127>& ptzConfigurationToken )
         {
             ptzConfigurationToken_ = ptzConfigurationToken;
         }
@@ -7440,7 +7440,7 @@ namespace Barrelman::Database
         {
             return videoSourceToken_;
         }
-        void SetVideoSourceToken( FixedDBWideString<127> videoSourceToken )
+        void SetVideoSourceToken( const FixedDBWideString<127>& videoSourceToken )
         {
             videoSourceToken_ = videoSourceToken;
         }
@@ -8549,7 +8549,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -8781,7 +8781,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -8797,7 +8797,7 @@ namespace Barrelman::Database
         {
             return alpha2_;
         }
-        void SetAlpha2( FixedDBWideString<2> alpha2 )
+        void SetAlpha2( const FixedDBWideString<2>& alpha2 )
         {
             alpha2_ = alpha2;
         }
@@ -8805,7 +8805,7 @@ namespace Barrelman::Database
         {
             return alpha3_;
         }
-        void SetAlpha3( FixedDBWideString<3> alpha3 )
+        void SetAlpha3( const FixedDBWideString<3>& alpha3 )
         {
             alpha3_ = alpha3;
         }
@@ -9056,7 +9056,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -9093,7 +9093,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         FixedDBWideString<127> hostname_;
         Int32 port_ = 0;
-        FixedDBWideString<100> queueName_;
+        FixedDBWideString<127> queueName_;
     public:
         using Base = BaseColumnData;
 
@@ -9152,7 +9152,7 @@ namespace Barrelman::Database
         {
             return hostname_;
         }
-        void SetHostname( FixedDBWideString<127> hostname )
+        void SetHostname( const FixedDBWideString<127>& hostname )
         {
             hostname_ = hostname;
         }
@@ -9164,11 +9164,11 @@ namespace Barrelman::Database
         {
             port_ = port;
         }
-        const FixedDBWideString<100>& QueueName( ) const
+        const FixedDBWideString<127>& QueueName( ) const
         {
             return queueName_;
         }
-        void SetQueueName( FixedDBWideString<100> queueName )
+        void SetQueueName( const FixedDBWideString<127>& queueName )
         {
             queueName_ = queueName;
         }
@@ -9350,7 +9350,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -10488,7 +10488,7 @@ namespace Barrelman::Database
         {
             return pitchTransducerName_;
         }
-        void SetPitchTransducerName( FixedDBWideString<64> pitchTransducerName )
+        void SetPitchTransducerName( const FixedDBWideString<64>& pitchTransducerName )
         {
             pitchTransducerName_ = pitchTransducerName;
         }
@@ -10496,7 +10496,7 @@ namespace Barrelman::Database
         {
             return rollTransducerName_;
         }
-        void SetRollTransducerName( FixedDBWideString<64> rollTransducerName )
+        void SetRollTransducerName( const FixedDBWideString<64>& rollTransducerName )
         {
             rollTransducerName_ = rollTransducerName;
         }
@@ -10635,7 +10635,7 @@ namespace Barrelman::Database
         {
             return identifier_;
         }
-        void SetIdentifier( FixedDBWideString<127> identifier )
+        void SetIdentifier( const FixedDBWideString<127>& identifier )
         {
             identifier_ = identifier;
         }
@@ -10761,7 +10761,7 @@ namespace Barrelman::Database
 
     class NameColumnData : public IdentityColumnData
     {
-        FixedDBWideString<100> text_;
+        FixedDBWideString<127> text_;
     public:
         using Base = IdentityColumnData;
 
@@ -10778,11 +10778,11 @@ namespace Barrelman::Database
             return Kind::Name;
         }
 
-        const FixedDBWideString<100>& Text( ) const
+        const FixedDBWideString<127>& Text( ) const
         {
             return text_;
         }
-        void SetText( FixedDBWideString<100> text )
+        void SetText( const FixedDBWideString<127>& text )
         {
             text_ = text;
         }
@@ -11193,7 +11193,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -11268,7 +11268,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -12333,7 +12333,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -12457,7 +12457,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -12535,7 +12535,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -12685,7 +12685,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -12759,7 +12759,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -13338,22 +13338,22 @@ namespace Barrelman::Database
         bool strictNMEA_ = false;
         Data::LineInputDeviceConnectionType connectionType_ = Data::LineInputDeviceConnectionType::Unknown;
         Int32 udpReceivePort_ = 0;
-        FixedDBWideString<100> udpSendHostname_;
+        FixedDBWideString<127> udpSendHostname_;
         Int32 udpSendPort_ = 0;
-        FixedDBWideString<100> tcpHostname_;
+        FixedDBWideString<127> tcpHostname_;
         Int32 tcpPort_ = 0;
         bool useHttpLogin_ = false;
-        FixedDBWideString<100> loginHostname_;
+        FixedDBWideString<127> loginHostname_;
         Int32 loginPort_ = 0;
-        FixedDBWideString<100> userName_;
-        FixedDBWideString<100> password_;
-        FixedDBWideString<100> comPort_;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
+        FixedDBWideString<127> comPort_;
         Int32 baudRate_ = 0;
         Int32 dataBits_ = 0;
         bool discardNull_ = false;
         bool dtrEnable_ = false;
         Data::Handshake handshake_ = Data::Handshake::None;
-        FixedDBWideString<100> newLine_;
+        FixedDBWideString<127> newLine_;
         Data::Parity parity_ = Data::Parity::None;
         Byte parityReplace_ = 0;
         Int32 readBufferSize_ = 0;
@@ -13363,7 +13363,7 @@ namespace Barrelman::Database
         Data::StopBits stopBits_ = Data::StopBits::None;
         Int32 writeBufferSize_ = 0;
         TimeSpan writeTimeout_;
-        FixedDBWideString<100> pairedComPort_;
+        FixedDBWideString<127> pairedComPort_;
     public:
         using Base = BaseColumnData;
 
@@ -13504,11 +13504,11 @@ namespace Barrelman::Database
         {
             udpReceivePort_ = udpReceivePort;
         }
-        const FixedDBWideString<100>& UdpSendHostname( ) const
+        const FixedDBWideString<127>& UdpSendHostname( ) const
         {
             return udpSendHostname_;
         }
-        void SetUdpSendHostname( FixedDBWideString<100> udpSendHostname )
+        void SetUdpSendHostname( const FixedDBWideString<127>& udpSendHostname )
         {
             udpSendHostname_ = udpSendHostname;
         }
@@ -13520,11 +13520,11 @@ namespace Barrelman::Database
         {
             udpSendPort_ = udpSendPort;
         }
-        const FixedDBWideString<100>& TcpHostname( ) const
+        const FixedDBWideString<127>& TcpHostname( ) const
         {
             return tcpHostname_;
         }
-        void SetTcpHostname( FixedDBWideString<100> tcpHostname )
+        void SetTcpHostname( const FixedDBWideString<127>& tcpHostname )
         {
             tcpHostname_ = tcpHostname;
         }
@@ -13544,11 +13544,11 @@ namespace Barrelman::Database
         {
             useHttpLogin_ = useHttpLogin;
         }
-        const FixedDBWideString<100>& LoginHostname( ) const
+        const FixedDBWideString<127>& LoginHostname( ) const
         {
             return loginHostname_;
         }
-        void SetLoginHostname( FixedDBWideString<100> loginHostname )
+        void SetLoginHostname( const FixedDBWideString<127>& loginHostname )
         {
             loginHostname_ = loginHostname;
         }
@@ -13560,27 +13560,27 @@ namespace Barrelman::Database
         {
             loginPort_ = loginPort;
         }
-        const FixedDBWideString<100>& UserName( ) const
+        const FixedDBWideString<127>& UserName( ) const
         {
             return userName_;
         }
-        void SetUserName( FixedDBWideString<100> userName )
+        void SetUserName( const FixedDBWideString<127>& userName )
         {
             userName_ = userName;
         }
-        const FixedDBWideString<100>& Password( ) const
+        const FixedDBWideString<127>& Password( ) const
         {
             return password_;
         }
-        void SetPassword( FixedDBWideString<100> password )
+        void SetPassword( const FixedDBWideString<127>& password )
         {
             password_ = password;
         }
-        const FixedDBWideString<100>& ComPort( ) const
+        const FixedDBWideString<127>& ComPort( ) const
         {
             return comPort_;
         }
-        void SetComPort( FixedDBWideString<100> comPort )
+        void SetComPort( const FixedDBWideString<127>& comPort )
         {
             comPort_ = comPort;
         }
@@ -13624,11 +13624,11 @@ namespace Barrelman::Database
         {
             handshake_ = handshake;
         }
-        const FixedDBWideString<100>& NewLine( ) const
+        const FixedDBWideString<127>& NewLine( ) const
         {
             return newLine_;
         }
-        void SetNewLine( FixedDBWideString<100> newLine )
+        void SetNewLine( const FixedDBWideString<127>& newLine )
         {
             newLine_ = newLine;
         }
@@ -13704,11 +13704,11 @@ namespace Barrelman::Database
         {
             writeTimeout_ = writeTimeout;
         }
-        const FixedDBWideString<100>& PairedComPort( ) const
+        const FixedDBWideString<127>& PairedComPort( ) const
         {
             return pairedComPort_;
         }
-        void SetPairedComPort( FixedDBWideString<100> pairedComPort )
+        void SetPairedComPort( const FixedDBWideString<127>& pairedComPort )
         {
             pairedComPort_ = pairedComPort;
         }
@@ -13844,7 +13844,7 @@ namespace Barrelman::Database
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid lineInputDevice_;
-        FixedDBWideString<100> type_;
+        FixedDBWideString<127> type_;
     public:
         using Base = BaseColumnData;
 
@@ -13888,11 +13888,11 @@ namespace Barrelman::Database
         {
             lineInputDevice_ = lineInputDevice;
         }
-        const FixedDBWideString<100>& Type( ) const
+        const FixedDBWideString<127>& Type( ) const
         {
             return type_;
         }
-        void SetType( FixedDBWideString<100> type )
+        void SetType( const FixedDBWideString<127>& type )
         {
             type_ = type;
         }
@@ -14064,7 +14064,7 @@ namespace Barrelman::Database
         {
             return hostName_;
         }
-        void SetHostName( FixedDBWideString<128> hostName )
+        void SetHostName( const FixedDBWideString<128>& hostName )
         {
             hostName_ = hostName;
         }
@@ -14153,7 +14153,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -14485,7 +14485,7 @@ namespace Barrelman::Database
         {
             return computerName_;
         }
-        void SetComputerName( FixedDBWideString<127> computerName )
+        void SetComputerName( const FixedDBWideString<127>& computerName )
         {
             computerName_ = computerName;
         }
@@ -14824,7 +14824,7 @@ namespace Barrelman::Database
         {
             return fileName_;
         }
-        void SetFileName( FixedDBWideString<260> fileName )
+        void SetFileName( const FixedDBWideString<260>& fileName )
         {
             fileName_ = fileName;
         }
@@ -14856,7 +14856,7 @@ namespace Barrelman::Database
         {
             return methodName_;
         }
-        void SetMethodName( FixedDBWideString<255> methodName )
+        void SetMethodName( const FixedDBWideString<255>& methodName )
         {
             methodName_ = methodName;
         }
@@ -15006,7 +15006,7 @@ namespace Barrelman::Database
         {
             return identity_;
         }
-        void SetIdentity( FixedDBWideString<127> identity )
+        void SetIdentity( const FixedDBWideString<127>& identity )
         {
             identity_ = identity;
         }
@@ -15325,7 +15325,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -15516,7 +15516,7 @@ namespace Barrelman::Database
         double top_ = 0.0;
         double width_ = 0.0;
         double height_ = 0.0;
-        FixedDBWideString<100> label_;
+        FixedDBWideString<127> label_;
         Binary data_;
         SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
@@ -15635,11 +15635,11 @@ namespace Barrelman::Database
         {
             height_ = height;
         }
-        const FixedDBWideString<100>& Label( ) const
+        const FixedDBWideString<127>& Label( ) const
         {
             return label_;
         }
-        void SetLabel( FixedDBWideString<100> label )
+        void SetLabel( const FixedDBWideString<127>& label )
         {
             label_ = label;
         }
@@ -15943,7 +15943,7 @@ namespace Barrelman::Database
         {
             return ipAddress_;
         }
-        void SetIpAddress( FixedDBWideString<127> ipAddress )
+        void SetIpAddress( const FixedDBWideString<127>& ipAddress )
         {
             ipAddress_ = ipAddress;
         }
@@ -16170,7 +16170,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<128> name )
+        void SetName( const FixedDBWideString<128>& name )
         {
             name_ = name;
         }
@@ -16219,7 +16219,7 @@ namespace Barrelman::Database
         Int64 rowVersion_ = 0;
         Guid proxySession_;
         DateTime timestamp_;
-        FixedDBWideString<100> streamName_;
+        FixedDBWideString<127> streamName_;
     public:
         using Base = BaseColumnData;
 
@@ -16272,11 +16272,11 @@ namespace Barrelman::Database
         {
             timestamp_ = timestamp;
         }
-        const FixedDBWideString<100>& StreamName( ) const
+        const FixedDBWideString<127>& StreamName( ) const
         {
             return streamName_;
         }
-        void SetStreamName( FixedDBWideString<100> streamName )
+        void SetStreamName( const FixedDBWideString<127>& streamName )
         {
             streamName_ = streamName;
         }
@@ -16394,7 +16394,7 @@ namespace Barrelman::Database
         {
             return sourceStreamUrl_;
         }
-        void SetSourceStreamUrl( FixedDBWideString<255> sourceStreamUrl )
+        void SetSourceStreamUrl( const FixedDBWideString<255>& sourceStreamUrl )
         {
             sourceStreamUrl_ = sourceStreamUrl;
         }
@@ -16402,7 +16402,7 @@ namespace Barrelman::Database
         {
             return streamName_;
         }
-        void SetStreamName( FixedDBWideString<255> streamName )
+        void SetStreamName( const FixedDBWideString<255>& streamName )
         {
             streamName_ = streamName;
         }
@@ -16426,7 +16426,7 @@ namespace Barrelman::Database
         {
             return username_;
         }
-        void SetUsername( FixedDBWideString<128> username )
+        void SetUsername( const FixedDBWideString<128>& username )
         {
             username_ = username;
         }
@@ -16434,7 +16434,7 @@ namespace Barrelman::Database
         {
             return password_;
         }
-        void SetPassword( FixedDBWideString<128> password )
+        void SetPassword( const FixedDBWideString<128>& password )
         {
             password_ = password;
         }
@@ -16474,7 +16474,7 @@ namespace Barrelman::Database
         {
             return videoDirectory_;
         }
-        void SetVideoDirectory( FixedDBWideString<260> videoDirectory )
+        void SetVideoDirectory( const FixedDBWideString<260>& videoDirectory )
         {
             videoDirectory_ = videoDirectory;
         }
@@ -16784,7 +16784,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -17321,17 +17321,17 @@ namespace Barrelman::Database
         Binary colors_;
         SQLLEN colorsLength_ = SQL_NULL_DATA;
         bool sendToServer_ = false;
-        FixedDBWideString<100> directory_;
+        FixedDBWideString<260> directory_;
         bool transparentWater_ = false;
         bool savePictures_ = false;
         bool sendAsTarget_ = false;
         bool writeLog_ = false;
-        FixedDBWideString<100> targetFilePrefix_;
+        FixedDBWideString<127> targetFilePrefix_;
         Guid targetMMSI_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         bool testSourceEnabled_ = false;
-        FixedDBWideString<100> proxyServer_;
+        FixedDBWideString<127> proxyServer_;
         bool useProxyServer_ = false;
     public:
         using Base = BaseColumnData;
@@ -17486,11 +17486,11 @@ namespace Barrelman::Database
         {
             sendToServer_ = sendToServer;
         }
-        const FixedDBWideString<100>& Directory( ) const
+        const FixedDBWideString<260>& Directory( ) const
         {
             return directory_;
         }
-        void SetDirectory( FixedDBWideString<100> directory )
+        void SetDirectory( const FixedDBWideString<260>& directory )
         {
             directory_ = directory;
         }
@@ -17526,11 +17526,11 @@ namespace Barrelman::Database
         {
             writeLog_ = writeLog;
         }
-        const FixedDBWideString<100>& TargetFilePrefix( ) const
+        const FixedDBWideString<127>& TargetFilePrefix( ) const
         {
             return targetFilePrefix_;
         }
-        void SetTargetFilePrefix( FixedDBWideString<100> targetFilePrefix )
+        void SetTargetFilePrefix( const FixedDBWideString<127>& targetFilePrefix )
         {
             targetFilePrefix_ = targetFilePrefix;
         }
@@ -17566,11 +17566,11 @@ namespace Barrelman::Database
         {
             testSourceEnabled_ = testSourceEnabled;
         }
-        const FixedDBWideString<100>& ProxyServer( ) const
+        const FixedDBWideString<127>& ProxyServer( ) const
         {
             return proxyServer_;
         }
-        void SetProxyServer( FixedDBWideString<100> proxyServer )
+        void SetProxyServer( const FixedDBWideString<127>& proxyServer )
         {
             proxyServer_ = proxyServer;
         }
@@ -18689,7 +18689,7 @@ namespace Barrelman::Database
 
     class StringPropertyColumnData : public PropertyColumnData
     {
-        FixedDBWideString<100> value_;
+        FixedDBWideString<127> value_;
     public:
         using Base = PropertyColumnData;
 
@@ -18706,11 +18706,11 @@ namespace Barrelman::Database
             return Kind::StringProperty;
         }
 
-        const FixedDBWideString<100>& Value( ) const
+        const FixedDBWideString<127>& Value( ) const
         {
             return value_;
         }
-        void SetValue( FixedDBWideString<100> value )
+        void SetValue( const FixedDBWideString<127>& value )
         {
             value_ = value;
         }
@@ -19856,7 +19856,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -20086,9 +20086,9 @@ namespace Barrelman::Database
 
     class DateTimePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
-        FixedDBWideString<100> defaultValue_;
-        FixedDBWideString<100> minValue_;
-        FixedDBWideString<100> maxValue_;
+        FixedDBWideString<127> defaultValue_;
+        FixedDBWideString<127> minValue_;
+        FixedDBWideString<127> maxValue_;
     public:
         using Base = PropertyDefinitionColumnData;
 
@@ -20107,27 +20107,27 @@ namespace Barrelman::Database
             return Kind::DateTimePropertyDefinition;
         }
 
-        const FixedDBWideString<100>& DefaultValue( ) const
+        const FixedDBWideString<127>& DefaultValue( ) const
         {
             return defaultValue_;
         }
-        void SetDefaultValue( FixedDBWideString<100> defaultValue )
+        void SetDefaultValue( const FixedDBWideString<127>& defaultValue )
         {
             defaultValue_ = defaultValue;
         }
-        const FixedDBWideString<100>& MinValue( ) const
+        const FixedDBWideString<127>& MinValue( ) const
         {
             return minValue_;
         }
-        void SetMinValue( FixedDBWideString<100> minValue )
+        void SetMinValue( const FixedDBWideString<127>& minValue )
         {
             minValue_ = minValue;
         }
-        const FixedDBWideString<100>& MaxValue( ) const
+        const FixedDBWideString<127>& MaxValue( ) const
         {
             return maxValue_;
         }
-        void SetMaxValue( FixedDBWideString<100> maxValue )
+        void SetMaxValue( const FixedDBWideString<127>& maxValue )
         {
             maxValue_ = maxValue;
         }
@@ -20722,8 +20722,8 @@ namespace Barrelman::Database
 
     class StringPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
-        FixedDBWideString<100> defaultValue_;
-        FixedDBWideString<100> pattern_;
+        FixedDBWideString<127> defaultValue_;
+        FixedDBWideString<127> pattern_;
     public:
         using Base = PropertyDefinitionColumnData;
 
@@ -20741,19 +20741,19 @@ namespace Barrelman::Database
             return Kind::StringPropertyDefinition;
         }
 
-        const FixedDBWideString<100>& DefaultValue( ) const
+        const FixedDBWideString<127>& DefaultValue( ) const
         {
             return defaultValue_;
         }
-        void SetDefaultValue( FixedDBWideString<100> defaultValue )
+        void SetDefaultValue( const FixedDBWideString<127>& defaultValue )
         {
             defaultValue_ = defaultValue;
         }
-        const FixedDBWideString<100>& Pattern( ) const
+        const FixedDBWideString<127>& Pattern( ) const
         {
             return pattern_;
         }
-        void SetPattern( FixedDBWideString<100> pattern )
+        void SetPattern( const FixedDBWideString<127>& pattern )
         {
             pattern_ = pattern;
         }
@@ -20933,8 +20933,8 @@ namespace Barrelman::Database
 
     class DateTimeTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
-        FixedDBWideString<100> minValue_;
-        FixedDBWideString<100> maxValue_;
+        FixedDBWideString<127> minValue_;
+        FixedDBWideString<127> maxValue_;
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
@@ -20952,19 +20952,19 @@ namespace Barrelman::Database
             return Kind::DateTimeTimeseriesPropertyDefinition;
         }
 
-        const FixedDBWideString<100>& MinValue( ) const
+        const FixedDBWideString<127>& MinValue( ) const
         {
             return minValue_;
         }
-        void SetMinValue( FixedDBWideString<100> minValue )
+        void SetMinValue( const FixedDBWideString<127>& minValue )
         {
             minValue_ = minValue;
         }
-        const FixedDBWideString<100>& MaxValue( ) const
+        const FixedDBWideString<127>& MaxValue( ) const
         {
             return maxValue_;
         }
-        void SetMaxValue( FixedDBWideString<100> maxValue )
+        void SetMaxValue( const FixedDBWideString<127>& maxValue )
         {
             maxValue_ = maxValue;
         }
@@ -21445,7 +21445,7 @@ namespace Barrelman::Database
 
     class StringTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
-        FixedDBWideString<100> pattern_;
+        FixedDBWideString<127> pattern_;
     public:
         using Base = TimeseriesPropertyDefinitionColumnData;
 
@@ -21462,11 +21462,11 @@ namespace Barrelman::Database
             return Kind::StringTimeseriesPropertyDefinition;
         }
 
-        const FixedDBWideString<100>& Pattern( ) const
+        const FixedDBWideString<127>& Pattern( ) const
         {
             return pattern_;
         }
-        void SetPattern( FixedDBWideString<100> pattern )
+        void SetPattern( const FixedDBWideString<127>& pattern )
         {
             pattern_ = pattern;
         }
@@ -22543,7 +22543,7 @@ namespace Barrelman::Database
         Guid radar_;
         DateTime timestamp_;
         Int32 radarProtocolVersion_ = 0;
-        FixedDBWideString<100> radarIPAddress_;
+        FixedDBWideString<127> radarIPAddress_;
         Int32 radarPort_ = 0;
         Int32 radarConfigurationPort_ = 0;
         TimeSpan skipMagicTimeout_;
@@ -22564,9 +22564,9 @@ namespace Barrelman::Database
         UInt32 trackColor_ = 0;
         UInt32 vectorColor_ = 0;
         bool enableNmea_ = false;
-        FixedDBWideString<100> nmeaReceiverIPAddress_;
+        FixedDBWideString<127> nmeaReceiverIPAddress_;
         Int32 nmeaReceiverPort_ = 0;
-        FixedDBWideString<100> nmeaReceiverSourceId_;
+        FixedDBWideString<127> nmeaReceiverSourceId_;
     public:
         using Base = BaseColumnData;
 
@@ -22651,11 +22651,11 @@ namespace Barrelman::Database
         {
             radarProtocolVersion_ = radarProtocolVersion;
         }
-        const FixedDBWideString<100>& RadarIPAddress( ) const
+        const FixedDBWideString<127>& RadarIPAddress( ) const
         {
             return radarIPAddress_;
         }
-        void SetRadarIPAddress( FixedDBWideString<100> radarIPAddress )
+        void SetRadarIPAddress( const FixedDBWideString<127>& radarIPAddress )
         {
             radarIPAddress_ = radarIPAddress;
         }
@@ -22819,11 +22819,11 @@ namespace Barrelman::Database
         {
             enableNmea_ = enableNmea;
         }
-        const FixedDBWideString<100>& NmeaReceiverIPAddress( ) const
+        const FixedDBWideString<127>& NmeaReceiverIPAddress( ) const
         {
             return nmeaReceiverIPAddress_;
         }
-        void SetNmeaReceiverIPAddress( FixedDBWideString<100> nmeaReceiverIPAddress )
+        void SetNmeaReceiverIPAddress( const FixedDBWideString<127>& nmeaReceiverIPAddress )
         {
             nmeaReceiverIPAddress_ = nmeaReceiverIPAddress;
         }
@@ -22835,11 +22835,11 @@ namespace Barrelman::Database
         {
             nmeaReceiverPort_ = nmeaReceiverPort;
         }
-        const FixedDBWideString<100>& NmeaReceiverSourceId( ) const
+        const FixedDBWideString<127>& NmeaReceiverSourceId( ) const
         {
             return nmeaReceiverSourceId_;
         }
-        void SetNmeaReceiverSourceId( FixedDBWideString<100> nmeaReceiverSourceId )
+        void SetNmeaReceiverSourceId( const FixedDBWideString<127>& nmeaReceiverSourceId )
         {
             nmeaReceiverSourceId_ = nmeaReceiverSourceId;
         }
@@ -23631,10 +23631,10 @@ namespace Barrelman::Database
         DateTime timestamp_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
-        FixedDBWideString<100> playbackUrl_;
-        FixedDBWideString<100> radioIPAddress_;
+        FixedDBWideString<127> playbackUrl_;
+        FixedDBWideString<127> radioIPAddress_;
         Int32 radioPort_ = 0;
-        FixedDBWideString<100> ed137IPAddress_;
+        FixedDBWideString<127> ed137IPAddress_;
         Int32 ed137Port_ = 0;
     public:
         using Base = BaseColumnData;
@@ -23710,19 +23710,19 @@ namespace Barrelman::Database
         {
             latitude_ = latitude;
         }
-        const FixedDBWideString<100>& PlaybackUrl( ) const
+        const FixedDBWideString<127>& PlaybackUrl( ) const
         {
             return playbackUrl_;
         }
-        void SetPlaybackUrl( FixedDBWideString<100> playbackUrl )
+        void SetPlaybackUrl( const FixedDBWideString<127>& playbackUrl )
         {
             playbackUrl_ = playbackUrl;
         }
-        const FixedDBWideString<100>& RadioIPAddress( ) const
+        const FixedDBWideString<127>& RadioIPAddress( ) const
         {
             return radioIPAddress_;
         }
-        void SetRadioIPAddress( FixedDBWideString<100> radioIPAddress )
+        void SetRadioIPAddress( const FixedDBWideString<127>& radioIPAddress )
         {
             radioIPAddress_ = radioIPAddress;
         }
@@ -23734,11 +23734,11 @@ namespace Barrelman::Database
         {
             radioPort_ = radioPort;
         }
-        const FixedDBWideString<100>& Ed137IPAddress( ) const
+        const FixedDBWideString<127>& Ed137IPAddress( ) const
         {
             return ed137IPAddress_;
         }
-        void SetEd137IPAddress( FixedDBWideString<100> ed137IPAddress )
+        void SetEd137IPAddress( const FixedDBWideString<127>& ed137IPAddress )
         {
             ed137IPAddress_ = ed137IPAddress;
         }
@@ -24445,7 +24445,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -24552,7 +24552,7 @@ namespace Barrelman::Database
         {
             return identity_;
         }
-        void SetIdentity( FixedDBWideString<255> identity )
+        void SetIdentity( const FixedDBWideString<255>& identity )
         {
             identity_ = identity;
         }
@@ -24653,7 +24653,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -24875,7 +24875,7 @@ namespace Barrelman::Database
         {
             return notificationQueueName_;
         }
-        void SetNotificationQueueName( FixedDBWideString<260> notificationQueueName )
+        void SetNotificationQueueName( const FixedDBWideString<260>& notificationQueueName )
         {
             notificationQueueName_ = notificationQueueName;
         }
@@ -24883,7 +24883,7 @@ namespace Barrelman::Database
         {
             return messageQueueName_;
         }
-        void SetMessageQueueName( FixedDBWideString<260> messageQueueName )
+        void SetMessageQueueName( const FixedDBWideString<260>& messageQueueName )
         {
             messageQueueName_ = messageQueueName;
         }
@@ -25284,8 +25284,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind entityType_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -25326,19 +25326,19 @@ namespace Barrelman::Database
         {
             rowVersion_ = rowVersion;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        void SetCatalog( const Guid& catalog )
+        void SetCatalog( const DBGuid& catalog )
         {
             catalog_ = catalog;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
-        void SetName( FixedDBWideString<100> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -25529,7 +25529,7 @@ namespace Barrelman::Database
 
     class DeviceEnabledTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid device_;
+        DBGuid device_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25546,11 +25546,11 @@ namespace Barrelman::Database
             return Kind::DeviceEnabledTimeseries;
         }
 
-        const Guid& Device( ) const
+        const DBGuid& Device( ) const
         {
             return device_;
         }
-        void SetDevice( const Guid& device )
+        void SetDevice( const DBGuid& device )
         {
             device_ = device;
         }
@@ -29130,7 +29130,7 @@ namespace Barrelman::Database
         Guid id_;
         Int64 rowVersion_ = 0;
         Guid tracker_;
-        FixedDBWideString<100> name_;
+        FixedDBWideString<127> name_;
     public:
         using Base = BaseColumnData;
 
@@ -29174,11 +29174,11 @@ namespace Barrelman::Database
         {
             tracker_ = tracker;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
-        void SetName( FixedDBWideString<100> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -30629,7 +30629,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -30703,7 +30703,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -30792,7 +30792,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }
@@ -31571,7 +31571,7 @@ namespace Barrelman::Database
         {
             return name_;
         }
-        void SetName( FixedDBWideString<127> name )
+        void SetName( const FixedDBWideString<127>& name )
         {
             name_ = name;
         }

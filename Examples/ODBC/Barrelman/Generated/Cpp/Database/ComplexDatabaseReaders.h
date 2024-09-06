@@ -22,7 +22,7 @@ namespace Barrelman::Database
         Int32 repeat_ = 0;
         Guid mmsi_;
         DBEnum<Data::NavigationalAidType> atnrmNavigationalAidType_;
-        FixedDBWideString<100> atnrmName_;
+        FixedDBWideString<127> atnrmName_;
         DBEnum<Data::PositionAccuracy> atnrmPositionAccuracy_;
         DBDouble atnrmLongitude_;
         DBDouble atnrmLatitude_;
@@ -38,12 +38,12 @@ namespace Barrelman::Database
         DBBoolean atnrmVirtualAid_;
         DBBoolean atnrmAssigned_;
         DBInt32 atnrmSpare_;
-        FixedDBWideString<100> atnrmNameExtension_;
+        FixedDBWideString<127> atnrmNameExtension_;
         DBInt32 aasrmSequenceNumber_;
         DBGuid aasrmDestinationMmsi_;
         DBBoolean aasrmRetransmitFlag_;
         DBInt32 aasrmSpare_;
-        FixedDBWideString<100> aasrmText_;
+        FixedDBWideString<127> aasrmText_;
         DBDateTime absrmTimestamp_;
         DBEnum<Data::PositionAccuracy> absrmPositionAccuracy_;
         DBDouble absrmLongitude_;
@@ -190,14 +190,14 @@ namespace Barrelman::Database
         DBEnum<Data::PositionFixType> asavrdmPositionFixType_;
         DBDateTime asavrdmEstimatedTimeOfArrival_;
         DBDouble asavrdmDraught_;
-        FixedDBWideString<100> asavrdmDestination_;
+        FixedDBWideString<127> asavrdmDestination_;
         DBBoolean asavrdmDataTerminalReady_;
         DBInt32 asavrdmSpare_;
         DBInt32 asdrmPartNumber_;
         DBGuid asdrpaShipName_;
         DBInt32 asdrpaSpare_;
         DBEnum<Data::ShipType> asdrpbShipType_;
-        FixedDBWideString<100> asdrpbVendorId_;
+        FixedDBWideString<127> asdrpbVendorId_;
         DBInt32 asdrpbUnitModelCode_;
         DBInt32 asdrpbSerialNumber_;
         DBGuid asdrpbCallsign_;
@@ -475,7 +475,7 @@ namespace Barrelman::Database
         {
             return atnrmNavigationalAidType_;
         }
-        const FixedDBWideString<100>& AidToNavigationReportMessageName( ) const
+        const FixedDBWideString<127>& AidToNavigationReportMessageName( ) const
         {
             return atnrmName_;
         }
@@ -539,7 +539,7 @@ namespace Barrelman::Database
         {
             return atnrmSpare_;
         }
-        const FixedDBWideString<100>& AidToNavigationReportMessageNameExtension( ) const
+        const FixedDBWideString<127>& AidToNavigationReportMessageNameExtension( ) const
         {
             return atnrmNameExtension_;
         }
@@ -559,7 +559,7 @@ namespace Barrelman::Database
         {
             return aasrmSpare_;
         }
-        const FixedDBWideString<100>& AisAddressedSafetyRelatedMessageText( ) const
+        const FixedDBWideString<127>& AisAddressedSafetyRelatedMessageText( ) const
         {
             return aasrmText_;
         }
@@ -1147,7 +1147,7 @@ namespace Barrelman::Database
         {
             return asavrdmDraught_;
         }
-        const FixedDBWideString<100>& AisStaticAndVoyageRelatedDataMessageDestination( ) const
+        const FixedDBWideString<127>& AisStaticAndVoyageRelatedDataMessageDestination( ) const
         {
             return asavrdmDestination_;
         }
@@ -1175,7 +1175,7 @@ namespace Barrelman::Database
         {
             return asdrpbShipType_;
         }
-        const FixedDBWideString<100>& AisStaticDataReportPartBMessageVendorId( ) const
+        const FixedDBWideString<127>& AisStaticDataReportPartBMessageVendorId( ) const
         {
             return asdrpbVendorId_;
         }
@@ -1780,7 +1780,7 @@ namespace Barrelman::Database
         DBGuid asdrpaShipName_;
         DBInt32 asdrpaSpare_;
         DBEnum<Data::ShipType> asdrpbShipType_;
-        FixedDBWideString<100> asdrpbVendorId_;
+        FixedDBWideString<127> asdrpbVendorId_;
         DBInt32 asdrpbUnitModelCode_;
         DBInt32 asdrpbSerialNumber_;
         DBGuid asdrpbCallsign_;
@@ -1875,7 +1875,7 @@ namespace Barrelman::Database
         {
             return asdrpbShipType_;
         }
-        const FixedDBWideString<100>& AisStaticDataReportPartBMessageVendorId( ) const
+        const FixedDBWideString<127>& AisStaticDataReportPartBMessageVendorId( ) const
         {
             return asdrpbVendorId_;
         }
@@ -2444,7 +2444,7 @@ namespace Barrelman::Database
         FixedDBWideString<127> cIdentifier_;
         DBInt64 imonIdentifier_;
         DBInt64 mmsiIdentifier_;
-        FixedDBWideString<100> nText_;
+        FixedDBWideString<127> nText_;
     public:
         using Base = BaseColumnData;
 
@@ -2489,7 +2489,7 @@ namespace Barrelman::Database
         {
             return mmsiIdentifier_;
         }
-        const FixedDBWideString<100>& NameText( ) const
+        const FixedDBWideString<127>& NameText( ) const
         {
             return nText_;
         }
@@ -4220,7 +4220,7 @@ namespace Barrelman::Database
         DBGuid rpValue_;
         DBSByte spValue_;
         DBSingle sipValue_;
-        FixedDBWideString<100> stpValue_;
+        FixedDBWideString<127> stpValue_;
         DBGuid btpTimeseries_;
         DBGuid botpTimeseries_;
         DBGuid bytpTimeseries_;
@@ -4363,7 +4363,7 @@ namespace Barrelman::Database
         {
             return sipValue_;
         }
-        const FixedDBWideString<100>& StringPropertyValue( ) const
+        const FixedDBWideString<127>& StringPropertyValue( ) const
         {
             return stpValue_;
         }
@@ -4899,9 +4899,9 @@ namespace Barrelman::Database
         DBByte bypdDefaultValue_;
         DBByte bypdMinValue_;
         DBByte bypdMaxValue_;
-        FixedDBWideString<100> dtpdDefaultValue_;
-        FixedDBWideString<100> dtpdMinValue_;
-        FixedDBWideString<100> dtpdMaxValue_;
+        FixedDBWideString<127> dtpdDefaultValue_;
+        FixedDBWideString<127> dtpdMinValue_;
+        FixedDBWideString<127> dtpdMaxValue_;
         DBDouble dpdDefaultValue_;
         DBDouble dpdMinValue_;
         DBDouble dpdMaxValue_;
@@ -4923,12 +4923,12 @@ namespace Barrelman::Database
         DBSingle sipdDefaultValue_;
         DBSingle sipdMinValue_;
         DBSingle sipdMaxValue_;
-        FixedDBWideString<100> stpdDefaultValue_;
-        FixedDBWideString<100> stpdPattern_;
+        FixedDBWideString<127> stpdDefaultValue_;
+        FixedDBWideString<127> stpdPattern_;
         DBByte bytpdMinValue_;
         DBByte bytpdMaxValue_;
-        FixedDBWideString<100> dttpdMinValue_;
-        FixedDBWideString<100> dttpdMaxValue_;
+        FixedDBWideString<127> dttpdMinValue_;
+        FixedDBWideString<127> dttpdMaxValue_;
         DBDouble dotpdMinValue_;
         DBDouble dotpdMaxValue_;
         DBInt16 i16tpdMinValue_;
@@ -4942,7 +4942,7 @@ namespace Barrelman::Database
         DBSByte sbtpdMaxValue_;
         DBSingle sitpdMinValue_;
         DBSingle sitpdMaxValue_;
-        FixedDBWideString<100> sttpdPattern_;
+        FixedDBWideString<127> sttpdPattern_;
         DBTimeSpan tstpdMinValue_;
         DBTimeSpan tstpdMaxValue_;
         DBUInt16 u16tpdMinValue_;
@@ -5096,15 +5096,15 @@ namespace Barrelman::Database
         {
             return bypdMaxValue_;
         }
-        const FixedDBWideString<100>& DateTimePropertyDefinitionDefaultValue( ) const
+        const FixedDBWideString<127>& DateTimePropertyDefinitionDefaultValue( ) const
         {
             return dtpdDefaultValue_;
         }
-        const FixedDBWideString<100>& DateTimePropertyDefinitionMinValue( ) const
+        const FixedDBWideString<127>& DateTimePropertyDefinitionMinValue( ) const
         {
             return dtpdMinValue_;
         }
-        const FixedDBWideString<100>& DateTimePropertyDefinitionMaxValue( ) const
+        const FixedDBWideString<127>& DateTimePropertyDefinitionMaxValue( ) const
         {
             return dtpdMaxValue_;
         }
@@ -5192,11 +5192,11 @@ namespace Barrelman::Database
         {
             return sipdMaxValue_;
         }
-        const FixedDBWideString<100>& StringPropertyDefinitionDefaultValue( ) const
+        const FixedDBWideString<127>& StringPropertyDefinitionDefaultValue( ) const
         {
             return stpdDefaultValue_;
         }
-        const FixedDBWideString<100>& StringPropertyDefinitionPattern( ) const
+        const FixedDBWideString<127>& StringPropertyDefinitionPattern( ) const
         {
             return stpdPattern_;
         }
@@ -5208,11 +5208,11 @@ namespace Barrelman::Database
         {
             return bytpdMaxValue_;
         }
-        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMinValue( ) const
+        const FixedDBWideString<127>& DateTimeTimeseriesPropertyDefinitionMinValue( ) const
         {
             return dttpdMinValue_;
         }
-        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMaxValue( ) const
+        const FixedDBWideString<127>& DateTimeTimeseriesPropertyDefinitionMaxValue( ) const
         {
             return dttpdMaxValue_;
         }
@@ -5268,7 +5268,7 @@ namespace Barrelman::Database
         {
             return sitpdMaxValue_;
         }
-        const FixedDBWideString<100>& StringTimeseriesPropertyDefinitionPattern( ) const
+        const FixedDBWideString<127>& StringTimeseriesPropertyDefinitionPattern( ) const
         {
             return sttpdPattern_;
         }
@@ -5573,8 +5573,8 @@ namespace Barrelman::Database
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
         DBByte bytpdMinValue_;
         DBByte bytpdMaxValue_;
-        FixedDBWideString<100> dttpdMinValue_;
-        FixedDBWideString<100> dttpdMaxValue_;
+        FixedDBWideString<127> dttpdMinValue_;
+        FixedDBWideString<127> dttpdMaxValue_;
         DBDouble dotpdMinValue_;
         DBDouble dotpdMaxValue_;
         DBInt16 i16tpdMinValue_;
@@ -5588,7 +5588,7 @@ namespace Barrelman::Database
         DBSByte sbtpdMaxValue_;
         DBSingle sitpdMinValue_;
         DBSingle sitpdMaxValue_;
-        FixedDBWideString<100> sttpdPattern_;
+        FixedDBWideString<127> sttpdPattern_;
         DBTimeSpan tstpdMinValue_;
         DBTimeSpan tstpdMaxValue_;
         DBUInt16 u16tpdMinValue_;
@@ -5675,11 +5675,11 @@ namespace Barrelman::Database
         {
             return bytpdMaxValue_;
         }
-        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMinValue( ) const
+        const FixedDBWideString<127>& DateTimeTimeseriesPropertyDefinitionMinValue( ) const
         {
             return dttpdMinValue_;
         }
-        const FixedDBWideString<100>& DateTimeTimeseriesPropertyDefinitionMaxValue( ) const
+        const FixedDBWideString<127>& DateTimeTimeseriesPropertyDefinitionMaxValue( ) const
         {
             return dttpdMaxValue_;
         }
@@ -5735,7 +5735,7 @@ namespace Barrelman::Database
         {
             return sitpdMaxValue_;
         }
-        const FixedDBWideString<100>& StringTimeseriesPropertyDefinitionPattern( ) const
+        const FixedDBWideString<127>& StringTimeseriesPropertyDefinitionPattern( ) const
         {
             return sttpdPattern_;
         }
@@ -6158,8 +6158,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         DBTimeSpan tMaxRetention_;
         DBGuid aatnoptAidToNavigation_;
         DBGuid detDevice_;
@@ -6298,11 +6298,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
@@ -6966,8 +6966,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         TimeSpan maxRetention_;
         DBGuid aatnoptAidToNavigation_;
         DBGuid detDevice_;
@@ -7106,11 +7106,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
@@ -7617,8 +7617,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         TimeSpan maxRetention_;
         DBGuid aatnoptAidToNavigation_;
         DBGuid detDevice_;
@@ -7677,11 +7677,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
@@ -7828,8 +7828,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         TimeSpan maxRetention_;
         DBGuid gatsGNSSDevice_;
         DBGuid glatsGNSSDevice_;
@@ -7916,11 +7916,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
@@ -8193,8 +8193,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         TimeSpan maxRetention_;
         DBGuid aatnptAidToNavigation_;
     public:
@@ -8229,11 +8229,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
@@ -8272,8 +8272,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         TimeSpan maxRetention_;
         DBGuid raotRadar_;
         DBGuid rftcltRadar_;
@@ -8328,11 +8328,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }
@@ -8461,8 +8461,8 @@ namespace Barrelman::Database
         Guid id_;
         Data::Kind kind_ = Data::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
-        FixedDBWideString<100> name_;
+        DBGuid catalog_;
+        FixedDBWideString<127> name_;
         TimeSpan maxRetention_;
         DBGuid rstRadome_;
     public:
@@ -8497,11 +8497,11 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        const FixedDBWideString<100>& Name( ) const
+        const FixedDBWideString<127>& Name( ) const
         {
             return name_;
         }

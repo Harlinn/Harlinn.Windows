@@ -134,6 +134,8 @@ namespace Harlinn::ODBC::Tool
 
         virtual void Load( const XmlElement& memberElement );
 
+        virtual void Validate( ) const;
+
     };
 
 
@@ -248,6 +250,8 @@ namespace Harlinn::ODBC::Tool
         }
 
         virtual void Load( const XmlElement& memberElement ) override;
+
+        virtual void Validate( ) const override;
 
     };
 
@@ -380,6 +384,8 @@ namespace Harlinn::ODBC::Tool
         }
 
         virtual void Load( const XmlElement& memberElement ) override;
+
+        virtual void Validate( ) const override;
     protected:
         ReferenceMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, Tool::MemberInfoType type, const WideString& name )
             : Base( owner, type, name )
@@ -407,6 +413,7 @@ namespace Harlinn::ODBC::Tool
     {
         std::weak_ptr<ClassInfo> type_;
         WideString referenceName_;
+        mutable std::weak_ptr<ReferenceMemberInfo> referencingMember_;
     public:
         using Base = MemberInfo;
         CollectionMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
@@ -418,7 +425,12 @@ namespace Harlinn::ODBC::Tool
             return false;
         }
 
+        std::shared_ptr<ReferenceMemberInfo> ReferencingMember( ) const;
+
         virtual void Load( const XmlElement& memberElement ) override;
+
+        virtual void Validate( ) const override;
+
     };
 
 

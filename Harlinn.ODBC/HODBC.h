@@ -295,7 +295,7 @@ namespace Harlinn::ODBC
             [[nodiscard]]
             const T* data( ) const noexcept
             {
-                return &value_;
+                return IsNull( ) == false ? &value_ : nullptr;
             }
             [[nodiscard]]
             T* data( ) noexcept
@@ -6909,6 +6909,13 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+        SQLLEN RowCount( ) const
+        {
+            SQLLEN result = 0;
+            RowCount( &result );
+            return result;
+        }
+
 
         Result SetCursorName( const SQLWCHAR* cursorName, SQLSMALLINT cursorNameLength ) const
         {

@@ -65,6 +65,8 @@ namespace Harlinn::ODBC::Tool
 
         static std::shared_ptr<ModelInfo> LoadFromFile( const WideString& filename );
 
+        void Validate( ) const;
+
 
     };
 

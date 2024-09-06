@@ -243,7 +243,7 @@ CREATE OR ALTER PROCEDURE [AisDeviceRawMessageUpdate]
   @AisDevice [uniqueidentifier],
   @Timestamp [bigint],
   @IsSent [bit],
-  @Message [nvarchar](100)
+  @Message [nvarchar](127)
 
 AS
   BEGIN
@@ -349,7 +349,7 @@ CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageUpdate]
   @Repeat [int],
   @Mmsi [uniqueidentifier],
   @NavigationalAidType [int],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @PositionAccuracy [int],
   @Longitude [float](53),
   @Latitude [float](53),
@@ -365,7 +365,7 @@ CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageUpdate]
   @VirtualAid [bit],
   @Assigned [bit],
   @Spare [int],
-  @NameExtension [nvarchar](100)
+  @NameExtension [nvarchar](127)
 
 AS
   BEGIN
@@ -431,7 +431,7 @@ CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageUpdate]
   @DestinationMmsi [uniqueidentifier],
   @RetransmitFlag [bit],
   @Spare [int],
-  @Text [nvarchar](100)
+  @Text [nvarchar](127)
 
 AS
   BEGIN
@@ -1519,7 +1519,7 @@ CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageUpdate]
   @PositionFixType [int],
   @EstimatedTimeOfArrival [bigint],
   @Draught [float](53),
-  @Destination [nvarchar](100),
+  @Destination [nvarchar](127),
   @DataTerminalReady [bit],
   @Spare [int]
 
@@ -1719,7 +1719,7 @@ CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageUpdate]
   @Mmsi [uniqueidentifier],
   @PartNumber [int],
   @ShipType [int],
-  @VendorId [nvarchar](100),
+  @VendorId [nvarchar](127),
   @UnitModelCode [int],
   @SerialNumber [int],
   @Callsign [uniqueidentifier],
@@ -2079,7 +2079,7 @@ CREATE OR ALTER PROCEDURE [BookmarkUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @View [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @Timestamp [bigint],
   @Latitude [float](53),
   @Longitude [float](53),
@@ -4062,7 +4062,7 @@ CREATE OR ALTER PROCEDURE [DeviceHostConfigurationUpdate]
   @Timestamp [bigint],
   @Hostname [nvarchar](127),
   @Port [int],
-  @QueueName [nvarchar](100)
+  @QueueName [nvarchar](127)
 
 AS
   BEGIN
@@ -4862,7 +4862,7 @@ GO
 CREATE OR ALTER PROCEDURE [NameUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
-  @Text [nvarchar](100)
+  @Text [nvarchar](127)
 
 AS
   BEGIN
@@ -6343,22 +6343,22 @@ CREATE OR ALTER PROCEDURE [LineInputDeviceConfigurationUpdate]
   @StrictNMEA [bit],
   @ConnectionType [int],
   @UdpReceivePort [int],
-  @UdpSendHostname [nvarchar](100),
+  @UdpSendHostname [nvarchar](127),
   @UdpSendPort [int],
-  @TcpHostname [nvarchar](100),
+  @TcpHostname [nvarchar](127),
   @TcpPort [int],
   @UseHttpLogin [bit],
-  @LoginHostname [nvarchar](100),
+  @LoginHostname [nvarchar](127),
   @LoginPort [int],
-  @UserName [nvarchar](100),
-  @Password [nvarchar](100),
-  @ComPort [nvarchar](100),
+  @UserName [nvarchar](127),
+  @Password [nvarchar](127),
+  @ComPort [nvarchar](127),
   @BaudRate [int],
   @DataBits [int],
   @DiscardNull [bit],
   @DtrEnable [bit],
   @Handshake [int],
-  @NewLine [nvarchar](100),
+  @NewLine [nvarchar](127),
   @Parity [int],
   @ParityReplace [tinyint],
   @ReadBufferSize [int],
@@ -6368,7 +6368,7 @@ CREATE OR ALTER PROCEDURE [LineInputDeviceConfigurationUpdate]
   @StopBits [int],
   @WriteBufferSize [int],
   @WriteTimeout [bigint],
-  @PairedComPort [nvarchar](100)
+  @PairedComPort [nvarchar](127)
 
 AS
   BEGIN
@@ -6418,7 +6418,7 @@ CREATE OR ALTER PROCEDURE [LineInputMessageRoutingUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @LineInputDevice [uniqueidentifier],
-  @Type [nvarchar](100)
+  @Type [nvarchar](127)
 
 AS
   BEGIN
@@ -7073,7 +7073,7 @@ CREATE OR ALTER PROCEDURE [MapElementUpdate]
   @Top [float](53),
   @Width [float](53),
   @Height [float](53),
-  @Label [nvarchar](100),
+  @Label [nvarchar](127),
   @Data [varbinary](max)
 
 AS
@@ -7337,7 +7337,7 @@ CREATE OR ALTER PROCEDURE [MediaProxySessionFileUpdate]
   @RowVersion [bigint] OUTPUT,
   @ProxySession [uniqueidentifier],
   @Timestamp [bigint],
-  @StreamName [nvarchar](100)
+  @StreamName [nvarchar](127)
 
 AS
   BEGIN
@@ -7823,17 +7823,17 @@ CREATE OR ALTER PROCEDURE [OilSpillDetectorConfigurationUpdate]
   @DrawBorder [bit],
   @Colors [varbinary](max),
   @SendToServer [bit],
-  @Directory [nvarchar](100),
+  @Directory [nvarchar](260),
   @TransparentWater [bit],
   @SavePictures [bit],
   @SendAsTarget [bit],
   @WriteLog [bit],
-  @TargetFilePrefix [nvarchar](100),
+  @TargetFilePrefix [nvarchar](127),
   @TargetMMSI [uniqueidentifier],
   @Latitude [float](53),
   @Longitude [float](53),
   @TestSourceEnabled [bit],
-  @ProxyServer [nvarchar](100),
+  @ProxyServer [nvarchar](127),
   @UseProxyServer [bit]
 
 AS
@@ -8748,7 +8748,7 @@ CREATE OR ALTER PROCEDURE [StringPropertyUpdate]
   @RowVersion [bigint] OUTPUT,
   @Element [uniqueidentifier],
   @Definition [uniqueidentifier],
-  @Value [nvarchar](100)
+  @Value [nvarchar](127)
 
 AS
   BEGIN
@@ -10229,9 +10229,9 @@ CREATE OR ALTER PROCEDURE [DateTimePropertyDefinitionUpdate]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @DefaultValue [nvarchar](100),
-  @MinValue [nvarchar](100),
-  @MaxValue [nvarchar](100)
+  @DefaultValue [nvarchar](127),
+  @MinValue [nvarchar](127),
+  @MaxValue [nvarchar](127)
 
 AS
   BEGIN
@@ -10784,8 +10784,8 @@ CREATE OR ALTER PROCEDURE [StringPropertyDefinitionUpdate]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @DefaultValue [nvarchar](100),
-  @Pattern [nvarchar](100)
+  @DefaultValue [nvarchar](127),
+  @Pattern [nvarchar](127)
 
 AS
   BEGIN
@@ -11008,8 +11008,8 @@ CREATE OR ALTER PROCEDURE [DateTimeTimeseriesPropertyDefinitionUpdate]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @MinValue [nvarchar](100),
-  @MaxValue [nvarchar](100)
+  @MinValue [nvarchar](127),
+  @MaxValue [nvarchar](127)
 
 AS
   BEGIN
@@ -11546,7 +11546,7 @@ CREATE OR ALTER PROCEDURE [StringTimeseriesPropertyDefinitionUpdate]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @Pattern [nvarchar](100)
+  @Pattern [nvarchar](127)
 
 AS
   BEGIN
@@ -12374,7 +12374,7 @@ CREATE OR ALTER PROCEDURE [RadarConfigurationUpdate]
   @Radar [uniqueidentifier],
   @Timestamp [bigint],
   @RadarProtocolVersion [int],
-  @RadarIPAddress [nvarchar](100),
+  @RadarIPAddress [nvarchar](127),
   @RadarPort [int],
   @RadarConfigurationPort [int],
   @SkipMagicTimeout [bigint],
@@ -12395,9 +12395,9 @@ CREATE OR ALTER PROCEDURE [RadarConfigurationUpdate]
   @TrackColor [numeric](10,0),
   @VectorColor [numeric](10,0),
   @EnableNmea [bit],
-  @NmeaReceiverIPAddress [nvarchar](100),
+  @NmeaReceiverIPAddress [nvarchar](127),
   @NmeaReceiverPort [int],
-  @NmeaReceiverSourceId [nvarchar](100)
+  @NmeaReceiverSourceId [nvarchar](127)
 
 AS
   BEGIN
@@ -12718,10 +12718,10 @@ CREATE OR ALTER PROCEDURE [RadioConfigurationUpdate]
   @Timestamp [bigint],
   @Longitude [float](53),
   @Latitude [float](53),
-  @PlaybackUrl [nvarchar](100),
-  @RadioIPAddress [nvarchar](100),
+  @PlaybackUrl [nvarchar](127),
+  @RadioIPAddress [nvarchar](127),
   @RadioPort [int],
-  @Ed137IPAddress [nvarchar](100),
+  @Ed137IPAddress [nvarchar](127),
   @Ed137Port [int]
 
 AS
@@ -13459,7 +13459,7 @@ CREATE OR ALTER PROCEDURE [BinaryTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -13518,7 +13518,7 @@ CREATE OR ALTER PROCEDURE [BooleanTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -13577,7 +13577,7 @@ CREATE OR ALTER PROCEDURE [AisAidToNavigationOffPositionTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @AidToNavigation [uniqueidentifier]
 
@@ -13645,7 +13645,7 @@ CREATE OR ALTER PROCEDURE [DeviceEnabledTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Device [uniqueidentifier]
 
@@ -13713,7 +13713,7 @@ CREATE OR ALTER PROCEDURE [RadarAutomaticSensitivityTimeControlTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -13781,7 +13781,7 @@ CREATE OR ALTER PROCEDURE [RadarBlankSector1TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -13849,7 +13849,7 @@ CREATE OR ALTER PROCEDURE [RadarBlankSector2TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -13917,7 +13917,7 @@ CREATE OR ALTER PROCEDURE [RadarEnableAutomaticFrequencyControlTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -13985,7 +13985,7 @@ CREATE OR ALTER PROCEDURE [RadarEnableFastTimeConstantTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -14053,7 +14053,7 @@ CREATE OR ALTER PROCEDURE [RadarEnableSensitivityTimeControlTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -14121,7 +14121,7 @@ CREATE OR ALTER PROCEDURE [RadarPowerOnTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -14189,7 +14189,7 @@ CREATE OR ALTER PROCEDURE [RadarSaveSettingsTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -14257,7 +14257,7 @@ CREATE OR ALTER PROCEDURE [RadarTrackingTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -14325,7 +14325,7 @@ CREATE OR ALTER PROCEDURE [MediaProxySessionEnabledTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @ProxySession [uniqueidentifier]
 
@@ -14393,7 +14393,7 @@ CREATE OR ALTER PROCEDURE [MediaServiceEnabledTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Service [uniqueidentifier]
 
@@ -14461,7 +14461,7 @@ CREATE OR ALTER PROCEDURE [ByteTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -14520,7 +14520,7 @@ CREATE OR ALTER PROCEDURE [DateTimeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -14579,7 +14579,7 @@ CREATE OR ALTER PROCEDURE [DoubleTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -14638,7 +14638,7 @@ CREATE OR ALTER PROCEDURE [GNSSAltitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GNSSDevice [uniqueidentifier]
 
@@ -14706,7 +14706,7 @@ CREATE OR ALTER PROCEDURE [GNSSLatitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GNSSDevice [uniqueidentifier]
 
@@ -14774,7 +14774,7 @@ CREATE OR ALTER PROCEDURE [GNSSLongitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GNSSDevice [uniqueidentifier]
 
@@ -14842,7 +14842,7 @@ CREATE OR ALTER PROCEDURE [GyroCourseTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -14910,7 +14910,7 @@ CREATE OR ALTER PROCEDURE [GyroHeadingMagneticNorthTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -14978,7 +14978,7 @@ CREATE OR ALTER PROCEDURE [GyroHeadingTrueNorthTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -15046,7 +15046,7 @@ CREATE OR ALTER PROCEDURE [GyroPitchTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -15114,7 +15114,7 @@ CREATE OR ALTER PROCEDURE [GyroRateOfTurnTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -15182,7 +15182,7 @@ CREATE OR ALTER PROCEDURE [GyroRollTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -15250,7 +15250,7 @@ CREATE OR ALTER PROCEDURE [GyroSpeedTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 
@@ -15318,7 +15318,7 @@ CREATE OR ALTER PROCEDURE [RadarLatitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -15386,7 +15386,7 @@ CREATE OR ALTER PROCEDURE [RadarLongitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -15454,7 +15454,7 @@ CREATE OR ALTER PROCEDURE [RadomeDewPointTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 
@@ -15522,7 +15522,7 @@ CREATE OR ALTER PROCEDURE [RadomePressureTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 
@@ -15590,7 +15590,7 @@ CREATE OR ALTER PROCEDURE [RadomeTemperatureTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 
@@ -15658,7 +15658,7 @@ CREATE OR ALTER PROCEDURE [VesselDraughtTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Vessel [uniqueidentifier]
 
@@ -15726,7 +15726,7 @@ CREATE OR ALTER PROCEDURE [ViewLatitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @View [uniqueidentifier]
 
@@ -15794,7 +15794,7 @@ CREATE OR ALTER PROCEDURE [ViewLongitudeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @View [uniqueidentifier]
 
@@ -15862,7 +15862,7 @@ CREATE OR ALTER PROCEDURE [ViewZoomLevelTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @View [uniqueidentifier]
 
@@ -15930,7 +15930,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationAbsoluteHumidityTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -15998,7 +15998,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationAirTemperatureTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16066,7 +16066,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationBarometricPressureTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16134,7 +16134,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationDewPointTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16202,7 +16202,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationRelativeHumidityTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16270,7 +16270,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationWaterTemperatureTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16338,7 +16338,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationWindDirectionTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16406,7 +16406,7 @@ CREATE OR ALTER PROCEDURE [WeatherStationWindSpeedTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 
@@ -16474,7 +16474,7 @@ CREATE OR ALTER PROCEDURE [GeoPosition2DTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -16533,7 +16533,7 @@ CREATE OR ALTER PROCEDURE [AisAidToNavigationPositionTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @AidToNavigation [uniqueidentifier]
 
@@ -16601,7 +16601,7 @@ CREATE OR ALTER PROCEDURE [GeoPosition3DTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -16660,7 +16660,7 @@ CREATE OR ALTER PROCEDURE [GuidTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -16719,7 +16719,7 @@ CREATE OR ALTER PROCEDURE [Int16TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -16778,7 +16778,7 @@ CREATE OR ALTER PROCEDURE [Int32TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -16837,7 +16837,7 @@ CREATE OR ALTER PROCEDURE [RadarAzimuthOffsetTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -16905,7 +16905,7 @@ CREATE OR ALTER PROCEDURE [RadarFastTimeConstantLevelTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -16973,7 +16973,7 @@ CREATE OR ALTER PROCEDURE [RadarFastTimeConstantModeTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17041,7 +17041,7 @@ CREATE OR ALTER PROCEDURE [RadarPulseTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17109,7 +17109,7 @@ CREATE OR ALTER PROCEDURE [RadarSector1EndTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17177,7 +17177,7 @@ CREATE OR ALTER PROCEDURE [RadarSector1StartTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17245,7 +17245,7 @@ CREATE OR ALTER PROCEDURE [RadarSector2EndTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17313,7 +17313,7 @@ CREATE OR ALTER PROCEDURE [RadarSector2StartTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17381,7 +17381,7 @@ CREATE OR ALTER PROCEDURE [RadarSensitivityTimeControlLevelTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17449,7 +17449,7 @@ CREATE OR ALTER PROCEDURE [RadarTuningTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 
@@ -17517,7 +17517,7 @@ CREATE OR ALTER PROCEDURE [VesselPersonsOnBoardTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Vessel [uniqueidentifier]
 
@@ -17585,7 +17585,7 @@ CREATE OR ALTER PROCEDURE [Int64TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17644,7 +17644,7 @@ CREATE OR ALTER PROCEDURE [Position2DTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17703,7 +17703,7 @@ CREATE OR ALTER PROCEDURE [Position3DTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17762,7 +17762,7 @@ CREATE OR ALTER PROCEDURE [ReferenceTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17821,7 +17821,7 @@ CREATE OR ALTER PROCEDURE [SByteTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17880,7 +17880,7 @@ CREATE OR ALTER PROCEDURE [SingleTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17939,7 +17939,7 @@ CREATE OR ALTER PROCEDURE [StringTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -17998,7 +17998,7 @@ CREATE OR ALTER PROCEDURE [TimeSpanTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -18057,7 +18057,7 @@ CREATE OR ALTER PROCEDURE [UInt16TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -18116,7 +18116,7 @@ CREATE OR ALTER PROCEDURE [UInt32TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -18175,7 +18175,7 @@ CREATE OR ALTER PROCEDURE [RadomeStatusTimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 
@@ -18243,7 +18243,7 @@ CREATE OR ALTER PROCEDURE [UInt64TimeseriesUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 
 AS
@@ -18302,7 +18302,7 @@ CREATE OR ALTER PROCEDURE [TimeseriesCatalogUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100)
+  @Name [nvarchar](127)
 
 AS
   BEGIN
@@ -18608,7 +18608,7 @@ CREATE OR ALTER PROCEDURE [TrackerFilterParametersUpdate]
   @Id [uniqueidentifier],
   @RowVersion [bigint] OUTPUT,
   @Tracker [uniqueidentifier],
-  @Name [nvarchar](100)
+  @Name [nvarchar](127)
 
 AS
   BEGIN

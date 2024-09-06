@@ -318,6 +318,14 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
+    void ClassInfo::Validate( ) const
+    {
+        for ( const auto& member : ownMembers_ )
+        {
+            member->Validate( );
+        }
+    }
+
     void ClassInfo::AfterLoad( )
     {
         std::sort( derivedClasses_.begin( ), derivedClasses_.end( ), []( const auto& first, const auto& second ) { return first->Name( ) < second->Name( ); } );

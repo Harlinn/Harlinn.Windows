@@ -226,6 +226,7 @@ namespace Harlinn::ODBC::Tool
         std::vector<std::shared_ptr<ClassInfo>> AllDerivedClasses( ) const;
         std::vector<std::shared_ptr<ClassInfo>> AllDerivedClassesAndSelf( ) const;
         void Load( const XmlElement& classElement );
+        void Validate( ) const;
         void AfterLoad( );
         void AddDerivedClassesToClassList( std::vector<std::shared_ptr<ClassInfo>>& classList ) const;
 

@@ -357,7 +357,7 @@ namespace Harlinn::ODBC::Tool
                     if ( IsBindable( member ) )
                     {
                         const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( member );
-                        result = Format( L"FixedDBWideString<{}>", stringMemberInfo.Size( ) );
+                        result = Format( L"const FixedDBWideString<{}>&", stringMemberInfo.Size( ) );
                     }
                     else
                     {
@@ -377,7 +377,7 @@ namespace Harlinn::ODBC::Tool
                     if ( IsBindable( member ) )
                     {
                         const auto& binaryMemberInfo = static_cast< const StringMemberInfo& >( member );
-                        result = Format( L"FixedDBBinary<{}>", binaryMemberInfo.Size( ) );
+                        result = Format( L"const FixedDBBinary<{}>&", binaryMemberInfo.Size( ) );
                     }
                     else
                     {

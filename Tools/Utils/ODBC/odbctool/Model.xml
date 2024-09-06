@@ -463,7 +463,7 @@
   <class name="AidToNavigationReportMessage" base="AisMessage">
     <members>
       <enum name="NavigationalAidType" type="NavigationalAidType"/>
-      <string name="Name" size="100"/>
+      <string name="Name" size="127"/>
       <enum name="PositionAccuracy" type="PositionAccuracy"/>
       <double name="Longitude"/>
       <double name="Latitude"/>
@@ -479,7 +479,7 @@
       <boolean name="VirtualAid"/>
       <boolean name="Assigned"/>
       <int32 name="Spare"/>
-      <string name="NameExtension" size="100"/>
+      <string name="NameExtension" size="127"/>
     </members>
   </class>
   <class name="AisAddressedSafetyRelatedMessage" base="AisMessage">
@@ -488,7 +488,7 @@
       <reference name="DestinationMmsi" type="MaritimeMobileServiceIdentity"/>
       <boolean name="RetransmitFlag"/>
       <int32 name="Spare"/>
-      <string name="Text" size="100"/>
+      <string name="Text" size="127"/>
     </members>
     <index name="DestinationMmsi" fields="DestinationMmsi"/>
   </class>
@@ -702,7 +702,7 @@
       <enum name="PositionFixType" type="PositionFixType"/>
       <datetime name="EstimatedTimeOfArrival" nullable="true"/>
       <double name="Draught"/>
-      <string name="Destination" size="100"/>
+      <string name="Destination" size="127"/>
       <boolean name="DataTerminalReady"/>
       <int32 name="Spare"/>
     </members>
@@ -725,7 +725,7 @@
   <class name="AisStaticDataReportPartBMessage" base="AisStaticDataReportMessage">
     <members>
       <enum name="ShipType" type="ShipType"/>
-      <string name="VendorId" size="100"/>
+      <string name="VendorId" size="127"/>
       <int32 name="UnitModelCode"/>
       <int32 name="SerialNumber"/>
       <reference name="Callsign" type="Callsign"/>
@@ -838,7 +838,7 @@
       <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
       <boolean name="IsSent"/>
-      <string name="Message" size="100"/>
+      <string name="Message" size="127"/>
     </members>
     <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -890,7 +890,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="View" type="View"/>
-      <string name="Name" size="100"/>
+      <string name="Name" size="127"/>
       <datetime name="Timestamp" nullable="true"/>
       <double name="Latitude"/>
       <double name="Longitude"/>
@@ -1288,7 +1288,7 @@
       <datetime name="Timestamp"/>
       <string name="Hostname" size="127" category="Parameters" description="The ip address, or hostname, of the computer running this instance of the Server."/>
       <int32 name="Port" category="Parameters" description="The port number of this instance of the Server."/>
-      <string name="QueueName" size="100" browsable="false"/>
+      <string name="QueueName" size="127" browsable="false"/>
     </members>
     <index name="Host_Timestamp" fields="Host;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1472,7 +1472,7 @@
   </class>
   <class name="Name" base="Identity" description="Identity base">
     <members>
-      <string name="Text" size="100"/>
+      <string name="Text" size="127"/>
       <collection name="AisStaticAndVoyageRelatedDataMessages" type="AisStaticAndVoyageRelatedDataMessage" member="ShipName"/>
       <collection name="AisStaticDataReportPartAMessages" type="AisStaticDataReportPartAMessage" member="ShipName"/>
       <collection name="AisExtendedClassBCsPositionReportMessages" type="AisExtendedClassBCsPositionReportMessage" member="Name"/>
@@ -1814,22 +1814,22 @@
       <boolean name="StrictNMEA" category="Common" description="If NMEA is set to true and StrictNMEA is set to true, then sentences must have a valid check-sum."/>
       <enum name="ConnectionType" type="LineInputDeviceConnectionType" category="Common" description="Specifies the connection type for the `LineInputDevice`."/>
       <int32 name="UdpReceivePort" category="UDP"/>
-      <string name="UdpSendHostname" size="100" category="UDP"/>
+      <string name="UdpSendHostname" size="127" category="UDP"/>
       <int32 name="UdpSendPort" category="UDP"/>
-      <string name="TcpHostname" size="100" category="TCP"/>
+      <string name="TcpHostname" size="127" category="TCP"/>
       <int32 name="TcpPort" category="TCP"/>
       <boolean name="UseHttpLogin" category="TCP"/>
-      <string name="LoginHostname" size="100" category="TCP"/>
+      <string name="LoginHostname" size="127" category="TCP"/>
       <int32 name="LoginPort" category="TCP"/>
-      <string name="UserName" size="100" category="TCP"/>
-      <string name="Password" size="100" category="TCP"/>
-      <string name="ComPort" size="100" category="Serial Port"/>
+      <string name="UserName" size="127" category="TCP"/>
+      <string name="Password" size="127" category="TCP"/>
+      <string name="ComPort" size="127" category="Serial Port"/>
       <int32 name="BaudRate" category="Serial Port"/>
       <int32 name="DataBits" category="Serial Port"/>
       <boolean name="DiscardNull" category="Serial Port"/>
       <boolean name="DtrEnable" category="Serial Port"/>
       <enum name="Handshake" type="Handshake" category="Serial Port"/>
-      <string name="NewLine" size="100" category="Serial Port"/>
+      <string name="NewLine" size="127" category="Serial Port"/>
       <enum name="Parity" type="Parity" category="Serial Port"/>
       <byte name="ParityReplace" category="Serial Port"/>
       <int32 name="ReadBufferSize" category="Serial Port"/>
@@ -1839,7 +1839,7 @@
       <enum name="StopBits" type="StopBits" category="Serial Port"/>
       <int32 name="WriteBufferSize" category="Serial Port"/>
       <timespan name="WriteTimeout" category="Serial Port"/>
-      <string name="PairedComPort" size="100" category="Simulation"/>
+      <string name="PairedComPort" size="127" category="Simulation"/>
     </members>
     <index name="LineInputDevice_Timestamp" fields="LineInputDevice;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1849,7 +1849,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="LineInputDevice" type="LineInputDevice"/>
-      <string name="Type" size="100"/>
+      <string name="Type" size="127"/>
       <collection name="Destinations" type="LineInputMessageRoutingDestination" member="Routing"/>
     </members>
     <index name="LineInputDevice_Type" fields="LineInputDevice;Type" unique="true"/>
@@ -2032,7 +2032,7 @@
       <double name="Top"/>
       <double name="Width"/>
       <double name="Height"/>
-      <string name="Label" size="100"/>
+      <string name="Label" size="127"/>
       <binary name="Data" size="unlimited"/>
     </members>
     <index name="Item" fields="Item"/>
@@ -2093,7 +2093,7 @@
       <rowversion name="RowVersion"/>
       <reference name="ProxySession" type="MediaProxySession"/>
       <datetime name="Timestamp"/>
-      <string name="StreamName" size="100"/>
+      <string name="StreamName" size="127"/>
     </members>
     <index name="ProxySession_Timestamp" fields="ProxySession;Timestamp" range="true" unique="true"/>
   </class>
@@ -2219,17 +2219,17 @@
       <boolean name="DrawBorder"/>
       <binary name="Colors" size="unlimited"/>
       <boolean name="SendToServer"/>
-      <string name="Directory" size="100"/>
+      <string name="Directory" size="260"/>
       <boolean name="TransparentWater"/>
       <boolean name="SavePictures"/>
       <boolean name="SendAsTarget"/>
       <boolean name="WriteLog"/>
-      <string name="TargetFilePrefix" size="100"/>
+      <string name="TargetFilePrefix" size="127"/>
       <reference name="TargetMMSI" type="MaritimeMobileServiceIdentity"/>
       <double name="Latitude"/>
       <double name="Longitude"/>
       <boolean name="TestSourceEnabled"/>
-      <string name="ProxyServer" size="100"/>
+      <string name="ProxyServer" size="127"/>
       <boolean name="UseProxyServer"/>
     </members>
     <index name="OilSpillDetector_Timestamp" fields="OilSpillDetector;Timestamp" range="true" unique="true"/>
@@ -2342,7 +2342,7 @@
   </class>
   <class name="StringProperty" base="Property" shortname="STP">
     <members>
-      <string name="Value" size="100"/>
+      <string name="Value" size="127"/>
     </members>
   </class>
   <class name="TimeseriesProperty" base="Property" abstract="true">
@@ -2501,9 +2501,9 @@
   </class>
   <class name="DateTimePropertyDefinition" base="PropertyDefinition">
     <members>
-      <string name="DefaultValue" size="100"/>
-      <string name="MinValue" size="100"/>
-      <string name="MaxValue" size="100"/>
+      <string name="DefaultValue" size="127"/>
+      <string name="MinValue" size="127"/>
+      <string name="MaxValue" size="127"/>
     </members>
   </class>
   <class name="DoublePropertyDefinition" base="PropertyDefinition">
@@ -2563,8 +2563,8 @@
   </class>
   <class name="StringPropertyDefinition" base="PropertyDefinition" shortname="STPD">
     <members>
-      <string name="DefaultValue" size="100"/>
-      <string name="Pattern" size="100"/>
+      <string name="DefaultValue" size="127"/>
+      <string name="Pattern" size="127"/>
     </members>
   </class>
   <class name="TimeseriesPropertyDefinition" base="PropertyDefinition" abstract="true">
@@ -2587,8 +2587,8 @@
   </class>
   <class name="DateTimeTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
     <members>
-      <string name="MinValue" size="100"/>
-      <string name="MaxValue" size="100"/>
+      <string name="MinValue" size="127"/>
+      <string name="MaxValue" size="127"/>
     </members>
   </class>
   <class name="DoubleTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="DOTPD">
@@ -2639,7 +2639,7 @@
   </class>
   <class name="StringTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition" shortname="STTPD">
     <members>
-      <string name="Pattern" size="100"/>
+      <string name="Pattern" size="127"/>
     </members>
   </class>
   <class name="TimeSpanTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
@@ -2753,7 +2753,7 @@
       <reference name="Radar" type="RadarDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <int32 name="RadarProtocolVersion" browsable="false"/>
-      <string name="RadarIPAddress" size="100" category="Network" description="Ip address, or hostname, of the radar"/>
+      <string name="RadarIPAddress" size="127" category="Network" description="Ip address, or hostname, of the radar"/>
       <int32 name="RadarPort" category="Network" description="The TCP port that the radar is listening for new connections on"/>
       <int32 name="RadarConfigurationPort" category="Network" description="The port of the radar http server interface."/>
       <timespan name="SkipMagicTimeout" category="Network"/>
@@ -2774,9 +2774,9 @@
       <uint32 name="TrackColor"/>
       <uint32 name="VectorColor"/>
       <boolean name="EnableNmea" category="NMEA" description="Set to true to enable UDP NMEA target reports"/>
-      <string name="NmeaReceiverIPAddress" size="100" category="NMEA" description="Ip address, or host name, the device that will receive NMEA target reports."/>
+      <string name="NmeaReceiverIPAddress" size="127" category="NMEA" description="Ip address, or host name, the device that will receive NMEA target reports."/>
       <int32 name="NmeaReceiverPort" category="NMEA" description="UDP port that NMEA target reports will be sent to."/>
-      <string name="NmeaReceiverSourceId" size="100" category="NMEA" description="Talker id for NMEA target reports."/>
+      <string name="NmeaReceiverSourceId" size="127" category="NMEA" description="Talker id for NMEA target reports."/>
     </members>
     <index name="Radar_Timestamp" fields="Radar;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -2859,10 +2859,10 @@
       <datetime name="Timestamp"/>
       <double name="Longitude"/>
       <double name="Latitude"/>
-      <string name="PlaybackUrl" size="100"/>
-      <string name="RadioIPAddress" size="100"/>
+      <string name="PlaybackUrl" size="127"/>
+      <string name="RadioIPAddress" size="127"/>
       <int32 name="RadioPort"/>
-      <string name="Ed137IPAddress" size="100"/>
+      <string name="Ed137IPAddress" size="127"/>
       <int32 name="Ed137Port"/>
     </members>
     <index name="Radio_Timestamp" fields="Radio;Timestamp" range="true" unique="true"/>
@@ -3034,8 +3034,8 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Catalog" type="TimeseriesCatalog"/>
-      <string name="Name" size="100" description="The unique name of this element within the `Catalog`."/>
+      <reference name="Catalog" type="TimeseriesCatalog" nullable="true"/>
+      <string name="Name" size="127" description="The unique name of this element within the `Catalog`."/>
     </members>
     <index name="Catalog_Name" fields="Catalog;Name" unique="true"/>
   </class>
@@ -3064,7 +3064,7 @@
   </class>
   <class name="DeviceEnabledTimeseries" base="BooleanTimeseries" displayname="Device Enabled" description="Tracks the Enabled state of a Device.">
     <members>
-      <reference name="Device" type="Device"/>
+      <reference name="Device" type="Device" nullable="true"/>
     </members>
   </class>
   <class name="RadarAutomaticSensitivityTimeControlTimeseries" base="BooleanTimeseries" displayname="Automatic Sensitivity Time Control (STC)">
@@ -3517,7 +3517,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="Tracker" type="TrackerDevice"/>
-      <string name="Name" size="100"/>
+      <string name="Name" size="127"/>
       <collection name="Configuration" type="TrackerFilterParametersConfiguration" member="Parameters"/>
     </members>
     <index name="Tracker_Name" fields="Tracker;Name" unique="true"/>

@@ -17,6 +17,49 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    std::shared_ptr<ReferenceMemberInfo> CollectionMemberInfo::ReferencingMember( ) const
+    {
+        auto referencingMember = referencingMember_.lock( );
+        if ( referencingMember == nullptr )
+        {
+            auto referencingType = type_.lock( );
+            if ( referencingType )
+            {
+                if ( referenceName_.Length( ) )
+                {
+                    referencingMember = std::dynamic_pointer_cast< ReferenceMemberInfo >( referencingType->FindOwnPersistentMember( referenceName_ ) );
+                }
+                else
+                {
+                    const auto& referencingTypeMembers = referencingType->OwnPersistentMembers( );
+                    const auto count = referencingTypeMembers.size( );
+                    for ( size_t i = 0; i < count; i++ )
+                    {
+                        const auto& referencingTypeMember = referencingTypeMembers[ i ];
+                        auto referencingTypeMemberType = referencingTypeMember->Type( );
+                        if ( referencingTypeMemberType == MemberInfoType::Reference || referencingTypeMemberType == MemberInfoType::TimeSeries )
+                        {
+                            auto referenceMemberInfo = std::dynamic_pointer_cast< ReferenceMemberInfo >( referencingTypeMember );
+                            auto referencedType = referenceMemberInfo->ReferencedType( );
+                            if ( referencedType )
+                            {
+                                if ( Owner( )->Id( ) == referencedType->Id( ) )
+                                {
+                                    referencingMember = referenceMemberInfo;
+                                }
+                            }
+                        }
+                    }
+                }
+                if ( referencingMember )
+                {
+                    referencingMember_ = referencingMember;
+                }
+            }
+        }
+        return referencingMember;
+    }
+
     void CollectionMemberInfo::Load( const XmlElement& memberElement )
     {
         Base::Load( memberElement );
@@ -32,6 +75,18 @@ namespace Harlinn::ODBC::Tool
         {
             referenceName_ = memberElement.Read<WideString>( L"reference" );
         }
-
     }
+
+    void CollectionMemberInfo::Validate( ) const
+    {
+        auto referencingMember = ReferencingMember( );
+        if ( referencingMember == nullptr )
+        {
+            auto ownerName = Owner( )->Name( );
+            auto name = Name( );
+            auto message = Format( L"Unknown referencing member for {}.{}.", ownerName, name );
+            throw Exception( message );
+        }
+    }
+
 }

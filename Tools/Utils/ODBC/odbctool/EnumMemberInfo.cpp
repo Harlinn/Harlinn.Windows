@@ -24,8 +24,21 @@ namespace Harlinn::ODBC::Tool
         {
             auto typeName = memberElement.Read<WideString>( L"type" );
             auto model = Model( );
-            auto type = model->FindEnum( typeName );
-            type_ = type;
+            auto enumType = model->FindEnum( typeName );
+            type_ = enumType;
         }
+    }
+
+    void EnumMemberInfo::Validate( ) const
+    {
+        auto enumType = EnumType( );
+        if ( enumType == nullptr )
+        {
+            auto ownerName = Owner( )->Name( );
+            auto name = Name( );
+            auto message = Format( L"Unknown enum for {}.{}.", ownerName, name );
+            throw Exception( message );
+        }
+
     }
 }

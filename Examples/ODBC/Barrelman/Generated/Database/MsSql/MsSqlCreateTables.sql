@@ -147,7 +147,7 @@ CREATE TABLE [dbo].[AisDeviceRawMessage]
   [AisDevice] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
   [IsSent] [bit] NOT NULL,
-  [Message] [nvarchar](100) NOT NULL,
+  [Message] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_AisDeviceRawMessage] PRIMARY KEY([Id])
 )
 go
@@ -226,7 +226,7 @@ CREATE TABLE [dbo].[AidToNavigationReportMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [NavigationalAidType] [int] NOT NULL,
-  [Name] [nvarchar](100) NOT NULL,
+  [Name] [nvarchar](127) NOT NULL,
   [PositionAccuracy] [int] NOT NULL,
   [Longitude] [float](53) NOT NULL,
   [Latitude] [float](53) NOT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE [dbo].[AidToNavigationReportMessage]
   [VirtualAid] [bit] NOT NULL,
   [Assigned] [bit] NOT NULL,
   [Spare] [int] NOT NULL,
-  [NameExtension] [nvarchar](100) NOT NULL,
+  [NameExtension] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_AidToNavigationReportMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
   CONSTRAINT [PK_AidToNavigationReportMessage] PRIMARY KEY([Id])
 )
@@ -265,7 +265,7 @@ CREATE TABLE [dbo].[AisAddressedSafetyRelatedMessage]
   [DestinationMmsi] [uniqueidentifier] NOT NULL,
   [RetransmitFlag] [bit] NOT NULL,
   [Spare] [int] NOT NULL,
-  [Text] [nvarchar](100) NOT NULL,
+  [Text] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_AisAddressedSafetyRelatedMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
   CONSTRAINT [PK_AisAddressedSafetyRelatedMessage] PRIMARY KEY([Id])
 )
@@ -709,7 +709,7 @@ CREATE TABLE [dbo].[AisStaticAndVoyageRelatedDataMessage]
   [PositionFixType] [int] NOT NULL,
   [EstimatedTimeOfArrival] [bigint] NULL,
   [Draught] [float](53) NOT NULL,
-  [Destination] [nvarchar](100) NOT NULL,
+  [Destination] [nvarchar](127) NOT NULL,
   [DataTerminalReady] [bit] NOT NULL,
   [Spare] [int] NOT NULL,
   CONSTRAINT [FK_AisStaticAndVoyageRelatedDataMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]),
@@ -782,7 +782,7 @@ CREATE TABLE [dbo].[AisStaticDataReportPartBMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [ShipType] [int] NOT NULL,
-  [VendorId] [nvarchar](100) NOT NULL,
+  [VendorId] [nvarchar](127) NOT NULL,
   [UnitModelCode] [int] NOT NULL,
   [SerialNumber] [int] NOT NULL,
   [Callsign] [uniqueidentifier] NOT NULL,
@@ -921,7 +921,7 @@ CREATE TABLE [dbo].[Bookmark]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
   [View] [uniqueidentifier] NOT NULL,
-  [Name] [nvarchar](100) NOT NULL,
+  [Name] [nvarchar](127) NOT NULL,
   [Timestamp] [bigint] NULL,
   [Latitude] [float](53) NOT NULL,
   [Longitude] [float](53) NOT NULL,
@@ -1751,7 +1751,7 @@ CREATE TABLE [dbo].[DeviceHostConfiguration]
   [Timestamp] [bigint] NOT NULL,
   [Hostname] [nvarchar](127) NOT NULL,
   [Port] [int] NOT NULL,
-  [QueueName] [nvarchar](100) NOT NULL,
+  [QueueName] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_DeviceHostConfiguration] PRIMARY KEY([Id])
 )
 go
@@ -2146,7 +2146,7 @@ CREATE TABLE [dbo].[Name]
   /*
    * Identity base
    */
-  [Text] [nvarchar](100) NOT NULL,
+  [Text] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_Name_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Identity]([Id]),
   CONSTRAINT [PK_Name] PRIMARY KEY([Id])
 )
@@ -2903,7 +2903,7 @@ CREATE TABLE [dbo].[LineInputDeviceConfiguration]
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [UdpSendHostname] [nvarchar](100) NOT NULL,
+  [UdpSendHostname] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
@@ -2911,7 +2911,7 @@ CREATE TABLE [dbo].[LineInputDeviceConfiguration]
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [TcpHostname] [nvarchar](100) NOT NULL,
+  [TcpHostname] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
@@ -2923,7 +2923,7 @@ CREATE TABLE [dbo].[LineInputDeviceConfiguration]
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [LoginHostname] [nvarchar](100) NOT NULL,
+  [LoginHostname] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
@@ -2931,15 +2931,15 @@ CREATE TABLE [dbo].[LineInputDeviceConfiguration]
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [UserName] [nvarchar](100) NOT NULL,
+  [UserName] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [Password] [nvarchar](100) NOT NULL,
+  [Password] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [ComPort] [nvarchar](100) NOT NULL,
+  [ComPort] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
@@ -2963,7 +2963,7 @@ CREATE TABLE [dbo].[LineInputDeviceConfiguration]
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [NewLine] [nvarchar](100) NOT NULL,
+  [NewLine] [nvarchar](127) NOT NULL,
   /*
    * The configuration for a `LineInputDevice`.
    */
@@ -3003,7 +3003,7 @@ CREATE TABLE [dbo].[LineInputDeviceConfiguration]
   /*
    * The configuration for a `LineInputDevice`.
    */
-  [PairedComPort] [nvarchar](100) NOT NULL,
+  [PairedComPort] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_LineInputDeviceConfiguration] PRIMARY KEY([Id])
 )
 go
@@ -3024,7 +3024,7 @@ CREATE TABLE [dbo].[LineInputMessageRouting]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
   [LineInputDevice] [uniqueidentifier] NOT NULL,
-  [Type] [nvarchar](100) NOT NULL,
+  [Type] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_LineInputMessageRouting] PRIMARY KEY([Id])
 )
 go
@@ -3510,7 +3510,7 @@ CREATE TABLE [dbo].[MapElement]
   [Top] [float](53) NOT NULL,
   [Width] [float](53) NOT NULL,
   [Height] [float](53) NOT NULL,
-  [Label] [nvarchar](100) NOT NULL,
+  [Label] [nvarchar](127) NOT NULL,
   [Data] [varbinary](max) NOT NULL,
   CONSTRAINT [PK_MapElement] PRIMARY KEY([Id])
 )
@@ -3612,7 +3612,7 @@ CREATE TABLE [dbo].[MediaProxySessionFile]
   [RowVersion] [bigint] NOT NULL,
   [ProxySession] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [StreamName] [nvarchar](100) NOT NULL,
+  [StreamName] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_MediaProxySessionFile] PRIMARY KEY([Id])
 )
 go
@@ -3842,17 +3842,17 @@ CREATE TABLE [dbo].[OilSpillDetectorConfiguration]
   [DrawBorder] [bit] NOT NULL,
   [Colors] [varbinary](max) NOT NULL,
   [SendToServer] [bit] NOT NULL,
-  [Directory] [nvarchar](100) NOT NULL,
+  [Directory] [nvarchar](260) NOT NULL,
   [TransparentWater] [bit] NOT NULL,
   [SavePictures] [bit] NOT NULL,
   [SendAsTarget] [bit] NOT NULL,
   [WriteLog] [bit] NOT NULL,
-  [TargetFilePrefix] [nvarchar](100) NOT NULL,
+  [TargetFilePrefix] [nvarchar](127) NOT NULL,
   [TargetMMSI] [uniqueidentifier] NOT NULL,
   [Latitude] [float](53) NOT NULL,
   [Longitude] [float](53) NOT NULL,
   [TestSourceEnabled] [bit] NOT NULL,
-  [ProxyServer] [nvarchar](100) NOT NULL,
+  [ProxyServer] [nvarchar](127) NOT NULL,
   [UseProxyServer] [bit] NOT NULL,
   CONSTRAINT [PK_OilSpillDetectorConfiguration] PRIMARY KEY([Id])
 )
@@ -4200,7 +4200,7 @@ go
 CREATE TABLE [dbo].[StringProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Value] [nvarchar](100) NOT NULL,
+  [Value] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_StringProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Property]([Id]),
   CONSTRAINT [PK_StringProperty] PRIMARY KEY([Id])
 )
@@ -4771,9 +4771,9 @@ go
 CREATE TABLE [dbo].[DateTimePropertyDefinition]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [DefaultValue] [nvarchar](100) NOT NULL,
-  [MinValue] [nvarchar](100) NOT NULL,
-  [MaxValue] [nvarchar](100) NOT NULL,
+  [DefaultValue] [nvarchar](127) NOT NULL,
+  [MinValue] [nvarchar](127) NOT NULL,
+  [MaxValue] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_DateTimePropertyDefinition_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[PropertyDefinition]([Id]),
   CONSTRAINT [PK_DateTimePropertyDefinition] PRIMARY KEY([Id])
 )
@@ -4963,8 +4963,8 @@ go
 CREATE TABLE [dbo].[StringPropertyDefinition]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [DefaultValue] [nvarchar](100) NOT NULL,
-  [Pattern] [nvarchar](100) NOT NULL,
+  [DefaultValue] [nvarchar](127) NOT NULL,
+  [Pattern] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_StringPropertyDefinition_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[PropertyDefinition]([Id]),
   CONSTRAINT [PK_StringPropertyDefinition] PRIMARY KEY([Id])
 )
@@ -5057,8 +5057,8 @@ go
 CREATE TABLE [dbo].[DateTimeTimeseriesPropertyDefinition]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [MinValue] [nvarchar](100) NOT NULL,
-  [MaxValue] [nvarchar](100) NOT NULL,
+  [MinValue] [nvarchar](127) NOT NULL,
+  [MaxValue] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_DateTimeTimeseriesPropertyDefinition_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesPropertyDefinition]([Id]),
   CONSTRAINT [PK_DateTimeTimeseriesPropertyDefinition] PRIMARY KEY([Id])
 )
@@ -5237,7 +5237,7 @@ go
 CREATE TABLE [dbo].[StringTimeseriesPropertyDefinition]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Pattern] [nvarchar](100) NOT NULL,
+  [Pattern] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_StringTimeseriesPropertyDefinition_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesPropertyDefinition]([Id]),
   CONSTRAINT [PK_StringTimeseriesPropertyDefinition] PRIMARY KEY([Id])
 )
@@ -5546,7 +5546,7 @@ CREATE TABLE [dbo].[RadarConfiguration]
   [Radar] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
   [RadarProtocolVersion] [int] NOT NULL,
-  [RadarIPAddress] [nvarchar](100) NOT NULL,
+  [RadarIPAddress] [nvarchar](127) NOT NULL,
   [RadarPort] [int] NOT NULL,
   [RadarConfigurationPort] [int] NOT NULL,
   [SkipMagicTimeout] [bigint] NOT NULL,
@@ -5567,9 +5567,9 @@ CREATE TABLE [dbo].[RadarConfiguration]
   [TrackColor] [numeric](10,0) NOT NULL,
   [VectorColor] [numeric](10,0) NOT NULL,
   [EnableNmea] [bit] NOT NULL,
-  [NmeaReceiverIPAddress] [nvarchar](100) NOT NULL,
+  [NmeaReceiverIPAddress] [nvarchar](127) NOT NULL,
   [NmeaReceiverPort] [int] NOT NULL,
-  [NmeaReceiverSourceId] [nvarchar](100) NOT NULL,
+  [NmeaReceiverSourceId] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_RadarConfiguration] PRIMARY KEY([Id])
 )
 go
@@ -5721,10 +5721,10 @@ CREATE TABLE [dbo].[RadioConfiguration]
   [Timestamp] [bigint] NOT NULL,
   [Longitude] [float](53) NOT NULL,
   [Latitude] [float](53) NOT NULL,
-  [PlaybackUrl] [nvarchar](100) NOT NULL,
-  [RadioIPAddress] [nvarchar](100) NOT NULL,
+  [PlaybackUrl] [nvarchar](127) NOT NULL,
+  [RadioIPAddress] [nvarchar](127) NOT NULL,
   [RadioPort] [int] NOT NULL,
-  [Ed137IPAddress] [nvarchar](100) NOT NULL,
+  [Ed137IPAddress] [nvarchar](127) NOT NULL,
   [Ed137Port] [int] NOT NULL,
   CONSTRAINT [PK_RadioConfiguration] PRIMARY KEY([Id])
 )
@@ -6118,8 +6118,8 @@ CREATE TABLE [dbo].[TimeseriesCatalogElement]
    */
   [EntityType] [int] NOT NULL,
   [RowVersion] [bigint] NOT NULL,
-  [Catalog] [uniqueidentifier] NOT NULL,
-  [Name] [nvarchar](100) NOT NULL,
+  [Catalog] [uniqueidentifier] NULL,
+  [Name] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_TimeseriesCatalogElement_EntityType] FOREIGN KEY([EntityType]) REFERENCES [dbo].[EntityTypes]([Id]),
   CONSTRAINT [PK_TimeseriesCatalogElement] PRIMARY KEY([Id])
 )
@@ -6222,7 +6222,7 @@ CREATE TABLE [dbo].[DeviceEnabledTimeseries]
   /*
    * Tracks the Enabled state of a Device.
    */
-  [Device] [uniqueidentifier] NOT NULL,
+  [Device] [uniqueidentifier] NULL,
   CONSTRAINT [FK_DeviceEnabledTimeseries_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[BooleanTimeseries]([Id]),
   CONSTRAINT [PK_DeviceEnabledTimeseries] PRIMARY KEY([Id])
 )
@@ -7784,7 +7784,7 @@ CREATE TABLE [dbo].[TrackerFilterParameters]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
   [Tracker] [uniqueidentifier] NOT NULL,
-  [Name] [nvarchar](100) NOT NULL,
+  [Name] [nvarchar](127) NOT NULL,
   CONSTRAINT [PK_TrackerFilterParameters] PRIMARY KEY([Id])
 )
 go

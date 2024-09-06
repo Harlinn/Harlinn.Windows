@@ -28,4 +28,16 @@ namespace Harlinn::ODBC::Tool
             type_ = type;
         }
     }
+
+    void ReferenceMemberInfo::Validate( ) const
+    {
+        auto referencedType = ReferencedType( );
+        if ( referencedType == nullptr )
+        {
+            auto ownerName = Owner( )->Name( );
+            auto name = Name( );
+            auto message = Format( L"Unknown referenced type for {}.{}.", ownerName, name );
+            throw Exception( message );
+        }
+    }
 }

@@ -166,8 +166,15 @@ namespace Harlinn::ODBC::Tool
                 }
             }
         }
+        Validate( );
+    }
 
-
+    void ModelInfo::Validate( ) const
+    {
+        for ( auto& classInfo : classList_ )
+        {
+            classInfo->Validate( );
+        }
     }
 
 

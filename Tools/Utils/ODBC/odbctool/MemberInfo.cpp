@@ -47,4 +47,10 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
+
+    void MemberInfo::Validate( ) const
+    {
+
+    }
+
 }

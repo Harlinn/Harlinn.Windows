@@ -600,15 +600,114 @@ namespace Harlinn::ODBC::Tool
         void Load( const XmlElement& element );
     };
 
+    class CSharpDatabaseOptions;
+    class CSharpDatabaseReadersOptions : public OptionsFile<CSharpDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpDatabaseOptions>;
+        CSharpDatabaseReadersOptions( const CSharpDatabaseOptions& owner )
+            : Base( owner, L"DatabaseReaders.cs" )
+        {
+        }
+    };
+
+
+    class CSharpComplexDatabaseReadersOptions : public OptionsFile<CSharpDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpDatabaseOptions>;
+        CSharpComplexDatabaseReadersOptions( const CSharpDatabaseOptions& owner )
+            : Base( owner, L"ComplexDatabaseReaders.cs" )
+        {
+        }
+    };
+
+    class CSharpStoredProceduresOptions : public OptionsFile<CSharpDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpDatabaseOptions>;
+        CSharpStoredProceduresOptions( const CSharpDatabaseOptions& owner )
+            : Base( owner, L"StoredProcedures.cs" )
+        {
+        }
+    };
+
+
+
+    class CSharpDatabaseOptions : public OptionsContainer<CSharpOptions>
+    {
+        CSharpDatabaseReadersOptions databaseReaders_;
+        CSharpComplexDatabaseReadersOptions complexDatabaseReaders_;
+        CSharpStoredProceduresOptions storedProcedures_;
+    public:
+        using Base = OptionsContainer<CSharpOptions>;
+        CSharpDatabaseOptions( const CSharpOptions& owner )
+            : Base( owner, L"Database" ), databaseReaders_( *this ), complexDatabaseReaders_( *this ), storedProcedures_( *this )
+        {
+        }
+
+        const CSharpDatabaseReadersOptions& DatabaseReaders( ) const
+        {
+            return databaseReaders_;
+        }
+
+        const CSharpComplexDatabaseReadersOptions& ComplexDatabaseReaders( ) const
+        {
+            return complexDatabaseReaders_;
+        }
+
+        const CSharpStoredProceduresOptions& StoredProcedures( ) const
+        {
+            return storedProcedures_;
+        }
+    };
+
+
+    class CSharpDataOptions;
+
+    class CSharpEnumsOptions : public OptionsFile<CSharpDataOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpDataOptions>;
+        CSharpEnumsOptions( const CSharpDataOptions& owner )
+            : Base( owner, L"Enums.cs" )
+        {
+        }
+    };
+
+    class CSharpDataTypesOptions : public OptionsFile<CSharpDataOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpDataOptions>;
+        CSharpDataTypesOptions( const CSharpDataOptions& owner )
+            : Base( owner, L"DataTypes.cs" )
+        {
+        }
+    };
+
+
+
 
     class CSharpDataOptions : public OptionsContainer<CSharpOptions>
     {
+        CSharpEnumsOptions enums_;
+        CSharpDataTypesOptions dataTypes_;
     public:
         using Base = OptionsContainer<CSharpOptions>;
 
         CSharpDataOptions(const CSharpOptions& owner )
-            : Base( owner, L"Data" )
+            : Base( owner, L"Data" ), enums_( *this ), dataTypes_( *this )
         { }
+
+        const CSharpEnumsOptions& Enums( ) const
+        {
+            return enums_;
+        }
+        const CSharpDataTypesOptions& DataTypes( ) const
+        {
+            return dataTypes_;
+        }
+
     };
 
 
@@ -617,9 +716,11 @@ namespace Harlinn::ODBC::Tool
         const Options& owner_;
         WideString outputDirectory_ = L"%HCC_HOME%\\DotNet\\Examples\\Barrelman\\Barrelman.Data";
         WideString namespace_ = L"Barrelman";
+        CSharpDataOptions data_;
+        CSharpDatabaseOptions database_;
     public:
         CSharpOptions( const Options& owner )
-            : owner_( owner )
+            : owner_( owner ), data_(*this), database_(*this )
         {
         }
 
@@ -637,6 +738,17 @@ namespace Harlinn::ODBC::Tool
         {
             return namespace_;
         }
+
+        const CSharpDataOptions& Data( ) const
+        {
+            return data_;
+        }
+
+        const CSharpDatabaseOptions& Database( ) const
+        {
+            return database_;
+        }
+
 
         void Load( const XmlElement& element );
 

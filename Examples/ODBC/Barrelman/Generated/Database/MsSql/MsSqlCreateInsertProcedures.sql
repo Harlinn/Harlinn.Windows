@@ -518,7 +518,7 @@ CREATE OR ALTER PROCEDURE [AisDeviceRawMessageInsert]
   @AisDevice [uniqueidentifier],
   @Timestamp [bigint],
   @IsSent [bit],
-  @Message [nvarchar](100)
+  @Message [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -578,7 +578,7 @@ INSTEAD OF INSERT AS
     DECLARE @AisDevice [uniqueidentifier]
     DECLARE @Timestamp [bigint]
     DECLARE @IsSent [bit]
-    DECLARE @Message [nvarchar](100)
+    DECLARE @Message [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -696,7 +696,7 @@ CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageInsert]
   @Repeat [int],
   @Mmsi [uniqueidentifier],
   @NavigationalAidType [int],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @PositionAccuracy [int],
   @Longitude [float](53),
   @Latitude [float](53),
@@ -712,7 +712,7 @@ CREATE OR ALTER PROCEDURE [AidToNavigationReportMessageInsert]
   @VirtualAid [bit],
   @Assigned [bit],
   @Spare [int],
-  @NameExtension [nvarchar](100)
+  @NameExtension [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -798,7 +798,7 @@ INSTEAD OF INSERT AS
     DECLARE @Repeat [int]
     DECLARE @Mmsi [uniqueidentifier]
     DECLARE @NavigationalAidType [int]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @PositionAccuracy [int]
     DECLARE @Longitude [float](53)
     DECLARE @Latitude [float](53)
@@ -814,7 +814,7 @@ INSTEAD OF INSERT AS
     DECLARE @VirtualAid [bit]
     DECLARE @Assigned [bit]
     DECLARE @Spare [int]
-    DECLARE @NameExtension [nvarchar](100)
+    DECLARE @NameExtension [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -888,7 +888,7 @@ CREATE OR ALTER PROCEDURE [AisAddressedSafetyRelatedMessageInsert]
   @DestinationMmsi [uniqueidentifier],
   @RetransmitFlag [bit],
   @Spare [int],
-  @Text [nvarchar](100)
+  @Text [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -964,7 +964,7 @@ INSTEAD OF INSERT AS
     DECLARE @DestinationMmsi [uniqueidentifier]
     DECLARE @RetransmitFlag [bit]
     DECLARE @Spare [int]
-    DECLARE @Text [nvarchar](100)
+    DECLARE @Text [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -3212,7 +3212,7 @@ CREATE OR ALTER PROCEDURE [AisStaticAndVoyageRelatedDataMessageInsert]
   @PositionFixType [int],
   @EstimatedTimeOfArrival [bigint],
   @Draught [float](53),
-  @Destination [nvarchar](100),
+  @Destination [nvarchar](127),
   @DataTerminalReady [bit],
   @Spare [int]
 AS
@@ -3308,7 +3308,7 @@ INSTEAD OF INSERT AS
     DECLARE @PositionFixType [int]
     DECLARE @EstimatedTimeOfArrival [bigint]
     DECLARE @Draught [float](53)
-    DECLARE @Destination [nvarchar](100)
+    DECLARE @Destination [nvarchar](127)
     DECLARE @DataTerminalReady [bit]
     DECLARE @Spare [int]
     FETCH NEXT FROM @cur INTO
@@ -3596,7 +3596,7 @@ CREATE OR ALTER PROCEDURE [AisStaticDataReportPartBMessageInsert]
   @Mmsi [uniqueidentifier],
   @PartNumber [int],
   @ShipType [int],
-  @VendorId [nvarchar](100),
+  @VendorId [nvarchar](127),
   @UnitModelCode [int],
   @SerialNumber [int],
   @Callsign [uniqueidentifier],
@@ -3690,7 +3690,7 @@ INSTEAD OF INSERT AS
     DECLARE @Mmsi [uniqueidentifier]
     DECLARE @PartNumber [int]
     DECLARE @ShipType [int]
-    DECLARE @VendorId [nvarchar](100)
+    DECLARE @VendorId [nvarchar](127)
     DECLARE @UnitModelCode [int]
     DECLARE @SerialNumber [int]
     DECLARE @Callsign [uniqueidentifier]
@@ -4254,7 +4254,7 @@ GO
 CREATE OR ALTER PROCEDURE [BookmarkInsert]
   @Id [uniqueidentifier] OUTPUT,
   @View [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @Timestamp [bigint],
   @Latitude [float](53),
   @Longitude [float](53),
@@ -4318,7 +4318,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @View [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @Timestamp [bigint]
     DECLARE @Latitude [float](53)
     DECLARE @Longitude [float](53)
@@ -7923,7 +7923,7 @@ CREATE OR ALTER PROCEDURE [DeviceHostConfigurationInsert]
   @Timestamp [bigint],
   @Hostname [nvarchar](127),
   @Port [int],
-  @QueueName [nvarchar](100)
+  @QueueName [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -7985,7 +7985,7 @@ INSTEAD OF INSERT AS
     DECLARE @Timestamp [bigint]
     DECLARE @Hostname [nvarchar](127)
     DECLARE @Port [int]
-    DECLARE @QueueName [nvarchar](100)
+    DECLARE @QueueName [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -9281,7 +9281,7 @@ GO
 
 CREATE OR ALTER PROCEDURE [NameInsert]
   @Id [uniqueidentifier] OUTPUT,
-  @Text [nvarchar](100)
+  @Text [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -9339,7 +9339,7 @@ INSTEAD OF INSERT AS
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
-    DECLARE @Text [nvarchar](100)
+    DECLARE @Text [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -11790,22 +11790,22 @@ CREATE OR ALTER PROCEDURE [LineInputDeviceConfigurationInsert]
   @StrictNMEA [bit],
   @ConnectionType [int],
   @UdpReceivePort [int],
-  @UdpSendHostname [nvarchar](100),
+  @UdpSendHostname [nvarchar](127),
   @UdpSendPort [int],
-  @TcpHostname [nvarchar](100),
+  @TcpHostname [nvarchar](127),
   @TcpPort [int],
   @UseHttpLogin [bit],
-  @LoginHostname [nvarchar](100),
+  @LoginHostname [nvarchar](127),
   @LoginPort [int],
-  @UserName [nvarchar](100),
-  @Password [nvarchar](100),
-  @ComPort [nvarchar](100),
+  @UserName [nvarchar](127),
+  @Password [nvarchar](127),
+  @ComPort [nvarchar](127),
   @BaudRate [int],
   @DataBits [int],
   @DiscardNull [bit],
   @DtrEnable [bit],
   @Handshake [int],
-  @NewLine [nvarchar](100),
+  @NewLine [nvarchar](127),
   @Parity [int],
   @ParityReplace [tinyint],
   @ReadBufferSize [int],
@@ -11815,7 +11815,7 @@ CREATE OR ALTER PROCEDURE [LineInputDeviceConfigurationInsert]
   @StopBits [int],
   @WriteBufferSize [int],
   @WriteTimeout [bigint],
-  @PairedComPort [nvarchar](100)
+  @PairedComPort [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -11912,22 +11912,22 @@ INSTEAD OF INSERT AS
     DECLARE @StrictNMEA [bit]
     DECLARE @ConnectionType [int]
     DECLARE @UdpReceivePort [int]
-    DECLARE @UdpSendHostname [nvarchar](100)
+    DECLARE @UdpSendHostname [nvarchar](127)
     DECLARE @UdpSendPort [int]
-    DECLARE @TcpHostname [nvarchar](100)
+    DECLARE @TcpHostname [nvarchar](127)
     DECLARE @TcpPort [int]
     DECLARE @UseHttpLogin [bit]
-    DECLARE @LoginHostname [nvarchar](100)
+    DECLARE @LoginHostname [nvarchar](127)
     DECLARE @LoginPort [int]
-    DECLARE @UserName [nvarchar](100)
-    DECLARE @Password [nvarchar](100)
-    DECLARE @ComPort [nvarchar](100)
+    DECLARE @UserName [nvarchar](127)
+    DECLARE @Password [nvarchar](127)
+    DECLARE @ComPort [nvarchar](127)
     DECLARE @BaudRate [int]
     DECLARE @DataBits [int]
     DECLARE @DiscardNull [bit]
     DECLARE @DtrEnable [bit]
     DECLARE @Handshake [int]
-    DECLARE @NewLine [nvarchar](100)
+    DECLARE @NewLine [nvarchar](127)
     DECLARE @Parity [int]
     DECLARE @ParityReplace [tinyint]
     DECLARE @ReadBufferSize [int]
@@ -11937,7 +11937,7 @@ INSTEAD OF INSERT AS
     DECLARE @StopBits [int]
     DECLARE @WriteBufferSize [int]
     DECLARE @WriteTimeout [bigint]
-    DECLARE @PairedComPort [nvarchar](100)
+    DECLARE @PairedComPort [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -12027,7 +12027,7 @@ GO
 CREATE OR ALTER PROCEDURE [LineInputMessageRoutingInsert]
   @Id [uniqueidentifier] OUTPUT,
   @LineInputDevice [uniqueidentifier],
-  @Type [nvarchar](100)
+  @Type [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -12083,7 +12083,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @LineInputDevice [uniqueidentifier]
-    DECLARE @Type [nvarchar](100)
+    DECLARE @Type [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -13230,7 +13230,7 @@ CREATE OR ALTER PROCEDURE [MapElementInsert]
   @Top [float](53),
   @Width [float](53),
   @Height [float](53),
-  @Label [nvarchar](100),
+  @Label [nvarchar](127),
   @Data [varbinary](max)
 AS
   BEGIN
@@ -13304,7 +13304,7 @@ INSTEAD OF INSERT AS
     DECLARE @Top [float](53)
     DECLARE @Width [float](53)
     DECLARE @Height [float](53)
-    DECLARE @Label [nvarchar](100)
+    DECLARE @Label [nvarchar](127)
     DECLARE @Data [varbinary](max)
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -13728,7 +13728,7 @@ CREATE OR ALTER PROCEDURE [MediaProxySessionFileInsert]
   @Id [uniqueidentifier] OUTPUT,
   @ProxySession [uniqueidentifier],
   @Timestamp [bigint],
-  @StreamName [nvarchar](100)
+  @StreamName [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -13786,7 +13786,7 @@ INSTEAD OF INSERT AS
     DECLARE @RowVersion [bigint]
     DECLARE @ProxySession [uniqueidentifier]
     DECLARE @Timestamp [bigint]
-    DECLARE @StreamName [nvarchar](100)
+    DECLARE @StreamName [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -14596,17 +14596,17 @@ CREATE OR ALTER PROCEDURE [OilSpillDetectorConfigurationInsert]
   @DrawBorder [bit],
   @Colors [varbinary](max),
   @SendToServer [bit],
-  @Directory [nvarchar](100),
+  @Directory [nvarchar](260),
   @TransparentWater [bit],
   @SavePictures [bit],
   @SendAsTarget [bit],
   @WriteLog [bit],
-  @TargetFilePrefix [nvarchar](100),
+  @TargetFilePrefix [nvarchar](127),
   @TargetMMSI [uniqueidentifier],
   @Latitude [float](53),
   @Longitude [float](53),
   @TestSourceEnabled [bit],
-  @ProxyServer [nvarchar](100),
+  @ProxyServer [nvarchar](127),
   @UseProxyServer [bit]
 AS
   BEGIN
@@ -14696,17 +14696,17 @@ INSTEAD OF INSERT AS
     DECLARE @DrawBorder [bit]
     DECLARE @Colors [varbinary](max)
     DECLARE @SendToServer [bit]
-    DECLARE @Directory [nvarchar](100)
+    DECLARE @Directory [nvarchar](260)
     DECLARE @TransparentWater [bit]
     DECLARE @SavePictures [bit]
     DECLARE @SendAsTarget [bit]
     DECLARE @WriteLog [bit]
-    DECLARE @TargetFilePrefix [nvarchar](100)
+    DECLARE @TargetFilePrefix [nvarchar](127)
     DECLARE @TargetMMSI [uniqueidentifier]
     DECLARE @Latitude [float](53)
     DECLARE @Longitude [float](53)
     DECLARE @TestSourceEnabled [bit]
-    DECLARE @ProxyServer [nvarchar](100)
+    DECLARE @ProxyServer [nvarchar](127)
     DECLARE @UseProxyServer [bit]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -16109,7 +16109,7 @@ CREATE OR ALTER PROCEDURE [StringPropertyInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Element [uniqueidentifier],
   @Definition [uniqueidentifier],
-  @Value [nvarchar](100)
+  @Value [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -16171,7 +16171,7 @@ INSTEAD OF INSERT AS
     DECLARE @RowVersion [bigint]
     DECLARE @Element [uniqueidentifier]
     DECLARE @Definition [uniqueidentifier]
-    DECLARE @Value [nvarchar](100)
+    DECLARE @Value [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -18394,9 +18394,9 @@ CREATE OR ALTER PROCEDURE [DateTimePropertyDefinitionInsert]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @DefaultValue [nvarchar](100),
-  @MinValue [nvarchar](100),
-  @MaxValue [nvarchar](100)
+  @DefaultValue [nvarchar](127),
+  @MinValue [nvarchar](127),
+  @MaxValue [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -18462,9 +18462,9 @@ INSTEAD OF INSERT AS
     DECLARE @ElementType [uniqueidentifier]
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
-    DECLARE @DefaultValue [nvarchar](100)
-    DECLARE @MinValue [nvarchar](100)
-    DECLARE @MaxValue [nvarchar](100)
+    DECLARE @DefaultValue [nvarchar](127)
+    DECLARE @MinValue [nvarchar](127)
+    DECLARE @MaxValue [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -19315,8 +19315,8 @@ CREATE OR ALTER PROCEDURE [StringPropertyDefinitionInsert]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @DefaultValue [nvarchar](100),
-  @Pattern [nvarchar](100)
+  @DefaultValue [nvarchar](127),
+  @Pattern [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -19381,8 +19381,8 @@ INSTEAD OF INSERT AS
     DECLARE @ElementType [uniqueidentifier]
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
-    DECLARE @DefaultValue [nvarchar](100)
-    DECLARE @Pattern [nvarchar](100)
+    DECLARE @DefaultValue [nvarchar](127)
+    DECLARE @Pattern [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -19697,8 +19697,8 @@ CREATE OR ALTER PROCEDURE [DateTimeTimeseriesPropertyDefinitionInsert]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @MinValue [nvarchar](100),
-  @MaxValue [nvarchar](100)
+  @MinValue [nvarchar](127),
+  @MaxValue [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -19765,8 +19765,8 @@ INSTEAD OF INSERT AS
     DECLARE @ElementType [uniqueidentifier]
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
-    DECLARE @MinValue [nvarchar](100)
-    DECLARE @MaxValue [nvarchar](100)
+    DECLARE @MinValue [nvarchar](127)
+    DECLARE @MaxValue [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -20591,7 +20591,7 @@ CREATE OR ALTER PROCEDURE [StringTimeseriesPropertyDefinitionInsert]
   @ElementType [uniqueidentifier],
   @Name [nvarchar](127),
   @Description [nvarchar](max),
-  @Pattern [nvarchar](100)
+  @Pattern [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -20657,7 +20657,7 @@ INSTEAD OF INSERT AS
     DECLARE @ElementType [uniqueidentifier]
     DECLARE @Name [nvarchar](127)
     DECLARE @Description [nvarchar](max)
-    DECLARE @Pattern [nvarchar](100)
+    DECLARE @Pattern [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -22009,7 +22009,7 @@ CREATE OR ALTER PROCEDURE [RadarConfigurationInsert]
   @Radar [uniqueidentifier],
   @Timestamp [bigint],
   @RadarProtocolVersion [int],
-  @RadarIPAddress [nvarchar](100),
+  @RadarIPAddress [nvarchar](127),
   @RadarPort [int],
   @RadarConfigurationPort [int],
   @SkipMagicTimeout [bigint],
@@ -22030,9 +22030,9 @@ CREATE OR ALTER PROCEDURE [RadarConfigurationInsert]
   @TrackColor [numeric](10,0),
   @VectorColor [numeric](10,0),
   @EnableNmea [bit],
-  @NmeaReceiverIPAddress [nvarchar](100),
+  @NmeaReceiverIPAddress [nvarchar](127),
   @NmeaReceiverPort [int],
-  @NmeaReceiverSourceId [nvarchar](100)
+  @NmeaReceiverSourceId [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -22115,7 +22115,7 @@ INSTEAD OF INSERT AS
     DECLARE @Radar [uniqueidentifier]
     DECLARE @Timestamp [bigint]
     DECLARE @RadarProtocolVersion [int]
-    DECLARE @RadarIPAddress [nvarchar](100)
+    DECLARE @RadarIPAddress [nvarchar](127)
     DECLARE @RadarPort [int]
     DECLARE @RadarConfigurationPort [int]
     DECLARE @SkipMagicTimeout [bigint]
@@ -22136,9 +22136,9 @@ INSTEAD OF INSERT AS
     DECLARE @TrackColor [numeric](10,0)
     DECLARE @VectorColor [numeric](10,0)
     DECLARE @EnableNmea [bit]
-    DECLARE @NmeaReceiverIPAddress [nvarchar](100)
+    DECLARE @NmeaReceiverIPAddress [nvarchar](127)
     DECLARE @NmeaReceiverPort [int]
-    DECLARE @NmeaReceiverSourceId [nvarchar](100)
+    DECLARE @NmeaReceiverSourceId [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -22705,10 +22705,10 @@ CREATE OR ALTER PROCEDURE [RadioConfigurationInsert]
   @Timestamp [bigint],
   @Longitude [float](53),
   @Latitude [float](53),
-  @PlaybackUrl [nvarchar](100),
-  @RadioIPAddress [nvarchar](100),
+  @PlaybackUrl [nvarchar](127),
+  @RadioIPAddress [nvarchar](127),
   @RadioPort [int],
-  @Ed137IPAddress [nvarchar](100),
+  @Ed137IPAddress [nvarchar](127),
   @Ed137Port [int]
 AS
   BEGIN
@@ -22775,10 +22775,10 @@ INSTEAD OF INSERT AS
     DECLARE @Timestamp [bigint]
     DECLARE @Longitude [float](53)
     DECLARE @Latitude [float](53)
-    DECLARE @PlaybackUrl [nvarchar](100)
-    DECLARE @RadioIPAddress [nvarchar](100)
+    DECLARE @PlaybackUrl [nvarchar](127)
+    DECLARE @RadioIPAddress [nvarchar](127)
     DECLARE @RadioPort [int]
-    DECLARE @Ed137IPAddress [nvarchar](100)
+    DECLARE @Ed137IPAddress [nvarchar](127)
     DECLARE @Ed137Port [int]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -24010,7 +24010,7 @@ GO
 CREATE OR ALTER PROCEDURE [BinaryTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -24074,7 +24074,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -24101,7 +24101,7 @@ GO
 CREATE OR ALTER PROCEDURE [BooleanTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -24165,7 +24165,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -24192,7 +24192,7 @@ GO
 CREATE OR ALTER PROCEDURE [AisAidToNavigationOffPositionTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @AidToNavigation [uniqueidentifier]
 AS
@@ -24260,7 +24260,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @AidToNavigation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24290,7 +24290,7 @@ GO
 CREATE OR ALTER PROCEDURE [DeviceEnabledTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Device [uniqueidentifier]
 AS
@@ -24358,7 +24358,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Device [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24388,7 +24388,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarAutomaticSensitivityTimeControlTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -24456,7 +24456,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24486,7 +24486,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarBlankSector1TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -24554,7 +24554,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24584,7 +24584,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarBlankSector2TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -24652,7 +24652,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24682,7 +24682,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarEnableAutomaticFrequencyControlTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -24750,7 +24750,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24780,7 +24780,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarEnableFastTimeConstantTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -24848,7 +24848,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24878,7 +24878,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarEnableSensitivityTimeControlTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -24946,7 +24946,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -24976,7 +24976,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarPowerOnTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -25044,7 +25044,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25074,7 +25074,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarSaveSettingsTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -25142,7 +25142,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25172,7 +25172,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarTrackingTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -25240,7 +25240,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25270,7 +25270,7 @@ GO
 CREATE OR ALTER PROCEDURE [MediaProxySessionEnabledTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @ProxySession [uniqueidentifier]
 AS
@@ -25338,7 +25338,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @ProxySession [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25368,7 +25368,7 @@ GO
 CREATE OR ALTER PROCEDURE [MediaServiceEnabledTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Service [uniqueidentifier]
 AS
@@ -25436,7 +25436,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Service [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25466,7 +25466,7 @@ GO
 CREATE OR ALTER PROCEDURE [ByteTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -25530,7 +25530,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -25557,7 +25557,7 @@ GO
 CREATE OR ALTER PROCEDURE [DateTimeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -25621,7 +25621,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -25648,7 +25648,7 @@ GO
 CREATE OR ALTER PROCEDURE [DoubleTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -25712,7 +25712,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -25739,7 +25739,7 @@ GO
 CREATE OR ALTER PROCEDURE [GNSSAltitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GNSSDevice [uniqueidentifier]
 AS
@@ -25807,7 +25807,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GNSSDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25837,7 +25837,7 @@ GO
 CREATE OR ALTER PROCEDURE [GNSSLatitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GNSSDevice [uniqueidentifier]
 AS
@@ -25905,7 +25905,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GNSSDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -25935,7 +25935,7 @@ GO
 CREATE OR ALTER PROCEDURE [GNSSLongitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GNSSDevice [uniqueidentifier]
 AS
@@ -26003,7 +26003,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GNSSDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26033,7 +26033,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroCourseTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26101,7 +26101,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26131,7 +26131,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroHeadingMagneticNorthTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26199,7 +26199,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26229,7 +26229,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroHeadingTrueNorthTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26297,7 +26297,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26327,7 +26327,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroPitchTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26395,7 +26395,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26425,7 +26425,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroRateOfTurnTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26493,7 +26493,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26523,7 +26523,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroRollTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26591,7 +26591,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26621,7 +26621,7 @@ GO
 CREATE OR ALTER PROCEDURE [GyroSpeedTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @GyroDevice [uniqueidentifier]
 AS
@@ -26689,7 +26689,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @GyroDevice [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26719,7 +26719,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarLatitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -26787,7 +26787,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26817,7 +26817,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarLongitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -26885,7 +26885,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -26915,7 +26915,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadomeDewPointTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 AS
@@ -26983,7 +26983,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radome [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27013,7 +27013,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadomePressureTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 AS
@@ -27081,7 +27081,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radome [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27111,7 +27111,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadomeTemperatureTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 AS
@@ -27179,7 +27179,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radome [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27209,7 +27209,7 @@ GO
 CREATE OR ALTER PROCEDURE [VesselDraughtTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Vessel [uniqueidentifier]
 AS
@@ -27277,7 +27277,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Vessel [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27307,7 +27307,7 @@ GO
 CREATE OR ALTER PROCEDURE [ViewLatitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @View [uniqueidentifier]
 AS
@@ -27375,7 +27375,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @View [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27405,7 +27405,7 @@ GO
 CREATE OR ALTER PROCEDURE [ViewLongitudeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @View [uniqueidentifier]
 AS
@@ -27473,7 +27473,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @View [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27503,7 +27503,7 @@ GO
 CREATE OR ALTER PROCEDURE [ViewZoomLevelTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @View [uniqueidentifier]
 AS
@@ -27571,7 +27571,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @View [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27601,7 +27601,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationAbsoluteHumidityTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -27669,7 +27669,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27699,7 +27699,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationAirTemperatureTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -27767,7 +27767,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27797,7 +27797,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationBarometricPressureTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -27865,7 +27865,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27895,7 +27895,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationDewPointTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -27963,7 +27963,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -27993,7 +27993,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationRelativeHumidityTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -28061,7 +28061,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -28091,7 +28091,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationWaterTemperatureTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -28159,7 +28159,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -28189,7 +28189,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationWindDirectionTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -28257,7 +28257,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -28287,7 +28287,7 @@ GO
 CREATE OR ALTER PROCEDURE [WeatherStationWindSpeedTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @WeatherStation [uniqueidentifier]
 AS
@@ -28355,7 +28355,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @WeatherStation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -28385,7 +28385,7 @@ GO
 CREATE OR ALTER PROCEDURE [GeoPosition2DTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -28449,7 +28449,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -28476,7 +28476,7 @@ GO
 CREATE OR ALTER PROCEDURE [AisAidToNavigationPositionTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @AidToNavigation [uniqueidentifier]
 AS
@@ -28544,7 +28544,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @AidToNavigation [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -28574,7 +28574,7 @@ GO
 CREATE OR ALTER PROCEDURE [GeoPosition3DTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -28638,7 +28638,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -28665,7 +28665,7 @@ GO
 CREATE OR ALTER PROCEDURE [GuidTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -28729,7 +28729,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -28756,7 +28756,7 @@ GO
 CREATE OR ALTER PROCEDURE [Int16TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -28820,7 +28820,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -28847,7 +28847,7 @@ GO
 CREATE OR ALTER PROCEDURE [Int32TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -28911,7 +28911,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -28938,7 +28938,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarAzimuthOffsetTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29006,7 +29006,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29036,7 +29036,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarFastTimeConstantLevelTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29104,7 +29104,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29134,7 +29134,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarFastTimeConstantModeTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29202,7 +29202,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29232,7 +29232,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarPulseTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29300,7 +29300,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29330,7 +29330,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarSector1EndTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29398,7 +29398,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29428,7 +29428,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarSector1StartTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29496,7 +29496,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29526,7 +29526,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarSector2EndTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29594,7 +29594,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29624,7 +29624,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarSector2StartTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29692,7 +29692,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29722,7 +29722,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarSensitivityTimeControlLevelTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29790,7 +29790,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29820,7 +29820,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadarTuningTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radar [uniqueidentifier]
 AS
@@ -29888,7 +29888,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radar [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -29918,7 +29918,7 @@ GO
 CREATE OR ALTER PROCEDURE [VesselPersonsOnBoardTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Vessel [uniqueidentifier]
 AS
@@ -29986,7 +29986,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Vessel [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -30016,7 +30016,7 @@ GO
 CREATE OR ALTER PROCEDURE [Int64TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30080,7 +30080,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30107,7 +30107,7 @@ GO
 CREATE OR ALTER PROCEDURE [Position2DTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30171,7 +30171,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30198,7 +30198,7 @@ GO
 CREATE OR ALTER PROCEDURE [Position3DTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30262,7 +30262,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30289,7 +30289,7 @@ GO
 CREATE OR ALTER PROCEDURE [ReferenceTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30353,7 +30353,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30380,7 +30380,7 @@ GO
 CREATE OR ALTER PROCEDURE [SByteTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30444,7 +30444,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30471,7 +30471,7 @@ GO
 CREATE OR ALTER PROCEDURE [SingleTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30535,7 +30535,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30562,7 +30562,7 @@ GO
 CREATE OR ALTER PROCEDURE [StringTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30626,7 +30626,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30653,7 +30653,7 @@ GO
 CREATE OR ALTER PROCEDURE [TimeSpanTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30717,7 +30717,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30744,7 +30744,7 @@ GO
 CREATE OR ALTER PROCEDURE [UInt16TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30808,7 +30808,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30835,7 +30835,7 @@ GO
 CREATE OR ALTER PROCEDURE [UInt32TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -30899,7 +30899,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -30926,7 +30926,7 @@ GO
 CREATE OR ALTER PROCEDURE [RadomeStatusTimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint],
   @Radome [uniqueidentifier]
 AS
@@ -30994,7 +30994,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     DECLARE @Radome [uniqueidentifier]
     FETCH NEXT FROM @cur INTO
@@ -31024,7 +31024,7 @@ GO
 CREATE OR ALTER PROCEDURE [UInt64TimeseriesInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100),
+  @Name [nvarchar](127),
   @MaxRetention [bigint]
 AS
   BEGIN
@@ -31088,7 +31088,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     DECLARE @MaxRetention [bigint]
     FETCH NEXT FROM @cur INTO
         @Id,
@@ -31115,7 +31115,7 @@ GO
 CREATE OR ALTER PROCEDURE [TimeseriesCatalogInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Catalog [uniqueidentifier],
-  @Name [nvarchar](100)
+  @Name [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -31175,7 +31175,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Catalog [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
@@ -31637,7 +31637,7 @@ GO
 CREATE OR ALTER PROCEDURE [TrackerFilterParametersInsert]
   @Id [uniqueidentifier] OUTPUT,
   @Tracker [uniqueidentifier],
-  @Name [nvarchar](100)
+  @Name [nvarchar](127)
 AS
   BEGIN
     IF @Id IS NULL
@@ -31693,7 +31693,7 @@ INSTEAD OF INSERT AS
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @Tracker [uniqueidentifier]
-    DECLARE @Name [nvarchar](100)
+    DECLARE @Name [nvarchar](127)
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
