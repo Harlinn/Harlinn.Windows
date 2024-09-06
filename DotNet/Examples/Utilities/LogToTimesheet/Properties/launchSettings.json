@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LogToTimesheet": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\Timelister\\TVNetwork_Old.log D:\\Timelister\\TVNetwork.log"
+    }
+  }
+}

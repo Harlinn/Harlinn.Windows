@@ -278,7 +278,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 }
                 else if (enumIntegerType == typeof(long) || enumIntegerType == typeof(ulong))
                 {
-                    sqlDbType = SqlDbType.SmallInt;
+                    sqlDbType = SqlDbType.BigInt;
                 }
             }
 
@@ -313,7 +313,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 }
                 else if (enumIntegerType == typeof(long) || enumIntegerType == typeof(ulong))
                 {
-                    sqlDbType = SqlDbType.SmallInt;
+                    sqlDbType = SqlDbType.BigInt;
                 }
             }
             SqlParameter parameter = new SqlParameter(parameterName, sqlDbType);

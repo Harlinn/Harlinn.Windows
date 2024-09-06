@@ -94,6 +94,10 @@ namespace Harlinn::ODBC::Tool
 
     };
 
+
+    // ------------------------------------------------------------------------
+    // Database
+    // ------------------------------------------------------------------------
     class SqlServerCreateTablesGenerator : public CodeGenerator<SqlServerGenerator, SqlServerCreateTablesOptions>
     {
     public:
@@ -227,6 +231,9 @@ namespace Harlinn::ODBC::Tool
           createDeleteProcedures_( *this )
     { }
 
+    // ------------------------------------------------------------------------
+    // C++
+    // ------------------------------------------------------------------------
     class CppEnumsGenerator : public CodeGenerator<CppDataGenerator, CppEnumsOptions>
     {
     public:
@@ -574,6 +581,178 @@ namespace Harlinn::ODBC::Tool
     }
 
 
+    // ------------------------------------------------------------------------
+    // C#
+    // ------------------------------------------------------------------------
+    class CSharpDatabaseGenerator;
+    class CSharpDataGenerator;
+    class CSharpGenerator;
+
+    
+    class CSharpDatabaseReadersGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpDatabaseReadersOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpDatabaseGenerator, CSharpDatabaseReadersOptions>;
+
+        inline CSharpDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner );
+
+        void Run( )
+        {
+            Flush( );
+        }
+    };
+
+    class CSharpComplexDatabaseReadersGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpComplexDatabaseReadersOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpDatabaseGenerator, CSharpComplexDatabaseReadersOptions>;
+
+        inline CSharpComplexDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner );
+
+        void Run( )
+        {
+            Flush( );
+        }
+
+    };
+
+    class CSharpStoredProceduresGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpStoredProceduresOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpDatabaseGenerator, CSharpStoredProceduresOptions>;
+
+        inline CSharpStoredProceduresGenerator( const CSharpDatabaseGenerator& owner );
+
+        void Run( )
+        {
+            Flush( );
+        }
+    };
+
+    class CSharpDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>
+    {
+        CSharpDatabaseReadersGenerator databaseReaders_;
+        CSharpComplexDatabaseReadersGenerator complexDatabaseReaders_;
+        CSharpStoredProceduresGenerator storedProcedures_;
+    public:
+        using Base = GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>;
+
+        inline CSharpDatabaseGenerator( const CSharpGenerator& owner );
+
+        void Run( )
+        {
+            databaseReaders_.Run( );
+            complexDatabaseReaders_.Run( );
+            storedProcedures_.Run( );
+        }
+
+    };
+
+    inline CSharpDatabaseReadersGenerator::CSharpDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner )
+        : Base( owner, owner.Options().DatabaseReaders() )
+    { }
+
+    inline CSharpComplexDatabaseReadersGenerator::CSharpComplexDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).ComplexDatabaseReaders( ) )
+    {
+    }
+    inline CSharpStoredProceduresGenerator::CSharpStoredProceduresGenerator( const CSharpDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).StoredProcedures() )
+    {
+    }
+
+
+
+    
+    class CSharpEnumsGenerator : public CodeGenerator<CSharpDataGenerator, CSharpEnumsOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpDataGenerator, CSharpEnumsOptions>;
+
+        inline CSharpEnumsGenerator( const CSharpDataGenerator& owner );
+
+        void Run( );
+    private:
+        static WideString GetUnderlyingType( const EnumInfo& enumInfo );
+        void CreateEnum( const EnumInfo& enumInfo );
+        void CreateKind( );
+        
+    };
+
+    class CSharpDataTypesGenerator : public CodeGenerator<CSharpDataGenerator, CSharpDataTypesOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpDataGenerator, CSharpDataTypesOptions>;
+
+        inline CSharpDataTypesGenerator( const CSharpDataGenerator& owner );
+
+        void Run( )
+        {
+            Flush( );
+        }
+
+    };
+
+    
+    class CSharpDataGenerator : public GeneratorContainer<CSharpGenerator, CSharpDataOptions>
+    {
+        CSharpEnumsGenerator enums_;
+        CSharpDataTypesGenerator dataTypes_;
+    public:
+        using Base = GeneratorContainer<CSharpGenerator, CSharpDataOptions>;
+
+        inline CSharpDataGenerator( const CSharpGenerator& owner );
+
+        void Run( )
+        {
+            enums_.Run( );
+            dataTypes_.Run( );
+        }
+    };
+
+    inline CSharpEnumsGenerator::CSharpEnumsGenerator( const CSharpDataGenerator& owner )
+        : Base( owner, owner.Options( ).Enums( ) )
+    {
+    }
+
+    inline CSharpDataTypesGenerator::CSharpDataTypesGenerator( const CSharpDataGenerator& owner )
+        : Base(owner, owner.Options().DataTypes())
+    { }
+
+    
+
+
+    class CSharpGenerator : public GeneratorContainer<Generator, CSharpOptions>
+    {
+        CSharpDataGenerator data_;
+        CSharpDatabaseGenerator database_;
+    public:
+        using Base = GeneratorContainer<Generator, CSharpOptions>;
+
+        inline CSharpGenerator( const Generator& owner );
+
+        void Run( )
+        {
+            data_.Run( );
+            database_.Run( );
+        }
+
+    };
+
+    inline CSharpDatabaseGenerator::CSharpDatabaseGenerator( const CSharpGenerator& owner )
+        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this)
+    {
+    }
+
+    inline CSharpDataGenerator::CSharpDataGenerator( const CSharpGenerator& owner )
+        : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this)
+    { }
+
+
+
+    // ------------------------------------------------------------------------
+    // Generator
+    // ------------------------------------------------------------------------
     class Generator
     {
         const Tool::Options& options_;
@@ -581,9 +760,10 @@ namespace Harlinn::ODBC::Tool
         DatabaseGenerator database_;
         CppGenerator cpp_;
         CppTestGenerator cppTest_;
+        CSharpGenerator csharp_;
     public:
         Generator( const Tool::Options& options, const ModelInfo& model )
-            : options_( options ), model_( model ), database_( *this ), cpp_(*this), cppTest_(*this)
+            : options_( options ), model_( model ), database_( *this ), cpp_(*this), cppTest_(*this), csharp_(*this)
         { }
 
         const Tool::Options& Options( ) const
@@ -601,6 +781,7 @@ namespace Harlinn::ODBC::Tool
             database_.Run( );
             cpp_.Run( );
             cppTest_.Run( );
+            csharp_.Run( );
         }
     };
 
@@ -617,6 +798,10 @@ namespace Harlinn::ODBC::Tool
     {
     }
 
+    inline CSharpGenerator::CSharpGenerator( const Generator& owner )
+        : Base( owner, owner.Options( ).CSharp( ) ), data_( *this ), database_( *this )
+    {
+    }
 
 
 }
