@@ -33,7 +33,7 @@ namespace Harlinn.Common.Core.Net.Data
         ConcurrencyConflict
     }
 
-    public abstract class BaseData<TEnum> where TEnum : struct, System.Enum
+    public abstract class BaseData<TEnum> : IEquatable<BaseData<TEnum>> where TEnum : struct, System.Enum
     {
         ObjectState objectState_ = ObjectState.Unknown;
 
@@ -72,7 +72,7 @@ namespace Harlinn.Common.Core.Net.Data
 
         public abstract BaseData<TEnum> Create();
 
-        public virtual void AssignTo(BaseData<TEnum> target)
+        public virtual void AssignTo([DisallowNull] BaseData<TEnum> target)
         {
             target.objectState_ = objectState_;
         }
@@ -84,7 +84,17 @@ namespace Harlinn.Common.Core.Net.Data
             return result;
         }
 
-
+        public virtual bool Equals(Data.BaseData<TEnum>? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            else
+            {
+                return GetObjectType().Equals( other.GetObjectType() );
+            }
+        }
     }
 
     public abstract class BaseDataInt64<TEnum> : BaseData<TEnum> where TEnum : struct, System.Enum
@@ -110,11 +120,25 @@ namespace Harlinn.Common.Core.Net.Data
         }
 
 
-        public override void AssignTo(BaseData<TEnum> target)
+        public override void AssignTo([DisallowNull] BaseData<TEnum> target)
         {
             base.AssignTo(target);
             var other = (BaseDataInt64<TEnum>)target;
             other.id_ = id_;
+        }
+
+        public override bool Equals(Data.BaseData<TEnum>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = (BaseDataInt64<TEnum>)other;
+                if (obj.id_ != id_)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
     }
 
@@ -141,11 +165,25 @@ namespace Harlinn.Common.Core.Net.Data
         }
 
 
-        public override void AssignTo(BaseData<TEnum> target)
+        public override void AssignTo([DisallowNull] BaseData<TEnum> target)
         {
             base.AssignTo(target);
             var other = (BaseDataGuid<TEnum>)target;
             other.id_ = id_;
+        }
+
+        public override bool Equals(Data.BaseData<TEnum>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = (BaseDataGuid<TEnum>)other;
+                if (obj.id_ != id_)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

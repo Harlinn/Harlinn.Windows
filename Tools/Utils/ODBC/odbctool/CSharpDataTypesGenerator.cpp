@@ -137,6 +137,37 @@ namespace Harlinn::ODBC::Tool
             }
             WriteLine( L"        }" );
             WriteLine( );
+            WriteLine( L"        public override bool Equals(BaseData<Kind>? other)" );
+            WriteLine( L"        {" );
+            WriteLine( L"            if (base.Equals(other))" );
+            WriteLine( L"            {" );
+            WriteLine( L"                var obj = ( {} )other;", className );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto memberType = member->Type( );
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    if ( memberType == MemberInfoType::Binary )
+                    {
+                        auto typeName = CSharpHelper::GetMemberFieldType( *member );
+                        WriteLine( L"                if( obj.{}.Equals( {} ) == false )", fieldName, fieldName );
+                    }
+                    else
+                    {
+                        WriteLine( L"                if( obj.{} != {} )", fieldName, fieldName );
+                    }
+                    WriteLine( L"                {" );
+                    WriteLine( L"                    return false;" );
+                    WriteLine( L"                }" );
+
+                }
+            }
+            WriteLine( L"                return true;" );
+            WriteLine( L"            }" );
+            WriteLine( L"            return false;" );
+            WriteLine( L"        }" );
+            WriteLine( );
         }
         WriteLine( L"        public override bool IsOfType(Kind objectType)", className );
         WriteLine( L"        {" );

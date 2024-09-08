@@ -33,6 +33,24 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AircraftTypeObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AircraftType )
@@ -114,6 +132,40 @@ namespace Barrelman.Data.Types
             destination.deviceCommandSourceType_ = deviceCommandSourceType_;
             destination.deviceCommandSourceId_ = deviceCommandSourceId_;
             destination.reply_ = reply_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisDeviceCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -253,6 +305,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisDeviceCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -422,6 +508,100 @@ namespace Barrelman.Data.Types
             destination.sourceUpdateRate_ = sourceUpdateRate_;
             destination.configurationURL_ = configurationURL_;
             destination.storeReceivedSentences_ = storeReceivedSentences_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisDeviceConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.filter_ != filter_ )
+                {
+                    return false;
+                }
+                if( obj.northWestLatitude_ != northWestLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.northWestLongitude_ != northWestLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.southEastLatitude_ != southEastLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.southEastLongitude_ != southEastLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.comPort_ != comPort_ )
+                {
+                    return false;
+                }
+                if( obj.baudRate_ != baudRate_ )
+                {
+                    return false;
+                }
+                if( obj.iPAddress_ != iPAddress_ )
+                {
+                    return false;
+                }
+                if( obj.port_ != port_ )
+                {
+                    return false;
+                }
+                if( obj.udpPort_ != udpPort_ )
+                {
+                    return false;
+                }
+                if( obj.authenticate_ != authenticate_ )
+                {
+                    return false;
+                }
+                if( obj.userName_ != userName_ )
+                {
+                    return false;
+                }
+                if( obj.password_ != password_ )
+                {
+                    return false;
+                }
+                if( obj.authenticationURL_ != authenticationURL_ )
+                {
+                    return false;
+                }
+                if( obj.connectionType_ != connectionType_ )
+                {
+                    return false;
+                }
+                if( obj.sourceUpdateRate_ != sourceUpdateRate_ )
+                {
+                    return false;
+                }
+                if( obj.configurationURL_ != configurationURL_ )
+                {
+                    return false;
+                }
+                if( obj.storeReceivedSentences_ != storeReceivedSentences_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -771,6 +951,36 @@ namespace Barrelman.Data.Types
             destination.message_ = message_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisDeviceRawMessageObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.isSent_ != isSent_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisDeviceRawMessage )
@@ -892,6 +1102,32 @@ namespace Barrelman.Data.Types
             destination.sentence_ = sentence_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisDeviceRawSentenceObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.sentence_ != sentence_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisDeviceRawSentence )
@@ -991,6 +1227,40 @@ namespace Barrelman.Data.Types
             destination.messageSequenceNumber_ = messageSequenceNumber_;
             destination.repeat_ = repeat_;
             destination.mmsi_ = mmsi_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisMessageObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.aisDevice_ != aisDevice_ )
+                {
+                    return false;
+                }
+                if( obj.receivedTimestamp_ != receivedTimestamp_ )
+                {
+                    return false;
+                }
+                if( obj.messageSequenceNumber_ != messageSequenceNumber_ )
+                {
+                    return false;
+                }
+                if( obj.repeat_ != repeat_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi_ != mmsi_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1154,6 +1424,88 @@ namespace Barrelman.Data.Types
             destination.assigned_ = assigned_;
             destination.spare_ = spare_;
             destination.nameExtension_ = nameExtension_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AidToNavigationReportMessageObject )other;
+                if( obj.navigationalAidType_ != navigationalAidType_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToBow_ != dimensionToBow_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStern_ != dimensionToStern_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToPort_ != dimensionToPort_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStarboard_ != dimensionToStarboard_ )
+                {
+                    return false;
+                }
+                if( obj.positionFixType_ != positionFixType_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.offPosition_ != offPosition_ )
+                {
+                    return false;
+                }
+                if( obj.regionalReserved_ != regionalReserved_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.virtualAid_ != virtualAid_ )
+                {
+                    return false;
+                }
+                if( obj.assigned_ != assigned_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.nameExtension_ != nameExtension_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1461,6 +1813,36 @@ namespace Barrelman.Data.Types
             destination.text_ = text_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisAddressedSafetyRelatedMessageObject )other;
+                if( obj.sequenceNumber_ != sequenceNumber_ )
+                {
+                    return false;
+                }
+                if( obj.destinationMmsi_ != destinationMmsi_ )
+                {
+                    return false;
+                }
+                if( obj.retransmitFlag_ != retransmitFlag_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.text_ != text_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisAddressedSafetyRelatedMessage )
@@ -1588,6 +1970,48 @@ namespace Barrelman.Data.Types
             destination.spare_ = spare_;
             destination.raim_ = raim_;
             destination.radioStatus_ = radioStatus_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisBaseStationReportMessageObject )other;
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.positionFixType_ != positionFixType_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.radioStatus_ != radioStatus_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1761,6 +2185,52 @@ namespace Barrelman.Data.Types
             destination.mmsi3_ = mmsi3_;
             destination.sequenceNumber4_ = sequenceNumber4_;
             destination.mmsi4_ = mmsi4_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisBinaryAcknowledgeMessageObject )other;
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber1_ != sequenceNumber1_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi1_ != mmsi1_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber2_ != sequenceNumber2_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi2_ != mmsi2_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber3_ != sequenceNumber3_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi3_ != mmsi3_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber4_ != sequenceNumber4_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi4_ != mmsi4_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1946,6 +2416,44 @@ namespace Barrelman.Data.Types
             destination.data_ = data_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisBinaryAddressedMessageObject )other;
+                if( obj.sequenceNumber_ != sequenceNumber_ )
+                {
+                    return false;
+                }
+                if( obj.destinationMmsi_ != destinationMmsi_ )
+                {
+                    return false;
+                }
+                if( obj.retransmitFlag_ != retransmitFlag_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.designatedAreaCode_ != designatedAreaCode_ )
+                {
+                    return false;
+                }
+                if( obj.functionalId_ != functionalId_ )
+                {
+                    return false;
+                }
+                if( obj.data_ != data_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisBinaryAddressedMessage )
@@ -2095,6 +2603,32 @@ namespace Barrelman.Data.Types
             destination.data_ = data_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisBinaryBroadcastMessageObject )other;
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.designatedAreaCode_ != designatedAreaCode_ )
+                {
+                    return false;
+                }
+                if( obj.functionalId_ != functionalId_ )
+                {
+                    return false;
+                }
+                if( obj.data_ != data_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisBinaryBroadcastMessage )
@@ -2226,6 +2760,84 @@ namespace Barrelman.Data.Types
             destination.reservedSlots4_ = reservedSlots4_;
             destination.timeout4_ = timeout4_;
             destination.increment4_ = increment4_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisDataLinkManagementMessageObject )other;
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.offset1_ != offset1_ )
+                {
+                    return false;
+                }
+                if( obj.reservedSlots1_ != reservedSlots1_ )
+                {
+                    return false;
+                }
+                if( obj.timeout1_ != timeout1_ )
+                {
+                    return false;
+                }
+                if( obj.increment1_ != increment1_ )
+                {
+                    return false;
+                }
+                if( obj.offset2_ != offset2_ )
+                {
+                    return false;
+                }
+                if( obj.reservedSlots2_ != reservedSlots2_ )
+                {
+                    return false;
+                }
+                if( obj.timeout2_ != timeout2_ )
+                {
+                    return false;
+                }
+                if( obj.increment2_ != increment2_ )
+                {
+                    return false;
+                }
+                if( obj.offset3_ != offset3_ )
+                {
+                    return false;
+                }
+                if( obj.reservedSlots3_ != reservedSlots3_ )
+                {
+                    return false;
+                }
+                if( obj.timeout3_ != timeout3_ )
+                {
+                    return false;
+                }
+                if( obj.increment3_ != increment3_ )
+                {
+                    return false;
+                }
+                if( obj.offset4_ != offset4_ )
+                {
+                    return false;
+                }
+                if( obj.reservedSlots4_ != reservedSlots4_ )
+                {
+                    return false;
+                }
+                if( obj.timeout4_ != timeout4_ )
+                {
+                    return false;
+                }
+                if( obj.increment4_ != increment4_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2547,6 +3159,96 @@ namespace Barrelman.Data.Types
             destination.dataTerminalReady_ = dataTerminalReady_;
             destination.assigned_ = assigned_;
             destination.spare_ = spare_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisExtendedClassBCsPositionReportMessageObject )other;
+                if( obj.reserved_ != reserved_ )
+                {
+                    return false;
+                }
+                if( obj.speedOverGround_ != speedOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.courseOverGround_ != courseOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.trueHeading_ != trueHeading_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.regionalReserved_ != regionalReserved_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.shipType_ != shipType_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToBow_ != dimensionToBow_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStern_ != dimensionToStern_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToPort_ != dimensionToPort_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStarboard_ != dimensionToStarboard_ )
+                {
+                    return false;
+                }
+                if( obj.positionFixType_ != positionFixType_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.dataTerminalReady_ != dataTerminalReady_ )
+                {
+                    return false;
+                }
+                if( obj.assigned_ != assigned_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2888,6 +3590,48 @@ namespace Barrelman.Data.Types
             destination.secondStationFirstSlotOffset_ = secondStationFirstSlotOffset_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisInterrogationMessageObject )other;
+                if( obj.interrogatedMmsi_ != interrogatedMmsi_ )
+                {
+                    return false;
+                }
+                if( obj.firstMessageType_ != firstMessageType_ )
+                {
+                    return false;
+                }
+                if( obj.firstSlotOffset_ != firstSlotOffset_ )
+                {
+                    return false;
+                }
+                if( obj.secondMessageType_ != secondMessageType_ )
+                {
+                    return false;
+                }
+                if( obj.secondSlotOffset_ != secondSlotOffset_ )
+                {
+                    return false;
+                }
+                if( obj.secondStationInterrogationMmsi_ != secondStationInterrogationMmsi_ )
+                {
+                    return false;
+                }
+                if( obj.secondStationFirstMessageType_ != secondStationFirstMessageType_ )
+                {
+                    return false;
+                }
+                if( obj.secondStationFirstSlotOffset_ != secondStationFirstSlotOffset_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisInterrogationMessage )
@@ -3057,6 +3801,68 @@ namespace Barrelman.Data.Types
             destination.spare_ = spare_;
             destination.raim_ = raim_;
             destination.radioStatus_ = radioStatus_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisPositionReportClassAMessageBaseObject )other;
+                if( obj.navigationStatus_ != navigationStatus_ )
+                {
+                    return false;
+                }
+                if( obj.rateOfTurn_ != rateOfTurn_ )
+                {
+                    return false;
+                }
+                if( obj.speedOverGround_ != speedOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.courseOverGround_ != courseOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.trueHeading_ != trueHeading_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.maneuverIndicator_ != maneuverIndicator_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.radioStatus_ != radioStatus_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3380,6 +4186,52 @@ namespace Barrelman.Data.Types
             destination.spare_ = spare_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisPositionReportForLongRangeApplicationsMessageObject )other;
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.navigationStatus_ != navigationStatus_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.speedOverGround_ != speedOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.courseOverGround_ != courseOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.gnssPositionStatus_ != gnssPositionStatus_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisPositionReportForLongRangeApplicationsMessage )
@@ -3565,6 +4417,52 @@ namespace Barrelman.Data.Types
             destination.mmsi3_ = mmsi3_;
             destination.sequenceNumber4_ = sequenceNumber4_;
             destination.mmsi4_ = mmsi4_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisSafetyRelatedAcknowledgmentMessageObject )other;
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber1_ != sequenceNumber1_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi1_ != mmsi1_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber2_ != sequenceNumber2_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi2_ != mmsi2_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber3_ != sequenceNumber3_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi3_ != mmsi3_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber4_ != sequenceNumber4_ )
+                {
+                    return false;
+                }
+                if( obj.mmsi4_ != mmsi4_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3768,6 +4666,84 @@ namespace Barrelman.Data.Types
             destination.assigned_ = assigned_;
             destination.raim_ = raim_;
             destination.radioStatus_ = radioStatus_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisStandardClassBCsPositionReportMessageObject )other;
+                if( obj.reserved_ != reserved_ )
+                {
+                    return false;
+                }
+                if( obj.speedOverGround_ != speedOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.courseOverGround_ != courseOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.trueHeading_ != trueHeading_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.regionalReserved_ != regionalReserved_ )
+                {
+                    return false;
+                }
+                if( obj.isCsUnit_ != isCsUnit_ )
+                {
+                    return false;
+                }
+                if( obj.hasDisplay_ != hasDisplay_ )
+                {
+                    return false;
+                }
+                if( obj.hasDscCapability_ != hasDscCapability_ )
+                {
+                    return false;
+                }
+                if( obj.band_ != band_ )
+                {
+                    return false;
+                }
+                if( obj.canAcceptMessage22_ != canAcceptMessage22_ )
+                {
+                    return false;
+                }
+                if( obj.assigned_ != assigned_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.radioStatus_ != radioStatus_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4077,6 +5053,68 @@ namespace Barrelman.Data.Types
             destination.radioStatus_ = radioStatus_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisStandardSarAircraftPositionReportMessageObject )other;
+                if( obj.altitude_ != altitude_ )
+                {
+                    return false;
+                }
+                if( obj.speedOverGround_ != speedOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.courseOverGround_ != courseOverGround_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.reserved_ != reserved_ )
+                {
+                    return false;
+                }
+                if( obj.dataTerminalReady_ != dataTerminalReady_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.assigned_ != assigned_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.radioStatus_ != radioStatus_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisStandardSarAircraftPositionReportMessage )
@@ -4330,6 +5368,76 @@ namespace Barrelman.Data.Types
             destination.destination_ = destination_;
             destination.dataTerminalReady_ = dataTerminalReady_;
             destination.spare_ = spare_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisStaticAndVoyageRelatedDataMessageObject )other;
+                if( obj.aisVersion_ != aisVersion_ )
+                {
+                    return false;
+                }
+                if( obj.imoNumber_ != imoNumber_ )
+                {
+                    return false;
+                }
+                if( obj.callsign_ != callsign_ )
+                {
+                    return false;
+                }
+                if( obj.shipName_ != shipName_ )
+                {
+                    return false;
+                }
+                if( obj.shipType_ != shipType_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToBow_ != dimensionToBow_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStern_ != dimensionToStern_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToPort_ != dimensionToPort_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStarboard_ != dimensionToStarboard_ )
+                {
+                    return false;
+                }
+                if( obj.positionFixType_ != positionFixType_ )
+                {
+                    return false;
+                }
+                if( obj.estimatedTimeOfArrival_ != estimatedTimeOfArrival_ )
+                {
+                    return false;
+                }
+                if( obj.draught_ != draught_ )
+                {
+                    return false;
+                }
+                if( obj.destination_ != destination_ )
+                {
+                    return false;
+                }
+                if( obj.dataTerminalReady_ != dataTerminalReady_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4587,6 +5695,20 @@ namespace Barrelman.Data.Types
             destination.partNumber_ = partNumber_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisStaticDataReportMessageObject )other;
+                if( obj.partNumber_ != partNumber_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisStaticDataReportMessage )
@@ -4646,6 +5768,24 @@ namespace Barrelman.Data.Types
             var destination = ( AisStaticDataReportPartAMessageObject )target;
             destination.shipName_ = shipName_;
             destination.spare_ = spare_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisStaticDataReportPartAMessageObject )other;
+                if( obj.shipName_ != shipName_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4741,6 +5881,64 @@ namespace Barrelman.Data.Types
             destination.mothershipMmsi_ = mothershipMmsi_;
             destination.positionFixType_ = positionFixType_;
             destination.spare_ = spare_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisStaticDataReportPartBMessageObject )other;
+                if( obj.shipType_ != shipType_ )
+                {
+                    return false;
+                }
+                if( obj.vendorId_ != vendorId_ )
+                {
+                    return false;
+                }
+                if( obj.unitModelCode_ != unitModelCode_ )
+                {
+                    return false;
+                }
+                if( obj.serialNumber_ != serialNumber_ )
+                {
+                    return false;
+                }
+                if( obj.callsign_ != callsign_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToBow_ != dimensionToBow_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStern_ != dimensionToStern_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToPort_ != dimensionToPort_ )
+                {
+                    return false;
+                }
+                if( obj.dimensionToStarboard_ != dimensionToStarboard_ )
+                {
+                    return false;
+                }
+                if( obj.mothershipMmsi_ != mothershipMmsi_ )
+                {
+                    return false;
+                }
+                if( obj.positionFixType_ != positionFixType_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4960,6 +6158,28 @@ namespace Barrelman.Data.Types
             destination.spare2_ = spare2_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisUtcAndDateInquiryMessageObject )other;
+                if( obj.spare1_ != spare1_ )
+                {
+                    return false;
+                }
+                if( obj.destinationMmsi_ != destinationMmsi_ )
+                {
+                    return false;
+                }
+                if( obj.spare2_ != spare2_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisUtcAndDateInquiryMessage )
@@ -5059,6 +6279,48 @@ namespace Barrelman.Data.Types
             destination.spare_ = spare_;
             destination.raim_ = raim_;
             destination.radioStatus_ = radioStatus_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisUtcAndDateResponseMessageObject )other;
+                if( obj.datetime_ != datetime_ )
+                {
+                    return false;
+                }
+                if( obj.positionAccuracy_ != positionAccuracy_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.positionFixType_ != positionFixType_ )
+                {
+                    return false;
+                }
+                if( obj.spare_ != spare_ )
+                {
+                    return false;
+                }
+                if( obj.raim_ != raim_ )
+                {
+                    return false;
+                }
+                if( obj.radioStatus_ != radioStatus_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5224,6 +6486,32 @@ namespace Barrelman.Data.Types
             destination.state_ = state_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AlarmStateChangeObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.alarm_ != alarm_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.state_ != state_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AlarmStateChange )
@@ -5327,6 +6615,24 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BaseStationTypeObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.BaseStationType )
@@ -5404,6 +6710,32 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
             destination.timestamp_ = timestamp_;
             destination.value_ = (byte[])value_.Clone( );
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BinaryTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_.Equals( value_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5517,6 +6849,44 @@ namespace Barrelman.Data.Types
             destination.latitude_ = latitude_;
             destination.longitude_ = longitude_;
             destination.zoomLevel_ = zoomLevel_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BookmarkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.view_ != view_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.zoomLevel_ != zoomLevel_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5668,6 +7038,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BooleanTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.BooleanTimeseriesValue )
@@ -5773,6 +7169,32 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
             destination.timestamp_ = timestamp_;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ByteTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5884,6 +7306,40 @@ namespace Barrelman.Data.Types
             destination.deviceCommandSourceType_ = deviceCommandSourceType_;
             destination.deviceCommandSourceId_ = deviceCommandSourceId_;
             destination.reply_ = reply_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6031,6 +7487,56 @@ namespace Barrelman.Data.Types
             destination.tiltSpeed_ = tiltSpeed_;
             destination.speedFocalLengthMode_ = speedFocalLengthMode_;
             destination.zoomSpeed_ = zoomSpeed_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandAbsoluteMoveObject )other;
+                if( obj.positionPanTiltMode_ != positionPanTiltMode_ )
+                {
+                    return false;
+                }
+                if( obj.panAngle_ != panAngle_ )
+                {
+                    return false;
+                }
+                if( obj.tiltAngle_ != tiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.positionFocalLengthMode_ != positionFocalLengthMode_ )
+                {
+                    return false;
+                }
+                if( obj.focalLength_ != focalLength_ )
+                {
+                    return false;
+                }
+                if( obj.speedPanTiltMode_ != speedPanTiltMode_ )
+                {
+                    return false;
+                }
+                if( obj.panSpeed_ != panSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.tiltSpeed_ != tiltSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.speedFocalLengthMode_ != speedFocalLengthMode_ )
+                {
+                    return false;
+                }
+                if( obj.zoomSpeed_ != zoomSpeed_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6222,6 +7728,28 @@ namespace Barrelman.Data.Types
             destination.z_ = z_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandAdjustPanTiltZoomObject )other;
+                if( obj.x_ != x_ )
+                {
+                    return false;
+                }
+                if( obj.y_ != y_ )
+                {
+                    return false;
+                }
+                if( obj.z_ != z_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraCommandAdjustPanTiltZoom )
@@ -6315,6 +7843,36 @@ namespace Barrelman.Data.Types
             destination.tiltVelocity_ = tiltVelocity_;
             destination.zoomVelocity_ = zoomVelocity_;
             destination.duration_ = duration_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandContinuousMoveObject )other;
+                if( obj.normalized_ != normalized_ )
+                {
+                    return false;
+                }
+                if( obj.panVelocity_ != panVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.tiltVelocity_ != tiltVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.zoomVelocity_ != zoomVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.duration_ != duration_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6438,6 +7996,36 @@ namespace Barrelman.Data.Types
             destination.altitude_ = altitude_;
             destination.viewportWidth_ = viewportWidth_;
             destination.viewportHeight_ = viewportHeight_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandGeoMoveObject )other;
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.altitude_ != altitude_ )
+                {
+                    return false;
+                }
+                if( obj.viewportWidth_ != viewportWidth_ )
+                {
+                    return false;
+                }
+                if( obj.viewportHeight_ != viewportHeight_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6565,6 +8153,44 @@ namespace Barrelman.Data.Types
             destination.panSpeed_ = panSpeed_;
             destination.tiltSpeed_ = tiltSpeed_;
             destination.zoomSpeed_ = zoomSpeed_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandRelativeMoveObject )other;
+                if( obj.normalized_ != normalized_ )
+                {
+                    return false;
+                }
+                if( obj.panAngle_ != panAngle_ )
+                {
+                    return false;
+                }
+                if( obj.tiltAngle_ != tiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.focalLength_ != focalLength_ )
+                {
+                    return false;
+                }
+                if( obj.panSpeed_ != panSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.tiltSpeed_ != tiltSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.zoomSpeed_ != zoomSpeed_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6762,6 +8388,20 @@ namespace Barrelman.Data.Types
             destination.enabled_ = enabled_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandSetAutoFocusObject )other;
+                if( obj.enabled_ != enabled_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraCommandSetAutoFocus )
@@ -6819,6 +8459,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( CameraCommandSetBlackAndWhiteObject )target;
             destination.enabled_ = enabled_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandSetBlackAndWhiteObject )other;
+                if( obj.enabled_ != enabled_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6880,6 +8534,24 @@ namespace Barrelman.Data.Types
             var destination = ( CameraCommandSetFollowedObject )target;
             destination.trackId_ = trackId_;
             destination.reason_ = reason_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandSetFollowedObject )other;
+                if( obj.trackId_ != trackId_ )
+                {
+                    return false;
+                }
+                if( obj.reason_ != reason_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6955,6 +8627,20 @@ namespace Barrelman.Data.Types
             destination.enabled_ = enabled_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandSetInfraRedLampObject )other;
+                if( obj.enabled_ != enabled_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraCommandSetInfraRedLamp )
@@ -7012,6 +8698,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( CameraCommandSetWasherObject )target;
             destination.enabled_ = enabled_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandSetWasherObject )other;
+                if( obj.enabled_ != enabled_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7073,6 +8773,20 @@ namespace Barrelman.Data.Types
             destination.enabled_ = enabled_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandSetWiperObject )other;
+                if( obj.enabled_ != enabled_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraCommandSetWiper )
@@ -7132,6 +8846,24 @@ namespace Barrelman.Data.Types
             var destination = ( CameraCommandStopObject )target;
             destination.panTilt_ = panTilt_;
             destination.zoom_ = zoom_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandStopObject )other;
+                if( obj.panTilt_ != panTilt_ )
+                {
+                    return false;
+                }
+                if( obj.zoom_ != zoom_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7221,6 +8953,52 @@ namespace Barrelman.Data.Types
             destination.panAngle_ = panAngle_;
             destination.tiltAngle_ = tiltAngle_;
             destination.focalLength_ = focalLength_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                if( obj.panAngle_ != panAngle_ )
+                {
+                    return false;
+                }
+                if( obj.tiltAngle_ != tiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.focalLength_ != focalLength_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7510,6 +9288,256 @@ namespace Barrelman.Data.Types
             destination.ptzProfileName_ = ptzProfileName_;
             destination.ptzConfigurationToken_ = ptzConfigurationToken_;
             destination.videoSourceToken_ = videoSourceToken_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.cameraControlProtocol_ != cameraControlProtocol_ )
+                {
+                    return false;
+                }
+                if( obj.cameraURL_ != cameraURL_ )
+                {
+                    return false;
+                }
+                if( obj.configurationURL_ != configurationURL_ )
+                {
+                    return false;
+                }
+                if( obj.userName_ != userName_ )
+                {
+                    return false;
+                }
+                if( obj.password_ != password_ )
+                {
+                    return false;
+                }
+                if( obj.useRtspUriOverride_ != useRtspUriOverride_ )
+                {
+                    return false;
+                }
+                if( obj.rtspUriOverride_ != rtspUriOverride_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.altitude_ != altitude_ )
+                {
+                    return false;
+                }
+                if( obj.useRelativePosition_ != useRelativePosition_ )
+                {
+                    return false;
+                }
+                if( obj.panTiltMode_ != panTiltMode_ )
+                {
+                    return false;
+                }
+                if( obj.minTiltAngle_ != minTiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.maxTiltAngle_ != maxTiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.minTiltScaleAngle_ != minTiltScaleAngle_ )
+                {
+                    return false;
+                }
+                if( obj.maxTiltScaleAngle_ != maxTiltScaleAngle_ )
+                {
+                    return false;
+                }
+                if( obj.useReverseTiltAngle_ != useReverseTiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.useReverseNormalizedTiltAngle_ != useReverseNormalizedTiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.minTiltVelocity_ != minTiltVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.maxTiltVelocity_ != maxTiltVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.minTiltSpeed_ != minTiltSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.maxTiltSpeed_ != maxTiltSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.minPanAngle_ != minPanAngle_ )
+                {
+                    return false;
+                }
+                if( obj.maxPanAngle_ != maxPanAngle_ )
+                {
+                    return false;
+                }
+                if( obj.minPanScaleAngle_ != minPanScaleAngle_ )
+                {
+                    return false;
+                }
+                if( obj.maxPanScaleAngle_ != maxPanScaleAngle_ )
+                {
+                    return false;
+                }
+                if( obj.useReversePanAngle_ != useReversePanAngle_ )
+                {
+                    return false;
+                }
+                if( obj.useReverseNormalizedPanAngle_ != useReverseNormalizedPanAngle_ )
+                {
+                    return false;
+                }
+                if( obj.minPanVelocity_ != minPanVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.maxPanVelocity_ != maxPanVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.minPanSpeed_ != minPanSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.maxPanSpeed_ != maxPanSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.focalLengthMode_ != focalLengthMode_ )
+                {
+                    return false;
+                }
+                if( obj.minFocalLength_ != minFocalLength_ )
+                {
+                    return false;
+                }
+                if( obj.maxFocalLength_ != maxFocalLength_ )
+                {
+                    return false;
+                }
+                if( obj.minFocalLengthScale_ != minFocalLengthScale_ )
+                {
+                    return false;
+                }
+                if( obj.maxFocalLengthScale_ != maxFocalLengthScale_ )
+                {
+                    return false;
+                }
+                if( obj.minZoomVelocity_ != minZoomVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.maxZoomVelocity_ != maxZoomVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.minZoomSpeed_ != minZoomSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.maxZoomSpeed_ != maxZoomSpeed_ )
+                {
+                    return false;
+                }
+                if( obj.imageSensorWidth_ != imageSensorWidth_ )
+                {
+                    return false;
+                }
+                if( obj.imageSensorHeight_ != imageSensorHeight_ )
+                {
+                    return false;
+                }
+                if( obj.homePanAngle_ != homePanAngle_ )
+                {
+                    return false;
+                }
+                if( obj.homeTiltAngle_ != homeTiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.homeFocalLength_ != homeFocalLength_ )
+                {
+                    return false;
+                }
+                if( obj.panOffset_ != panOffset_ )
+                {
+                    return false;
+                }
+                if( obj.tiltOffset_ != tiltOffset_ )
+                {
+                    return false;
+                }
+                if( obj.aimAltitude_ != aimAltitude_ )
+                {
+                    return false;
+                }
+                if( obj.minimumTargetWidth_ != minimumTargetWidth_ )
+                {
+                    return false;
+                }
+                if( obj.targetLockTimeout_ != targetLockTimeout_ )
+                {
+                    return false;
+                }
+                if( obj.updateStatusInterval_ != updateStatusInterval_ )
+                {
+                    return false;
+                }
+                if( obj.readTimeout_ != readTimeout_ )
+                {
+                    return false;
+                }
+                if( obj.moveCommandStatusDelay_ != moveCommandStatusDelay_ )
+                {
+                    return false;
+                }
+                if( obj.ptzProfileName_ != ptzProfileName_ )
+                {
+                    return false;
+                }
+                if( obj.ptzConfigurationToken_ != ptzConfigurationToken_ )
+                {
+                    return false;
+                }
+                if( obj.videoSourceToken_ != videoSourceToken_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8401,6 +10429,28 @@ namespace Barrelman.Data.Types
             destination.timestamp_ = timestamp_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraPanCalibrationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraPanCalibration )
@@ -8492,6 +10542,32 @@ namespace Barrelman.Data.Types
             destination.panCalibration_ = panCalibration_;
             destination.panAngle_ = panAngle_;
             destination.panOffset_ = panOffset_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraPanCalibrationValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.panCalibration_ != panCalibration_ )
+                {
+                    return false;
+                }
+                if( obj.panAngle_ != panAngle_ )
+                {
+                    return false;
+                }
+                if( obj.panOffset_ != panOffset_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8627,6 +10703,88 @@ namespace Barrelman.Data.Types
             destination.zoomVelocity_ = zoomVelocity_;
             destination.activeFeatures_ = activeFeatures_;
             destination.error_ = error_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraStatusObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.track_ != track_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.positionPanTiltMode_ != positionPanTiltMode_ )
+                {
+                    return false;
+                }
+                if( obj.panAngle_ != panAngle_ )
+                {
+                    return false;
+                }
+                if( obj.tiltAngle_ != tiltAngle_ )
+                {
+                    return false;
+                }
+                if( obj.positionFocalLengthMode_ != positionFocalLengthMode_ )
+                {
+                    return false;
+                }
+                if( obj.focalLength_ != focalLength_ )
+                {
+                    return false;
+                }
+                if( obj.panTiltMoveStatus_ != panTiltMoveStatus_ )
+                {
+                    return false;
+                }
+                if( obj.zoomMoveStatus_ != zoomMoveStatus_ )
+                {
+                    return false;
+                }
+                if( obj.velocityPanTiltMode_ != velocityPanTiltMode_ )
+                {
+                    return false;
+                }
+                if( obj.panVelocity_ != panVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.tiltVelocity_ != tiltVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.velocityFocalLengthMode_ != velocityFocalLengthMode_ )
+                {
+                    return false;
+                }
+                if( obj.zoomVelocity_ != zoomVelocity_ )
+                {
+                    return false;
+                }
+                if( obj.activeFeatures_ != activeFeatures_ )
+                {
+                    return false;
+                }
+                if( obj.error_ != error_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8930,6 +11088,28 @@ namespace Barrelman.Data.Types
             destination.timestamp_ = timestamp_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraTiltCalibrationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraTiltCalibration )
@@ -9021,6 +11201,32 @@ namespace Barrelman.Data.Types
             destination.tiltCalibration_ = tiltCalibration_;
             destination.panAngle_ = panAngle_;
             destination.tiltOffset_ = tiltOffset_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraTiltCalibrationValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.tiltCalibration_ != tiltCalibration_ )
+                {
+                    return false;
+                }
+                if( obj.panAngle_ != panAngle_ )
+                {
+                    return false;
+                }
+                if( obj.tiltOffset_ != tiltOffset_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9128,6 +11334,28 @@ namespace Barrelman.Data.Types
             destination.timestamp_ = timestamp_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraZoomCalibrationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CameraZoomCalibration )
@@ -9219,6 +11447,32 @@ namespace Barrelman.Data.Types
             destination.zoomCalibration_ = zoomCalibration_;
             destination.focalLength_ = focalLength_;
             destination.focalLengthOffset_ = focalLengthOffset_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CameraZoomCalibrationValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.zoomCalibration_ != zoomCalibration_ )
+                {
+                    return false;
+                }
+                if( obj.focalLength_ != focalLength_ )
+                {
+                    return false;
+                }
+                if( obj.focalLengthOffset_ != focalLengthOffset_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9314,6 +11568,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.catalog_ = catalog_;
             destination.name_ = name_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CatalogElementObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.catalog_ != catalog_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9429,6 +11705,20 @@ namespace Barrelman.Data.Types
             destination.elementType_ = elementType_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ElementObject )other;
+                if( obj.elementType_ != elementType_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Element )
@@ -9488,6 +11778,24 @@ namespace Barrelman.Data.Types
             var destination = ( CollectionInfoObject )target;
             destination.rowVersion_ = rowVersion_;
             destination.count_ = count_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CollectionInfoObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.count_ != count_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9569,6 +11877,36 @@ namespace Barrelman.Data.Types
             destination.code_ = code_;
             destination.alpha2_ = alpha2_;
             destination.alpha3_ = alpha3_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CountryObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.code_ != code_ )
+                {
+                    return false;
+                }
+                if( obj.alpha2_ != alpha2_ )
+                {
+                    return false;
+                }
+                if( obj.alpha3_ != alpha3_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9688,6 +12026,24 @@ namespace Barrelman.Data.Types
             destination.typeCode_ = typeCode_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CursorInfoObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.typeCode_ != typeCode_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CursorInfo )
@@ -9765,6 +12121,32 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
             destination.timestamp_ = timestamp_;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DateTimeTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9870,6 +12252,24 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DeviceHostObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DeviceHost )
@@ -9951,6 +12351,40 @@ namespace Barrelman.Data.Types
             destination.hostname_ = hostname_;
             destination.port_ = port_;
             destination.queueName_ = queueName_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DeviceHostConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.host_ != host_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.hostname_ != hostname_ )
+                {
+                    return false;
+                }
+                if( obj.port_ != port_ )
+                {
+                    return false;
+                }
+                if( obj.queueName_ != queueName_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10088,6 +12522,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DoubleTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DoubleTimeseriesValue )
@@ -10191,6 +12651,24 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( FacilityTypeObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.FacilityType )
@@ -10270,6 +12748,36 @@ namespace Barrelman.Data.Types
             destination.timestamp_ = timestamp_;
             destination.latitude_ = latitude_;
             destination.longitude_ = longitude_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GeoPosition2DTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10395,6 +12903,40 @@ namespace Barrelman.Data.Types
             destination.latitude_ = latitude_;
             destination.longitude_ = longitude_;
             destination.altitude_ = altitude_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GeoPosition3DTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.altitude_ != altitude_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10536,6 +13078,40 @@ namespace Barrelman.Data.Types
             destination.reply_ = reply_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSDeviceCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GNSSDeviceCommand )
@@ -10673,6 +13249,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSDeviceCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10818,6 +13428,52 @@ namespace Barrelman.Data.Types
             destination.latitudeOffset_ = latitudeOffset_;
             destination.longitudeOffset_ = longitudeOffset_;
             destination.altitudeOffset_ = altitudeOffset_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSDeviceConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.defaultLatitude_ != defaultLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.defaultLongitude_ != defaultLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.defaultAltitude_ != defaultAltitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitudeOffset_ != latitudeOffset_ )
+                {
+                    return false;
+                }
+                if( obj.longitudeOffset_ != longitudeOffset_ )
+                {
+                    return false;
+                }
+                if( obj.altitudeOffset_ != altitudeOffset_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10997,6 +13653,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GuidTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GuidTimeseriesValue )
@@ -11106,6 +13788,40 @@ namespace Barrelman.Data.Types
             destination.deviceCommandSourceType_ = deviceCommandSourceType_;
             destination.deviceCommandSourceId_ = deviceCommandSourceId_;
             destination.reply_ = reply_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroDeviceCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11245,6 +13961,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroDeviceCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11390,6 +14140,52 @@ namespace Barrelman.Data.Types
             destination.headingMagneticNorthOffset_ = headingMagneticNorthOffset_;
             destination.pitchTransducerName_ = pitchTransducerName_;
             destination.rollTransducerName_ = rollTransducerName_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroDeviceConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.defaultHeadingTrueNorth_ != defaultHeadingTrueNorth_ )
+                {
+                    return false;
+                }
+                if( obj.defaultMagneticTrueNorth_ != defaultMagneticTrueNorth_ )
+                {
+                    return false;
+                }
+                if( obj.headingTrueNorthOffset_ != headingTrueNorthOffset_ )
+                {
+                    return false;
+                }
+                if( obj.headingMagneticNorthOffset_ != headingMagneticNorthOffset_ )
+                {
+                    return false;
+                }
+                if( obj.pitchTransducerName_ != pitchTransducerName_ )
+                {
+                    return false;
+                }
+                if( obj.rollTransducerName_ != rollTransducerName_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11553,6 +14349,20 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( IdentityObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Identity )
@@ -11610,6 +14420,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( CallsignObject )target;
             destination.identifier_ = identifier_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CallsignObject )other;
+                if( obj.identifier_ != identifier_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11671,6 +14495,20 @@ namespace Barrelman.Data.Types
             destination.identifier_ = identifier_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( InternationalMaritimeOrganizationNumberObject )other;
+                if( obj.identifier_ != identifier_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.InternationalMaritimeOrganizationNumber )
@@ -11730,6 +14568,20 @@ namespace Barrelman.Data.Types
             destination.identifier_ = identifier_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MaritimeMobileServiceIdentityObject )other;
+                if( obj.identifier_ != identifier_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.MaritimeMobileServiceIdentity )
@@ -11787,6 +14639,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( NameObject )target;
             destination.text_ = text_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( NameObject )other;
+                if( obj.text_ != text_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11852,6 +14718,32 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
             destination.timestamp_ = timestamp_;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int16TimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11961,6 +14853,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int32TimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int32TimeseriesValue )
@@ -12068,6 +14986,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int64TimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int64TimeseriesValue )
@@ -12159,6 +15103,20 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ItemObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Item )
@@ -12218,6 +15176,24 @@ namespace Barrelman.Data.Types
             var destination = ( BaseStationObject )target;
             destination.name_ = name_;
             destination.type_ = type_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BaseStationObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12287,6 +15263,32 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
             destination.description_ = description_;
             destination.enabledTimeseries_ = enabledTimeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DeviceObject )other;
+                if( obj.host_ != host_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                if( obj.enabledTimeseries_ != enabledTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12420,6 +15422,28 @@ namespace Barrelman.Data.Types
             destination.altitudeTimeseries_ = altitudeTimeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSDeviceObject )other;
+                if( obj.latitudeTimeseries_ != latitudeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.longitudeTimeseries_ != longitudeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.altitudeTimeseries_ != altitudeTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GNSSDevice )
@@ -12519,6 +15543,48 @@ namespace Barrelman.Data.Types
             destination.courseTimeseries_ = courseTimeseries_;
             destination.speedTimeseries_ = speedTimeseries_;
             destination.gNSSDevice_ = gNSSDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroDeviceObject )other;
+                if( obj.headingTrueNorthTimeseries_ != headingTrueNorthTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.headingMagneticNorthTimeseries_ != headingMagneticNorthTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.pitchTimeseries_ != pitchTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.rateOfTurnTimeseries_ != rateOfTurnTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.rollTimeseries_ != rollTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.courseTimeseries_ != courseTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.speedTimeseries_ != speedTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12764,6 +15830,36 @@ namespace Barrelman.Data.Types
             destination.statusTimeseries_ = statusTimeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeDeviceObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.pressureTimeseries_ != pressureTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.temperatureTimeseries_ != temperatureTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.dewPointTimeseries_ != dewPointTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.statusTimeseries_ != statusTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadomeDevice )
@@ -12963,6 +16059,108 @@ namespace Barrelman.Data.Types
             destination.longitudeTimeseries_ = longitudeTimeseries_;
             destination.radome_ = radome_;
             destination.gNSSDevice_ = gNSSDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarDeviceObject )other;
+                if( obj.saveSettingsTimeseries_ != saveSettingsTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.powerOnTimeseries_ != powerOnTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.trackingOnTimeseries_ != trackingOnTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.radarPulseTimeseries_ != radarPulseTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.tuningTimeseries_ != tuningTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.blankSector1Timeseries_ != blankSector1Timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.sector1StartTimeseries_ != sector1StartTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.sector1EndTimeseries_ != sector1EndTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.blankSector2Timeseries_ != blankSector2Timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.sector2StartTimeseries_ != sector2StartTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.sector2EndTimeseries_ != sector2EndTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.enableAutomaticFrequencyControlTimeseries_ != enableAutomaticFrequencyControlTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.azimuthOffsetTimeseries_ != azimuthOffsetTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.enableSensitivityTimeControlTimeseries_ != enableSensitivityTimeControlTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.automaticSensitivityTimeControlTimeseries_ != automaticSensitivityTimeControlTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.sensitivityTimeControlLevelTimeseries_ != sensitivityTimeControlLevelTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.enableFastTimeConstantTimeseries_ != enableFastTimeConstantTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.fastTimeConstantLevelTimeseries_ != fastTimeConstantLevelTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.fastTimeConstantModeTimeseries_ != fastTimeConstantModeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.latitudeTimeseries_ != latitudeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.longitudeTimeseries_ != longitudeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13348,6 +16546,52 @@ namespace Barrelman.Data.Types
             destination.gyro_ = gyro_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationDeviceObject )other;
+                if( obj.barometricPressureTimeseries_ != barometricPressureTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.airTemperatureTimeseries_ != airTemperatureTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.waterTemperatureTimeseries_ != waterTemperatureTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.relativeHumidityTimeseries_ != relativeHumidityTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.absoluteHumidityTimeseries_ != absoluteHumidityTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.dewPointTimeseries_ != dewPointTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.windDirectionTimeseries_ != windDirectionTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.windSpeedTimeseries_ != windSpeedTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.gyro_ != gyro_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.WeatherStationDevice )
@@ -13527,6 +16771,36 @@ namespace Barrelman.Data.Types
             destination.altitude_ = altitude_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( FacilityObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.altitude_ != altitude_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Facility )
@@ -13660,6 +16934,24 @@ namespace Barrelman.Data.Types
             destination.type_ = type_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AircraftObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Aircraft )
@@ -13749,6 +17041,56 @@ namespace Barrelman.Data.Types
             destination.toPort_ = toPort_;
             destination.toStarboard_ = toStarboard_;
             destination.offPositionTimeseries_ = offPositionTimeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisAidToNavigationObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.mMSI_ != mMSI_ )
+                {
+                    return false;
+                }
+                if( obj.navigationalAidType_ != navigationalAidType_ )
+                {
+                    return false;
+                }
+                if( obj.position_ != position_ )
+                {
+                    return false;
+                }
+                if( obj.isVirtual_ != isVirtual_ )
+                {
+                    return false;
+                }
+                if( obj.toBow_ != toBow_ )
+                {
+                    return false;
+                }
+                if( obj.toStern_ != toStern_ )
+                {
+                    return false;
+                }
+                if( obj.toPort_ != toPort_ )
+                {
+                    return false;
+                }
+                if( obj.toStarboard_ != toStarboard_ )
+                {
+                    return false;
+                }
+                if( obj.offPositionTimeseries_ != offPositionTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13938,6 +17280,24 @@ namespace Barrelman.Data.Types
             destination.type_ = type_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( VehicleObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Vehicle )
@@ -14023,6 +17383,48 @@ namespace Barrelman.Data.Types
             destination.toStarboard_ = toStarboard_;
             destination.draughtTimeseries_ = draughtTimeseries_;
             destination.personsOnBoardTimeseries_ = personsOnBoardTimeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( VesselObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                if( obj.toBow_ != toBow_ )
+                {
+                    return false;
+                }
+                if( obj.toStern_ != toStern_ )
+                {
+                    return false;
+                }
+                if( obj.toPort_ != toPort_ )
+                {
+                    return false;
+                }
+                if( obj.toStarboard_ != toStarboard_ )
+                {
+                    return false;
+                }
+                if( obj.draughtTimeseries_ != draughtTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.personsOnBoardTimeseries_ != personsOnBoardTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14190,6 +17592,36 @@ namespace Barrelman.Data.Types
             destination.end_ = end_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ItemIdentityLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.item_ != item_ )
+                {
+                    return false;
+                }
+                if( obj.identity_ != identity_ )
+                {
+                    return false;
+                }
+                if( obj.start_ != start_ )
+                {
+                    return false;
+                }
+                if( obj.end_ != end_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ItemIdentityLink )
@@ -14311,6 +17743,32 @@ namespace Barrelman.Data.Types
             destination.timestamp_ = timestamp_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ItemParentChildLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.parent_ != parent_ )
+                {
+                    return false;
+                }
+                if( obj.child_ != child_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ItemParentChildLink )
@@ -14420,6 +17878,40 @@ namespace Barrelman.Data.Types
             destination.deviceCommandSourceType_ = deviceCommandSourceType_;
             destination.deviceCommandSourceId_ = deviceCommandSourceId_;
             destination.reply_ = reply_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LineInputDeviceCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.lineInputDevice_ != lineInputDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14559,6 +18051,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LineInputDeviceCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.lineInputDevice_ != lineInputDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14758,6 +18284,160 @@ namespace Barrelman.Data.Types
             destination.writeBufferSize_ = writeBufferSize_;
             destination.writeTimeout_ = writeTimeout_;
             destination.pairedComPort_ = pairedComPort_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LineInputDeviceConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.lineInputDevice_ != lineInputDevice_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.storeReceivedSentences_ != storeReceivedSentences_ )
+                {
+                    return false;
+                }
+                if( obj.storeSentMessages_ != storeSentMessages_ )
+                {
+                    return false;
+                }
+                if( obj.storeUnsentMessages_ != storeUnsentMessages_ )
+                {
+                    return false;
+                }
+                if( obj.nMEA_ != nMEA_ )
+                {
+                    return false;
+                }
+                if( obj.strictNMEA_ != strictNMEA_ )
+                {
+                    return false;
+                }
+                if( obj.connectionType_ != connectionType_ )
+                {
+                    return false;
+                }
+                if( obj.udpReceivePort_ != udpReceivePort_ )
+                {
+                    return false;
+                }
+                if( obj.udpSendHostname_ != udpSendHostname_ )
+                {
+                    return false;
+                }
+                if( obj.udpSendPort_ != udpSendPort_ )
+                {
+                    return false;
+                }
+                if( obj.tcpHostname_ != tcpHostname_ )
+                {
+                    return false;
+                }
+                if( obj.tcpPort_ != tcpPort_ )
+                {
+                    return false;
+                }
+                if( obj.useHttpLogin_ != useHttpLogin_ )
+                {
+                    return false;
+                }
+                if( obj.loginHostname_ != loginHostname_ )
+                {
+                    return false;
+                }
+                if( obj.loginPort_ != loginPort_ )
+                {
+                    return false;
+                }
+                if( obj.userName_ != userName_ )
+                {
+                    return false;
+                }
+                if( obj.password_ != password_ )
+                {
+                    return false;
+                }
+                if( obj.comPort_ != comPort_ )
+                {
+                    return false;
+                }
+                if( obj.baudRate_ != baudRate_ )
+                {
+                    return false;
+                }
+                if( obj.dataBits_ != dataBits_ )
+                {
+                    return false;
+                }
+                if( obj.discardNull_ != discardNull_ )
+                {
+                    return false;
+                }
+                if( obj.dtrEnable_ != dtrEnable_ )
+                {
+                    return false;
+                }
+                if( obj.handshake_ != handshake_ )
+                {
+                    return false;
+                }
+                if( obj.newLine_ != newLine_ )
+                {
+                    return false;
+                }
+                if( obj.parity_ != parity_ )
+                {
+                    return false;
+                }
+                if( obj.parityReplace_ != parityReplace_ )
+                {
+                    return false;
+                }
+                if( obj.readBufferSize_ != readBufferSize_ )
+                {
+                    return false;
+                }
+                if( obj.readTimeout_ != readTimeout_ )
+                {
+                    return false;
+                }
+                if( obj.receivedBytesThreshold_ != receivedBytesThreshold_ )
+                {
+                    return false;
+                }
+                if( obj.rtsEnable_ != rtsEnable_ )
+                {
+                    return false;
+                }
+                if( obj.stopBits_ != stopBits_ )
+                {
+                    return false;
+                }
+                if( obj.writeBufferSize_ != writeBufferSize_ )
+                {
+                    return false;
+                }
+                if( obj.writeTimeout_ != writeTimeout_ )
+                {
+                    return false;
+                }
+                if( obj.pairedComPort_ != pairedComPort_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15313,6 +18993,28 @@ namespace Barrelman.Data.Types
             destination.type_ = type_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LineInputMessageRoutingObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.lineInputDevice_ != lineInputDevice_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.LineInputMessageRouting )
@@ -15402,6 +19104,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.routing_ = routing_;
             destination.listener_ = listener_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LineInputMessageRoutingDestinationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.routing_ != routing_ )
+                {
+                    return false;
+                }
+                if( obj.listener_ != listener_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15495,6 +19219,32 @@ namespace Barrelman.Data.Types
             destination.lineInputDevice_ = lineInputDevice_;
             destination.hostName_ = hostName_;
             destination.port_ = port_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LineInputWhiteListEntryObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.lineInputDevice_ != lineInputDevice_ )
+                {
+                    return false;
+                }
+                if( obj.hostName_ != hostName_ )
+                {
+                    return false;
+                }
+                if( obj.port_ != port_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15600,6 +19350,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.name_ = name_;
             destination.description_ = description_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogApplicationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15715,6 +19487,76 @@ namespace Barrelman.Data.Types
             destination.alert_ = alert_;
             destination.fatal_ = fatal_;
             destination.emergency_ = emergency_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogApplicationConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.application_ != application_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.finest_ != finest_ )
+                {
+                    return false;
+                }
+                if( obj.finer_ != finer_ )
+                {
+                    return false;
+                }
+                if( obj.fine_ != fine_ )
+                {
+                    return false;
+                }
+                if( obj.info_ != info_ )
+                {
+                    return false;
+                }
+                if( obj.notice_ != notice_ )
+                {
+                    return false;
+                }
+                if( obj.warn_ != warn_ )
+                {
+                    return false;
+                }
+                if( obj.error_ != error_ )
+                {
+                    return false;
+                }
+                if( obj.severe_ != severe_ )
+                {
+                    return false;
+                }
+                if( obj.critical_ != critical_ )
+                {
+                    return false;
+                }
+                if( obj.alert_ != alert_ )
+                {
+                    return false;
+                }
+                if( obj.fatal_ != fatal_ )
+                {
+                    return false;
+                }
+                if( obj.emergency_ != emergency_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15976,6 +19818,28 @@ namespace Barrelman.Data.Types
             destination.description_ = description_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogHostObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.computerName_ != computerName_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.LogHost )
@@ -16089,6 +19953,76 @@ namespace Barrelman.Data.Types
             destination.alert_ = alert_;
             destination.fatal_ = fatal_;
             destination.emergency_ = emergency_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogHostConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.host_ != host_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.finest_ != finest_ )
+                {
+                    return false;
+                }
+                if( obj.finer_ != finer_ )
+                {
+                    return false;
+                }
+                if( obj.fine_ != fine_ )
+                {
+                    return false;
+                }
+                if( obj.info_ != info_ )
+                {
+                    return false;
+                }
+                if( obj.notice_ != notice_ )
+                {
+                    return false;
+                }
+                if( obj.warn_ != warn_ )
+                {
+                    return false;
+                }
+                if( obj.error_ != error_ )
+                {
+                    return false;
+                }
+                if( obj.severe_ != severe_ )
+                {
+                    return false;
+                }
+                if( obj.critical_ != critical_ )
+                {
+                    return false;
+                }
+                if( obj.alert_ != alert_ )
+                {
+                    return false;
+                }
+                if( obj.fatal_ != fatal_ )
+                {
+                    return false;
+                }
+                if( obj.emergency_ != emergency_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16356,6 +20290,40 @@ namespace Barrelman.Data.Types
             destination.methodName_ = methodName_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogLocationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.fileName_ != fileName_ )
+                {
+                    return false;
+                }
+                if( obj.lineNumber_ != lineNumber_ )
+                {
+                    return false;
+                }
+                if( obj.namespace_ != namespace_ )
+                {
+                    return false;
+                }
+                if( obj.className_ != className_ )
+                {
+                    return false;
+                }
+                if( obj.methodName_ != methodName_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.LogLocation )
@@ -16497,6 +20465,48 @@ namespace Barrelman.Data.Types
             destination.processId_ = processId_;
             destination.path_ = path_;
             destination.identity_ = identity_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogProcessObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.application_ != application_ )
+                {
+                    return false;
+                }
+                if( obj.host_ != host_ )
+                {
+                    return false;
+                }
+                if( obj.started_ != started_ )
+                {
+                    return false;
+                }
+                if( obj.stopped_ != stopped_ )
+                {
+                    return false;
+                }
+                if( obj.processId_ != processId_ )
+                {
+                    return false;
+                }
+                if( obj.path_ != path_ )
+                {
+                    return false;
+                }
+                if( obj.identity_ != identity_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16672,6 +20682,56 @@ namespace Barrelman.Data.Types
             destination.message_ = message_;
             destination.exceptionString_ = exceptionString_;
             destination.propertiesData_ = (byte[])propertiesData_.Clone( );
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogRecordObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.thread_ != thread_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber_ != sequenceNumber_ )
+                {
+                    return false;
+                }
+                if( obj.level_ != level_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.depth_ != depth_ )
+                {
+                    return false;
+                }
+                if( obj.location_ != location_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                if( obj.exceptionString_ != exceptionString_ )
+                {
+                    return false;
+                }
+                if( obj.propertiesData_.Equals( propertiesData_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16869,6 +20929,40 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogThreadObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.process_ != process_ )
+                {
+                    return false;
+                }
+                if( obj.started_ != started_ )
+                {
+                    return false;
+                }
+                if( obj.stopped_ != stopped_ )
+                {
+                    return false;
+                }
+                if( obj.threadId_ != threadId_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.LogThread )
@@ -17008,6 +21102,44 @@ namespace Barrelman.Data.Types
             destination.depth_ = depth_;
             destination.entered_ = entered_;
             destination.ended_ = ended_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( LogTraceEntryObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.thread_ != thread_ )
+                {
+                    return false;
+                }
+                if( obj.sequenceNumber_ != sequenceNumber_ )
+                {
+                    return false;
+                }
+                if( obj.location_ != location_ )
+                {
+                    return false;
+                }
+                if( obj.depth_ != depth_ )
+                {
+                    return false;
+                }
+                if( obj.entered_ != entered_ )
+                {
+                    return false;
+                }
+                if( obj.ended_ != ended_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17173,6 +21305,64 @@ namespace Barrelman.Data.Types
             destination.height_ = height_;
             destination.label_ = label_;
             destination.data_ = (byte[])data_.Clone( );
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MapElementObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.item_ != item_ )
+                {
+                    return false;
+                }
+                if( obj.elementType_ != elementType_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.angle_ != angle_ )
+                {
+                    return false;
+                }
+                if( obj.left_ != left_ )
+                {
+                    return false;
+                }
+                if( obj.top_ != top_ )
+                {
+                    return false;
+                }
+                if( obj.width_ != width_ )
+                {
+                    return false;
+                }
+                if( obj.height_ != height_ )
+                {
+                    return false;
+                }
+                if( obj.label_ != label_ )
+                {
+                    return false;
+                }
+                if( obj.data_.Equals( data_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17404,6 +21594,52 @@ namespace Barrelman.Data.Types
             destination.image_ = (byte[])image_.Clone( );
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MapInfoObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.scale_ != scale_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.northWestLatitude_ != northWestLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.northWestLongitude_ != northWestLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.southEastLatitude_ != southEastLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.southEastLongitude_ != southEastLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.image_.Equals( image_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.MapInfo )
@@ -17589,6 +21825,48 @@ namespace Barrelman.Data.Types
             destination.imageOffsetY_ = imageOffsetY_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MapServiceOptionsObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.ipAddress_ != ipAddress_ )
+                {
+                    return false;
+                }
+                if( obj.port_ != port_ )
+                {
+                    return false;
+                }
+                if( obj.imageScaleFactorX_ != imageScaleFactorX_ )
+                {
+                    return false;
+                }
+                if( obj.imageOffsetX_ != imageOffsetX_ )
+                {
+                    return false;
+                }
+                if( obj.imageScaleFactorY_ != imageScaleFactorY_ )
+                {
+                    return false;
+                }
+                if( obj.imageOffsetY_ != imageOffsetY_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.MapServiceOptions )
@@ -17750,6 +22028,28 @@ namespace Barrelman.Data.Types
             destination.country_ = country_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MaritimeIdentificationDigitsObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.code_ != code_ )
+                {
+                    return false;
+                }
+                if( obj.country_ != country_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.MaritimeIdentificationDigits )
@@ -17841,6 +22141,32 @@ namespace Barrelman.Data.Types
             destination.service_ = service_;
             destination.name_ = name_;
             destination.enabledTimeseries_ = enabledTimeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaProxySessionObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.service_ != service_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.enabledTimeseries_ != enabledTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17948,6 +22274,32 @@ namespace Barrelman.Data.Types
             destination.proxySession_ = proxySession_;
             destination.timestamp_ = timestamp_;
             destination.streamName_ = streamName_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaProxySessionFileObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.proxySession_ != proxySession_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.streamName_ != streamName_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18075,6 +22427,72 @@ namespace Barrelman.Data.Types
             destination.maxFileTime_ = maxFileTime_;
             destination.maxFileRetention_ = maxFileRetention_;
             destination.videoDirectory_ = videoDirectory_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaProxySessionOptionsObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.proxySession_ != proxySession_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.sourceStreamUrl_ != sourceStreamUrl_ )
+                {
+                    return false;
+                }
+                if( obj.streamName_ != streamName_ )
+                {
+                    return false;
+                }
+                if( obj.mode_ != mode_ )
+                {
+                    return false;
+                }
+                if( obj.tunnelOverHTTPPortNumber_ != tunnelOverHTTPPortNumber_ )
+                {
+                    return false;
+                }
+                if( obj.username_ != username_ )
+                {
+                    return false;
+                }
+                if( obj.password_ != password_ )
+                {
+                    return false;
+                }
+                if( obj.recorderPortNumber_ != recorderPortNumber_ )
+                {
+                    return false;
+                }
+                if( obj.sessionType_ != sessionType_ )
+                {
+                    return false;
+                }
+                if( obj.maxFileTime_ != maxFileTime_ )
+                {
+                    return false;
+                }
+                if( obj.maxFileRetention_ != maxFileRetention_ )
+                {
+                    return false;
+                }
+                if( obj.videoDirectory_ != videoDirectory_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18320,6 +22738,24 @@ namespace Barrelman.Data.Types
             destination.enabledTimeseries_ = enabledTimeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaServiceObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.enabledTimeseries_ != enabledTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.MediaService )
@@ -18399,6 +22835,36 @@ namespace Barrelman.Data.Types
             destination.timestamp_ = timestamp_;
             destination.rtspPortNumber_ = rtspPortNumber_;
             destination.httpPortNumber_ = httpPortNumber_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaServiceOptionsObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.mediaService_ != mediaService_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.rtspPortNumber_ != rtspPortNumber_ )
+                {
+                    return false;
+                }
+                if( obj.httpPortNumber_ != httpPortNumber_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18510,6 +22976,32 @@ namespace Barrelman.Data.Types
             destination.namespace_ = namespace_;
             destination.name_ = name_;
             destination.description_ = description_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( NamespaceElementObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.namespace_ != namespace_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18679,6 +23171,48 @@ namespace Barrelman.Data.Types
             destination.trace_ = (byte[])trace_.Clone( );
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( OilSpillObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.oilSpillDetector_ != oilSpillDetector_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.oilArea_ != oilArea_ )
+                {
+                    return false;
+                }
+                if( obj.shape_.Equals( shape_ ) == false )
+                {
+                    return false;
+                }
+                if( obj.bSI_.Equals( bSI_ ) == false )
+                {
+                    return false;
+                }
+                if( obj.oil_.Equals( oil_ ) == false )
+                {
+                    return false;
+                }
+                if( obj.trace_.Equals( trace_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.OilSpill )
@@ -18846,6 +23380,40 @@ namespace Barrelman.Data.Types
             destination.reply_ = reply_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( OilSpillDetectorCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.oilSpillDetector_ != oilSpillDetector_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.OilSpillDetectorCommand )
@@ -18983,6 +23551,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( OilSpillDetectorCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.oilSpillDetector_ != oilSpillDetector_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19160,6 +23762,116 @@ namespace Barrelman.Data.Types
             destination.testSourceEnabled_ = testSourceEnabled_;
             destination.proxyServer_ = proxyServer_;
             destination.useProxyServer_ = useProxyServer_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( OilSpillDetectorConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.oilSpillDetector_ != oilSpillDetector_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.range_ != range_ )
+                {
+                    return false;
+                }
+                if( obj.startAngle_ != startAngle_ )
+                {
+                    return false;
+                }
+                if( obj.endAngle_ != endAngle_ )
+                {
+                    return false;
+                }
+                if( obj.startRange_ != startRange_ )
+                {
+                    return false;
+                }
+                if( obj.endRange_ != endRange_ )
+                {
+                    return false;
+                }
+                if( obj.updateRate_ != updateRate_ )
+                {
+                    return false;
+                }
+                if( obj.statusSendTime_ != statusSendTime_ )
+                {
+                    return false;
+                }
+                if( obj.drawBorder_ != drawBorder_ )
+                {
+                    return false;
+                }
+                if( obj.colors_.Equals( colors_ ) == false )
+                {
+                    return false;
+                }
+                if( obj.sendToServer_ != sendToServer_ )
+                {
+                    return false;
+                }
+                if( obj.directory_ != directory_ )
+                {
+                    return false;
+                }
+                if( obj.transparentWater_ != transparentWater_ )
+                {
+                    return false;
+                }
+                if( obj.savePictures_ != savePictures_ )
+                {
+                    return false;
+                }
+                if( obj.sendAsTarget_ != sendAsTarget_ )
+                {
+                    return false;
+                }
+                if( obj.writeLog_ != writeLog_ )
+                {
+                    return false;
+                }
+                if( obj.targetFilePrefix_ != targetFilePrefix_ )
+                {
+                    return false;
+                }
+                if( obj.targetMMSI_ != targetMMSI_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.testSourceEnabled_ != testSourceEnabled_ )
+                {
+                    return false;
+                }
+                if( obj.proxyServer_ != proxyServer_ )
+                {
+                    return false;
+                }
+                if( obj.useProxyServer_ != useProxyServer_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19565,6 +24277,36 @@ namespace Barrelman.Data.Types
             destination.y_ = y_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Position2DTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.x_ != x_ )
+                {
+                    return false;
+                }
+                if( obj.y_ != y_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Position2DTimeseriesValue )
@@ -19688,6 +24430,40 @@ namespace Barrelman.Data.Types
             destination.x_ = x_;
             destination.y_ = y_;
             destination.z_ = z_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Position3DTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.x_ != x_ )
+                {
+                    return false;
+                }
+                if( obj.y_ != y_ )
+                {
+                    return false;
+                }
+                if( obj.z_ != z_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19823,6 +24599,28 @@ namespace Barrelman.Data.Types
             destination.trackId_ = trackId_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ProcessTrackValueResultObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.createdNewTrack_ != createdNewTrack_ )
+                {
+                    return false;
+                }
+                if( obj.trackId_ != trackId_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ProcessTrackValueResult )
@@ -19902,6 +24700,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.element_ = element_;
             destination.definition_ = definition_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( PropertyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.element_ != element_ )
+                {
+                    return false;
+                }
+                if( obj.definition_ != definition_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19991,6 +24811,20 @@ namespace Barrelman.Data.Types
             destination.value_ = (byte[])value_.Clone( );
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BinaryPropertyObject )other;
+                if( obj.value_.Equals( value_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.BinaryProperty )
@@ -20048,6 +24882,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( BooleanPropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BooleanPropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20109,6 +24957,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BytePropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ByteProperty )
@@ -20166,6 +25028,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( DateTimePropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DateTimePropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20227,6 +25103,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DoublePropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DoubleProperty )
@@ -20284,6 +25174,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GuidPropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GuidPropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20345,6 +25249,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int16PropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int16Property )
@@ -20402,6 +25320,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( Int32PropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int32PropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20463,6 +25395,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int64PropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int64Property )
@@ -20520,6 +25466,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( ReferencePropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ReferencePropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20581,6 +25541,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SBytePropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SByteProperty )
@@ -20640,6 +25614,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SinglePropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SingleProperty )
@@ -20697,6 +25685,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( StringPropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( StringPropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20774,6 +25776,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BinaryTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.BinaryTimeseriesProperty )
@@ -20831,6 +25847,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( BooleanTimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BooleanTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20892,6 +25922,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ByteTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ByteTimeseriesProperty )
@@ -20949,6 +25993,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( DateTimeTimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DateTimeTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21010,6 +26068,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DoubleTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DoubleTimeseriesProperty )
@@ -21067,6 +26139,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GuidTimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GuidTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21128,6 +26214,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int16TimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int16TimeseriesProperty )
@@ -21185,6 +26285,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( Int32TimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int32TimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21246,6 +26360,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int64TimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int64TimeseriesProperty )
@@ -21303,6 +26431,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( ReferenceTimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ReferenceTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21364,6 +26506,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SByteTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SByteTimeseriesProperty )
@@ -21421,6 +26577,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( SingleTimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SingleTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21482,6 +26652,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( StringTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.StringTimeseriesProperty )
@@ -21539,6 +26723,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( TimeSpanTimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeSpanTimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21600,6 +26798,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt16TimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt16TimeseriesProperty )
@@ -21657,6 +26869,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( UInt32TimeseriesPropertyObject )target;
             destination.timeseries_ = timeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt32TimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21718,6 +26944,20 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt64TimeseriesPropertyObject )other;
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt64TimeseriesProperty )
@@ -21775,6 +27015,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( TimeSpanPropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeSpanPropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21836,6 +27090,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt16PropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt16Property )
@@ -21893,6 +27161,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( UInt32PropertyObject )target;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt32PropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21954,6 +27236,20 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt64PropertyObject )other;
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt64Property )
@@ -22007,6 +27303,32 @@ namespace Barrelman.Data.Types
             destination.elementType_ = elementType_;
             destination.name_ = name_;
             destination.description_ = description_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( PropertyDefinitionObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.elementType_ != elementType_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22110,6 +27432,20 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = (byte[])defaultValue_.Clone( );
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BinaryPropertyDefinitionObject )other;
+                if( obj.defaultValue_.Equals( defaultValue_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.BinaryPropertyDefinition )
@@ -22167,6 +27503,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( BooleanPropertyDefinitionObject )target;
             destination.defaultValue_ = defaultValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BooleanPropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22230,6 +27580,28 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = defaultValue_;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( BytePropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22323,6 +27695,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DateTimePropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DateTimePropertyDefinition )
@@ -22414,6 +27808,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DoublePropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DoublePropertyDefinition )
@@ -22501,6 +27917,20 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = defaultValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GuidPropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GuidPropertyDefinition )
@@ -22562,6 +27992,28 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = defaultValue_;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int16PropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22655,6 +28107,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int32PropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int32PropertyDefinition )
@@ -22746,6 +28220,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int64PropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int64PropertyDefinition )
@@ -22835,6 +28331,24 @@ namespace Barrelman.Data.Types
             destination.referencedElementType_ = referencedElementType_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ReferencePropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.referencedElementType_ != referencedElementType_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ReferencePropertyDefinition )
@@ -22910,6 +28424,28 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = defaultValue_;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SBytePropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23003,6 +28539,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SinglePropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SinglePropertyDefinition )
@@ -23090,6 +28648,24 @@ namespace Barrelman.Data.Types
             var destination = ( StringPropertyDefinitionObject )target;
             destination.defaultValue_ = defaultValue_;
             destination.pattern_ = pattern_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( StringPropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.pattern_ != pattern_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23235,6 +28811,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ByteTimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ByteTimeseriesPropertyDefinition )
@@ -23310,6 +28904,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DateTimeTimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.DateTimeTimeseriesPropertyDefinition )
@@ -23383,6 +28995,24 @@ namespace Barrelman.Data.Types
             var destination = ( DoubleTimeseriesPropertyDefinitionObject )target;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DoubleTimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23486,6 +29116,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int16TimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int16TimeseriesPropertyDefinition )
@@ -23559,6 +29207,24 @@ namespace Barrelman.Data.Types
             var destination = ( Int32TimeseriesPropertyDefinitionObject )target;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int32TimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23636,6 +29302,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( Int64TimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Int64TimeseriesPropertyDefinition )
@@ -23709,6 +29393,20 @@ namespace Barrelman.Data.Types
             destination.referencedElementType_ = referencedElementType_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ReferenceTimeseriesPropertyDefinitionObject )other;
+                if( obj.referencedElementType_ != referencedElementType_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ReferenceTimeseriesPropertyDefinition )
@@ -23768,6 +29466,24 @@ namespace Barrelman.Data.Types
             var destination = ( SByteTimeseriesPropertyDefinitionObject )target;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SByteTimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23845,6 +29561,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SingleTimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SingleTimeseriesPropertyDefinition )
@@ -23918,6 +29652,20 @@ namespace Barrelman.Data.Types
             destination.pattern_ = pattern_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( StringTimeseriesPropertyDefinitionObject )other;
+                if( obj.pattern_ != pattern_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.StringTimeseriesPropertyDefinition )
@@ -23977,6 +29725,24 @@ namespace Barrelman.Data.Types
             var destination = ( TimeSpanTimeseriesPropertyDefinitionObject )target;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeSpanTimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24054,6 +29820,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt16TimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt16TimeseriesPropertyDefinition )
@@ -24127,6 +29911,24 @@ namespace Barrelman.Data.Types
             var destination = ( UInt32TimeseriesPropertyDefinitionObject )target;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt32TimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24204,6 +30006,24 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt64TimeseriesPropertyDefinitionObject )other;
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt64TimeseriesPropertyDefinition )
@@ -24279,6 +30099,28 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = defaultValue_;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeSpanPropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24372,6 +30214,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt16PropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt16PropertyDefinition )
@@ -24461,6 +30325,28 @@ namespace Barrelman.Data.Types
             destination.defaultValue_ = defaultValue_;
             destination.minValue_ = minValue_;
             destination.maxValue_ = maxValue_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt32PropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24554,6 +30440,28 @@ namespace Barrelman.Data.Types
             destination.maxValue_ = maxValue_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt64PropertyDefinitionObject )other;
+                if( obj.defaultValue_ != defaultValue_ )
+                {
+                    return false;
+                }
+                if( obj.minValue_ != minValue_ )
+                {
+                    return false;
+                }
+                if( obj.maxValue_ != maxValue_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt64PropertyDefinition )
@@ -24645,6 +30553,32 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
             destination.timestamp_ = timestamp_;
             destination.type_ = type_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarAlarmStatusObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.type_ != type_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24756,6 +30690,40 @@ namespace Barrelman.Data.Types
             destination.deviceCommandSourceType_ = deviceCommandSourceType_;
             destination.deviceCommandSourceId_ = deviceCommandSourceId_;
             destination.reply_ = reply_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24923,6 +30891,40 @@ namespace Barrelman.Data.Types
             destination.message_ = message_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarCommandReply )
@@ -25058,6 +31060,36 @@ namespace Barrelman.Data.Types
             destination.rotationCount_ = rotationCount_;
             destination.pulse_ = pulse_;
             destination.tx_ = tx_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarCommandReplyGetStatusObject )other;
+                if( obj.azimuthCount_ != azimuthCount_ )
+                {
+                    return false;
+                }
+                if( obj.triggerCount_ != triggerCount_ )
+                {
+                    return false;
+                }
+                if( obj.rotationCount_ != rotationCount_ )
+                {
+                    return false;
+                }
+                if( obj.pulse_ != pulse_ )
+                {
+                    return false;
+                }
+                if( obj.tx_ != tx_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25227,6 +31259,128 @@ namespace Barrelman.Data.Types
             destination.nmeaReceiverIPAddress_ = nmeaReceiverIPAddress_;
             destination.nmeaReceiverPort_ = nmeaReceiverPort_;
             destination.nmeaReceiverSourceId_ = nmeaReceiverSourceId_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.radarProtocolVersion_ != radarProtocolVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radarIPAddress_ != radarIPAddress_ )
+                {
+                    return false;
+                }
+                if( obj.radarPort_ != radarPort_ )
+                {
+                    return false;
+                }
+                if( obj.radarConfigurationPort_ != radarConfigurationPort_ )
+                {
+                    return false;
+                }
+                if( obj.skipMagicTimeout_ != skipMagicTimeout_ )
+                {
+                    return false;
+                }
+                if( obj.readTimeout_ != readTimeout_ )
+                {
+                    return false;
+                }
+                if( obj.synchronizationInterval_ != synchronizationInterval_ )
+                {
+                    return false;
+                }
+                if( obj.targetsRefreshRate_ != targetsRefreshRate_ )
+                {
+                    return false;
+                }
+                if( obj.range_ != range_ )
+                {
+                    return false;
+                }
+                if( obj.sectorCount_ != sectorCount_ )
+                {
+                    return false;
+                }
+                if( obj.sectorOffset_ != sectorOffset_ )
+                {
+                    return false;
+                }
+                if( obj.imageColor_ != imageColor_ )
+                {
+                    return false;
+                }
+                if( obj.imageSubstitutionColor_ != imageSubstitutionColor_ )
+                {
+                    return false;
+                }
+                if( obj.transparentColor_ != transparentColor_ )
+                {
+                    return false;
+                }
+                if( obj.imageScaleFactorX_ != imageScaleFactorX_ )
+                {
+                    return false;
+                }
+                if( obj.imageOffsetX_ != imageOffsetX_ )
+                {
+                    return false;
+                }
+                if( obj.imageScaleFactorY_ != imageScaleFactorY_ )
+                {
+                    return false;
+                }
+                if( obj.imageOffsetY_ != imageOffsetY_ )
+                {
+                    return false;
+                }
+                if( obj.radarImageType_ != radarImageType_ )
+                {
+                    return false;
+                }
+                if( obj.trackColor_ != trackColor_ )
+                {
+                    return false;
+                }
+                if( obj.vectorColor_ != vectorColor_ )
+                {
+                    return false;
+                }
+                if( obj.enableNmea_ != enableNmea_ )
+                {
+                    return false;
+                }
+                if( obj.nmeaReceiverIPAddress_ != nmeaReceiverIPAddress_ )
+                {
+                    return false;
+                }
+                if( obj.nmeaReceiverPort_ != nmeaReceiverPort_ )
+                {
+                    return false;
+                }
+                if( obj.nmeaReceiverSourceId_ != nmeaReceiverSourceId_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25678,6 +31832,44 @@ namespace Barrelman.Data.Types
             destination.image_ = (byte[])image_.Clone( );
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarImageObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.depth_ != depth_ )
+                {
+                    return false;
+                }
+                if( obj.resolution_ != resolution_ )
+                {
+                    return false;
+                }
+                if( obj.range_ != range_ )
+                {
+                    return false;
+                }
+                if( obj.image_.Equals( image_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarImage )
@@ -25829,6 +32021,36 @@ namespace Barrelman.Data.Types
             destination.table_ = (byte[])table_.Clone( );
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarRawTrackTableObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.count_ != count_ )
+                {
+                    return false;
+                }
+                if( obj.table_.Equals( table_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarRawTrackTable )
@@ -25958,6 +32180,52 @@ namespace Barrelman.Data.Types
             destination.pulse_ = pulse_;
             destination.tx_ = tx_;
             destination.tracking_ = tracking_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarStatusObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.azimuthCount_ != azimuthCount_ )
+                {
+                    return false;
+                }
+                if( obj.triggerCount_ != triggerCount_ )
+                {
+                    return false;
+                }
+                if( obj.rotationTime_ != rotationTime_ )
+                {
+                    return false;
+                }
+                if( obj.pulse_ != pulse_ )
+                {
+                    return false;
+                }
+                if( obj.tx_ != tx_ )
+                {
+                    return false;
+                }
+                if( obj.tracking_ != tracking_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26141,6 +32409,40 @@ namespace Barrelman.Data.Types
             destination.reply_ = reply_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadioCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radio_ != radio_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadioCommand )
@@ -26278,6 +32580,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadioCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radio_ != radio_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26425,6 +32761,56 @@ namespace Barrelman.Data.Types
             destination.radioPort_ = radioPort_;
             destination.ed137IPAddress_ = ed137IPAddress_;
             destination.ed137Port_ = ed137Port_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadioConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radio_ != radio_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.playbackUrl_ != playbackUrl_ )
+                {
+                    return false;
+                }
+                if( obj.radioIPAddress_ != radioIPAddress_ )
+                {
+                    return false;
+                }
+                if( obj.radioPort_ != radioPort_ )
+                {
+                    return false;
+                }
+                if( obj.ed137IPAddress_ != ed137IPAddress_ )
+                {
+                    return false;
+                }
+                if( obj.ed137Port_ != ed137Port_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26622,6 +33008,40 @@ namespace Barrelman.Data.Types
             destination.reply_ = reply_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadomeCommand )
@@ -26759,6 +33179,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26902,6 +33356,48 @@ namespace Barrelman.Data.Types
             destination.highPressureLimit_ = highPressureLimit_;
             destination.lowTemperatureLimit_ = lowTemperatureLimit_;
             destination.highTemperatureLimit_ = highTemperatureLimit_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.interval_ != interval_ )
+                {
+                    return false;
+                }
+                if( obj.lowPressureLimit_ != lowPressureLimit_ )
+                {
+                    return false;
+                }
+                if( obj.highPressureLimit_ != highPressureLimit_ )
+                {
+                    return false;
+                }
+                if( obj.lowTemperatureLimit_ != lowTemperatureLimit_ )
+                {
+                    return false;
+                }
+                if( obj.highTemperatureLimit_ != highTemperatureLimit_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -27067,6 +33563,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ReferenceTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ReferenceTimeseriesValue )
@@ -27174,6 +33696,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SByteTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SByteTimeseriesValue )
@@ -27279,6 +33827,28 @@ namespace Barrelman.Data.Types
             destination.description_ = description_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SecurityDomainObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SecurityDomain )
@@ -27360,6 +33930,32 @@ namespace Barrelman.Data.Types
             destination.domain_ = domain_;
             destination.identity_ = identity_;
             destination.description_ = description_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SecurityIdentifierObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.domain_ != domain_ )
+                {
+                    return false;
+                }
+                if( obj.identity_ != identity_ )
+                {
+                    return false;
+                }
+                if( obj.description_ != description_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -27489,6 +34085,20 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SecurityRoleObject )other;
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SecurityRole )
@@ -27554,6 +34164,36 @@ namespace Barrelman.Data.Types
             destination.role_ = role_;
             destination.start_ = start_;
             destination.end_ = end_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SecurityIdentifierRoleLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.member_ != member_ )
+                {
+                    return false;
+                }
+                if( obj.role_ != role_ )
+                {
+                    return false;
+                }
+                if( obj.start_ != start_ )
+                {
+                    return false;
+                }
+                if( obj.end_ != end_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -27681,6 +34321,44 @@ namespace Barrelman.Data.Types
             destination.clientSession_ = clientSession_;
             destination.notificationQueueName_ = notificationQueueName_;
             destination.messageQueueName_ = messageQueueName_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SecurityLoginSessionObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.login_ != login_ )
+                {
+                    return false;
+                }
+                if( obj.fromTime_ != fromTime_ )
+                {
+                    return false;
+                }
+                if( obj.throughTime_ != throughTime_ )
+                {
+                    return false;
+                }
+                if( obj.clientSession_ != clientSession_ )
+                {
+                    return false;
+                }
+                if( obj.notificationQueueName_ != notificationQueueName_ )
+                {
+                    return false;
+                }
+                if( obj.messageQueueName_ != messageQueueName_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -27838,6 +34516,48 @@ namespace Barrelman.Data.Types
             destination.canRead_ = canRead_;
             destination.canUpdate_ = canUpdate_;
             destination.canDelete_ = canDelete_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SecurityPermissionObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.identifier_ != identifier_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.typeCode_ != typeCode_ )
+                {
+                    return false;
+                }
+                if( obj.canCreate_ != canCreate_ )
+                {
+                    return false;
+                }
+                if( obj.canRead_ != canRead_ )
+                {
+                    return false;
+                }
+                if( obj.canUpdate_ != canUpdate_ )
+                {
+                    return false;
+                }
+                if( obj.canDelete_ != canDelete_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28003,6 +34723,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( SingleTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.SingleTimeseriesValue )
@@ -28110,6 +34856,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( StringTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.StringTimeseriesValue )
@@ -28205,6 +34977,28 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeseriesCatalogElementObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.catalog_ != catalog_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TimeseriesCatalogElement )
@@ -28280,6 +35074,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( TimeseriesObject )target;
             destination.maxRetention_ = maxRetention_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeseriesObject )other;
+                if( obj.maxRetention_ != maxRetention_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28393,6 +35201,20 @@ namespace Barrelman.Data.Types
             destination.aidToNavigation_ = aidToNavigation_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisAidToNavigationOffPositionTimeseriesObject )other;
+                if( obj.aidToNavigation_ != aidToNavigation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.AisAidToNavigationOffPositionTimeseries )
@@ -28450,6 +35272,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( DeviceEnabledTimeseriesObject )target;
             destination.device_ = device_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( DeviceEnabledTimeseriesObject )other;
+                if( obj.device_ != device_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28511,6 +35347,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarAutomaticSensitivityTimeControlTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarAutomaticSensitivityTimeControlTimeseries )
@@ -28568,6 +35418,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarBlankSector1TimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarBlankSector1TimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28629,6 +35493,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarBlankSector2TimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarBlankSector2Timeseries )
@@ -28686,6 +35564,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarEnableAutomaticFrequencyControlTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarEnableAutomaticFrequencyControlTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28747,6 +35639,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarEnableFastTimeConstantTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarEnableFastTimeConstantTimeseries )
@@ -28804,6 +35710,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarEnableSensitivityTimeControlTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarEnableSensitivityTimeControlTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28865,6 +35785,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarPowerOnTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarPowerOnTimeseries )
@@ -28922,6 +35856,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarSaveSettingsTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarSaveSettingsTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -28983,6 +35931,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarTrackingTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarTrackingTimeseries )
@@ -29042,6 +36004,20 @@ namespace Barrelman.Data.Types
             destination.proxySession_ = proxySession_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaProxySessionEnabledTimeseriesObject )other;
+                if( obj.proxySession_ != proxySession_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.MediaProxySessionEnabledTimeseries )
@@ -29099,6 +36075,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( MediaServiceEnabledTimeseriesObject )target;
             destination.service_ = service_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( MediaServiceEnabledTimeseriesObject )other;
+                if( obj.service_ != service_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29238,6 +36228,20 @@ namespace Barrelman.Data.Types
             destination.gNSSDevice_ = gNSSDevice_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSAltitudeTimeseriesObject )other;
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GNSSAltitudeTimeseries )
@@ -29295,6 +36299,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GNSSLatitudeTimeseriesObject )target;
             destination.gNSSDevice_ = gNSSDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSLatitudeTimeseriesObject )other;
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29356,6 +36374,20 @@ namespace Barrelman.Data.Types
             destination.gNSSDevice_ = gNSSDevice_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GNSSLongitudeTimeseriesObject )other;
+                if( obj.gNSSDevice_ != gNSSDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GNSSLongitudeTimeseries )
@@ -29413,6 +36445,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GyroCourseTimeseriesObject )target;
             destination.gyroDevice_ = gyroDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroCourseTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29474,6 +36520,20 @@ namespace Barrelman.Data.Types
             destination.gyroDevice_ = gyroDevice_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroHeadingMagneticNorthTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GyroHeadingMagneticNorthTimeseries )
@@ -29531,6 +36591,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GyroHeadingTrueNorthTimeseriesObject )target;
             destination.gyroDevice_ = gyroDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroHeadingTrueNorthTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29592,6 +36666,20 @@ namespace Barrelman.Data.Types
             destination.gyroDevice_ = gyroDevice_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroPitchTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GyroPitchTimeseries )
@@ -29649,6 +36737,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GyroRateOfTurnTimeseriesObject )target;
             destination.gyroDevice_ = gyroDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroRateOfTurnTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29710,6 +36812,20 @@ namespace Barrelman.Data.Types
             destination.gyroDevice_ = gyroDevice_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroRollTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.GyroRollTimeseries )
@@ -29767,6 +36883,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( GyroSpeedTimeseriesObject )target;
             destination.gyroDevice_ = gyroDevice_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( GyroSpeedTimeseriesObject )other;
+                if( obj.gyroDevice_ != gyroDevice_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29828,6 +36958,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarLatitudeTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarLatitudeTimeseries )
@@ -29885,6 +37029,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarLongitudeTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarLongitudeTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -29946,6 +37104,20 @@ namespace Barrelman.Data.Types
             destination.radome_ = radome_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeDewPointTimeseriesObject )other;
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadomeDewPointTimeseries )
@@ -30003,6 +37175,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadomePressureTimeseriesObject )target;
             destination.radome_ = radome_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomePressureTimeseriesObject )other;
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30064,6 +37250,20 @@ namespace Barrelman.Data.Types
             destination.radome_ = radome_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeTemperatureTimeseriesObject )other;
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadomeTemperatureTimeseries )
@@ -30121,6 +37321,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( VesselDraughtTimeseriesObject )target;
             destination.vessel_ = vessel_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( VesselDraughtTimeseriesObject )other;
+                if( obj.vessel_ != vessel_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30182,6 +37396,20 @@ namespace Barrelman.Data.Types
             destination.view_ = view_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ViewLatitudeTimeseriesObject )other;
+                if( obj.view_ != view_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ViewLatitudeTimeseries )
@@ -30239,6 +37467,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( ViewLongitudeTimeseriesObject )target;
             destination.view_ = view_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ViewLongitudeTimeseriesObject )other;
+                if( obj.view_ != view_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30300,6 +37542,20 @@ namespace Barrelman.Data.Types
             destination.view_ = view_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ViewZoomLevelTimeseriesObject )other;
+                if( obj.view_ != view_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ViewZoomLevelTimeseries )
@@ -30357,6 +37613,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( WeatherStationAbsoluteHumidityTimeseriesObject )target;
             destination.weatherStation_ = weatherStation_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationAbsoluteHumidityTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30418,6 +37688,20 @@ namespace Barrelman.Data.Types
             destination.weatherStation_ = weatherStation_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationAirTemperatureTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.WeatherStationAirTemperatureTimeseries )
@@ -30475,6 +37759,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( WeatherStationBarometricPressureTimeseriesObject )target;
             destination.weatherStation_ = weatherStation_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationBarometricPressureTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30536,6 +37834,20 @@ namespace Barrelman.Data.Types
             destination.weatherStation_ = weatherStation_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationDewPointTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.WeatherStationDewPointTimeseries )
@@ -30593,6 +37905,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( WeatherStationRelativeHumidityTimeseriesObject )target;
             destination.weatherStation_ = weatherStation_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationRelativeHumidityTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30654,6 +37980,20 @@ namespace Barrelman.Data.Types
             destination.weatherStation_ = weatherStation_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationWaterTemperatureTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.WeatherStationWaterTemperatureTimeseries )
@@ -30713,6 +38053,20 @@ namespace Barrelman.Data.Types
             destination.weatherStation_ = weatherStation_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationWindDirectionTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.WeatherStationWindDirectionTimeseries )
@@ -30770,6 +38124,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( WeatherStationWindSpeedTimeseriesObject )target;
             destination.weatherStation_ = weatherStation_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationWindSpeedTimeseriesObject )other;
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -30855,6 +38223,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( AisAidToNavigationPositionTimeseriesObject )target;
             destination.aidToNavigation_ = aidToNavigation_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( AisAidToNavigationPositionTimeseriesObject )other;
+                if( obj.aidToNavigation_ != aidToNavigation_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -31020,6 +38402,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarAzimuthOffsetTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarAzimuthOffsetTimeseries )
@@ -31077,6 +38473,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarFastTimeConstantLevelTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarFastTimeConstantLevelTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -31138,6 +38548,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarFastTimeConstantModeTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarFastTimeConstantModeTimeseries )
@@ -31195,6 +38619,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarPulseTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarPulseTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -31256,6 +38694,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarSector1EndTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarSector1EndTimeseries )
@@ -31313,6 +38765,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarSector1StartTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarSector1StartTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -31374,6 +38840,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarSector2EndTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarSector2EndTimeseries )
@@ -31431,6 +38911,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( RadarSector2StartTimeseriesObject )target;
             destination.radar_ = radar_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarSector2StartTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -31492,6 +38986,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarSensitivityTimeControlLevelTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarSensitivityTimeControlLevelTimeseries )
@@ -31551,6 +39059,20 @@ namespace Barrelman.Data.Types
             destination.radar_ = radar_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadarTuningTimeseriesObject )other;
+                if( obj.radar_ != radar_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadarTuningTimeseries )
@@ -31608,6 +39130,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( VesselPersonsOnBoardTimeseriesObject )target;
             destination.vessel_ = vessel_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( VesselPersonsOnBoardTimeseriesObject )other;
+                if( obj.vessel_ != vessel_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -31929,6 +39465,20 @@ namespace Barrelman.Data.Types
             destination.radome_ = radome_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( RadomeStatusTimeseriesObject )other;
+                if( obj.radome_ != radome_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.RadomeStatusTimeseries )
@@ -32046,6 +39596,32 @@ namespace Barrelman.Data.Types
             destination.count_ = count_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeseriesInfoObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.firstTimestamp_ != firstTimestamp_ )
+                {
+                    return false;
+                }
+                if( obj.lastTimestamp_ != lastTimestamp_ )
+                {
+                    return false;
+                }
+                if( obj.count_ != count_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TimeseriesInfo )
@@ -32151,6 +39727,32 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
             destination.timestamp_ = timestamp_;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TimeSpanTimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -32262,6 +39864,36 @@ namespace Barrelman.Data.Types
             destination.end_ = end_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackableItemTrackLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.item_ != item_ )
+                {
+                    return false;
+                }
+                if( obj.track_ != track_ )
+                {
+                    return false;
+                }
+                if( obj.start_ != start_ )
+                {
+                    return false;
+                }
+                if( obj.end_ != end_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TrackableItemTrackLink )
@@ -32371,6 +40003,32 @@ namespace Barrelman.Data.Types
             destination.tracker_ = tracker_;
             destination.trackNumber_ = trackNumber_;
             destination.timestamp_ = timestamp_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackBaseObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.tracker_ != tracker_ )
+                {
+                    return false;
+                }
+                if( obj.trackNumber_ != trackNumber_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -32530,6 +40188,28 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackerFilterParametersObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.tracker_ != tracker_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TrackerFilterParameters )
@@ -32645,6 +40325,80 @@ namespace Barrelman.Data.Types
             destination.deltaRMin_ = deltaRMin_;
             destination.deltaVMax_ = deltaVMax_;
             destination.deltaAMax_ = deltaAMax_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackerFilterParametersConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.parameters_ != parameters_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.useNaivePredictor_ != useNaivePredictor_ )
+                {
+                    return false;
+                }
+                if( obj.numberOfPoints_ != numberOfPoints_ )
+                {
+                    return false;
+                }
+                if( obj.windowSize_ != windowSize_ )
+                {
+                    return false;
+                }
+                if( obj.stabilizeCount_ != stabilizeCount_ )
+                {
+                    return false;
+                }
+                if( obj.maxBadPoints_ != maxBadPoints_ )
+                {
+                    return false;
+                }
+                if( obj.modelType_ != modelType_ )
+                {
+                    return false;
+                }
+                if( obj.sigmaR_ != sigmaR_ )
+                {
+                    return false;
+                }
+                if( obj.sigmaAcc_ != sigmaAcc_ )
+                {
+                    return false;
+                }
+                if( obj.tauVel_ != tauVel_ )
+                {
+                    return false;
+                }
+                if( obj.tauAcc_ != tauAcc_ )
+                {
+                    return false;
+                }
+                if( obj.deltaRMin_ != deltaRMin_ )
+                {
+                    return false;
+                }
+                if( obj.deltaVMax_ != deltaVMax_ )
+                {
+                    return false;
+                }
+                if( obj.deltaAMax_ != deltaAMax_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -32930,6 +40684,48 @@ namespace Barrelman.Data.Types
             destination.southEastLongitude_ = southEastLongitude_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackInfoObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.firstTimestamp_ != firstTimestamp_ )
+                {
+                    return false;
+                }
+                if( obj.lastTimestamp_ != lastTimestamp_ )
+                {
+                    return false;
+                }
+                if( obj.count_ != count_ )
+                {
+                    return false;
+                }
+                if( obj.northWestLatitude_ != northWestLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.northWestLongitude_ != northWestLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.southEastLatitude_ != southEastLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.southEastLongitude_ != southEastLongitude_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TrackInfo )
@@ -33107,6 +40903,64 @@ namespace Barrelman.Data.Types
             destination.maxCourseDeviation_ = maxCourseDeviation_;
             destination.maxSpeedDeviation_ = maxSpeedDeviation_;
             destination.minimumSpeedThreshold_ = minimumSpeedThreshold_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackingServiceOptionsObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.timerInterval_ != timerInterval_ )
+                {
+                    return false;
+                }
+                if( obj.maxAgeOfCurrentTrackValue_ != maxAgeOfCurrentTrackValue_ )
+                {
+                    return false;
+                }
+                if( obj.falseThreshold_ != falseThreshold_ )
+                {
+                    return false;
+                }
+                if( obj.distanceThreshold_ != distanceThreshold_ )
+                {
+                    return false;
+                }
+                if( obj.distanceUnmergeThreshold_ != distanceUnmergeThreshold_ )
+                {
+                    return false;
+                }
+                if( obj.unmergeLatency_ != unmergeLatency_ )
+                {
+                    return false;
+                }
+                if( obj.kalmanFiltering_ != kalmanFiltering_ )
+                {
+                    return false;
+                }
+                if( obj.maxCourseDeviation_ != maxCourseDeviation_ )
+                {
+                    return false;
+                }
+                if( obj.maxSpeedDeviation_ != maxSpeedDeviation_ )
+                {
+                    return false;
+                }
+                if( obj.minimumSpeedThreshold_ != minimumSpeedThreshold_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -33330,6 +41184,36 @@ namespace Barrelman.Data.Types
             destination.end_ = end_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.primary_ != primary_ )
+                {
+                    return false;
+                }
+                if( obj.secondary_ != secondary_ )
+                {
+                    return false;
+                }
+                if( obj.start_ != start_ )
+                {
+                    return false;
+                }
+                if( obj.end_ != end_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TrackLink )
@@ -33461,6 +41345,56 @@ namespace Barrelman.Data.Types
             destination.speed_ = speed_;
             destination.course_ = course_;
             destination.heading_ = heading_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.track_ != track_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.flags_ != flags_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.speed_ != speed_ )
+                {
+                    return false;
+                }
+                if( obj.course_ != course_ )
+                {
+                    return false;
+                }
+                if( obj.heading_ != heading_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -33668,6 +41602,60 @@ namespace Barrelman.Data.Types
             destination.rateOfClimb_ = rateOfClimb_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( TrackValue3DObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.track_ != track_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.flags_ != flags_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.altitude_ != altitude_ )
+                {
+                    return false;
+                }
+                if( obj.speed_ != speed_ )
+                {
+                    return false;
+                }
+                if( obj.course_ != course_ )
+                {
+                    return false;
+                }
+                if( obj.rateOfClimb_ != rateOfClimb_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.TrackValue3D )
@@ -33873,6 +41861,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt16TimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt16TimeseriesValue )
@@ -33978,6 +41992,32 @@ namespace Barrelman.Data.Types
             destination.timeseries_ = timeseries_;
             destination.timestamp_ = timestamp_;
             destination.value_ = value_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt32TimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -34087,6 +42127,32 @@ namespace Barrelman.Data.Types
             destination.value_ = value_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( UInt64TimeseriesValueObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.timeseries_ != timeseries_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.value_ != value_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.UInt64TimeseriesValue )
@@ -34190,6 +42256,24 @@ namespace Barrelman.Data.Types
             destination.name_ = name_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( VehicleTypeObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.VehicleType )
@@ -34265,6 +42349,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.name_ = name_;
             destination.code_ = code_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( VesselTypeObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.code_ != code_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -34360,6 +42466,36 @@ namespace Barrelman.Data.Types
             destination.latitudeTimeseries_ = latitudeTimeseries_;
             destination.longitudeTimeseries_ = longitudeTimeseries_;
             destination.zoomLevelTimeseries_ = zoomLevelTimeseries_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ViewObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.latitudeTimeseries_ != latitudeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.longitudeTimeseries_ != longitudeTimeseries_ )
+                {
+                    return false;
+                }
+                if( obj.zoomLevelTimeseries_ != zoomLevelTimeseries_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -34485,6 +42621,36 @@ namespace Barrelman.Data.Types
             destination.end_ = end_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ViewCameraLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.view_ != view_ )
+                {
+                    return false;
+                }
+                if( obj.camera_ != camera_ )
+                {
+                    return false;
+                }
+                if( obj.start_ != start_ )
+                {
+                    return false;
+                }
+                if( obj.end_ != end_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.ViewCameraLink )
@@ -34606,6 +42772,36 @@ namespace Barrelman.Data.Types
             destination.tracker_ = tracker_;
             destination.start_ = start_;
             destination.end_ = end_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ViewTrackerLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.view_ != view_ )
+                {
+                    return false;
+                }
+                if( obj.tracker_ != tracker_ )
+                {
+                    return false;
+                }
+                if( obj.start_ != start_ )
+                {
+                    return false;
+                }
+                if( obj.end_ != end_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -34731,6 +42927,40 @@ namespace Barrelman.Data.Types
             destination.deviceCommandSourceType_ = deviceCommandSourceType_;
             destination.deviceCommandSourceId_ = deviceCommandSourceId_;
             destination.reply_ = reply_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationCommandObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceType_ != deviceCommandSourceType_ )
+                {
+                    return false;
+                }
+                if( obj.deviceCommandSourceId_ != deviceCommandSourceId_ )
+                {
+                    return false;
+                }
+                if( obj.reply_ != reply_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -34870,6 +43100,40 @@ namespace Barrelman.Data.Types
             destination.command_ = command_;
             destination.status_ = status_;
             destination.message_ = message_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationCommandReplyObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.command_ != command_ )
+                {
+                    return false;
+                }
+                if( obj.status_ != status_ )
+                {
+                    return false;
+                }
+                if( obj.message_ != message_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -35017,6 +43281,56 @@ namespace Barrelman.Data.Types
             destination.gyroOffset_ = gyroOffset_;
             destination.enableAveraging_ = enableAveraging_;
             destination.averagingInterval_ = averagingInterval_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( WeatherStationConfigurationObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.weatherStation_ != weatherStation_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.noDataTimeOut_ != noDataTimeOut_ )
+                {
+                    return false;
+                }
+                if( obj.sendInterval_ != sendInterval_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.gyroOffset_ != gyroOffset_ )
+                {
+                    return false;
+                }
+                if( obj.enableAveraging_ != enableAveraging_ )
+                {
+                    return false;
+                }
+                if( obj.averagingInterval_ != averagingInterval_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -35212,6 +43526,56 @@ namespace Barrelman.Data.Types
             destination.fillColor_ = fillColor_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ZoneObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.name_ != name_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.alarmType_ != alarmType_ )
+                {
+                    return false;
+                }
+                if( obj.alarmTime_ != alarmTime_ )
+                {
+                    return false;
+                }
+                if( obj.radarTrackMinimumLifetime_ != radarTrackMinimumLifetime_ )
+                {
+                    return false;
+                }
+                if( obj.speed_ != speed_ )
+                {
+                    return false;
+                }
+                if( obj.strokeColor_ != strokeColor_ )
+                {
+                    return false;
+                }
+                if( obj.fillColor_ != fillColor_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.Zone )
@@ -35397,6 +43761,20 @@ namespace Barrelman.Data.Types
             destination.radius_ = radius_;
         }
 
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( CircularZoneObject )other;
+                if( obj.radius_ != radius_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public override bool IsOfType(Kind objectType)
         {
             if( objectType == Kind.CircularZone )
@@ -35454,6 +43832,20 @@ namespace Barrelman.Data.Types
             base.AssignTo( target );
             var destination = ( PolygonZoneObject )target;
             destination.polygon_ = (byte[])polygon_.Clone( );
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( PolygonZoneObject )other;
+                if( obj.polygon_.Equals( polygon_ ) == false )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -35517,6 +43909,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.zone_ = zone_;
             destination.timestamp_ = timestamp_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ZoneExceptionsObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.zone_ != zone_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -35608,6 +44022,28 @@ namespace Barrelman.Data.Types
             destination.rowVersion_ = rowVersion_;
             destination.zoneExceptions_ = zoneExceptions_;
             destination.vessel_ = vessel_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ZoneExceptionsVesselLinkObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.zoneExceptions_ != zoneExceptions_ )
+                {
+                    return false;
+                }
+                if( obj.vessel_ != vessel_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -35721,6 +44157,72 @@ namespace Barrelman.Data.Types
             destination.enterLongitude_ = enterLongitude_;
             destination.leaveLatitude_ = leaveLatitude_;
             destination.leaveLongitude_ = leaveLongitude_;
+        }
+
+        public override bool Equals(BaseData<Kind>? other)
+        {
+            if (base.Equals(other))
+            {
+                var obj = ( ZoneTrackAlarmObject )other;
+                if( obj.rowVersion_ != rowVersion_ )
+                {
+                    return false;
+                }
+                if( obj.track_ != track_ )
+                {
+                    return false;
+                }
+                if( obj.zone_ != zone_ )
+                {
+                    return false;
+                }
+                if( obj.radarTrack_ != radarTrack_ )
+                {
+                    return false;
+                }
+                if( obj.timestamp_ != timestamp_ )
+                {
+                    return false;
+                }
+                if( obj.latitude_ != latitude_ )
+                {
+                    return false;
+                }
+                if( obj.longitude_ != longitude_ )
+                {
+                    return false;
+                }
+                if( obj.speed_ != speed_ )
+                {
+                    return false;
+                }
+                if( obj.course_ != course_ )
+                {
+                    return false;
+                }
+                if( obj.heading_ != heading_ )
+                {
+                    return false;
+                }
+                if( obj.enterLatitude_ != enterLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.enterLongitude_ != enterLongitude_ )
+                {
+                    return false;
+                }
+                if( obj.leaveLatitude_ != leaveLatitude_ )
+                {
+                    return false;
+                }
+                if( obj.leaveLongitude_ != leaveLongitude_ )
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
 
         public override bool IsOfType(Kind objectType)
