@@ -386,45 +386,24 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime timestamp_;
-        FixedDBWideString<127> userName_;
-        FixedDBWideString<127> password_;
-        double latitude_ = 0.0;
-        double longitude_ = 0.0;
-        FixedDBWideString<127> aisProviderLoginURL_;
+        bool filter_ = false;
+        double northWestLatitude_ = 0.0;
+        double northWestLongitude_ = 0.0;
+        double southEastLatitude_ = 0.0;
+        double southEastLongitude_ = 0.0;
         FixedDBWideString<32> comPort_;
         Int32 baudRate_ = 0;
-        bool filterByArea_ = false;
-        double upperLeftCornerLatitude_ = 0.0;
-        double upperLeftCornerLongitude_ = 0.0;
-        double bottomRightCornerLatitude_ = 0.0;
-        double bottomRightCornerLongitude_ = 0.0;
-        FixedDBWideString<127> aisProviderIPAddress_;
-        Int32 aisProviderPort_ = 0;
-        bool useLogin_ = false;
-        Int32 aisProviderLoginPort_ = 0;
-        bool canSendAISMessage_ = false;
-        WideString textMessageHeader_;
-        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
-        WideString urls_;
-        SQLLEN urlsLength_ = SQL_NULL_DATA;
+        FixedDBWideString<127> iPAddress_;
+        Int32 port_ = 0;
         Int32 udpPort_ = 0;
+        bool authenticate_ = false;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
+        FixedDBWideString<127> authenticationURL_;
         Types::AisDeviceConnectionType connectionType_ = Types::AisDeviceConnectionType::Unknown;
-        bool enableRefreshAidToNavigationIn30sec_ = false;
-        bool enableAidToNavigationFromFile_ = false;
-        WideString aidToNavigationHeader_;
-        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
-        bool sendingMMSI_ = false;
         Int32 sourceUpdateRate_ = 0;
-        bool enableRefreshStayingStillTargetIn30sec_ = false;
-        WideString excludeSendAisBaseStation_;
-        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
-        WideString excludeSendAisA_;
-        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
-        bool enableSendBaseStationAlarms_ = false;
-        FixedDBWideString<127> aisWebConfig_;
+        FixedDBWideString<127> configurationURL_;
         bool storeReceivedSentences_ = false;
-        bool storeSentMessages_ = false;
-        bool storeUnsentMessages_ = false;
     public:
         AisDeviceConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -434,40 +413,24 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(aisDevice_);
             destination.Write(timestamp_);
-            userName_.WriteTo( destination );
-            password_.WriteTo( destination );
-            destination.Write(latitude_);
-            destination.Write(longitude_);
-            aisProviderLoginURL_.WriteTo( destination );
+            destination.Write(filter_);
+            destination.Write(northWestLatitude_);
+            destination.Write(northWestLongitude_);
+            destination.Write(southEastLatitude_);
+            destination.Write(southEastLongitude_);
             comPort_.WriteTo( destination );
             destination.Write(baudRate_);
-            destination.Write(filterByArea_);
-            destination.Write(upperLeftCornerLatitude_);
-            destination.Write(upperLeftCornerLongitude_);
-            destination.Write(bottomRightCornerLatitude_);
-            destination.Write(bottomRightCornerLongitude_);
-            aisProviderIPAddress_.WriteTo( destination );
-            destination.Write(aisProviderPort_);
-            destination.Write(useLogin_);
-            destination.Write(aisProviderLoginPort_);
-            destination.Write(canSendAISMessage_);
-            destination.Write(textMessageHeader_);
-            destination.Write(urls_);
+            iPAddress_.WriteTo( destination );
+            destination.Write(port_);
             destination.Write(udpPort_);
+            destination.Write(authenticate_);
+            userName_.WriteTo( destination );
+            password_.WriteTo( destination );
+            authenticationURL_.WriteTo( destination );
             destination.Write(connectionType_);
-            destination.Write(enableRefreshAidToNavigationIn30sec_);
-            destination.Write(enableAidToNavigationFromFile_);
-            destination.Write(aidToNavigationHeader_);
-            destination.Write(sendingMMSI_);
             destination.Write(sourceUpdateRate_);
-            destination.Write(enableRefreshStayingStillTargetIn30sec_);
-            destination.Write(excludeSendAisBaseStation_);
-            destination.Write(excludeSendAisA_);
-            destination.Write(enableSendBaseStationAlarms_);
-            aisWebConfig_.WriteTo( destination );
+            configurationURL_.WriteTo( destination );
             destination.Write(storeReceivedSentences_);
-            destination.Write(storeSentMessages_);
-            destination.Write(storeUnsentMessages_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -476,40 +439,24 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(aisDevice_);
             source.Read(timestamp_);
-            userName_.ReadFrom( source );
-            password_.ReadFrom( source );
-            source.Read(latitude_);
-            source.Read(longitude_);
-            aisProviderLoginURL_.ReadFrom( source );
+            source.Read(filter_);
+            source.Read(northWestLatitude_);
+            source.Read(northWestLongitude_);
+            source.Read(southEastLatitude_);
+            source.Read(southEastLongitude_);
             comPort_.ReadFrom( source );
             source.Read(baudRate_);
-            source.Read(filterByArea_);
-            source.Read(upperLeftCornerLatitude_);
-            source.Read(upperLeftCornerLongitude_);
-            source.Read(bottomRightCornerLatitude_);
-            source.Read(bottomRightCornerLongitude_);
-            aisProviderIPAddress_.ReadFrom( source );
-            source.Read(aisProviderPort_);
-            source.Read(useLogin_);
-            source.Read(aisProviderLoginPort_);
-            source.Read(canSendAISMessage_);
-            source.Read(textMessageHeader_);
-            source.Read(urls_);
+            iPAddress_.ReadFrom( source );
+            source.Read(port_);
             source.Read(udpPort_);
+            source.Read(authenticate_);
+            userName_.ReadFrom( source );
+            password_.ReadFrom( source );
+            authenticationURL_.ReadFrom( source );
             source.Read(connectionType_);
-            source.Read(enableRefreshAidToNavigationIn30sec_);
-            source.Read(enableAidToNavigationFromFile_);
-            source.Read(aidToNavigationHeader_);
-            source.Read(sendingMMSI_);
             source.Read(sourceUpdateRate_);
-            source.Read(enableRefreshStayingStillTargetIn30sec_);
-            source.Read(excludeSendAisBaseStation_);
-            source.Read(excludeSendAisA_);
-            source.Read(enableSendBaseStationAlarms_);
-            aisWebConfig_.ReadFrom( source );
+            configurationURL_.ReadFrom( source );
             source.Read(storeReceivedSentences_);
-            source.Read(storeSentMessages_);
-            source.Read(storeUnsentMessages_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -549,23 +496,23 @@ namespace Barrelman::Types
                 {
                     return false;
                 }
-                if ( dataObject.userName_ != userName_ )
+                if ( dataObject.filter_ != filter_ )
                 {
                     return false;
                 }
-                if ( dataObject.password_ != password_ )
+                if ( dataObject.northWestLatitude_ != northWestLatitude_ )
                 {
                     return false;
                 }
-                if ( dataObject.latitude_ != latitude_ )
+                if ( dataObject.northWestLongitude_ != northWestLongitude_ )
                 {
                     return false;
                 }
-                if ( dataObject.longitude_ != longitude_ )
+                if ( dataObject.southEastLatitude_ != southEastLatitude_ )
                 {
                     return false;
                 }
-                if ( dataObject.aisProviderLoginURL_ != aisProviderLoginURL_ )
+                if ( dataObject.southEastLongitude_ != southEastLongitude_ )
                 {
                     return false;
                 }
@@ -577,51 +524,11 @@ namespace Barrelman::Types
                 {
                     return false;
                 }
-                if ( dataObject.filterByArea_ != filterByArea_ )
+                if ( dataObject.iPAddress_ != iPAddress_ )
                 {
                     return false;
                 }
-                if ( dataObject.upperLeftCornerLatitude_ != upperLeftCornerLatitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.upperLeftCornerLongitude_ != upperLeftCornerLongitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.bottomRightCornerLatitude_ != bottomRightCornerLatitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.bottomRightCornerLongitude_ != bottomRightCornerLongitude_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderIPAddress_ != aisProviderIPAddress_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderPort_ != aisProviderPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.useLogin_ != useLogin_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisProviderLoginPort_ != aisProviderLoginPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.canSendAISMessage_ != canSendAISMessage_ )
-                {
-                    return false;
-                }
-                if ( dataObject.textMessageHeader_ != textMessageHeader_ )
-                {
-                    return false;
-                }
-                if ( dataObject.urls_ != urls_ )
+                if ( dataObject.port_ != port_ )
                 {
                     return false;
                 }
@@ -629,23 +536,23 @@ namespace Barrelman::Types
                 {
                     return false;
                 }
+                if ( dataObject.authenticate_ != authenticate_ )
+                {
+                    return false;
+                }
+                if ( dataObject.userName_ != userName_ )
+                {
+                    return false;
+                }
+                if ( dataObject.password_ != password_ )
+                {
+                    return false;
+                }
+                if ( dataObject.authenticationURL_ != authenticationURL_ )
+                {
+                    return false;
+                }
                 if ( dataObject.connectionType_ != connectionType_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableRefreshAidToNavigationIn30sec_ != enableRefreshAidToNavigationIn30sec_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableAidToNavigationFromFile_ != enableAidToNavigationFromFile_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aidToNavigationHeader_ != aidToNavigationHeader_ )
-                {
-                    return false;
-                }
-                if ( dataObject.sendingMMSI_ != sendingMMSI_ )
                 {
                     return false;
                 }
@@ -653,35 +560,11 @@ namespace Barrelman::Types
                 {
                     return false;
                 }
-                if ( dataObject.enableRefreshStayingStillTargetIn30sec_ != enableRefreshStayingStillTargetIn30sec_ )
-                {
-                    return false;
-                }
-                if ( dataObject.excludeSendAisBaseStation_ != excludeSendAisBaseStation_ )
-                {
-                    return false;
-                }
-                if ( dataObject.excludeSendAisA_ != excludeSendAisA_ )
-                {
-                    return false;
-                }
-                if ( dataObject.enableSendBaseStationAlarms_ != enableSendBaseStationAlarms_ )
-                {
-                    return false;
-                }
-                if ( dataObject.aisWebConfig_ != aisWebConfig_ )
+                if ( dataObject.configurationURL_ != configurationURL_ )
                 {
                     return false;
                 }
                 if ( dataObject.storeReceivedSentences_ != storeReceivedSentences_ )
-                {
-                    return false;
-                }
-                if ( dataObject.storeSentMessages_ != storeSentMessages_ )
-                {
-                    return false;
-                }
-                if ( dataObject.storeUnsentMessages_ != storeUnsentMessages_ )
                 {
                     return false;
                 }
@@ -713,45 +596,45 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const FixedDBWideString<127>& UserName( ) const
+        bool Filter( ) const
         {
-            return userName_;
+            return filter_;
         }
-        void SetUserName( const FixedDBWideString<127>& userName )
+        void SetFilter( bool filter )
         {
-            userName_ = userName;
+            filter_ = filter;
         }
-        const FixedDBWideString<127>& Password( ) const
+        double NorthWestLatitude( ) const
         {
-            return password_;
+            return northWestLatitude_;
         }
-        void SetPassword( const FixedDBWideString<127>& password )
+        void SetNorthWestLatitude( double northWestLatitude )
         {
-            password_ = password;
+            northWestLatitude_ = northWestLatitude;
         }
-        double Latitude( ) const
+        double NorthWestLongitude( ) const
         {
-            return latitude_;
+            return northWestLongitude_;
         }
-        void SetLatitude( double latitude )
+        void SetNorthWestLongitude( double northWestLongitude )
         {
-            latitude_ = latitude;
+            northWestLongitude_ = northWestLongitude;
         }
-        double Longitude( ) const
+        double SouthEastLatitude( ) const
         {
-            return longitude_;
+            return southEastLatitude_;
         }
-        void SetLongitude( double longitude )
+        void SetSouthEastLatitude( double southEastLatitude )
         {
-            longitude_ = longitude;
+            southEastLatitude_ = southEastLatitude;
         }
-        const FixedDBWideString<127>& AisProviderLoginURL( ) const
+        double SouthEastLongitude( ) const
         {
-            return aisProviderLoginURL_;
+            return southEastLongitude_;
         }
-        void SetAisProviderLoginURL( const FixedDBWideString<127>& aisProviderLoginURL )
+        void SetSouthEastLongitude( double southEastLongitude )
         {
-            aisProviderLoginURL_ = aisProviderLoginURL;
+            southEastLongitude_ = southEastLongitude;
         }
         const FixedDBWideString<32>& ComPort( ) const
         {
@@ -769,101 +652,21 @@ namespace Barrelman::Types
         {
             baudRate_ = baudRate;
         }
-        bool FilterByArea( ) const
+        const FixedDBWideString<127>& IPAddress( ) const
         {
-            return filterByArea_;
+            return iPAddress_;
         }
-        void SetFilterByArea( bool filterByArea )
+        void SetIPAddress( const FixedDBWideString<127>& iPAddress )
         {
-            filterByArea_ = filterByArea;
+            iPAddress_ = iPAddress;
         }
-        double UpperLeftCornerLatitude( ) const
+        Int32 Port( ) const
         {
-            return upperLeftCornerLatitude_;
+            return port_;
         }
-        void SetUpperLeftCornerLatitude( double upperLeftCornerLatitude )
+        void SetPort( Int32 port )
         {
-            upperLeftCornerLatitude_ = upperLeftCornerLatitude;
-        }
-        double UpperLeftCornerLongitude( ) const
-        {
-            return upperLeftCornerLongitude_;
-        }
-        void SetUpperLeftCornerLongitude( double upperLeftCornerLongitude )
-        {
-            upperLeftCornerLongitude_ = upperLeftCornerLongitude;
-        }
-        double BottomRightCornerLatitude( ) const
-        {
-            return bottomRightCornerLatitude_;
-        }
-        void SetBottomRightCornerLatitude( double bottomRightCornerLatitude )
-        {
-            bottomRightCornerLatitude_ = bottomRightCornerLatitude;
-        }
-        double BottomRightCornerLongitude( ) const
-        {
-            return bottomRightCornerLongitude_;
-        }
-        void SetBottomRightCornerLongitude( double bottomRightCornerLongitude )
-        {
-            bottomRightCornerLongitude_ = bottomRightCornerLongitude;
-        }
-        const FixedDBWideString<127>& AisProviderIPAddress( ) const
-        {
-            return aisProviderIPAddress_;
-        }
-        void SetAisProviderIPAddress( const FixedDBWideString<127>& aisProviderIPAddress )
-        {
-            aisProviderIPAddress_ = aisProviderIPAddress;
-        }
-        Int32 AisProviderPort( ) const
-        {
-            return aisProviderPort_;
-        }
-        void SetAisProviderPort( Int32 aisProviderPort )
-        {
-            aisProviderPort_ = aisProviderPort;
-        }
-        bool UseLogin( ) const
-        {
-            return useLogin_;
-        }
-        void SetUseLogin( bool useLogin )
-        {
-            useLogin_ = useLogin;
-        }
-        Int32 AisProviderLoginPort( ) const
-        {
-            return aisProviderLoginPort_;
-        }
-        void SetAisProviderLoginPort( Int32 aisProviderLoginPort )
-        {
-            aisProviderLoginPort_ = aisProviderLoginPort;
-        }
-        bool CanSendAISMessage( ) const
-        {
-            return canSendAISMessage_;
-        }
-        void SetCanSendAISMessage( bool canSendAISMessage )
-        {
-            canSendAISMessage_ = canSendAISMessage;
-        }
-        const WideString& TextMessageHeader( ) const
-        {
-            return textMessageHeader_;
-        }
-        void SetTextMessageHeader( const WideString& textMessageHeader )
-        {
-            textMessageHeader_ = textMessageHeader;
-        }
-        const WideString& Urls( ) const
-        {
-            return urls_;
-        }
-        void SetUrls( const WideString& urls )
-        {
-            urls_ = urls;
+            port_ = port;
         }
         Int32 UdpPort( ) const
         {
@@ -873,6 +676,38 @@ namespace Barrelman::Types
         {
             udpPort_ = udpPort;
         }
+        bool Authenticate( ) const
+        {
+            return authenticate_;
+        }
+        void SetAuthenticate( bool authenticate )
+        {
+            authenticate_ = authenticate;
+        }
+        const FixedDBWideString<127>& UserName( ) const
+        {
+            return userName_;
+        }
+        void SetUserName( const FixedDBWideString<127>& userName )
+        {
+            userName_ = userName;
+        }
+        const FixedDBWideString<127>& Password( ) const
+        {
+            return password_;
+        }
+        void SetPassword( const FixedDBWideString<127>& password )
+        {
+            password_ = password;
+        }
+        const FixedDBWideString<127>& AuthenticationURL( ) const
+        {
+            return authenticationURL_;
+        }
+        void SetAuthenticationURL( const FixedDBWideString<127>& authenticationURL )
+        {
+            authenticationURL_ = authenticationURL;
+        }
         Types::AisDeviceConnectionType ConnectionType( ) const
         {
             return connectionType_;
@@ -880,38 +715,6 @@ namespace Barrelman::Types
         void SetConnectionType( Types::AisDeviceConnectionType connectionType )
         {
             connectionType_ = connectionType;
-        }
-        bool EnableRefreshAidToNavigationIn30sec( ) const
-        {
-            return enableRefreshAidToNavigationIn30sec_;
-        }
-        void SetEnableRefreshAidToNavigationIn30sec( bool enableRefreshAidToNavigationIn30sec )
-        {
-            enableRefreshAidToNavigationIn30sec_ = enableRefreshAidToNavigationIn30sec;
-        }
-        bool EnableAidToNavigationFromFile( ) const
-        {
-            return enableAidToNavigationFromFile_;
-        }
-        void SetEnableAidToNavigationFromFile( bool enableAidToNavigationFromFile )
-        {
-            enableAidToNavigationFromFile_ = enableAidToNavigationFromFile;
-        }
-        const WideString& AidToNavigationHeader( ) const
-        {
-            return aidToNavigationHeader_;
-        }
-        void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
-        {
-            aidToNavigationHeader_ = aidToNavigationHeader;
-        }
-        bool SendingMMSI( ) const
-        {
-            return sendingMMSI_;
-        }
-        void SetSendingMMSI( bool sendingMMSI )
-        {
-            sendingMMSI_ = sendingMMSI;
         }
         Int32 SourceUpdateRate( ) const
         {
@@ -921,45 +724,13 @@ namespace Barrelman::Types
         {
             sourceUpdateRate_ = sourceUpdateRate;
         }
-        bool EnableRefreshStayingStillTargetIn30sec( ) const
+        const FixedDBWideString<127>& ConfigurationURL( ) const
         {
-            return enableRefreshStayingStillTargetIn30sec_;
+            return configurationURL_;
         }
-        void SetEnableRefreshStayingStillTargetIn30sec( bool enableRefreshStayingStillTargetIn30sec )
+        void SetConfigurationURL( const FixedDBWideString<127>& configurationURL )
         {
-            enableRefreshStayingStillTargetIn30sec_ = enableRefreshStayingStillTargetIn30sec;
-        }
-        const WideString& ExcludeSendAisBaseStation( ) const
-        {
-            return excludeSendAisBaseStation_;
-        }
-        void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
-        {
-            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
-        }
-        const WideString& ExcludeSendAisA( ) const
-        {
-            return excludeSendAisA_;
-        }
-        void SetExcludeSendAisA( const WideString& excludeSendAisA )
-        {
-            excludeSendAisA_ = excludeSendAisA;
-        }
-        bool EnableSendBaseStationAlarms( ) const
-        {
-            return enableSendBaseStationAlarms_;
-        }
-        void SetEnableSendBaseStationAlarms( bool enableSendBaseStationAlarms )
-        {
-            enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
-        }
-        const FixedDBWideString<127>& AisWebConfig( ) const
-        {
-            return aisWebConfig_;
-        }
-        void SetAisWebConfig( const FixedDBWideString<127>& aisWebConfig )
-        {
-            aisWebConfig_ = aisWebConfig;
+            configurationURL_ = configurationURL;
         }
         bool StoreReceivedSentences( ) const
         {
@@ -968,22 +739,6 @@ namespace Barrelman::Types
         void SetStoreReceivedSentences( bool storeReceivedSentences )
         {
             storeReceivedSentences_ = storeReceivedSentences;
-        }
-        bool StoreSentMessages( ) const
-        {
-            return storeSentMessages_;
-        }
-        void SetStoreSentMessages( bool storeSentMessages )
-        {
-            storeSentMessages_ = storeSentMessages;
-        }
-        bool StoreUnsentMessages( ) const
-        {
-            return storeUnsentMessages_;
-        }
-        void SetStoreUnsentMessages( bool storeUnsentMessages )
-        {
-            storeUnsentMessages_ = storeUnsentMessages;
         }
     };
     class AisDeviceRawMessageObject : public BaseData<Kind, Guid>
@@ -7733,20 +7488,16 @@ namespace Barrelman::Types
         Guid camera_;
         DateTime timestamp_;
         Types::CameraControlProtocol cameraControlProtocol_ = Types::CameraControlProtocol::Unknown;
-        FixedDBWideString<127> cameraAddress_;
-        Int32 cameraPort_ = 0;
-        FixedDBWideString<127> cameraControlAddress_;
-        Int32 cameraControlPort_ = 0;
-        FixedDBWideString<127> cameraUserName_;
-        FixedDBWideString<127> cameraPassword_;
+        FixedDBWideString<127> cameraURL_;
+        FixedDBWideString<127> configurationURL_;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
         bool useRtspUriOverride_ = false;
         FixedDBWideString<127> rtspUriOverride_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double altitude_ = 0.0;
         bool useRelativePosition_ = false;
-        double azimuthFromGPS_ = 0.0;
-        double distanceFromGPS_ = 0.0;
         Types::CameraPanTiltMode panTiltMode_ = Types::CameraPanTiltMode::Unknown;
         double minTiltAngle_ = 0.0;
         double maxTiltAngle_ = 0.0;
@@ -7803,20 +7554,16 @@ namespace Barrelman::Types
             destination.Write(camera_);
             destination.Write(timestamp_);
             destination.Write(cameraControlProtocol_);
-            cameraAddress_.WriteTo( destination );
-            destination.Write(cameraPort_);
-            cameraControlAddress_.WriteTo( destination );
-            destination.Write(cameraControlPort_);
-            cameraUserName_.WriteTo( destination );
-            cameraPassword_.WriteTo( destination );
+            cameraURL_.WriteTo( destination );
+            configurationURL_.WriteTo( destination );
+            userName_.WriteTo( destination );
+            password_.WriteTo( destination );
             destination.Write(useRtspUriOverride_);
             rtspUriOverride_.WriteTo( destination );
             destination.Write(latitude_);
             destination.Write(longitude_);
             destination.Write(altitude_);
             destination.Write(useRelativePosition_);
-            destination.Write(azimuthFromGPS_);
-            destination.Write(distanceFromGPS_);
             destination.Write(panTiltMode_);
             destination.Write(minTiltAngle_);
             destination.Write(maxTiltAngle_);
@@ -7872,20 +7619,16 @@ namespace Barrelman::Types
             source.Read(camera_);
             source.Read(timestamp_);
             source.Read(cameraControlProtocol_);
-            cameraAddress_.ReadFrom( source );
-            source.Read(cameraPort_);
-            cameraControlAddress_.ReadFrom( source );
-            source.Read(cameraControlPort_);
-            cameraUserName_.ReadFrom( source );
-            cameraPassword_.ReadFrom( source );
+            cameraURL_.ReadFrom( source );
+            configurationURL_.ReadFrom( source );
+            userName_.ReadFrom( source );
+            password_.ReadFrom( source );
             source.Read(useRtspUriOverride_);
             rtspUriOverride_.ReadFrom( source );
             source.Read(latitude_);
             source.Read(longitude_);
             source.Read(altitude_);
             source.Read(useRelativePosition_);
-            source.Read(azimuthFromGPS_);
-            source.Read(distanceFromGPS_);
             source.Read(panTiltMode_);
             source.Read(minTiltAngle_);
             source.Read(maxTiltAngle_);
@@ -7975,27 +7718,19 @@ namespace Barrelman::Types
                 {
                     return false;
                 }
-                if ( dataObject.cameraAddress_ != cameraAddress_ )
+                if ( dataObject.cameraURL_ != cameraURL_ )
                 {
                     return false;
                 }
-                if ( dataObject.cameraPort_ != cameraPort_ )
+                if ( dataObject.configurationURL_ != configurationURL_ )
                 {
                     return false;
                 }
-                if ( dataObject.cameraControlAddress_ != cameraControlAddress_ )
+                if ( dataObject.userName_ != userName_ )
                 {
                     return false;
                 }
-                if ( dataObject.cameraControlPort_ != cameraControlPort_ )
-                {
-                    return false;
-                }
-                if ( dataObject.cameraUserName_ != cameraUserName_ )
-                {
-                    return false;
-                }
-                if ( dataObject.cameraPassword_ != cameraPassword_ )
+                if ( dataObject.password_ != password_ )
                 {
                     return false;
                 }
@@ -8020,14 +7755,6 @@ namespace Barrelman::Types
                     return false;
                 }
                 if ( dataObject.useRelativePosition_ != useRelativePosition_ )
-                {
-                    return false;
-                }
-                if ( dataObject.azimuthFromGPS_ != azimuthFromGPS_ )
-                {
-                    return false;
-                }
-                if ( dataObject.distanceFromGPS_ != distanceFromGPS_ )
                 {
                     return false;
                 }
@@ -8251,53 +7978,37 @@ namespace Barrelman::Types
         {
             cameraControlProtocol_ = cameraControlProtocol;
         }
-        const FixedDBWideString<127>& CameraAddress( ) const
+        const FixedDBWideString<127>& CameraURL( ) const
         {
-            return cameraAddress_;
+            return cameraURL_;
         }
-        void SetCameraAddress( const FixedDBWideString<127>& cameraAddress )
+        void SetCameraURL( const FixedDBWideString<127>& cameraURL )
         {
-            cameraAddress_ = cameraAddress;
+            cameraURL_ = cameraURL;
         }
-        Int32 CameraPort( ) const
+        const FixedDBWideString<127>& ConfigurationURL( ) const
         {
-            return cameraPort_;
+            return configurationURL_;
         }
-        void SetCameraPort( Int32 cameraPort )
+        void SetConfigurationURL( const FixedDBWideString<127>& configurationURL )
         {
-            cameraPort_ = cameraPort;
+            configurationURL_ = configurationURL;
         }
-        const FixedDBWideString<127>& CameraControlAddress( ) const
+        const FixedDBWideString<127>& UserName( ) const
         {
-            return cameraControlAddress_;
+            return userName_;
         }
-        void SetCameraControlAddress( const FixedDBWideString<127>& cameraControlAddress )
+        void SetUserName( const FixedDBWideString<127>& userName )
         {
-            cameraControlAddress_ = cameraControlAddress;
+            userName_ = userName;
         }
-        Int32 CameraControlPort( ) const
+        const FixedDBWideString<127>& Password( ) const
         {
-            return cameraControlPort_;
+            return password_;
         }
-        void SetCameraControlPort( Int32 cameraControlPort )
+        void SetPassword( const FixedDBWideString<127>& password )
         {
-            cameraControlPort_ = cameraControlPort;
-        }
-        const FixedDBWideString<127>& CameraUserName( ) const
-        {
-            return cameraUserName_;
-        }
-        void SetCameraUserName( const FixedDBWideString<127>& cameraUserName )
-        {
-            cameraUserName_ = cameraUserName;
-        }
-        const FixedDBWideString<127>& CameraPassword( ) const
-        {
-            return cameraPassword_;
-        }
-        void SetCameraPassword( const FixedDBWideString<127>& cameraPassword )
-        {
-            cameraPassword_ = cameraPassword;
+            password_ = password;
         }
         bool UseRtspUriOverride( ) const
         {
@@ -8346,22 +8057,6 @@ namespace Barrelman::Types
         void SetUseRelativePosition( bool useRelativePosition )
         {
             useRelativePosition_ = useRelativePosition;
-        }
-        double AzimuthFromGPS( ) const
-        {
-            return azimuthFromGPS_;
-        }
-        void SetAzimuthFromGPS( double azimuthFromGPS )
-        {
-            azimuthFromGPS_ = azimuthFromGPS;
-        }
-        double DistanceFromGPS( ) const
-        {
-            return distanceFromGPS_;
-        }
-        void SetDistanceFromGPS( double distanceFromGPS )
-        {
-            distanceFromGPS_ = distanceFromGPS;
         }
         Types::CameraPanTiltMode PanTiltMode( ) const
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 using Harlinn.Common.Core.Net;
@@ -10,7 +11,7 @@ namespace Barrelman.Data.Types
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
-        public AircraftTypeObject ( )
+        public AircraftTypeObject( )
         {
         }
 
@@ -22,6 +23,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AircraftTypeObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AircraftTypeObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -57,6 +66,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class AisDeviceCommandObject : BaseDataGuid<Kind>
     {
@@ -66,7 +90,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid? reply_;
-        public AisDeviceCommandObject ( )
+        public AisDeviceCommandObject( )
         {
         }
 
@@ -78,6 +102,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisDeviceCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisDeviceCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.aisDevice_ = aisDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -161,6 +197,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( aisDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            aisDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadNullableGuid( );
+        }
+
     }
     public class AisDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -170,7 +229,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public AisDeviceCommandReplyObject ( )
+        public AisDeviceCommandReplyObject( )
         {
         }
 
@@ -182,6 +241,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisDeviceCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisDeviceCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.aisDevice_ = aisDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -265,47 +336,54 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( aisDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            aisDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class AisDeviceConfigurationObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid aisDevice_;
         DateTime timestamp_;
-        string userName_ = string.Empty;
-        string password_ = string.Empty;
-        double latitude_ = 0.0;
-        double longitude_ = 0.0;
-        string aisProviderLoginURL_ = string.Empty;
+        bool filter_ = false;
+        double northWestLatitude_ = 0.0;
+        double northWestLongitude_ = 0.0;
+        double southEastLatitude_ = 0.0;
+        double southEastLongitude_ = 0.0;
         string comPort_ = string.Empty;
         int baudRate_ = 0;
-        bool filterByArea_ = false;
-        double upperLeftCornerLatitude_ = 0.0;
-        double upperLeftCornerLongitude_ = 0.0;
-        double bottomRightCornerLatitude_ = 0.0;
-        double bottomRightCornerLongitude_ = 0.0;
-        string aisProviderIPAddress_ = string.Empty;
-        int aisProviderPort_ = 0;
-        bool useLogin_ = false;
-        int aisProviderLoginPort_ = 0;
-        bool canSendAISMessage_ = false;
-        string textMessageHeader_ = string.Empty;
-        string urls_ = string.Empty;
+        string iPAddress_ = string.Empty;
+        int port_ = 0;
         int udpPort_ = 0;
+        bool authenticate_ = false;
+        string userName_ = string.Empty;
+        string password_ = string.Empty;
+        string authenticationURL_ = string.Empty;
         Types.AisDeviceConnectionType connectionType_ = Types.AisDeviceConnectionType.Unknown;
-        bool enableRefreshAidToNavigationIn30sec_ = false;
-        bool enableAidToNavigationFromFile_ = false;
-        string aidToNavigationHeader_ = string.Empty;
-        bool sendingMMSI_ = false;
         int sourceUpdateRate_ = 0;
-        bool enableRefreshStayingStillTargetIn30sec_ = false;
-        string excludeSendAisBaseStation_ = string.Empty;
-        string excludeSendAisA_ = string.Empty;
-        bool enableSendBaseStationAlarms_ = false;
-        string aisWebConfig_ = string.Empty;
+        string configurationURL_ = string.Empty;
         bool storeReceivedSentences_ = false;
-        bool storeSentMessages_ = false;
-        bool storeUnsentMessages_ = false;
-        public AisDeviceConfigurationObject ( )
+        public AisDeviceConfigurationObject( )
         {
         }
 
@@ -317,6 +395,33 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisDeviceConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisDeviceConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.aisDevice_ = aisDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.filter_ = filter_;
+            destination.northWestLatitude_ = northWestLatitude_;
+            destination.northWestLongitude_ = northWestLongitude_;
+            destination.southEastLatitude_ = southEastLatitude_;
+            destination.southEastLongitude_ = southEastLongitude_;
+            destination.comPort_ = comPort_;
+            destination.baudRate_ = baudRate_;
+            destination.iPAddress_ = iPAddress_;
+            destination.port_ = port_;
+            destination.udpPort_ = udpPort_;
+            destination.authenticate_ = authenticate_;
+            destination.userName_ = userName_;
+            destination.password_ = password_;
+            destination.authenticationURL_ = authenticationURL_;
+            destination.connectionType_ = connectionType_;
+            destination.sourceUpdateRate_ = sourceUpdateRate_;
+            destination.configurationURL_ = configurationURL_;
+            destination.storeReceivedSentences_ = storeReceivedSentences_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -364,62 +469,62 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public string UserName
+        public bool Filter
         {
-            get => userName_;
+            get => filter_;
             set
             {
-                if( userName_ != value )
+                if( filter_ != value )
                 {
-                    userName_ = value;
+                    filter_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public string Password
+        public double NorthWestLatitude
         {
-            get => password_;
+            get => northWestLatitude_;
             set
             {
-                if( password_ != value )
+                if( northWestLatitude_ != value )
                 {
-                    password_ = value;
+                    northWestLatitude_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public double Latitude
+        public double NorthWestLongitude
         {
-            get => latitude_;
+            get => northWestLongitude_;
             set
             {
-                if( latitude_ != value )
+                if( northWestLongitude_ != value )
                 {
-                    latitude_ = value;
+                    northWestLongitude_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public double Longitude
+        public double SouthEastLatitude
         {
-            get => longitude_;
+            get => southEastLatitude_;
             set
             {
-                if( longitude_ != value )
+                if( southEastLatitude_ != value )
                 {
-                    longitude_ = value;
+                    southEastLatitude_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public string AisProviderLoginURL
+        public double SouthEastLongitude
         {
-            get => aisProviderLoginURL_;
+            get => southEastLongitude_;
             set
             {
-                if( aisProviderLoginURL_ != value )
+                if( southEastLongitude_ != value )
                 {
-                    aisProviderLoginURL_ = value;
+                    southEastLongitude_ = value;
                     OnPropertyChanged( );
                 }
             }
@@ -448,146 +553,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public bool FilterByArea
+        public string IPAddress
         {
-            get => filterByArea_;
+            get => iPAddress_;
             set
             {
-                if( filterByArea_ != value )
+                if( iPAddress_ != value )
                 {
-                    filterByArea_ = value;
+                    iPAddress_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public double UpperLeftCornerLatitude
+        public int Port
         {
-            get => upperLeftCornerLatitude_;
+            get => port_;
             set
             {
-                if( upperLeftCornerLatitude_ != value )
+                if( port_ != value )
                 {
-                    upperLeftCornerLatitude_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public double UpperLeftCornerLongitude
-        {
-            get => upperLeftCornerLongitude_;
-            set
-            {
-                if( upperLeftCornerLongitude_ != value )
-                {
-                    upperLeftCornerLongitude_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public double BottomRightCornerLatitude
-        {
-            get => bottomRightCornerLatitude_;
-            set
-            {
-                if( bottomRightCornerLatitude_ != value )
-                {
-                    bottomRightCornerLatitude_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public double BottomRightCornerLongitude
-        {
-            get => bottomRightCornerLongitude_;
-            set
-            {
-                if( bottomRightCornerLongitude_ != value )
-                {
-                    bottomRightCornerLongitude_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string AisProviderIPAddress
-        {
-            get => aisProviderIPAddress_;
-            set
-            {
-                if( aisProviderIPAddress_ != value )
-                {
-                    aisProviderIPAddress_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public int AisProviderPort
-        {
-            get => aisProviderPort_;
-            set
-            {
-                if( aisProviderPort_ != value )
-                {
-                    aisProviderPort_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public bool UseLogin
-        {
-            get => useLogin_;
-            set
-            {
-                if( useLogin_ != value )
-                {
-                    useLogin_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public int AisProviderLoginPort
-        {
-            get => aisProviderLoginPort_;
-            set
-            {
-                if( aisProviderLoginPort_ != value )
-                {
-                    aisProviderLoginPort_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public bool CanSendAISMessage
-        {
-            get => canSendAISMessage_;
-            set
-            {
-                if( canSendAISMessage_ != value )
-                {
-                    canSendAISMessage_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string TextMessageHeader
-        {
-            get => textMessageHeader_;
-            set
-            {
-                if( textMessageHeader_ != value )
-                {
-                    textMessageHeader_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string Urls
-        {
-            get => urls_;
-            set
-            {
-                if( urls_ != value )
-                {
-                    urls_ = value;
+                    port_ = value;
                     OnPropertyChanged( );
                 }
             }
@@ -604,6 +589,54 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+        public bool Authenticate
+        {
+            get => authenticate_;
+            set
+            {
+                if( authenticate_ != value )
+                {
+                    authenticate_ = value;
+                    OnPropertyChanged( );
+                }
+            }
+        }
+        public string UserName
+        {
+            get => userName_;
+            set
+            {
+                if( userName_ != value )
+                {
+                    userName_ = value;
+                    OnPropertyChanged( );
+                }
+            }
+        }
+        public string Password
+        {
+            get => password_;
+            set
+            {
+                if( password_ != value )
+                {
+                    password_ = value;
+                    OnPropertyChanged( );
+                }
+            }
+        }
+        public string AuthenticationURL
+        {
+            get => authenticationURL_;
+            set
+            {
+                if( authenticationURL_ != value )
+                {
+                    authenticationURL_ = value;
+                    OnPropertyChanged( );
+                }
+            }
+        }
         public Types.AisDeviceConnectionType ConnectionType
         {
             get => connectionType_;
@@ -612,54 +645,6 @@ namespace Barrelman.Data.Types
                 if( connectionType_ != value )
                 {
                     connectionType_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public bool EnableRefreshAidToNavigationIn30sec
-        {
-            get => enableRefreshAidToNavigationIn30sec_;
-            set
-            {
-                if( enableRefreshAidToNavigationIn30sec_ != value )
-                {
-                    enableRefreshAidToNavigationIn30sec_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public bool EnableAidToNavigationFromFile
-        {
-            get => enableAidToNavigationFromFile_;
-            set
-            {
-                if( enableAidToNavigationFromFile_ != value )
-                {
-                    enableAidToNavigationFromFile_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string AidToNavigationHeader
-        {
-            get => aidToNavigationHeader_;
-            set
-            {
-                if( aidToNavigationHeader_ != value )
-                {
-                    aidToNavigationHeader_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public bool SendingMMSI
-        {
-            get => sendingMMSI_;
-            set
-            {
-                if( sendingMMSI_ != value )
-                {
-                    sendingMMSI_ = value;
                     OnPropertyChanged( );
                 }
             }
@@ -676,62 +661,14 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public bool EnableRefreshStayingStillTargetIn30sec
+        public string ConfigurationURL
         {
-            get => enableRefreshStayingStillTargetIn30sec_;
+            get => configurationURL_;
             set
             {
-                if( enableRefreshStayingStillTargetIn30sec_ != value )
+                if( configurationURL_ != value )
                 {
-                    enableRefreshStayingStillTargetIn30sec_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string ExcludeSendAisBaseStation
-        {
-            get => excludeSendAisBaseStation_;
-            set
-            {
-                if( excludeSendAisBaseStation_ != value )
-                {
-                    excludeSendAisBaseStation_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string ExcludeSendAisA
-        {
-            get => excludeSendAisA_;
-            set
-            {
-                if( excludeSendAisA_ != value )
-                {
-                    excludeSendAisA_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public bool EnableSendBaseStationAlarms
-        {
-            get => enableSendBaseStationAlarms_;
-            set
-            {
-                if( enableSendBaseStationAlarms_ != value )
-                {
-                    enableSendBaseStationAlarms_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string AisWebConfig
-        {
-            get => aisWebConfig_;
-            set
-            {
-                if( aisWebConfig_ != value )
-                {
-                    aisWebConfig_ = value;
+                    configurationURL_ = value;
                     OnPropertyChanged( );
                 }
             }
@@ -748,30 +685,59 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public bool StoreSentMessages
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
         {
-            get => storeSentMessages_;
-            set
-            {
-                if( storeSentMessages_ != value )
-                {
-                    storeSentMessages_ = value;
-                    OnPropertyChanged( );
-                }
-            }
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( aisDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( filter_ );
+            destination.Write( northWestLatitude_ );
+            destination.Write( northWestLongitude_ );
+            destination.Write( southEastLatitude_ );
+            destination.Write( southEastLongitude_ );
+            destination.Write( comPort_ );
+            destination.Write( baudRate_ );
+            destination.Write( iPAddress_ );
+            destination.Write( port_ );
+            destination.Write( udpPort_ );
+            destination.Write( authenticate_ );
+            destination.Write( userName_ );
+            destination.Write( password_ );
+            destination.Write( authenticationURL_ );
+            destination.Write( connectionType_ );
+            destination.Write( sourceUpdateRate_ );
+            destination.Write( configurationURL_ );
+            destination.Write( storeReceivedSentences_ );
         }
-        public bool StoreUnsentMessages
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
         {
-            get => storeUnsentMessages_;
-            set
-            {
-                if( storeUnsentMessages_ != value )
-                {
-                    storeUnsentMessages_ = value;
-                    OnPropertyChanged( );
-                }
-            }
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            aisDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            filter_ = source.ReadBoolean( );
+            northWestLatitude_ = source.ReadDouble( );
+            northWestLongitude_ = source.ReadDouble( );
+            southEastLatitude_ = source.ReadDouble( );
+            southEastLongitude_ = source.ReadDouble( );
+            comPort_ = source.ReadString( );
+            baudRate_ = source.ReadInt32( );
+            iPAddress_ = source.ReadString( );
+            port_ = source.ReadInt32( );
+            udpPort_ = source.ReadInt32( );
+            authenticate_ = source.ReadBoolean( );
+            userName_ = source.ReadString( );
+            password_ = source.ReadString( );
+            authenticationURL_ = source.ReadString( );
+            connectionType_ = source.ReadEnum<Types.AisDeviceConnectionType>( );
+            sourceUpdateRate_ = source.ReadInt32( );
+            configurationURL_ = source.ReadString( );
+            storeReceivedSentences_ = source.ReadBoolean( );
         }
+
     }
     public class AisDeviceRawMessageObject : BaseDataGuid<Kind>
     {
@@ -780,7 +746,7 @@ namespace Barrelman.Data.Types
         DateTime timestamp_;
         bool isSent_ = false;
         string message_ = string.Empty;
-        public AisDeviceRawMessageObject ( )
+        public AisDeviceRawMessageObject( )
         {
         }
 
@@ -792,6 +758,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisDeviceRawMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisDeviceRawMessageObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.aisDevice_ = aisDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.isSent_ = isSent_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -863,6 +840,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( aisDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( isSent_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            aisDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            isSent_ = source.ReadBoolean( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class AisDeviceRawSentenceObject : BaseDataGuid<Kind>
     {
@@ -870,7 +868,7 @@ namespace Barrelman.Data.Types
         Guid aisDevice_;
         DateTime timestamp_;
         string sentence_ = string.Empty;
-        public AisDeviceRawSentenceObject ( )
+        public AisDeviceRawSentenceObject( )
         {
         }
 
@@ -882,6 +880,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisDeviceRawSentenceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisDeviceRawSentenceObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.aisDevice_ = aisDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.sentence_ = sentence_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -941,6 +949,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( aisDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( sentence_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            aisDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            sentence_ = source.ReadString( );
+        }
+
     }
     public abstract class AisMessageObject : BaseDataGuid<Kind>
     {
@@ -950,8 +977,20 @@ namespace Barrelman.Data.Types
         long messageSequenceNumber_ = 0;
         int repeat_ = 0;
         Guid mmsi_;
-        protected AisMessageObject ( )
+        protected AisMessageObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisMessageObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.aisDevice_ = aisDevice_;
+            destination.receivedTimestamp_ = receivedTimestamp_;
+            destination.messageSequenceNumber_ = messageSequenceNumber_;
+            destination.repeat_ = repeat_;
+            destination.mmsi_ = mmsi_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1035,6 +1074,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( aisDevice_ );
+            destination.Write( receivedTimestamp_ );
+            destination.Write( messageSequenceNumber_ );
+            destination.Write( repeat_ );
+            destination.Write( mmsi_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            aisDevice_ = source.ReadGuid( );
+            receivedTimestamp_ = source.ReadDateTime( );
+            messageSequenceNumber_ = source.ReadInt64( );
+            repeat_ = source.ReadInt32( );
+            mmsi_ = source.ReadGuid( );
+        }
+
     }
     public class AidToNavigationReportMessageObject : AisMessageObject
     {
@@ -1056,7 +1118,7 @@ namespace Barrelman.Data.Types
         bool assigned_ = false;
         int spare_ = 0;
         string nameExtension_ = string.Empty;
-        public AidToNavigationReportMessageObject ( )
+        public AidToNavigationReportMessageObject( )
         {
         }
 
@@ -1068,6 +1130,30 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AidToNavigationReportMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AidToNavigationReportMessageObject )target;
+            destination.navigationalAidType_ = navigationalAidType_;
+            destination.name_ = name_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.dimensionToBow_ = dimensionToBow_;
+            destination.dimensionToStern_ = dimensionToStern_;
+            destination.dimensionToPort_ = dimensionToPort_;
+            destination.dimensionToStarboard_ = dimensionToStarboard_;
+            destination.positionFixType_ = positionFixType_;
+            destination.timestamp_ = timestamp_;
+            destination.offPosition_ = offPosition_;
+            destination.regionalReserved_ = regionalReserved_;
+            destination.raim_ = raim_;
+            destination.virtualAid_ = virtualAid_;
+            destination.assigned_ = assigned_;
+            destination.spare_ = spare_;
+            destination.nameExtension_ = nameExtension_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1295,6 +1381,53 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( navigationalAidType_ );
+            destination.Write( name_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( dimensionToBow_ );
+            destination.Write( dimensionToStern_ );
+            destination.Write( dimensionToPort_ );
+            destination.Write( dimensionToStarboard_ );
+            destination.Write( positionFixType_ );
+            destination.Write( timestamp_ );
+            destination.Write( offPosition_ );
+            destination.Write( regionalReserved_ );
+            destination.Write( raim_ );
+            destination.Write( virtualAid_ );
+            destination.Write( assigned_ );
+            destination.Write( spare_ );
+            destination.Write( nameExtension_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            navigationalAidType_ = source.ReadEnum<Types.NavigationalAidType>( );
+            name_ = source.ReadString( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            dimensionToBow_ = source.ReadInt32( );
+            dimensionToStern_ = source.ReadInt32( );
+            dimensionToPort_ = source.ReadInt32( );
+            dimensionToStarboard_ = source.ReadInt32( );
+            positionFixType_ = source.ReadEnum<Types.PositionFixType>( );
+            timestamp_ = source.ReadInt32( );
+            offPosition_ = source.ReadBoolean( );
+            regionalReserved_ = source.ReadInt32( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            virtualAid_ = source.ReadBoolean( );
+            assigned_ = source.ReadBoolean( );
+            spare_ = source.ReadInt32( );
+            nameExtension_ = source.ReadString( );
+        }
+
     }
     public class AisAddressedSafetyRelatedMessageObject : AisMessageObject
     {
@@ -1303,7 +1436,7 @@ namespace Barrelman.Data.Types
         bool retransmitFlag_ = false;
         int spare_ = 0;
         string text_ = string.Empty;
-        public AisAddressedSafetyRelatedMessageObject ( )
+        public AisAddressedSafetyRelatedMessageObject( )
         {
         }
 
@@ -1315,6 +1448,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisAddressedSafetyRelatedMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisAddressedSafetyRelatedMessageObject )target;
+            destination.sequenceNumber_ = sequenceNumber_;
+            destination.destinationMmsi_ = destinationMmsi_;
+            destination.retransmitFlag_ = retransmitFlag_;
+            destination.spare_ = spare_;
+            destination.text_ = text_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1386,6 +1530,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( sequenceNumber_ );
+            destination.Write( destinationMmsi_ );
+            destination.Write( retransmitFlag_ );
+            destination.Write( spare_ );
+            destination.Write( text_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            sequenceNumber_ = source.ReadInt32( );
+            destinationMmsi_ = source.ReadGuid( );
+            retransmitFlag_ = source.ReadBoolean( );
+            spare_ = source.ReadInt32( );
+            text_ = source.ReadString( );
+        }
+
     }
     public class AisBaseStationReportMessageObject : AisMessageObject
     {
@@ -1397,7 +1562,7 @@ namespace Barrelman.Data.Types
         int spare_ = 0;
         Types.Raim raim_ = Types.Raim.NotInUse;
         int radioStatus_ = 0;
-        public AisBaseStationReportMessageObject ( )
+        public AisBaseStationReportMessageObject( )
         {
         }
 
@@ -1409,6 +1574,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisBaseStationReportMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisBaseStationReportMessageObject )target;
+            destination.timestamp_ = timestamp_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.positionFixType_ = positionFixType_;
+            destination.spare_ = spare_;
+            destination.raim_ = raim_;
+            destination.radioStatus_ = radioStatus_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1516,6 +1695,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timestamp_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( positionFixType_ );
+            destination.Write( spare_ );
+            destination.Write( raim_ );
+            destination.Write( radioStatus_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timestamp_ = source.ReadDateTime( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            positionFixType_ = source.ReadEnum<Types.PositionFixType>( );
+            spare_ = source.ReadInt32( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            radioStatus_ = source.ReadInt32( );
+        }
+
     }
     public class AisBinaryAcknowledgeMessageObject : AisMessageObject
     {
@@ -1528,7 +1734,7 @@ namespace Barrelman.Data.Types
         Guid? mmsi3_;
         int? sequenceNumber4_;
         Guid? mmsi4_;
-        public AisBinaryAcknowledgeMessageObject ( )
+        public AisBinaryAcknowledgeMessageObject( )
         {
         }
 
@@ -1540,6 +1746,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisBinaryAcknowledgeMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisBinaryAcknowledgeMessageObject )target;
+            destination.spare_ = spare_;
+            destination.sequenceNumber1_ = sequenceNumber1_;
+            destination.mmsi1_ = mmsi1_;
+            destination.sequenceNumber2_ = sequenceNumber2_;
+            destination.mmsi2_ = mmsi2_;
+            destination.sequenceNumber3_ = sequenceNumber3_;
+            destination.mmsi3_ = mmsi3_;
+            destination.sequenceNumber4_ = sequenceNumber4_;
+            destination.mmsi4_ = mmsi4_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1659,6 +1880,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( spare_ );
+            destination.Write( sequenceNumber1_ );
+            destination.Write( mmsi1_ );
+            destination.Write( sequenceNumber2_ );
+            destination.Write( mmsi2_ );
+            destination.Write( sequenceNumber3_ );
+            destination.Write( mmsi3_ );
+            destination.Write( sequenceNumber4_ );
+            destination.Write( mmsi4_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            spare_ = source.ReadInt32( );
+            sequenceNumber1_ = source.ReadInt32( );
+            mmsi1_ = source.ReadGuid( );
+            sequenceNumber2_ = source.ReadNullableInt32( );
+            mmsi2_ = source.ReadNullableGuid( );
+            sequenceNumber3_ = source.ReadNullableInt32( );
+            mmsi3_ = source.ReadNullableGuid( );
+            sequenceNumber4_ = source.ReadNullableInt32( );
+            mmsi4_ = source.ReadNullableGuid( );
+        }
+
     }
     public class AisBinaryAddressedMessageObject : AisMessageObject
     {
@@ -1669,7 +1919,7 @@ namespace Barrelman.Data.Types
         int designatedAreaCode_ = 0;
         int functionalId_ = 0;
         string data_ = string.Empty;
-        public AisBinaryAddressedMessageObject ( )
+        public AisBinaryAddressedMessageObject( )
         {
         }
 
@@ -1681,6 +1931,19 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisBinaryAddressedMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisBinaryAddressedMessageObject )target;
+            destination.sequenceNumber_ = sequenceNumber_;
+            destination.destinationMmsi_ = destinationMmsi_;
+            destination.retransmitFlag_ = retransmitFlag_;
+            destination.spare_ = spare_;
+            destination.designatedAreaCode_ = designatedAreaCode_;
+            destination.functionalId_ = functionalId_;
+            destination.data_ = data_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1776,6 +2039,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( sequenceNumber_ );
+            destination.Write( destinationMmsi_ );
+            destination.Write( retransmitFlag_ );
+            destination.Write( spare_ );
+            destination.Write( designatedAreaCode_ );
+            destination.Write( functionalId_ );
+            destination.Write( data_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            sequenceNumber_ = source.ReadInt32( );
+            destinationMmsi_ = source.ReadGuid( );
+            retransmitFlag_ = source.ReadBoolean( );
+            spare_ = source.ReadInt32( );
+            designatedAreaCode_ = source.ReadInt32( );
+            functionalId_ = source.ReadInt32( );
+            data_ = source.ReadString( );
+        }
+
     }
     public class AisBinaryBroadcastMessageObject : AisMessageObject
     {
@@ -1783,7 +2071,7 @@ namespace Barrelman.Data.Types
         int designatedAreaCode_ = 0;
         int functionalId_ = 0;
         string data_ = string.Empty;
-        public AisBinaryBroadcastMessageObject ( )
+        public AisBinaryBroadcastMessageObject( )
         {
         }
 
@@ -1795,6 +2083,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisBinaryBroadcastMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisBinaryBroadcastMessageObject )target;
+            destination.spare_ = spare_;
+            destination.designatedAreaCode_ = designatedAreaCode_;
+            destination.functionalId_ = functionalId_;
+            destination.data_ = data_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -1854,6 +2152,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( spare_ );
+            destination.Write( designatedAreaCode_ );
+            destination.Write( functionalId_ );
+            destination.Write( data_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            spare_ = source.ReadInt32( );
+            designatedAreaCode_ = source.ReadInt32( );
+            functionalId_ = source.ReadInt32( );
+            data_ = source.ReadString( );
+        }
+
     }
     public class AisDataLinkManagementMessageObject : AisMessageObject
     {
@@ -1874,7 +2191,7 @@ namespace Barrelman.Data.Types
         int? reservedSlots4_;
         int? timeout4_;
         int? increment4_;
-        public AisDataLinkManagementMessageObject ( )
+        public AisDataLinkManagementMessageObject( )
         {
         }
 
@@ -1886,6 +2203,29 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisDataLinkManagementMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisDataLinkManagementMessageObject )target;
+            destination.spare_ = spare_;
+            destination.offset1_ = offset1_;
+            destination.reservedSlots1_ = reservedSlots1_;
+            destination.timeout1_ = timeout1_;
+            destination.increment1_ = increment1_;
+            destination.offset2_ = offset2_;
+            destination.reservedSlots2_ = reservedSlots2_;
+            destination.timeout2_ = timeout2_;
+            destination.increment2_ = increment2_;
+            destination.offset3_ = offset3_;
+            destination.reservedSlots3_ = reservedSlots3_;
+            destination.timeout3_ = timeout3_;
+            destination.increment3_ = increment3_;
+            destination.offset4_ = offset4_;
+            destination.reservedSlots4_ = reservedSlots4_;
+            destination.timeout4_ = timeout4_;
+            destination.increment4_ = increment4_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2101,6 +2441,51 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( spare_ );
+            destination.Write( offset1_ );
+            destination.Write( reservedSlots1_ );
+            destination.Write( timeout1_ );
+            destination.Write( increment1_ );
+            destination.Write( offset2_ );
+            destination.Write( reservedSlots2_ );
+            destination.Write( timeout2_ );
+            destination.Write( increment2_ );
+            destination.Write( offset3_ );
+            destination.Write( reservedSlots3_ );
+            destination.Write( timeout3_ );
+            destination.Write( increment3_ );
+            destination.Write( offset4_ );
+            destination.Write( reservedSlots4_ );
+            destination.Write( timeout4_ );
+            destination.Write( increment4_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            spare_ = source.ReadInt32( );
+            offset1_ = source.ReadInt32( );
+            reservedSlots1_ = source.ReadInt32( );
+            timeout1_ = source.ReadInt32( );
+            increment1_ = source.ReadInt32( );
+            offset2_ = source.ReadNullableInt32( );
+            reservedSlots2_ = source.ReadNullableInt32( );
+            timeout2_ = source.ReadNullableInt32( );
+            increment2_ = source.ReadNullableInt32( );
+            offset3_ = source.ReadNullableInt32( );
+            reservedSlots3_ = source.ReadNullableInt32( );
+            timeout3_ = source.ReadNullableInt32( );
+            increment3_ = source.ReadNullableInt32( );
+            offset4_ = source.ReadNullableInt32( );
+            reservedSlots4_ = source.ReadNullableInt32( );
+            timeout4_ = source.ReadNullableInt32( );
+            increment4_ = source.ReadNullableInt32( );
+        }
+
     }
     public class AisExtendedClassBCsPositionReportMessageObject : AisMessageObject
     {
@@ -2124,7 +2509,7 @@ namespace Barrelman.Data.Types
         bool dataTerminalReady_ = false;
         bool assigned_ = false;
         int spare_ = 0;
-        public AisExtendedClassBCsPositionReportMessageObject ( )
+        public AisExtendedClassBCsPositionReportMessageObject( )
         {
         }
 
@@ -2136,6 +2521,32 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisExtendedClassBCsPositionReportMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisExtendedClassBCsPositionReportMessageObject )target;
+            destination.reserved_ = reserved_;
+            destination.speedOverGround_ = speedOverGround_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.courseOverGround_ = courseOverGround_;
+            destination.trueHeading_ = trueHeading_;
+            destination.timestamp_ = timestamp_;
+            destination.regionalReserved_ = regionalReserved_;
+            destination.name_ = name_;
+            destination.shipType_ = shipType_;
+            destination.dimensionToBow_ = dimensionToBow_;
+            destination.dimensionToStern_ = dimensionToStern_;
+            destination.dimensionToPort_ = dimensionToPort_;
+            destination.dimensionToStarboard_ = dimensionToStarboard_;
+            destination.positionFixType_ = positionFixType_;
+            destination.raim_ = raim_;
+            destination.dataTerminalReady_ = dataTerminalReady_;
+            destination.assigned_ = assigned_;
+            destination.spare_ = spare_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2387,6 +2798,57 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( reserved_ );
+            destination.Write( speedOverGround_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( courseOverGround_ );
+            destination.Write( trueHeading_ );
+            destination.Write( timestamp_ );
+            destination.Write( regionalReserved_ );
+            destination.Write( name_ );
+            destination.Write( shipType_ );
+            destination.Write( dimensionToBow_ );
+            destination.Write( dimensionToStern_ );
+            destination.Write( dimensionToPort_ );
+            destination.Write( dimensionToStarboard_ );
+            destination.Write( positionFixType_ );
+            destination.Write( raim_ );
+            destination.Write( dataTerminalReady_ );
+            destination.Write( assigned_ );
+            destination.Write( spare_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            reserved_ = source.ReadInt32( );
+            speedOverGround_ = source.ReadDouble( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            courseOverGround_ = source.ReadDouble( );
+            trueHeading_ = source.ReadNullableInt32( );
+            timestamp_ = source.ReadInt32( );
+            regionalReserved_ = source.ReadInt32( );
+            name_ = source.ReadGuid( );
+            shipType_ = source.ReadEnum<Types.ShipType>( );
+            dimensionToBow_ = source.ReadInt32( );
+            dimensionToStern_ = source.ReadInt32( );
+            dimensionToPort_ = source.ReadInt32( );
+            dimensionToStarboard_ = source.ReadInt32( );
+            positionFixType_ = source.ReadEnum<Types.PositionFixType>( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            dataTerminalReady_ = source.ReadBoolean( );
+            assigned_ = source.ReadBoolean( );
+            spare_ = source.ReadInt32( );
+        }
+
     }
     public class AisInterrogationMessageObject : AisMessageObject
     {
@@ -2398,7 +2860,7 @@ namespace Barrelman.Data.Types
         Guid? secondStationInterrogationMmsi_;
         Types.AisMessageType? secondStationFirstMessageType_;
         int? secondStationFirstSlotOffset_;
-        public AisInterrogationMessageObject ( )
+        public AisInterrogationMessageObject( )
         {
         }
 
@@ -2410,6 +2872,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisInterrogationMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisInterrogationMessageObject )target;
+            destination.interrogatedMmsi_ = interrogatedMmsi_;
+            destination.firstMessageType_ = firstMessageType_;
+            destination.firstSlotOffset_ = firstSlotOffset_;
+            destination.secondMessageType_ = secondMessageType_;
+            destination.secondSlotOffset_ = secondSlotOffset_;
+            destination.secondStationInterrogationMmsi_ = secondStationInterrogationMmsi_;
+            destination.secondStationFirstMessageType_ = secondStationFirstMessageType_;
+            destination.secondStationFirstSlotOffset_ = secondStationFirstSlotOffset_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2517,6 +2993,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( interrogatedMmsi_ );
+            destination.Write( firstMessageType_ );
+            destination.Write( firstSlotOffset_ );
+            destination.Write( secondMessageType_ );
+            destination.Write( secondSlotOffset_ );
+            destination.Write( secondStationInterrogationMmsi_ );
+            destination.Write( secondStationFirstMessageType_ );
+            destination.Write( secondStationFirstSlotOffset_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            interrogatedMmsi_ = source.ReadGuid( );
+            firstMessageType_ = source.ReadEnum<Types.AisMessageType>( );
+            firstSlotOffset_ = source.ReadInt32( );
+            secondMessageType_ = source.ReadNullableEnum<Types.AisMessageType>( );
+            secondSlotOffset_ = source.ReadNullableInt32( );
+            secondStationInterrogationMmsi_ = source.ReadNullableGuid( );
+            secondStationFirstMessageType_ = source.ReadNullableEnum<Types.AisMessageType>( );
+            secondStationFirstSlotOffset_ = source.ReadNullableInt32( );
+        }
+
     }
     public abstract class AisPositionReportClassAMessageBaseObject : AisMessageObject
     {
@@ -2533,8 +3036,27 @@ namespace Barrelman.Data.Types
         int spare_ = 0;
         Types.Raim raim_ = Types.Raim.NotInUse;
         int radioStatus_ = 0;
-        protected AisPositionReportClassAMessageBaseObject ( )
+        protected AisPositionReportClassAMessageBaseObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisPositionReportClassAMessageBaseObject )target;
+            destination.navigationStatus_ = navigationStatus_;
+            destination.rateOfTurn_ = rateOfTurn_;
+            destination.speedOverGround_ = speedOverGround_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.courseOverGround_ = courseOverGround_;
+            destination.trueHeading_ = trueHeading_;
+            destination.timestamp_ = timestamp_;
+            destination.maneuverIndicator_ = maneuverIndicator_;
+            destination.spare_ = spare_;
+            destination.raim_ = raim_;
+            destination.radioStatus_ = radioStatus_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2702,10 +3224,47 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( navigationStatus_ );
+            destination.Write( rateOfTurn_ );
+            destination.Write( speedOverGround_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( courseOverGround_ );
+            destination.Write( trueHeading_ );
+            destination.Write( timestamp_ );
+            destination.Write( maneuverIndicator_ );
+            destination.Write( spare_ );
+            destination.Write( raim_ );
+            destination.Write( radioStatus_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            navigationStatus_ = source.ReadEnum<Types.NavigationStatus>( );
+            rateOfTurn_ = source.ReadNullableInt32( );
+            speedOverGround_ = source.ReadDouble( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            courseOverGround_ = source.ReadDouble( );
+            trueHeading_ = source.ReadNullableInt32( );
+            timestamp_ = source.ReadInt32( );
+            maneuverIndicator_ = source.ReadEnum<Types.ManeuverIndicator>( );
+            spare_ = source.ReadInt32( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            radioStatus_ = source.ReadInt32( );
+        }
+
     }
     public class AisPositionReportClassAAssignedScheduleMessageObject : AisPositionReportClassAMessageBaseObject
     {
-        public AisPositionReportClassAAssignedScheduleMessageObject ( )
+        public AisPositionReportClassAAssignedScheduleMessageObject( )
         {
         }
 
@@ -2731,7 +3290,7 @@ namespace Barrelman.Data.Types
     }
     public class AisPositionReportClassAMessageObject : AisPositionReportClassAMessageBaseObject
     {
-        public AisPositionReportClassAMessageObject ( )
+        public AisPositionReportClassAMessageObject( )
         {
         }
 
@@ -2757,7 +3316,7 @@ namespace Barrelman.Data.Types
     }
     public class AisPositionReportClassAResponseToInterrogationMessageObject : AisPositionReportClassAMessageBaseObject
     {
-        public AisPositionReportClassAResponseToInterrogationMessageObject ( )
+        public AisPositionReportClassAResponseToInterrogationMessageObject( )
         {
         }
 
@@ -2792,7 +3351,7 @@ namespace Barrelman.Data.Types
         double courseOverGround_ = 0.0;
         Types.GnssPositionStatus gnssPositionStatus_ = Types.GnssPositionStatus.CurrentGnssPosition;
         int spare_ = 0;
-        public AisPositionReportForLongRangeApplicationsMessageObject ( )
+        public AisPositionReportForLongRangeApplicationsMessageObject( )
         {
         }
 
@@ -2804,6 +3363,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisPositionReportForLongRangeApplicationsMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisPositionReportForLongRangeApplicationsMessageObject )target;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.raim_ = raim_;
+            destination.navigationStatus_ = navigationStatus_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.speedOverGround_ = speedOverGround_;
+            destination.courseOverGround_ = courseOverGround_;
+            destination.gnssPositionStatus_ = gnssPositionStatus_;
+            destination.spare_ = spare_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -2923,6 +3497,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( positionAccuracy_ );
+            destination.Write( raim_ );
+            destination.Write( navigationStatus_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( speedOverGround_ );
+            destination.Write( courseOverGround_ );
+            destination.Write( gnssPositionStatus_ );
+            destination.Write( spare_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            navigationStatus_ = source.ReadEnum<Types.NavigationStatus>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            speedOverGround_ = source.ReadDouble( );
+            courseOverGround_ = source.ReadDouble( );
+            gnssPositionStatus_ = source.ReadEnum<Types.GnssPositionStatus>( );
+            spare_ = source.ReadInt32( );
+        }
+
     }
     public class AisSafetyRelatedAcknowledgmentMessageObject : AisMessageObject
     {
@@ -2935,7 +3538,7 @@ namespace Barrelman.Data.Types
         Guid? mmsi3_;
         int? sequenceNumber4_;
         Guid? mmsi4_;
-        public AisSafetyRelatedAcknowledgmentMessageObject ( )
+        public AisSafetyRelatedAcknowledgmentMessageObject( )
         {
         }
 
@@ -2947,6 +3550,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisSafetyRelatedAcknowledgmentMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisSafetyRelatedAcknowledgmentMessageObject )target;
+            destination.spare_ = spare_;
+            destination.sequenceNumber1_ = sequenceNumber1_;
+            destination.mmsi1_ = mmsi1_;
+            destination.sequenceNumber2_ = sequenceNumber2_;
+            destination.mmsi2_ = mmsi2_;
+            destination.sequenceNumber3_ = sequenceNumber3_;
+            destination.mmsi3_ = mmsi3_;
+            destination.sequenceNumber4_ = sequenceNumber4_;
+            destination.mmsi4_ = mmsi4_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3066,6 +3684,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( spare_ );
+            destination.Write( sequenceNumber1_ );
+            destination.Write( mmsi1_ );
+            destination.Write( sequenceNumber2_ );
+            destination.Write( mmsi2_ );
+            destination.Write( sequenceNumber3_ );
+            destination.Write( mmsi3_ );
+            destination.Write( sequenceNumber4_ );
+            destination.Write( mmsi4_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            spare_ = source.ReadInt32( );
+            sequenceNumber1_ = source.ReadInt32( );
+            mmsi1_ = source.ReadGuid( );
+            sequenceNumber2_ = source.ReadNullableInt32( );
+            mmsi2_ = source.ReadNullableGuid( );
+            sequenceNumber3_ = source.ReadNullableInt32( );
+            mmsi3_ = source.ReadNullableGuid( );
+            sequenceNumber4_ = source.ReadNullableInt32( );
+            mmsi4_ = source.ReadNullableGuid( );
+        }
+
     }
     public class AisStandardClassBCsPositionReportMessageObject : AisMessageObject
     {
@@ -3086,7 +3733,7 @@ namespace Barrelman.Data.Types
         bool assigned_ = false;
         Types.Raim raim_ = Types.Raim.NotInUse;
         int radioStatus_ = 0;
-        public AisStandardClassBCsPositionReportMessageObject ( )
+        public AisStandardClassBCsPositionReportMessageObject( )
         {
         }
 
@@ -3098,6 +3745,29 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisStandardClassBCsPositionReportMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisStandardClassBCsPositionReportMessageObject )target;
+            destination.reserved_ = reserved_;
+            destination.speedOverGround_ = speedOverGround_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.courseOverGround_ = courseOverGround_;
+            destination.trueHeading_ = trueHeading_;
+            destination.timestamp_ = timestamp_;
+            destination.regionalReserved_ = regionalReserved_;
+            destination.isCsUnit_ = isCsUnit_;
+            destination.hasDisplay_ = hasDisplay_;
+            destination.hasDscCapability_ = hasDscCapability_;
+            destination.band_ = band_;
+            destination.canAcceptMessage22_ = canAcceptMessage22_;
+            destination.assigned_ = assigned_;
+            destination.raim_ = raim_;
+            destination.radioStatus_ = radioStatus_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3313,6 +3983,51 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( reserved_ );
+            destination.Write( speedOverGround_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( courseOverGround_ );
+            destination.Write( trueHeading_ );
+            destination.Write( timestamp_ );
+            destination.Write( regionalReserved_ );
+            destination.Write( isCsUnit_ );
+            destination.Write( hasDisplay_ );
+            destination.Write( hasDscCapability_ );
+            destination.Write( band_ );
+            destination.Write( canAcceptMessage22_ );
+            destination.Write( assigned_ );
+            destination.Write( raim_ );
+            destination.Write( radioStatus_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            reserved_ = source.ReadInt32( );
+            speedOverGround_ = source.ReadDouble( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            courseOverGround_ = source.ReadDouble( );
+            trueHeading_ = source.ReadNullableInt32( );
+            timestamp_ = source.ReadInt32( );
+            regionalReserved_ = source.ReadInt32( );
+            isCsUnit_ = source.ReadBoolean( );
+            hasDisplay_ = source.ReadBoolean( );
+            hasDscCapability_ = source.ReadBoolean( );
+            band_ = source.ReadBoolean( );
+            canAcceptMessage22_ = source.ReadBoolean( );
+            assigned_ = source.ReadBoolean( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            radioStatus_ = source.ReadInt32( );
+        }
+
     }
     public class AisStandardSarAircraftPositionReportMessageObject : AisMessageObject
     {
@@ -3329,7 +4044,7 @@ namespace Barrelman.Data.Types
         bool assigned_ = false;
         Types.Raim raim_ = Types.Raim.NotInUse;
         int radioStatus_ = 0;
-        public AisStandardSarAircraftPositionReportMessageObject ( )
+        public AisStandardSarAircraftPositionReportMessageObject( )
         {
         }
 
@@ -3341,6 +4056,25 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisStandardSarAircraftPositionReportMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisStandardSarAircraftPositionReportMessageObject )target;
+            destination.altitude_ = altitude_;
+            destination.speedOverGround_ = speedOverGround_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.courseOverGround_ = courseOverGround_;
+            destination.timestamp_ = timestamp_;
+            destination.reserved_ = reserved_;
+            destination.dataTerminalReady_ = dataTerminalReady_;
+            destination.spare_ = spare_;
+            destination.assigned_ = assigned_;
+            destination.raim_ = raim_;
+            destination.radioStatus_ = radioStatus_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3508,6 +4242,43 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( altitude_ );
+            destination.Write( speedOverGround_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( courseOverGround_ );
+            destination.Write( timestamp_ );
+            destination.Write( reserved_ );
+            destination.Write( dataTerminalReady_ );
+            destination.Write( spare_ );
+            destination.Write( assigned_ );
+            destination.Write( raim_ );
+            destination.Write( radioStatus_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            altitude_ = source.ReadInt32( );
+            speedOverGround_ = source.ReadInt32( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            courseOverGround_ = source.ReadDouble( );
+            timestamp_ = source.ReadInt32( );
+            reserved_ = source.ReadInt32( );
+            dataTerminalReady_ = source.ReadBoolean( );
+            spare_ = source.ReadInt32( );
+            assigned_ = source.ReadBoolean( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            radioStatus_ = source.ReadInt32( );
+        }
+
     }
     public class AisStaticAndVoyageRelatedDataMessageObject : AisMessageObject
     {
@@ -3526,7 +4297,7 @@ namespace Barrelman.Data.Types
         string destination_ = string.Empty;
         bool dataTerminalReady_ = false;
         int spare_ = 0;
-        public AisStaticAndVoyageRelatedDataMessageObject ( )
+        public AisStaticAndVoyageRelatedDataMessageObject( )
         {
         }
 
@@ -3538,6 +4309,27 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisStaticAndVoyageRelatedDataMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisStaticAndVoyageRelatedDataMessageObject )target;
+            destination.aisVersion_ = aisVersion_;
+            destination.imoNumber_ = imoNumber_;
+            destination.callsign_ = callsign_;
+            destination.shipName_ = shipName_;
+            destination.shipType_ = shipType_;
+            destination.dimensionToBow_ = dimensionToBow_;
+            destination.dimensionToStern_ = dimensionToStern_;
+            destination.dimensionToPort_ = dimensionToPort_;
+            destination.dimensionToStarboard_ = dimensionToStarboard_;
+            destination.positionFixType_ = positionFixType_;
+            destination.estimatedTimeOfArrival_ = estimatedTimeOfArrival_;
+            destination.draught_ = draught_;
+            destination.destination_ = destination_;
+            destination.dataTerminalReady_ = dataTerminalReady_;
+            destination.spare_ = spare_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3729,11 +4521,52 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( aisVersion_ );
+            destination.Write( imoNumber_ );
+            destination.Write( callsign_ );
+            destination.Write( shipName_ );
+            destination.Write( shipType_ );
+            destination.Write( dimensionToBow_ );
+            destination.Write( dimensionToStern_ );
+            destination.Write( dimensionToPort_ );
+            destination.Write( dimensionToStarboard_ );
+            destination.Write( positionFixType_ );
+            destination.Write( estimatedTimeOfArrival_ );
+            destination.Write( draught_ );
+            destination.Write( destination_ );
+            destination.Write( dataTerminalReady_ );
+            destination.Write( spare_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            aisVersion_ = source.ReadInt32( );
+            imoNumber_ = source.ReadGuid( );
+            callsign_ = source.ReadGuid( );
+            shipName_ = source.ReadGuid( );
+            shipType_ = source.ReadEnum<Types.ShipType>( );
+            dimensionToBow_ = source.ReadInt32( );
+            dimensionToStern_ = source.ReadInt32( );
+            dimensionToPort_ = source.ReadInt32( );
+            dimensionToStarboard_ = source.ReadInt32( );
+            positionFixType_ = source.ReadEnum<Types.PositionFixType>( );
+            estimatedTimeOfArrival_ = source.ReadNullableDateTime( );
+            draught_ = source.ReadDouble( );
+            destination_ = source.ReadString( );
+            dataTerminalReady_ = source.ReadBoolean( );
+            spare_ = source.ReadInt32( );
+        }
+
     }
     public class AisStaticDataReportMessageObject : AisMessageObject
     {
         int partNumber_ = 0;
-        public AisStaticDataReportMessageObject ( )
+        public AisStaticDataReportMessageObject( )
         {
         }
 
@@ -3745,6 +4578,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisStaticDataReportMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisStaticDataReportMessageObject )target;
+            destination.partNumber_ = partNumber_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3768,12 +4608,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( partNumber_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            partNumber_ = source.ReadInt32( );
+        }
+
     }
     public class AisStaticDataReportPartAMessageObject : AisStaticDataReportMessageObject
     {
         Guid shipName_;
         int spare_ = 0;
-        public AisStaticDataReportPartAMessageObject ( )
+        public AisStaticDataReportPartAMessageObject( )
         {
         }
 
@@ -3785,6 +4638,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisStaticDataReportPartAMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisStaticDataReportPartAMessageObject )target;
+            destination.shipName_ = shipName_;
+            destination.spare_ = spare_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -3820,6 +4681,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( shipName_ );
+            destination.Write( spare_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            shipName_ = source.ReadGuid( );
+            spare_ = source.ReadInt32( );
+        }
+
     }
     public class AisStaticDataReportPartBMessageObject : AisStaticDataReportMessageObject
     {
@@ -3835,7 +4711,7 @@ namespace Barrelman.Data.Types
         Guid? mothershipMmsi_;
         Types.PositionFixType positionFixType_ = Types.PositionFixType.Undefined1;
         int spare_ = 0;
-        public AisStaticDataReportPartBMessageObject ( )
+        public AisStaticDataReportPartBMessageObject( )
         {
         }
 
@@ -3847,6 +4723,24 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisStaticDataReportPartBMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisStaticDataReportPartBMessageObject )target;
+            destination.shipType_ = shipType_;
+            destination.vendorId_ = vendorId_;
+            destination.unitModelCode_ = unitModelCode_;
+            destination.serialNumber_ = serialNumber_;
+            destination.callsign_ = callsign_;
+            destination.dimensionToBow_ = dimensionToBow_;
+            destination.dimensionToStern_ = dimensionToStern_;
+            destination.dimensionToPort_ = dimensionToPort_;
+            destination.dimensionToStarboard_ = dimensionToStarboard_;
+            destination.mothershipMmsi_ = mothershipMmsi_;
+            destination.positionFixType_ = positionFixType_;
+            destination.spare_ = spare_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4002,13 +4896,48 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( shipType_ );
+            destination.Write( vendorId_ );
+            destination.Write( unitModelCode_ );
+            destination.Write( serialNumber_ );
+            destination.Write( callsign_ );
+            destination.Write( dimensionToBow_ );
+            destination.Write( dimensionToStern_ );
+            destination.Write( dimensionToPort_ );
+            destination.Write( dimensionToStarboard_ );
+            destination.Write( mothershipMmsi_ );
+            destination.Write( positionFixType_ );
+            destination.Write( spare_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            shipType_ = source.ReadEnum<Types.ShipType>( );
+            vendorId_ = source.ReadString( );
+            unitModelCode_ = source.ReadInt32( );
+            serialNumber_ = source.ReadInt32( );
+            callsign_ = source.ReadGuid( );
+            dimensionToBow_ = source.ReadInt32( );
+            dimensionToStern_ = source.ReadInt32( );
+            dimensionToPort_ = source.ReadInt32( );
+            dimensionToStarboard_ = source.ReadInt32( );
+            mothershipMmsi_ = source.ReadNullableGuid( );
+            positionFixType_ = source.ReadEnum<Types.PositionFixType>( );
+            spare_ = source.ReadInt32( );
+        }
+
     }
     public class AisUtcAndDateInquiryMessageObject : AisMessageObject
     {
         int spare1_ = 0;
         int destinationMmsi_ = 0;
         int spare2_ = 0;
-        public AisUtcAndDateInquiryMessageObject ( )
+        public AisUtcAndDateInquiryMessageObject( )
         {
         }
 
@@ -4020,6 +4949,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisUtcAndDateInquiryMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisUtcAndDateInquiryMessageObject )target;
+            destination.spare1_ = spare1_;
+            destination.destinationMmsi_ = destinationMmsi_;
+            destination.spare2_ = spare2_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4067,6 +5005,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( spare1_ );
+            destination.Write( destinationMmsi_ );
+            destination.Write( spare2_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            spare1_ = source.ReadInt32( );
+            destinationMmsi_ = source.ReadInt32( );
+            spare2_ = source.ReadInt32( );
+        }
+
     }
     public class AisUtcAndDateResponseMessageObject : AisMessageObject
     {
@@ -4078,7 +5033,7 @@ namespace Barrelman.Data.Types
         int spare_ = 0;
         Types.Raim raim_ = Types.Raim.NotInUse;
         int radioStatus_ = 0;
-        public AisUtcAndDateResponseMessageObject ( )
+        public AisUtcAndDateResponseMessageObject( )
         {
         }
 
@@ -4090,6 +5045,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisUtcAndDateResponseMessageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisUtcAndDateResponseMessageObject )target;
+            destination.datetime_ = datetime_;
+            destination.positionAccuracy_ = positionAccuracy_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.positionFixType_ = positionFixType_;
+            destination.spare_ = spare_;
+            destination.raim_ = raim_;
+            destination.radioStatus_ = radioStatus_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4197,6 +5166,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( datetime_ );
+            destination.Write( positionAccuracy_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( positionFixType_ );
+            destination.Write( spare_ );
+            destination.Write( raim_ );
+            destination.Write( radioStatus_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            datetime_ = source.ReadDateTime( );
+            positionAccuracy_ = source.ReadEnum<Types.PositionAccuracy>( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            positionFixType_ = source.ReadEnum<Types.PositionFixType>( );
+            spare_ = source.ReadInt32( );
+            raim_ = source.ReadEnum<Types.Raim>( );
+            radioStatus_ = source.ReadInt32( );
+        }
+
     }
     public class AlarmStateChangeObject : BaseDataGuid<Kind>
     {
@@ -4204,7 +5200,7 @@ namespace Barrelman.Data.Types
         Guid alarm_;
         DateTime timestamp_;
         Types.AlarmState state_ = Types.AlarmState.Unknown;
-        public AlarmStateChangeObject ( )
+        public AlarmStateChangeObject( )
         {
         }
 
@@ -4216,6 +5212,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AlarmStateChangeObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AlarmStateChangeObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.alarm_ = alarm_;
+            destination.timestamp_ = timestamp_;
+            destination.state_ = state_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4275,12 +5281,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( alarm_ );
+            destination.Write( timestamp_ );
+            destination.Write( state_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            alarm_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            state_ = source.ReadEnum<Types.AlarmState>( );
+        }
+
     }
     public class BaseStationTypeObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
-        public BaseStationTypeObject ( )
+        public BaseStationTypeObject( )
         {
         }
 
@@ -4292,6 +5317,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BaseStationTypeObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BaseStationTypeObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4327,6 +5360,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class BinaryTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -4334,7 +5382,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         byte[] value_ = Array.Empty<byte>();
-        public BinaryTimeseriesValueObject ( )
+        public BinaryTimeseriesValueObject( )
         {
         }
 
@@ -4346,6 +5394,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BinaryTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BinaryTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = (byte[])value_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4405,6 +5463,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.WriteArray( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadByteArray( );
+        }
+
     }
     public class BookmarkObject : BaseDataGuid<Kind>
     {
@@ -4415,7 +5492,7 @@ namespace Barrelman.Data.Types
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double zoomLevel_ = 0.0;
-        public BookmarkObject ( )
+        public BookmarkObject( )
         {
         }
 
@@ -4427,6 +5504,19 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BookmarkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BookmarkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.view_ = view_;
+            destination.name_ = name_;
+            destination.timestamp_ = timestamp_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.zoomLevel_ = zoomLevel_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4522,6 +5612,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( view_ );
+            destination.Write( name_ );
+            destination.Write( timestamp_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( zoomLevel_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            view_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+            timestamp_ = source.ReadNullableDateTime( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            zoomLevel_ = source.ReadDouble( );
+        }
+
     }
     public class BooleanTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -4529,7 +5644,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         bool? value_;
-        public BooleanTimeseriesValueObject ( )
+        public BooleanTimeseriesValueObject( )
         {
         }
 
@@ -4541,6 +5656,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BooleanTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BooleanTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4600,6 +5725,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableBoolean( );
+        }
+
     }
     public class ByteTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -4607,7 +5751,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         byte? value_;
-        public ByteTimeseriesValueObject ( )
+        public ByteTimeseriesValueObject( )
         {
         }
 
@@ -4619,6 +5763,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ByteTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ByteTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4678,6 +5832,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableByte( );
+        }
+
     }
     public class CameraCommandObject : BaseDataGuid<Kind>
     {
@@ -4687,7 +5860,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public CameraCommandObject ( )
+        public CameraCommandObject( )
         {
         }
 
@@ -4699,6 +5872,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4782,6 +5967,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class CameraCommandAbsoluteMoveObject : CameraCommandObject
     {
@@ -4795,7 +6003,7 @@ namespace Barrelman.Data.Types
         double? tiltSpeed_;
         Types.CameraFocalLengthMode speedFocalLengthMode_ = Types.CameraFocalLengthMode.Unknown;
         double? zoomSpeed_;
-        public CameraCommandAbsoluteMoveObject ( )
+        public CameraCommandAbsoluteMoveObject( )
         {
         }
 
@@ -4807,6 +6015,22 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandAbsoluteMoveObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandAbsoluteMoveObject )target;
+            destination.positionPanTiltMode_ = positionPanTiltMode_;
+            destination.panAngle_ = panAngle_;
+            destination.tiltAngle_ = tiltAngle_;
+            destination.positionFocalLengthMode_ = positionFocalLengthMode_;
+            destination.focalLength_ = focalLength_;
+            destination.speedPanTiltMode_ = speedPanTiltMode_;
+            destination.panSpeed_ = panSpeed_;
+            destination.tiltSpeed_ = tiltSpeed_;
+            destination.speedFocalLengthMode_ = speedFocalLengthMode_;
+            destination.zoomSpeed_ = zoomSpeed_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -4938,13 +6162,44 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( positionPanTiltMode_ );
+            destination.Write( panAngle_ );
+            destination.Write( tiltAngle_ );
+            destination.Write( positionFocalLengthMode_ );
+            destination.Write( focalLength_ );
+            destination.Write( speedPanTiltMode_ );
+            destination.Write( panSpeed_ );
+            destination.Write( tiltSpeed_ );
+            destination.Write( speedFocalLengthMode_ );
+            destination.Write( zoomSpeed_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            positionPanTiltMode_ = source.ReadEnum<Types.CameraPanTiltMode>( );
+            panAngle_ = source.ReadNullableDouble( );
+            tiltAngle_ = source.ReadNullableDouble( );
+            positionFocalLengthMode_ = source.ReadEnum<Types.CameraFocalLengthMode>( );
+            focalLength_ = source.ReadNullableDouble( );
+            speedPanTiltMode_ = source.ReadEnum<Types.CameraPanTiltMode>( );
+            panSpeed_ = source.ReadNullableDouble( );
+            tiltSpeed_ = source.ReadNullableDouble( );
+            speedFocalLengthMode_ = source.ReadEnum<Types.CameraFocalLengthMode>( );
+            zoomSpeed_ = source.ReadNullableDouble( );
+        }
+
     }
     public class CameraCommandAdjustPanTiltZoomObject : CameraCommandObject
     {
         double? x_;
         double? y_;
         double? z_;
-        public CameraCommandAdjustPanTiltZoomObject ( )
+        public CameraCommandAdjustPanTiltZoomObject( )
         {
         }
 
@@ -4956,6 +6211,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandAdjustPanTiltZoomObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandAdjustPanTiltZoomObject )target;
+            destination.x_ = x_;
+            destination.y_ = y_;
+            destination.z_ = z_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5003,6 +6267,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( x_ );
+            destination.Write( y_ );
+            destination.Write( z_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            x_ = source.ReadNullableDouble( );
+            y_ = source.ReadNullableDouble( );
+            z_ = source.ReadNullableDouble( );
+        }
+
     }
     public class CameraCommandContinuousMoveObject : CameraCommandObject
     {
@@ -5011,7 +6292,7 @@ namespace Barrelman.Data.Types
         double? tiltVelocity_;
         double? zoomVelocity_;
         TimeSpan? duration_;
-        public CameraCommandContinuousMoveObject ( )
+        public CameraCommandContinuousMoveObject( )
         {
         }
 
@@ -5023,6 +6304,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandContinuousMoveObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandContinuousMoveObject )target;
+            destination.normalized_ = normalized_;
+            destination.panVelocity_ = panVelocity_;
+            destination.tiltVelocity_ = tiltVelocity_;
+            destination.zoomVelocity_ = zoomVelocity_;
+            destination.duration_ = duration_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5094,6 +6386,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( normalized_ );
+            destination.Write( panVelocity_ );
+            destination.Write( tiltVelocity_ );
+            destination.Write( zoomVelocity_ );
+            destination.Write( duration_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            normalized_ = source.ReadBoolean( );
+            panVelocity_ = source.ReadNullableDouble( );
+            tiltVelocity_ = source.ReadNullableDouble( );
+            zoomVelocity_ = source.ReadNullableDouble( );
+            duration_ = source.ReadNullableTimeSpan( );
+        }
+
     }
     public class CameraCommandGeoMoveObject : CameraCommandObject
     {
@@ -5102,7 +6415,7 @@ namespace Barrelman.Data.Types
         double? altitude_;
         double? viewportWidth_;
         double? viewportHeight_;
-        public CameraCommandGeoMoveObject ( )
+        public CameraCommandGeoMoveObject( )
         {
         }
 
@@ -5114,6 +6427,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandGeoMoveObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandGeoMoveObject )target;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.altitude_ = altitude_;
+            destination.viewportWidth_ = viewportWidth_;
+            destination.viewportHeight_ = viewportHeight_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5185,6 +6509,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( altitude_ );
+            destination.Write( viewportWidth_ );
+            destination.Write( viewportHeight_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            altitude_ = source.ReadNullableDouble( );
+            viewportWidth_ = source.ReadNullableDouble( );
+            viewportHeight_ = source.ReadNullableDouble( );
+        }
+
     }
     public class CameraCommandRelativeMoveObject : CameraCommandObject
     {
@@ -5195,7 +6540,7 @@ namespace Barrelman.Data.Types
         double? panSpeed_;
         double? tiltSpeed_;
         double? zoomSpeed_;
-        public CameraCommandRelativeMoveObject ( )
+        public CameraCommandRelativeMoveObject( )
         {
         }
 
@@ -5207,6 +6552,19 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandRelativeMoveObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandRelativeMoveObject )target;
+            destination.normalized_ = normalized_;
+            destination.panAngle_ = panAngle_;
+            destination.tiltAngle_ = tiltAngle_;
+            destination.focalLength_ = focalLength_;
+            destination.panSpeed_ = panSpeed_;
+            destination.tiltSpeed_ = tiltSpeed_;
+            destination.zoomSpeed_ = zoomSpeed_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5302,10 +6660,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( normalized_ );
+            destination.Write( panAngle_ );
+            destination.Write( tiltAngle_ );
+            destination.Write( focalLength_ );
+            destination.Write( panSpeed_ );
+            destination.Write( tiltSpeed_ );
+            destination.Write( zoomSpeed_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            normalized_ = source.ReadBoolean( );
+            panAngle_ = source.ReadNullableDouble( );
+            tiltAngle_ = source.ReadNullableDouble( );
+            focalLength_ = source.ReadNullableDouble( );
+            panSpeed_ = source.ReadNullableDouble( );
+            tiltSpeed_ = source.ReadNullableDouble( );
+            zoomSpeed_ = source.ReadNullableDouble( );
+        }
+
     }
     public class CameraCommandReleasePTZOwnershipObject : CameraCommandObject
     {
-        public CameraCommandReleasePTZOwnershipObject ( )
+        public CameraCommandReleasePTZOwnershipObject( )
         {
         }
 
@@ -5331,7 +6714,7 @@ namespace Barrelman.Data.Types
     }
     public class CameraCommandRequestPTZOwnershipObject : CameraCommandObject
     {
-        public CameraCommandRequestPTZOwnershipObject ( )
+        public CameraCommandRequestPTZOwnershipObject( )
         {
         }
 
@@ -5358,7 +6741,7 @@ namespace Barrelman.Data.Types
     public class CameraCommandSetAutoFocusObject : CameraCommandObject
     {
         bool enabled_ = false;
-        public CameraCommandSetAutoFocusObject ( )
+        public CameraCommandSetAutoFocusObject( )
         {
         }
 
@@ -5370,6 +6753,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandSetAutoFocusObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandSetAutoFocusObject )target;
+            destination.enabled_ = enabled_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5393,11 +6783,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( enabled_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            enabled_ = source.ReadBoolean( );
+        }
+
     }
     public class CameraCommandSetBlackAndWhiteObject : CameraCommandObject
     {
         bool enabled_ = false;
-        public CameraCommandSetBlackAndWhiteObject ( )
+        public CameraCommandSetBlackAndWhiteObject( )
         {
         }
 
@@ -5409,6 +6812,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandSetBlackAndWhiteObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandSetBlackAndWhiteObject )target;
+            destination.enabled_ = enabled_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5432,12 +6842,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( enabled_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            enabled_ = source.ReadBoolean( );
+        }
+
     }
     public class CameraCommandSetFollowedObject : CameraCommandObject
     {
         Guid trackId_;
         Types.CameraFollowReason reason_ = Types.CameraFollowReason.Alarm;
-        public CameraCommandSetFollowedObject ( )
+        public CameraCommandSetFollowedObject( )
         {
         }
 
@@ -5449,6 +6872,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandSetFollowedObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandSetFollowedObject )target;
+            destination.trackId_ = trackId_;
+            destination.reason_ = reason_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5484,11 +6915,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( trackId_ );
+            destination.Write( reason_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            trackId_ = source.ReadGuid( );
+            reason_ = source.ReadEnum<Types.CameraFollowReason>( );
+        }
+
     }
     public class CameraCommandSetInfraRedLampObject : CameraCommandObject
     {
         bool enabled_ = false;
-        public CameraCommandSetInfraRedLampObject ( )
+        public CameraCommandSetInfraRedLampObject( )
         {
         }
 
@@ -5500,6 +6946,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandSetInfraRedLampObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandSetInfraRedLampObject )target;
+            destination.enabled_ = enabled_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5523,11 +6976,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( enabled_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            enabled_ = source.ReadBoolean( );
+        }
+
     }
     public class CameraCommandSetWasherObject : CameraCommandObject
     {
         bool enabled_ = false;
-        public CameraCommandSetWasherObject ( )
+        public CameraCommandSetWasherObject( )
         {
         }
 
@@ -5539,6 +7005,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandSetWasherObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandSetWasherObject )target;
+            destination.enabled_ = enabled_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5562,11 +7035,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( enabled_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            enabled_ = source.ReadBoolean( );
+        }
+
     }
     public class CameraCommandSetWiperObject : CameraCommandObject
     {
         bool enabled_ = false;
-        public CameraCommandSetWiperObject ( )
+        public CameraCommandSetWiperObject( )
         {
         }
 
@@ -5578,6 +7064,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandSetWiperObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandSetWiperObject )target;
+            destination.enabled_ = enabled_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5601,12 +7094,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( enabled_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            enabled_ = source.ReadBoolean( );
+        }
+
     }
     public class CameraCommandStopObject : CameraCommandObject
     {
         bool panTilt_ = false;
         bool zoom_ = false;
-        public CameraCommandStopObject ( )
+        public CameraCommandStopObject( )
         {
         }
 
@@ -5618,6 +7124,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandStopObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandStopObject )target;
+            destination.panTilt_ = panTilt_;
+            destination.zoom_ = zoom_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5653,6 +7167,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( panTilt_ );
+            destination.Write( zoom_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            panTilt_ = source.ReadBoolean( );
+            zoom_ = source.ReadBoolean( );
+        }
+
     }
     public class CameraCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -5665,7 +7194,7 @@ namespace Barrelman.Data.Types
         double panAngle_ = 0.0;
         double tiltAngle_ = 0.0;
         double focalLength_ = 0.0;
-        public CameraCommandReplyObject ( )
+        public CameraCommandReplyObject( )
         {
         }
 
@@ -5677,6 +7206,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
+            destination.panAngle_ = panAngle_;
+            destination.tiltAngle_ = tiltAngle_;
+            destination.focalLength_ = focalLength_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5796,6 +7340,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+            destination.Write( panAngle_ );
+            destination.Write( tiltAngle_ );
+            destination.Write( focalLength_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+            panAngle_ = source.ReadDouble( );
+            tiltAngle_ = source.ReadDouble( );
+            focalLength_ = source.ReadDouble( );
+        }
+
     }
     public class CameraConfigurationObject : BaseDataGuid<Kind>
     {
@@ -5803,20 +7376,16 @@ namespace Barrelman.Data.Types
         Guid camera_;
         DateTime timestamp_;
         Types.CameraControlProtocol cameraControlProtocol_ = Types.CameraControlProtocol.Unknown;
-        string cameraAddress_ = string.Empty;
-        int cameraPort_ = 0;
-        string cameraControlAddress_ = string.Empty;
-        int cameraControlPort_ = 0;
-        string cameraUserName_ = string.Empty;
-        string cameraPassword_ = string.Empty;
+        string cameraURL_ = string.Empty;
+        string configurationURL_ = string.Empty;
+        string userName_ = string.Empty;
+        string password_ = string.Empty;
         bool useRtspUriOverride_ = false;
         string rtspUriOverride_ = string.Empty;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double altitude_ = 0.0;
         bool useRelativePosition_ = false;
-        double azimuthFromGPS_ = 0.0;
-        double distanceFromGPS_ = 0.0;
         Types.CameraPanTiltMode panTiltMode_ = Types.CameraPanTiltMode.Unknown;
         double minTiltAngle_ = 0.0;
         double maxTiltAngle_ = 0.0;
@@ -5863,7 +7432,7 @@ namespace Barrelman.Data.Types
         string ptzProfileName_ = string.Empty;
         string ptzConfigurationToken_ = string.Empty;
         string videoSourceToken_ = string.Empty;
-        public CameraConfigurationObject ( )
+        public CameraConfigurationObject( )
         {
         }
 
@@ -5875,6 +7444,72 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.timestamp_ = timestamp_;
+            destination.cameraControlProtocol_ = cameraControlProtocol_;
+            destination.cameraURL_ = cameraURL_;
+            destination.configurationURL_ = configurationURL_;
+            destination.userName_ = userName_;
+            destination.password_ = password_;
+            destination.useRtspUriOverride_ = useRtspUriOverride_;
+            destination.rtspUriOverride_ = rtspUriOverride_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.altitude_ = altitude_;
+            destination.useRelativePosition_ = useRelativePosition_;
+            destination.panTiltMode_ = panTiltMode_;
+            destination.minTiltAngle_ = minTiltAngle_;
+            destination.maxTiltAngle_ = maxTiltAngle_;
+            destination.minTiltScaleAngle_ = minTiltScaleAngle_;
+            destination.maxTiltScaleAngle_ = maxTiltScaleAngle_;
+            destination.useReverseTiltAngle_ = useReverseTiltAngle_;
+            destination.useReverseNormalizedTiltAngle_ = useReverseNormalizedTiltAngle_;
+            destination.minTiltVelocity_ = minTiltVelocity_;
+            destination.maxTiltVelocity_ = maxTiltVelocity_;
+            destination.minTiltSpeed_ = minTiltSpeed_;
+            destination.maxTiltSpeed_ = maxTiltSpeed_;
+            destination.minPanAngle_ = minPanAngle_;
+            destination.maxPanAngle_ = maxPanAngle_;
+            destination.minPanScaleAngle_ = minPanScaleAngle_;
+            destination.maxPanScaleAngle_ = maxPanScaleAngle_;
+            destination.useReversePanAngle_ = useReversePanAngle_;
+            destination.useReverseNormalizedPanAngle_ = useReverseNormalizedPanAngle_;
+            destination.minPanVelocity_ = minPanVelocity_;
+            destination.maxPanVelocity_ = maxPanVelocity_;
+            destination.minPanSpeed_ = minPanSpeed_;
+            destination.maxPanSpeed_ = maxPanSpeed_;
+            destination.focalLengthMode_ = focalLengthMode_;
+            destination.minFocalLength_ = minFocalLength_;
+            destination.maxFocalLength_ = maxFocalLength_;
+            destination.minFocalLengthScale_ = minFocalLengthScale_;
+            destination.maxFocalLengthScale_ = maxFocalLengthScale_;
+            destination.minZoomVelocity_ = minZoomVelocity_;
+            destination.maxZoomVelocity_ = maxZoomVelocity_;
+            destination.minZoomSpeed_ = minZoomSpeed_;
+            destination.maxZoomSpeed_ = maxZoomSpeed_;
+            destination.imageSensorWidth_ = imageSensorWidth_;
+            destination.imageSensorHeight_ = imageSensorHeight_;
+            destination.homePanAngle_ = homePanAngle_;
+            destination.homeTiltAngle_ = homeTiltAngle_;
+            destination.homeFocalLength_ = homeFocalLength_;
+            destination.panOffset_ = panOffset_;
+            destination.tiltOffset_ = tiltOffset_;
+            destination.aimAltitude_ = aimAltitude_;
+            destination.minimumTargetWidth_ = minimumTargetWidth_;
+            destination.targetLockTimeout_ = targetLockTimeout_;
+            destination.updateStatusInterval_ = updateStatusInterval_;
+            destination.readTimeout_ = readTimeout_;
+            destination.moveCommandStatusDelay_ = moveCommandStatusDelay_;
+            destination.ptzProfileName_ = ptzProfileName_;
+            destination.ptzConfigurationToken_ = ptzConfigurationToken_;
+            destination.videoSourceToken_ = videoSourceToken_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -5934,74 +7569,50 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public string CameraAddress
+        public string CameraURL
         {
-            get => cameraAddress_;
+            get => cameraURL_;
             set
             {
-                if( cameraAddress_ != value )
+                if( cameraURL_ != value )
                 {
-                    cameraAddress_ = value;
+                    cameraURL_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public int CameraPort
+        public string ConfigurationURL
         {
-            get => cameraPort_;
+            get => configurationURL_;
             set
             {
-                if( cameraPort_ != value )
+                if( configurationURL_ != value )
                 {
-                    cameraPort_ = value;
+                    configurationURL_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public string CameraControlAddress
+        public string UserName
         {
-            get => cameraControlAddress_;
+            get => userName_;
             set
             {
-                if( cameraControlAddress_ != value )
+                if( userName_ != value )
                 {
-                    cameraControlAddress_ = value;
+                    userName_ = value;
                     OnPropertyChanged( );
                 }
             }
         }
-        public int CameraControlPort
+        public string Password
         {
-            get => cameraControlPort_;
+            get => password_;
             set
             {
-                if( cameraControlPort_ != value )
+                if( password_ != value )
                 {
-                    cameraControlPort_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string CameraUserName
-        {
-            get => cameraUserName_;
-            set
-            {
-                if( cameraUserName_ != value )
-                {
-                    cameraUserName_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public string CameraPassword
-        {
-            get => cameraPassword_;
-            set
-            {
-                if( cameraPassword_ != value )
-                {
-                    cameraPassword_ = value;
+                    password_ = value;
                     OnPropertyChanged( );
                 }
             }
@@ -6074,30 +7685,6 @@ namespace Barrelman.Data.Types
                 if( useRelativePosition_ != value )
                 {
                     useRelativePosition_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public double AzimuthFromGPS
-        {
-            get => azimuthFromGPS_;
-            set
-            {
-                if( azimuthFromGPS_ != value )
-                {
-                    azimuthFromGPS_ = value;
-                    OnPropertyChanged( );
-                }
-            }
-        }
-        public double DistanceFromGPS
-        {
-            get => distanceFromGPS_;
-            set
-            {
-                if( distanceFromGPS_ != value )
-                {
-                    distanceFromGPS_ = value;
                     OnPropertyChanged( );
                 }
             }
@@ -6654,13 +8241,144 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( timestamp_ );
+            destination.Write( cameraControlProtocol_ );
+            destination.Write( cameraURL_ );
+            destination.Write( configurationURL_ );
+            destination.Write( userName_ );
+            destination.Write( password_ );
+            destination.Write( useRtspUriOverride_ );
+            destination.Write( rtspUriOverride_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( altitude_ );
+            destination.Write( useRelativePosition_ );
+            destination.Write( panTiltMode_ );
+            destination.Write( minTiltAngle_ );
+            destination.Write( maxTiltAngle_ );
+            destination.Write( minTiltScaleAngle_ );
+            destination.Write( maxTiltScaleAngle_ );
+            destination.Write( useReverseTiltAngle_ );
+            destination.Write( useReverseNormalizedTiltAngle_ );
+            destination.Write( minTiltVelocity_ );
+            destination.Write( maxTiltVelocity_ );
+            destination.Write( minTiltSpeed_ );
+            destination.Write( maxTiltSpeed_ );
+            destination.Write( minPanAngle_ );
+            destination.Write( maxPanAngle_ );
+            destination.Write( minPanScaleAngle_ );
+            destination.Write( maxPanScaleAngle_ );
+            destination.Write( useReversePanAngle_ );
+            destination.Write( useReverseNormalizedPanAngle_ );
+            destination.Write( minPanVelocity_ );
+            destination.Write( maxPanVelocity_ );
+            destination.Write( minPanSpeed_ );
+            destination.Write( maxPanSpeed_ );
+            destination.Write( focalLengthMode_ );
+            destination.Write( minFocalLength_ );
+            destination.Write( maxFocalLength_ );
+            destination.Write( minFocalLengthScale_ );
+            destination.Write( maxFocalLengthScale_ );
+            destination.Write( minZoomVelocity_ );
+            destination.Write( maxZoomVelocity_ );
+            destination.Write( minZoomSpeed_ );
+            destination.Write( maxZoomSpeed_ );
+            destination.Write( imageSensorWidth_ );
+            destination.Write( imageSensorHeight_ );
+            destination.Write( homePanAngle_ );
+            destination.Write( homeTiltAngle_ );
+            destination.Write( homeFocalLength_ );
+            destination.Write( panOffset_ );
+            destination.Write( tiltOffset_ );
+            destination.Write( aimAltitude_ );
+            destination.Write( minimumTargetWidth_ );
+            destination.Write( targetLockTimeout_ );
+            destination.Write( updateStatusInterval_ );
+            destination.Write( readTimeout_ );
+            destination.Write( moveCommandStatusDelay_ );
+            destination.Write( ptzProfileName_ );
+            destination.Write( ptzConfigurationToken_ );
+            destination.Write( videoSourceToken_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            cameraControlProtocol_ = source.ReadEnum<Types.CameraControlProtocol>( );
+            cameraURL_ = source.ReadString( );
+            configurationURL_ = source.ReadString( );
+            userName_ = source.ReadString( );
+            password_ = source.ReadString( );
+            useRtspUriOverride_ = source.ReadBoolean( );
+            rtspUriOverride_ = source.ReadString( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            altitude_ = source.ReadDouble( );
+            useRelativePosition_ = source.ReadBoolean( );
+            panTiltMode_ = source.ReadEnum<Types.CameraPanTiltMode>( );
+            minTiltAngle_ = source.ReadDouble( );
+            maxTiltAngle_ = source.ReadDouble( );
+            minTiltScaleAngle_ = source.ReadDouble( );
+            maxTiltScaleAngle_ = source.ReadDouble( );
+            useReverseTiltAngle_ = source.ReadBoolean( );
+            useReverseNormalizedTiltAngle_ = source.ReadBoolean( );
+            minTiltVelocity_ = source.ReadDouble( );
+            maxTiltVelocity_ = source.ReadDouble( );
+            minTiltSpeed_ = source.ReadDouble( );
+            maxTiltSpeed_ = source.ReadDouble( );
+            minPanAngle_ = source.ReadDouble( );
+            maxPanAngle_ = source.ReadDouble( );
+            minPanScaleAngle_ = source.ReadDouble( );
+            maxPanScaleAngle_ = source.ReadDouble( );
+            useReversePanAngle_ = source.ReadBoolean( );
+            useReverseNormalizedPanAngle_ = source.ReadBoolean( );
+            minPanVelocity_ = source.ReadDouble( );
+            maxPanVelocity_ = source.ReadDouble( );
+            minPanSpeed_ = source.ReadDouble( );
+            maxPanSpeed_ = source.ReadDouble( );
+            focalLengthMode_ = source.ReadEnum<Types.CameraFocalLengthMode>( );
+            minFocalLength_ = source.ReadDouble( );
+            maxFocalLength_ = source.ReadDouble( );
+            minFocalLengthScale_ = source.ReadDouble( );
+            maxFocalLengthScale_ = source.ReadDouble( );
+            minZoomVelocity_ = source.ReadDouble( );
+            maxZoomVelocity_ = source.ReadDouble( );
+            minZoomSpeed_ = source.ReadDouble( );
+            maxZoomSpeed_ = source.ReadDouble( );
+            imageSensorWidth_ = source.ReadDouble( );
+            imageSensorHeight_ = source.ReadDouble( );
+            homePanAngle_ = source.ReadDouble( );
+            homeTiltAngle_ = source.ReadDouble( );
+            homeFocalLength_ = source.ReadDouble( );
+            panOffset_ = source.ReadDouble( );
+            tiltOffset_ = source.ReadDouble( );
+            aimAltitude_ = source.ReadDouble( );
+            minimumTargetWidth_ = source.ReadDouble( );
+            targetLockTimeout_ = source.ReadTimeSpan( );
+            updateStatusInterval_ = source.ReadTimeSpan( );
+            readTimeout_ = source.ReadTimeSpan( );
+            moveCommandStatusDelay_ = source.ReadTimeSpan( );
+            ptzProfileName_ = source.ReadString( );
+            ptzConfigurationToken_ = source.ReadString( );
+            videoSourceToken_ = source.ReadString( );
+        }
+
     }
     public class CameraPanCalibrationObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        public CameraPanCalibrationObject ( )
+        public CameraPanCalibrationObject( )
         {
         }
 
@@ -6672,6 +8390,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraPanCalibrationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraPanCalibrationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.timestamp_ = timestamp_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6719,6 +8446,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( timestamp_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+        }
+
     }
     public class CameraPanCalibrationValueObject : BaseDataGuid<Kind>
     {
@@ -6726,7 +8470,7 @@ namespace Barrelman.Data.Types
         Guid panCalibration_;
         double panAngle_ = 0.0;
         double panOffset_ = 0.0;
-        public CameraPanCalibrationValueObject ( )
+        public CameraPanCalibrationValueObject( )
         {
         }
 
@@ -6738,6 +8482,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraPanCalibrationValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraPanCalibrationValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.panCalibration_ = panCalibration_;
+            destination.panAngle_ = panAngle_;
+            destination.panOffset_ = panOffset_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -6797,6 +8551,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( panCalibration_ );
+            destination.Write( panAngle_ );
+            destination.Write( panOffset_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            panCalibration_ = source.ReadGuid( );
+            panAngle_ = source.ReadDouble( );
+            panOffset_ = source.ReadDouble( );
+        }
+
     }
     public class CameraStatusObject : BaseDataGuid<Kind>
     {
@@ -6818,7 +8591,7 @@ namespace Barrelman.Data.Types
         double? zoomVelocity_;
         Types.CameraFeatures activeFeatures_ = Types.CameraFeatures.None;
         string error_ = string.Empty;
-        public CameraStatusObject ( )
+        public CameraStatusObject( )
         {
         }
 
@@ -6830,6 +8603,30 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraStatusObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraStatusObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.track_ = track_;
+            destination.timestamp_ = timestamp_;
+            destination.positionPanTiltMode_ = positionPanTiltMode_;
+            destination.panAngle_ = panAngle_;
+            destination.tiltAngle_ = tiltAngle_;
+            destination.positionFocalLengthMode_ = positionFocalLengthMode_;
+            destination.focalLength_ = focalLength_;
+            destination.panTiltMoveStatus_ = panTiltMoveStatus_;
+            destination.zoomMoveStatus_ = zoomMoveStatus_;
+            destination.velocityPanTiltMode_ = velocityPanTiltMode_;
+            destination.panVelocity_ = panVelocity_;
+            destination.tiltVelocity_ = tiltVelocity_;
+            destination.velocityFocalLengthMode_ = velocityFocalLengthMode_;
+            destination.zoomVelocity_ = zoomVelocity_;
+            destination.activeFeatures_ = activeFeatures_;
+            destination.error_ = error_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7057,13 +8854,60 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( track_ );
+            destination.Write( timestamp_ );
+            destination.Write( positionPanTiltMode_ );
+            destination.Write( panAngle_ );
+            destination.Write( tiltAngle_ );
+            destination.Write( positionFocalLengthMode_ );
+            destination.Write( focalLength_ );
+            destination.Write( panTiltMoveStatus_ );
+            destination.Write( zoomMoveStatus_ );
+            destination.Write( velocityPanTiltMode_ );
+            destination.Write( panVelocity_ );
+            destination.Write( tiltVelocity_ );
+            destination.Write( velocityFocalLengthMode_ );
+            destination.Write( zoomVelocity_ );
+            destination.Write( activeFeatures_ );
+            destination.Write( error_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            track_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            positionPanTiltMode_ = source.ReadEnum<Types.CameraPanTiltMode>( );
+            panAngle_ = source.ReadDouble( );
+            tiltAngle_ = source.ReadDouble( );
+            positionFocalLengthMode_ = source.ReadEnum<Types.CameraFocalLengthMode>( );
+            focalLength_ = source.ReadDouble( );
+            panTiltMoveStatus_ = source.ReadEnum<Types.CameraMoveStatus>( );
+            zoomMoveStatus_ = source.ReadEnum<Types.CameraMoveStatus>( );
+            velocityPanTiltMode_ = source.ReadEnum<Types.CameraPanTiltMode>( );
+            panVelocity_ = source.ReadNullableDouble( );
+            tiltVelocity_ = source.ReadNullableDouble( );
+            velocityFocalLengthMode_ = source.ReadEnum<Types.CameraFocalLengthMode>( );
+            zoomVelocity_ = source.ReadNullableDouble( );
+            activeFeatures_ = source.ReadEnum<Types.CameraFeatures>( );
+            error_ = source.ReadString( );
+        }
+
     }
     public class CameraTiltCalibrationObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        public CameraTiltCalibrationObject ( )
+        public CameraTiltCalibrationObject( )
         {
         }
 
@@ -7075,6 +8919,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraTiltCalibrationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraTiltCalibrationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.timestamp_ = timestamp_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7122,6 +8975,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( timestamp_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+        }
+
     }
     public class CameraTiltCalibrationValueObject : BaseDataGuid<Kind>
     {
@@ -7129,7 +8999,7 @@ namespace Barrelman.Data.Types
         Guid tiltCalibration_;
         double panAngle_ = 0.0;
         double tiltOffset_ = 0.0;
-        public CameraTiltCalibrationValueObject ( )
+        public CameraTiltCalibrationValueObject( )
         {
         }
 
@@ -7141,6 +9011,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraTiltCalibrationValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraTiltCalibrationValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.tiltCalibration_ = tiltCalibration_;
+            destination.panAngle_ = panAngle_;
+            destination.tiltOffset_ = tiltOffset_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7200,13 +9080,32 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( tiltCalibration_ );
+            destination.Write( panAngle_ );
+            destination.Write( tiltOffset_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            tiltCalibration_ = source.ReadGuid( );
+            panAngle_ = source.ReadDouble( );
+            tiltOffset_ = source.ReadDouble( );
+        }
+
     }
     public class CameraZoomCalibrationObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        public CameraZoomCalibrationObject ( )
+        public CameraZoomCalibrationObject( )
         {
         }
 
@@ -7218,6 +9117,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraZoomCalibrationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraZoomCalibrationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.camera_ = camera_;
+            destination.timestamp_ = timestamp_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7265,6 +9173,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( camera_ );
+            destination.Write( timestamp_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            camera_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+        }
+
     }
     public class CameraZoomCalibrationValueObject : BaseDataGuid<Kind>
     {
@@ -7272,7 +9197,7 @@ namespace Barrelman.Data.Types
         Guid zoomCalibration_;
         double focalLength_ = 0.0;
         double focalLengthOffset_ = 0.0;
-        public CameraZoomCalibrationValueObject ( )
+        public CameraZoomCalibrationValueObject( )
         {
         }
 
@@ -7284,6 +9209,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CameraZoomCalibrationValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CameraZoomCalibrationValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.zoomCalibration_ = zoomCalibration_;
+            destination.focalLength_ = focalLength_;
+            destination.focalLengthOffset_ = focalLengthOffset_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7343,14 +9278,42 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( zoomCalibration_ );
+            destination.Write( focalLength_ );
+            destination.Write( focalLengthOffset_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            zoomCalibration_ = source.ReadGuid( );
+            focalLength_ = source.ReadDouble( );
+            focalLengthOffset_ = source.ReadDouble( );
+        }
+
     }
     public abstract class CatalogElementObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid catalog_;
         string name_ = string.Empty;
-        protected CatalogElementObject ( )
+        protected CatalogElementObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CatalogElementObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.catalog_ = catalog_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7398,10 +9361,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( catalog_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            catalog_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class CatalogObject : CatalogElementObject
     {
-        public CatalogObject ( )
+        public CatalogObject( )
         {
         }
 
@@ -7428,7 +9408,7 @@ namespace Barrelman.Data.Types
     public class ElementObject : CatalogElementObject
     {
         Guid elementType_;
-        public ElementObject ( )
+        public ElementObject( )
         {
         }
 
@@ -7440,6 +9420,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ElementObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ElementObject )target;
+            destination.elementType_ = elementType_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7463,12 +9450,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( elementType_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            elementType_ = source.ReadGuid( );
+        }
+
     }
     public class CollectionInfoObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         long count_ = 0;
-        public CollectionInfoObject ( )
+        public CollectionInfoObject( )
         {
         }
 
@@ -7480,6 +9480,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CollectionInfoObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CollectionInfoObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.count_ = count_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7515,6 +9523,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( count_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            count_ = source.ReadInt64( );
+        }
+
     }
     public class CountryObject : BaseDataGuid<Kind>
     {
@@ -7523,7 +9546,7 @@ namespace Barrelman.Data.Types
         int code_ = 0;
         string alpha2_ = string.Empty;
         string alpha3_ = string.Empty;
-        public CountryObject ( )
+        public CountryObject( )
         {
         }
 
@@ -7535,6 +9558,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CountryObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CountryObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
+            destination.code_ = code_;
+            destination.alpha2_ = alpha2_;
+            destination.alpha3_ = alpha3_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7606,12 +9640,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+            destination.Write( code_ );
+            destination.Write( alpha2_ );
+            destination.Write( alpha3_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+            code_ = source.ReadInt32( );
+            alpha2_ = source.ReadString( );
+            alpha3_ = source.ReadString( );
+        }
+
     }
     public class CursorInfoObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         int typeCode_ = 0;
-        public CursorInfoObject ( )
+        public CursorInfoObject( )
         {
         }
 
@@ -7623,6 +9678,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CursorInfoObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CursorInfoObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.typeCode_ = typeCode_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7658,6 +9721,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( typeCode_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            typeCode_ = source.ReadInt32( );
+        }
+
     }
     public class DateTimeTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -7665,7 +9743,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         DateTime? value_;
-        public DateTimeTimeseriesValueObject ( )
+        public DateTimeTimeseriesValueObject( )
         {
         }
 
@@ -7677,6 +9755,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DateTimeTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DateTimeTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7736,12 +9824,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class DeviceHostObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
-        public DeviceHostObject ( )
+        public DeviceHostObject( )
         {
         }
 
@@ -7753,6 +9860,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DeviceHostObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DeviceHostObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7788,6 +9903,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class DeviceHostConfigurationObject : BaseDataGuid<Kind>
     {
@@ -7797,7 +9927,7 @@ namespace Barrelman.Data.Types
         string hostname_ = string.Empty;
         int port_ = 0;
         string queueName_ = string.Empty;
-        public DeviceHostConfigurationObject ( )
+        public DeviceHostConfigurationObject( )
         {
         }
 
@@ -7809,6 +9939,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DeviceHostConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DeviceHostConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.host_ = host_;
+            destination.timestamp_ = timestamp_;
+            destination.hostname_ = hostname_;
+            destination.port_ = port_;
+            destination.queueName_ = queueName_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7892,6 +10034,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( host_ );
+            destination.Write( timestamp_ );
+            destination.Write( hostname_ );
+            destination.Write( port_ );
+            destination.Write( queueName_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            host_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            hostname_ = source.ReadString( );
+            port_ = source.ReadInt32( );
+            queueName_ = source.ReadString( );
+        }
+
     }
     public class DoubleTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -7899,7 +10064,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         double? value_;
-        public DoubleTimeseriesValueObject ( )
+        public DoubleTimeseriesValueObject( )
         {
         }
 
@@ -7911,6 +10076,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DoubleTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DoubleTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -7970,12 +10145,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableDouble( );
+        }
+
     }
     public class FacilityTypeObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
-        public FacilityTypeObject ( )
+        public FacilityTypeObject( )
         {
         }
 
@@ -7987,6 +10181,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new FacilityTypeObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( FacilityTypeObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8022,6 +10224,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class GeoPosition2DTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -8030,7 +10247,7 @@ namespace Barrelman.Data.Types
         DateTime timestamp_;
         double? latitude_;
         double? longitude_;
-        public GeoPosition2DTimeseriesValueObject ( )
+        public GeoPosition2DTimeseriesValueObject( )
         {
         }
 
@@ -8042,6 +10259,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GeoPosition2DTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GeoPosition2DTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8113,6 +10341,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            latitude_ = source.ReadNullableDouble( );
+            longitude_ = source.ReadNullableDouble( );
+        }
+
     }
     public class GeoPosition3DTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -8122,7 +10371,7 @@ namespace Barrelman.Data.Types
         double? latitude_;
         double? longitude_;
         double? altitude_;
-        public GeoPosition3DTimeseriesValueObject ( )
+        public GeoPosition3DTimeseriesValueObject( )
         {
         }
 
@@ -8134,6 +10383,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GeoPosition3DTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GeoPosition3DTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.altitude_ = altitude_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8217,6 +10478,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( altitude_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            latitude_ = source.ReadNullableDouble( );
+            longitude_ = source.ReadNullableDouble( );
+            altitude_ = source.ReadNullableDouble( );
+        }
+
     }
     public class GNSSDeviceCommandObject : BaseDataGuid<Kind>
     {
@@ -8226,7 +10510,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public GNSSDeviceCommandObject ( )
+        public GNSSDeviceCommandObject( )
         {
         }
 
@@ -8238,6 +10522,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSDeviceCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSDeviceCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.gNSSDevice_ = gNSSDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8321,6 +10617,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( gNSSDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            gNSSDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class GNSSDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -8330,7 +10649,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public GNSSDeviceCommandReplyObject ( )
+        public GNSSDeviceCommandReplyObject( )
         {
         }
 
@@ -8342,6 +10661,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSDeviceCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSDeviceCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.gNSSDevice_ = gNSSDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8425,6 +10756,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( gNSSDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            gNSSDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class GNSSDeviceConfigurationObject : BaseDataGuid<Kind>
     {
@@ -8437,7 +10791,7 @@ namespace Barrelman.Data.Types
         double latitudeOffset_ = 0.0;
         double longitudeOffset_ = 0.0;
         double altitudeOffset_ = 0.0;
-        public GNSSDeviceConfigurationObject ( )
+        public GNSSDeviceConfigurationObject( )
         {
         }
 
@@ -8449,6 +10803,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSDeviceConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSDeviceConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.gNSSDevice_ = gNSSDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.defaultLatitude_ = defaultLatitude_;
+            destination.defaultLongitude_ = defaultLongitude_;
+            destination.defaultAltitude_ = defaultAltitude_;
+            destination.latitudeOffset_ = latitudeOffset_;
+            destination.longitudeOffset_ = longitudeOffset_;
+            destination.altitudeOffset_ = altitudeOffset_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8568,6 +10937,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( gNSSDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( defaultLatitude_ );
+            destination.Write( defaultLongitude_ );
+            destination.Write( defaultAltitude_ );
+            destination.Write( latitudeOffset_ );
+            destination.Write( longitudeOffset_ );
+            destination.Write( altitudeOffset_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            gNSSDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            defaultLatitude_ = source.ReadDouble( );
+            defaultLongitude_ = source.ReadDouble( );
+            defaultAltitude_ = source.ReadDouble( );
+            latitudeOffset_ = source.ReadDouble( );
+            longitudeOffset_ = source.ReadDouble( );
+            altitudeOffset_ = source.ReadDouble( );
+        }
+
     }
     public class GuidTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -8575,7 +10973,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         Guid? value_;
-        public GuidTimeseriesValueObject ( )
+        public GuidTimeseriesValueObject( )
         {
         }
 
@@ -8587,6 +10985,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GuidTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GuidTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8646,6 +11054,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableGuid( );
+        }
+
     }
     public class GyroDeviceCommandObject : BaseDataGuid<Kind>
     {
@@ -8655,7 +11082,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public GyroDeviceCommandObject ( )
+        public GyroDeviceCommandObject( )
         {
         }
 
@@ -8667,6 +11094,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroDeviceCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroDeviceCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.gyroDevice_ = gyroDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8750,6 +11189,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( gyroDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            gyroDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class GyroDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -8759,7 +11221,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public GyroDeviceCommandReplyObject ( )
+        public GyroDeviceCommandReplyObject( )
         {
         }
 
@@ -8771,6 +11233,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroDeviceCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroDeviceCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.gyroDevice_ = gyroDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8854,6 +11328,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( gyroDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            gyroDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class GyroDeviceConfigurationObject : BaseDataGuid<Kind>
     {
@@ -8866,7 +11363,7 @@ namespace Barrelman.Data.Types
         double headingMagneticNorthOffset_ = 0.0;
         string pitchTransducerName_ = string.Empty;
         string rollTransducerName_ = string.Empty;
-        public GyroDeviceConfigurationObject ( )
+        public GyroDeviceConfigurationObject( )
         {
         }
 
@@ -8878,6 +11375,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroDeviceConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroDeviceConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.gyroDevice_ = gyroDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.defaultHeadingTrueNorth_ = defaultHeadingTrueNorth_;
+            destination.defaultMagneticTrueNorth_ = defaultMagneticTrueNorth_;
+            destination.headingTrueNorthOffset_ = headingTrueNorthOffset_;
+            destination.headingMagneticNorthOffset_ = headingMagneticNorthOffset_;
+            destination.pitchTransducerName_ = pitchTransducerName_;
+            destination.rollTransducerName_ = rollTransducerName_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -8997,12 +11509,48 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( gyroDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( defaultHeadingTrueNorth_ );
+            destination.Write( defaultMagneticTrueNorth_ );
+            destination.Write( headingTrueNorthOffset_ );
+            destination.Write( headingMagneticNorthOffset_ );
+            destination.Write( pitchTransducerName_ );
+            destination.Write( rollTransducerName_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            gyroDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            defaultHeadingTrueNorth_ = source.ReadDouble( );
+            defaultMagneticTrueNorth_ = source.ReadDouble( );
+            headingTrueNorthOffset_ = source.ReadDouble( );
+            headingMagneticNorthOffset_ = source.ReadDouble( );
+            pitchTransducerName_ = source.ReadString( );
+            rollTransducerName_ = source.ReadString( );
+        }
+
     }
     public abstract class IdentityObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
-        protected IdentityObject ( )
+        protected IdentityObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( IdentityObject )target;
+            destination.rowVersion_ = rowVersion_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9026,11 +11574,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+        }
+
     }
     public class CallsignObject : IdentityObject
     {
         string identifier_ = string.Empty;
-        public CallsignObject ( )
+        public CallsignObject( )
         {
         }
 
@@ -9042,6 +11603,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CallsignObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CallsignObject )target;
+            destination.identifier_ = identifier_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9065,11 +11633,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( identifier_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            identifier_ = source.ReadString( );
+        }
+
     }
     public class InternationalMaritimeOrganizationNumberObject : IdentityObject
     {
         long identifier_ = 0;
-        public InternationalMaritimeOrganizationNumberObject ( )
+        public InternationalMaritimeOrganizationNumberObject( )
         {
         }
 
@@ -9081,6 +11662,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new InternationalMaritimeOrganizationNumberObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( InternationalMaritimeOrganizationNumberObject )target;
+            destination.identifier_ = identifier_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9104,11 +11692,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( identifier_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            identifier_ = source.ReadInt64( );
+        }
+
     }
     public class MaritimeMobileServiceIdentityObject : IdentityObject
     {
         long identifier_ = 0;
-        public MaritimeMobileServiceIdentityObject ( )
+        public MaritimeMobileServiceIdentityObject( )
         {
         }
 
@@ -9120,6 +11721,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MaritimeMobileServiceIdentityObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MaritimeMobileServiceIdentityObject )target;
+            destination.identifier_ = identifier_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9143,11 +11751,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( identifier_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            identifier_ = source.ReadInt64( );
+        }
+
     }
     public class NameObject : IdentityObject
     {
         string text_ = string.Empty;
-        public NameObject ( )
+        public NameObject( )
         {
         }
 
@@ -9159,6 +11780,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new NameObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( NameObject )target;
+            destination.text_ = text_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9182,6 +11810,19 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( text_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            text_ = source.ReadString( );
+        }
+
     }
     public class Int16TimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -9189,7 +11830,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         short? value_;
-        public Int16TimeseriesValueObject ( )
+        public Int16TimeseriesValueObject( )
         {
         }
 
@@ -9201,6 +11842,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int16TimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int16TimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9260,6 +11911,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableInt16( );
+        }
+
     }
     public class Int32TimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -9267,7 +11937,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         int? value_;
-        public Int32TimeseriesValueObject ( )
+        public Int32TimeseriesValueObject( )
         {
         }
 
@@ -9279,6 +11949,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int32TimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int32TimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9338,6 +12018,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableInt32( );
+        }
+
     }
     public class Int64TimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -9345,7 +12044,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         long? value_;
-        public Int64TimeseriesValueObject ( )
+        public Int64TimeseriesValueObject( )
         {
         }
 
@@ -9357,6 +12056,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int64TimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int64TimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9416,12 +12125,38 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableInt64( );
+        }
+
     }
     public abstract class ItemObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
-        protected ItemObject ( )
+        protected ItemObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ItemObject )target;
+            destination.rowVersion_ = rowVersion_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9445,12 +12180,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+        }
+
     }
     public class BaseStationObject : ItemObject
     {
         string name_ = string.Empty;
         Guid type_;
-        public BaseStationObject ( )
+        public BaseStationObject( )
         {
         }
 
@@ -9462,6 +12210,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BaseStationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BaseStationObject )target;
+            destination.name_ = name_;
+            destination.type_ = type_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9497,6 +12253,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+            destination.Write( type_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+            type_ = source.ReadGuid( );
+        }
+
     }
     public abstract class DeviceObject : ItemObject
     {
@@ -9504,8 +12275,18 @@ namespace Barrelman.Data.Types
         string name_ = string.Empty;
         string description_ = string.Empty;
         Guid enabledTimeseries_;
-        protected DeviceObject ( )
+        protected DeviceObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DeviceObject )target;
+            destination.host_ = host_;
+            destination.name_ = name_;
+            destination.description_ = description_;
+            destination.enabledTimeseries_ = enabledTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9565,10 +12346,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( host_ );
+            destination.Write( name_ );
+            destination.Write( description_ );
+            destination.Write( enabledTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            host_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+            description_ = source.ReadString( );
+            enabledTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class CameraDeviceObject : DeviceObject
     {
-        public CameraDeviceObject ( )
+        public CameraDeviceObject( )
         {
         }
 
@@ -9597,7 +12397,7 @@ namespace Barrelman.Data.Types
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
         Guid altitudeTimeseries_;
-        public GNSSDeviceObject ( )
+        public GNSSDeviceObject( )
         {
         }
 
@@ -9609,6 +12409,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSDeviceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSDeviceObject )target;
+            destination.latitudeTimeseries_ = latitudeTimeseries_;
+            destination.longitudeTimeseries_ = longitudeTimeseries_;
+            destination.altitudeTimeseries_ = altitudeTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9656,6 +12465,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( latitudeTimeseries_ );
+            destination.Write( longitudeTimeseries_ );
+            destination.Write( altitudeTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            latitudeTimeseries_ = source.ReadGuid( );
+            longitudeTimeseries_ = source.ReadGuid( );
+            altitudeTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class GyroDeviceObject : DeviceObject
     {
@@ -9667,7 +12493,7 @@ namespace Barrelman.Data.Types
         Guid courseTimeseries_;
         Guid speedTimeseries_;
         Guid gNSSDevice_;
-        public GyroDeviceObject ( )
+        public GyroDeviceObject( )
         {
         }
 
@@ -9679,6 +12505,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroDeviceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroDeviceObject )target;
+            destination.headingTrueNorthTimeseries_ = headingTrueNorthTimeseries_;
+            destination.headingMagneticNorthTimeseries_ = headingMagneticNorthTimeseries_;
+            destination.pitchTimeseries_ = pitchTimeseries_;
+            destination.rateOfTurnTimeseries_ = rateOfTurnTimeseries_;
+            destination.rollTimeseries_ = rollTimeseries_;
+            destination.courseTimeseries_ = courseTimeseries_;
+            destination.speedTimeseries_ = speedTimeseries_;
+            destination.gNSSDevice_ = gNSSDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9786,10 +12626,37 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( headingTrueNorthTimeseries_ );
+            destination.Write( headingMagneticNorthTimeseries_ );
+            destination.Write( pitchTimeseries_ );
+            destination.Write( rateOfTurnTimeseries_ );
+            destination.Write( rollTimeseries_ );
+            destination.Write( courseTimeseries_ );
+            destination.Write( speedTimeseries_ );
+            destination.Write( gNSSDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            headingTrueNorthTimeseries_ = source.ReadGuid( );
+            headingMagneticNorthTimeseries_ = source.ReadGuid( );
+            pitchTimeseries_ = source.ReadGuid( );
+            rateOfTurnTimeseries_ = source.ReadGuid( );
+            rollTimeseries_ = source.ReadGuid( );
+            courseTimeseries_ = source.ReadGuid( );
+            speedTimeseries_ = source.ReadGuid( );
+            gNSSDevice_ = source.ReadGuid( );
+        }
+
     }
     public class LineInputDeviceObject : DeviceObject
     {
-        public LineInputDeviceObject ( )
+        public LineInputDeviceObject( )
         {
         }
 
@@ -9815,7 +12682,7 @@ namespace Barrelman.Data.Types
     }
     public class OilSpillDetectorDeviceObject : DeviceObject
     {
-        public OilSpillDetectorDeviceObject ( )
+        public OilSpillDetectorDeviceObject( )
         {
         }
 
@@ -9841,7 +12708,7 @@ namespace Barrelman.Data.Types
     }
     public class RadioDeviceObject : DeviceObject
     {
-        public RadioDeviceObject ( )
+        public RadioDeviceObject( )
         {
         }
 
@@ -9872,7 +12739,7 @@ namespace Barrelman.Data.Types
         Guid temperatureTimeseries_;
         Guid dewPointTimeseries_;
         Guid statusTimeseries_;
-        public RadomeDeviceObject ( )
+        public RadomeDeviceObject( )
         {
         }
 
@@ -9884,6 +12751,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeDeviceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeDeviceObject )target;
+            destination.radar_ = radar_;
+            destination.pressureTimeseries_ = pressureTimeseries_;
+            destination.temperatureTimeseries_ = temperatureTimeseries_;
+            destination.dewPointTimeseries_ = dewPointTimeseries_;
+            destination.statusTimeseries_ = statusTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -9955,10 +12833,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+            destination.Write( pressureTimeseries_ );
+            destination.Write( temperatureTimeseries_ );
+            destination.Write( dewPointTimeseries_ );
+            destination.Write( statusTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadNullableGuid( );
+            pressureTimeseries_ = source.ReadGuid( );
+            temperatureTimeseries_ = source.ReadGuid( );
+            dewPointTimeseries_ = source.ReadGuid( );
+            statusTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public abstract class TrackerDeviceObject : DeviceObject
     {
-        protected TrackerDeviceObject ( )
+        protected TrackerDeviceObject( )
         {
         }
 
@@ -9974,7 +12873,7 @@ namespace Barrelman.Data.Types
     }
     public class AisDeviceObject : TrackerDeviceObject
     {
-        public AisDeviceObject ( )
+        public AisDeviceObject( )
         {
         }
 
@@ -10023,7 +12922,7 @@ namespace Barrelman.Data.Types
         Guid longitudeTimeseries_;
         Guid? radome_;
         Guid? gNSSDevice_;
-        public RadarDeviceObject ( )
+        public RadarDeviceObject( )
         {
         }
 
@@ -10035,6 +12934,35 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarDeviceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarDeviceObject )target;
+            destination.saveSettingsTimeseries_ = saveSettingsTimeseries_;
+            destination.powerOnTimeseries_ = powerOnTimeseries_;
+            destination.trackingOnTimeseries_ = trackingOnTimeseries_;
+            destination.radarPulseTimeseries_ = radarPulseTimeseries_;
+            destination.tuningTimeseries_ = tuningTimeseries_;
+            destination.blankSector1Timeseries_ = blankSector1Timeseries_;
+            destination.sector1StartTimeseries_ = sector1StartTimeseries_;
+            destination.sector1EndTimeseries_ = sector1EndTimeseries_;
+            destination.blankSector2Timeseries_ = blankSector2Timeseries_;
+            destination.sector2StartTimeseries_ = sector2StartTimeseries_;
+            destination.sector2EndTimeseries_ = sector2EndTimeseries_;
+            destination.enableAutomaticFrequencyControlTimeseries_ = enableAutomaticFrequencyControlTimeseries_;
+            destination.azimuthOffsetTimeseries_ = azimuthOffsetTimeseries_;
+            destination.enableSensitivityTimeControlTimeseries_ = enableSensitivityTimeControlTimeseries_;
+            destination.automaticSensitivityTimeControlTimeseries_ = automaticSensitivityTimeControlTimeseries_;
+            destination.sensitivityTimeControlLevelTimeseries_ = sensitivityTimeControlLevelTimeseries_;
+            destination.enableFastTimeConstantTimeseries_ = enableFastTimeConstantTimeseries_;
+            destination.fastTimeConstantLevelTimeseries_ = fastTimeConstantLevelTimeseries_;
+            destination.fastTimeConstantModeTimeseries_ = fastTimeConstantModeTimeseries_;
+            destination.latitudeTimeseries_ = latitudeTimeseries_;
+            destination.longitudeTimeseries_ = longitudeTimeseries_;
+            destination.radome_ = radome_;
+            destination.gNSSDevice_ = gNSSDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10322,6 +13250,63 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( saveSettingsTimeseries_ );
+            destination.Write( powerOnTimeseries_ );
+            destination.Write( trackingOnTimeseries_ );
+            destination.Write( radarPulseTimeseries_ );
+            destination.Write( tuningTimeseries_ );
+            destination.Write( blankSector1Timeseries_ );
+            destination.Write( sector1StartTimeseries_ );
+            destination.Write( sector1EndTimeseries_ );
+            destination.Write( blankSector2Timeseries_ );
+            destination.Write( sector2StartTimeseries_ );
+            destination.Write( sector2EndTimeseries_ );
+            destination.Write( enableAutomaticFrequencyControlTimeseries_ );
+            destination.Write( azimuthOffsetTimeseries_ );
+            destination.Write( enableSensitivityTimeControlTimeseries_ );
+            destination.Write( automaticSensitivityTimeControlTimeseries_ );
+            destination.Write( sensitivityTimeControlLevelTimeseries_ );
+            destination.Write( enableFastTimeConstantTimeseries_ );
+            destination.Write( fastTimeConstantLevelTimeseries_ );
+            destination.Write( fastTimeConstantModeTimeseries_ );
+            destination.Write( latitudeTimeseries_ );
+            destination.Write( longitudeTimeseries_ );
+            destination.Write( radome_ );
+            destination.Write( gNSSDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            saveSettingsTimeseries_ = source.ReadGuid( );
+            powerOnTimeseries_ = source.ReadGuid( );
+            trackingOnTimeseries_ = source.ReadGuid( );
+            radarPulseTimeseries_ = source.ReadGuid( );
+            tuningTimeseries_ = source.ReadGuid( );
+            blankSector1Timeseries_ = source.ReadGuid( );
+            sector1StartTimeseries_ = source.ReadGuid( );
+            sector1EndTimeseries_ = source.ReadGuid( );
+            blankSector2Timeseries_ = source.ReadGuid( );
+            sector2StartTimeseries_ = source.ReadGuid( );
+            sector2EndTimeseries_ = source.ReadGuid( );
+            enableAutomaticFrequencyControlTimeseries_ = source.ReadGuid( );
+            azimuthOffsetTimeseries_ = source.ReadGuid( );
+            enableSensitivityTimeControlTimeseries_ = source.ReadGuid( );
+            automaticSensitivityTimeControlTimeseries_ = source.ReadGuid( );
+            sensitivityTimeControlLevelTimeseries_ = source.ReadGuid( );
+            enableFastTimeConstantTimeseries_ = source.ReadGuid( );
+            fastTimeConstantLevelTimeseries_ = source.ReadGuid( );
+            fastTimeConstantModeTimeseries_ = source.ReadGuid( );
+            latitudeTimeseries_ = source.ReadGuid( );
+            longitudeTimeseries_ = source.ReadGuid( );
+            radome_ = source.ReadNullableGuid( );
+            gNSSDevice_ = source.ReadNullableGuid( );
+        }
+
     }
     public class WeatherStationDeviceObject : DeviceObject
     {
@@ -10334,7 +13319,7 @@ namespace Barrelman.Data.Types
         Guid windDirectionTimeseries_;
         Guid windSpeedTimeseries_;
         Guid gyro_;
-        public WeatherStationDeviceObject ( )
+        public WeatherStationDeviceObject( )
         {
         }
 
@@ -10346,6 +13331,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationDeviceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationDeviceObject )target;
+            destination.barometricPressureTimeseries_ = barometricPressureTimeseries_;
+            destination.airTemperatureTimeseries_ = airTemperatureTimeseries_;
+            destination.waterTemperatureTimeseries_ = waterTemperatureTimeseries_;
+            destination.relativeHumidityTimeseries_ = relativeHumidityTimeseries_;
+            destination.absoluteHumidityTimeseries_ = absoluteHumidityTimeseries_;
+            destination.dewPointTimeseries_ = dewPointTimeseries_;
+            destination.windDirectionTimeseries_ = windDirectionTimeseries_;
+            destination.windSpeedTimeseries_ = windSpeedTimeseries_;
+            destination.gyro_ = gyro_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10465,6 +13465,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( barometricPressureTimeseries_ );
+            destination.Write( airTemperatureTimeseries_ );
+            destination.Write( waterTemperatureTimeseries_ );
+            destination.Write( relativeHumidityTimeseries_ );
+            destination.Write( absoluteHumidityTimeseries_ );
+            destination.Write( dewPointTimeseries_ );
+            destination.Write( windDirectionTimeseries_ );
+            destination.Write( windSpeedTimeseries_ );
+            destination.Write( gyro_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            barometricPressureTimeseries_ = source.ReadGuid( );
+            airTemperatureTimeseries_ = source.ReadGuid( );
+            waterTemperatureTimeseries_ = source.ReadGuid( );
+            relativeHumidityTimeseries_ = source.ReadGuid( );
+            absoluteHumidityTimeseries_ = source.ReadGuid( );
+            dewPointTimeseries_ = source.ReadGuid( );
+            windDirectionTimeseries_ = source.ReadGuid( );
+            windSpeedTimeseries_ = source.ReadGuid( );
+            gyro_ = source.ReadGuid( );
+        }
+
     }
     public class FacilityObject : ItemObject
     {
@@ -10473,7 +13502,7 @@ namespace Barrelman.Data.Types
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double altitude_ = 0.0;
-        public FacilityObject ( )
+        public FacilityObject( )
         {
         }
 
@@ -10485,6 +13514,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new FacilityObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( FacilityObject )target;
+            destination.name_ = name_;
+            destination.type_ = type_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.altitude_ = altitude_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10556,10 +13596,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+            destination.Write( type_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( altitude_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+            type_ = source.ReadGuid( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            altitude_ = source.ReadDouble( );
+        }
+
     }
     public abstract class TrackableItemObject : ItemObject
     {
-        protected TrackableItemObject ( )
+        protected TrackableItemObject( )
         {
         }
 
@@ -10577,7 +13638,7 @@ namespace Barrelman.Data.Types
     {
         string name_ = string.Empty;
         Guid type_;
-        public AircraftObject ( )
+        public AircraftObject( )
         {
         }
 
@@ -10589,6 +13650,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AircraftObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AircraftObject )target;
+            destination.name_ = name_;
+            destination.type_ = type_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10624,6 +13693,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+            destination.Write( type_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+            type_ = source.ReadGuid( );
+        }
+
     }
     public class AisAidToNavigationObject : TrackableItemObject
     {
@@ -10637,7 +13721,7 @@ namespace Barrelman.Data.Types
         int toPort_ = 0;
         int toStarboard_ = 0;
         Guid offPositionTimeseries_;
-        public AisAidToNavigationObject ( )
+        public AisAidToNavigationObject( )
         {
         }
 
@@ -10649,6 +13733,22 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisAidToNavigationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisAidToNavigationObject )target;
+            destination.name_ = name_;
+            destination.mMSI_ = mMSI_;
+            destination.navigationalAidType_ = navigationalAidType_;
+            destination.position_ = position_;
+            destination.isVirtual_ = isVirtual_;
+            destination.toBow_ = toBow_;
+            destination.toStern_ = toStern_;
+            destination.toPort_ = toPort_;
+            destination.toStarboard_ = toStarboard_;
+            destination.offPositionTimeseries_ = offPositionTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10780,12 +13880,43 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+            destination.Write( mMSI_ );
+            destination.Write( navigationalAidType_ );
+            destination.Write( position_ );
+            destination.Write( isVirtual_ );
+            destination.Write( toBow_ );
+            destination.Write( toStern_ );
+            destination.Write( toPort_ );
+            destination.Write( toStarboard_ );
+            destination.Write( offPositionTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+            mMSI_ = source.ReadGuid( );
+            navigationalAidType_ = source.ReadEnum<Types.NavigationalAidType>( );
+            position_ = source.ReadGuid( );
+            isVirtual_ = source.ReadBoolean( );
+            toBow_ = source.ReadInt32( );
+            toStern_ = source.ReadInt32( );
+            toPort_ = source.ReadInt32( );
+            toStarboard_ = source.ReadInt32( );
+            offPositionTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class VehicleObject : TrackableItemObject
     {
         string name_ = string.Empty;
         Guid type_;
-        public VehicleObject ( )
+        public VehicleObject( )
         {
         }
 
@@ -10797,6 +13928,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new VehicleObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( VehicleObject )target;
+            destination.name_ = name_;
+            destination.type_ = type_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10832,6 +13971,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+            destination.Write( type_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+            type_ = source.ReadGuid( );
+        }
+
     }
     public class VesselObject : TrackableItemObject
     {
@@ -10843,7 +13997,7 @@ namespace Barrelman.Data.Types
         int toStarboard_ = 0;
         Guid draughtTimeseries_;
         Guid personsOnBoardTimeseries_;
-        public VesselObject ( )
+        public VesselObject( )
         {
         }
 
@@ -10855,6 +14009,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new VesselObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( VesselObject )target;
+            destination.name_ = name_;
+            destination.type_ = type_;
+            destination.toBow_ = toBow_;
+            destination.toStern_ = toStern_;
+            destination.toPort_ = toPort_;
+            destination.toStarboard_ = toStarboard_;
+            destination.draughtTimeseries_ = draughtTimeseries_;
+            destination.personsOnBoardTimeseries_ = personsOnBoardTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -10962,6 +14130,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+            destination.Write( type_ );
+            destination.Write( toBow_ );
+            destination.Write( toStern_ );
+            destination.Write( toPort_ );
+            destination.Write( toStarboard_ );
+            destination.Write( draughtTimeseries_ );
+            destination.Write( personsOnBoardTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+            type_ = source.ReadGuid( );
+            toBow_ = source.ReadInt32( );
+            toStern_ = source.ReadInt32( );
+            toPort_ = source.ReadInt32( );
+            toStarboard_ = source.ReadInt32( );
+            draughtTimeseries_ = source.ReadGuid( );
+            personsOnBoardTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class ItemIdentityLinkObject : BaseDataGuid<Kind>
     {
@@ -10970,7 +14165,7 @@ namespace Barrelman.Data.Types
         Guid identity_;
         DateTime start_;
         DateTime? end_;
-        public ItemIdentityLinkObject ( )
+        public ItemIdentityLinkObject( )
         {
         }
 
@@ -10982,6 +14177,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ItemIdentityLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ItemIdentityLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.item_ = item_;
+            destination.identity_ = identity_;
+            destination.start_ = start_;
+            destination.end_ = end_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11053,6 +14259,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( item_ );
+            destination.Write( identity_ );
+            destination.Write( start_ );
+            destination.Write( end_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            item_ = source.ReadGuid( );
+            identity_ = source.ReadGuid( );
+            start_ = source.ReadDateTime( );
+            end_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class ItemParentChildLinkObject : BaseDataGuid<Kind>
     {
@@ -11060,7 +14287,7 @@ namespace Barrelman.Data.Types
         Guid parent_;
         Guid child_;
         DateTime timestamp_;
-        public ItemParentChildLinkObject ( )
+        public ItemParentChildLinkObject( )
         {
         }
 
@@ -11072,6 +14299,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ItemParentChildLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ItemParentChildLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.parent_ = parent_;
+            destination.child_ = child_;
+            destination.timestamp_ = timestamp_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11131,6 +14368,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( parent_ );
+            destination.Write( child_ );
+            destination.Write( timestamp_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            parent_ = source.ReadGuid( );
+            child_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+        }
+
     }
     public class LineInputDeviceCommandObject : BaseDataGuid<Kind>
     {
@@ -11140,7 +14396,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public LineInputDeviceCommandObject ( )
+        public LineInputDeviceCommandObject( )
         {
         }
 
@@ -11152,6 +14408,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LineInputDeviceCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LineInputDeviceCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.lineInputDevice_ = lineInputDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11235,6 +14503,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( lineInputDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            lineInputDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class LineInputDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -11244,7 +14535,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public LineInputDeviceCommandReplyObject ( )
+        public LineInputDeviceCommandReplyObject( )
         {
         }
 
@@ -11256,6 +14547,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LineInputDeviceCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LineInputDeviceCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.lineInputDevice_ = lineInputDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11339,6 +14642,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( lineInputDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            lineInputDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class LineInputDeviceConfigurationObject : BaseDataGuid<Kind>
     {
@@ -11378,7 +14704,7 @@ namespace Barrelman.Data.Types
         int writeBufferSize_ = 0;
         TimeSpan writeTimeout_;
         string pairedComPort_ = string.Empty;
-        public LineInputDeviceConfigurationObject ( )
+        public LineInputDeviceConfigurationObject( )
         {
         }
 
@@ -11390,6 +14716,48 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LineInputDeviceConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LineInputDeviceConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.lineInputDevice_ = lineInputDevice_;
+            destination.timestamp_ = timestamp_;
+            destination.storeReceivedSentences_ = storeReceivedSentences_;
+            destination.storeSentMessages_ = storeSentMessages_;
+            destination.storeUnsentMessages_ = storeUnsentMessages_;
+            destination.nMEA_ = nMEA_;
+            destination.strictNMEA_ = strictNMEA_;
+            destination.connectionType_ = connectionType_;
+            destination.udpReceivePort_ = udpReceivePort_;
+            destination.udpSendHostname_ = udpSendHostname_;
+            destination.udpSendPort_ = udpSendPort_;
+            destination.tcpHostname_ = tcpHostname_;
+            destination.tcpPort_ = tcpPort_;
+            destination.useHttpLogin_ = useHttpLogin_;
+            destination.loginHostname_ = loginHostname_;
+            destination.loginPort_ = loginPort_;
+            destination.userName_ = userName_;
+            destination.password_ = password_;
+            destination.comPort_ = comPort_;
+            destination.baudRate_ = baudRate_;
+            destination.dataBits_ = dataBits_;
+            destination.discardNull_ = discardNull_;
+            destination.dtrEnable_ = dtrEnable_;
+            destination.handshake_ = handshake_;
+            destination.newLine_ = newLine_;
+            destination.parity_ = parity_;
+            destination.parityReplace_ = parityReplace_;
+            destination.readBufferSize_ = readBufferSize_;
+            destination.readTimeout_ = readTimeout_;
+            destination.receivedBytesThreshold_ = receivedBytesThreshold_;
+            destination.rtsEnable_ = rtsEnable_;
+            destination.stopBits_ = stopBits_;
+            destination.writeBufferSize_ = writeBufferSize_;
+            destination.writeTimeout_ = writeTimeout_;
+            destination.pairedComPort_ = pairedComPort_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11833,13 +15201,96 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( lineInputDevice_ );
+            destination.Write( timestamp_ );
+            destination.Write( storeReceivedSentences_ );
+            destination.Write( storeSentMessages_ );
+            destination.Write( storeUnsentMessages_ );
+            destination.Write( nMEA_ );
+            destination.Write( strictNMEA_ );
+            destination.Write( connectionType_ );
+            destination.Write( udpReceivePort_ );
+            destination.Write( udpSendHostname_ );
+            destination.Write( udpSendPort_ );
+            destination.Write( tcpHostname_ );
+            destination.Write( tcpPort_ );
+            destination.Write( useHttpLogin_ );
+            destination.Write( loginHostname_ );
+            destination.Write( loginPort_ );
+            destination.Write( userName_ );
+            destination.Write( password_ );
+            destination.Write( comPort_ );
+            destination.Write( baudRate_ );
+            destination.Write( dataBits_ );
+            destination.Write( discardNull_ );
+            destination.Write( dtrEnable_ );
+            destination.Write( handshake_ );
+            destination.Write( newLine_ );
+            destination.Write( parity_ );
+            destination.Write( parityReplace_ );
+            destination.Write( readBufferSize_ );
+            destination.Write( readTimeout_ );
+            destination.Write( receivedBytesThreshold_ );
+            destination.Write( rtsEnable_ );
+            destination.Write( stopBits_ );
+            destination.Write( writeBufferSize_ );
+            destination.Write( writeTimeout_ );
+            destination.Write( pairedComPort_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            lineInputDevice_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            storeReceivedSentences_ = source.ReadBoolean( );
+            storeSentMessages_ = source.ReadBoolean( );
+            storeUnsentMessages_ = source.ReadBoolean( );
+            nMEA_ = source.ReadBoolean( );
+            strictNMEA_ = source.ReadBoolean( );
+            connectionType_ = source.ReadEnum<Types.LineInputDeviceConnectionType>( );
+            udpReceivePort_ = source.ReadInt32( );
+            udpSendHostname_ = source.ReadString( );
+            udpSendPort_ = source.ReadInt32( );
+            tcpHostname_ = source.ReadString( );
+            tcpPort_ = source.ReadInt32( );
+            useHttpLogin_ = source.ReadBoolean( );
+            loginHostname_ = source.ReadString( );
+            loginPort_ = source.ReadInt32( );
+            userName_ = source.ReadString( );
+            password_ = source.ReadString( );
+            comPort_ = source.ReadString( );
+            baudRate_ = source.ReadInt32( );
+            dataBits_ = source.ReadInt32( );
+            discardNull_ = source.ReadBoolean( );
+            dtrEnable_ = source.ReadBoolean( );
+            handshake_ = source.ReadEnum<Types.Handshake>( );
+            newLine_ = source.ReadString( );
+            parity_ = source.ReadEnum<Types.Parity>( );
+            parityReplace_ = source.ReadByte( );
+            readBufferSize_ = source.ReadInt32( );
+            readTimeout_ = source.ReadTimeSpan( );
+            receivedBytesThreshold_ = source.ReadInt32( );
+            rtsEnable_ = source.ReadBoolean( );
+            stopBits_ = source.ReadEnum<Types.StopBits>( );
+            writeBufferSize_ = source.ReadInt32( );
+            writeTimeout_ = source.ReadTimeSpan( );
+            pairedComPort_ = source.ReadString( );
+        }
+
     }
     public class LineInputMessageRoutingObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid lineInputDevice_;
         string type_ = string.Empty;
-        public LineInputMessageRoutingObject ( )
+        public LineInputMessageRoutingObject( )
         {
         }
 
@@ -11851,6 +15302,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LineInputMessageRoutingObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LineInputMessageRoutingObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.lineInputDevice_ = lineInputDevice_;
+            destination.type_ = type_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11898,13 +15358,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( lineInputDevice_ );
+            destination.Write( type_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            lineInputDevice_ = source.ReadGuid( );
+            type_ = source.ReadString( );
+        }
+
     }
     public class LineInputMessageRoutingDestinationObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid routing_;
         Guid listener_;
-        public LineInputMessageRoutingDestinationObject ( )
+        public LineInputMessageRoutingDestinationObject( )
         {
         }
 
@@ -11916,6 +15393,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LineInputMessageRoutingDestinationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LineInputMessageRoutingDestinationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.routing_ = routing_;
+            destination.listener_ = listener_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -11963,6 +15449,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( routing_ );
+            destination.Write( listener_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            routing_ = source.ReadGuid( );
+            listener_ = source.ReadGuid( );
+        }
+
     }
     public class LineInputWhiteListEntryObject : BaseDataGuid<Kind>
     {
@@ -11970,7 +15473,7 @@ namespace Barrelman.Data.Types
         Guid lineInputDevice_;
         string hostName_ = string.Empty;
         int port_ = 0;
-        public LineInputWhiteListEntryObject ( )
+        public LineInputWhiteListEntryObject( )
         {
         }
 
@@ -11982,6 +15485,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LineInputWhiteListEntryObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LineInputWhiteListEntryObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.lineInputDevice_ = lineInputDevice_;
+            destination.hostName_ = hostName_;
+            destination.port_ = port_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12041,13 +15554,32 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( lineInputDevice_ );
+            destination.Write( hostName_ );
+            destination.Write( port_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            lineInputDevice_ = source.ReadGuid( );
+            hostName_ = source.ReadString( );
+            port_ = source.ReadInt32( );
+        }
+
     }
     public class LogApplicationObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
         string description_ = string.Empty;
-        public LogApplicationObject ( )
+        public LogApplicationObject( )
         {
         }
 
@@ -12059,6 +15591,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogApplicationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogApplicationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
+            destination.description_ = description_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12106,6 +15647,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+            destination.Write( description_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+            description_ = source.ReadString( );
+        }
+
     }
     public class LogApplicationConfigurationObject : BaseDataGuid<Kind>
     {
@@ -12124,7 +15682,7 @@ namespace Barrelman.Data.Types
         bool alert_ = false;
         bool fatal_ = false;
         bool emergency_ = false;
-        public LogApplicationConfigurationObject ( )
+        public LogApplicationConfigurationObject( )
         {
         }
 
@@ -12136,6 +15694,27 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogApplicationConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogApplicationConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.application_ = application_;
+            destination.timestamp_ = timestamp_;
+            destination.finest_ = finest_;
+            destination.finer_ = finer_;
+            destination.fine_ = fine_;
+            destination.info_ = info_;
+            destination.notice_ = notice_;
+            destination.warn_ = warn_;
+            destination.error_ = error_;
+            destination.severe_ = severe_;
+            destination.critical_ = critical_;
+            destination.alert_ = alert_;
+            destination.fatal_ = fatal_;
+            destination.emergency_ = emergency_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12327,13 +15906,54 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( application_ );
+            destination.Write( timestamp_ );
+            destination.Write( finest_ );
+            destination.Write( finer_ );
+            destination.Write( fine_ );
+            destination.Write( info_ );
+            destination.Write( notice_ );
+            destination.Write( warn_ );
+            destination.Write( error_ );
+            destination.Write( severe_ );
+            destination.Write( critical_ );
+            destination.Write( alert_ );
+            destination.Write( fatal_ );
+            destination.Write( emergency_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            application_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            finest_ = source.ReadBoolean( );
+            finer_ = source.ReadBoolean( );
+            fine_ = source.ReadBoolean( );
+            info_ = source.ReadBoolean( );
+            notice_ = source.ReadBoolean( );
+            warn_ = source.ReadBoolean( );
+            error_ = source.ReadBoolean( );
+            severe_ = source.ReadBoolean( );
+            critical_ = source.ReadBoolean( );
+            alert_ = source.ReadBoolean( );
+            fatal_ = source.ReadBoolean( );
+            emergency_ = source.ReadBoolean( );
+        }
+
     }
     public class LogHostObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string computerName_ = string.Empty;
         string description_ = string.Empty;
-        public LogHostObject ( )
+        public LogHostObject( )
         {
         }
 
@@ -12345,6 +15965,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogHostObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogHostObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.computerName_ = computerName_;
+            destination.description_ = description_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12392,6 +16021,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( computerName_ );
+            destination.Write( description_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            computerName_ = source.ReadString( );
+            description_ = source.ReadString( );
+        }
+
     }
     public class LogHostConfigurationObject : BaseDataGuid<Kind>
     {
@@ -12410,7 +16056,7 @@ namespace Barrelman.Data.Types
         bool alert_ = false;
         bool fatal_ = false;
         bool emergency_ = false;
-        public LogHostConfigurationObject ( )
+        public LogHostConfigurationObject( )
         {
         }
 
@@ -12422,6 +16068,27 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogHostConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogHostConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.host_ = host_;
+            destination.timestamp_ = timestamp_;
+            destination.finest_ = finest_;
+            destination.finer_ = finer_;
+            destination.fine_ = fine_;
+            destination.info_ = info_;
+            destination.notice_ = notice_;
+            destination.warn_ = warn_;
+            destination.error_ = error_;
+            destination.severe_ = severe_;
+            destination.critical_ = critical_;
+            destination.alert_ = alert_;
+            destination.fatal_ = fatal_;
+            destination.emergency_ = emergency_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12613,6 +16280,47 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( host_ );
+            destination.Write( timestamp_ );
+            destination.Write( finest_ );
+            destination.Write( finer_ );
+            destination.Write( fine_ );
+            destination.Write( info_ );
+            destination.Write( notice_ );
+            destination.Write( warn_ );
+            destination.Write( error_ );
+            destination.Write( severe_ );
+            destination.Write( critical_ );
+            destination.Write( alert_ );
+            destination.Write( fatal_ );
+            destination.Write( emergency_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            host_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            finest_ = source.ReadBoolean( );
+            finer_ = source.ReadBoolean( );
+            fine_ = source.ReadBoolean( );
+            info_ = source.ReadBoolean( );
+            notice_ = source.ReadBoolean( );
+            warn_ = source.ReadBoolean( );
+            error_ = source.ReadBoolean( );
+            severe_ = source.ReadBoolean( );
+            critical_ = source.ReadBoolean( );
+            alert_ = source.ReadBoolean( );
+            fatal_ = source.ReadBoolean( );
+            emergency_ = source.ReadBoolean( );
+        }
+
     }
     public class LogLocationObject : BaseDataGuid<Kind>
     {
@@ -12622,7 +16330,7 @@ namespace Barrelman.Data.Types
         string namespace_ = string.Empty;
         string className_ = string.Empty;
         string methodName_ = string.Empty;
-        public LogLocationObject ( )
+        public LogLocationObject( )
         {
         }
 
@@ -12634,6 +16342,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogLocationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogLocationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.fileName_ = fileName_;
+            destination.lineNumber_ = lineNumber_;
+            destination.namespace_ = namespace_;
+            destination.className_ = className_;
+            destination.methodName_ = methodName_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12717,6 +16437,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( fileName_ );
+            destination.Write( lineNumber_ );
+            destination.Write( namespace_ );
+            destination.Write( className_ );
+            destination.Write( methodName_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            fileName_ = source.ReadString( );
+            lineNumber_ = source.ReadInt32( );
+            namespace_ = source.ReadString( );
+            className_ = source.ReadString( );
+            methodName_ = source.ReadString( );
+        }
+
     }
     public class LogProcessObject : BaseDataGuid<Kind>
     {
@@ -12728,7 +16471,7 @@ namespace Barrelman.Data.Types
         long processId_ = 0;
         string path_ = string.Empty;
         string identity_ = string.Empty;
-        public LogProcessObject ( )
+        public LogProcessObject( )
         {
         }
 
@@ -12740,6 +16483,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogProcessObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogProcessObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.application_ = application_;
+            destination.host_ = host_;
+            destination.started_ = started_;
+            destination.stopped_ = stopped_;
+            destination.processId_ = processId_;
+            destination.path_ = path_;
+            destination.identity_ = identity_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -12847,6 +16604,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( application_ );
+            destination.Write( host_ );
+            destination.Write( started_ );
+            destination.Write( stopped_ );
+            destination.Write( processId_ );
+            destination.Write( path_ );
+            destination.Write( identity_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            application_ = source.ReadGuid( );
+            host_ = source.ReadGuid( );
+            started_ = source.ReadDateTime( );
+            stopped_ = source.ReadNullableDateTime( );
+            processId_ = source.ReadInt64( );
+            path_ = source.ReadString( );
+            identity_ = source.ReadString( );
+        }
+
     }
     public class LogRecordObject : BaseDataGuid<Kind>
     {
@@ -12860,7 +16644,7 @@ namespace Barrelman.Data.Types
         string message_ = string.Empty;
         string exceptionString_ = string.Empty;
         byte[] propertiesData_ = Array.Empty<byte>();
-        public LogRecordObject ( )
+        public LogRecordObject( )
         {
         }
 
@@ -12872,6 +16656,22 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogRecordObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogRecordObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.thread_ = thread_;
+            destination.sequenceNumber_ = sequenceNumber_;
+            destination.level_ = level_;
+            destination.timestamp_ = timestamp_;
+            destination.depth_ = depth_;
+            destination.location_ = location_;
+            destination.message_ = message_;
+            destination.exceptionString_ = exceptionString_;
+            destination.propertiesData_ = (byte[])propertiesData_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13003,6 +16803,37 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( thread_ );
+            destination.Write( sequenceNumber_ );
+            destination.Write( level_ );
+            destination.Write( timestamp_ );
+            destination.Write( depth_ );
+            destination.Write( location_ );
+            destination.Write( message_ );
+            destination.Write( exceptionString_ );
+            destination.WriteArray( propertiesData_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            thread_ = source.ReadGuid( );
+            sequenceNumber_ = source.ReadInt64( );
+            level_ = source.ReadEnum<Types.LogLevel>( );
+            timestamp_ = source.ReadDateTime( );
+            depth_ = source.ReadInt32( );
+            location_ = source.ReadGuid( );
+            message_ = source.ReadString( );
+            exceptionString_ = source.ReadString( );
+            propertiesData_ = source.ReadByteArray( );
+        }
+
     }
     public class LogThreadObject : BaseDataGuid<Kind>
     {
@@ -13012,7 +16843,7 @@ namespace Barrelman.Data.Types
         DateTime? stopped_;
         long threadId_ = 0;
         string name_ = string.Empty;
-        public LogThreadObject ( )
+        public LogThreadObject( )
         {
         }
 
@@ -13024,6 +16855,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogThreadObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogThreadObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.process_ = process_;
+            destination.started_ = started_;
+            destination.stopped_ = stopped_;
+            destination.threadId_ = threadId_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13107,6 +16950,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( process_ );
+            destination.Write( started_ );
+            destination.Write( stopped_ );
+            destination.Write( threadId_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            process_ = source.ReadGuid( );
+            started_ = source.ReadDateTime( );
+            stopped_ = source.ReadNullableDateTime( );
+            threadId_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class LogTraceEntryObject : BaseDataGuid<Kind>
     {
@@ -13117,7 +16983,7 @@ namespace Barrelman.Data.Types
         int depth_ = 0;
         DateTime entered_;
         DateTime? ended_;
-        public LogTraceEntryObject ( )
+        public LogTraceEntryObject( )
         {
         }
 
@@ -13129,6 +16995,19 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new LogTraceEntryObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( LogTraceEntryObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.thread_ = thread_;
+            destination.sequenceNumber_ = sequenceNumber_;
+            destination.location_ = location_;
+            destination.depth_ = depth_;
+            destination.entered_ = entered_;
+            destination.ended_ = ended_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13224,6 +17103,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( thread_ );
+            destination.Write( sequenceNumber_ );
+            destination.Write( location_ );
+            destination.Write( depth_ );
+            destination.Write( entered_ );
+            destination.Write( ended_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            thread_ = source.ReadGuid( );
+            sequenceNumber_ = source.ReadInt64( );
+            location_ = source.ReadGuid( );
+            depth_ = source.ReadInt32( );
+            entered_ = source.ReadDateTime( );
+            ended_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class MapElementObject : BaseDataGuid<Kind>
     {
@@ -13239,7 +17143,7 @@ namespace Barrelman.Data.Types
         double height_ = 0.0;
         string label_ = string.Empty;
         byte[] data_ = Array.Empty<byte>();
-        public MapElementObject ( )
+        public MapElementObject( )
         {
         }
 
@@ -13251,6 +17155,24 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MapElementObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MapElementObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.item_ = item_;
+            destination.elementType_ = elementType_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.angle_ = angle_;
+            destination.left_ = left_;
+            destination.top_ = top_;
+            destination.width_ = width_;
+            destination.height_ = height_;
+            destination.label_ = label_;
+            destination.data_ = (byte[])data_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13406,6 +17328,41 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( item_ );
+            destination.Write( elementType_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( angle_ );
+            destination.Write( left_ );
+            destination.Write( top_ );
+            destination.Write( width_ );
+            destination.Write( height_ );
+            destination.Write( label_ );
+            destination.WriteArray( data_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            item_ = source.ReadGuid( );
+            elementType_ = source.ReadEnum<Types.MapElementType>( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            angle_ = source.ReadDouble( );
+            left_ = source.ReadDouble( );
+            top_ = source.ReadDouble( );
+            width_ = source.ReadDouble( );
+            height_ = source.ReadDouble( );
+            label_ = source.ReadString( );
+            data_ = source.ReadByteArray( );
+        }
+
     }
     public class MapInfoObject : BaseDataGuid<Kind>
     {
@@ -13418,7 +17375,7 @@ namespace Barrelman.Data.Types
         double southEastLatitude_ = 0.0;
         double southEastLongitude_ = 0.0;
         byte[] image_ = Array.Empty<byte>();
-        public MapInfoObject ( )
+        public MapInfoObject( )
         {
         }
 
@@ -13430,6 +17387,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MapInfoObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MapInfoObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.scale_ = scale_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.northWestLatitude_ = northWestLatitude_;
+            destination.northWestLongitude_ = northWestLongitude_;
+            destination.southEastLatitude_ = southEastLatitude_;
+            destination.southEastLongitude_ = southEastLongitude_;
+            destination.image_ = (byte[])image_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13549,6 +17521,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( scale_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( northWestLatitude_ );
+            destination.Write( northWestLongitude_ );
+            destination.Write( southEastLatitude_ );
+            destination.Write( southEastLongitude_ );
+            destination.WriteArray( image_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            scale_ = source.ReadInt32( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            northWestLatitude_ = source.ReadDouble( );
+            northWestLongitude_ = source.ReadDouble( );
+            southEastLatitude_ = source.ReadDouble( );
+            southEastLongitude_ = source.ReadDouble( );
+            image_ = source.ReadByteArray( );
+        }
+
     }
     public class MapServiceOptionsObject : BaseDataGuid<Kind>
     {
@@ -13560,7 +17561,7 @@ namespace Barrelman.Data.Types
         double imageOffsetX_ = 0.0;
         double imageScaleFactorY_ = 0.0;
         double imageOffsetY_ = 0.0;
-        public MapServiceOptionsObject ( )
+        public MapServiceOptionsObject( )
         {
         }
 
@@ -13572,6 +17573,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MapServiceOptionsObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MapServiceOptionsObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timestamp_ = timestamp_;
+            destination.ipAddress_ = ipAddress_;
+            destination.port_ = port_;
+            destination.imageScaleFactorX_ = imageScaleFactorX_;
+            destination.imageOffsetX_ = imageOffsetX_;
+            destination.imageScaleFactorY_ = imageScaleFactorY_;
+            destination.imageOffsetY_ = imageOffsetY_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13679,13 +17694,40 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timestamp_ );
+            destination.Write( ipAddress_ );
+            destination.Write( port_ );
+            destination.Write( imageScaleFactorX_ );
+            destination.Write( imageOffsetX_ );
+            destination.Write( imageScaleFactorY_ );
+            destination.Write( imageOffsetY_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timestamp_ = source.ReadDateTime( );
+            ipAddress_ = source.ReadString( );
+            port_ = source.ReadInt32( );
+            imageScaleFactorX_ = source.ReadDouble( );
+            imageOffsetX_ = source.ReadDouble( );
+            imageScaleFactorY_ = source.ReadDouble( );
+            imageOffsetY_ = source.ReadDouble( );
+        }
+
     }
     public class MaritimeIdentificationDigitsObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         int code_ = 0;
         Guid country_;
-        public MaritimeIdentificationDigitsObject ( )
+        public MaritimeIdentificationDigitsObject( )
         {
         }
 
@@ -13697,6 +17739,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MaritimeIdentificationDigitsObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MaritimeIdentificationDigitsObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.code_ = code_;
+            destination.country_ = country_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13744,6 +17795,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( code_ );
+            destination.Write( country_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            code_ = source.ReadInt32( );
+            country_ = source.ReadGuid( );
+        }
+
     }
     public class MediaProxySessionObject : BaseDataGuid<Kind>
     {
@@ -13751,7 +17819,7 @@ namespace Barrelman.Data.Types
         Guid service_;
         string name_ = string.Empty;
         Guid enabledTimeseries_;
-        public MediaProxySessionObject ( )
+        public MediaProxySessionObject( )
         {
         }
 
@@ -13763,6 +17831,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaProxySessionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaProxySessionObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.service_ = service_;
+            destination.name_ = name_;
+            destination.enabledTimeseries_ = enabledTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13822,6 +17900,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( service_ );
+            destination.Write( name_ );
+            destination.Write( enabledTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            service_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+            enabledTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class MediaProxySessionFileObject : BaseDataGuid<Kind>
     {
@@ -13829,7 +17926,7 @@ namespace Barrelman.Data.Types
         Guid proxySession_;
         DateTime timestamp_;
         string streamName_ = string.Empty;
-        public MediaProxySessionFileObject ( )
+        public MediaProxySessionFileObject( )
         {
         }
 
@@ -13841,6 +17938,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaProxySessionFileObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaProxySessionFileObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.proxySession_ = proxySession_;
+            destination.timestamp_ = timestamp_;
+            destination.streamName_ = streamName_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -13900,6 +18007,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( proxySession_ );
+            destination.Write( timestamp_ );
+            destination.Write( streamName_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            proxySession_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            streamName_ = source.ReadString( );
+        }
+
     }
     public class MediaProxySessionOptionsObject : BaseDataGuid<Kind>
     {
@@ -13917,7 +18043,7 @@ namespace Barrelman.Data.Types
         TimeSpan maxFileTime_;
         TimeSpan maxFileRetention_;
         string videoDirectory_ = string.Empty;
-        public MediaProxySessionOptionsObject ( )
+        public MediaProxySessionOptionsObject( )
         {
         }
 
@@ -13929,6 +18055,26 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaProxySessionOptionsObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaProxySessionOptionsObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.proxySession_ = proxySession_;
+            destination.timestamp_ = timestamp_;
+            destination.sourceStreamUrl_ = sourceStreamUrl_;
+            destination.streamName_ = streamName_;
+            destination.mode_ = mode_;
+            destination.tunnelOverHTTPPortNumber_ = tunnelOverHTTPPortNumber_;
+            destination.username_ = username_;
+            destination.password_ = password_;
+            destination.recorderPortNumber_ = recorderPortNumber_;
+            destination.sessionType_ = sessionType_;
+            destination.maxFileTime_ = maxFileTime_;
+            destination.maxFileRetention_ = maxFileRetention_;
+            destination.videoDirectory_ = videoDirectory_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14108,12 +18254,51 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( proxySession_ );
+            destination.Write( timestamp_ );
+            destination.Write( sourceStreamUrl_ );
+            destination.Write( streamName_ );
+            destination.Write( mode_ );
+            destination.Write( tunnelOverHTTPPortNumber_ );
+            destination.Write( username_ );
+            destination.Write( password_ );
+            destination.Write( recorderPortNumber_ );
+            destination.Write( sessionType_ );
+            destination.Write( maxFileTime_ );
+            destination.Write( maxFileRetention_ );
+            destination.Write( videoDirectory_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            proxySession_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            sourceStreamUrl_ = source.ReadString( );
+            streamName_ = source.ReadString( );
+            mode_ = source.ReadEnum<Types.MediaProxySessionMode>( );
+            tunnelOverHTTPPortNumber_ = source.ReadInt32( );
+            username_ = source.ReadString( );
+            password_ = source.ReadString( );
+            recorderPortNumber_ = source.ReadInt32( );
+            sessionType_ = source.ReadEnum<Types.MediaProxySessionType>( );
+            maxFileTime_ = source.ReadTimeSpan( );
+            maxFileRetention_ = source.ReadTimeSpan( );
+            videoDirectory_ = source.ReadString( );
+        }
+
     }
     public class MediaServiceObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid enabledTimeseries_;
-        public MediaServiceObject ( )
+        public MediaServiceObject( )
         {
         }
 
@@ -14125,6 +18310,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaServiceObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaServiceObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.enabledTimeseries_ = enabledTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14160,6 +18353,21 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( enabledTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            enabledTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class MediaServiceOptionsObject : BaseDataGuid<Kind>
     {
@@ -14168,7 +18376,7 @@ namespace Barrelman.Data.Types
         DateTime timestamp_;
         int rtspPortNumber_ = 0;
         int httpPortNumber_ = 0;
-        public MediaServiceOptionsObject ( )
+        public MediaServiceOptionsObject( )
         {
         }
 
@@ -14180,6 +18388,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaServiceOptionsObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaServiceOptionsObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.mediaService_ = mediaService_;
+            destination.timestamp_ = timestamp_;
+            destination.rtspPortNumber_ = rtspPortNumber_;
+            destination.httpPortNumber_ = httpPortNumber_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14251,6 +18470,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( mediaService_ );
+            destination.Write( timestamp_ );
+            destination.Write( rtspPortNumber_ );
+            destination.Write( httpPortNumber_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            mediaService_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            rtspPortNumber_ = source.ReadInt32( );
+            httpPortNumber_ = source.ReadInt32( );
+        }
+
     }
     public abstract class NamespaceElementObject : BaseDataGuid<Kind>
     {
@@ -14258,8 +18498,18 @@ namespace Barrelman.Data.Types
         Guid namespace_;
         string name_ = string.Empty;
         string description_ = string.Empty;
-        protected NamespaceElementObject ( )
+        protected NamespaceElementObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( NamespaceElementObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.namespace_ = namespace_;
+            destination.name_ = name_;
+            destination.description_ = description_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14319,10 +18569,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( namespace_ );
+            destination.Write( name_ );
+            destination.Write( description_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            namespace_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+            description_ = source.ReadString( );
+        }
+
     }
     public class ElementTypeObject : NamespaceElementObject
     {
-        public ElementTypeObject ( )
+        public ElementTypeObject( )
         {
         }
 
@@ -14348,7 +18617,7 @@ namespace Barrelman.Data.Types
     }
     public class NamespaceObject : NamespaceElementObject
     {
-        public NamespaceObject ( )
+        public NamespaceObject( )
         {
         }
 
@@ -14382,7 +18651,7 @@ namespace Barrelman.Data.Types
         byte[] bSI_ = Array.Empty<byte>();
         byte[] oil_ = Array.Empty<byte>();
         byte[] trace_ = Array.Empty<byte>();
-        public OilSpillObject ( )
+        public OilSpillObject( )
         {
         }
 
@@ -14394,6 +18663,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new OilSpillObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( OilSpillObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.oilSpillDetector_ = oilSpillDetector_;
+            destination.timestamp_ = timestamp_;
+            destination.oilArea_ = oilArea_;
+            destination.shape_ = (byte[])shape_.Clone( );
+            destination.bSI_ = (byte[])bSI_.Clone( );
+            destination.oil_ = (byte[])oil_.Clone( );
+            destination.trace_ = (byte[])trace_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14501,6 +18784,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( oilSpillDetector_ );
+            destination.Write( timestamp_ );
+            destination.Write( oilArea_ );
+            destination.WriteArray( shape_ );
+            destination.WriteArray( bSI_ );
+            destination.WriteArray( oil_ );
+            destination.WriteArray( trace_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            oilSpillDetector_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            oilArea_ = source.ReadDouble( );
+            shape_ = source.ReadByteArray( );
+            bSI_ = source.ReadByteArray( );
+            oil_ = source.ReadByteArray( );
+            trace_ = source.ReadByteArray( );
+        }
+
     }
     public class OilSpillDetectorCommandObject : BaseDataGuid<Kind>
     {
@@ -14510,7 +18820,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public OilSpillDetectorCommandObject ( )
+        public OilSpillDetectorCommandObject( )
         {
         }
 
@@ -14522,6 +18832,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new OilSpillDetectorCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( OilSpillDetectorCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.oilSpillDetector_ = oilSpillDetector_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14605,6 +18927,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( oilSpillDetector_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            oilSpillDetector_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class OilSpillDetectorCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -14614,7 +18959,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public OilSpillDetectorCommandReplyObject ( )
+        public OilSpillDetectorCommandReplyObject( )
         {
         }
 
@@ -14626,6 +18971,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new OilSpillDetectorCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( OilSpillDetectorCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.oilSpillDetector_ = oilSpillDetector_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -14709,6 +19066,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( oilSpillDetector_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            oilSpillDetector_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class OilSpillDetectorConfigurationObject : BaseDataGuid<Kind>
     {
@@ -14737,7 +19117,7 @@ namespace Barrelman.Data.Types
         bool testSourceEnabled_ = false;
         string proxyServer_ = string.Empty;
         bool useProxyServer_ = false;
-        public OilSpillDetectorConfigurationObject ( )
+        public OilSpillDetectorConfigurationObject( )
         {
         }
 
@@ -14749,6 +19129,37 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new OilSpillDetectorConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( OilSpillDetectorConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.oilSpillDetector_ = oilSpillDetector_;
+            destination.timestamp_ = timestamp_;
+            destination.range_ = range_;
+            destination.startAngle_ = startAngle_;
+            destination.endAngle_ = endAngle_;
+            destination.startRange_ = startRange_;
+            destination.endRange_ = endRange_;
+            destination.updateRate_ = updateRate_;
+            destination.statusSendTime_ = statusSendTime_;
+            destination.drawBorder_ = drawBorder_;
+            destination.colors_ = (byte[])colors_.Clone( );
+            destination.sendToServer_ = sendToServer_;
+            destination.directory_ = directory_;
+            destination.transparentWater_ = transparentWater_;
+            destination.savePictures_ = savePictures_;
+            destination.sendAsTarget_ = sendAsTarget_;
+            destination.writeLog_ = writeLog_;
+            destination.targetFilePrefix_ = targetFilePrefix_;
+            destination.targetMMSI_ = targetMMSI_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.testSourceEnabled_ = testSourceEnabled_;
+            destination.proxyServer_ = proxyServer_;
+            destination.useProxyServer_ = useProxyServer_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15060,6 +19471,67 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( oilSpillDetector_ );
+            destination.Write( timestamp_ );
+            destination.Write( range_ );
+            destination.Write( startAngle_ );
+            destination.Write( endAngle_ );
+            destination.Write( startRange_ );
+            destination.Write( endRange_ );
+            destination.Write( updateRate_ );
+            destination.Write( statusSendTime_ );
+            destination.Write( drawBorder_ );
+            destination.WriteArray( colors_ );
+            destination.Write( sendToServer_ );
+            destination.Write( directory_ );
+            destination.Write( transparentWater_ );
+            destination.Write( savePictures_ );
+            destination.Write( sendAsTarget_ );
+            destination.Write( writeLog_ );
+            destination.Write( targetFilePrefix_ );
+            destination.Write( targetMMSI_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( testSourceEnabled_ );
+            destination.Write( proxyServer_ );
+            destination.Write( useProxyServer_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            oilSpillDetector_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            range_ = source.ReadDouble( );
+            startAngle_ = source.ReadDouble( );
+            endAngle_ = source.ReadDouble( );
+            startRange_ = source.ReadDouble( );
+            endRange_ = source.ReadDouble( );
+            updateRate_ = source.ReadInt32( );
+            statusSendTime_ = source.ReadTimeSpan( );
+            drawBorder_ = source.ReadBoolean( );
+            colors_ = source.ReadByteArray( );
+            sendToServer_ = source.ReadBoolean( );
+            directory_ = source.ReadString( );
+            transparentWater_ = source.ReadBoolean( );
+            savePictures_ = source.ReadBoolean( );
+            sendAsTarget_ = source.ReadBoolean( );
+            writeLog_ = source.ReadBoolean( );
+            targetFilePrefix_ = source.ReadString( );
+            targetMMSI_ = source.ReadGuid( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            testSourceEnabled_ = source.ReadBoolean( );
+            proxyServer_ = source.ReadString( );
+            useProxyServer_ = source.ReadBoolean( );
+        }
+
     }
     public class Position2DTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -15068,7 +19540,7 @@ namespace Barrelman.Data.Types
         DateTime timestamp_;
         double? x_;
         double? y_;
-        public Position2DTimeseriesValueObject ( )
+        public Position2DTimeseriesValueObject( )
         {
         }
 
@@ -15080,6 +19552,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Position2DTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Position2DTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.x_ = x_;
+            destination.y_ = y_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15151,6 +19634,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( x_ );
+            destination.Write( y_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            x_ = source.ReadNullableDouble( );
+            y_ = source.ReadNullableDouble( );
+        }
+
     }
     public class Position3DTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -15160,7 +19664,7 @@ namespace Barrelman.Data.Types
         double? x_;
         double? y_;
         double? z_;
-        public Position3DTimeseriesValueObject ( )
+        public Position3DTimeseriesValueObject( )
         {
         }
 
@@ -15172,6 +19676,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Position3DTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Position3DTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.x_ = x_;
+            destination.y_ = y_;
+            destination.z_ = z_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15255,13 +19771,36 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( x_ );
+            destination.Write( y_ );
+            destination.Write( z_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            x_ = source.ReadNullableDouble( );
+            y_ = source.ReadNullableDouble( );
+            z_ = source.ReadNullableDouble( );
+        }
+
     }
     public class ProcessTrackValueResultObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         bool createdNewTrack_ = false;
         Guid trackId_;
-        public ProcessTrackValueResultObject ( )
+        public ProcessTrackValueResultObject( )
         {
         }
 
@@ -15273,6 +19812,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ProcessTrackValueResultObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ProcessTrackValueResultObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.createdNewTrack_ = createdNewTrack_;
+            destination.trackId_ = trackId_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15320,14 +19868,40 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( createdNewTrack_ );
+            destination.Write( trackId_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            createdNewTrack_ = source.ReadBoolean( );
+            trackId_ = source.ReadGuid( );
+        }
+
     }
     public abstract class PropertyObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid element_;
         Guid definition_;
-        protected PropertyObject ( )
+        protected PropertyObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( PropertyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.element_ = element_;
+            destination.definition_ = definition_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15375,11 +19949,28 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( element_ );
+            destination.Write( definition_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            element_ = source.ReadGuid( );
+            definition_ = source.ReadGuid( );
+        }
+
     }
     public class BinaryPropertyObject : PropertyObject
     {
         byte[] value_ = Array.Empty<byte>();
-        public BinaryPropertyObject ( )
+        public BinaryPropertyObject( )
         {
         }
 
@@ -15391,6 +19982,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BinaryPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BinaryPropertyObject )target;
+            destination.value_ = (byte[])value_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15414,11 +20012,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.WriteArray( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadByteArray( );
+        }
+
     }
     public class BooleanPropertyObject : PropertyObject
     {
         bool value_ = false;
-        public BooleanPropertyObject ( )
+        public BooleanPropertyObject( )
         {
         }
 
@@ -15430,6 +20041,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BooleanPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BooleanPropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15453,11 +20071,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadBoolean( );
+        }
+
     }
     public class BytePropertyObject : PropertyObject
     {
         byte value_ = 0;
-        public BytePropertyObject ( )
+        public BytePropertyObject( )
         {
         }
 
@@ -15469,6 +20100,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BytePropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BytePropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15492,11 +20130,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadByte( );
+        }
+
     }
     public class DateTimePropertyObject : PropertyObject
     {
         DateTime value_;
-        public DateTimePropertyObject ( )
+        public DateTimePropertyObject( )
         {
         }
 
@@ -15508,6 +20159,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DateTimePropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DateTimePropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15531,11 +20189,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadDateTime( );
+        }
+
     }
     public class DoublePropertyObject : PropertyObject
     {
         double value_ = 0.0;
-        public DoublePropertyObject ( )
+        public DoublePropertyObject( )
         {
         }
 
@@ -15547,6 +20218,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DoublePropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DoublePropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15570,11 +20248,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadDouble( );
+        }
+
     }
     public class GuidPropertyObject : PropertyObject
     {
         Guid value_;
-        public GuidPropertyObject ( )
+        public GuidPropertyObject( )
         {
         }
 
@@ -15586,6 +20277,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GuidPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GuidPropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15609,11 +20307,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadGuid( );
+        }
+
     }
     public class Int16PropertyObject : PropertyObject
     {
         short value_ = 0;
-        public Int16PropertyObject ( )
+        public Int16PropertyObject( )
         {
         }
 
@@ -15625,6 +20336,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int16PropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int16PropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15648,11 +20366,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadInt16( );
+        }
+
     }
     public class Int32PropertyObject : PropertyObject
     {
         int value_ = 0;
-        public Int32PropertyObject ( )
+        public Int32PropertyObject( )
         {
         }
 
@@ -15664,6 +20395,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int32PropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int32PropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15687,11 +20425,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadInt32( );
+        }
+
     }
     public class Int64PropertyObject : PropertyObject
     {
         long value_ = 0;
-        public Int64PropertyObject ( )
+        public Int64PropertyObject( )
         {
         }
 
@@ -15703,6 +20454,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int64PropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int64PropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15726,11 +20484,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadInt64( );
+        }
+
     }
     public class ReferencePropertyObject : PropertyObject
     {
         Guid value_;
-        public ReferencePropertyObject ( )
+        public ReferencePropertyObject( )
         {
         }
 
@@ -15742,6 +20513,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ReferencePropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ReferencePropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15765,11 +20543,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadGuid( );
+        }
+
     }
     public class SBytePropertyObject : PropertyObject
     {
         sbyte value_ = 0;
-        public SBytePropertyObject ( )
+        public SBytePropertyObject( )
         {
         }
 
@@ -15781,6 +20572,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SBytePropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SBytePropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15804,11 +20602,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadSByte( );
+        }
+
     }
     public class SinglePropertyObject : PropertyObject
     {
         float value_ = 0.0f;
-        public SinglePropertyObject ( )
+        public SinglePropertyObject( )
         {
         }
 
@@ -15820,6 +20631,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SinglePropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SinglePropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15843,11 +20661,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadSingle( );
+        }
+
     }
     public class StringPropertyObject : PropertyObject
     {
         string value_ = string.Empty;
-        public StringPropertyObject ( )
+        public StringPropertyObject( )
         {
         }
 
@@ -15859,6 +20690,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new StringPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( StringPropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15882,10 +20720,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadString( );
+        }
+
     }
     public abstract class TimeseriesPropertyObject : PropertyObject
     {
-        protected TimeseriesPropertyObject ( )
+        protected TimeseriesPropertyObject( )
         {
         }
 
@@ -15902,7 +20753,7 @@ namespace Barrelman.Data.Types
     public class BinaryTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public BinaryTimeseriesPropertyObject ( )
+        public BinaryTimeseriesPropertyObject( )
         {
         }
 
@@ -15914,6 +20765,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BinaryTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BinaryTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15937,11 +20795,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class BooleanTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public BooleanTimeseriesPropertyObject ( )
+        public BooleanTimeseriesPropertyObject( )
         {
         }
 
@@ -15953,6 +20824,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BooleanTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BooleanTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -15976,11 +20854,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class ByteTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public ByteTimeseriesPropertyObject ( )
+        public ByteTimeseriesPropertyObject( )
         {
         }
 
@@ -15992,6 +20883,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ByteTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ByteTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16015,11 +20913,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class DateTimeTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public DateTimeTimeseriesPropertyObject ( )
+        public DateTimeTimeseriesPropertyObject( )
         {
         }
 
@@ -16031,6 +20942,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DateTimeTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DateTimeTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16054,11 +20972,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class DoubleTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public DoubleTimeseriesPropertyObject ( )
+        public DoubleTimeseriesPropertyObject( )
         {
         }
 
@@ -16070,6 +21001,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DoubleTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DoubleTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16093,11 +21031,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class GuidTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public GuidTimeseriesPropertyObject ( )
+        public GuidTimeseriesPropertyObject( )
         {
         }
 
@@ -16109,6 +21060,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GuidTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GuidTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16132,11 +21090,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class Int16TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public Int16TimeseriesPropertyObject ( )
+        public Int16TimeseriesPropertyObject( )
         {
         }
 
@@ -16148,6 +21119,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int16TimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int16TimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16171,11 +21149,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class Int32TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public Int32TimeseriesPropertyObject ( )
+        public Int32TimeseriesPropertyObject( )
         {
         }
 
@@ -16187,6 +21178,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int32TimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int32TimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16210,11 +21208,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class Int64TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public Int64TimeseriesPropertyObject ( )
+        public Int64TimeseriesPropertyObject( )
         {
         }
 
@@ -16226,6 +21237,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int64TimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int64TimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16249,11 +21267,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class ReferenceTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public ReferenceTimeseriesPropertyObject ( )
+        public ReferenceTimeseriesPropertyObject( )
         {
         }
 
@@ -16265,6 +21296,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ReferenceTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ReferenceTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16288,11 +21326,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class SByteTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public SByteTimeseriesPropertyObject ( )
+        public SByteTimeseriesPropertyObject( )
         {
         }
 
@@ -16304,6 +21355,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SByteTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SByteTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16327,11 +21385,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class SingleTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public SingleTimeseriesPropertyObject ( )
+        public SingleTimeseriesPropertyObject( )
         {
         }
 
@@ -16343,6 +21414,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SingleTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SingleTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16366,11 +21444,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class StringTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public StringTimeseriesPropertyObject ( )
+        public StringTimeseriesPropertyObject( )
         {
         }
 
@@ -16382,6 +21473,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new StringTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( StringTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16405,11 +21503,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class TimeSpanTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public TimeSpanTimeseriesPropertyObject ( )
+        public TimeSpanTimeseriesPropertyObject( )
         {
         }
 
@@ -16421,6 +21532,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TimeSpanTimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeSpanTimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16444,11 +21562,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class UInt16TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public UInt16TimeseriesPropertyObject ( )
+        public UInt16TimeseriesPropertyObject( )
         {
         }
 
@@ -16460,6 +21591,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt16TimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt16TimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16483,11 +21621,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class UInt32TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public UInt32TimeseriesPropertyObject ( )
+        public UInt32TimeseriesPropertyObject( )
         {
         }
 
@@ -16499,6 +21650,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt32TimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt32TimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16522,11 +21680,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class UInt64TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid timeseries_;
-        public UInt64TimeseriesPropertyObject ( )
+        public UInt64TimeseriesPropertyObject( )
         {
         }
 
@@ -16538,6 +21709,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt64TimeseriesPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt64TimeseriesPropertyObject )target;
+            destination.timeseries_ = timeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16561,11 +21739,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( timeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            timeseries_ = source.ReadGuid( );
+        }
+
     }
     public class TimeSpanPropertyObject : PropertyObject
     {
         TimeSpan value_;
-        public TimeSpanPropertyObject ( )
+        public TimeSpanPropertyObject( )
         {
         }
 
@@ -16577,6 +21768,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TimeSpanPropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeSpanPropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16600,11 +21798,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadTimeSpan( );
+        }
+
     }
     public class UInt16PropertyObject : PropertyObject
     {
         ushort value_ = 0;
-        public UInt16PropertyObject ( )
+        public UInt16PropertyObject( )
         {
         }
 
@@ -16616,6 +21827,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt16PropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt16PropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16639,11 +21857,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadUInt16( );
+        }
+
     }
     public class UInt32PropertyObject : PropertyObject
     {
         uint value_ = 0;
-        public UInt32PropertyObject ( )
+        public UInt32PropertyObject( )
         {
         }
 
@@ -16655,6 +21886,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt32PropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt32PropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16678,11 +21916,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadUInt32( );
+        }
+
     }
     public class UInt64PropertyObject : PropertyObject
     {
         long value_ = 0;
-        public UInt64PropertyObject ( )
+        public UInt64PropertyObject( )
         {
         }
 
@@ -16694,6 +21945,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt64PropertyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt64PropertyObject )target;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16717,6 +21975,19 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            value_ = source.ReadInt64( );
+        }
+
     }
     public abstract class PropertyDefinitionObject : BaseDataGuid<Kind>
     {
@@ -16724,8 +21995,18 @@ namespace Barrelman.Data.Types
         Guid elementType_;
         string name_ = string.Empty;
         string description_ = string.Empty;
-        protected PropertyDefinitionObject ( )
+        protected PropertyDefinitionObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( PropertyDefinitionObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.elementType_ = elementType_;
+            destination.name_ = name_;
+            destination.description_ = description_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16785,11 +22066,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( elementType_ );
+            destination.Write( name_ );
+            destination.Write( description_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            elementType_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+            description_ = source.ReadString( );
+        }
+
     }
     public class BinaryPropertyDefinitionObject : PropertyDefinitionObject
     {
         byte[] defaultValue_ = Array.Empty<byte>();
-        public BinaryPropertyDefinitionObject ( )
+        public BinaryPropertyDefinitionObject( )
         {
         }
 
@@ -16801,6 +22101,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BinaryPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BinaryPropertyDefinitionObject )target;
+            destination.defaultValue_ = (byte[])defaultValue_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16824,11 +22131,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.WriteArray( defaultValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadByteArray( );
+        }
+
     }
     public class BooleanPropertyDefinitionObject : PropertyDefinitionObject
     {
         bool defaultValue_ = false;
-        public BooleanPropertyDefinitionObject ( )
+        public BooleanPropertyDefinitionObject( )
         {
         }
 
@@ -16840,6 +22160,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BooleanPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BooleanPropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16863,13 +22190,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadBoolean( );
+        }
+
     }
     public class BytePropertyDefinitionObject : PropertyDefinitionObject
     {
         byte defaultValue_ = 0;
         byte minValue_ = 0;
         byte maxValue_ = 0;
-        public BytePropertyDefinitionObject ( )
+        public BytePropertyDefinitionObject( )
         {
         }
 
@@ -16881,6 +22221,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new BytePropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( BytePropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16928,13 +22277,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadByte( );
+            minValue_ = source.ReadByte( );
+            maxValue_ = source.ReadByte( );
+        }
+
     }
     public class DateTimePropertyDefinitionObject : PropertyDefinitionObject
     {
         string defaultValue_ = string.Empty;
         string minValue_ = string.Empty;
         string maxValue_ = string.Empty;
-        public DateTimePropertyDefinitionObject ( )
+        public DateTimePropertyDefinitionObject( )
         {
         }
 
@@ -16946,6 +22312,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DateTimePropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DateTimePropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -16993,13 +22368,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadString( );
+            minValue_ = source.ReadString( );
+            maxValue_ = source.ReadString( );
+        }
+
     }
     public class DoublePropertyDefinitionObject : PropertyDefinitionObject
     {
         double defaultValue_ = 0.0;
         double minValue_ = 0.0;
         double maxValue_ = 0.0;
-        public DoublePropertyDefinitionObject ( )
+        public DoublePropertyDefinitionObject( )
         {
         }
 
@@ -17011,6 +22403,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DoublePropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DoublePropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17058,11 +22459,28 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadDouble( );
+            minValue_ = source.ReadDouble( );
+            maxValue_ = source.ReadDouble( );
+        }
+
     }
     public class GuidPropertyDefinitionObject : PropertyDefinitionObject
     {
         Guid defaultValue_;
-        public GuidPropertyDefinitionObject ( )
+        public GuidPropertyDefinitionObject( )
         {
         }
 
@@ -17074,6 +22492,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GuidPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GuidPropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17097,13 +22522,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadGuid( );
+        }
+
     }
     public class Int16PropertyDefinitionObject : PropertyDefinitionObject
     {
         short defaultValue_ = 0;
         short minValue_ = 0;
         short maxValue_ = 0;
-        public Int16PropertyDefinitionObject ( )
+        public Int16PropertyDefinitionObject( )
         {
         }
 
@@ -17115,6 +22553,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int16PropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int16PropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17162,13 +22609,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadInt16( );
+            minValue_ = source.ReadInt16( );
+            maxValue_ = source.ReadInt16( );
+        }
+
     }
     public class Int32PropertyDefinitionObject : PropertyDefinitionObject
     {
         int defaultValue_ = 0;
         int minValue_ = 0;
         int maxValue_ = 0;
-        public Int32PropertyDefinitionObject ( )
+        public Int32PropertyDefinitionObject( )
         {
         }
 
@@ -17180,6 +22644,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int32PropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int32PropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17227,13 +22700,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadInt32( );
+            minValue_ = source.ReadInt32( );
+            maxValue_ = source.ReadInt32( );
+        }
+
     }
     public class Int64PropertyDefinitionObject : PropertyDefinitionObject
     {
         long defaultValue_ = 0;
         long minValue_ = 0;
         long maxValue_ = 0;
-        public Int64PropertyDefinitionObject ( )
+        public Int64PropertyDefinitionObject( )
         {
         }
 
@@ -17245,6 +22735,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int64PropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int64PropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17292,12 +22791,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadInt64( );
+            minValue_ = source.ReadInt64( );
+            maxValue_ = source.ReadInt64( );
+        }
+
     }
     public class ReferencePropertyDefinitionObject : PropertyDefinitionObject
     {
         Guid defaultValue_;
         Guid referencedElementType_;
-        public ReferencePropertyDefinitionObject ( )
+        public ReferencePropertyDefinitionObject( )
         {
         }
 
@@ -17309,6 +22825,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ReferencePropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ReferencePropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.referencedElementType_ = referencedElementType_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17344,13 +22868,28 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( referencedElementType_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadGuid( );
+            referencedElementType_ = source.ReadGuid( );
+        }
+
     }
     public class SBytePropertyDefinitionObject : PropertyDefinitionObject
     {
         sbyte defaultValue_ = 0;
         sbyte minValue_ = 0;
         sbyte maxValue_ = 0;
-        public SBytePropertyDefinitionObject ( )
+        public SBytePropertyDefinitionObject( )
         {
         }
 
@@ -17362,6 +22901,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SBytePropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SBytePropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17409,13 +22957,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadSByte( );
+            minValue_ = source.ReadSByte( );
+            maxValue_ = source.ReadSByte( );
+        }
+
     }
     public class SinglePropertyDefinitionObject : PropertyDefinitionObject
     {
         float defaultValue_ = 0.0f;
         float minValue_ = 0.0f;
         float maxValue_ = 0.0f;
-        public SinglePropertyDefinitionObject ( )
+        public SinglePropertyDefinitionObject( )
         {
         }
 
@@ -17427,6 +22992,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SinglePropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SinglePropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17474,12 +23048,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadSingle( );
+            minValue_ = source.ReadSingle( );
+            maxValue_ = source.ReadSingle( );
+        }
+
     }
     public class StringPropertyDefinitionObject : PropertyDefinitionObject
     {
         string defaultValue_ = string.Empty;
         string pattern_ = string.Empty;
-        public StringPropertyDefinitionObject ( )
+        public StringPropertyDefinitionObject( )
         {
         }
 
@@ -17491,6 +23082,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new StringPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( StringPropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.pattern_ = pattern_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17526,10 +23125,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( pattern_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadString( );
+            pattern_ = source.ReadString( );
+        }
+
     }
     public abstract class TimeseriesPropertyDefinitionObject : PropertyDefinitionObject
     {
-        protected TimeseriesPropertyDefinitionObject ( )
+        protected TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17545,7 +23159,7 @@ namespace Barrelman.Data.Types
     }
     public class BinaryTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
-        public BinaryTimeseriesPropertyDefinitionObject ( )
+        public BinaryTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17571,7 +23185,7 @@ namespace Barrelman.Data.Types
     }
     public class BooleanTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
-        public BooleanTimeseriesPropertyDefinitionObject ( )
+        public BooleanTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17599,7 +23213,7 @@ namespace Barrelman.Data.Types
     {
         byte minValue_ = 0;
         byte maxValue_ = 0;
-        public ByteTimeseriesPropertyDefinitionObject ( )
+        public ByteTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17611,6 +23225,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ByteTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ByteTimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17646,12 +23268,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadByte( );
+            maxValue_ = source.ReadByte( );
+        }
+
     }
     public class DateTimeTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         string minValue_ = string.Empty;
         string maxValue_ = string.Empty;
-        public DateTimeTimeseriesPropertyDefinitionObject ( )
+        public DateTimeTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17663,6 +23300,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DateTimeTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DateTimeTimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17698,12 +23343,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadString( );
+            maxValue_ = source.ReadString( );
+        }
+
     }
     public class DoubleTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         double minValue_ = 0.0;
         double maxValue_ = 0.0;
-        public DoubleTimeseriesPropertyDefinitionObject ( )
+        public DoubleTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17715,6 +23375,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DoubleTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DoubleTimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17750,10 +23418,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadDouble( );
+            maxValue_ = source.ReadDouble( );
+        }
+
     }
     public class GuidTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
-        public GuidTimeseriesPropertyDefinitionObject ( )
+        public GuidTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17781,7 +23464,7 @@ namespace Barrelman.Data.Types
     {
         short minValue_ = 0;
         short maxValue_ = 0;
-        public Int16TimeseriesPropertyDefinitionObject ( )
+        public Int16TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17793,6 +23476,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int16TimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int16TimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17828,12 +23519,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadInt16( );
+            maxValue_ = source.ReadInt16( );
+        }
+
     }
     public class Int32TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         int minValue_ = 0;
         int maxValue_ = 0;
-        public Int32TimeseriesPropertyDefinitionObject ( )
+        public Int32TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17845,6 +23551,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int32TimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int32TimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17880,12 +23594,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadInt32( );
+            maxValue_ = source.ReadInt32( );
+        }
+
     }
     public class Int64TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         long minValue_ = 0;
         long maxValue_ = 0;
-        public Int64TimeseriesPropertyDefinitionObject ( )
+        public Int64TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17897,6 +23626,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new Int64TimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( Int64TimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17932,11 +23669,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadInt64( );
+            maxValue_ = source.ReadInt64( );
+        }
+
     }
     public class ReferenceTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         Guid referencedElementType_;
-        public ReferenceTimeseriesPropertyDefinitionObject ( )
+        public ReferenceTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17948,6 +23700,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ReferenceTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ReferenceTimeseriesPropertyDefinitionObject )target;
+            destination.referencedElementType_ = referencedElementType_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -17971,12 +23730,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( referencedElementType_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            referencedElementType_ = source.ReadGuid( );
+        }
+
     }
     public class SByteTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         sbyte minValue_ = 0;
         sbyte maxValue_ = 0;
-        public SByteTimeseriesPropertyDefinitionObject ( )
+        public SByteTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -17988,6 +23760,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SByteTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SByteTimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18023,12 +23803,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadSByte( );
+            maxValue_ = source.ReadSByte( );
+        }
+
     }
     public class SingleTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         float minValue_ = 0.0f;
         float maxValue_ = 0.0f;
-        public SingleTimeseriesPropertyDefinitionObject ( )
+        public SingleTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -18040,6 +23835,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SingleTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SingleTimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18075,11 +23878,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadSingle( );
+            maxValue_ = source.ReadSingle( );
+        }
+
     }
     public class StringTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         string pattern_ = string.Empty;
-        public StringTimeseriesPropertyDefinitionObject ( )
+        public StringTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -18091,6 +23909,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new StringTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( StringTimeseriesPropertyDefinitionObject )target;
+            destination.pattern_ = pattern_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18114,12 +23939,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( pattern_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            pattern_ = source.ReadString( );
+        }
+
     }
     public class TimeSpanTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         TimeSpan minValue_;
         TimeSpan maxValue_;
-        public TimeSpanTimeseriesPropertyDefinitionObject ( )
+        public TimeSpanTimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -18131,6 +23969,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TimeSpanTimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeSpanTimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18166,12 +24012,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadTimeSpan( );
+            maxValue_ = source.ReadTimeSpan( );
+        }
+
     }
     public class UInt16TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         ushort minValue_ = 0;
         ushort maxValue_ = 0;
-        public UInt16TimeseriesPropertyDefinitionObject ( )
+        public UInt16TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -18183,6 +24044,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt16TimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt16TimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18218,12 +24087,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadUInt16( );
+            maxValue_ = source.ReadUInt16( );
+        }
+
     }
     public class UInt32TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         uint minValue_ = 0;
         uint maxValue_ = 0;
-        public UInt32TimeseriesPropertyDefinitionObject ( )
+        public UInt32TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -18235,6 +24119,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt32TimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt32TimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18270,12 +24162,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadUInt32( );
+            maxValue_ = source.ReadUInt32( );
+        }
+
     }
     public class UInt64TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         long minValue_ = 0;
         long maxValue_ = 0;
-        public UInt64TimeseriesPropertyDefinitionObject ( )
+        public UInt64TimeseriesPropertyDefinitionObject( )
         {
         }
 
@@ -18287,6 +24194,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt64TimeseriesPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt64TimeseriesPropertyDefinitionObject )target;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18322,13 +24237,28 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            minValue_ = source.ReadInt64( );
+            maxValue_ = source.ReadInt64( );
+        }
+
     }
     public class TimeSpanPropertyDefinitionObject : PropertyDefinitionObject
     {
         TimeSpan defaultValue_;
         TimeSpan minValue_;
         TimeSpan maxValue_;
-        public TimeSpanPropertyDefinitionObject ( )
+        public TimeSpanPropertyDefinitionObject( )
         {
         }
 
@@ -18340,6 +24270,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TimeSpanPropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeSpanPropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18387,13 +24326,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadTimeSpan( );
+            minValue_ = source.ReadTimeSpan( );
+            maxValue_ = source.ReadTimeSpan( );
+        }
+
     }
     public class UInt16PropertyDefinitionObject : PropertyDefinitionObject
     {
         ushort defaultValue_ = 0;
         ushort minValue_ = 0;
         ushort maxValue_ = 0;
-        public UInt16PropertyDefinitionObject ( )
+        public UInt16PropertyDefinitionObject( )
         {
         }
 
@@ -18405,6 +24361,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt16PropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt16PropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18452,13 +24417,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadUInt16( );
+            minValue_ = source.ReadUInt16( );
+            maxValue_ = source.ReadUInt16( );
+        }
+
     }
     public class UInt32PropertyDefinitionObject : PropertyDefinitionObject
     {
         uint defaultValue_ = 0;
         uint minValue_ = 0;
         uint maxValue_ = 0;
-        public UInt32PropertyDefinitionObject ( )
+        public UInt32PropertyDefinitionObject( )
         {
         }
 
@@ -18470,6 +24452,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt32PropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt32PropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18517,13 +24508,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadUInt32( );
+            minValue_ = source.ReadUInt32( );
+            maxValue_ = source.ReadUInt32( );
+        }
+
     }
     public class UInt64PropertyDefinitionObject : PropertyDefinitionObject
     {
         long defaultValue_ = 0;
         long minValue_ = 0;
         long maxValue_ = 0;
-        public UInt64PropertyDefinitionObject ( )
+        public UInt64PropertyDefinitionObject( )
         {
         }
 
@@ -18535,6 +24543,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt64PropertyDefinitionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt64PropertyDefinitionObject )target;
+            destination.defaultValue_ = defaultValue_;
+            destination.minValue_ = minValue_;
+            destination.maxValue_ = maxValue_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18582,6 +24599,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( defaultValue_ );
+            destination.Write( minValue_ );
+            destination.Write( maxValue_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            defaultValue_ = source.ReadInt64( );
+            minValue_ = source.ReadInt64( );
+            maxValue_ = source.ReadInt64( );
+        }
+
     }
     public class RadarAlarmStatusObject : BaseDataGuid<Kind>
     {
@@ -18589,7 +24623,7 @@ namespace Barrelman.Data.Types
         Guid radar_;
         DateTime timestamp_;
         Types.AlarmState type_ = Types.AlarmState.Unknown;
-        public RadarAlarmStatusObject ( )
+        public RadarAlarmStatusObject( )
         {
         }
 
@@ -18601,6 +24635,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarAlarmStatusObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarAlarmStatusObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.type_ = type_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18660,6 +24704,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( type_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            type_ = source.ReadEnum<Types.AlarmState>( );
+        }
+
     }
     public class RadarCommandObject : BaseDataGuid<Kind>
     {
@@ -18669,7 +24732,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public RadarCommandObject ( )
+        public RadarCommandObject( )
         {
         }
 
@@ -18681,6 +24744,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18764,10 +24839,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class RadarCommandGetStatusObject : RadarCommandObject
     {
-        public RadarCommandGetStatusObject ( )
+        public RadarCommandGetStatusObject( )
         {
         }
 
@@ -18799,7 +24897,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public RadarCommandReplyObject ( )
+        public RadarCommandReplyObject( )
         {
         }
 
@@ -18811,6 +24909,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18894,6 +25004,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class RadarCommandReplyGetStatusObject : RadarCommandReplyObject
     {
@@ -18902,7 +25035,7 @@ namespace Barrelman.Data.Types
         TimeSpan rotationCount_;
         Types.RadarPulse pulse_ = Types.RadarPulse.Short;
         bool tx_ = false;
-        public RadarCommandReplyGetStatusObject ( )
+        public RadarCommandReplyGetStatusObject( )
         {
         }
 
@@ -18914,6 +25047,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarCommandReplyGetStatusObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarCommandReplyGetStatusObject )target;
+            destination.azimuthCount_ = azimuthCount_;
+            destination.triggerCount_ = triggerCount_;
+            destination.rotationCount_ = rotationCount_;
+            destination.pulse_ = pulse_;
+            destination.tx_ = tx_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -18985,6 +25129,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( azimuthCount_ );
+            destination.Write( triggerCount_ );
+            destination.Write( rotationCount_ );
+            destination.Write( pulse_ );
+            destination.Write( tx_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            azimuthCount_ = source.ReadInt32( );
+            triggerCount_ = source.ReadInt32( );
+            rotationCount_ = source.ReadTimeSpan( );
+            pulse_ = source.ReadEnum<Types.RadarPulse>( );
+            tx_ = source.ReadBoolean( );
+        }
+
     }
     public class RadarConfigurationObject : BaseDataGuid<Kind>
     {
@@ -19016,7 +25181,7 @@ namespace Barrelman.Data.Types
         string nmeaReceiverIPAddress_ = string.Empty;
         int nmeaReceiverPort_ = 0;
         string nmeaReceiverSourceId_ = string.Empty;
-        public RadarConfigurationObject ( )
+        public RadarConfigurationObject( )
         {
         }
 
@@ -19028,6 +25193,40 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.radarProtocolVersion_ = radarProtocolVersion_;
+            destination.radarIPAddress_ = radarIPAddress_;
+            destination.radarPort_ = radarPort_;
+            destination.radarConfigurationPort_ = radarConfigurationPort_;
+            destination.skipMagicTimeout_ = skipMagicTimeout_;
+            destination.readTimeout_ = readTimeout_;
+            destination.synchronizationInterval_ = synchronizationInterval_;
+            destination.targetsRefreshRate_ = targetsRefreshRate_;
+            destination.range_ = range_;
+            destination.sectorCount_ = sectorCount_;
+            destination.sectorOffset_ = sectorOffset_;
+            destination.imageColor_ = imageColor_;
+            destination.imageSubstitutionColor_ = imageSubstitutionColor_;
+            destination.transparentColor_ = transparentColor_;
+            destination.imageScaleFactorX_ = imageScaleFactorX_;
+            destination.imageOffsetX_ = imageOffsetX_;
+            destination.imageScaleFactorY_ = imageScaleFactorY_;
+            destination.imageOffsetY_ = imageOffsetY_;
+            destination.radarImageType_ = radarImageType_;
+            destination.trackColor_ = trackColor_;
+            destination.vectorColor_ = vectorColor_;
+            destination.enableNmea_ = enableNmea_;
+            destination.nmeaReceiverIPAddress_ = nmeaReceiverIPAddress_;
+            destination.nmeaReceiverPort_ = nmeaReceiverPort_;
+            destination.nmeaReceiverSourceId_ = nmeaReceiverSourceId_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19375,6 +25574,73 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( radarProtocolVersion_ );
+            destination.Write( radarIPAddress_ );
+            destination.Write( radarPort_ );
+            destination.Write( radarConfigurationPort_ );
+            destination.Write( skipMagicTimeout_ );
+            destination.Write( readTimeout_ );
+            destination.Write( synchronizationInterval_ );
+            destination.Write( targetsRefreshRate_ );
+            destination.Write( range_ );
+            destination.Write( sectorCount_ );
+            destination.Write( sectorOffset_ );
+            destination.Write( imageColor_ );
+            destination.Write( imageSubstitutionColor_ );
+            destination.Write( transparentColor_ );
+            destination.Write( imageScaleFactorX_ );
+            destination.Write( imageOffsetX_ );
+            destination.Write( imageScaleFactorY_ );
+            destination.Write( imageOffsetY_ );
+            destination.Write( radarImageType_ );
+            destination.Write( trackColor_ );
+            destination.Write( vectorColor_ );
+            destination.Write( enableNmea_ );
+            destination.Write( nmeaReceiverIPAddress_ );
+            destination.Write( nmeaReceiverPort_ );
+            destination.Write( nmeaReceiverSourceId_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            radarProtocolVersion_ = source.ReadInt32( );
+            radarIPAddress_ = source.ReadString( );
+            radarPort_ = source.ReadInt32( );
+            radarConfigurationPort_ = source.ReadInt32( );
+            skipMagicTimeout_ = source.ReadTimeSpan( );
+            readTimeout_ = source.ReadTimeSpan( );
+            synchronizationInterval_ = source.ReadTimeSpan( );
+            targetsRefreshRate_ = source.ReadInt32( );
+            range_ = source.ReadInt32( );
+            sectorCount_ = source.ReadInt32( );
+            sectorOffset_ = source.ReadInt32( );
+            imageColor_ = source.ReadUInt32( );
+            imageSubstitutionColor_ = source.ReadNullableUInt32( );
+            transparentColor_ = source.ReadUInt32( );
+            imageScaleFactorX_ = source.ReadDouble( );
+            imageOffsetX_ = source.ReadDouble( );
+            imageScaleFactorY_ = source.ReadDouble( );
+            imageOffsetY_ = source.ReadDouble( );
+            radarImageType_ = source.ReadEnum<Types.RadarImageType>( );
+            trackColor_ = source.ReadUInt32( );
+            vectorColor_ = source.ReadUInt32( );
+            enableNmea_ = source.ReadBoolean( );
+            nmeaReceiverIPAddress_ = source.ReadString( );
+            nmeaReceiverPort_ = source.ReadInt32( );
+            nmeaReceiverSourceId_ = source.ReadString( );
+        }
+
     }
     public class RadarImageObject : BaseDataGuid<Kind>
     {
@@ -19385,7 +25651,7 @@ namespace Barrelman.Data.Types
         int resolution_ = 0;
         int range_ = 0;
         byte[] image_ = Array.Empty<byte>();
-        public RadarImageObject ( )
+        public RadarImageObject( )
         {
         }
 
@@ -19397,6 +25663,19 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarImageObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarImageObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.depth_ = depth_;
+            destination.resolution_ = resolution_;
+            destination.range_ = range_;
+            destination.image_ = (byte[])image_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19492,6 +25771,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( depth_ );
+            destination.Write( resolution_ );
+            destination.Write( range_ );
+            destination.WriteArray( image_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            depth_ = source.ReadUInt32( );
+            resolution_ = source.ReadInt32( );
+            range_ = source.ReadInt32( );
+            image_ = source.ReadByteArray( );
+        }
+
     }
     public class RadarRawTrackTableObject : BaseDataGuid<Kind>
     {
@@ -19500,7 +25804,7 @@ namespace Barrelman.Data.Types
         DateTime timestamp_;
         int count_ = 0;
         byte[] table_ = Array.Empty<byte>();
-        public RadarRawTrackTableObject ( )
+        public RadarRawTrackTableObject( )
         {
         }
 
@@ -19512,6 +25816,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarRawTrackTableObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarRawTrackTableObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.count_ = count_;
+            destination.table_ = (byte[])table_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19583,6 +25898,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( count_ );
+            destination.WriteArray( table_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            count_ = source.ReadInt32( );
+            table_ = source.ReadByteArray( );
+        }
+
     }
     public class RadarStatusObject : BaseDataGuid<Kind>
     {
@@ -19595,7 +25931,7 @@ namespace Barrelman.Data.Types
         Types.RadarPulse pulse_ = Types.RadarPulse.Short;
         bool tx_ = false;
         bool tracking_ = false;
-        public RadarStatusObject ( )
+        public RadarStatusObject( )
         {
         }
 
@@ -19607,6 +25943,21 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarStatusObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarStatusObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radar_ = radar_;
+            destination.timestamp_ = timestamp_;
+            destination.azimuthCount_ = azimuthCount_;
+            destination.triggerCount_ = triggerCount_;
+            destination.rotationTime_ = rotationTime_;
+            destination.pulse_ = pulse_;
+            destination.tx_ = tx_;
+            destination.tracking_ = tracking_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19726,6 +26077,35 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radar_ );
+            destination.Write( timestamp_ );
+            destination.Write( azimuthCount_ );
+            destination.Write( triggerCount_ );
+            destination.Write( rotationTime_ );
+            destination.Write( pulse_ );
+            destination.Write( tx_ );
+            destination.Write( tracking_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radar_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            azimuthCount_ = source.ReadInt32( );
+            triggerCount_ = source.ReadInt32( );
+            rotationTime_ = source.ReadTimeSpan( );
+            pulse_ = source.ReadEnum<Types.RadarPulse>( );
+            tx_ = source.ReadBoolean( );
+            tracking_ = source.ReadBoolean( );
+        }
+
     }
     public class RadioCommandObject : BaseDataGuid<Kind>
     {
@@ -19735,7 +26115,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public RadioCommandObject ( )
+        public RadioCommandObject( )
         {
         }
 
@@ -19747,6 +26127,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadioCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadioCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radio_ = radio_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19830,6 +26222,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radio_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radio_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class RadioCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -19839,7 +26254,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public RadioCommandReplyObject ( )
+        public RadioCommandReplyObject( )
         {
         }
 
@@ -19851,6 +26266,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadioCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadioCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radio_ = radio_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -19934,6 +26361,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radio_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radio_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class RadioConfigurationObject : BaseDataGuid<Kind>
     {
@@ -19947,7 +26397,7 @@ namespace Barrelman.Data.Types
         int radioPort_ = 0;
         string ed137IPAddress_ = string.Empty;
         int ed137Port_ = 0;
-        public RadioConfigurationObject ( )
+        public RadioConfigurationObject( )
         {
         }
 
@@ -19959,6 +26409,22 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadioConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadioConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radio_ = radio_;
+            destination.timestamp_ = timestamp_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.playbackUrl_ = playbackUrl_;
+            destination.radioIPAddress_ = radioIPAddress_;
+            destination.radioPort_ = radioPort_;
+            destination.ed137IPAddress_ = ed137IPAddress_;
+            destination.ed137Port_ = ed137Port_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20090,6 +26556,37 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radio_ );
+            destination.Write( timestamp_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( playbackUrl_ );
+            destination.Write( radioIPAddress_ );
+            destination.Write( radioPort_ );
+            destination.Write( ed137IPAddress_ );
+            destination.Write( ed137Port_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radio_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            playbackUrl_ = source.ReadString( );
+            radioIPAddress_ = source.ReadString( );
+            radioPort_ = source.ReadInt32( );
+            ed137IPAddress_ = source.ReadString( );
+            ed137Port_ = source.ReadInt32( );
+        }
+
     }
     public class RadomeCommandObject : BaseDataGuid<Kind>
     {
@@ -20099,7 +26596,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public RadomeCommandObject ( )
+        public RadomeCommandObject( )
         {
         }
 
@@ -20111,6 +26608,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radome_ = radome_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20194,6 +26703,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radome_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radome_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class RadomeCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -20203,7 +26735,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public RadomeCommandReplyObject ( )
+        public RadomeCommandReplyObject( )
         {
         }
 
@@ -20215,6 +26747,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radome_ = radome_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20298,6 +26842,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radome_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radome_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class RadomeConfigurationObject : BaseDataGuid<Kind>
     {
@@ -20309,7 +26876,7 @@ namespace Barrelman.Data.Types
         double highPressureLimit_ = 0.0;
         double lowTemperatureLimit_ = 0.0;
         double highTemperatureLimit_ = 0.0;
-        public RadomeConfigurationObject ( )
+        public RadomeConfigurationObject( )
         {
         }
 
@@ -20321,6 +26888,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.radome_ = radome_;
+            destination.timestamp_ = timestamp_;
+            destination.interval_ = interval_;
+            destination.lowPressureLimit_ = lowPressureLimit_;
+            destination.highPressureLimit_ = highPressureLimit_;
+            destination.lowTemperatureLimit_ = lowTemperatureLimit_;
+            destination.highTemperatureLimit_ = highTemperatureLimit_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20428,6 +27009,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( radome_ );
+            destination.Write( timestamp_ );
+            destination.Write( interval_ );
+            destination.Write( lowPressureLimit_ );
+            destination.Write( highPressureLimit_ );
+            destination.Write( lowTemperatureLimit_ );
+            destination.Write( highTemperatureLimit_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            radome_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            interval_ = source.ReadTimeSpan( );
+            lowPressureLimit_ = source.ReadDouble( );
+            highPressureLimit_ = source.ReadDouble( );
+            lowTemperatureLimit_ = source.ReadDouble( );
+            highTemperatureLimit_ = source.ReadDouble( );
+        }
+
     }
     public class ReferenceTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -20435,7 +27043,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         Guid value_;
-        public ReferenceTimeseriesValueObject ( )
+        public ReferenceTimeseriesValueObject( )
         {
         }
 
@@ -20447,6 +27055,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ReferenceTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ReferenceTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20506,6 +27124,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadGuid( );
+        }
+
     }
     public class SByteTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -20513,7 +27150,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         sbyte? value_;
-        public SByteTimeseriesValueObject ( )
+        public SByteTimeseriesValueObject( )
         {
         }
 
@@ -20525,6 +27162,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SByteTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SByteTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20584,13 +27231,32 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableSByte( );
+        }
+
     }
     public class SecurityDomainObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
         string description_ = string.Empty;
-        public SecurityDomainObject ( )
+        public SecurityDomainObject( )
         {
         }
 
@@ -20602,6 +27268,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SecurityDomainObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SecurityDomainObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
+            destination.description_ = description_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20649,6 +27324,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+            destination.Write( description_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+            description_ = source.ReadString( );
+        }
+
     }
     public abstract class SecurityIdentifierObject : BaseDataGuid<Kind>
     {
@@ -20656,8 +27348,18 @@ namespace Barrelman.Data.Types
         Guid domain_;
         string identity_ = string.Empty;
         string description_ = string.Empty;
-        protected SecurityIdentifierObject ( )
+        protected SecurityIdentifierObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SecurityIdentifierObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.domain_ = domain_;
+            destination.identity_ = identity_;
+            destination.description_ = description_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20717,10 +27419,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( domain_ );
+            destination.Write( identity_ );
+            destination.Write( description_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            domain_ = source.ReadGuid( );
+            identity_ = source.ReadString( );
+            description_ = source.ReadString( );
+        }
+
     }
     public class SecurityLoginObject : SecurityIdentifierObject
     {
-        public SecurityLoginObject ( )
+        public SecurityLoginObject( )
         {
         }
 
@@ -20747,7 +27468,7 @@ namespace Barrelman.Data.Types
     public class SecurityRoleObject : SecurityIdentifierObject
     {
         string name_ = string.Empty;
-        public SecurityRoleObject ( )
+        public SecurityRoleObject( )
         {
         }
 
@@ -20759,6 +27480,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SecurityRoleObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SecurityRoleObject )target;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20782,6 +27510,19 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            name_ = source.ReadString( );
+        }
+
     }
     public class SecurityIdentifierRoleLinkObject : BaseDataGuid<Kind>
     {
@@ -20790,7 +27531,7 @@ namespace Barrelman.Data.Types
         Guid role_;
         DateTime start_;
         DateTime? end_;
-        public SecurityIdentifierRoleLinkObject ( )
+        public SecurityIdentifierRoleLinkObject( )
         {
         }
 
@@ -20802,6 +27543,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SecurityIdentifierRoleLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SecurityIdentifierRoleLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.member_ = member_;
+            destination.role_ = role_;
+            destination.start_ = start_;
+            destination.end_ = end_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20873,6 +27625,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( member_ );
+            destination.Write( role_ );
+            destination.Write( start_ );
+            destination.Write( end_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            member_ = source.ReadGuid( );
+            role_ = source.ReadGuid( );
+            start_ = source.ReadDateTime( );
+            end_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class SecurityLoginSessionObject : BaseDataGuid<Kind>
     {
@@ -20883,7 +27656,7 @@ namespace Barrelman.Data.Types
         Guid clientSession_;
         string notificationQueueName_ = string.Empty;
         string messageQueueName_ = string.Empty;
-        public SecurityLoginSessionObject ( )
+        public SecurityLoginSessionObject( )
         {
         }
 
@@ -20895,6 +27668,19 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SecurityLoginSessionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SecurityLoginSessionObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.login_ = login_;
+            destination.fromTime_ = fromTime_;
+            destination.throughTime_ = throughTime_;
+            destination.clientSession_ = clientSession_;
+            destination.notificationQueueName_ = notificationQueueName_;
+            destination.messageQueueName_ = messageQueueName_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -20990,6 +27776,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( login_ );
+            destination.Write( fromTime_ );
+            destination.Write( throughTime_ );
+            destination.Write( clientSession_ );
+            destination.Write( notificationQueueName_ );
+            destination.Write( messageQueueName_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            login_ = source.ReadGuid( );
+            fromTime_ = source.ReadDateTime( );
+            throughTime_ = source.ReadNullableDateTime( );
+            clientSession_ = source.ReadGuid( );
+            notificationQueueName_ = source.ReadString( );
+            messageQueueName_ = source.ReadString( );
+        }
+
     }
     public class SecurityPermissionObject : BaseDataGuid<Kind>
     {
@@ -21001,7 +27812,7 @@ namespace Barrelman.Data.Types
         bool canRead_ = false;
         bool canUpdate_ = false;
         bool canDelete_ = false;
-        public SecurityPermissionObject ( )
+        public SecurityPermissionObject( )
         {
         }
 
@@ -21013,6 +27824,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SecurityPermissionObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SecurityPermissionObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.identifier_ = identifier_;
+            destination.timestamp_ = timestamp_;
+            destination.typeCode_ = typeCode_;
+            destination.canCreate_ = canCreate_;
+            destination.canRead_ = canRead_;
+            destination.canUpdate_ = canUpdate_;
+            destination.canDelete_ = canDelete_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21120,6 +27945,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( identifier_ );
+            destination.Write( timestamp_ );
+            destination.Write( typeCode_ );
+            destination.Write( canCreate_ );
+            destination.Write( canRead_ );
+            destination.Write( canUpdate_ );
+            destination.Write( canDelete_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            identifier_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            typeCode_ = source.ReadInt32( );
+            canCreate_ = source.ReadBoolean( );
+            canRead_ = source.ReadBoolean( );
+            canUpdate_ = source.ReadBoolean( );
+            canDelete_ = source.ReadBoolean( );
+        }
+
     }
     public class SingleTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -21127,7 +27979,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         float? value_;
-        public SingleTimeseriesValueObject ( )
+        public SingleTimeseriesValueObject( )
         {
         }
 
@@ -21139,6 +27991,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new SingleTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( SingleTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21198,6 +28060,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableSingle( );
+        }
+
     }
     public class StringTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -21205,7 +28086,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         string value_ = string.Empty;
-        public StringTimeseriesValueObject ( )
+        public StringTimeseriesValueObject( )
         {
         }
 
@@ -21217,6 +28098,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new StringTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( StringTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21276,14 +28167,42 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadString( );
+        }
+
     }
     public abstract class TimeseriesCatalogElementObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid? catalog_;
         string name_ = string.Empty;
-        protected TimeseriesCatalogElementObject ( )
+        protected TimeseriesCatalogElementObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeseriesCatalogElementObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.catalog_ = catalog_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21331,12 +28250,36 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( catalog_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            catalog_ = source.ReadNullableGuid( );
+            name_ = source.ReadString( );
+        }
+
     }
     public abstract class TimeseriesObject : TimeseriesCatalogElementObject
     {
         TimeSpan maxRetention_;
-        protected TimeseriesObject ( )
+        protected TimeseriesObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeseriesObject )target;
+            destination.maxRetention_ = maxRetention_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21360,10 +28303,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( maxRetention_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            maxRetention_ = source.ReadTimeSpan( );
+        }
+
     }
     public class BinaryTimeseriesObject : TimeseriesObject
     {
-        public BinaryTimeseriesObject ( )
+        public BinaryTimeseriesObject( )
         {
         }
 
@@ -21389,7 +28345,7 @@ namespace Barrelman.Data.Types
     }
     public class BooleanTimeseriesObject : TimeseriesObject
     {
-        public BooleanTimeseriesObject ( )
+        public BooleanTimeseriesObject( )
         {
         }
 
@@ -21416,7 +28372,7 @@ namespace Barrelman.Data.Types
     public class AisAidToNavigationOffPositionTimeseriesObject : BooleanTimeseriesObject
     {
         Guid aidToNavigation_;
-        public AisAidToNavigationOffPositionTimeseriesObject ( )
+        public AisAidToNavigationOffPositionTimeseriesObject( )
         {
         }
 
@@ -21428,6 +28384,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisAidToNavigationOffPositionTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisAidToNavigationOffPositionTimeseriesObject )target;
+            destination.aidToNavigation_ = aidToNavigation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21451,11 +28414,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( aidToNavigation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            aidToNavigation_ = source.ReadGuid( );
+        }
+
     }
     public class DeviceEnabledTimeseriesObject : BooleanTimeseriesObject
     {
         Guid? device_;
-        public DeviceEnabledTimeseriesObject ( )
+        public DeviceEnabledTimeseriesObject( )
         {
         }
 
@@ -21467,6 +28443,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new DeviceEnabledTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( DeviceEnabledTimeseriesObject )target;
+            destination.device_ = device_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21490,11 +28473,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( device_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            device_ = source.ReadNullableGuid( );
+        }
+
     }
     public class RadarAutomaticSensitivityTimeControlTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarAutomaticSensitivityTimeControlTimeseriesObject ( )
+        public RadarAutomaticSensitivityTimeControlTimeseriesObject( )
         {
         }
 
@@ -21506,6 +28502,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarAutomaticSensitivityTimeControlTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarAutomaticSensitivityTimeControlTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21529,11 +28532,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarBlankSector1TimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarBlankSector1TimeseriesObject ( )
+        public RadarBlankSector1TimeseriesObject( )
         {
         }
 
@@ -21545,6 +28561,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarBlankSector1TimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarBlankSector1TimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21568,11 +28591,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarBlankSector2TimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarBlankSector2TimeseriesObject ( )
+        public RadarBlankSector2TimeseriesObject( )
         {
         }
 
@@ -21584,6 +28620,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarBlankSector2TimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarBlankSector2TimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21607,11 +28650,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarEnableAutomaticFrequencyControlTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarEnableAutomaticFrequencyControlTimeseriesObject ( )
+        public RadarEnableAutomaticFrequencyControlTimeseriesObject( )
         {
         }
 
@@ -21623,6 +28679,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarEnableAutomaticFrequencyControlTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarEnableAutomaticFrequencyControlTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21646,11 +28709,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarEnableFastTimeConstantTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarEnableFastTimeConstantTimeseriesObject ( )
+        public RadarEnableFastTimeConstantTimeseriesObject( )
         {
         }
 
@@ -21662,6 +28738,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarEnableFastTimeConstantTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarEnableFastTimeConstantTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21685,11 +28768,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarEnableSensitivityTimeControlTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarEnableSensitivityTimeControlTimeseriesObject ( )
+        public RadarEnableSensitivityTimeControlTimeseriesObject( )
         {
         }
 
@@ -21701,6 +28797,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarEnableSensitivityTimeControlTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarEnableSensitivityTimeControlTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21724,11 +28827,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarPowerOnTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarPowerOnTimeseriesObject ( )
+        public RadarPowerOnTimeseriesObject( )
         {
         }
 
@@ -21740,6 +28856,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarPowerOnTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarPowerOnTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21763,11 +28886,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarSaveSettingsTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarSaveSettingsTimeseriesObject ( )
+        public RadarSaveSettingsTimeseriesObject( )
         {
         }
 
@@ -21779,6 +28915,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarSaveSettingsTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarSaveSettingsTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21802,11 +28945,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarTrackingTimeseriesObject : BooleanTimeseriesObject
     {
         Guid radar_;
-        public RadarTrackingTimeseriesObject ( )
+        public RadarTrackingTimeseriesObject( )
         {
         }
 
@@ -21818,6 +28974,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarTrackingTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarTrackingTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21841,11 +29004,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class MediaProxySessionEnabledTimeseriesObject : BooleanTimeseriesObject
     {
         Guid proxySession_;
-        public MediaProxySessionEnabledTimeseriesObject ( )
+        public MediaProxySessionEnabledTimeseriesObject( )
         {
         }
 
@@ -21857,6 +29033,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaProxySessionEnabledTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaProxySessionEnabledTimeseriesObject )target;
+            destination.proxySession_ = proxySession_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21880,11 +29063,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( proxySession_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            proxySession_ = source.ReadGuid( );
+        }
+
     }
     public class MediaServiceEnabledTimeseriesObject : BooleanTimeseriesObject
     {
         Guid service_;
-        public MediaServiceEnabledTimeseriesObject ( )
+        public MediaServiceEnabledTimeseriesObject( )
         {
         }
 
@@ -21896,6 +29092,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new MediaServiceEnabledTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( MediaServiceEnabledTimeseriesObject )target;
+            destination.service_ = service_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -21919,10 +29122,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( service_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            service_ = source.ReadGuid( );
+        }
+
     }
     public class ByteTimeseriesObject : TimeseriesObject
     {
-        public ByteTimeseriesObject ( )
+        public ByteTimeseriesObject( )
         {
         }
 
@@ -21948,7 +29164,7 @@ namespace Barrelman.Data.Types
     }
     public class DateTimeTimeseriesObject : TimeseriesObject
     {
-        public DateTimeTimeseriesObject ( )
+        public DateTimeTimeseriesObject( )
         {
         }
 
@@ -21974,7 +29190,7 @@ namespace Barrelman.Data.Types
     }
     public class DoubleTimeseriesObject : TimeseriesObject
     {
-        public DoubleTimeseriesObject ( )
+        public DoubleTimeseriesObject( )
         {
         }
 
@@ -22001,7 +29217,7 @@ namespace Barrelman.Data.Types
     public class GNSSAltitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gNSSDevice_;
-        public GNSSAltitudeTimeseriesObject ( )
+        public GNSSAltitudeTimeseriesObject( )
         {
         }
 
@@ -22013,6 +29229,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSAltitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSAltitudeTimeseriesObject )target;
+            destination.gNSSDevice_ = gNSSDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22036,11 +29259,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gNSSDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gNSSDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GNSSLatitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gNSSDevice_;
-        public GNSSLatitudeTimeseriesObject ( )
+        public GNSSLatitudeTimeseriesObject( )
         {
         }
 
@@ -22052,6 +29288,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSLatitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSLatitudeTimeseriesObject )target;
+            destination.gNSSDevice_ = gNSSDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22075,11 +29318,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gNSSDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gNSSDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GNSSLongitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gNSSDevice_;
-        public GNSSLongitudeTimeseriesObject ( )
+        public GNSSLongitudeTimeseriesObject( )
         {
         }
 
@@ -22091,6 +29347,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GNSSLongitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GNSSLongitudeTimeseriesObject )target;
+            destination.gNSSDevice_ = gNSSDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22114,11 +29377,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gNSSDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gNSSDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroCourseTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroCourseTimeseriesObject ( )
+        public GyroCourseTimeseriesObject( )
         {
         }
 
@@ -22130,6 +29406,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroCourseTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroCourseTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22153,11 +29436,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroHeadingMagneticNorthTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroHeadingMagneticNorthTimeseriesObject ( )
+        public GyroHeadingMagneticNorthTimeseriesObject( )
         {
         }
 
@@ -22169,6 +29465,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroHeadingMagneticNorthTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroHeadingMagneticNorthTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22192,11 +29495,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroHeadingTrueNorthTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroHeadingTrueNorthTimeseriesObject ( )
+        public GyroHeadingTrueNorthTimeseriesObject( )
         {
         }
 
@@ -22208,6 +29524,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroHeadingTrueNorthTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroHeadingTrueNorthTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22231,11 +29554,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroPitchTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroPitchTimeseriesObject ( )
+        public GyroPitchTimeseriesObject( )
         {
         }
 
@@ -22247,6 +29583,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroPitchTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroPitchTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22270,11 +29613,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroRateOfTurnTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroRateOfTurnTimeseriesObject ( )
+        public GyroRateOfTurnTimeseriesObject( )
         {
         }
 
@@ -22286,6 +29642,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroRateOfTurnTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroRateOfTurnTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22309,11 +29672,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroRollTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroRollTimeseriesObject ( )
+        public GyroRollTimeseriesObject( )
         {
         }
 
@@ -22325,6 +29701,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroRollTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroRollTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22348,11 +29731,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class GyroSpeedTimeseriesObject : DoubleTimeseriesObject
     {
         Guid gyroDevice_;
-        public GyroSpeedTimeseriesObject ( )
+        public GyroSpeedTimeseriesObject( )
         {
         }
 
@@ -22364,6 +29760,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new GyroSpeedTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( GyroSpeedTimeseriesObject )target;
+            destination.gyroDevice_ = gyroDevice_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22387,11 +29790,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( gyroDevice_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            gyroDevice_ = source.ReadGuid( );
+        }
+
     }
     public class RadarLatitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid radar_;
-        public RadarLatitudeTimeseriesObject ( )
+        public RadarLatitudeTimeseriesObject( )
         {
         }
 
@@ -22403,6 +29819,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarLatitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarLatitudeTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22426,11 +29849,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarLongitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid radar_;
-        public RadarLongitudeTimeseriesObject ( )
+        public RadarLongitudeTimeseriesObject( )
         {
         }
 
@@ -22442,6 +29878,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarLongitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarLongitudeTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22465,11 +29908,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadomeDewPointTimeseriesObject : DoubleTimeseriesObject
     {
         Guid radome_;
-        public RadomeDewPointTimeseriesObject ( )
+        public RadomeDewPointTimeseriesObject( )
         {
         }
 
@@ -22481,6 +29937,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeDewPointTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeDewPointTimeseriesObject )target;
+            destination.radome_ = radome_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22504,11 +29967,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radome_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radome_ = source.ReadGuid( );
+        }
+
     }
     public class RadomePressureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid radome_;
-        public RadomePressureTimeseriesObject ( )
+        public RadomePressureTimeseriesObject( )
         {
         }
 
@@ -22520,6 +29996,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomePressureTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomePressureTimeseriesObject )target;
+            destination.radome_ = radome_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22543,11 +30026,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radome_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radome_ = source.ReadGuid( );
+        }
+
     }
     public class RadomeTemperatureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid radome_;
-        public RadomeTemperatureTimeseriesObject ( )
+        public RadomeTemperatureTimeseriesObject( )
         {
         }
 
@@ -22559,6 +30055,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeTemperatureTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeTemperatureTimeseriesObject )target;
+            destination.radome_ = radome_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22582,11 +30085,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radome_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radome_ = source.ReadGuid( );
+        }
+
     }
     public class VesselDraughtTimeseriesObject : DoubleTimeseriesObject
     {
         Guid vessel_;
-        public VesselDraughtTimeseriesObject ( )
+        public VesselDraughtTimeseriesObject( )
         {
         }
 
@@ -22598,6 +30114,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new VesselDraughtTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( VesselDraughtTimeseriesObject )target;
+            destination.vessel_ = vessel_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22621,11 +30144,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( vessel_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            vessel_ = source.ReadGuid( );
+        }
+
     }
     public class ViewLatitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid view_;
-        public ViewLatitudeTimeseriesObject ( )
+        public ViewLatitudeTimeseriesObject( )
         {
         }
 
@@ -22637,6 +30173,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ViewLatitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ViewLatitudeTimeseriesObject )target;
+            destination.view_ = view_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22660,11 +30203,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( view_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            view_ = source.ReadGuid( );
+        }
+
     }
     public class ViewLongitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid view_;
-        public ViewLongitudeTimeseriesObject ( )
+        public ViewLongitudeTimeseriesObject( )
         {
         }
 
@@ -22676,6 +30232,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ViewLongitudeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ViewLongitudeTimeseriesObject )target;
+            destination.view_ = view_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22699,11 +30262,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( view_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            view_ = source.ReadGuid( );
+        }
+
     }
     public class ViewZoomLevelTimeseriesObject : DoubleTimeseriesObject
     {
         Guid view_;
-        public ViewZoomLevelTimeseriesObject ( )
+        public ViewZoomLevelTimeseriesObject( )
         {
         }
 
@@ -22715,6 +30291,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ViewZoomLevelTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ViewZoomLevelTimeseriesObject )target;
+            destination.view_ = view_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22738,11 +30321,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( view_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            view_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationAbsoluteHumidityTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationAbsoluteHumidityTimeseriesObject ( )
+        public WeatherStationAbsoluteHumidityTimeseriesObject( )
         {
         }
 
@@ -22754,6 +30350,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationAbsoluteHumidityTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationAbsoluteHumidityTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22777,11 +30380,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationAirTemperatureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationAirTemperatureTimeseriesObject ( )
+        public WeatherStationAirTemperatureTimeseriesObject( )
         {
         }
 
@@ -22793,6 +30409,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationAirTemperatureTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationAirTemperatureTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22816,11 +30439,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationBarometricPressureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationBarometricPressureTimeseriesObject ( )
+        public WeatherStationBarometricPressureTimeseriesObject( )
         {
         }
 
@@ -22832,6 +30468,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationBarometricPressureTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationBarometricPressureTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22855,11 +30498,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationDewPointTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationDewPointTimeseriesObject ( )
+        public WeatherStationDewPointTimeseriesObject( )
         {
         }
 
@@ -22871,6 +30527,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationDewPointTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationDewPointTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22894,11 +30557,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationRelativeHumidityTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationRelativeHumidityTimeseriesObject ( )
+        public WeatherStationRelativeHumidityTimeseriesObject( )
         {
         }
 
@@ -22910,6 +30586,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationRelativeHumidityTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationRelativeHumidityTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22933,11 +30616,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationWaterTemperatureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationWaterTemperatureTimeseriesObject ( )
+        public WeatherStationWaterTemperatureTimeseriesObject( )
         {
         }
 
@@ -22949,6 +30645,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationWaterTemperatureTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationWaterTemperatureTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -22972,11 +30675,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationWindDirectionTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationWindDirectionTimeseriesObject ( )
+        public WeatherStationWindDirectionTimeseriesObject( )
         {
         }
 
@@ -22988,6 +30704,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationWindDirectionTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationWindDirectionTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23011,11 +30734,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationWindSpeedTimeseriesObject : DoubleTimeseriesObject
     {
         Guid weatherStation_;
-        public WeatherStationWindSpeedTimeseriesObject ( )
+        public WeatherStationWindSpeedTimeseriesObject( )
         {
         }
 
@@ -23027,6 +30763,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationWindSpeedTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationWindSpeedTimeseriesObject )target;
+            destination.weatherStation_ = weatherStation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23050,10 +30793,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( weatherStation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            weatherStation_ = source.ReadGuid( );
+        }
+
     }
     public class GeoPosition2DTimeseriesObject : TimeseriesObject
     {
-        public GeoPosition2DTimeseriesObject ( )
+        public GeoPosition2DTimeseriesObject( )
         {
         }
 
@@ -23080,7 +30836,7 @@ namespace Barrelman.Data.Types
     public class AisAidToNavigationPositionTimeseriesObject : GeoPosition2DTimeseriesObject
     {
         Guid aidToNavigation_;
-        public AisAidToNavigationPositionTimeseriesObject ( )
+        public AisAidToNavigationPositionTimeseriesObject( )
         {
         }
 
@@ -23092,6 +30848,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new AisAidToNavigationPositionTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( AisAidToNavigationPositionTimeseriesObject )target;
+            destination.aidToNavigation_ = aidToNavigation_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23115,10 +30878,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( aidToNavigation_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            aidToNavigation_ = source.ReadGuid( );
+        }
+
     }
     public class GeoPosition3DTimeseriesObject : TimeseriesObject
     {
-        public GeoPosition3DTimeseriesObject ( )
+        public GeoPosition3DTimeseriesObject( )
         {
         }
 
@@ -23144,7 +30920,7 @@ namespace Barrelman.Data.Types
     }
     public class GuidTimeseriesObject : TimeseriesObject
     {
-        public GuidTimeseriesObject ( )
+        public GuidTimeseriesObject( )
         {
         }
 
@@ -23170,7 +30946,7 @@ namespace Barrelman.Data.Types
     }
     public class Int16TimeseriesObject : TimeseriesObject
     {
-        public Int16TimeseriesObject ( )
+        public Int16TimeseriesObject( )
         {
         }
 
@@ -23196,7 +30972,7 @@ namespace Barrelman.Data.Types
     }
     public class Int32TimeseriesObject : TimeseriesObject
     {
-        public Int32TimeseriesObject ( )
+        public Int32TimeseriesObject( )
         {
         }
 
@@ -23223,7 +30999,7 @@ namespace Barrelman.Data.Types
     public class RadarAzimuthOffsetTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarAzimuthOffsetTimeseriesObject ( )
+        public RadarAzimuthOffsetTimeseriesObject( )
         {
         }
 
@@ -23235,6 +31011,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarAzimuthOffsetTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarAzimuthOffsetTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23258,11 +31041,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarFastTimeConstantLevelTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarFastTimeConstantLevelTimeseriesObject ( )
+        public RadarFastTimeConstantLevelTimeseriesObject( )
         {
         }
 
@@ -23274,6 +31070,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarFastTimeConstantLevelTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarFastTimeConstantLevelTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23297,11 +31100,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarFastTimeConstantModeTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarFastTimeConstantModeTimeseriesObject ( )
+        public RadarFastTimeConstantModeTimeseriesObject( )
         {
         }
 
@@ -23313,6 +31129,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarFastTimeConstantModeTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarFastTimeConstantModeTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23336,11 +31159,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarPulseTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarPulseTimeseriesObject ( )
+        public RadarPulseTimeseriesObject( )
         {
         }
 
@@ -23352,6 +31188,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarPulseTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarPulseTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23375,11 +31218,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarSector1EndTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarSector1EndTimeseriesObject ( )
+        public RadarSector1EndTimeseriesObject( )
         {
         }
 
@@ -23391,6 +31247,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarSector1EndTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarSector1EndTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23414,11 +31277,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarSector1StartTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarSector1StartTimeseriesObject ( )
+        public RadarSector1StartTimeseriesObject( )
         {
         }
 
@@ -23430,6 +31306,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarSector1StartTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarSector1StartTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23453,11 +31336,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarSector2EndTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarSector2EndTimeseriesObject ( )
+        public RadarSector2EndTimeseriesObject( )
         {
         }
 
@@ -23469,6 +31365,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarSector2EndTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarSector2EndTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23492,11 +31395,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarSector2StartTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarSector2StartTimeseriesObject ( )
+        public RadarSector2StartTimeseriesObject( )
         {
         }
 
@@ -23508,6 +31424,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarSector2StartTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarSector2StartTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23531,11 +31454,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarSensitivityTimeControlLevelTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarSensitivityTimeControlLevelTimeseriesObject ( )
+        public RadarSensitivityTimeControlLevelTimeseriesObject( )
         {
         }
 
@@ -23547,6 +31483,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarSensitivityTimeControlLevelTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarSensitivityTimeControlLevelTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23570,11 +31513,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class RadarTuningTimeseriesObject : Int32TimeseriesObject
     {
         Guid radar_;
-        public RadarTuningTimeseriesObject ( )
+        public RadarTuningTimeseriesObject( )
         {
         }
 
@@ -23586,6 +31542,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadarTuningTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadarTuningTimeseriesObject )target;
+            destination.radar_ = radar_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23609,11 +31572,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radar_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radar_ = source.ReadGuid( );
+        }
+
     }
     public class VesselPersonsOnBoardTimeseriesObject : Int32TimeseriesObject
     {
         Guid vessel_;
-        public VesselPersonsOnBoardTimeseriesObject ( )
+        public VesselPersonsOnBoardTimeseriesObject( )
         {
         }
 
@@ -23625,6 +31601,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new VesselPersonsOnBoardTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( VesselPersonsOnBoardTimeseriesObject )target;
+            destination.vessel_ = vessel_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23648,10 +31631,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( vessel_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            vessel_ = source.ReadGuid( );
+        }
+
     }
     public class Int64TimeseriesObject : TimeseriesObject
     {
-        public Int64TimeseriesObject ( )
+        public Int64TimeseriesObject( )
         {
         }
 
@@ -23677,7 +31673,7 @@ namespace Barrelman.Data.Types
     }
     public class Position2DTimeseriesObject : TimeseriesObject
     {
-        public Position2DTimeseriesObject ( )
+        public Position2DTimeseriesObject( )
         {
         }
 
@@ -23703,7 +31699,7 @@ namespace Barrelman.Data.Types
     }
     public class Position3DTimeseriesObject : TimeseriesObject
     {
-        public Position3DTimeseriesObject ( )
+        public Position3DTimeseriesObject( )
         {
         }
 
@@ -23729,7 +31725,7 @@ namespace Barrelman.Data.Types
     }
     public class ReferenceTimeseriesObject : TimeseriesObject
     {
-        public ReferenceTimeseriesObject ( )
+        public ReferenceTimeseriesObject( )
         {
         }
 
@@ -23755,7 +31751,7 @@ namespace Barrelman.Data.Types
     }
     public class SByteTimeseriesObject : TimeseriesObject
     {
-        public SByteTimeseriesObject ( )
+        public SByteTimeseriesObject( )
         {
         }
 
@@ -23781,7 +31777,7 @@ namespace Barrelman.Data.Types
     }
     public class SingleTimeseriesObject : TimeseriesObject
     {
-        public SingleTimeseriesObject ( )
+        public SingleTimeseriesObject( )
         {
         }
 
@@ -23807,7 +31803,7 @@ namespace Barrelman.Data.Types
     }
     public class StringTimeseriesObject : TimeseriesObject
     {
-        public StringTimeseriesObject ( )
+        public StringTimeseriesObject( )
         {
         }
 
@@ -23833,7 +31829,7 @@ namespace Barrelman.Data.Types
     }
     public class TimeSpanTimeseriesObject : TimeseriesObject
     {
-        public TimeSpanTimeseriesObject ( )
+        public TimeSpanTimeseriesObject( )
         {
         }
 
@@ -23859,7 +31855,7 @@ namespace Barrelman.Data.Types
     }
     public class UInt16TimeseriesObject : TimeseriesObject
     {
-        public UInt16TimeseriesObject ( )
+        public UInt16TimeseriesObject( )
         {
         }
 
@@ -23885,7 +31881,7 @@ namespace Barrelman.Data.Types
     }
     public class UInt32TimeseriesObject : TimeseriesObject
     {
-        public UInt32TimeseriesObject ( )
+        public UInt32TimeseriesObject( )
         {
         }
 
@@ -23912,7 +31908,7 @@ namespace Barrelman.Data.Types
     public class RadomeStatusTimeseriesObject : UInt32TimeseriesObject
     {
         Guid radome_;
-        public RadomeStatusTimeseriesObject ( )
+        public RadomeStatusTimeseriesObject( )
         {
         }
 
@@ -23924,6 +31920,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new RadomeStatusTimeseriesObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( RadomeStatusTimeseriesObject )target;
+            destination.radome_ = radome_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -23947,10 +31950,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radome_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radome_ = source.ReadGuid( );
+        }
+
     }
     public class UInt64TimeseriesObject : TimeseriesObject
     {
-        public UInt64TimeseriesObject ( )
+        public UInt64TimeseriesObject( )
         {
         }
 
@@ -23976,7 +31992,7 @@ namespace Barrelman.Data.Types
     }
     public class TimeseriesCatalogObject : TimeseriesCatalogElementObject
     {
-        public TimeseriesCatalogObject ( )
+        public TimeseriesCatalogObject( )
         {
         }
 
@@ -24006,7 +32022,7 @@ namespace Barrelman.Data.Types
         DateTime? firstTimestamp_;
         DateTime? lastTimestamp_;
         long count_ = 0;
-        public TimeseriesInfoObject ( )
+        public TimeseriesInfoObject( )
         {
         }
 
@@ -24018,6 +32034,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TimeseriesInfoObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeseriesInfoObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.firstTimestamp_ = firstTimestamp_;
+            destination.lastTimestamp_ = lastTimestamp_;
+            destination.count_ = count_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24077,6 +32103,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( firstTimestamp_ );
+            destination.Write( lastTimestamp_ );
+            destination.Write( count_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            firstTimestamp_ = source.ReadNullableDateTime( );
+            lastTimestamp_ = source.ReadNullableDateTime( );
+            count_ = source.ReadInt64( );
+        }
+
     }
     public class TimeSpanTimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -24084,7 +32129,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         TimeSpan? value_;
-        public TimeSpanTimeseriesValueObject ( )
+        public TimeSpanTimeseriesValueObject( )
         {
         }
 
@@ -24096,6 +32141,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TimeSpanTimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TimeSpanTimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24155,6 +32210,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableTimeSpan( );
+        }
+
     }
     public class TrackableItemTrackLinkObject : BaseDataGuid<Kind>
     {
@@ -24163,7 +32237,7 @@ namespace Barrelman.Data.Types
         Guid track_;
         DateTime start_;
         DateTime? end_;
-        public TrackableItemTrackLinkObject ( )
+        public TrackableItemTrackLinkObject( )
         {
         }
 
@@ -24175,6 +32249,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackableItemTrackLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackableItemTrackLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.item_ = item_;
+            destination.track_ = track_;
+            destination.start_ = start_;
+            destination.end_ = end_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24246,6 +32331,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( item_ );
+            destination.Write( track_ );
+            destination.Write( start_ );
+            destination.Write( end_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            item_ = source.ReadGuid( );
+            track_ = source.ReadGuid( );
+            start_ = source.ReadDateTime( );
+            end_ = source.ReadNullableDateTime( );
+        }
+
     }
     public abstract class TrackBaseObject : BaseDataGuid<Kind>
     {
@@ -24253,8 +32359,18 @@ namespace Barrelman.Data.Types
         Guid tracker_;
         long trackNumber_ = 0;
         DateTime timestamp_;
-        protected TrackBaseObject ( )
+        protected TrackBaseObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackBaseObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.tracker_ = tracker_;
+            destination.trackNumber_ = trackNumber_;
+            destination.timestamp_ = timestamp_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24314,10 +32430,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( tracker_ );
+            destination.Write( trackNumber_ );
+            destination.Write( timestamp_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            tracker_ = source.ReadGuid( );
+            trackNumber_ = source.ReadInt64( );
+            timestamp_ = source.ReadDateTime( );
+        }
+
     }
     public class TrackObject : TrackBaseObject
     {
-        public TrackObject ( )
+        public TrackObject( )
         {
         }
 
@@ -24343,7 +32478,7 @@ namespace Barrelman.Data.Types
     }
     public class Track3DObject : TrackBaseObject
     {
-        public Track3DObject ( )
+        public Track3DObject( )
         {
         }
 
@@ -24372,7 +32507,7 @@ namespace Barrelman.Data.Types
         long rowVersion_ = 0;
         Guid tracker_;
         string name_ = string.Empty;
-        public TrackerFilterParametersObject ( )
+        public TrackerFilterParametersObject( )
         {
         }
 
@@ -24384,6 +32519,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackerFilterParametersObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackerFilterParametersObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.tracker_ = tracker_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24431,6 +32575,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( tracker_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            tracker_ = source.ReadGuid( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class TrackerFilterParametersConfigurationObject : BaseDataGuid<Kind>
     {
@@ -24450,7 +32611,7 @@ namespace Barrelman.Data.Types
         double deltaRMin_ = 0.0;
         double deltaVMax_ = 0.0;
         double deltaAMax_ = 0.0;
-        public TrackerFilterParametersConfigurationObject ( )
+        public TrackerFilterParametersConfigurationObject( )
         {
         }
 
@@ -24462,6 +32623,28 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackerFilterParametersConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackerFilterParametersConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.parameters_ = parameters_;
+            destination.timestamp_ = timestamp_;
+            destination.useNaivePredictor_ = useNaivePredictor_;
+            destination.numberOfPoints_ = numberOfPoints_;
+            destination.windowSize_ = windowSize_;
+            destination.stabilizeCount_ = stabilizeCount_;
+            destination.maxBadPoints_ = maxBadPoints_;
+            destination.modelType_ = modelType_;
+            destination.sigmaR_ = sigmaR_;
+            destination.sigmaAcc_ = sigmaAcc_;
+            destination.tauVel_ = tauVel_;
+            destination.tauAcc_ = tauAcc_;
+            destination.deltaRMin_ = deltaRMin_;
+            destination.deltaVMax_ = deltaVMax_;
+            destination.deltaAMax_ = deltaAMax_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24665,6 +32848,49 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( parameters_ );
+            destination.Write( timestamp_ );
+            destination.Write( useNaivePredictor_ );
+            destination.Write( numberOfPoints_ );
+            destination.Write( windowSize_ );
+            destination.Write( stabilizeCount_ );
+            destination.Write( maxBadPoints_ );
+            destination.Write( modelType_ );
+            destination.Write( sigmaR_ );
+            destination.Write( sigmaAcc_ );
+            destination.Write( tauVel_ );
+            destination.Write( tauAcc_ );
+            destination.Write( deltaRMin_ );
+            destination.Write( deltaVMax_ );
+            destination.Write( deltaAMax_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            parameters_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            useNaivePredictor_ = source.ReadBoolean( );
+            numberOfPoints_ = source.ReadInt32( );
+            windowSize_ = source.ReadInt32( );
+            stabilizeCount_ = source.ReadInt32( );
+            maxBadPoints_ = source.ReadInt32( );
+            modelType_ = source.ReadEnum<Types.TrackerFilterModelType>( );
+            sigmaR_ = source.ReadDouble( );
+            sigmaAcc_ = source.ReadDouble( );
+            tauVel_ = source.ReadDouble( );
+            tauAcc_ = source.ReadDouble( );
+            deltaRMin_ = source.ReadDouble( );
+            deltaVMax_ = source.ReadDouble( );
+            deltaAMax_ = source.ReadDouble( );
+        }
+
     }
     public class TrackInfoObject : BaseDataGuid<Kind>
     {
@@ -24676,7 +32902,7 @@ namespace Barrelman.Data.Types
         double? northWestLongitude_;
         double? southEastLatitude_;
         double? southEastLongitude_;
-        public TrackInfoObject ( )
+        public TrackInfoObject( )
         {
         }
 
@@ -24688,6 +32914,20 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackInfoObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackInfoObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.firstTimestamp_ = firstTimestamp_;
+            destination.lastTimestamp_ = lastTimestamp_;
+            destination.count_ = count_;
+            destination.northWestLatitude_ = northWestLatitude_;
+            destination.northWestLongitude_ = northWestLongitude_;
+            destination.southEastLatitude_ = southEastLatitude_;
+            destination.southEastLongitude_ = southEastLongitude_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24795,6 +33035,33 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( firstTimestamp_ );
+            destination.Write( lastTimestamp_ );
+            destination.Write( count_ );
+            destination.Write( northWestLatitude_ );
+            destination.Write( northWestLongitude_ );
+            destination.Write( southEastLatitude_ );
+            destination.Write( southEastLongitude_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            firstTimestamp_ = source.ReadNullableDateTime( );
+            lastTimestamp_ = source.ReadNullableDateTime( );
+            count_ = source.ReadInt64( );
+            northWestLatitude_ = source.ReadNullableDouble( );
+            northWestLongitude_ = source.ReadNullableDouble( );
+            southEastLatitude_ = source.ReadNullableDouble( );
+            southEastLongitude_ = source.ReadNullableDouble( );
+        }
+
     }
     public class TrackingServiceOptionsObject : BaseDataGuid<Kind>
     {
@@ -24810,7 +33077,7 @@ namespace Barrelman.Data.Types
         double maxCourseDeviation_ = 0.0;
         double maxSpeedDeviation_ = 0.0;
         double minimumSpeedThreshold_ = 0.0;
-        public TrackingServiceOptionsObject ( )
+        public TrackingServiceOptionsObject( )
         {
         }
 
@@ -24822,6 +33089,24 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackingServiceOptionsObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackingServiceOptionsObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timestamp_ = timestamp_;
+            destination.timerInterval_ = timerInterval_;
+            destination.maxAgeOfCurrentTrackValue_ = maxAgeOfCurrentTrackValue_;
+            destination.falseThreshold_ = falseThreshold_;
+            destination.distanceThreshold_ = distanceThreshold_;
+            destination.distanceUnmergeThreshold_ = distanceUnmergeThreshold_;
+            destination.unmergeLatency_ = unmergeLatency_;
+            destination.kalmanFiltering_ = kalmanFiltering_;
+            destination.maxCourseDeviation_ = maxCourseDeviation_;
+            destination.maxSpeedDeviation_ = maxSpeedDeviation_;
+            destination.minimumSpeedThreshold_ = minimumSpeedThreshold_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -24977,6 +33262,41 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timestamp_ );
+            destination.Write( timerInterval_ );
+            destination.Write( maxAgeOfCurrentTrackValue_ );
+            destination.Write( falseThreshold_ );
+            destination.Write( distanceThreshold_ );
+            destination.Write( distanceUnmergeThreshold_ );
+            destination.Write( unmergeLatency_ );
+            destination.Write( kalmanFiltering_ );
+            destination.Write( maxCourseDeviation_ );
+            destination.Write( maxSpeedDeviation_ );
+            destination.Write( minimumSpeedThreshold_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timestamp_ = source.ReadDateTime( );
+            timerInterval_ = source.ReadTimeSpan( );
+            maxAgeOfCurrentTrackValue_ = source.ReadTimeSpan( );
+            falseThreshold_ = source.ReadDouble( );
+            distanceThreshold_ = source.ReadDouble( );
+            distanceUnmergeThreshold_ = source.ReadDouble( );
+            unmergeLatency_ = source.ReadInt64( );
+            kalmanFiltering_ = source.ReadBoolean( );
+            maxCourseDeviation_ = source.ReadDouble( );
+            maxSpeedDeviation_ = source.ReadDouble( );
+            minimumSpeedThreshold_ = source.ReadDouble( );
+        }
+
     }
     public class TrackLinkObject : BaseDataGuid<Kind>
     {
@@ -24985,7 +33305,7 @@ namespace Barrelman.Data.Types
         Guid secondary_;
         DateTime start_;
         DateTime? end_;
-        public TrackLinkObject ( )
+        public TrackLinkObject( )
         {
         }
 
@@ -24997,6 +33317,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.primary_ = primary_;
+            destination.secondary_ = secondary_;
+            destination.start_ = start_;
+            destination.end_ = end_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25068,6 +33399,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( primary_ );
+            destination.Write( secondary_ );
+            destination.Write( start_ );
+            destination.Write( end_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            primary_ = source.ReadGuid( );
+            secondary_ = source.ReadGuid( );
+            start_ = source.ReadDateTime( );
+            end_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class TrackValueObject : BaseDataGuid<Kind>
     {
@@ -25081,7 +33433,7 @@ namespace Barrelman.Data.Types
         double speed_ = 0.0;
         double course_ = 0.0;
         double heading_ = 0.0;
-        public TrackValueObject ( )
+        public TrackValueObject( )
         {
         }
 
@@ -25093,6 +33445,22 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.track_ = track_;
+            destination.timestamp_ = timestamp_;
+            destination.flags_ = flags_;
+            destination.status_ = status_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.speed_ = speed_;
+            destination.course_ = course_;
+            destination.heading_ = heading_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25224,6 +33592,37 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( track_ );
+            destination.Write( timestamp_ );
+            destination.Write( flags_ );
+            destination.Write( status_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( speed_ );
+            destination.Write( course_ );
+            destination.Write( heading_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            track_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            flags_ = source.ReadEnum<Types.TrackFlags>( );
+            status_ = source.ReadEnum<Types.TrackStatus>( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            speed_ = source.ReadDouble( );
+            course_ = source.ReadDouble( );
+            heading_ = source.ReadDouble( );
+        }
+
     }
     public class TrackValue3DObject : BaseDataGuid<Kind>
     {
@@ -25238,7 +33637,7 @@ namespace Barrelman.Data.Types
         double speed_ = 0.0;
         double course_ = 0.0;
         double rateOfClimb_ = 0.0;
-        public TrackValue3DObject ( )
+        public TrackValue3DObject( )
         {
         }
 
@@ -25250,6 +33649,23 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new TrackValue3DObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( TrackValue3DObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.track_ = track_;
+            destination.timestamp_ = timestamp_;
+            destination.flags_ = flags_;
+            destination.status_ = status_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.altitude_ = altitude_;
+            destination.speed_ = speed_;
+            destination.course_ = course_;
+            destination.rateOfClimb_ = rateOfClimb_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25393,6 +33809,39 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( track_ );
+            destination.Write( timestamp_ );
+            destination.Write( flags_ );
+            destination.Write( status_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( altitude_ );
+            destination.Write( speed_ );
+            destination.Write( course_ );
+            destination.Write( rateOfClimb_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            track_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            flags_ = source.ReadEnum<Types.TrackFlags3D>( );
+            status_ = source.ReadUInt32( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            altitude_ = source.ReadDouble( );
+            speed_ = source.ReadDouble( );
+            course_ = source.ReadDouble( );
+            rateOfClimb_ = source.ReadDouble( );
+        }
+
     }
     public class UInt16TimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -25400,7 +33849,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         ushort? value_;
-        public UInt16TimeseriesValueObject ( )
+        public UInt16TimeseriesValueObject( )
         {
         }
 
@@ -25412,6 +33861,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt16TimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt16TimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25471,6 +33930,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableUInt16( );
+        }
+
     }
     public class UInt32TimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -25478,7 +33956,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         uint? value_;
-        public UInt32TimeseriesValueObject ( )
+        public UInt32TimeseriesValueObject( )
         {
         }
 
@@ -25490,6 +33968,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt32TimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt32TimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25549,6 +34037,25 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableUInt32( );
+        }
+
     }
     public class UInt64TimeseriesValueObject : BaseDataGuid<Kind>
     {
@@ -25556,7 +34063,7 @@ namespace Barrelman.Data.Types
         Guid timeseries_;
         DateTime timestamp_;
         long? value_;
-        public UInt64TimeseriesValueObject ( )
+        public UInt64TimeseriesValueObject( )
         {
         }
 
@@ -25568,6 +34075,16 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new UInt64TimeseriesValueObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( UInt64TimeseriesValueObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.timeseries_ = timeseries_;
+            destination.timestamp_ = timestamp_;
+            destination.value_ = value_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25627,12 +34144,31 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( timeseries_ );
+            destination.Write( timestamp_ );
+            destination.Write( value_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            timeseries_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            value_ = source.ReadNullableInt64( );
+        }
+
     }
     public class VehicleTypeObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
-        public VehicleTypeObject ( )
+        public VehicleTypeObject( )
         {
         }
 
@@ -25644,6 +34180,14 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new VehicleTypeObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( VehicleTypeObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25679,13 +34223,28 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+        }
+
     }
     public class VesselTypeObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         string name_ = string.Empty;
         int code_ = 0;
-        public VesselTypeObject ( )
+        public VesselTypeObject( )
         {
         }
 
@@ -25697,6 +34256,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new VesselTypeObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( VesselTypeObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
+            destination.code_ = code_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25744,6 +34312,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+            destination.Write( code_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+            code_ = source.ReadInt32( );
+        }
+
     }
     public class ViewObject : BaseDataGuid<Kind>
     {
@@ -25752,7 +34337,7 @@ namespace Barrelman.Data.Types
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
         Guid zoomLevelTimeseries_;
-        public ViewObject ( )
+        public ViewObject( )
         {
         }
 
@@ -25764,6 +34349,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ViewObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ViewObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
+            destination.latitudeTimeseries_ = latitudeTimeseries_;
+            destination.longitudeTimeseries_ = longitudeTimeseries_;
+            destination.zoomLevelTimeseries_ = zoomLevelTimeseries_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25835,6 +34431,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+            destination.Write( latitudeTimeseries_ );
+            destination.Write( longitudeTimeseries_ );
+            destination.Write( zoomLevelTimeseries_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+            latitudeTimeseries_ = source.ReadGuid( );
+            longitudeTimeseries_ = source.ReadGuid( );
+            zoomLevelTimeseries_ = source.ReadGuid( );
+        }
+
     }
     public class ViewCameraLinkObject : BaseDataGuid<Kind>
     {
@@ -25843,7 +34460,7 @@ namespace Barrelman.Data.Types
         Guid camera_;
         DateTime start_;
         DateTime? end_;
-        public ViewCameraLinkObject ( )
+        public ViewCameraLinkObject( )
         {
         }
 
@@ -25855,6 +34472,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ViewCameraLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ViewCameraLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.view_ = view_;
+            destination.camera_ = camera_;
+            destination.start_ = start_;
+            destination.end_ = end_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -25926,6 +34554,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( view_ );
+            destination.Write( camera_ );
+            destination.Write( start_ );
+            destination.Write( end_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            view_ = source.ReadGuid( );
+            camera_ = source.ReadGuid( );
+            start_ = source.ReadDateTime( );
+            end_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class ViewTrackerLinkObject : BaseDataGuid<Kind>
     {
@@ -25934,7 +34583,7 @@ namespace Barrelman.Data.Types
         Guid tracker_;
         DateTime start_;
         DateTime? end_;
-        public ViewTrackerLinkObject ( )
+        public ViewTrackerLinkObject( )
         {
         }
 
@@ -25946,6 +34595,17 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ViewTrackerLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ViewTrackerLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.view_ = view_;
+            destination.tracker_ = tracker_;
+            destination.start_ = start_;
+            destination.end_ = end_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26017,6 +34677,27 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( view_ );
+            destination.Write( tracker_ );
+            destination.Write( start_ );
+            destination.Write( end_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            view_ = source.ReadGuid( );
+            tracker_ = source.ReadGuid( );
+            start_ = source.ReadDateTime( );
+            end_ = source.ReadNullableDateTime( );
+        }
+
     }
     public class WeatherStationCommandObject : BaseDataGuid<Kind>
     {
@@ -26026,7 +34707,7 @@ namespace Barrelman.Data.Types
         Types.DeviceCommandSourceType deviceCommandSourceType_ = Types.DeviceCommandSourceType.Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        public WeatherStationCommandObject ( )
+        public WeatherStationCommandObject( )
         {
         }
 
@@ -26038,6 +34719,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationCommandObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationCommandObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.weatherStation_ = weatherStation_;
+            destination.timestamp_ = timestamp_;
+            destination.deviceCommandSourceType_ = deviceCommandSourceType_;
+            destination.deviceCommandSourceId_ = deviceCommandSourceId_;
+            destination.reply_ = reply_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26121,6 +34814,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( weatherStation_ );
+            destination.Write( timestamp_ );
+            destination.Write( deviceCommandSourceType_ );
+            destination.Write( deviceCommandSourceId_ );
+            destination.Write( reply_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            weatherStation_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            deviceCommandSourceType_ = source.ReadEnum<Types.DeviceCommandSourceType>( );
+            deviceCommandSourceId_ = source.ReadGuid( );
+            reply_ = source.ReadGuid( );
+        }
+
     }
     public class WeatherStationCommandReplyObject : BaseDataGuid<Kind>
     {
@@ -26130,7 +34846,7 @@ namespace Barrelman.Data.Types
         Guid command_;
         Types.DeviceCommandReplyStatus status_ = Types.DeviceCommandReplyStatus.Unknown;
         string message_ = string.Empty;
-        public WeatherStationCommandReplyObject ( )
+        public WeatherStationCommandReplyObject( )
         {
         }
 
@@ -26142,6 +34858,18 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationCommandReplyObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationCommandReplyObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.weatherStation_ = weatherStation_;
+            destination.timestamp_ = timestamp_;
+            destination.command_ = command_;
+            destination.status_ = status_;
+            destination.message_ = message_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26225,6 +34953,29 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( weatherStation_ );
+            destination.Write( timestamp_ );
+            destination.Write( command_ );
+            destination.Write( status_ );
+            destination.Write( message_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            weatherStation_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            command_ = source.ReadGuid( );
+            status_ = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
+            message_ = source.ReadString( );
+        }
+
     }
     public class WeatherStationConfigurationObject : BaseDataGuid<Kind>
     {
@@ -26238,7 +34989,7 @@ namespace Barrelman.Data.Types
         double gyroOffset_ = 0.0;
         bool enableAveraging_ = false;
         TimeSpan averagingInterval_;
-        public WeatherStationConfigurationObject ( )
+        public WeatherStationConfigurationObject( )
         {
         }
 
@@ -26250,6 +35001,22 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new WeatherStationConfigurationObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( WeatherStationConfigurationObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.weatherStation_ = weatherStation_;
+            destination.timestamp_ = timestamp_;
+            destination.noDataTimeOut_ = noDataTimeOut_;
+            destination.sendInterval_ = sendInterval_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.gyroOffset_ = gyroOffset_;
+            destination.enableAveraging_ = enableAveraging_;
+            destination.averagingInterval_ = averagingInterval_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26381,6 +35148,37 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( weatherStation_ );
+            destination.Write( timestamp_ );
+            destination.Write( noDataTimeOut_ );
+            destination.Write( sendInterval_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( gyroOffset_ );
+            destination.Write( enableAveraging_ );
+            destination.Write( averagingInterval_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            weatherStation_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            noDataTimeOut_ = source.ReadTimeSpan( );
+            sendInterval_ = source.ReadTimeSpan( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            gyroOffset_ = source.ReadDouble( );
+            enableAveraging_ = source.ReadBoolean( );
+            averagingInterval_ = source.ReadTimeSpan( );
+        }
+
     }
     public abstract class ZoneObject : BaseDataGuid<Kind>
     {
@@ -26394,8 +35192,24 @@ namespace Barrelman.Data.Types
         double speed_ = 0.0;
         uint strokeColor_ = 0;
         uint fillColor_ = 0;
-        protected ZoneObject ( )
+        protected ZoneObject( )
         {
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ZoneObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.name_ = name_;
+            destination.longitude_ = longitude_;
+            destination.latitude_ = latitude_;
+            destination.alarmType_ = alarmType_;
+            destination.alarmTime_ = alarmTime_;
+            destination.radarTrackMinimumLifetime_ = radarTrackMinimumLifetime_;
+            destination.speed_ = speed_;
+            destination.strokeColor_ = strokeColor_;
+            destination.fillColor_ = fillColor_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26527,11 +35341,42 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( name_ );
+            destination.Write( longitude_ );
+            destination.Write( latitude_ );
+            destination.Write( alarmType_ );
+            destination.Write( alarmTime_ );
+            destination.Write( radarTrackMinimumLifetime_ );
+            destination.Write( speed_ );
+            destination.Write( strokeColor_ );
+            destination.Write( fillColor_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            name_ = source.ReadString( );
+            longitude_ = source.ReadDouble( );
+            latitude_ = source.ReadDouble( );
+            alarmType_ = source.ReadEnum<Types.ZoneAlarmType>( );
+            alarmTime_ = source.ReadTimeSpan( );
+            radarTrackMinimumLifetime_ = source.ReadTimeSpan( );
+            speed_ = source.ReadDouble( );
+            strokeColor_ = source.ReadUInt32( );
+            fillColor_ = source.ReadUInt32( );
+        }
+
     }
     public class CircularZoneObject : ZoneObject
     {
         double radius_ = 0.0;
-        public CircularZoneObject ( )
+        public CircularZoneObject( )
         {
         }
 
@@ -26543,6 +35388,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new CircularZoneObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( CircularZoneObject )target;
+            destination.radius_ = radius_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26566,11 +35418,24 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( radius_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            radius_ = source.ReadDouble( );
+        }
+
     }
     public class PolygonZoneObject : ZoneObject
     {
         byte[] polygon_ = Array.Empty<byte>();
-        public PolygonZoneObject ( )
+        public PolygonZoneObject( )
         {
         }
 
@@ -26582,6 +35447,13 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new PolygonZoneObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( PolygonZoneObject )target;
+            destination.polygon_ = (byte[])polygon_.Clone( );
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26605,13 +35477,26 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.WriteArray( polygon_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            polygon_ = source.ReadByteArray( );
+        }
+
     }
     public class ZoneExceptionsObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid zone_;
         DateTime timestamp_;
-        public ZoneExceptionsObject ( )
+        public ZoneExceptionsObject( )
         {
         }
 
@@ -26623,6 +35508,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ZoneExceptionsObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ZoneExceptionsObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.zone_ = zone_;
+            destination.timestamp_ = timestamp_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26670,13 +35564,30 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( zone_ );
+            destination.Write( timestamp_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            zone_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+        }
+
     }
     public class ZoneExceptionsVesselLinkObject : BaseDataGuid<Kind>
     {
         long rowVersion_ = 0;
         Guid zoneExceptions_;
         Guid vessel_;
-        public ZoneExceptionsVesselLinkObject ( )
+        public ZoneExceptionsVesselLinkObject( )
         {
         }
 
@@ -26688,6 +35599,15 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ZoneExceptionsVesselLinkObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ZoneExceptionsVesselLinkObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.zoneExceptions_ = zoneExceptions_;
+            destination.vessel_ = vessel_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26735,6 +35655,23 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( zoneExceptions_ );
+            destination.Write( vessel_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            zoneExceptions_ = source.ReadGuid( );
+            vessel_ = source.ReadGuid( );
+        }
+
     }
     public class ZoneTrackAlarmObject : BaseDataGuid<Kind>
     {
@@ -26752,7 +35689,7 @@ namespace Barrelman.Data.Types
         double enterLongitude_ = 0.0;
         double? leaveLatitude_;
         double? leaveLongitude_;
-        public ZoneTrackAlarmObject ( )
+        public ZoneTrackAlarmObject( )
         {
         }
 
@@ -26764,6 +35701,26 @@ namespace Barrelman.Data.Types
         public override BaseData<Kind> Create()
         {
             return new ZoneTrackAlarmObject( );
+        }
+
+        public override void AssignTo( BaseData<Kind> target )
+        {
+            base.AssignTo( target );
+            var destination = ( ZoneTrackAlarmObject )target;
+            destination.rowVersion_ = rowVersion_;
+            destination.track_ = track_;
+            destination.zone_ = zone_;
+            destination.radarTrack_ = radarTrack_;
+            destination.timestamp_ = timestamp_;
+            destination.latitude_ = latitude_;
+            destination.longitude_ = longitude_;
+            destination.speed_ = speed_;
+            destination.course_ = course_;
+            destination.heading_ = heading_;
+            destination.enterLatitude_ = enterLatitude_;
+            destination.enterLongitude_ = enterLongitude_;
+            destination.leaveLatitude_ = leaveLatitude_;
+            destination.leaveLongitude_ = leaveLongitude_;
         }
 
         public override bool IsOfType(Kind objectType)
@@ -26943,5 +35900,44 @@ namespace Barrelman.Data.Types
                 }
             }
         }
+
+        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            base.WriteTo( destination );
+            destination.Write( rowVersion_ );
+            destination.Write( track_ );
+            destination.Write( zone_ );
+            destination.Write( radarTrack_ );
+            destination.Write( timestamp_ );
+            destination.Write( latitude_ );
+            destination.Write( longitude_ );
+            destination.Write( speed_ );
+            destination.Write( course_ );
+            destination.Write( heading_ );
+            destination.Write( enterLatitude_ );
+            destination.Write( enterLongitude_ );
+            destination.Write( leaveLatitude_ );
+            destination.Write( leaveLongitude_ );
+        }
+
+        public override void ReadFrom([DisallowNull] BinaryReader source)
+        {
+            base.ReadFrom( source );
+            rowVersion_ = source.ReadInt64( );
+            track_ = source.ReadGuid( );
+            zone_ = source.ReadGuid( );
+            radarTrack_ = source.ReadGuid( );
+            timestamp_ = source.ReadDateTime( );
+            latitude_ = source.ReadDouble( );
+            longitude_ = source.ReadDouble( );
+            speed_ = source.ReadDouble( );
+            course_ = source.ReadNullableDouble( );
+            heading_ = source.ReadNullableDouble( );
+            enterLatitude_ = source.ReadDouble( );
+            enterLongitude_ = source.ReadDouble( );
+            leaveLatitude_ = source.ReadNullableDouble( );
+            leaveLongitude_ = source.ReadNullableDouble( );
+        }
+
     }
 }

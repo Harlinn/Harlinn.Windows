@@ -35,6 +35,9 @@ namespace Harlinn::ODBC::Tool
         static WideString GetMemberFieldType( const MemberInfo& member );
         static WideString GetMemberFieldName( const MemberInfo& member );
         static bool MemberFieldRequiresDefaultValue( const MemberInfo& member );
+        static WideString GetSerializationWriteFunction( const MemberInfo& member );
+        static WideString GetSerializationReadFunction( const MemberInfo& member );
+
     };
 }
 

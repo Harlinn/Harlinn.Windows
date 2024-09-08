@@ -267,40 +267,24 @@ CREATE OR ALTER PROCEDURE [AisDeviceConfigurationInsert]
   @Id [uniqueidentifier] OUTPUT,
   @AisDevice [uniqueidentifier],
   @Timestamp [bigint],
-  @UserName [nvarchar](127),
-  @Password [nvarchar](127),
-  @Latitude [float](53),
-  @Longitude [float](53),
-  @AisProviderLoginURL [nvarchar](127),
+  @Filter [bit],
+  @NorthWestLatitude [float](53),
+  @NorthWestLongitude [float](53),
+  @SouthEastLatitude [float](53),
+  @SouthEastLongitude [float](53),
   @ComPort [nvarchar](32),
   @BaudRate [int],
-  @FilterByArea [bit],
-  @UpperLeftCornerLatitude [float](53),
-  @UpperLeftCornerLongitude [float](53),
-  @BottomRightCornerLatitude [float](53),
-  @BottomRightCornerLongitude [float](53),
-  @AisProviderIPAddress [nvarchar](127),
-  @AisProviderPort [int],
-  @UseLogin [bit],
-  @AisProviderLoginPort [int],
-  @CanSendAISMessage [bit],
-  @TextMessageHeader [nvarchar](max),
-  @Urls [nvarchar](max),
+  @IPAddress [nvarchar](127),
+  @Port [int],
   @UdpPort [int],
+  @Authenticate [bit],
+  @UserName [nvarchar](127),
+  @Password [nvarchar](127),
+  @AuthenticationURL [nvarchar](127),
   @ConnectionType [int],
-  @EnableRefreshAidToNavigationIn30sec [bit],
-  @EnableAidToNavigationFromFile [bit],
-  @AidToNavigationHeader [nvarchar](max),
-  @SendingMMSI [bit],
   @SourceUpdateRate [int],
-  @EnableRefreshStayingStillTargetIn30sec [bit],
-  @ExcludeSendAisBaseStation [nvarchar](max),
-  @ExcludeSendAisA [nvarchar](max),
-  @EnableSendBaseStationAlarms [bit],
-  @AisWebConfig [nvarchar](127),
-  @StoreReceivedSentences [bit],
-  @StoreSentMessages [bit],
-  @StoreUnsentMessages [bit]
+  @ConfigurationURL [nvarchar](127),
+  @StoreReceivedSentences [bit]
 AS
   BEGIN
     IF @Id IS NULL
@@ -314,8 +298,8 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [AisDeviceConfiguration]([Id], [RowVersion], [AisDevice], [Timestamp], [UserName], [Password], [Latitude], [Longitude], [AisProviderLoginURL], [ComPort], [BaudRate], [FilterByArea], [UpperLeftCornerLatitude], [UpperLeftCornerLongitude], [BottomRightCornerLatitude], [BottomRightCornerLongitude], [AisProviderIPAddress], [AisProviderPort], [UseLogin], [AisProviderLoginPort], [CanSendAISMessage], [TextMessageHeader], [Urls], [UdpPort], [ConnectionType], [EnableRefreshAidToNavigationIn30sec], [EnableAidToNavigationFromFile], [AidToNavigationHeader], [SendingMMSI], [SourceUpdateRate], [EnableRefreshStayingStillTargetIn30sec], [ExcludeSendAisBaseStation], [ExcludeSendAisA], [EnableSendBaseStationAlarms], [AisWebConfig], [StoreReceivedSentences], [StoreSentMessages], [StoreUnsentMessages])
-          VALUES(@Id, 0, @AisDevice, @Timestamp, @UserName, @Password, @Latitude, @Longitude, @AisProviderLoginURL, @ComPort, @BaudRate, @FilterByArea, @UpperLeftCornerLatitude, @UpperLeftCornerLongitude, @BottomRightCornerLatitude, @BottomRightCornerLongitude, @AisProviderIPAddress, @AisProviderPort, @UseLogin, @AisProviderLoginPort, @CanSendAISMessage, @TextMessageHeader, @Urls, @UdpPort, @ConnectionType, @EnableRefreshAidToNavigationIn30sec, @EnableAidToNavigationFromFile, @AidToNavigationHeader, @SendingMMSI, @SourceUpdateRate, @EnableRefreshStayingStillTargetIn30sec, @ExcludeSendAisBaseStation, @ExcludeSendAisA, @EnableSendBaseStationAlarms, @AisWebConfig, @StoreReceivedSentences, @StoreSentMessages, @StoreUnsentMessages);
+      INSERT INTO [AisDeviceConfiguration]([Id], [RowVersion], [AisDevice], [Timestamp], [Filter], [NorthWestLatitude], [NorthWestLongitude], [SouthEastLatitude], [SouthEastLongitude], [ComPort], [BaudRate], [IPAddress], [Port], [UdpPort], [Authenticate], [UserName], [Password], [AuthenticationURL], [ConnectionType], [SourceUpdateRate], [ConfigurationURL], [StoreReceivedSentences])
+          VALUES(@Id, 0, @AisDevice, @Timestamp, @Filter, @NorthWestLatitude, @NorthWestLongitude, @SouthEastLatitude, @SouthEastLongitude, @ComPort, @BaudRate, @IPAddress, @Port, @UdpPort, @Authenticate, @UserName, @Password, @AuthenticationURL, @ConnectionType, @SourceUpdateRate, @ConfigurationURL, @StoreReceivedSentences);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -351,161 +335,97 @@ INSTEAD OF INSERT AS
         [RowVersion],
         [AisDevice],
         [Timestamp],
-        [UserName],
-        [Password],
-        [Latitude],
-        [Longitude],
-        [AisProviderLoginURL],
+        [Filter],
+        [NorthWestLatitude],
+        [NorthWestLongitude],
+        [SouthEastLatitude],
+        [SouthEastLongitude],
         [ComPort],
         [BaudRate],
-        [FilterByArea],
-        [UpperLeftCornerLatitude],
-        [UpperLeftCornerLongitude],
-        [BottomRightCornerLatitude],
-        [BottomRightCornerLongitude],
-        [AisProviderIPAddress],
-        [AisProviderPort],
-        [UseLogin],
-        [AisProviderLoginPort],
-        [CanSendAISMessage],
-        [TextMessageHeader],
-        [Urls],
+        [IPAddress],
+        [Port],
         [UdpPort],
+        [Authenticate],
+        [UserName],
+        [Password],
+        [AuthenticationURL],
         [ConnectionType],
-        [EnableRefreshAidToNavigationIn30sec],
-        [EnableAidToNavigationFromFile],
-        [AidToNavigationHeader],
-        [SendingMMSI],
         [SourceUpdateRate],
-        [EnableRefreshStayingStillTargetIn30sec],
-        [ExcludeSendAisBaseStation],
-        [ExcludeSendAisA],
-        [EnableSendBaseStationAlarms],
-        [AisWebConfig],
-        [StoreReceivedSentences],
-        [StoreSentMessages],
-        [StoreUnsentMessages]
+        [ConfigurationURL],
+        [StoreReceivedSentences]
       FROM inserted
     OPEN @cur
     DECLARE @Id [uniqueidentifier]
     DECLARE @RowVersion [bigint]
     DECLARE @AisDevice [uniqueidentifier]
     DECLARE @Timestamp [bigint]
-    DECLARE @UserName [nvarchar](127)
-    DECLARE @Password [nvarchar](127)
-    DECLARE @Latitude [float](53)
-    DECLARE @Longitude [float](53)
-    DECLARE @AisProviderLoginURL [nvarchar](127)
+    DECLARE @Filter [bit]
+    DECLARE @NorthWestLatitude [float](53)
+    DECLARE @NorthWestLongitude [float](53)
+    DECLARE @SouthEastLatitude [float](53)
+    DECLARE @SouthEastLongitude [float](53)
     DECLARE @ComPort [nvarchar](32)
     DECLARE @BaudRate [int]
-    DECLARE @FilterByArea [bit]
-    DECLARE @UpperLeftCornerLatitude [float](53)
-    DECLARE @UpperLeftCornerLongitude [float](53)
-    DECLARE @BottomRightCornerLatitude [float](53)
-    DECLARE @BottomRightCornerLongitude [float](53)
-    DECLARE @AisProviderIPAddress [nvarchar](127)
-    DECLARE @AisProviderPort [int]
-    DECLARE @UseLogin [bit]
-    DECLARE @AisProviderLoginPort [int]
-    DECLARE @CanSendAISMessage [bit]
-    DECLARE @TextMessageHeader [nvarchar](max)
-    DECLARE @Urls [nvarchar](max)
+    DECLARE @IPAddress [nvarchar](127)
+    DECLARE @Port [int]
     DECLARE @UdpPort [int]
+    DECLARE @Authenticate [bit]
+    DECLARE @UserName [nvarchar](127)
+    DECLARE @Password [nvarchar](127)
+    DECLARE @AuthenticationURL [nvarchar](127)
     DECLARE @ConnectionType [int]
-    DECLARE @EnableRefreshAidToNavigationIn30sec [bit]
-    DECLARE @EnableAidToNavigationFromFile [bit]
-    DECLARE @AidToNavigationHeader [nvarchar](max)
-    DECLARE @SendingMMSI [bit]
     DECLARE @SourceUpdateRate [int]
-    DECLARE @EnableRefreshStayingStillTargetIn30sec [bit]
-    DECLARE @ExcludeSendAisBaseStation [nvarchar](max)
-    DECLARE @ExcludeSendAisA [nvarchar](max)
-    DECLARE @EnableSendBaseStationAlarms [bit]
-    DECLARE @AisWebConfig [nvarchar](127)
+    DECLARE @ConfigurationURL [nvarchar](127)
     DECLARE @StoreReceivedSentences [bit]
-    DECLARE @StoreSentMessages [bit]
-    DECLARE @StoreUnsentMessages [bit]
     FETCH NEXT FROM @cur INTO
         @Id,
         @RowVersion,
         @AisDevice,
         @Timestamp,
-        @UserName,
-        @Password,
-        @Latitude,
-        @Longitude,
-        @AisProviderLoginURL,
+        @Filter,
+        @NorthWestLatitude,
+        @NorthWestLongitude,
+        @SouthEastLatitude,
+        @SouthEastLongitude,
         @ComPort,
         @BaudRate,
-        @FilterByArea,
-        @UpperLeftCornerLatitude,
-        @UpperLeftCornerLongitude,
-        @BottomRightCornerLatitude,
-        @BottomRightCornerLongitude,
-        @AisProviderIPAddress,
-        @AisProviderPort,
-        @UseLogin,
-        @AisProviderLoginPort,
-        @CanSendAISMessage,
-        @TextMessageHeader,
-        @Urls,
+        @IPAddress,
+        @Port,
         @UdpPort,
+        @Authenticate,
+        @UserName,
+        @Password,
+        @AuthenticationURL,
         @ConnectionType,
-        @EnableRefreshAidToNavigationIn30sec,
-        @EnableAidToNavigationFromFile,
-        @AidToNavigationHeader,
-        @SendingMMSI,
         @SourceUpdateRate,
-        @EnableRefreshStayingStillTargetIn30sec,
-        @ExcludeSendAisBaseStation,
-        @ExcludeSendAisA,
-        @EnableSendBaseStationAlarms,
-        @AisWebConfig,
-        @StoreReceivedSentences,
-        @StoreSentMessages,
-        @StoreUnsentMessages
+        @ConfigurationURL,
+        @StoreReceivedSentences
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [AisDeviceConfigurationInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@UserName,@Password,@Latitude,@Longitude,@AisProviderLoginURL,@ComPort,@BaudRate,@FilterByArea,@UpperLeftCornerLatitude,@UpperLeftCornerLongitude,@BottomRightCornerLatitude,@BottomRightCornerLongitude,@AisProviderIPAddress,@AisProviderPort,@UseLogin,@AisProviderLoginPort,@CanSendAISMessage,@TextMessageHeader,@Urls,@UdpPort,@ConnectionType,@EnableRefreshAidToNavigationIn30sec,@EnableAidToNavigationFromFile,@AidToNavigationHeader,@SendingMMSI,@SourceUpdateRate,@EnableRefreshStayingStillTargetIn30sec,@ExcludeSendAisBaseStation,@ExcludeSendAisA,@EnableSendBaseStationAlarms,@AisWebConfig,@StoreReceivedSentences,@StoreSentMessages,@StoreUnsentMessages
+        EXEC [AisDeviceConfigurationInsert] @Id,@RowVersion,@AisDevice,@Timestamp,@Filter,@NorthWestLatitude,@NorthWestLongitude,@SouthEastLatitude,@SouthEastLongitude,@ComPort,@BaudRate,@IPAddress,@Port,@UdpPort,@Authenticate,@UserName,@Password,@AuthenticationURL,@ConnectionType,@SourceUpdateRate,@ConfigurationURL,@StoreReceivedSentences
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @AisDevice,
             @Timestamp,
-            @UserName,
-            @Password,
-            @Latitude,
-            @Longitude,
-            @AisProviderLoginURL,
+            @Filter,
+            @NorthWestLatitude,
+            @NorthWestLongitude,
+            @SouthEastLatitude,
+            @SouthEastLongitude,
             @ComPort,
             @BaudRate,
-            @FilterByArea,
-            @UpperLeftCornerLatitude,
-            @UpperLeftCornerLongitude,
-            @BottomRightCornerLatitude,
-            @BottomRightCornerLongitude,
-            @AisProviderIPAddress,
-            @AisProviderPort,
-            @UseLogin,
-            @AisProviderLoginPort,
-            @CanSendAISMessage,
-            @TextMessageHeader,
-            @Urls,
+            @IPAddress,
+            @Port,
             @UdpPort,
+            @Authenticate,
+            @UserName,
+            @Password,
+            @AuthenticationURL,
             @ConnectionType,
-            @EnableRefreshAidToNavigationIn30sec,
-            @EnableAidToNavigationFromFile,
-            @AidToNavigationHeader,
-            @SendingMMSI,
             @SourceUpdateRate,
-            @EnableRefreshStayingStillTargetIn30sec,
-            @ExcludeSendAisBaseStation,
-            @ExcludeSendAisA,
-            @EnableSendBaseStationAlarms,
-            @AisWebConfig,
-            @StoreReceivedSentences,
-            @StoreSentMessages,
-            @StoreUnsentMessages
+            @ConfigurationURL,
+            @StoreReceivedSentences
       END
     CLOSE @cur
     DEALLOCATE @cur
@@ -6314,20 +6234,16 @@ CREATE OR ALTER PROCEDURE [CameraConfigurationInsert]
   @Camera [uniqueidentifier],
   @Timestamp [bigint],
   @CameraControlProtocol [int],
-  @CameraAddress [nvarchar](127),
-  @CameraPort [int],
-  @CameraControlAddress [nvarchar](127),
-  @CameraControlPort [int],
-  @CameraUserName [nvarchar](127),
-  @CameraPassword [nvarchar](127),
+  @CameraURL [nvarchar](127),
+  @ConfigurationURL [nvarchar](127),
+  @UserName [nvarchar](127),
+  @Password [nvarchar](127),
   @UseRtspUriOverride [bit],
   @RtspUriOverride [nvarchar](127),
   @Latitude [float](53),
   @Longitude [float](53),
   @Altitude [float](53),
   @UseRelativePosition [bit],
-  @AzimuthFromGPS [float](53),
-  @DistanceFromGPS [float](53),
   @PanTiltMode [int],
   @MinTiltAngle [float](53),
   @MaxTiltAngle [float](53),
@@ -6387,8 +6303,8 @@ AS
     ELSE
       BEGIN TRANSACTION;
     BEGIN TRY
-      INSERT INTO [CameraConfiguration]([Id], [RowVersion], [Camera], [Timestamp], [CameraControlProtocol], [CameraAddress], [CameraPort], [CameraControlAddress], [CameraControlPort], [CameraUserName], [CameraPassword], [UseRtspUriOverride], [RtspUriOverride], [Latitude], [Longitude], [Altitude], [UseRelativePosition], [AzimuthFromGPS], [DistanceFromGPS], [PanTiltMode], [MinTiltAngle], [MaxTiltAngle], [MinTiltScaleAngle], [MaxTiltScaleAngle], [UseReverseTiltAngle], [UseReverseNormalizedTiltAngle], [MinTiltVelocity], [MaxTiltVelocity], [MinTiltSpeed], [MaxTiltSpeed], [MinPanAngle], [MaxPanAngle], [MinPanScaleAngle], [MaxPanScaleAngle], [UseReversePanAngle], [UseReverseNormalizedPanAngle], [MinPanVelocity], [MaxPanVelocity], [MinPanSpeed], [MaxPanSpeed], [FocalLengthMode], [MinFocalLength], [MaxFocalLength], [MinFocalLengthScale], [MaxFocalLengthScale], [MinZoomVelocity], [MaxZoomVelocity], [MinZoomSpeed], [MaxZoomSpeed], [ImageSensorWidth], [ImageSensorHeight], [HomePanAngle], [HomeTiltAngle], [HomeFocalLength], [PanOffset], [TiltOffset], [AimAltitude], [MinimumTargetWidth], [TargetLockTimeout], [UpdateStatusInterval], [ReadTimeout], [MoveCommandStatusDelay], [PtzProfileName], [PtzConfigurationToken], [VideoSourceToken])
-          VALUES(@Id, 0, @Camera, @Timestamp, @CameraControlProtocol, @CameraAddress, @CameraPort, @CameraControlAddress, @CameraControlPort, @CameraUserName, @CameraPassword, @UseRtspUriOverride, @RtspUriOverride, @Latitude, @Longitude, @Altitude, @UseRelativePosition, @AzimuthFromGPS, @DistanceFromGPS, @PanTiltMode, @MinTiltAngle, @MaxTiltAngle, @MinTiltScaleAngle, @MaxTiltScaleAngle, @UseReverseTiltAngle, @UseReverseNormalizedTiltAngle, @MinTiltVelocity, @MaxTiltVelocity, @MinTiltSpeed, @MaxTiltSpeed, @MinPanAngle, @MaxPanAngle, @MinPanScaleAngle, @MaxPanScaleAngle, @UseReversePanAngle, @UseReverseNormalizedPanAngle, @MinPanVelocity, @MaxPanVelocity, @MinPanSpeed, @MaxPanSpeed, @FocalLengthMode, @MinFocalLength, @MaxFocalLength, @MinFocalLengthScale, @MaxFocalLengthScale, @MinZoomVelocity, @MaxZoomVelocity, @MinZoomSpeed, @MaxZoomSpeed, @ImageSensorWidth, @ImageSensorHeight, @HomePanAngle, @HomeTiltAngle, @HomeFocalLength, @PanOffset, @TiltOffset, @AimAltitude, @MinimumTargetWidth, @TargetLockTimeout, @UpdateStatusInterval, @ReadTimeout, @MoveCommandStatusDelay, @PtzProfileName, @PtzConfigurationToken, @VideoSourceToken);
+      INSERT INTO [CameraConfiguration]([Id], [RowVersion], [Camera], [Timestamp], [CameraControlProtocol], [CameraURL], [ConfigurationURL], [UserName], [Password], [UseRtspUriOverride], [RtspUriOverride], [Latitude], [Longitude], [Altitude], [UseRelativePosition], [PanTiltMode], [MinTiltAngle], [MaxTiltAngle], [MinTiltScaleAngle], [MaxTiltScaleAngle], [UseReverseTiltAngle], [UseReverseNormalizedTiltAngle], [MinTiltVelocity], [MaxTiltVelocity], [MinTiltSpeed], [MaxTiltSpeed], [MinPanAngle], [MaxPanAngle], [MinPanScaleAngle], [MaxPanScaleAngle], [UseReversePanAngle], [UseReverseNormalizedPanAngle], [MinPanVelocity], [MaxPanVelocity], [MinPanSpeed], [MaxPanSpeed], [FocalLengthMode], [MinFocalLength], [MaxFocalLength], [MinFocalLengthScale], [MaxFocalLengthScale], [MinZoomVelocity], [MaxZoomVelocity], [MinZoomSpeed], [MaxZoomSpeed], [ImageSensorWidth], [ImageSensorHeight], [HomePanAngle], [HomeTiltAngle], [HomeFocalLength], [PanOffset], [TiltOffset], [AimAltitude], [MinimumTargetWidth], [TargetLockTimeout], [UpdateStatusInterval], [ReadTimeout], [MoveCommandStatusDelay], [PtzProfileName], [PtzConfigurationToken], [VideoSourceToken])
+          VALUES(@Id, 0, @Camera, @Timestamp, @CameraControlProtocol, @CameraURL, @ConfigurationURL, @UserName, @Password, @UseRtspUriOverride, @RtspUriOverride, @Latitude, @Longitude, @Altitude, @UseRelativePosition, @PanTiltMode, @MinTiltAngle, @MaxTiltAngle, @MinTiltScaleAngle, @MaxTiltScaleAngle, @UseReverseTiltAngle, @UseReverseNormalizedTiltAngle, @MinTiltVelocity, @MaxTiltVelocity, @MinTiltSpeed, @MaxTiltSpeed, @MinPanAngle, @MaxPanAngle, @MinPanScaleAngle, @MaxPanScaleAngle, @UseReversePanAngle, @UseReverseNormalizedPanAngle, @MinPanVelocity, @MaxPanVelocity, @MinPanSpeed, @MaxPanSpeed, @FocalLengthMode, @MinFocalLength, @MaxFocalLength, @MinFocalLengthScale, @MaxFocalLengthScale, @MinZoomVelocity, @MaxZoomVelocity, @MinZoomSpeed, @MaxZoomSpeed, @ImageSensorWidth, @ImageSensorHeight, @HomePanAngle, @HomeTiltAngle, @HomeFocalLength, @PanOffset, @TiltOffset, @AimAltitude, @MinimumTargetWidth, @TargetLockTimeout, @UpdateStatusInterval, @ReadTimeout, @MoveCommandStatusDelay, @PtzProfileName, @PtzConfigurationToken, @VideoSourceToken);
       IF @TranCounter = 0
           COMMIT TRANSACTION;
     END TRY
@@ -6425,20 +6341,16 @@ INSTEAD OF INSERT AS
         [Camera],
         [Timestamp],
         [CameraControlProtocol],
-        [CameraAddress],
-        [CameraPort],
-        [CameraControlAddress],
-        [CameraControlPort],
-        [CameraUserName],
-        [CameraPassword],
+        [CameraURL],
+        [ConfigurationURL],
+        [UserName],
+        [Password],
         [UseRtspUriOverride],
         [RtspUriOverride],
         [Latitude],
         [Longitude],
         [Altitude],
         [UseRelativePosition],
-        [AzimuthFromGPS],
-        [DistanceFromGPS],
         [PanTiltMode],
         [MinTiltAngle],
         [MaxTiltAngle],
@@ -6492,20 +6404,16 @@ INSTEAD OF INSERT AS
     DECLARE @Camera [uniqueidentifier]
     DECLARE @Timestamp [bigint]
     DECLARE @CameraControlProtocol [int]
-    DECLARE @CameraAddress [nvarchar](127)
-    DECLARE @CameraPort [int]
-    DECLARE @CameraControlAddress [nvarchar](127)
-    DECLARE @CameraControlPort [int]
-    DECLARE @CameraUserName [nvarchar](127)
-    DECLARE @CameraPassword [nvarchar](127)
+    DECLARE @CameraURL [nvarchar](127)
+    DECLARE @ConfigurationURL [nvarchar](127)
+    DECLARE @UserName [nvarchar](127)
+    DECLARE @Password [nvarchar](127)
     DECLARE @UseRtspUriOverride [bit]
     DECLARE @RtspUriOverride [nvarchar](127)
     DECLARE @Latitude [float](53)
     DECLARE @Longitude [float](53)
     DECLARE @Altitude [float](53)
     DECLARE @UseRelativePosition [bit]
-    DECLARE @AzimuthFromGPS [float](53)
-    DECLARE @DistanceFromGPS [float](53)
     DECLARE @PanTiltMode [int]
     DECLARE @MinTiltAngle [float](53)
     DECLARE @MaxTiltAngle [float](53)
@@ -6558,20 +6466,16 @@ INSTEAD OF INSERT AS
         @Camera,
         @Timestamp,
         @CameraControlProtocol,
-        @CameraAddress,
-        @CameraPort,
-        @CameraControlAddress,
-        @CameraControlPort,
-        @CameraUserName,
-        @CameraPassword,
+        @CameraURL,
+        @ConfigurationURL,
+        @UserName,
+        @Password,
         @UseRtspUriOverride,
         @RtspUriOverride,
         @Latitude,
         @Longitude,
         @Altitude,
         @UseRelativePosition,
-        @AzimuthFromGPS,
-        @DistanceFromGPS,
         @PanTiltMode,
         @MinTiltAngle,
         @MaxTiltAngle,
@@ -6620,27 +6524,23 @@ INSTEAD OF INSERT AS
         @VideoSourceToken
     WHILE(@@fetch_status <> -1)
       BEGIN
-        EXEC [CameraConfigurationInsert] @Id,@RowVersion,@Camera,@Timestamp,@CameraControlProtocol,@CameraAddress,@CameraPort,@CameraControlAddress,@CameraControlPort,@CameraUserName,@CameraPassword,@UseRtspUriOverride,@RtspUriOverride,@Latitude,@Longitude,@Altitude,@UseRelativePosition,@AzimuthFromGPS,@DistanceFromGPS,@PanTiltMode,@MinTiltAngle,@MaxTiltAngle,@MinTiltScaleAngle,@MaxTiltScaleAngle,@UseReverseTiltAngle,@UseReverseNormalizedTiltAngle,@MinTiltVelocity,@MaxTiltVelocity,@MinTiltSpeed,@MaxTiltSpeed,@MinPanAngle,@MaxPanAngle,@MinPanScaleAngle,@MaxPanScaleAngle,@UseReversePanAngle,@UseReverseNormalizedPanAngle,@MinPanVelocity,@MaxPanVelocity,@MinPanSpeed,@MaxPanSpeed,@FocalLengthMode,@MinFocalLength,@MaxFocalLength,@MinFocalLengthScale,@MaxFocalLengthScale,@MinZoomVelocity,@MaxZoomVelocity,@MinZoomSpeed,@MaxZoomSpeed,@ImageSensorWidth,@ImageSensorHeight,@HomePanAngle,@HomeTiltAngle,@HomeFocalLength,@PanOffset,@TiltOffset,@AimAltitude,@MinimumTargetWidth,@TargetLockTimeout,@UpdateStatusInterval,@ReadTimeout,@MoveCommandStatusDelay,@PtzProfileName,@PtzConfigurationToken,@VideoSourceToken
+        EXEC [CameraConfigurationInsert] @Id,@RowVersion,@Camera,@Timestamp,@CameraControlProtocol,@CameraURL,@ConfigurationURL,@UserName,@Password,@UseRtspUriOverride,@RtspUriOverride,@Latitude,@Longitude,@Altitude,@UseRelativePosition,@PanTiltMode,@MinTiltAngle,@MaxTiltAngle,@MinTiltScaleAngle,@MaxTiltScaleAngle,@UseReverseTiltAngle,@UseReverseNormalizedTiltAngle,@MinTiltVelocity,@MaxTiltVelocity,@MinTiltSpeed,@MaxTiltSpeed,@MinPanAngle,@MaxPanAngle,@MinPanScaleAngle,@MaxPanScaleAngle,@UseReversePanAngle,@UseReverseNormalizedPanAngle,@MinPanVelocity,@MaxPanVelocity,@MinPanSpeed,@MaxPanSpeed,@FocalLengthMode,@MinFocalLength,@MaxFocalLength,@MinFocalLengthScale,@MaxFocalLengthScale,@MinZoomVelocity,@MaxZoomVelocity,@MinZoomSpeed,@MaxZoomSpeed,@ImageSensorWidth,@ImageSensorHeight,@HomePanAngle,@HomeTiltAngle,@HomeFocalLength,@PanOffset,@TiltOffset,@AimAltitude,@MinimumTargetWidth,@TargetLockTimeout,@UpdateStatusInterval,@ReadTimeout,@MoveCommandStatusDelay,@PtzProfileName,@PtzConfigurationToken,@VideoSourceToken
         FETCH NEXT FROM @cur INTO
             @Id,
             @RowVersion,
             @Camera,
             @Timestamp,
             @CameraControlProtocol,
-            @CameraAddress,
-            @CameraPort,
-            @CameraControlAddress,
-            @CameraControlPort,
-            @CameraUserName,
-            @CameraPassword,
+            @CameraURL,
+            @ConfigurationURL,
+            @UserName,
+            @Password,
             @UseRtspUriOverride,
             @RtspUriOverride,
             @Latitude,
             @Longitude,
             @Altitude,
             @UseRelativePosition,
-            @AzimuthFromGPS,
-            @DistanceFromGPS,
             @PanTiltMode,
             @MinTiltAngle,
             @MaxTiltAngle,

@@ -603,45 +603,24 @@ namespace Barrelman::Database
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime timestamp_;
-        FixedDBWideString<127> userName_;
-        FixedDBWideString<127> password_;
-        double latitude_ = 0.0;
-        double longitude_ = 0.0;
-        FixedDBWideString<127> aisProviderLoginURL_;
+        bool filter_ = false;
+        double northWestLatitude_ = 0.0;
+        double northWestLongitude_ = 0.0;
+        double southEastLatitude_ = 0.0;
+        double southEastLongitude_ = 0.0;
         FixedDBWideString<32> comPort_;
         Int32 baudRate_ = 0;
-        bool filterByArea_ = false;
-        double upperLeftCornerLatitude_ = 0.0;
-        double upperLeftCornerLongitude_ = 0.0;
-        double bottomRightCornerLatitude_ = 0.0;
-        double bottomRightCornerLongitude_ = 0.0;
-        FixedDBWideString<127> aisProviderIPAddress_;
-        Int32 aisProviderPort_ = 0;
-        bool useLogin_ = false;
-        Int32 aisProviderLoginPort_ = 0;
-        bool canSendAISMessage_ = false;
-        WideString textMessageHeader_;
-        SQLLEN textMessageHeaderLength_ = SQL_NULL_DATA;
-        WideString urls_;
-        SQLLEN urlsLength_ = SQL_NULL_DATA;
+        FixedDBWideString<127> iPAddress_;
+        Int32 port_ = 0;
         Int32 udpPort_ = 0;
+        bool authenticate_ = false;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
+        FixedDBWideString<127> authenticationURL_;
         Types::AisDeviceConnectionType connectionType_ = Types::AisDeviceConnectionType::Unknown;
-        bool enableRefreshAidToNavigationIn30sec_ = false;
-        bool enableAidToNavigationFromFile_ = false;
-        WideString aidToNavigationHeader_;
-        SQLLEN aidToNavigationHeaderLength_ = SQL_NULL_DATA;
-        bool sendingMMSI_ = false;
         Int32 sourceUpdateRate_ = 0;
-        bool enableRefreshStayingStillTargetIn30sec_ = false;
-        WideString excludeSendAisBaseStation_;
-        SQLLEN excludeSendAisBaseStationLength_ = SQL_NULL_DATA;
-        WideString excludeSendAisA_;
-        SQLLEN excludeSendAisALength_ = SQL_NULL_DATA;
-        bool enableSendBaseStationAlarms_ = false;
-        FixedDBWideString<127> aisWebConfig_;
+        FixedDBWideString<127> configurationURL_;
         bool storeReceivedSentences_ = false;
-        bool storeSentMessages_ = false;
-        bool storeUnsentMessages_ = false;
     public:
         using Base = BaseColumnData;
 
@@ -653,40 +632,24 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT ROWVERSION_FIELD_ID = 2;
         static constexpr SQLUSMALLINT AISDEVICE_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
-        static constexpr SQLUSMALLINT USERNAME_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT PASSWORD_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT AISPROVIDERLOGINURL_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT FILTER_FIELD_ID = 5;
+        static constexpr SQLUSMALLINT NORTHWESTLATITUDE_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT NORTHWESTLONGITUDE_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT SOUTHEASTLATITUDE_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT SOUTHEASTLONGITUDE_FIELD_ID = 9;
         static constexpr SQLUSMALLINT COMPORT_FIELD_ID = 10;
         static constexpr SQLUSMALLINT BAUDRATE_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT FILTERBYAREA_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT UPPERLEFTCORNERLATITUDE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT UPPERLEFTCORNERLONGITUDE_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT BOTTOMRIGHTCORNERLATITUDE_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT AISPROVIDERIPADDRESS_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT AISPROVIDERPORT_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT USELOGIN_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT AISPROVIDERLOGINPORT_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT CANSENDAISMESSAGE_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT UDPPORT_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT CONNECTIONTYPE_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT SENDINGMMSI_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT SOURCEUPDATERATE_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT ENABLESENDBASESTATIONALARMS_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT AISWEBCONFIG_FIELD_ID = 30;
-        static constexpr SQLUSMALLINT STORERECEIVEDSENTENCES_FIELD_ID = 31;
-        static constexpr SQLUSMALLINT STORESENTMESSAGES_FIELD_ID = 32;
-        static constexpr SQLUSMALLINT STOREUNSENTMESSAGES_FIELD_ID = 33;
-        static constexpr SQLUSMALLINT TEXTMESSAGEHEADER_FIELD_ID = 34;
-        static constexpr SQLUSMALLINT URLS_FIELD_ID = 35;
-        static constexpr SQLUSMALLINT AIDTONAVIGATIONHEADER_FIELD_ID = 36;
-        static constexpr SQLUSMALLINT EXCLUDESENDAISBASESTATION_FIELD_ID = 37;
-        static constexpr SQLUSMALLINT EXCLUDESENDAISA_FIELD_ID = 38;
+        static constexpr SQLUSMALLINT IPADDRESS_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT PORT_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT UDPPORT_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT AUTHENTICATE_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT USERNAME_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT PASSWORD_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT AUTHENTICATIONURL_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT CONNECTIONTYPE_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT SOURCEUPDATERATE_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT CONFIGURATIONURL_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT STORERECEIVEDSENTENCES_FIELD_ID = 22;
 
         AisDeviceConfigurationColumnData( ) = default;
 
@@ -727,45 +690,45 @@ namespace Barrelman::Database
         {
             timestamp_ = timestamp;
         }
-        const FixedDBWideString<127>& UserName( ) const
+        bool Filter( ) const
         {
-            return userName_;
+            return filter_;
         }
-        void SetUserName( const FixedDBWideString<127>& userName )
+        void SetFilter( bool filter )
         {
-            userName_ = userName;
+            filter_ = filter;
         }
-        const FixedDBWideString<127>& Password( ) const
+        double NorthWestLatitude( ) const
         {
-            return password_;
+            return northWestLatitude_;
         }
-        void SetPassword( const FixedDBWideString<127>& password )
+        void SetNorthWestLatitude( double northWestLatitude )
         {
-            password_ = password;
+            northWestLatitude_ = northWestLatitude;
         }
-        double Latitude( ) const
+        double NorthWestLongitude( ) const
         {
-            return latitude_;
+            return northWestLongitude_;
         }
-        void SetLatitude( double latitude )
+        void SetNorthWestLongitude( double northWestLongitude )
         {
-            latitude_ = latitude;
+            northWestLongitude_ = northWestLongitude;
         }
-        double Longitude( ) const
+        double SouthEastLatitude( ) const
         {
-            return longitude_;
+            return southEastLatitude_;
         }
-        void SetLongitude( double longitude )
+        void SetSouthEastLatitude( double southEastLatitude )
         {
-            longitude_ = longitude;
+            southEastLatitude_ = southEastLatitude;
         }
-        const FixedDBWideString<127>& AisProviderLoginURL( ) const
+        double SouthEastLongitude( ) const
         {
-            return aisProviderLoginURL_;
+            return southEastLongitude_;
         }
-        void SetAisProviderLoginURL( const FixedDBWideString<127>& aisProviderLoginURL )
+        void SetSouthEastLongitude( double southEastLongitude )
         {
-            aisProviderLoginURL_ = aisProviderLoginURL;
+            southEastLongitude_ = southEastLongitude;
         }
         const FixedDBWideString<32>& ComPort( ) const
         {
@@ -783,101 +746,21 @@ namespace Barrelman::Database
         {
             baudRate_ = baudRate;
         }
-        bool FilterByArea( ) const
+        const FixedDBWideString<127>& IPAddress( ) const
         {
-            return filterByArea_;
+            return iPAddress_;
         }
-        void SetFilterByArea( bool filterByArea )
+        void SetIPAddress( const FixedDBWideString<127>& iPAddress )
         {
-            filterByArea_ = filterByArea;
+            iPAddress_ = iPAddress;
         }
-        double UpperLeftCornerLatitude( ) const
+        Int32 Port( ) const
         {
-            return upperLeftCornerLatitude_;
+            return port_;
         }
-        void SetUpperLeftCornerLatitude( double upperLeftCornerLatitude )
+        void SetPort( Int32 port )
         {
-            upperLeftCornerLatitude_ = upperLeftCornerLatitude;
-        }
-        double UpperLeftCornerLongitude( ) const
-        {
-            return upperLeftCornerLongitude_;
-        }
-        void SetUpperLeftCornerLongitude( double upperLeftCornerLongitude )
-        {
-            upperLeftCornerLongitude_ = upperLeftCornerLongitude;
-        }
-        double BottomRightCornerLatitude( ) const
-        {
-            return bottomRightCornerLatitude_;
-        }
-        void SetBottomRightCornerLatitude( double bottomRightCornerLatitude )
-        {
-            bottomRightCornerLatitude_ = bottomRightCornerLatitude;
-        }
-        double BottomRightCornerLongitude( ) const
-        {
-            return bottomRightCornerLongitude_;
-        }
-        void SetBottomRightCornerLongitude( double bottomRightCornerLongitude )
-        {
-            bottomRightCornerLongitude_ = bottomRightCornerLongitude;
-        }
-        const FixedDBWideString<127>& AisProviderIPAddress( ) const
-        {
-            return aisProviderIPAddress_;
-        }
-        void SetAisProviderIPAddress( const FixedDBWideString<127>& aisProviderIPAddress )
-        {
-            aisProviderIPAddress_ = aisProviderIPAddress;
-        }
-        Int32 AisProviderPort( ) const
-        {
-            return aisProviderPort_;
-        }
-        void SetAisProviderPort( Int32 aisProviderPort )
-        {
-            aisProviderPort_ = aisProviderPort;
-        }
-        bool UseLogin( ) const
-        {
-            return useLogin_;
-        }
-        void SetUseLogin( bool useLogin )
-        {
-            useLogin_ = useLogin;
-        }
-        Int32 AisProviderLoginPort( ) const
-        {
-            return aisProviderLoginPort_;
-        }
-        void SetAisProviderLoginPort( Int32 aisProviderLoginPort )
-        {
-            aisProviderLoginPort_ = aisProviderLoginPort;
-        }
-        bool CanSendAISMessage( ) const
-        {
-            return canSendAISMessage_;
-        }
-        void SetCanSendAISMessage( bool canSendAISMessage )
-        {
-            canSendAISMessage_ = canSendAISMessage;
-        }
-        const WideString& TextMessageHeader( ) const
-        {
-            return textMessageHeader_;
-        }
-        void SetTextMessageHeader( const WideString& textMessageHeader )
-        {
-            textMessageHeader_ = textMessageHeader;
-        }
-        const WideString& Urls( ) const
-        {
-            return urls_;
-        }
-        void SetUrls( const WideString& urls )
-        {
-            urls_ = urls;
+            port_ = port;
         }
         Int32 UdpPort( ) const
         {
@@ -887,6 +770,38 @@ namespace Barrelman::Database
         {
             udpPort_ = udpPort;
         }
+        bool Authenticate( ) const
+        {
+            return authenticate_;
+        }
+        void SetAuthenticate( bool authenticate )
+        {
+            authenticate_ = authenticate;
+        }
+        const FixedDBWideString<127>& UserName( ) const
+        {
+            return userName_;
+        }
+        void SetUserName( const FixedDBWideString<127>& userName )
+        {
+            userName_ = userName;
+        }
+        const FixedDBWideString<127>& Password( ) const
+        {
+            return password_;
+        }
+        void SetPassword( const FixedDBWideString<127>& password )
+        {
+            password_ = password;
+        }
+        const FixedDBWideString<127>& AuthenticationURL( ) const
+        {
+            return authenticationURL_;
+        }
+        void SetAuthenticationURL( const FixedDBWideString<127>& authenticationURL )
+        {
+            authenticationURL_ = authenticationURL;
+        }
         Types::AisDeviceConnectionType ConnectionType( ) const
         {
             return connectionType_;
@@ -894,38 +809,6 @@ namespace Barrelman::Database
         void SetConnectionType( Types::AisDeviceConnectionType connectionType )
         {
             connectionType_ = connectionType;
-        }
-        bool EnableRefreshAidToNavigationIn30sec( ) const
-        {
-            return enableRefreshAidToNavigationIn30sec_;
-        }
-        void SetEnableRefreshAidToNavigationIn30sec( bool enableRefreshAidToNavigationIn30sec )
-        {
-            enableRefreshAidToNavigationIn30sec_ = enableRefreshAidToNavigationIn30sec;
-        }
-        bool EnableAidToNavigationFromFile( ) const
-        {
-            return enableAidToNavigationFromFile_;
-        }
-        void SetEnableAidToNavigationFromFile( bool enableAidToNavigationFromFile )
-        {
-            enableAidToNavigationFromFile_ = enableAidToNavigationFromFile;
-        }
-        const WideString& AidToNavigationHeader( ) const
-        {
-            return aidToNavigationHeader_;
-        }
-        void SetAidToNavigationHeader( const WideString& aidToNavigationHeader )
-        {
-            aidToNavigationHeader_ = aidToNavigationHeader;
-        }
-        bool SendingMMSI( ) const
-        {
-            return sendingMMSI_;
-        }
-        void SetSendingMMSI( bool sendingMMSI )
-        {
-            sendingMMSI_ = sendingMMSI;
         }
         Int32 SourceUpdateRate( ) const
         {
@@ -935,45 +818,13 @@ namespace Barrelman::Database
         {
             sourceUpdateRate_ = sourceUpdateRate;
         }
-        bool EnableRefreshStayingStillTargetIn30sec( ) const
+        const FixedDBWideString<127>& ConfigurationURL( ) const
         {
-            return enableRefreshStayingStillTargetIn30sec_;
+            return configurationURL_;
         }
-        void SetEnableRefreshStayingStillTargetIn30sec( bool enableRefreshStayingStillTargetIn30sec )
+        void SetConfigurationURL( const FixedDBWideString<127>& configurationURL )
         {
-            enableRefreshStayingStillTargetIn30sec_ = enableRefreshStayingStillTargetIn30sec;
-        }
-        const WideString& ExcludeSendAisBaseStation( ) const
-        {
-            return excludeSendAisBaseStation_;
-        }
-        void SetExcludeSendAisBaseStation( const WideString& excludeSendAisBaseStation )
-        {
-            excludeSendAisBaseStation_ = excludeSendAisBaseStation;
-        }
-        const WideString& ExcludeSendAisA( ) const
-        {
-            return excludeSendAisA_;
-        }
-        void SetExcludeSendAisA( const WideString& excludeSendAisA )
-        {
-            excludeSendAisA_ = excludeSendAisA;
-        }
-        bool EnableSendBaseStationAlarms( ) const
-        {
-            return enableSendBaseStationAlarms_;
-        }
-        void SetEnableSendBaseStationAlarms( bool enableSendBaseStationAlarms )
-        {
-            enableSendBaseStationAlarms_ = enableSendBaseStationAlarms;
-        }
-        const FixedDBWideString<127>& AisWebConfig( ) const
-        {
-            return aisWebConfig_;
-        }
-        void SetAisWebConfig( const FixedDBWideString<127>& aisWebConfig )
-        {
-            aisWebConfig_ = aisWebConfig;
+            configurationURL_ = configurationURL;
         }
         bool StoreReceivedSentences( ) const
         {
@@ -983,69 +834,32 @@ namespace Barrelman::Database
         {
             storeReceivedSentences_ = storeReceivedSentences;
         }
-        bool StoreSentMessages( ) const
-        {
-            return storeSentMessages_;
-        }
-        void SetStoreSentMessages( bool storeSentMessages )
-        {
-            storeSentMessages_ = storeSentMessages;
-        }
-        bool StoreUnsentMessages( ) const
-        {
-            return storeUnsentMessages_;
-        }
-        void SetStoreUnsentMessages( bool storeUnsentMessages )
-        {
-            storeUnsentMessages_ = storeUnsentMessages;
-        }
         void BindColumns( const ODBC::Statement& statement )
         {
             Bind(statement, ID_FIELD_ID, id_);
             Bind(statement, ROWVERSION_FIELD_ID, rowVersion_);
             Bind(statement, AISDEVICE_FIELD_ID, aisDevice_);
             Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
-            Bind(statement, USERNAME_FIELD_ID, userName_);
-            Bind(statement, PASSWORD_FIELD_ID, password_);
-            Bind(statement, LATITUDE_FIELD_ID, latitude_);
-            Bind(statement, LONGITUDE_FIELD_ID, longitude_);
-            Bind(statement, AISPROVIDERLOGINURL_FIELD_ID, aisProviderLoginURL_);
+            Bind(statement, FILTER_FIELD_ID, filter_);
+            Bind(statement, NORTHWESTLATITUDE_FIELD_ID, northWestLatitude_);
+            Bind(statement, NORTHWESTLONGITUDE_FIELD_ID, northWestLongitude_);
+            Bind(statement, SOUTHEASTLATITUDE_FIELD_ID, southEastLatitude_);
+            Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, southEastLongitude_);
             Bind(statement, COMPORT_FIELD_ID, comPort_);
             Bind(statement, BAUDRATE_FIELD_ID, baudRate_);
-            Bind(statement, FILTERBYAREA_FIELD_ID, filterByArea_);
-            Bind(statement, UPPERLEFTCORNERLATITUDE_FIELD_ID, upperLeftCornerLatitude_);
-            Bind(statement, UPPERLEFTCORNERLONGITUDE_FIELD_ID, upperLeftCornerLongitude_);
-            Bind(statement, BOTTOMRIGHTCORNERLATITUDE_FIELD_ID, bottomRightCornerLatitude_);
-            Bind(statement, BOTTOMRIGHTCORNERLONGITUDE_FIELD_ID, bottomRightCornerLongitude_);
-            Bind(statement, AISPROVIDERIPADDRESS_FIELD_ID, aisProviderIPAddress_);
-            Bind(statement, AISPROVIDERPORT_FIELD_ID, aisProviderPort_);
-            Bind(statement, USELOGIN_FIELD_ID, useLogin_);
-            Bind(statement, AISPROVIDERLOGINPORT_FIELD_ID, aisProviderLoginPort_);
-            Bind(statement, CANSENDAISMESSAGE_FIELD_ID, canSendAISMessage_);
+            Bind(statement, IPADDRESS_FIELD_ID, iPAddress_);
+            Bind(statement, PORT_FIELD_ID, port_);
             Bind(statement, UDPPORT_FIELD_ID, udpPort_);
+            Bind(statement, AUTHENTICATE_FIELD_ID, authenticate_);
+            Bind(statement, USERNAME_FIELD_ID, userName_);
+            Bind(statement, PASSWORD_FIELD_ID, password_);
+            Bind(statement, AUTHENTICATIONURL_FIELD_ID, authenticationURL_);
             Bind(statement, CONNECTIONTYPE_FIELD_ID, connectionType_);
-            Bind(statement, ENABLEREFRESHAIDTONAVIGATIONIN30SEC_FIELD_ID, enableRefreshAidToNavigationIn30sec_);
-            Bind(statement, ENABLEAIDTONAVIGATIONFROMFILE_FIELD_ID, enableAidToNavigationFromFile_);
-            Bind(statement, SENDINGMMSI_FIELD_ID, sendingMMSI_);
             Bind(statement, SOURCEUPDATERATE_FIELD_ID, sourceUpdateRate_);
-            Bind(statement, ENABLEREFRESHSTAYINGSTILLTARGETIN30SEC_FIELD_ID, enableRefreshStayingStillTargetIn30sec_);
-            Bind(statement, ENABLESENDBASESTATIONALARMS_FIELD_ID, enableSendBaseStationAlarms_);
-            Bind(statement, AISWEBCONFIG_FIELD_ID, aisWebConfig_);
+            Bind(statement, CONFIGURATIONURL_FIELD_ID, configurationURL_);
             Bind(statement, STORERECEIVEDSENTENCES_FIELD_ID, storeReceivedSentences_);
-            Bind(statement, STORESENTMESSAGES_FIELD_ID, storeSentMessages_);
-            Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, storeUnsentMessages_);
         }
 
-        void ReadUnboundData( const ODBC::Statement& statement )
-        {
-            Base::ReadUnboundData( statement );
-
-            textMessageHeader_ = statement.GetWideString(TEXTMESSAGEHEADER_FIELD_ID);
-            urls_ = statement.GetWideString(URLS_FIELD_ID);
-            aidToNavigationHeader_ = statement.GetWideString(AIDTONAVIGATIONHEADER_FIELD_ID);
-            excludeSendAisBaseStation_ = statement.GetWideString(EXCLUDESENDAISBASESTATION_FIELD_ID);
-            excludeSendAisA_ = statement.GetWideString(EXCLUDESENDAISA_FIELD_ID);
-        }
         template<IO::StreamWriter StreamT>
         void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1054,40 +868,24 @@ namespace Barrelman::Database
             WriteColumnValue( destination, rowVersion_);
             WriteColumnValue( destination, aisDevice_);
             WriteColumnValue( destination, timestamp_);
-            WriteColumnValue( destination, userName_);
-            WriteColumnValue( destination, password_);
-            WriteColumnValue( destination, latitude_);
-            WriteColumnValue( destination, longitude_);
-            WriteColumnValue( destination, aisProviderLoginURL_);
+            WriteColumnValue( destination, filter_);
+            WriteColumnValue( destination, northWestLatitude_);
+            WriteColumnValue( destination, northWestLongitude_);
+            WriteColumnValue( destination, southEastLatitude_);
+            WriteColumnValue( destination, southEastLongitude_);
             WriteColumnValue( destination, comPort_);
             WriteColumnValue( destination, baudRate_);
-            WriteColumnValue( destination, filterByArea_);
-            WriteColumnValue( destination, upperLeftCornerLatitude_);
-            WriteColumnValue( destination, upperLeftCornerLongitude_);
-            WriteColumnValue( destination, bottomRightCornerLatitude_);
-            WriteColumnValue( destination, bottomRightCornerLongitude_);
-            WriteColumnValue( destination, aisProviderIPAddress_);
-            WriteColumnValue( destination, aisProviderPort_);
-            WriteColumnValue( destination, useLogin_);
-            WriteColumnValue( destination, aisProviderLoginPort_);
-            WriteColumnValue( destination, canSendAISMessage_);
-            WriteColumnValue( destination, textMessageHeader_);
-            WriteColumnValue( destination, urls_);
+            WriteColumnValue( destination, iPAddress_);
+            WriteColumnValue( destination, port_);
             WriteColumnValue( destination, udpPort_);
+            WriteColumnValue( destination, authenticate_);
+            WriteColumnValue( destination, userName_);
+            WriteColumnValue( destination, password_);
+            WriteColumnValue( destination, authenticationURL_);
             WriteColumnValue( destination, connectionType_);
-            WriteColumnValue( destination, enableRefreshAidToNavigationIn30sec_);
-            WriteColumnValue( destination, enableAidToNavigationFromFile_);
-            WriteColumnValue( destination, aidToNavigationHeader_);
-            WriteColumnValue( destination, sendingMMSI_);
             WriteColumnValue( destination, sourceUpdateRate_);
-            WriteColumnValue( destination, enableRefreshStayingStillTargetIn30sec_);
-            WriteColumnValue( destination, excludeSendAisBaseStation_);
-            WriteColumnValue( destination, excludeSendAisA_);
-            WriteColumnValue( destination, enableSendBaseStationAlarms_);
-            WriteColumnValue( destination, aisWebConfig_);
+            WriteColumnValue( destination, configurationURL_);
             WriteColumnValue( destination, storeReceivedSentences_);
-            WriteColumnValue( destination, storeSentMessages_);
-            WriteColumnValue( destination, storeUnsentMessages_);
         }
         void AssignTo( Types::AisDeviceConfigurationObject& destination ) const
         {
@@ -1095,40 +893,24 @@ namespace Barrelman::Database
             destination.SetRowVersion( rowVersion_ );
             destination.SetAisDevice( aisDevice_ );
             destination.SetTimestamp( timestamp_ );
-            destination.SetUserName( userName_ );
-            destination.SetPassword( password_ );
-            destination.SetLatitude( latitude_ );
-            destination.SetLongitude( longitude_ );
-            destination.SetAisProviderLoginURL( aisProviderLoginURL_ );
+            destination.SetFilter( filter_ );
+            destination.SetNorthWestLatitude( northWestLatitude_ );
+            destination.SetNorthWestLongitude( northWestLongitude_ );
+            destination.SetSouthEastLatitude( southEastLatitude_ );
+            destination.SetSouthEastLongitude( southEastLongitude_ );
             destination.SetComPort( comPort_ );
             destination.SetBaudRate( baudRate_ );
-            destination.SetFilterByArea( filterByArea_ );
-            destination.SetUpperLeftCornerLatitude( upperLeftCornerLatitude_ );
-            destination.SetUpperLeftCornerLongitude( upperLeftCornerLongitude_ );
-            destination.SetBottomRightCornerLatitude( bottomRightCornerLatitude_ );
-            destination.SetBottomRightCornerLongitude( bottomRightCornerLongitude_ );
-            destination.SetAisProviderIPAddress( aisProviderIPAddress_ );
-            destination.SetAisProviderPort( aisProviderPort_ );
-            destination.SetUseLogin( useLogin_ );
-            destination.SetAisProviderLoginPort( aisProviderLoginPort_ );
-            destination.SetCanSendAISMessage( canSendAISMessage_ );
-            destination.SetTextMessageHeader( textMessageHeader_ );
-            destination.SetUrls( urls_ );
+            destination.SetIPAddress( iPAddress_ );
+            destination.SetPort( port_ );
             destination.SetUdpPort( udpPort_ );
+            destination.SetAuthenticate( authenticate_ );
+            destination.SetUserName( userName_ );
+            destination.SetPassword( password_ );
+            destination.SetAuthenticationURL( authenticationURL_ );
             destination.SetConnectionType( connectionType_ );
-            destination.SetEnableRefreshAidToNavigationIn30sec( enableRefreshAidToNavigationIn30sec_ );
-            destination.SetEnableAidToNavigationFromFile( enableAidToNavigationFromFile_ );
-            destination.SetAidToNavigationHeader( aidToNavigationHeader_ );
-            destination.SetSendingMMSI( sendingMMSI_ );
             destination.SetSourceUpdateRate( sourceUpdateRate_ );
-            destination.SetEnableRefreshStayingStillTargetIn30sec( enableRefreshStayingStillTargetIn30sec_ );
-            destination.SetExcludeSendAisBaseStation( excludeSendAisBaseStation_ );
-            destination.SetExcludeSendAisA( excludeSendAisA_ );
-            destination.SetEnableSendBaseStationAlarms( enableSendBaseStationAlarms_ );
-            destination.SetAisWebConfig( aisWebConfig_ );
+            destination.SetConfigurationURL( configurationURL_ );
             destination.SetStoreReceivedSentences( storeReceivedSentences_ );
-            destination.SetStoreSentMessages( storeSentMessages_ );
-            destination.SetStoreUnsentMessages( storeUnsentMessages_ );
         }
     };
 
@@ -6784,20 +6566,16 @@ namespace Barrelman::Database
         Guid camera_;
         DateTime timestamp_;
         Types::CameraControlProtocol cameraControlProtocol_ = Types::CameraControlProtocol::Unknown;
-        FixedDBWideString<127> cameraAddress_;
-        Int32 cameraPort_ = 0;
-        FixedDBWideString<127> cameraControlAddress_;
-        Int32 cameraControlPort_ = 0;
-        FixedDBWideString<127> cameraUserName_;
-        FixedDBWideString<127> cameraPassword_;
+        FixedDBWideString<127> cameraURL_;
+        FixedDBWideString<127> configurationURL_;
+        FixedDBWideString<127> userName_;
+        FixedDBWideString<127> password_;
         bool useRtspUriOverride_ = false;
         FixedDBWideString<127> rtspUriOverride_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double altitude_ = 0.0;
         bool useRelativePosition_ = false;
-        double azimuthFromGPS_ = 0.0;
-        double distanceFromGPS_ = 0.0;
         Types::CameraPanTiltMode panTiltMode_ = Types::CameraPanTiltMode::Unknown;
         double minTiltAngle_ = 0.0;
         double maxTiltAngle_ = 0.0;
@@ -6856,66 +6634,62 @@ namespace Barrelman::Database
         static constexpr SQLUSMALLINT CAMERA_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TIMESTAMP_FIELD_ID = 4;
         static constexpr SQLUSMALLINT CAMERACONTROLPROTOCOL_FIELD_ID = 5;
-        static constexpr SQLUSMALLINT CAMERAADDRESS_FIELD_ID = 6;
-        static constexpr SQLUSMALLINT CAMERAPORT_FIELD_ID = 7;
-        static constexpr SQLUSMALLINT CAMERACONTROLADDRESS_FIELD_ID = 8;
-        static constexpr SQLUSMALLINT CAMERACONTROLPORT_FIELD_ID = 9;
-        static constexpr SQLUSMALLINT CAMERAUSERNAME_FIELD_ID = 10;
-        static constexpr SQLUSMALLINT CAMERAPASSWORD_FIELD_ID = 11;
-        static constexpr SQLUSMALLINT USERTSPURIOVERRIDE_FIELD_ID = 12;
-        static constexpr SQLUSMALLINT RTSPURIOVERRIDE_FIELD_ID = 13;
-        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 14;
-        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 15;
-        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 16;
-        static constexpr SQLUSMALLINT USERELATIVEPOSITION_FIELD_ID = 17;
-        static constexpr SQLUSMALLINT AZIMUTHFROMGPS_FIELD_ID = 18;
-        static constexpr SQLUSMALLINT DISTANCEFROMGPS_FIELD_ID = 19;
-        static constexpr SQLUSMALLINT PANTILTMODE_FIELD_ID = 20;
-        static constexpr SQLUSMALLINT MINTILTANGLE_FIELD_ID = 21;
-        static constexpr SQLUSMALLINT MAXTILTANGLE_FIELD_ID = 22;
-        static constexpr SQLUSMALLINT MINTILTSCALEANGLE_FIELD_ID = 23;
-        static constexpr SQLUSMALLINT MAXTILTSCALEANGLE_FIELD_ID = 24;
-        static constexpr SQLUSMALLINT USEREVERSETILTANGLE_FIELD_ID = 25;
-        static constexpr SQLUSMALLINT USEREVERSENORMALIZEDTILTANGLE_FIELD_ID = 26;
-        static constexpr SQLUSMALLINT MINTILTVELOCITY_FIELD_ID = 27;
-        static constexpr SQLUSMALLINT MAXTILTVELOCITY_FIELD_ID = 28;
-        static constexpr SQLUSMALLINT MINTILTSPEED_FIELD_ID = 29;
-        static constexpr SQLUSMALLINT MAXTILTSPEED_FIELD_ID = 30;
-        static constexpr SQLUSMALLINT MINPANANGLE_FIELD_ID = 31;
-        static constexpr SQLUSMALLINT MAXPANANGLE_FIELD_ID = 32;
-        static constexpr SQLUSMALLINT MINPANSCALEANGLE_FIELD_ID = 33;
-        static constexpr SQLUSMALLINT MAXPANSCALEANGLE_FIELD_ID = 34;
-        static constexpr SQLUSMALLINT USEREVERSEPANANGLE_FIELD_ID = 35;
-        static constexpr SQLUSMALLINT USEREVERSENORMALIZEDPANANGLE_FIELD_ID = 36;
-        static constexpr SQLUSMALLINT MINPANVELOCITY_FIELD_ID = 37;
-        static constexpr SQLUSMALLINT MAXPANVELOCITY_FIELD_ID = 38;
-        static constexpr SQLUSMALLINT MINPANSPEED_FIELD_ID = 39;
-        static constexpr SQLUSMALLINT MAXPANSPEED_FIELD_ID = 40;
-        static constexpr SQLUSMALLINT FOCALLENGTHMODE_FIELD_ID = 41;
-        static constexpr SQLUSMALLINT MINFOCALLENGTH_FIELD_ID = 42;
-        static constexpr SQLUSMALLINT MAXFOCALLENGTH_FIELD_ID = 43;
-        static constexpr SQLUSMALLINT MINFOCALLENGTHSCALE_FIELD_ID = 44;
-        static constexpr SQLUSMALLINT MAXFOCALLENGTHSCALE_FIELD_ID = 45;
-        static constexpr SQLUSMALLINT MINZOOMVELOCITY_FIELD_ID = 46;
-        static constexpr SQLUSMALLINT MAXZOOMVELOCITY_FIELD_ID = 47;
-        static constexpr SQLUSMALLINT MINZOOMSPEED_FIELD_ID = 48;
-        static constexpr SQLUSMALLINT MAXZOOMSPEED_FIELD_ID = 49;
-        static constexpr SQLUSMALLINT IMAGESENSORWIDTH_FIELD_ID = 50;
-        static constexpr SQLUSMALLINT IMAGESENSORHEIGHT_FIELD_ID = 51;
-        static constexpr SQLUSMALLINT HOMEPANANGLE_FIELD_ID = 52;
-        static constexpr SQLUSMALLINT HOMETILTANGLE_FIELD_ID = 53;
-        static constexpr SQLUSMALLINT HOMEFOCALLENGTH_FIELD_ID = 54;
-        static constexpr SQLUSMALLINT PANOFFSET_FIELD_ID = 55;
-        static constexpr SQLUSMALLINT TILTOFFSET_FIELD_ID = 56;
-        static constexpr SQLUSMALLINT AIMALTITUDE_FIELD_ID = 57;
-        static constexpr SQLUSMALLINT MINIMUMTARGETWIDTH_FIELD_ID = 58;
-        static constexpr SQLUSMALLINT TARGETLOCKTIMEOUT_FIELD_ID = 59;
-        static constexpr SQLUSMALLINT UPDATESTATUSINTERVAL_FIELD_ID = 60;
-        static constexpr SQLUSMALLINT READTIMEOUT_FIELD_ID = 61;
-        static constexpr SQLUSMALLINT MOVECOMMANDSTATUSDELAY_FIELD_ID = 62;
-        static constexpr SQLUSMALLINT PTZPROFILENAME_FIELD_ID = 63;
-        static constexpr SQLUSMALLINT PTZCONFIGURATIONTOKEN_FIELD_ID = 64;
-        static constexpr SQLUSMALLINT VIDEOSOURCETOKEN_FIELD_ID = 65;
+        static constexpr SQLUSMALLINT CAMERAURL_FIELD_ID = 6;
+        static constexpr SQLUSMALLINT CONFIGURATIONURL_FIELD_ID = 7;
+        static constexpr SQLUSMALLINT USERNAME_FIELD_ID = 8;
+        static constexpr SQLUSMALLINT PASSWORD_FIELD_ID = 9;
+        static constexpr SQLUSMALLINT USERTSPURIOVERRIDE_FIELD_ID = 10;
+        static constexpr SQLUSMALLINT RTSPURIOVERRIDE_FIELD_ID = 11;
+        static constexpr SQLUSMALLINT LATITUDE_FIELD_ID = 12;
+        static constexpr SQLUSMALLINT LONGITUDE_FIELD_ID = 13;
+        static constexpr SQLUSMALLINT ALTITUDE_FIELD_ID = 14;
+        static constexpr SQLUSMALLINT USERELATIVEPOSITION_FIELD_ID = 15;
+        static constexpr SQLUSMALLINT PANTILTMODE_FIELD_ID = 16;
+        static constexpr SQLUSMALLINT MINTILTANGLE_FIELD_ID = 17;
+        static constexpr SQLUSMALLINT MAXTILTANGLE_FIELD_ID = 18;
+        static constexpr SQLUSMALLINT MINTILTSCALEANGLE_FIELD_ID = 19;
+        static constexpr SQLUSMALLINT MAXTILTSCALEANGLE_FIELD_ID = 20;
+        static constexpr SQLUSMALLINT USEREVERSETILTANGLE_FIELD_ID = 21;
+        static constexpr SQLUSMALLINT USEREVERSENORMALIZEDTILTANGLE_FIELD_ID = 22;
+        static constexpr SQLUSMALLINT MINTILTVELOCITY_FIELD_ID = 23;
+        static constexpr SQLUSMALLINT MAXTILTVELOCITY_FIELD_ID = 24;
+        static constexpr SQLUSMALLINT MINTILTSPEED_FIELD_ID = 25;
+        static constexpr SQLUSMALLINT MAXTILTSPEED_FIELD_ID = 26;
+        static constexpr SQLUSMALLINT MINPANANGLE_FIELD_ID = 27;
+        static constexpr SQLUSMALLINT MAXPANANGLE_FIELD_ID = 28;
+        static constexpr SQLUSMALLINT MINPANSCALEANGLE_FIELD_ID = 29;
+        static constexpr SQLUSMALLINT MAXPANSCALEANGLE_FIELD_ID = 30;
+        static constexpr SQLUSMALLINT USEREVERSEPANANGLE_FIELD_ID = 31;
+        static constexpr SQLUSMALLINT USEREVERSENORMALIZEDPANANGLE_FIELD_ID = 32;
+        static constexpr SQLUSMALLINT MINPANVELOCITY_FIELD_ID = 33;
+        static constexpr SQLUSMALLINT MAXPANVELOCITY_FIELD_ID = 34;
+        static constexpr SQLUSMALLINT MINPANSPEED_FIELD_ID = 35;
+        static constexpr SQLUSMALLINT MAXPANSPEED_FIELD_ID = 36;
+        static constexpr SQLUSMALLINT FOCALLENGTHMODE_FIELD_ID = 37;
+        static constexpr SQLUSMALLINT MINFOCALLENGTH_FIELD_ID = 38;
+        static constexpr SQLUSMALLINT MAXFOCALLENGTH_FIELD_ID = 39;
+        static constexpr SQLUSMALLINT MINFOCALLENGTHSCALE_FIELD_ID = 40;
+        static constexpr SQLUSMALLINT MAXFOCALLENGTHSCALE_FIELD_ID = 41;
+        static constexpr SQLUSMALLINT MINZOOMVELOCITY_FIELD_ID = 42;
+        static constexpr SQLUSMALLINT MAXZOOMVELOCITY_FIELD_ID = 43;
+        static constexpr SQLUSMALLINT MINZOOMSPEED_FIELD_ID = 44;
+        static constexpr SQLUSMALLINT MAXZOOMSPEED_FIELD_ID = 45;
+        static constexpr SQLUSMALLINT IMAGESENSORWIDTH_FIELD_ID = 46;
+        static constexpr SQLUSMALLINT IMAGESENSORHEIGHT_FIELD_ID = 47;
+        static constexpr SQLUSMALLINT HOMEPANANGLE_FIELD_ID = 48;
+        static constexpr SQLUSMALLINT HOMETILTANGLE_FIELD_ID = 49;
+        static constexpr SQLUSMALLINT HOMEFOCALLENGTH_FIELD_ID = 50;
+        static constexpr SQLUSMALLINT PANOFFSET_FIELD_ID = 51;
+        static constexpr SQLUSMALLINT TILTOFFSET_FIELD_ID = 52;
+        static constexpr SQLUSMALLINT AIMALTITUDE_FIELD_ID = 53;
+        static constexpr SQLUSMALLINT MINIMUMTARGETWIDTH_FIELD_ID = 54;
+        static constexpr SQLUSMALLINT TARGETLOCKTIMEOUT_FIELD_ID = 55;
+        static constexpr SQLUSMALLINT UPDATESTATUSINTERVAL_FIELD_ID = 56;
+        static constexpr SQLUSMALLINT READTIMEOUT_FIELD_ID = 57;
+        static constexpr SQLUSMALLINT MOVECOMMANDSTATUSDELAY_FIELD_ID = 58;
+        static constexpr SQLUSMALLINT PTZPROFILENAME_FIELD_ID = 59;
+        static constexpr SQLUSMALLINT PTZCONFIGURATIONTOKEN_FIELD_ID = 60;
+        static constexpr SQLUSMALLINT VIDEOSOURCETOKEN_FIELD_ID = 61;
 
         CameraConfigurationColumnData( ) = default;
 
@@ -6964,53 +6738,37 @@ namespace Barrelman::Database
         {
             cameraControlProtocol_ = cameraControlProtocol;
         }
-        const FixedDBWideString<127>& CameraAddress( ) const
+        const FixedDBWideString<127>& CameraURL( ) const
         {
-            return cameraAddress_;
+            return cameraURL_;
         }
-        void SetCameraAddress( const FixedDBWideString<127>& cameraAddress )
+        void SetCameraURL( const FixedDBWideString<127>& cameraURL )
         {
-            cameraAddress_ = cameraAddress;
+            cameraURL_ = cameraURL;
         }
-        Int32 CameraPort( ) const
+        const FixedDBWideString<127>& ConfigurationURL( ) const
         {
-            return cameraPort_;
+            return configurationURL_;
         }
-        void SetCameraPort( Int32 cameraPort )
+        void SetConfigurationURL( const FixedDBWideString<127>& configurationURL )
         {
-            cameraPort_ = cameraPort;
+            configurationURL_ = configurationURL;
         }
-        const FixedDBWideString<127>& CameraControlAddress( ) const
+        const FixedDBWideString<127>& UserName( ) const
         {
-            return cameraControlAddress_;
+            return userName_;
         }
-        void SetCameraControlAddress( const FixedDBWideString<127>& cameraControlAddress )
+        void SetUserName( const FixedDBWideString<127>& userName )
         {
-            cameraControlAddress_ = cameraControlAddress;
+            userName_ = userName;
         }
-        Int32 CameraControlPort( ) const
+        const FixedDBWideString<127>& Password( ) const
         {
-            return cameraControlPort_;
+            return password_;
         }
-        void SetCameraControlPort( Int32 cameraControlPort )
+        void SetPassword( const FixedDBWideString<127>& password )
         {
-            cameraControlPort_ = cameraControlPort;
-        }
-        const FixedDBWideString<127>& CameraUserName( ) const
-        {
-            return cameraUserName_;
-        }
-        void SetCameraUserName( const FixedDBWideString<127>& cameraUserName )
-        {
-            cameraUserName_ = cameraUserName;
-        }
-        const FixedDBWideString<127>& CameraPassword( ) const
-        {
-            return cameraPassword_;
-        }
-        void SetCameraPassword( const FixedDBWideString<127>& cameraPassword )
-        {
-            cameraPassword_ = cameraPassword;
+            password_ = password;
         }
         bool UseRtspUriOverride( ) const
         {
@@ -7059,22 +6817,6 @@ namespace Barrelman::Database
         void SetUseRelativePosition( bool useRelativePosition )
         {
             useRelativePosition_ = useRelativePosition;
-        }
-        double AzimuthFromGPS( ) const
-        {
-            return azimuthFromGPS_;
-        }
-        void SetAzimuthFromGPS( double azimuthFromGPS )
-        {
-            azimuthFromGPS_ = azimuthFromGPS;
-        }
-        double DistanceFromGPS( ) const
-        {
-            return distanceFromGPS_;
-        }
-        void SetDistanceFromGPS( double distanceFromGPS )
-        {
-            distanceFromGPS_ = distanceFromGPS;
         }
         Types::CameraPanTiltMode PanTiltMode( ) const
         {
@@ -7451,20 +7193,16 @@ namespace Barrelman::Database
             Bind(statement, CAMERA_FIELD_ID, camera_);
             Bind(statement, TIMESTAMP_FIELD_ID, timestamp_);
             Bind(statement, CAMERACONTROLPROTOCOL_FIELD_ID, cameraControlProtocol_);
-            Bind(statement, CAMERAADDRESS_FIELD_ID, cameraAddress_);
-            Bind(statement, CAMERAPORT_FIELD_ID, cameraPort_);
-            Bind(statement, CAMERACONTROLADDRESS_FIELD_ID, cameraControlAddress_);
-            Bind(statement, CAMERACONTROLPORT_FIELD_ID, cameraControlPort_);
-            Bind(statement, CAMERAUSERNAME_FIELD_ID, cameraUserName_);
-            Bind(statement, CAMERAPASSWORD_FIELD_ID, cameraPassword_);
+            Bind(statement, CAMERAURL_FIELD_ID, cameraURL_);
+            Bind(statement, CONFIGURATIONURL_FIELD_ID, configurationURL_);
+            Bind(statement, USERNAME_FIELD_ID, userName_);
+            Bind(statement, PASSWORD_FIELD_ID, password_);
             Bind(statement, USERTSPURIOVERRIDE_FIELD_ID, useRtspUriOverride_);
             Bind(statement, RTSPURIOVERRIDE_FIELD_ID, rtspUriOverride_);
             Bind(statement, LATITUDE_FIELD_ID, latitude_);
             Bind(statement, LONGITUDE_FIELD_ID, longitude_);
             Bind(statement, ALTITUDE_FIELD_ID, altitude_);
             Bind(statement, USERELATIVEPOSITION_FIELD_ID, useRelativePosition_);
-            Bind(statement, AZIMUTHFROMGPS_FIELD_ID, azimuthFromGPS_);
-            Bind(statement, DISTANCEFROMGPS_FIELD_ID, distanceFromGPS_);
             Bind(statement, PANTILTMODE_FIELD_ID, panTiltMode_);
             Bind(statement, MINTILTANGLE_FIELD_ID, minTiltAngle_);
             Bind(statement, MAXTILTANGLE_FIELD_ID, maxTiltAngle_);
@@ -7522,20 +7260,16 @@ namespace Barrelman::Database
             WriteColumnValue( destination, camera_);
             WriteColumnValue( destination, timestamp_);
             WriteColumnValue( destination, cameraControlProtocol_);
-            WriteColumnValue( destination, cameraAddress_);
-            WriteColumnValue( destination, cameraPort_);
-            WriteColumnValue( destination, cameraControlAddress_);
-            WriteColumnValue( destination, cameraControlPort_);
-            WriteColumnValue( destination, cameraUserName_);
-            WriteColumnValue( destination, cameraPassword_);
+            WriteColumnValue( destination, cameraURL_);
+            WriteColumnValue( destination, configurationURL_);
+            WriteColumnValue( destination, userName_);
+            WriteColumnValue( destination, password_);
             WriteColumnValue( destination, useRtspUriOverride_);
             WriteColumnValue( destination, rtspUriOverride_);
             WriteColumnValue( destination, latitude_);
             WriteColumnValue( destination, longitude_);
             WriteColumnValue( destination, altitude_);
             WriteColumnValue( destination, useRelativePosition_);
-            WriteColumnValue( destination, azimuthFromGPS_);
-            WriteColumnValue( destination, distanceFromGPS_);
             WriteColumnValue( destination, panTiltMode_);
             WriteColumnValue( destination, minTiltAngle_);
             WriteColumnValue( destination, maxTiltAngle_);
@@ -7590,20 +7324,16 @@ namespace Barrelman::Database
             destination.SetCamera( camera_ );
             destination.SetTimestamp( timestamp_ );
             destination.SetCameraControlProtocol( cameraControlProtocol_ );
-            destination.SetCameraAddress( cameraAddress_ );
-            destination.SetCameraPort( cameraPort_ );
-            destination.SetCameraControlAddress( cameraControlAddress_ );
-            destination.SetCameraControlPort( cameraControlPort_ );
-            destination.SetCameraUserName( cameraUserName_ );
-            destination.SetCameraPassword( cameraPassword_ );
+            destination.SetCameraURL( cameraURL_ );
+            destination.SetConfigurationURL( configurationURL_ );
+            destination.SetUserName( userName_ );
+            destination.SetPassword( password_ );
             destination.SetUseRtspUriOverride( useRtspUriOverride_ );
             destination.SetRtspUriOverride( rtspUriOverride_ );
             destination.SetLatitude( latitude_ );
             destination.SetLongitude( longitude_ );
             destination.SetAltitude( altitude_ );
             destination.SetUseRelativePosition( useRelativePosition_ );
-            destination.SetAzimuthFromGPS( azimuthFromGPS_ );
-            destination.SetDistanceFromGPS( distanceFromGPS_ );
             destination.SetPanTiltMode( panTiltMode_ );
             destination.SetMinTiltAngle( minTiltAngle_ );
             destination.SetMaxTiltAngle( maxTiltAngle_ );

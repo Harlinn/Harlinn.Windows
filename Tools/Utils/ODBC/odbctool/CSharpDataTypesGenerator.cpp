@@ -30,6 +30,7 @@ namespace Harlinn::ODBC::Tool
         auto nspace = Options( ).Namespace( L"." );
 
         WriteLine( L"using System;" );
+        WriteLine( L"using System.Diagnostics.CodeAnalysis;" );
         WriteLine( L"using System.IO;" );
         WriteLine( );
         WriteLine( L"using Harlinn.Common.Core.Net;" );
@@ -64,6 +65,8 @@ namespace Harlinn::ODBC::Tool
             WriteLine( L"    public class {} : {}", className, baseClassName );
         }
         WriteLine( L"    {" );
+
+        // Fields
         for ( const auto& member : persistentMembers )
         {
             if ( member->PrimaryKey( ) == false )
@@ -84,7 +87,7 @@ namespace Harlinn::ODBC::Tool
 
         if ( classInfo.Abstract( ) == false )
         {
-            WriteLine( L"        public {} ( )", className );
+            WriteLine( L"        public {}( )", className );
             WriteLine( L"        {" );
             WriteLine( L"        }" );
             WriteLine( );
@@ -102,12 +105,39 @@ namespace Harlinn::ODBC::Tool
         }
         else
         {
-            WriteLine( L"        protected {} ( )", className );
+            WriteLine( L"        protected {}( )", className );
             WriteLine( L"        {" );
             WriteLine( L"        }" );
             WriteLine( );
         }
 
+        if ( persistentMembers.size( ) )
+        {
+            WriteLine( L"        public override void AssignTo( BaseData<Kind> target )" );
+            WriteLine( L"        {" );
+            WriteLine( L"            base.AssignTo( target );" );
+            WriteLine( L"            var destination = ( {} )target;", className );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto memberType = member->Type( );
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    if ( memberType == MemberInfoType::Binary )
+                    {
+                        auto typeName = CSharpHelper::GetMemberFieldType( *member );
+                        WriteLine( L"            destination.{} = ({}){}.Clone( );", fieldName, typeName, fieldName );
+                    }
+                    else
+                    {
+                        WriteLine( L"            destination.{} = {};", fieldName, fieldName );
+                    }
+
+                }
+            }
+            WriteLine( L"        }" );
+            WriteLine( );
+        }
         WriteLine( L"        public override bool IsOfType(Kind objectType)", className );
         WriteLine( L"        {" );
         WriteLine( L"            if( objectType == Kind.{} )", classInfo.Name( ) );
@@ -117,49 +147,69 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"            return base.IsOfType( objectType );" );
         WriteLine( L"        }" );
         WriteLine( );
-
-        for ( const auto& member : persistentMembers )
+        
+        if ( persistentMembers.size( ) )
         {
-            if ( member->PrimaryKey( ) == false )
+            // Properties
+            for ( const auto& member : persistentMembers )
             {
-                auto typeName = CSharpHelper::GetMemberFieldType( *member );
-                auto fieldName = CSharpHelper::GetMemberFieldName( *member );
-                auto propertyName = member->Name().FirstToUpper( );
-                
-                
-                    
-                WriteLine( L"        public {} {}", typeName, propertyName );
-                WriteLine( L"        {" );
-                WriteLine( L"            get => {};", fieldName );
-                WriteLine( L"            set" );
-                WriteLine( L"            {" );
-                WriteLine( L"                if( {} != value )", fieldName );
-                WriteLine( L"                {" );
-                WriteLine( L"                    {} = value;", fieldName );
-                WriteLine( L"                    OnPropertyChanged( );" );
-                WriteLine( L"                }" );
-                WriteLine( L"            }" );
-                WriteLine( L"        }" );
-                
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto typeName = CSharpHelper::GetMemberFieldType( *member );
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    auto propertyName = member->Name( ).FirstToUpper( );
+
+
+
+                    WriteLine( L"        public {} {}", typeName, propertyName );
+                    WriteLine( L"        {" );
+                    WriteLine( L"            get => {};", fieldName );
+                    WriteLine( L"            set" );
+                    WriteLine( L"            {" );
+                    WriteLine( L"                if( {} != value )", fieldName );
+                    WriteLine( L"                {" );
+                    WriteLine( L"                    {} = value;", fieldName );
+                    WriteLine( L"                    OnPropertyChanged( );" );
+                    WriteLine( L"                }" );
+                    WriteLine( L"            }" );
+                    WriteLine( L"        }" );
+
+                }
             }
+            WriteLine( );
+            WriteLine( L"        public override void WriteTo( [ DisallowNull ] BinaryWriter destination )" );
+            WriteLine( L"        {" );
+            WriteLine( L"            base.WriteTo( destination );" );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    auto writeFunctionName = CSharpHelper::GetSerializationWriteFunction( *member );
+
+                    WriteLine( L"            destination.{}( {} );", writeFunctionName, fieldName );
+                }
+            }
+            WriteLine( L"        }" );
+            WriteLine( );
+            WriteLine( L"        public override void ReadFrom([DisallowNull] BinaryReader source)" );
+            WriteLine( L"        {" );
+            WriteLine( L"            base.ReadFrom( source );" );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    auto readFunctionName = CSharpHelper::GetSerializationReadFunction( *member );
+
+                    WriteLine( L"            {} = source.{}( );", fieldName, readFunctionName );
+                }
+            }
+            WriteLine( L"        }" );
+            WriteLine( );
+
         }
 
         WriteLine( L"    }" );
-    }
-    void CSharpDataTypesGenerator::CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member )
-    {
-
-    }
-    void CSharpDataTypesGenerator::CreateSetter( const ClassInfo& classInfo, const MemberInfo& member )
-    {
-
-    }
-    void CSharpDataTypesGenerator::CreateReadDataFrom( )
-    {
-
-    }
-    void CSharpDataTypesGenerator::CreateWriteDataTo( )
-    {
-
     }
 }

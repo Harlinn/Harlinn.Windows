@@ -793,40 +793,24 @@
       <rowversion name="RowVersion"/>
       <reference name="AisDevice" type="AisDevice" browsable="false"/>
       <datetime name="Timestamp"/>
-      <string name="UserName" size="127" category="Authentication"/>
-      <string name="Password" size="127" category="Authentication"/>
-      <double name="Latitude" category="Position"/>
-      <double name="Longitude" category="Position"/>
-      <string name="AisProviderLoginURL" size="127" category="Authentication"/>
+      <boolean name="Filter" category="Filter"/>
+      <double name="NorthWestLatitude" category="Filter"/>
+      <double name="NorthWestLongitude" category="Filter"/>
+      <double name="SouthEastLatitude" category="Filter"/>
+      <double name="SouthEastLongitude" category="Filter"/>
       <string name="ComPort" size="32" category="Serial Port"/>
       <int32 name="BaudRate" category="Serial Port"/>
-      <boolean name="FilterByArea" category="Filter"/>
-      <double name="UpperLeftCornerLatitude" category="Filter"/>
-      <double name="UpperLeftCornerLongitude" category="Filter"/>
-      <double name="BottomRightCornerLatitude" category="Filter"/>
-      <double name="BottomRightCornerLongitude" category="Filter"/>
-      <string name="AisProviderIPAddress" size="127" category="Network"/>
-      <int32 name="AisProviderPort" category="Network"/>
-      <boolean name="UseLogin" category="Authentication"/>
-      <int32 name="AisProviderLoginPort" category="Authentication"/>
-      <boolean name="CanSendAISMessage" category="Send"/>
-      <string name="TextMessageHeader" size="unlimited" category="Send"/>
-      <string name="Urls" size="unlimited" category="Network"/>
+      <string name="IPAddress" size="127" category="Network"/>
+      <int32 name="Port" category="Network"/>
       <int32 name="UdpPort" category="Network"/>
+      <boolean name="Authenticate" category="Authentication"/>
+      <string name="UserName" size="127" category="Authentication"/>
+      <string name="Password" size="127" category="Authentication"/>
+      <string name="AuthenticationURL" size="127" category="Authentication"/>
       <enum name="ConnectionType" type="AisDeviceConnectionType"/>
-      <boolean name="EnableRefreshAidToNavigationIn30sec"/>
-      <boolean name="EnableAidToNavigationFromFile" category="Aid To Navigation"/>
-      <string name="AidToNavigationHeader" size="unlimited" category="Aid To Navigation"/>
-      <boolean name="SendingMMSI" category="Send"/>
       <int32 name="SourceUpdateRate"/>
-      <boolean name="EnableRefreshStayingStillTargetIn30sec"/>
-      <string name="ExcludeSendAisBaseStation" size="unlimited"/>
-      <string name="ExcludeSendAisA" size="unlimited"/>
-      <boolean name="EnableSendBaseStationAlarms"/>
-      <string name="AisWebConfig" size="127"/>
+      <string name="ConfigurationURL" size="127"/>
       <boolean name="StoreReceivedSentences"/>
-      <boolean name="StoreSentMessages"/>
-      <boolean name="StoreUnsentMessages"/>
     </members>
     <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1053,20 +1037,16 @@
       <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
       <enum name="CameraControlProtocol" type="CameraControlProtocol"/>
-      <string name="CameraAddress" size="127" category="Network"/>
-      <int32 name="CameraPort" category="Network"/>
-      <string name="CameraControlAddress" size="127" category="Network"/>
-      <int32 name="CameraControlPort" category="Network"/>
-      <string name="CameraUserName" size="127" category="Authentication"/>
-      <string name="CameraPassword" size="127" category="Authentication"/>
+      <string name="CameraURL" size="127" category="Network"/>
+      <string name="ConfigurationURL" size="127" category="Network"/>
+      <string name="UserName" size="127" category="Authentication"/>
+      <string name="Password" size="127" category="Authentication"/>
       <boolean name="UseRtspUriOverride" category="RTSP"/>
       <string name="RtspUriOverride" size="127" category="RTSP"/>
       <double name="Latitude" category="Location"/>
       <double name="Longitude" category="Location"/>
       <double name="Altitude" category="Location"/>
       <boolean name="UseRelativePosition" category="Location"/>
-      <double name="AzimuthFromGPS" category="Location"/>
-      <double name="DistanceFromGPS" category="Location"/>
       <enum name="PanTiltMode" type="CameraPanTiltMode"/>
       <double name="MinTiltAngle" category="Tilt Angle" description="The minimum tilt angle in degrees. Must be &gt;= -180°"/>
       <double name="MaxTiltAngle" category="Tilt Angle" description="The maximum tilt angle in degrees. Must be &lt;= 180°"/>

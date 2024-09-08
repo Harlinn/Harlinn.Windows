@@ -488,4 +488,142 @@ namespace Harlinn::ODBC::Tool
         return false;
     }
 
+    WideString CSharpHelper::GetSerializationWriteFunction( const MemberInfo& member )
+    {
+        WideString result = L"Write";
+        auto memberType = member.Type( );
+        if ( memberType == MemberInfoType::Binary )
+        {
+            result = L"WriteArray";
+        }
+        return result;
+    }
+    WideString CSharpHelper::GetSerializationReadFunction( const MemberInfo& member )
+    {
+        WideString result = L"<unknown>";
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = member.Nullable( ) ? L"ReadNullableBoolean" : L"ReadBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = member.Nullable( ) ? L"ReadNullableSByte" : L"ReadSByte";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = member.Nullable( ) ? L"ReadNullableByte" : L"ReadByte";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = member.Nullable( ) ? L"ReadNullableInt16" : L"ReadInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = member.Nullable( ) ? L"ReadNullableUInt16" : L"ReadUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = member.Nullable( ) ? L"ReadNullableInt32" : L"ReadInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = member.Nullable( ) ? L"ReadNullableUInt32" : L"ReadUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = member.Nullable( ) ? L"ReadNullableInt64" : L"ReadInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = member.Nullable( ) ? L"ReadNullableUInt64" : L"ReadUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast< const EnumMemberInfo& >( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    if ( member.Nullable( ) )
+                    {
+                        result = Format( L"ReadNullableEnum<Types.{}>", enumType->Name( ) );
+                    }
+                    else
+                    {
+                        result = Format( L"ReadEnum<Types.{}>", enumType->Name( ) );
+                    }
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = member.Nullable( ) ? L"ReadNullableSingle" : L"ReadSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = member.Nullable( ) ? L"ReadNullableDouble" : L"ReadDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = member.Nullable( ) ? L"ReadNullableCurrency" : L"ReadCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = member.Nullable( ) ? L"ReadNullableDateTime" : L"ReadDateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = member.Nullable( ) ? L"ReadNullableTimeSpan" : L"ReadTimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = member.Nullable( ) ? L"ReadNullableGuid" : L"ReadGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = L"ReadString";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = L"ReadByteArray";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = member.Nullable( ) ? L"ReadNullableInt64" : L"ReadInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = member.Nullable( ) ? L"ReadNullableGuid" : L"ReadGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = member.Nullable( ) ? L"ReadNullableGuid" : L"ReadGuid";
+            }
+            break;
+        }
+
+        return result;
+    }
+
 }
