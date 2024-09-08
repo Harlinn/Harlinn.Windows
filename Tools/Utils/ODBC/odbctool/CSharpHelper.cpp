@@ -622,8 +622,145 @@ namespace Harlinn::ODBC::Tool
             }
             break;
         }
-
         return result;
     }
+
+    WideString CSharpHelper::GetSimpleDataReaderName( const ClassInfo& classInfo )
+    {
+        return Format( L"Simple{}DataReader", classInfo.Name( ).FirstToUpper( ) );
+    }
+
+    WideString CSharpHelper::GetComplexDataReaderName( const ClassInfo& classInfo )
+    {
+        return Format( L"Complex{}DataReader", classInfo.Name( ).FirstToUpper( ) );
+    }
+
+    WideString CSharpHelper::GetDataReaderGetFunctionName( const MemberInfo& member )
+    {
+        WideString result = L"<unknown>";
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = member.Nullable( ) ? L"GetNullableBoolean" : L"GetBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = member.Nullable( ) ? L"GetNullableSByte" : L"GetSByte";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = member.Nullable( ) ? L"GetNullableByte" : L"GetByte";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt16" : L"GetInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = member.Nullable( ) ? L"GetNullableUInt16" : L"GetUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt32" : L"GetInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = member.Nullable( ) ? L"GetNullableUInt32" : L"GetUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt64" : L"GetInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = member.Nullable( ) ? L"GetNullableUInt64" : L"GetUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast< const EnumMemberInfo& >( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    if ( member.Nullable( ) )
+                    {
+                        result = Format( L"GetNullableEnum<Types.{}>", enumType->Name( ) );
+                    }
+                    else
+                    {
+                        result = Format( L"GetEnum<Types.{}>", enumType->Name( ) );
+                    }
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = member.Nullable( ) ? L"GetNullableFloat" : L"GetFloat";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = member.Nullable( ) ? L"GetNullableDouble" : L"GetDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt64" : L"GetInt64";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt64" : L"GetInt64";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt64" : L"GetInt64";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = member.Nullable( ) ? L"GetNullableGuid" : L"GetGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = member.Nullable( ) ? L"GetNullableString" : L"GetString";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = member.Nullable( ) ? L"GetNullableBytes" : L"GetBytes";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = member.Nullable( ) ? L"GetNullableInt64" : L"GetInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = member.Nullable( ) ? L"GetNullableGuid" : L"GetGuid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = member.Nullable( ) ? L"GetNullableGuid" : L"GetGuid";
+            }
+            break;
+        }
+        return result;
+    }
+
 
 }

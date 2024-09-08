@@ -160,7 +160,6 @@ namespace Harlinn::ODBC::Tool
                     WriteLine( L"                {" );
                     WriteLine( L"                    return false;" );
                     WriteLine( L"                }" );
-
                 }
             }
             WriteLine( L"                return true;" );

@@ -38,6 +38,10 @@ namespace Harlinn::ODBC::Tool
         static WideString GetSerializationWriteFunction( const MemberInfo& member );
         static WideString GetSerializationReadFunction( const MemberInfo& member );
 
+        static WideString GetSimpleDataReaderName( const ClassInfo& classInfo );
+        static WideString GetComplexDataReaderName( const ClassInfo& classInfo );
+        static WideString GetDataReaderGetFunctionName( const MemberInfo& member );
+
     };
 }
 

@@ -332,6 +332,34 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
+        public byte[] GetBytes(int i)
+        {
+            try
+            {
+                var sqlBinary = _reader.GetSqlBinary(i);
+                if(sqlBinary != null)
+                {
+                    return sqlBinary.Value;
+                }
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                throw;
+            }
+            return Array.Empty<byte>();
+        }
+
+        public byte[]? GetNullableBytes(int i)
+        {
+            if (!IsDBNull(i))
+            {
+                return GetBytes(i);
+            }
+            return null;
+        }
+
+
         public char GetChar(int i)
         {
             try
@@ -501,7 +529,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return null;
         }
 
-        public T GetEnum<T>(int i) where T : System.Enum
+        public T GetEnum<T>(int i) where T : struct, System.Enum
         {
             var enumType = typeof(T);
             var enumIntegerType = Enum.GetUnderlyingType(enumType);
@@ -546,6 +574,15 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 return (T)Enum.ToObject(typeof(T), value);
             }
             return default;
+        }
+
+        public T? GetNullableEnum<T>(int i) where T : struct, System.Enum
+        {
+            if (!IsDBNull(i))
+            {
+                return GetEnum<T>(i);
+            }
+            return null;
         }
 
         public float GetFloat(int i)
@@ -671,6 +708,15 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
                 LogException(exc);
                 throw;
             }
+        }
+
+        public string? GetNullableString(int i)
+        {
+            if (!IsDBNull(i))
+            {
+                return GetString(i);
+            }
+            return null;
         }
 
         public Guid GetGuid(int i)

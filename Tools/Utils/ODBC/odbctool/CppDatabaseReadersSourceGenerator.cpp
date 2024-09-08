@@ -58,7 +58,7 @@ namespace Harlinn::ODBC::Tool
     void CppDatabaseReadersSourceGenerator::CreateQuery( const ClassInfo& classInfo )
     {
         auto topLevelClass = classInfo.TopLevelClass( );
-        classInfo.BaseClasses( );
+        
         auto className = CppHelper::GetColumnDataType( classInfo );
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = SqlServerHelper::GetColumnName( *primaryKey );
