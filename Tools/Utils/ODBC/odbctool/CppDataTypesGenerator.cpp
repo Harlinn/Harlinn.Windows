@@ -32,7 +32,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"#ifndef {}", headerGuard );
         WriteLine( L"#define {}", headerGuard );
         WriteLine( );
-        WriteLine( "#include \"Data/Enums.h\"" );
+        WriteLine( "#include \"Enums.h\"" );
         WriteLine( "#include <HODBC.h>" );
         WriteLine( "#include <HCCData.h>" );
         WriteLine( );

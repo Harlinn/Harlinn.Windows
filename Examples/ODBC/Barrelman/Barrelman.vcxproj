@@ -166,8 +166,8 @@
     <ClInclude Include="Generated\Cpp\Database\ComplexDatabaseReaders.h" />
     <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h" />
     <ClInclude Include="Generated\Cpp\Database\StoredProcedures.h" />
-    <ClInclude Include="Generated\Cpp\Data\DataTypes.h" />
-    <ClInclude Include="Generated\Cpp\Data\Enums.h" />
+    <ClInclude Include="Generated\Cpp\Types\DataTypes.h" />
+    <ClInclude Include="Generated\Cpp\Types\Enums.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -175,7 +175,7 @@
     <ClCompile Include="Generated\Cpp\Database\ComplexDatabaseReaders.cpp" />
     <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp" />
     <ClCompile Include="Generated\Cpp\Database\StoredProcedures.cpp" />
-    <ClCompile Include="Generated\Cpp\Data\DataTypes.cpp" />
+    <ClCompile Include="Generated\Cpp\Types\DataTypes.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -25,6 +25,7 @@ namespace Harlinn::ODBC::Tool
         const auto& model = Model( );
         const auto& classes = model.Classes( );
         auto classCount = classes.size( );
+        const auto& dataTypesOptions = Options( ).Owner( ).Owner( ).Data( ).DataTypes( );
 
         auto headerGuard = CppHelper::GetHeaderGuard( Filename( ) );
         auto nspace = Options( ).Namespace( L"::" );
@@ -34,7 +35,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( "#include <HODBC.h>" );
         WriteLine( "#include <HCCData.h>" );
-        WriteLine( "#include \"Data/DataTypes.h\"" );
+        WriteLine( "#include \"Types/DataTypes.h\"" );
         WriteLine( );
 
         WriteLine( );
@@ -64,7 +65,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    class BaseColumnData" );
         WriteLine( L"    {" );
         WriteLine( L"    public:" );
-        WriteLine( L"        using Kind = Data::Kind;" );
+        WriteLine( L"        using Kind = Types::Kind;" );
         WriteLine( L"        virtual ~BaseColumnData( ) = default;" );
         WriteLine( L"        virtual Kind GetKind() const = 0;" );
         WriteLine( L"        void ReadUnboundData( const ODBC::Statement& statement )" );
@@ -351,7 +352,7 @@ namespace Harlinn::ODBC::Tool
             }
             if ( classInfo.HasDescendants( ) )
             {
-                WriteLine( L"        Data::Kind entityType_ = Data::Kind::Unknown;" );
+                WriteLine( L"        Types::Kind entityType_ = Types::Kind::Unknown;" );
             }
         }
 
@@ -554,7 +555,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         if ( member.PrimaryKey( ) && classInfo.HasDescendants() )
         {
-            WriteLine( L"        Data::Kind EntityType( ) const" );
+            WriteLine( L"        Types::Kind EntityType( ) const" );
             WriteLine( L"        {" );
             WriteLine( L"            return entityType_;" );
             WriteLine( L"        }" );
@@ -594,7 +595,7 @@ namespace Harlinn::ODBC::Tool
         }
         else
         {
-            WriteLine( L"            WriteColumnValue( destination, Data::Kind::{} );", classInfo.Name() );
+            WriteLine( L"            WriteColumnValue( destination, Types::Kind::{} );", classInfo.Name() );
         }
         for ( size_t i = 0; i < memberCount; i++ )
         {
@@ -612,13 +613,13 @@ namespace Harlinn::ODBC::Tool
         auto members = classInfo.OwnPersistentMembers( );
         auto memberCount = members.size( );
 
-        WriteLine( L"        void AssignTo( Data::{}& destination ) const", dataClassName );
+        WriteLine( L"        void AssignTo( Types::{}& destination ) const", dataClassName );
         WriteLine( L"        {" );
         if ( classInfo.IsTopLevel( ) == false )
         {
             auto baseClass = classInfo.BaseClass( );
             auto baseDataClassName = CppHelper::GetDataType( *baseClass );
-            WriteLine( L"            Base::AssignTo( static_cast<Data::{}&>( destination ) );", baseDataClassName );
+            WriteLine( L"            Base::AssignTo( static_cast<Types::{}&>( destination ) );", baseDataClassName );
         }
         for ( size_t i = 0; i < memberCount; i++ )
         {

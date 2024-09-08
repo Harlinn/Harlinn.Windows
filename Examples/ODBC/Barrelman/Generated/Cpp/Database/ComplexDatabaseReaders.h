@@ -14,27 +14,27 @@ namespace Barrelman::Database
     class ComplexAisMessageColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
         Guid mmsi_;
-        DBEnum<Data::NavigationalAidType> atnrmNavigationalAidType_;
+        DBEnum<Types::NavigationalAidType> atnrmNavigationalAidType_;
         FixedDBWideString<127> atnrmName_;
-        DBEnum<Data::PositionAccuracy> atnrmPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> atnrmPositionAccuracy_;
         DBDouble atnrmLongitude_;
         DBDouble atnrmLatitude_;
         DBInt32 atnrmDimensionToBow_;
         DBInt32 atnrmDimensionToStern_;
         DBInt32 atnrmDimensionToPort_;
         DBInt32 atnrmDimensionToStarboard_;
-        DBEnum<Data::PositionFixType> atnrmPositionFixType_;
+        DBEnum<Types::PositionFixType> atnrmPositionFixType_;
         DBInt32 atnrmTimestamp_;
         DBBoolean atnrmOffPosition_;
         DBInt32 atnrmRegionalReserved_;
-        DBEnum<Data::Raim> atnrmRaim_;
+        DBEnum<Types::Raim> atnrmRaim_;
         DBBoolean atnrmVirtualAid_;
         DBBoolean atnrmAssigned_;
         DBInt32 atnrmSpare_;
@@ -45,12 +45,12 @@ namespace Barrelman::Database
         DBInt32 aasrmSpare_;
         FixedDBWideString<127> aasrmText_;
         DBDateTime absrmTimestamp_;
-        DBEnum<Data::PositionAccuracy> absrmPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> absrmPositionAccuracy_;
         DBDouble absrmLongitude_;
         DBDouble absrmLatitude_;
-        DBEnum<Data::PositionFixType> absrmPositionFixType_;
+        DBEnum<Types::PositionFixType> absrmPositionFixType_;
         DBInt32 absrmSpare_;
-        DBEnum<Data::Raim> absrmRaim_;
+        DBEnum<Types::Raim> absrmRaim_;
         DBInt32 absrmRadioStatus_;
         DBInt32 abacSpare_;
         DBInt32 abacSequenceNumber1_;
@@ -91,7 +91,7 @@ namespace Barrelman::Database
         DBInt32 adlmmIncrement4_;
         DBInt32 aecbprmReserved_;
         DBDouble aecbprmSpeedOverGround_;
-        DBEnum<Data::PositionAccuracy> aecbprmPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> aecbprmPositionAccuracy_;
         DBDouble aecbprmLongitude_;
         DBDouble aecbprmLatitude_;
         DBDouble aecbprmCourseOverGround_;
@@ -99,45 +99,45 @@ namespace Barrelman::Database
         DBInt32 aecbprmTimestamp_;
         DBInt32 aecbprmRegionalReserved_;
         DBGuid aecbprmName_;
-        DBEnum<Data::ShipType> aecbprmShipType_;
+        DBEnum<Types::ShipType> aecbprmShipType_;
         DBInt32 aecbprmDimensionToBow_;
         DBInt32 aecbprmDimensionToStern_;
         DBInt32 aecbprmDimensionToPort_;
         DBInt32 aecbprmDimensionToStarboard_;
-        DBEnum<Data::PositionFixType> aecbprmPositionFixType_;
-        DBEnum<Data::Raim> aecbprmRaim_;
+        DBEnum<Types::PositionFixType> aecbprmPositionFixType_;
+        DBEnum<Types::Raim> aecbprmRaim_;
         DBBoolean aecbprmDataTerminalReady_;
         DBBoolean aecbprmAssigned_;
         DBInt32 aecbprmSpare_;
         DBGuid aimInterrogatedMmsi_;
-        DBEnum<Data::AisMessageType> aimFirstMessageType_;
+        DBEnum<Types::AisMessageType> aimFirstMessageType_;
         DBInt32 aimFirstSlotOffset_;
-        DBEnum<Data::AisMessageType> aimSecondMessageType_;
+        DBEnum<Types::AisMessageType> aimSecondMessageType_;
         DBInt32 aimSecondSlotOffset_;
         DBGuid aimSecondStationInterrogationMmsi_;
-        DBEnum<Data::AisMessageType> aimSecondStationFirstMessageType_;
+        DBEnum<Types::AisMessageType> aimSecondStationFirstMessageType_;
         DBInt32 aimSecondStationFirstSlotOffset_;
-        DBEnum<Data::NavigationStatus> aprcabNavigationStatus_;
+        DBEnum<Types::NavigationStatus> aprcabNavigationStatus_;
         DBInt32 aprcabRateOfTurn_;
         DBDouble aprcabSpeedOverGround_;
-        DBEnum<Data::PositionAccuracy> aprcabPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> aprcabPositionAccuracy_;
         DBDouble aprcabLongitude_;
         DBDouble aprcabLatitude_;
         DBDouble aprcabCourseOverGround_;
         DBInt32 aprcabTrueHeading_;
         DBInt32 aprcabTimestamp_;
-        DBEnum<Data::ManeuverIndicator> aprcabManeuverIndicator_;
+        DBEnum<Types::ManeuverIndicator> aprcabManeuverIndicator_;
         DBInt32 aprcabSpare_;
-        DBEnum<Data::Raim> aprcabRaim_;
+        DBEnum<Types::Raim> aprcabRaim_;
         DBInt32 aprcabRadioStatus_;
-        DBEnum<Data::PositionAccuracy> aprflramPositionAccuracy_;
-        DBEnum<Data::Raim> aprflramRaim_;
-        DBEnum<Data::NavigationStatus> aprflramNavigationStatus_;
+        DBEnum<Types::PositionAccuracy> aprflramPositionAccuracy_;
+        DBEnum<Types::Raim> aprflramRaim_;
+        DBEnum<Types::NavigationStatus> aprflramNavigationStatus_;
         DBDouble aprflramLongitude_;
         DBDouble aprflramLatitude_;
         DBDouble aprflramSpeedOverGround_;
         DBDouble aprflramCourseOverGround_;
-        DBEnum<Data::GnssPositionStatus> aprflramGnssPositionStatus_;
+        DBEnum<Types::GnssPositionStatus> aprflramGnssPositionStatus_;
         DBInt32 aprflramSpare_;
         DBInt32 asramSpare_;
         DBInt32 asramSequenceNumber1_;
@@ -150,7 +150,7 @@ namespace Barrelman::Database
         DBGuid asramMmsi4_;
         DBInt32 ascbprmReserved_;
         DBDouble ascbprmSpeedOverGround_;
-        DBEnum<Data::PositionAccuracy> ascbprmPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> ascbprmPositionAccuracy_;
         DBDouble ascbprmLongitude_;
         DBDouble ascbprmLatitude_;
         DBDouble ascbprmCourseOverGround_;
@@ -163,11 +163,11 @@ namespace Barrelman::Database
         DBBoolean ascbprmBand_;
         DBBoolean ascbprmCanAcceptMessage22_;
         DBBoolean ascbprmAssigned_;
-        DBEnum<Data::Raim> ascbprmRaim_;
+        DBEnum<Types::Raim> ascbprmRaim_;
         DBInt32 ascbprmRadioStatus_;
         DBInt32 assaprmAltitude_;
         DBInt32 assaprmSpeedOverGround_;
-        DBEnum<Data::PositionAccuracy> assaprmPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> assaprmPositionAccuracy_;
         DBDouble assaprmLongitude_;
         DBDouble assaprmLatitude_;
         DBDouble assaprmCourseOverGround_;
@@ -176,18 +176,18 @@ namespace Barrelman::Database
         DBBoolean assaprmDataTerminalReady_;
         DBInt32 assaprmSpare_;
         DBBoolean assaprmAssigned_;
-        DBEnum<Data::Raim> assaprmRaim_;
+        DBEnum<Types::Raim> assaprmRaim_;
         DBInt32 assaprmRadioStatus_;
         DBInt32 asavrdmAisVersion_;
         DBGuid asavrdmImoNumber_;
         DBGuid asavrdmCallsign_;
         DBGuid asavrdmShipName_;
-        DBEnum<Data::ShipType> asavrdmShipType_;
+        DBEnum<Types::ShipType> asavrdmShipType_;
         DBInt32 asavrdmDimensionToBow_;
         DBInt32 asavrdmDimensionToStern_;
         DBInt32 asavrdmDimensionToPort_;
         DBInt32 asavrdmDimensionToStarboard_;
-        DBEnum<Data::PositionFixType> asavrdmPositionFixType_;
+        DBEnum<Types::PositionFixType> asavrdmPositionFixType_;
         DBDateTime asavrdmEstimatedTimeOfArrival_;
         DBDouble asavrdmDraught_;
         FixedDBWideString<127> asavrdmDestination_;
@@ -196,7 +196,7 @@ namespace Barrelman::Database
         DBInt32 asdrmPartNumber_;
         DBGuid asdrpaShipName_;
         DBInt32 asdrpaSpare_;
-        DBEnum<Data::ShipType> asdrpbShipType_;
+        DBEnum<Types::ShipType> asdrpbShipType_;
         FixedDBWideString<127> asdrpbVendorId_;
         DBInt32 asdrpbUnitModelCode_;
         DBInt32 asdrpbSerialNumber_;
@@ -206,18 +206,18 @@ namespace Barrelman::Database
         DBInt32 asdrpbDimensionToPort_;
         DBInt32 asdrpbDimensionToStarboard_;
         DBGuid asdrpbMothershipMmsi_;
-        DBEnum<Data::PositionFixType> asdrpbPositionFixType_;
+        DBEnum<Types::PositionFixType> asdrpbPositionFixType_;
         DBInt32 asdrpbSpare_;
         DBInt32 auadimSpare1_;
         DBInt32 auadimDestinationMmsi_;
         DBInt32 auadimSpare2_;
         DBDateTime auadrmDatetime_;
-        DBEnum<Data::PositionAccuracy> auadrmPositionAccuracy_;
+        DBEnum<Types::PositionAccuracy> auadrmPositionAccuracy_;
         DBDouble auadrmLongitude_;
         DBDouble auadrmLatitude_;
-        DBEnum<Data::PositionFixType> auadrmPositionFixType_;
+        DBEnum<Types::PositionFixType> auadrmPositionFixType_;
         DBInt32 auadrmSpare_;
-        DBEnum<Data::Raim> auadrmRaim_;
+        DBEnum<Types::Raim> auadrmRaim_;
         DBInt32 auadrmRadioStatus_;
     public:
         using Base = BaseColumnData;
@@ -471,7 +471,7 @@ namespace Barrelman::Database
         {
             return mmsi_;
         }
-        DBEnum<Data::NavigationalAidType> AidToNavigationReportMessageNavigationalAidType( ) const
+        DBEnum<Types::NavigationalAidType> AidToNavigationReportMessageNavigationalAidType( ) const
         {
             return atnrmNavigationalAidType_;
         }
@@ -479,7 +479,7 @@ namespace Barrelman::Database
         {
             return atnrmName_;
         }
-        DBEnum<Data::PositionAccuracy> AidToNavigationReportMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AidToNavigationReportMessagePositionAccuracy( ) const
         {
             return atnrmPositionAccuracy_;
         }
@@ -507,7 +507,7 @@ namespace Barrelman::Database
         {
             return atnrmDimensionToStarboard_;
         }
-        DBEnum<Data::PositionFixType> AidToNavigationReportMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AidToNavigationReportMessagePositionFixType( ) const
         {
             return atnrmPositionFixType_;
         }
@@ -523,7 +523,7 @@ namespace Barrelman::Database
         {
             return atnrmRegionalReserved_;
         }
-        DBEnum<Data::Raim> AidToNavigationReportMessageRaim( ) const
+        DBEnum<Types::Raim> AidToNavigationReportMessageRaim( ) const
         {
             return atnrmRaim_;
         }
@@ -567,7 +567,7 @@ namespace Barrelman::Database
         {
             return absrmTimestamp_;
         }
-        DBEnum<Data::PositionAccuracy> AisBaseStationReportMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisBaseStationReportMessagePositionAccuracy( ) const
         {
             return absrmPositionAccuracy_;
         }
@@ -579,7 +579,7 @@ namespace Barrelman::Database
         {
             return absrmLatitude_;
         }
-        DBEnum<Data::PositionFixType> AisBaseStationReportMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AisBaseStationReportMessagePositionFixType( ) const
         {
             return absrmPositionFixType_;
         }
@@ -587,7 +587,7 @@ namespace Barrelman::Database
         {
             return absrmSpare_;
         }
-        DBEnum<Data::Raim> AisBaseStationReportMessageRaim( ) const
+        DBEnum<Types::Raim> AisBaseStationReportMessageRaim( ) const
         {
             return absrmRaim_;
         }
@@ -751,7 +751,7 @@ namespace Barrelman::Database
         {
             return aecbprmSpeedOverGround_;
         }
-        DBEnum<Data::PositionAccuracy> AisExtendedClassBCsPositionReportMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisExtendedClassBCsPositionReportMessagePositionAccuracy( ) const
         {
             return aecbprmPositionAccuracy_;
         }
@@ -783,7 +783,7 @@ namespace Barrelman::Database
         {
             return aecbprmName_;
         }
-        DBEnum<Data::ShipType> AisExtendedClassBCsPositionReportMessageShipType( ) const
+        DBEnum<Types::ShipType> AisExtendedClassBCsPositionReportMessageShipType( ) const
         {
             return aecbprmShipType_;
         }
@@ -803,11 +803,11 @@ namespace Barrelman::Database
         {
             return aecbprmDimensionToStarboard_;
         }
-        DBEnum<Data::PositionFixType> AisExtendedClassBCsPositionReportMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AisExtendedClassBCsPositionReportMessagePositionFixType( ) const
         {
             return aecbprmPositionFixType_;
         }
-        DBEnum<Data::Raim> AisExtendedClassBCsPositionReportMessageRaim( ) const
+        DBEnum<Types::Raim> AisExtendedClassBCsPositionReportMessageRaim( ) const
         {
             return aecbprmRaim_;
         }
@@ -827,7 +827,7 @@ namespace Barrelman::Database
         {
             return aimInterrogatedMmsi_;
         }
-        DBEnum<Data::AisMessageType> AisInterrogationMessageFirstMessageType( ) const
+        DBEnum<Types::AisMessageType> AisInterrogationMessageFirstMessageType( ) const
         {
             return aimFirstMessageType_;
         }
@@ -835,7 +835,7 @@ namespace Barrelman::Database
         {
             return aimFirstSlotOffset_;
         }
-        DBEnum<Data::AisMessageType> AisInterrogationMessageSecondMessageType( ) const
+        DBEnum<Types::AisMessageType> AisInterrogationMessageSecondMessageType( ) const
         {
             return aimSecondMessageType_;
         }
@@ -847,7 +847,7 @@ namespace Barrelman::Database
         {
             return aimSecondStationInterrogationMmsi_;
         }
-        DBEnum<Data::AisMessageType> AisInterrogationMessageSecondStationFirstMessageType( ) const
+        DBEnum<Types::AisMessageType> AisInterrogationMessageSecondStationFirstMessageType( ) const
         {
             return aimSecondStationFirstMessageType_;
         }
@@ -855,7 +855,7 @@ namespace Barrelman::Database
         {
             return aimSecondStationFirstSlotOffset_;
         }
-        DBEnum<Data::NavigationStatus> AisPositionReportClassAMessageBaseNavigationStatus( ) const
+        DBEnum<Types::NavigationStatus> AisPositionReportClassAMessageBaseNavigationStatus( ) const
         {
             return aprcabNavigationStatus_;
         }
@@ -867,7 +867,7 @@ namespace Barrelman::Database
         {
             return aprcabSpeedOverGround_;
         }
-        DBEnum<Data::PositionAccuracy> AisPositionReportClassAMessageBasePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisPositionReportClassAMessageBasePositionAccuracy( ) const
         {
             return aprcabPositionAccuracy_;
         }
@@ -891,7 +891,7 @@ namespace Barrelman::Database
         {
             return aprcabTimestamp_;
         }
-        DBEnum<Data::ManeuverIndicator> AisPositionReportClassAMessageBaseManeuverIndicator( ) const
+        DBEnum<Types::ManeuverIndicator> AisPositionReportClassAMessageBaseManeuverIndicator( ) const
         {
             return aprcabManeuverIndicator_;
         }
@@ -899,7 +899,7 @@ namespace Barrelman::Database
         {
             return aprcabSpare_;
         }
-        DBEnum<Data::Raim> AisPositionReportClassAMessageBaseRaim( ) const
+        DBEnum<Types::Raim> AisPositionReportClassAMessageBaseRaim( ) const
         {
             return aprcabRaim_;
         }
@@ -907,15 +907,15 @@ namespace Barrelman::Database
         {
             return aprcabRadioStatus_;
         }
-        DBEnum<Data::PositionAccuracy> AisPositionReportForLongRangeApplicationsMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisPositionReportForLongRangeApplicationsMessagePositionAccuracy( ) const
         {
             return aprflramPositionAccuracy_;
         }
-        DBEnum<Data::Raim> AisPositionReportForLongRangeApplicationsMessageRaim( ) const
+        DBEnum<Types::Raim> AisPositionReportForLongRangeApplicationsMessageRaim( ) const
         {
             return aprflramRaim_;
         }
-        DBEnum<Data::NavigationStatus> AisPositionReportForLongRangeApplicationsMessageNavigationStatus( ) const
+        DBEnum<Types::NavigationStatus> AisPositionReportForLongRangeApplicationsMessageNavigationStatus( ) const
         {
             return aprflramNavigationStatus_;
         }
@@ -935,7 +935,7 @@ namespace Barrelman::Database
         {
             return aprflramCourseOverGround_;
         }
-        DBEnum<Data::GnssPositionStatus> AisPositionReportForLongRangeApplicationsMessageGnssPositionStatus( ) const
+        DBEnum<Types::GnssPositionStatus> AisPositionReportForLongRangeApplicationsMessageGnssPositionStatus( ) const
         {
             return aprflramGnssPositionStatus_;
         }
@@ -987,7 +987,7 @@ namespace Barrelman::Database
         {
             return ascbprmSpeedOverGround_;
         }
-        DBEnum<Data::PositionAccuracy> AisStandardClassBCsPositionReportMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisStandardClassBCsPositionReportMessagePositionAccuracy( ) const
         {
             return ascbprmPositionAccuracy_;
         }
@@ -1039,7 +1039,7 @@ namespace Barrelman::Database
         {
             return ascbprmAssigned_;
         }
-        DBEnum<Data::Raim> AisStandardClassBCsPositionReportMessageRaim( ) const
+        DBEnum<Types::Raim> AisStandardClassBCsPositionReportMessageRaim( ) const
         {
             return ascbprmRaim_;
         }
@@ -1055,7 +1055,7 @@ namespace Barrelman::Database
         {
             return assaprmSpeedOverGround_;
         }
-        DBEnum<Data::PositionAccuracy> AisStandardSarAircraftPositionReportMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisStandardSarAircraftPositionReportMessagePositionAccuracy( ) const
         {
             return assaprmPositionAccuracy_;
         }
@@ -1091,7 +1091,7 @@ namespace Barrelman::Database
         {
             return assaprmAssigned_;
         }
-        DBEnum<Data::Raim> AisStandardSarAircraftPositionReportMessageRaim( ) const
+        DBEnum<Types::Raim> AisStandardSarAircraftPositionReportMessageRaim( ) const
         {
             return assaprmRaim_;
         }
@@ -1115,7 +1115,7 @@ namespace Barrelman::Database
         {
             return asavrdmShipName_;
         }
-        DBEnum<Data::ShipType> AisStaticAndVoyageRelatedDataMessageShipType( ) const
+        DBEnum<Types::ShipType> AisStaticAndVoyageRelatedDataMessageShipType( ) const
         {
             return asavrdmShipType_;
         }
@@ -1135,7 +1135,7 @@ namespace Barrelman::Database
         {
             return asavrdmDimensionToStarboard_;
         }
-        DBEnum<Data::PositionFixType> AisStaticAndVoyageRelatedDataMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AisStaticAndVoyageRelatedDataMessagePositionFixType( ) const
         {
             return asavrdmPositionFixType_;
         }
@@ -1171,7 +1171,7 @@ namespace Barrelman::Database
         {
             return asdrpaSpare_;
         }
-        DBEnum<Data::ShipType> AisStaticDataReportPartBMessageShipType( ) const
+        DBEnum<Types::ShipType> AisStaticDataReportPartBMessageShipType( ) const
         {
             return asdrpbShipType_;
         }
@@ -1211,7 +1211,7 @@ namespace Barrelman::Database
         {
             return asdrpbMothershipMmsi_;
         }
-        DBEnum<Data::PositionFixType> AisStaticDataReportPartBMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AisStaticDataReportPartBMessagePositionFixType( ) const
         {
             return asdrpbPositionFixType_;
         }
@@ -1235,7 +1235,7 @@ namespace Barrelman::Database
         {
             return auadrmDatetime_;
         }
-        DBEnum<Data::PositionAccuracy> AisUtcAndDateResponseMessagePositionAccuracy( ) const
+        DBEnum<Types::PositionAccuracy> AisUtcAndDateResponseMessagePositionAccuracy( ) const
         {
             return auadrmPositionAccuracy_;
         }
@@ -1247,7 +1247,7 @@ namespace Barrelman::Database
         {
             return auadrmLatitude_;
         }
-        DBEnum<Data::PositionFixType> AisUtcAndDateResponseMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AisUtcAndDateResponseMessagePositionFixType( ) const
         {
             return auadrmPositionFixType_;
         }
@@ -1255,7 +1255,7 @@ namespace Barrelman::Database
         {
             return auadrmSpare_;
         }
-        DBEnum<Data::Raim> AisUtcAndDateResponseMessageRaim( ) const
+        DBEnum<Types::Raim> AisUtcAndDateResponseMessageRaim( ) const
         {
             return auadrmRaim_;
         }
@@ -1276,7 +1276,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, mmsi_);
             switch( kind_ )
             {
-                case Data::Kind::AidToNavigationReportMessage:
+                case Types::Kind::AidToNavigationReportMessage:
                 {
                     WriteColumnValue( destination, atnrmNavigationalAidType_);
                     WriteColumnValue( destination, atnrmName_);
@@ -1298,7 +1298,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, atnrmNameExtension_);
                 }
                 break;
-                case Data::Kind::AisAddressedSafetyRelatedMessage:
+                case Types::Kind::AisAddressedSafetyRelatedMessage:
                 {
                     WriteColumnValue( destination, aasrmSequenceNumber_);
                     WriteColumnValue( destination, aasrmDestinationMmsi_);
@@ -1307,7 +1307,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aasrmText_);
                 }
                 break;
-                case Data::Kind::AisBaseStationReportMessage:
+                case Types::Kind::AisBaseStationReportMessage:
                 {
                     WriteColumnValue( destination, absrmTimestamp_);
                     WriteColumnValue( destination, absrmPositionAccuracy_);
@@ -1319,7 +1319,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, absrmRadioStatus_);
                 }
                 break;
-                case Data::Kind::AisBinaryAcknowledgeMessage:
+                case Types::Kind::AisBinaryAcknowledgeMessage:
                 {
                     WriteColumnValue( destination, abacSpare_);
                     WriteColumnValue( destination, abacSequenceNumber1_);
@@ -1332,7 +1332,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, abacMmsi4_);
                 }
                 break;
-                case Data::Kind::AisBinaryAddressedMessage:
+                case Types::Kind::AisBinaryAddressedMessage:
                 {
                     WriteColumnValue( destination, abamSequenceNumber_);
                     WriteColumnValue( destination, abamDestinationMmsi_);
@@ -1343,7 +1343,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, abamData_);
                 }
                 break;
-                case Data::Kind::AisBinaryBroadcastMessage:
+                case Types::Kind::AisBinaryBroadcastMessage:
                 {
                     WriteColumnValue( destination, abbmSpare_);
                     WriteColumnValue( destination, abbmDesignatedAreaCode_);
@@ -1351,7 +1351,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, abbmData_);
                 }
                 break;
-                case Data::Kind::AisDataLinkManagementMessage:
+                case Types::Kind::AisDataLinkManagementMessage:
                 {
                     WriteColumnValue( destination, adlmmSpare_);
                     WriteColumnValue( destination, adlmmOffset1_);
@@ -1372,7 +1372,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, adlmmIncrement4_);
                 }
                 break;
-                case Data::Kind::AisExtendedClassBCsPositionReportMessage:
+                case Types::Kind::AisExtendedClassBCsPositionReportMessage:
                 {
                     WriteColumnValue( destination, aecbprmReserved_);
                     WriteColumnValue( destination, aecbprmSpeedOverGround_);
@@ -1396,7 +1396,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aecbprmSpare_);
                 }
                 break;
-                case Data::Kind::AisInterrogationMessage:
+                case Types::Kind::AisInterrogationMessage:
                 {
                     WriteColumnValue( destination, aimInterrogatedMmsi_);
                     WriteColumnValue( destination, aimFirstMessageType_);
@@ -1408,7 +1408,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aimSecondStationFirstSlotOffset_);
                 }
                 break;
-                case Data::Kind::AisPositionReportClassAAssignedScheduleMessage:
+                case Types::Kind::AisPositionReportClassAAssignedScheduleMessage:
                 {
                     WriteColumnValue( destination, aprcabNavigationStatus_);
                     WriteColumnValue( destination, aprcabRateOfTurn_);
@@ -1425,7 +1425,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aprcabRadioStatus_);
                 }
                 break;
-                case Data::Kind::AisPositionReportClassAMessage:
+                case Types::Kind::AisPositionReportClassAMessage:
                 {
                     WriteColumnValue( destination, aprcabNavigationStatus_);
                     WriteColumnValue( destination, aprcabRateOfTurn_);
@@ -1442,7 +1442,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aprcabRadioStatus_);
                 }
                 break;
-                case Data::Kind::AisPositionReportClassAResponseToInterrogationMessage:
+                case Types::Kind::AisPositionReportClassAResponseToInterrogationMessage:
                 {
                     WriteColumnValue( destination, aprcabNavigationStatus_);
                     WriteColumnValue( destination, aprcabRateOfTurn_);
@@ -1459,7 +1459,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aprcabRadioStatus_);
                 }
                 break;
-                case Data::Kind::AisPositionReportForLongRangeApplicationsMessage:
+                case Types::Kind::AisPositionReportForLongRangeApplicationsMessage:
                 {
                     WriteColumnValue( destination, aprflramPositionAccuracy_);
                     WriteColumnValue( destination, aprflramRaim_);
@@ -1472,7 +1472,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aprflramSpare_);
                 }
                 break;
-                case Data::Kind::AisSafetyRelatedAcknowledgmentMessage:
+                case Types::Kind::AisSafetyRelatedAcknowledgmentMessage:
                 {
                     WriteColumnValue( destination, asramSpare_);
                     WriteColumnValue( destination, asramSequenceNumber1_);
@@ -1485,7 +1485,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, asramMmsi4_);
                 }
                 break;
-                case Data::Kind::AisStandardClassBCsPositionReportMessage:
+                case Types::Kind::AisStandardClassBCsPositionReportMessage:
                 {
                     WriteColumnValue( destination, ascbprmReserved_);
                     WriteColumnValue( destination, ascbprmSpeedOverGround_);
@@ -1506,7 +1506,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, ascbprmRadioStatus_);
                 }
                 break;
-                case Data::Kind::AisStandardSarAircraftPositionReportMessage:
+                case Types::Kind::AisStandardSarAircraftPositionReportMessage:
                 {
                     WriteColumnValue( destination, assaprmAltitude_);
                     WriteColumnValue( destination, assaprmSpeedOverGround_);
@@ -1523,7 +1523,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, assaprmRadioStatus_);
                 }
                 break;
-                case Data::Kind::AisStaticAndVoyageRelatedDataMessage:
+                case Types::Kind::AisStaticAndVoyageRelatedDataMessage:
                 {
                     WriteColumnValue( destination, asavrdmAisVersion_);
                     WriteColumnValue( destination, asavrdmImoNumber_);
@@ -1542,19 +1542,19 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, asavrdmSpare_);
                 }
                 break;
-                case Data::Kind::AisStaticDataReportMessage:
+                case Types::Kind::AisStaticDataReportMessage:
                 {
                     WriteColumnValue( destination, asdrmPartNumber_);
                 }
                 break;
-                case Data::Kind::AisStaticDataReportPartAMessage:
+                case Types::Kind::AisStaticDataReportPartAMessage:
                 {
                     WriteColumnValue( destination, asdrmPartNumber_);
                     WriteColumnValue( destination, asdrpaShipName_);
                     WriteColumnValue( destination, asdrpaSpare_);
                 }
                 break;
-                case Data::Kind::AisStaticDataReportPartBMessage:
+                case Types::Kind::AisStaticDataReportPartBMessage:
                 {
                     WriteColumnValue( destination, asdrmPartNumber_);
                     WriteColumnValue( destination, asdrpbShipType_);
@@ -1571,14 +1571,14 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, asdrpbSpare_);
                 }
                 break;
-                case Data::Kind::AisUtcAndDateInquiryMessage:
+                case Types::Kind::AisUtcAndDateInquiryMessage:
                 {
                     WriteColumnValue( destination, auadimSpare1_);
                     WriteColumnValue( destination, auadimDestinationMmsi_);
                     WriteColumnValue( destination, auadimSpare2_);
                 }
                 break;
-                case Data::Kind::AisUtcAndDateResponseMessage:
+                case Types::Kind::AisUtcAndDateResponseMessage:
                 {
                     WriteColumnValue( destination, auadrmDatetime_);
                     WriteColumnValue( destination, auadrmPositionAccuracy_);
@@ -1599,25 +1599,25 @@ namespace Barrelman::Database
     class ComplexAisPositionReportClassAMessageBaseColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
         Guid mmsi_;
-        Data::NavigationStatus navigationStatus_ = Data::NavigationStatus::UnderWayUsingEngine;
+        Types::NavigationStatus navigationStatus_ = Types::NavigationStatus::UnderWayUsingEngine;
         DBInt32 rateOfTurn_;
         double speedOverGround_ = 0.0;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
         DBInt32 trueHeading_;
         Int32 timestamp_ = 0;
-        Data::ManeuverIndicator maneuverIndicator_ = Data::ManeuverIndicator::NotAvailable;
+        Types::ManeuverIndicator maneuverIndicator_ = Types::ManeuverIndicator::NotAvailable;
         Int32 spare_ = 0;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         Int32 radioStatus_ = 0;
     public:
         using Base = BaseColumnData;
@@ -1685,7 +1685,7 @@ namespace Barrelman::Database
         {
             return mmsi_;
         }
-        Data::NavigationStatus NavigationStatus( ) const
+        Types::NavigationStatus NavigationStatus( ) const
         {
             return navigationStatus_;
         }
@@ -1697,7 +1697,7 @@ namespace Barrelman::Database
         {
             return speedOverGround_;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
@@ -1721,7 +1721,7 @@ namespace Barrelman::Database
         {
             return timestamp_;
         }
-        Data::ManeuverIndicator ManeuverIndicator( ) const
+        Types::ManeuverIndicator ManeuverIndicator( ) const
         {
             return maneuverIndicator_;
         }
@@ -1729,7 +1729,7 @@ namespace Barrelman::Database
         {
             return spare_;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
@@ -1769,7 +1769,7 @@ namespace Barrelman::Database
     class ComplexAisStaticDataReportMessageColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime receivedTimestamp_;
@@ -1779,7 +1779,7 @@ namespace Barrelman::Database
         Int32 partNumber_ = 0;
         DBGuid asdrpaShipName_;
         DBInt32 asdrpaSpare_;
-        DBEnum<Data::ShipType> asdrpbShipType_;
+        DBEnum<Types::ShipType> asdrpbShipType_;
         FixedDBWideString<127> asdrpbVendorId_;
         DBInt32 asdrpbUnitModelCode_;
         DBInt32 asdrpbSerialNumber_;
@@ -1789,7 +1789,7 @@ namespace Barrelman::Database
         DBInt32 asdrpbDimensionToPort_;
         DBInt32 asdrpbDimensionToStarboard_;
         DBGuid asdrpbMothershipMmsi_;
-        DBEnum<Data::PositionFixType> asdrpbPositionFixType_;
+        DBEnum<Types::PositionFixType> asdrpbPositionFixType_;
         DBInt32 asdrpbSpare_;
     public:
         using Base = BaseColumnData;
@@ -1871,7 +1871,7 @@ namespace Barrelman::Database
         {
             return asdrpaSpare_;
         }
-        DBEnum<Data::ShipType> AisStaticDataReportPartBMessageShipType( ) const
+        DBEnum<Types::ShipType> AisStaticDataReportPartBMessageShipType( ) const
         {
             return asdrpbShipType_;
         }
@@ -1911,7 +1911,7 @@ namespace Barrelman::Database
         {
             return asdrpbMothershipMmsi_;
         }
-        DBEnum<Data::PositionFixType> AisStaticDataReportPartBMessagePositionFixType( ) const
+        DBEnum<Types::PositionFixType> AisStaticDataReportPartBMessagePositionFixType( ) const
         {
             return asdrpbPositionFixType_;
         }
@@ -1933,13 +1933,13 @@ namespace Barrelman::Database
             WriteColumnValue( destination, partNumber_);
             switch( kind_ )
             {
-                case Data::Kind::AisStaticDataReportPartAMessage:
+                case Types::Kind::AisStaticDataReportPartAMessage:
                 {
                     WriteColumnValue( destination, asdrpaShipName_);
                     WriteColumnValue( destination, asdrpaSpare_);
                 }
                 break;
-                case Data::Kind::AisStaticDataReportPartBMessage:
+                case Types::Kind::AisStaticDataReportPartBMessage:
                 {
                     WriteColumnValue( destination, asdrpbShipType_);
                     WriteColumnValue( destination, asdrpbVendorId_);
@@ -1964,22 +1964,22 @@ namespace Barrelman::Database
     class ComplexCameraCommandColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
-        DBEnum<Data::CameraPanTiltMode> ccamPositionPanTiltMode_;
+        DBEnum<Types::CameraPanTiltMode> ccamPositionPanTiltMode_;
         DBDouble ccamPanAngle_;
         DBDouble ccamTiltAngle_;
-        DBEnum<Data::CameraFocalLengthMode> ccamPositionFocalLengthMode_;
+        DBEnum<Types::CameraFocalLengthMode> ccamPositionFocalLengthMode_;
         DBDouble ccamFocalLength_;
-        DBEnum<Data::CameraPanTiltMode> ccamSpeedPanTiltMode_;
+        DBEnum<Types::CameraPanTiltMode> ccamSpeedPanTiltMode_;
         DBDouble ccamPanSpeed_;
         DBDouble ccamTiltSpeed_;
-        DBEnum<Data::CameraFocalLengthMode> ccamSpeedFocalLengthMode_;
+        DBEnum<Types::CameraFocalLengthMode> ccamSpeedFocalLengthMode_;
         DBDouble ccamZoomSpeed_;
         DBDouble ccaptzX_;
         DBDouble ccaptzY_;
@@ -2004,7 +2004,7 @@ namespace Barrelman::Database
         DBBoolean ccsafEnabled_;
         DBBoolean ccsbawEnabled_;
         DBGuid ccsfTrackId_;
-        DBEnum<Data::CameraFollowReason> ccsfReason_;
+        DBEnum<Types::CameraFollowReason> ccsfReason_;
         DBBoolean ccsirlEnabled_;
         DBBoolean cwaEnabled_;
         DBBoolean cwiEnabled_;
@@ -2090,7 +2090,7 @@ namespace Barrelman::Database
         {
             return timestamp_;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
@@ -2102,7 +2102,7 @@ namespace Barrelman::Database
         {
             return reply_;
         }
-        DBEnum<Data::CameraPanTiltMode> CameraCommandAbsoluteMovePositionPanTiltMode( ) const
+        DBEnum<Types::CameraPanTiltMode> CameraCommandAbsoluteMovePositionPanTiltMode( ) const
         {
             return ccamPositionPanTiltMode_;
         }
@@ -2114,7 +2114,7 @@ namespace Barrelman::Database
         {
             return ccamTiltAngle_;
         }
-        DBEnum<Data::CameraFocalLengthMode> CameraCommandAbsoluteMovePositionFocalLengthMode( ) const
+        DBEnum<Types::CameraFocalLengthMode> CameraCommandAbsoluteMovePositionFocalLengthMode( ) const
         {
             return ccamPositionFocalLengthMode_;
         }
@@ -2122,7 +2122,7 @@ namespace Barrelman::Database
         {
             return ccamFocalLength_;
         }
-        DBEnum<Data::CameraPanTiltMode> CameraCommandAbsoluteMoveSpeedPanTiltMode( ) const
+        DBEnum<Types::CameraPanTiltMode> CameraCommandAbsoluteMoveSpeedPanTiltMode( ) const
         {
             return ccamSpeedPanTiltMode_;
         }
@@ -2134,7 +2134,7 @@ namespace Barrelman::Database
         {
             return ccamTiltSpeed_;
         }
-        DBEnum<Data::CameraFocalLengthMode> CameraCommandAbsoluteMoveSpeedFocalLengthMode( ) const
+        DBEnum<Types::CameraFocalLengthMode> CameraCommandAbsoluteMoveSpeedFocalLengthMode( ) const
         {
             return ccamSpeedFocalLengthMode_;
         }
@@ -2234,7 +2234,7 @@ namespace Barrelman::Database
         {
             return ccsfTrackId_;
         }
-        DBEnum<Data::CameraFollowReason> CameraCommandSetFollowedReason( ) const
+        DBEnum<Types::CameraFollowReason> CameraCommandSetFollowedReason( ) const
         {
             return ccsfReason_;
         }
@@ -2271,7 +2271,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, reply_);
             switch( kind_ )
             {
-                case Data::Kind::CameraCommandAbsoluteMove:
+                case Types::Kind::CameraCommandAbsoluteMove:
                 {
                     WriteColumnValue( destination, ccamPositionPanTiltMode_);
                     WriteColumnValue( destination, ccamPanAngle_);
@@ -2285,14 +2285,14 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, ccamZoomSpeed_);
                 }
                 break;
-                case Data::Kind::CameraCommandAdjustPanTiltZoom:
+                case Types::Kind::CameraCommandAdjustPanTiltZoom:
                 {
                     WriteColumnValue( destination, ccaptzX_);
                     WriteColumnValue( destination, ccaptzY_);
                     WriteColumnValue( destination, ccaptzZ_);
                 }
                 break;
-                case Data::Kind::CameraCommandContinuousMove:
+                case Types::Kind::CameraCommandContinuousMove:
                 {
                     WriteColumnValue( destination, cccmNormalized_);
                     WriteColumnValue( destination, cccmPanVelocity_);
@@ -2301,7 +2301,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, cccmDuration_);
                 }
                 break;
-                case Data::Kind::CameraCommandGeoMove:
+                case Types::Kind::CameraCommandGeoMove:
                 {
                     WriteColumnValue( destination, ccgmLatitude_);
                     WriteColumnValue( destination, ccgmLongitude_);
@@ -2310,7 +2310,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, ccgmViewportHeight_);
                 }
                 break;
-                case Data::Kind::CameraCommandRelativeMove:
+                case Types::Kind::CameraCommandRelativeMove:
                 {
                     WriteColumnValue( destination, ccrmNormalized_);
                     WriteColumnValue( destination, ccrmPanAngle_);
@@ -2321,38 +2321,38 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, ccrmZoomSpeed_);
                 }
                 break;
-                case Data::Kind::CameraCommandSetAutoFocus:
+                case Types::Kind::CameraCommandSetAutoFocus:
                 {
                     WriteColumnValue( destination, ccsafEnabled_);
                 }
                 break;
-                case Data::Kind::CameraCommandSetBlackAndWhite:
+                case Types::Kind::CameraCommandSetBlackAndWhite:
                 {
                     WriteColumnValue( destination, ccsbawEnabled_);
                 }
                 break;
-                case Data::Kind::CameraCommandSetFollowed:
+                case Types::Kind::CameraCommandSetFollowed:
                 {
                     WriteColumnValue( destination, ccsfTrackId_);
                     WriteColumnValue( destination, ccsfReason_);
                 }
                 break;
-                case Data::Kind::CameraCommandSetInfraRedLamp:
+                case Types::Kind::CameraCommandSetInfraRedLamp:
                 {
                     WriteColumnValue( destination, ccsirlEnabled_);
                 }
                 break;
-                case Data::Kind::CameraCommandSetWasher:
+                case Types::Kind::CameraCommandSetWasher:
                 {
                     WriteColumnValue( destination, cwaEnabled_);
                 }
                 break;
-                case Data::Kind::CameraCommandSetWiper:
+                case Types::Kind::CameraCommandSetWiper:
                 {
                     WriteColumnValue( destination, cwiEnabled_);
                 }
                 break;
-                case Data::Kind::CameraCommandStop:
+                case Types::Kind::CameraCommandStop:
                 {
                     WriteColumnValue( destination, ccsPanTilt_);
                     WriteColumnValue( destination, ccsZoom_);
@@ -2367,7 +2367,7 @@ namespace Barrelman::Database
     class ComplexCatalogElementColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid catalog_;
         FixedDBWideString<127> name_;
@@ -2425,7 +2425,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, name_);
             switch( kind_ )
             {
-                case Data::Kind::Element:
+                case Types::Kind::Element:
                 {
                     WriteColumnValue( destination, eElementType_);
                 }
@@ -2439,7 +2439,7 @@ namespace Barrelman::Database
     class ComplexIdentityColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> cIdentifier_;
         DBInt64 imonIdentifier_;
@@ -2501,22 +2501,22 @@ namespace Barrelman::Database
             WriteColumnValue( destination, rowVersion_);
             switch( kind_ )
             {
-                case Data::Kind::Callsign:
+                case Types::Kind::Callsign:
                 {
                     WriteColumnValue( destination, cIdentifier_);
                 }
                 break;
-                case Data::Kind::InternationalMaritimeOrganizationNumber:
+                case Types::Kind::InternationalMaritimeOrganizationNumber:
                 {
                     WriteColumnValue( destination, imonIdentifier_);
                 }
                 break;
-                case Data::Kind::MaritimeMobileServiceIdentity:
+                case Types::Kind::MaritimeMobileServiceIdentity:
                 {
                     WriteColumnValue( destination, mmsiIdentifier_);
                 }
                 break;
-                case Data::Kind::Name:
+                case Types::Kind::Name:
                 {
                     WriteColumnValue( destination, nText_);
                 }
@@ -2530,7 +2530,7 @@ namespace Barrelman::Database
     class ComplexItemColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> bsName_;
         DBGuid bsType_;
@@ -2595,7 +2595,7 @@ namespace Barrelman::Database
         DBGuid aType_;
         FixedDBWideString<127> aatnName_;
         DBGuid aatnMMSI_;
-        DBEnum<Data::NavigationalAidType> aatnNavigationalAidType_;
+        DBEnum<Types::NavigationalAidType> aatnNavigationalAidType_;
         DBGuid aatnPosition_;
         DBBoolean aatnIsVirtual_;
         DBInt32 aatnToBow_;
@@ -2975,7 +2975,7 @@ namespace Barrelman::Database
         {
             return aatnMMSI_;
         }
-        DBEnum<Data::NavigationalAidType> AisAidToNavigationNavigationalAidType( ) const
+        DBEnum<Types::NavigationalAidType> AisAidToNavigationNavigationalAidType( ) const
         {
             return aatnNavigationalAidType_;
         }
@@ -3055,13 +3055,13 @@ namespace Barrelman::Database
             WriteColumnValue( destination, rowVersion_);
             switch( kind_ )
             {
-                case Data::Kind::BaseStation:
+                case Types::Kind::BaseStation:
                 {
                     WriteColumnValue( destination, bsName_);
                     WriteColumnValue( destination, bsType_);
                 }
                 break;
-                case Data::Kind::CameraDevice:
+                case Types::Kind::CameraDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3069,7 +3069,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::GNSSDevice:
+                case Types::Kind::GNSSDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3080,7 +3080,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, gAltitudeTimeseries_);
                 }
                 break;
-                case Data::Kind::GyroDevice:
+                case Types::Kind::GyroDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3096,7 +3096,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, gdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::LineInputDevice:
+                case Types::Kind::LineInputDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3104,7 +3104,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::OilSpillDetectorDevice:
+                case Types::Kind::OilSpillDetectorDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3112,7 +3112,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::RadioDevice:
+                case Types::Kind::RadioDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3120,7 +3120,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::RadomeDevice:
+                case Types::Kind::RadomeDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3133,7 +3133,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, rdoStatusTimeseries_);
                 }
                 break;
-                case Data::Kind::AisDevice:
+                case Types::Kind::AisDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3141,7 +3141,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, dEnabledTimeseries_);
                 }
                 break;
-                case Data::Kind::RadarDevice:
+                case Types::Kind::RadarDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3172,7 +3172,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, rdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::WeatherStationDevice:
+                case Types::Kind::WeatherStationDevice:
                 {
                     WriteColumnValue( destination, dHost_);
                     WriteColumnValue( destination, dName_);
@@ -3189,7 +3189,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, wsdGyro_);
                 }
                 break;
-                case Data::Kind::Facility:
+                case Types::Kind::Facility:
                 {
                     WriteColumnValue( destination, fName_);
                     WriteColumnValue( destination, fType_);
@@ -3198,13 +3198,13 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, fAltitude_);
                 }
                 break;
-                case Data::Kind::Aircraft:
+                case Types::Kind::Aircraft:
                 {
                     WriteColumnValue( destination, aName_);
                     WriteColumnValue( destination, aType_);
                 }
                 break;
-                case Data::Kind::AisAidToNavigation:
+                case Types::Kind::AisAidToNavigation:
                 {
                     WriteColumnValue( destination, aatnName_);
                     WriteColumnValue( destination, aatnMMSI_);
@@ -3218,13 +3218,13 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aatnOffPositionTimeseries_);
                 }
                 break;
-                case Data::Kind::Vehicle:
+                case Types::Kind::Vehicle:
                 {
                     WriteColumnValue( destination, vName_);
                     WriteColumnValue( destination, vType_);
                 }
                 break;
-                case Data::Kind::Vessel:
+                case Types::Kind::Vessel:
                 {
                     WriteColumnValue( destination, vslName_);
                     WriteColumnValue( destination, vslType_);
@@ -3245,7 +3245,7 @@ namespace Barrelman::Database
     class ComplexDeviceColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid host_;
         FixedDBWideString<127> name_;
@@ -3601,14 +3601,14 @@ namespace Barrelman::Database
             WriteColumnValue( destination, enabledTimeseries_);
             switch( kind_ )
             {
-                case Data::Kind::GNSSDevice:
+                case Types::Kind::GNSSDevice:
                 {
                     WriteColumnValue( destination, gLatitudeTimeseries_);
                     WriteColumnValue( destination, gLongitudeTimeseries_);
                     WriteColumnValue( destination, gAltitudeTimeseries_);
                 }
                 break;
-                case Data::Kind::GyroDevice:
+                case Types::Kind::GyroDevice:
                 {
                     WriteColumnValue( destination, gdHeadingTrueNorthTimeseries_);
                     WriteColumnValue( destination, gdHeadingMagneticNorthTimeseries_);
@@ -3620,7 +3620,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, gdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::RadomeDevice:
+                case Types::Kind::RadomeDevice:
                 {
                     WriteColumnValue( destination, rdoRadar_);
                     WriteColumnValue( destination, rdoPressureTimeseries_);
@@ -3629,7 +3629,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, rdoStatusTimeseries_);
                 }
                 break;
-                case Data::Kind::RadarDevice:
+                case Types::Kind::RadarDevice:
                 {
                     WriteColumnValue( destination, rdSaveSettingsTimeseries_);
                     WriteColumnValue( destination, rdPowerOnTimeseries_);
@@ -3656,7 +3656,7 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, rdGNSSDevice_);
                 }
                 break;
-                case Data::Kind::WeatherStationDevice:
+                case Types::Kind::WeatherStationDevice:
                 {
                     WriteColumnValue( destination, wsdBarometricPressureTimeseries_);
                     WriteColumnValue( destination, wsdAirTemperatureTimeseries_);
@@ -3678,7 +3678,7 @@ namespace Barrelman::Database
     class ComplexTrackerDeviceColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid host_;
         FixedDBWideString<127> name_;
@@ -3884,7 +3884,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, enabledTimeseries_);
             switch( kind_ )
             {
-                case Data::Kind::RadarDevice:
+                case Types::Kind::RadarDevice:
                 {
                     WriteColumnValue( destination, rdSaveSettingsTimeseries_);
                     WriteColumnValue( destination, rdPowerOnTimeseries_);
@@ -3920,13 +3920,13 @@ namespace Barrelman::Database
     class ComplexTrackableItemColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> aName_;
         DBGuid aType_;
         FixedDBWideString<127> aatnName_;
         DBGuid aatnMMSI_;
-        DBEnum<Data::NavigationalAidType> aatnNavigationalAidType_;
+        DBEnum<Types::NavigationalAidType> aatnNavigationalAidType_;
         DBGuid aatnPosition_;
         DBBoolean aatnIsVirtual_;
         DBInt32 aatnToBow_;
@@ -4010,7 +4010,7 @@ namespace Barrelman::Database
         {
             return aatnMMSI_;
         }
-        DBEnum<Data::NavigationalAidType> AisAidToNavigationNavigationalAidType( ) const
+        DBEnum<Types::NavigationalAidType> AisAidToNavigationNavigationalAidType( ) const
         {
             return aatnNavigationalAidType_;
         }
@@ -4090,13 +4090,13 @@ namespace Barrelman::Database
             WriteColumnValue( destination, rowVersion_);
             switch( kind_ )
             {
-                case Data::Kind::Aircraft:
+                case Types::Kind::Aircraft:
                 {
                     WriteColumnValue( destination, aName_);
                     WriteColumnValue( destination, aType_);
                 }
                 break;
-                case Data::Kind::AisAidToNavigation:
+                case Types::Kind::AisAidToNavigation:
                 {
                     WriteColumnValue( destination, aatnName_);
                     WriteColumnValue( destination, aatnMMSI_);
@@ -4110,13 +4110,13 @@ namespace Barrelman::Database
                     WriteColumnValue( destination, aatnOffPositionTimeseries_);
                 }
                 break;
-                case Data::Kind::Vehicle:
+                case Types::Kind::Vehicle:
                 {
                     WriteColumnValue( destination, vName_);
                     WriteColumnValue( destination, vType_);
                 }
                 break;
-                case Data::Kind::Vessel:
+                case Types::Kind::Vessel:
                 {
                     WriteColumnValue( destination, vslName_);
                     WriteColumnValue( destination, vslType_);
@@ -4137,7 +4137,7 @@ namespace Barrelman::Database
     class ComplexNamespaceElementColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid namespace_;
         FixedDBWideString<127> name_;
@@ -4204,7 +4204,7 @@ namespace Barrelman::Database
     class ComplexPropertyColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid element_;
         Guid definition_;
@@ -4461,172 +4461,172 @@ namespace Barrelman::Database
             WriteColumnValue( destination, definition_);
             switch( kind_ )
             {
-                case Data::Kind::BinaryProperty:
+                case Types::Kind::BinaryProperty:
                 {
                     WriteColumnValue( destination, bpValue_);
                 }
                 break;
-                case Data::Kind::BooleanProperty:
+                case Types::Kind::BooleanProperty:
                 {
                     WriteColumnValue( destination, bopValue_);
                 }
                 break;
-                case Data::Kind::ByteProperty:
+                case Types::Kind::ByteProperty:
                 {
                     WriteColumnValue( destination, bypValue_);
                 }
                 break;
-                case Data::Kind::DateTimeProperty:
+                case Types::Kind::DateTimeProperty:
                 {
                     WriteColumnValue( destination, dtpValue_);
                 }
                 break;
-                case Data::Kind::DoubleProperty:
+                case Types::Kind::DoubleProperty:
                 {
                     WriteColumnValue( destination, dpValue_);
                 }
                 break;
-                case Data::Kind::GuidProperty:
+                case Types::Kind::GuidProperty:
                 {
                     WriteColumnValue( destination, gpValue_);
                 }
                 break;
-                case Data::Kind::Int16Property:
+                case Types::Kind::Int16Property:
                 {
                     WriteColumnValue( destination, i16pValue_);
                 }
                 break;
-                case Data::Kind::Int32Property:
+                case Types::Kind::Int32Property:
                 {
                     WriteColumnValue( destination, i32pValue_);
                 }
                 break;
-                case Data::Kind::Int64Property:
+                case Types::Kind::Int64Property:
                 {
                     WriteColumnValue( destination, i64pValue_);
                 }
                 break;
-                case Data::Kind::ReferenceProperty:
+                case Types::Kind::ReferenceProperty:
                 {
                     WriteColumnValue( destination, rpValue_);
                 }
                 break;
-                case Data::Kind::SByteProperty:
+                case Types::Kind::SByteProperty:
                 {
                     WriteColumnValue( destination, spValue_);
                 }
                 break;
-                case Data::Kind::SingleProperty:
+                case Types::Kind::SingleProperty:
                 {
                     WriteColumnValue( destination, sipValue_);
                 }
                 break;
-                case Data::Kind::StringProperty:
+                case Types::Kind::StringProperty:
                 {
                     WriteColumnValue( destination, stpValue_);
                 }
                 break;
-                case Data::Kind::BinaryTimeseriesProperty:
+                case Types::Kind::BinaryTimeseriesProperty:
                 {
                     WriteColumnValue( destination, btpTimeseries_);
                 }
                 break;
-                case Data::Kind::BooleanTimeseriesProperty:
+                case Types::Kind::BooleanTimeseriesProperty:
                 {
                     WriteColumnValue( destination, botpTimeseries_);
                 }
                 break;
-                case Data::Kind::ByteTimeseriesProperty:
+                case Types::Kind::ByteTimeseriesProperty:
                 {
                     WriteColumnValue( destination, bytpTimeseries_);
                 }
                 break;
-                case Data::Kind::DateTimeTimeseriesProperty:
+                case Types::Kind::DateTimeTimeseriesProperty:
                 {
                     WriteColumnValue( destination, dttpTimeseries_);
                 }
                 break;
-                case Data::Kind::DoubleTimeseriesProperty:
+                case Types::Kind::DoubleTimeseriesProperty:
                 {
                     WriteColumnValue( destination, dotpTimeseries_);
                 }
                 break;
-                case Data::Kind::GuidTimeseriesProperty:
+                case Types::Kind::GuidTimeseriesProperty:
                 {
                     WriteColumnValue( destination, gtpTimeseries_);
                 }
                 break;
-                case Data::Kind::Int16TimeseriesProperty:
+                case Types::Kind::Int16TimeseriesProperty:
                 {
                     WriteColumnValue( destination, i16tpTimeseries_);
                 }
                 break;
-                case Data::Kind::Int32TimeseriesProperty:
+                case Types::Kind::Int32TimeseriesProperty:
                 {
                     WriteColumnValue( destination, i32tpTimeseries_);
                 }
                 break;
-                case Data::Kind::Int64TimeseriesProperty:
+                case Types::Kind::Int64TimeseriesProperty:
                 {
                     WriteColumnValue( destination, i64tpTimeseries_);
                 }
                 break;
-                case Data::Kind::ReferenceTimeseriesProperty:
+                case Types::Kind::ReferenceTimeseriesProperty:
                 {
                     WriteColumnValue( destination, rtpTimeseries_);
                 }
                 break;
-                case Data::Kind::SByteTimeseriesProperty:
+                case Types::Kind::SByteTimeseriesProperty:
                 {
                     WriteColumnValue( destination, sbtpTimeseries_);
                 }
                 break;
-                case Data::Kind::SingleTimeseriesProperty:
+                case Types::Kind::SingleTimeseriesProperty:
                 {
                     WriteColumnValue( destination, sitpTimeseries_);
                 }
                 break;
-                case Data::Kind::StringTimeseriesProperty:
+                case Types::Kind::StringTimeseriesProperty:
                 {
                     WriteColumnValue( destination, sttpTimeseries_);
                 }
                 break;
-                case Data::Kind::TimeSpanTimeseriesProperty:
+                case Types::Kind::TimeSpanTimeseriesProperty:
                 {
                     WriteColumnValue( destination, tstpTimeseries_);
                 }
                 break;
-                case Data::Kind::UInt16TimeseriesProperty:
+                case Types::Kind::UInt16TimeseriesProperty:
                 {
                     WriteColumnValue( destination, u16tpTimeseries_);
                 }
                 break;
-                case Data::Kind::UInt32TimeseriesProperty:
+                case Types::Kind::UInt32TimeseriesProperty:
                 {
                     WriteColumnValue( destination, u32tpTimeseries_);
                 }
                 break;
-                case Data::Kind::UInt64TimeseriesProperty:
+                case Types::Kind::UInt64TimeseriesProperty:
                 {
                     WriteColumnValue( destination, u64tpTimeseries_);
                 }
                 break;
-                case Data::Kind::TimeSpanProperty:
+                case Types::Kind::TimeSpanProperty:
                 {
                     WriteColumnValue( destination, tspValue_);
                 }
                 break;
-                case Data::Kind::UInt16Property:
+                case Types::Kind::UInt16Property:
                 {
                     WriteColumnValue( destination, u16pValue_);
                 }
                 break;
-                case Data::Kind::UInt32Property:
+                case Types::Kind::UInt32Property:
                 {
                     WriteColumnValue( destination, u32pValue_);
                 }
                 break;
-                case Data::Kind::UInt64Property:
+                case Types::Kind::UInt64Property:
                 {
                     WriteColumnValue( destination, u64pValue_);
                 }
@@ -4640,7 +4640,7 @@ namespace Barrelman::Database
     class ComplexTimeseriesPropertyColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid element_;
         Guid definition_;
@@ -4794,87 +4794,87 @@ namespace Barrelman::Database
             WriteColumnValue( destination, definition_);
             switch( kind_ )
             {
-                case Data::Kind::BinaryTimeseriesProperty:
+                case Types::Kind::BinaryTimeseriesProperty:
                 {
                     WriteColumnValue( destination, btpTimeseries_);
                 }
                 break;
-                case Data::Kind::BooleanTimeseriesProperty:
+                case Types::Kind::BooleanTimeseriesProperty:
                 {
                     WriteColumnValue( destination, botpTimeseries_);
                 }
                 break;
-                case Data::Kind::ByteTimeseriesProperty:
+                case Types::Kind::ByteTimeseriesProperty:
                 {
                     WriteColumnValue( destination, bytpTimeseries_);
                 }
                 break;
-                case Data::Kind::DateTimeTimeseriesProperty:
+                case Types::Kind::DateTimeTimeseriesProperty:
                 {
                     WriteColumnValue( destination, dttpTimeseries_);
                 }
                 break;
-                case Data::Kind::DoubleTimeseriesProperty:
+                case Types::Kind::DoubleTimeseriesProperty:
                 {
                     WriteColumnValue( destination, dotpTimeseries_);
                 }
                 break;
-                case Data::Kind::GuidTimeseriesProperty:
+                case Types::Kind::GuidTimeseriesProperty:
                 {
                     WriteColumnValue( destination, gtpTimeseries_);
                 }
                 break;
-                case Data::Kind::Int16TimeseriesProperty:
+                case Types::Kind::Int16TimeseriesProperty:
                 {
                     WriteColumnValue( destination, i16tpTimeseries_);
                 }
                 break;
-                case Data::Kind::Int32TimeseriesProperty:
+                case Types::Kind::Int32TimeseriesProperty:
                 {
                     WriteColumnValue( destination, i32tpTimeseries_);
                 }
                 break;
-                case Data::Kind::Int64TimeseriesProperty:
+                case Types::Kind::Int64TimeseriesProperty:
                 {
                     WriteColumnValue( destination, i64tpTimeseries_);
                 }
                 break;
-                case Data::Kind::ReferenceTimeseriesProperty:
+                case Types::Kind::ReferenceTimeseriesProperty:
                 {
                     WriteColumnValue( destination, rtpTimeseries_);
                 }
                 break;
-                case Data::Kind::SByteTimeseriesProperty:
+                case Types::Kind::SByteTimeseriesProperty:
                 {
                     WriteColumnValue( destination, sbtpTimeseries_);
                 }
                 break;
-                case Data::Kind::SingleTimeseriesProperty:
+                case Types::Kind::SingleTimeseriesProperty:
                 {
                     WriteColumnValue( destination, sitpTimeseries_);
                 }
                 break;
-                case Data::Kind::StringTimeseriesProperty:
+                case Types::Kind::StringTimeseriesProperty:
                 {
                     WriteColumnValue( destination, sttpTimeseries_);
                 }
                 break;
-                case Data::Kind::TimeSpanTimeseriesProperty:
+                case Types::Kind::TimeSpanTimeseriesProperty:
                 {
                     WriteColumnValue( destination, tstpTimeseries_);
                 }
                 break;
-                case Data::Kind::UInt16TimeseriesProperty:
+                case Types::Kind::UInt16TimeseriesProperty:
                 {
                     WriteColumnValue( destination, u16tpTimeseries_);
                 }
                 break;
-                case Data::Kind::UInt32TimeseriesProperty:
+                case Types::Kind::UInt32TimeseriesProperty:
                 {
                     WriteColumnValue( destination, u32tpTimeseries_);
                 }
                 break;
-                case Data::Kind::UInt64TimeseriesProperty:
+                case Types::Kind::UInt64TimeseriesProperty:
                 {
                     WriteColumnValue( destination, u64tpTimeseries_);
                 }
@@ -4888,7 +4888,7 @@ namespace Barrelman::Database
     class ComplexPropertyDefinitionColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid elementType_;
         FixedDBWideString<127> name_;
@@ -5363,193 +5363,193 @@ namespace Barrelman::Database
             WriteColumnValue( destination, description_);
             switch( kind_ )
             {
-                case Data::Kind::BinaryPropertyDefinition:
+                case Types::Kind::BinaryPropertyDefinition:
                 {
                     WriteColumnValue( destination, bpdDefaultValue_);
                 }
                 break;
-                case Data::Kind::BooleanPropertyDefinition:
+                case Types::Kind::BooleanPropertyDefinition:
                 {
                     WriteColumnValue( destination, bopdDefaultValue_);
                 }
                 break;
-                case Data::Kind::BytePropertyDefinition:
+                case Types::Kind::BytePropertyDefinition:
                 {
                     WriteColumnValue( destination, bypdDefaultValue_);
                     WriteColumnValue( destination, bypdMinValue_);
                     WriteColumnValue( destination, bypdMaxValue_);
                 }
                 break;
-                case Data::Kind::DateTimePropertyDefinition:
+                case Types::Kind::DateTimePropertyDefinition:
                 {
                     WriteColumnValue( destination, dtpdDefaultValue_);
                     WriteColumnValue( destination, dtpdMinValue_);
                     WriteColumnValue( destination, dtpdMaxValue_);
                 }
                 break;
-                case Data::Kind::DoublePropertyDefinition:
+                case Types::Kind::DoublePropertyDefinition:
                 {
                     WriteColumnValue( destination, dpdDefaultValue_);
                     WriteColumnValue( destination, dpdMinValue_);
                     WriteColumnValue( destination, dpdMaxValue_);
                 }
                 break;
-                case Data::Kind::GuidPropertyDefinition:
+                case Types::Kind::GuidPropertyDefinition:
                 {
                     WriteColumnValue( destination, gpdDefaultValue_);
                 }
                 break;
-                case Data::Kind::Int16PropertyDefinition:
+                case Types::Kind::Int16PropertyDefinition:
                 {
                     WriteColumnValue( destination, i16pdDefaultValue_);
                     WriteColumnValue( destination, i16pdMinValue_);
                     WriteColumnValue( destination, i16pdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int32PropertyDefinition:
+                case Types::Kind::Int32PropertyDefinition:
                 {
                     WriteColumnValue( destination, i32pdDefaultValue_);
                     WriteColumnValue( destination, i32pdMinValue_);
                     WriteColumnValue( destination, i32pdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int64PropertyDefinition:
+                case Types::Kind::Int64PropertyDefinition:
                 {
                     WriteColumnValue( destination, i64pdDefaultValue_);
                     WriteColumnValue( destination, i64pdMinValue_);
                     WriteColumnValue( destination, i64pdMaxValue_);
                 }
                 break;
-                case Data::Kind::ReferencePropertyDefinition:
+                case Types::Kind::ReferencePropertyDefinition:
                 {
                     WriteColumnValue( destination, rpdDefaultValue_);
                     WriteColumnValue( destination, rpdReferencedElementType_);
                 }
                 break;
-                case Data::Kind::SBytePropertyDefinition:
+                case Types::Kind::SBytePropertyDefinition:
                 {
                     WriteColumnValue( destination, sbpdDefaultValue_);
                     WriteColumnValue( destination, sbpdMinValue_);
                     WriteColumnValue( destination, sbpdMaxValue_);
                 }
                 break;
-                case Data::Kind::SinglePropertyDefinition:
+                case Types::Kind::SinglePropertyDefinition:
                 {
                     WriteColumnValue( destination, sipdDefaultValue_);
                     WriteColumnValue( destination, sipdMinValue_);
                     WriteColumnValue( destination, sipdMaxValue_);
                 }
                 break;
-                case Data::Kind::StringPropertyDefinition:
+                case Types::Kind::StringPropertyDefinition:
                 {
                     WriteColumnValue( destination, stpdDefaultValue_);
                     WriteColumnValue( destination, stpdPattern_);
                 }
                 break;
-                case Data::Kind::ByteTimeseriesPropertyDefinition:
+                case Types::Kind::ByteTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, bytpdMinValue_);
                     WriteColumnValue( destination, bytpdMaxValue_);
                 }
                 break;
-                case Data::Kind::DateTimeTimeseriesPropertyDefinition:
+                case Types::Kind::DateTimeTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, dttpdMinValue_);
                     WriteColumnValue( destination, dttpdMaxValue_);
                 }
                 break;
-                case Data::Kind::DoubleTimeseriesPropertyDefinition:
+                case Types::Kind::DoubleTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, dotpdMinValue_);
                     WriteColumnValue( destination, dotpdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int16TimeseriesPropertyDefinition:
+                case Types::Kind::Int16TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, i16tpdMinValue_);
                     WriteColumnValue( destination, i16tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int32TimeseriesPropertyDefinition:
+                case Types::Kind::Int32TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, i32tpdMinValue_);
                     WriteColumnValue( destination, i32tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int64TimeseriesPropertyDefinition:
+                case Types::Kind::Int64TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, i64tpdMinValue_);
                     WriteColumnValue( destination, i64tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::ReferenceTimeseriesPropertyDefinition:
+                case Types::Kind::ReferenceTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, rtpdReferencedElementType_);
                 }
                 break;
-                case Data::Kind::SByteTimeseriesPropertyDefinition:
+                case Types::Kind::SByteTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, sbtpdMinValue_);
                     WriteColumnValue( destination, sbtpdMaxValue_);
                 }
                 break;
-                case Data::Kind::SingleTimeseriesPropertyDefinition:
+                case Types::Kind::SingleTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, sitpdMinValue_);
                     WriteColumnValue( destination, sitpdMaxValue_);
                 }
                 break;
-                case Data::Kind::StringTimeseriesPropertyDefinition:
+                case Types::Kind::StringTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, sttpdPattern_);
                 }
                 break;
-                case Data::Kind::TimeSpanTimeseriesPropertyDefinition:
+                case Types::Kind::TimeSpanTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, tstpdMinValue_);
                     WriteColumnValue( destination, tstpdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt16TimeseriesPropertyDefinition:
+                case Types::Kind::UInt16TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, u16tpdMinValue_);
                     WriteColumnValue( destination, u16tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt32TimeseriesPropertyDefinition:
+                case Types::Kind::UInt32TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, u32tpdMinValue_);
                     WriteColumnValue( destination, u32tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt64TimeseriesPropertyDefinition:
+                case Types::Kind::UInt64TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, u64tpdMinValue_);
                     WriteColumnValue( destination, u64tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::TimeSpanPropertyDefinition:
+                case Types::Kind::TimeSpanPropertyDefinition:
                 {
                     WriteColumnValue( destination, tspdDefaultValue_);
                     WriteColumnValue( destination, tspdMinValue_);
                     WriteColumnValue( destination, tspdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt16PropertyDefinition:
+                case Types::Kind::UInt16PropertyDefinition:
                 {
                     WriteColumnValue( destination, u16pdDefaultValue_);
                     WriteColumnValue( destination, u16pdMinValue_);
                     WriteColumnValue( destination, u16pdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt32PropertyDefinition:
+                case Types::Kind::UInt32PropertyDefinition:
                 {
                     WriteColumnValue( destination, u32pdDefaultValue_);
                     WriteColumnValue( destination, u32pdMinValue_);
                     WriteColumnValue( destination, u32pdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt64PropertyDefinition:
+                case Types::Kind::UInt64PropertyDefinition:
                 {
                     WriteColumnValue( destination, u64pdDefaultValue_);
                     WriteColumnValue( destination, u64pdMinValue_);
@@ -5565,7 +5565,7 @@ namespace Barrelman::Database
     class ComplexTimeseriesPropertyDefinitionColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid elementType_;
         FixedDBWideString<127> name_;
@@ -5782,83 +5782,83 @@ namespace Barrelman::Database
             WriteColumnValue( destination, description_);
             switch( kind_ )
             {
-                case Data::Kind::ByteTimeseriesPropertyDefinition:
+                case Types::Kind::ByteTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, bytpdMinValue_);
                     WriteColumnValue( destination, bytpdMaxValue_);
                 }
                 break;
-                case Data::Kind::DateTimeTimeseriesPropertyDefinition:
+                case Types::Kind::DateTimeTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, dttpdMinValue_);
                     WriteColumnValue( destination, dttpdMaxValue_);
                 }
                 break;
-                case Data::Kind::DoubleTimeseriesPropertyDefinition:
+                case Types::Kind::DoubleTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, dotpdMinValue_);
                     WriteColumnValue( destination, dotpdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int16TimeseriesPropertyDefinition:
+                case Types::Kind::Int16TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, i16tpdMinValue_);
                     WriteColumnValue( destination, i16tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int32TimeseriesPropertyDefinition:
+                case Types::Kind::Int32TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, i32tpdMinValue_);
                     WriteColumnValue( destination, i32tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::Int64TimeseriesPropertyDefinition:
+                case Types::Kind::Int64TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, i64tpdMinValue_);
                     WriteColumnValue( destination, i64tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::ReferenceTimeseriesPropertyDefinition:
+                case Types::Kind::ReferenceTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, rtpdReferencedElementType_);
                 }
                 break;
-                case Data::Kind::SByteTimeseriesPropertyDefinition:
+                case Types::Kind::SByteTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, sbtpdMinValue_);
                     WriteColumnValue( destination, sbtpdMaxValue_);
                 }
                 break;
-                case Data::Kind::SingleTimeseriesPropertyDefinition:
+                case Types::Kind::SingleTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, sitpdMinValue_);
                     WriteColumnValue( destination, sitpdMaxValue_);
                 }
                 break;
-                case Data::Kind::StringTimeseriesPropertyDefinition:
+                case Types::Kind::StringTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, sttpdPattern_);
                 }
                 break;
-                case Data::Kind::TimeSpanTimeseriesPropertyDefinition:
+                case Types::Kind::TimeSpanTimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, tstpdMinValue_);
                     WriteColumnValue( destination, tstpdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt16TimeseriesPropertyDefinition:
+                case Types::Kind::UInt16TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, u16tpdMinValue_);
                     WriteColumnValue( destination, u16tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt32TimeseriesPropertyDefinition:
+                case Types::Kind::UInt32TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, u32tpdMinValue_);
                     WriteColumnValue( destination, u32tpdMaxValue_);
                 }
                 break;
-                case Data::Kind::UInt64TimeseriesPropertyDefinition:
+                case Types::Kind::UInt64TimeseriesPropertyDefinition:
                 {
                     WriteColumnValue( destination, u64tpdMinValue_);
                     WriteColumnValue( destination, u64tpdMaxValue_);
@@ -5873,11 +5873,11 @@ namespace Barrelman::Database
     class ComplexRadarCommandColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
@@ -5921,7 +5921,7 @@ namespace Barrelman::Database
         {
             return timestamp_;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
@@ -5952,18 +5952,18 @@ namespace Barrelman::Database
     class ComplexRadarCommandReplyColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
         DBInt32 rcrgsAzimuthCount_;
         DBInt32 rcrgsTriggerCount_;
         DBTimeSpan rcrgsRotationCount_;
-        DBEnum<Data::RadarPulse> rcrgsPulse_;
+        DBEnum<Types::RadarPulse> rcrgsPulse_;
         DBBoolean rcrgsTx_;
     public:
         using Base = BaseColumnData;
@@ -6016,7 +6016,7 @@ namespace Barrelman::Database
         {
             return command_;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
@@ -6036,7 +6036,7 @@ namespace Barrelman::Database
         {
             return rcrgsRotationCount_;
         }
-        DBEnum<Data::RadarPulse> RadarCommandReplyGetStatusPulse( ) const
+        DBEnum<Types::RadarPulse> RadarCommandReplyGetStatusPulse( ) const
         {
             return rcrgsPulse_;
         }
@@ -6057,7 +6057,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, message_);
             switch( kind_ )
             {
-                case Data::Kind::RadarCommandReplyGetStatus:
+                case Types::Kind::RadarCommandReplyGetStatus:
                 {
                     WriteColumnValue( destination, rcrgsAzimuthCount_);
                     WriteColumnValue( destination, rcrgsTriggerCount_);
@@ -6075,7 +6075,7 @@ namespace Barrelman::Database
     class ComplexSecurityIdentifierColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid domain_;
         FixedDBWideString<255> identity_;
@@ -6142,7 +6142,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, description_);
             switch( kind_ )
             {
-                case Data::Kind::SecurityRole:
+                case Types::Kind::SecurityRole:
                 {
                     WriteColumnValue( destination, srName_);
                 }
@@ -6156,7 +6156,7 @@ namespace Barrelman::Database
     class ComplexTimeseriesCatalogElementColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -6532,425 +6532,425 @@ namespace Barrelman::Database
             WriteColumnValue( destination, name_);
             switch( kind_ )
             {
-                case Data::Kind::BinaryTimeseries:
+                case Types::Kind::BinaryTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::BooleanTimeseries:
+                case Types::Kind::BooleanTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::AisAidToNavigationOffPositionTimeseries:
+                case Types::Kind::AisAidToNavigationOffPositionTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, aatnoptAidToNavigation_);
                 }
                 break;
-                case Data::Kind::DeviceEnabledTimeseries:
+                case Types::Kind::DeviceEnabledTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, detDevice_);
                 }
                 break;
-                case Data::Kind::MediaProxySessionEnabledTimeseries:
+                case Types::Kind::MediaProxySessionEnabledTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, mpsetProxySession_);
                 }
                 break;
-                case Data::Kind::MediaServiceEnabledTimeseries:
+                case Types::Kind::MediaServiceEnabledTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, msetService_);
                 }
                 break;
-                case Data::Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+                case Types::Kind::RadarAutomaticSensitivityTimeControlTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rastctRadar_);
                 }
                 break;
-                case Data::Kind::RadarBlankSector1Timeseries:
+                case Types::Kind::RadarBlankSector1Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rbs1tRadar_);
                 }
                 break;
-                case Data::Kind::RadarBlankSector2Timeseries:
+                case Types::Kind::RadarBlankSector2Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rbs2tRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+                case Types::Kind::RadarEnableAutomaticFrequencyControlTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, reafctRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableFastTimeConstantTimeseries:
+                case Types::Kind::RadarEnableFastTimeConstantTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, reftctRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableSensitivityTimeControlTimeseries:
+                case Types::Kind::RadarEnableSensitivityTimeControlTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, restctRadar_);
                 }
                 break;
-                case Data::Kind::RadarPowerOnTimeseries:
+                case Types::Kind::RadarPowerOnTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rpotRadar_);
                 }
                 break;
-                case Data::Kind::RadarSaveSettingsTimeseries:
+                case Types::Kind::RadarSaveSettingsTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rsstRadar_);
                 }
                 break;
-                case Data::Kind::RadarTrackingTimeseries:
+                case Types::Kind::RadarTrackingTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rttRadar_);
                 }
                 break;
-                case Data::Kind::ByteTimeseries:
+                case Types::Kind::ByteTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::DateTimeTimeseries:
+                case Types::Kind::DateTimeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::DoubleTimeseries:
+                case Types::Kind::DoubleTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::GNSSAltitudeTimeseries:
+                case Types::Kind::GNSSAltitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, gatsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GNSSLatitudeTimeseries:
+                case Types::Kind::GNSSLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, glatsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GNSSLongitudeTimeseries:
+                case Types::Kind::GNSSLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, glotsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GyroCourseTimeseries:
+                case Types::Kind::GyroCourseTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, gctGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroHeadingMagneticNorthTimeseries:
+                case Types::Kind::GyroHeadingMagneticNorthTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, ghmntGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroHeadingTrueNorthTimeseries:
+                case Types::Kind::GyroHeadingTrueNorthTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, ghtntGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroPitchTimeseries:
+                case Types::Kind::GyroPitchTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, gptGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroRateOfTurnTimeseries:
+                case Types::Kind::GyroRateOfTurnTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, grottGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroRollTimeseries:
+                case Types::Kind::GyroRollTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, grtGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroSpeedTimeseries:
+                case Types::Kind::GyroSpeedTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, gstGyroDevice_);
                 }
                 break;
-                case Data::Kind::RadarLatitudeTimeseries:
+                case Types::Kind::RadarLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rlatsRadar_);
                 }
                 break;
-                case Data::Kind::RadarLongitudeTimeseries:
+                case Types::Kind::RadarLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rlotsRadar_);
                 }
                 break;
-                case Data::Kind::RadomeDewPointTimeseries:
+                case Types::Kind::RadomeDewPointTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rdptRadome_);
                 }
                 break;
-                case Data::Kind::RadomePressureTimeseries:
+                case Types::Kind::RadomePressureTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rptRadome_);
                 }
                 break;
-                case Data::Kind::RadomeTemperatureTimeseries:
+                case Types::Kind::RadomeTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rtetsRadome_);
                 }
                 break;
-                case Data::Kind::VesselDraughtTimeseries:
+                case Types::Kind::VesselDraughtTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, vdtVessel_);
                 }
                 break;
-                case Data::Kind::ViewLatitudeTimeseries:
+                case Types::Kind::ViewLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, vlatsView_);
                 }
                 break;
-                case Data::Kind::ViewLongitudeTimeseries:
+                case Types::Kind::ViewLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, vlotsView_);
                 }
                 break;
-                case Data::Kind::ViewZoomLevelTimeseries:
+                case Types::Kind::ViewZoomLevelTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, vzltView_);
                 }
                 break;
-                case Data::Kind::WeatherStationAbsoluteHumidityTimeseries:
+                case Types::Kind::WeatherStationAbsoluteHumidityTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wsahtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationAirTemperatureTimeseries:
+                case Types::Kind::WeatherStationAirTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wsattWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationBarometricPressureTimeseries:
+                case Types::Kind::WeatherStationBarometricPressureTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wsbptWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationDewPointTimeseries:
+                case Types::Kind::WeatherStationDewPointTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wsdptWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationRelativeHumidityTimeseries:
+                case Types::Kind::WeatherStationRelativeHumidityTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wsrhtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWaterTemperatureTimeseries:
+                case Types::Kind::WeatherStationWaterTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wswttWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWindDirectionTimeseries:
+                case Types::Kind::WeatherStationWindDirectionTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wswdtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWindSpeedTimeseries:
+                case Types::Kind::WeatherStationWindSpeedTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, wswstWeatherStation_);
                 }
                 break;
-                case Data::Kind::GeoPosition2DTimeseries:
+                case Types::Kind::GeoPosition2DTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::AisAidToNavigationPositionTimeseries:
+                case Types::Kind::AisAidToNavigationPositionTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, aatnptAidToNavigation_);
                 }
                 break;
-                case Data::Kind::GeoPosition3DTimeseries:
+                case Types::Kind::GeoPosition3DTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::GuidTimeseries:
+                case Types::Kind::GuidTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::Int16Timeseries:
+                case Types::Kind::Int16Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::Int32Timeseries:
+                case Types::Kind::Int32Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::RadarAzimuthOffsetTimeseries:
+                case Types::Kind::RadarAzimuthOffsetTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, raotRadar_);
                 }
                 break;
-                case Data::Kind::RadarFastTimeConstantLevelTimeseries:
+                case Types::Kind::RadarFastTimeConstantLevelTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rftcltRadar_);
                 }
                 break;
-                case Data::Kind::RadarFastTimeConstantModeTimeseries:
+                case Types::Kind::RadarFastTimeConstantModeTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rftcmtRadar_);
                 }
                 break;
-                case Data::Kind::RadarPulseTimeseries:
+                case Types::Kind::RadarPulseTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, raptsRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector1EndTimeseries:
+                case Types::Kind::RadarSector1EndTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rs1etRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector1StartTimeseries:
+                case Types::Kind::RadarSector1StartTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rs1stRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector2EndTimeseries:
+                case Types::Kind::RadarSector2EndTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rs2etRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector2StartTimeseries:
+                case Types::Kind::RadarSector2StartTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rs2stRadar_);
                 }
                 break;
-                case Data::Kind::RadarSensitivityTimeControlLevelTimeseries:
+                case Types::Kind::RadarSensitivityTimeControlLevelTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rstcltRadar_);
                 }
                 break;
-                case Data::Kind::RadarTuningTimeseries:
+                case Types::Kind::RadarTuningTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, ratutsRadar_);
                 }
                 break;
-                case Data::Kind::VesselPersonsOnBoardTimeseries:
+                case Types::Kind::VesselPersonsOnBoardTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, vpobtVessel_);
                 }
                 break;
-                case Data::Kind::Int64Timeseries:
+                case Types::Kind::Int64Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::Position2DTimeseries:
+                case Types::Kind::Position2DTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::Position3DTimeseries:
+                case Types::Kind::Position3DTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::ReferenceTimeseries:
+                case Types::Kind::ReferenceTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::SByteTimeseries:
+                case Types::Kind::SByteTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::SingleTimeseries:
+                case Types::Kind::SingleTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::StringTimeseries:
+                case Types::Kind::StringTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::TimeSpanTimeseries:
+                case Types::Kind::TimeSpanTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::UInt16Timeseries:
+                case Types::Kind::UInt16Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::UInt32Timeseries:
+                case Types::Kind::UInt32Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
                 break;
-                case Data::Kind::RadomeStatusTimeseries:
+                case Types::Kind::RadomeStatusTimeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                     WriteColumnValue( destination, rstRadome_);
                 }
                 break;
-                case Data::Kind::UInt64Timeseries:
+                case Types::Kind::UInt64Timeseries:
                 {
                     WriteColumnValue( destination, tMaxRetention_);
                 }
@@ -6964,7 +6964,7 @@ namespace Barrelman::Database
     class ComplexTimeseriesColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -7341,267 +7341,267 @@ namespace Barrelman::Database
             WriteColumnValue( destination, maxRetention_);
             switch( kind_ )
             {
-                case Data::Kind::AisAidToNavigationOffPositionTimeseries:
+                case Types::Kind::AisAidToNavigationOffPositionTimeseries:
                 {
                     WriteColumnValue( destination, aatnoptAidToNavigation_);
                 }
                 break;
-                case Data::Kind::DeviceEnabledTimeseries:
+                case Types::Kind::DeviceEnabledTimeseries:
                 {
                     WriteColumnValue( destination, detDevice_);
                 }
                 break;
-                case Data::Kind::MediaProxySessionEnabledTimeseries:
+                case Types::Kind::MediaProxySessionEnabledTimeseries:
                 {
                     WriteColumnValue( destination, mpsetProxySession_);
                 }
                 break;
-                case Data::Kind::MediaServiceEnabledTimeseries:
+                case Types::Kind::MediaServiceEnabledTimeseries:
                 {
                     WriteColumnValue( destination, msetService_);
                 }
                 break;
-                case Data::Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+                case Types::Kind::RadarAutomaticSensitivityTimeControlTimeseries:
                 {
                     WriteColumnValue( destination, rastctRadar_);
                 }
                 break;
-                case Data::Kind::RadarBlankSector1Timeseries:
+                case Types::Kind::RadarBlankSector1Timeseries:
                 {
                     WriteColumnValue( destination, rbs1tRadar_);
                 }
                 break;
-                case Data::Kind::RadarBlankSector2Timeseries:
+                case Types::Kind::RadarBlankSector2Timeseries:
                 {
                     WriteColumnValue( destination, rbs2tRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+                case Types::Kind::RadarEnableAutomaticFrequencyControlTimeseries:
                 {
                     WriteColumnValue( destination, reafctRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableFastTimeConstantTimeseries:
+                case Types::Kind::RadarEnableFastTimeConstantTimeseries:
                 {
                     WriteColumnValue( destination, reftctRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableSensitivityTimeControlTimeseries:
+                case Types::Kind::RadarEnableSensitivityTimeControlTimeseries:
                 {
                     WriteColumnValue( destination, restctRadar_);
                 }
                 break;
-                case Data::Kind::RadarPowerOnTimeseries:
+                case Types::Kind::RadarPowerOnTimeseries:
                 {
                     WriteColumnValue( destination, rpotRadar_);
                 }
                 break;
-                case Data::Kind::RadarSaveSettingsTimeseries:
+                case Types::Kind::RadarSaveSettingsTimeseries:
                 {
                     WriteColumnValue( destination, rsstRadar_);
                 }
                 break;
-                case Data::Kind::RadarTrackingTimeseries:
+                case Types::Kind::RadarTrackingTimeseries:
                 {
                     WriteColumnValue( destination, rttRadar_);
                 }
                 break;
-                case Data::Kind::GNSSAltitudeTimeseries:
+                case Types::Kind::GNSSAltitudeTimeseries:
                 {
                     WriteColumnValue( destination, gatsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GNSSLatitudeTimeseries:
+                case Types::Kind::GNSSLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, glatsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GNSSLongitudeTimeseries:
+                case Types::Kind::GNSSLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, glotsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GyroCourseTimeseries:
+                case Types::Kind::GyroCourseTimeseries:
                 {
                     WriteColumnValue( destination, gctGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroHeadingMagneticNorthTimeseries:
+                case Types::Kind::GyroHeadingMagneticNorthTimeseries:
                 {
                     WriteColumnValue( destination, ghmntGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroHeadingTrueNorthTimeseries:
+                case Types::Kind::GyroHeadingTrueNorthTimeseries:
                 {
                     WriteColumnValue( destination, ghtntGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroPitchTimeseries:
+                case Types::Kind::GyroPitchTimeseries:
                 {
                     WriteColumnValue( destination, gptGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroRateOfTurnTimeseries:
+                case Types::Kind::GyroRateOfTurnTimeseries:
                 {
                     WriteColumnValue( destination, grottGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroRollTimeseries:
+                case Types::Kind::GyroRollTimeseries:
                 {
                     WriteColumnValue( destination, grtGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroSpeedTimeseries:
+                case Types::Kind::GyroSpeedTimeseries:
                 {
                     WriteColumnValue( destination, gstGyroDevice_);
                 }
                 break;
-                case Data::Kind::RadarLatitudeTimeseries:
+                case Types::Kind::RadarLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, rlatsRadar_);
                 }
                 break;
-                case Data::Kind::RadarLongitudeTimeseries:
+                case Types::Kind::RadarLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, rlotsRadar_);
                 }
                 break;
-                case Data::Kind::RadomeDewPointTimeseries:
+                case Types::Kind::RadomeDewPointTimeseries:
                 {
                     WriteColumnValue( destination, rdptRadome_);
                 }
                 break;
-                case Data::Kind::RadomePressureTimeseries:
+                case Types::Kind::RadomePressureTimeseries:
                 {
                     WriteColumnValue( destination, rptRadome_);
                 }
                 break;
-                case Data::Kind::RadomeTemperatureTimeseries:
+                case Types::Kind::RadomeTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, rtetsRadome_);
                 }
                 break;
-                case Data::Kind::VesselDraughtTimeseries:
+                case Types::Kind::VesselDraughtTimeseries:
                 {
                     WriteColumnValue( destination, vdtVessel_);
                 }
                 break;
-                case Data::Kind::ViewLatitudeTimeseries:
+                case Types::Kind::ViewLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, vlatsView_);
                 }
                 break;
-                case Data::Kind::ViewLongitudeTimeseries:
+                case Types::Kind::ViewLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, vlotsView_);
                 }
                 break;
-                case Data::Kind::ViewZoomLevelTimeseries:
+                case Types::Kind::ViewZoomLevelTimeseries:
                 {
                     WriteColumnValue( destination, vzltView_);
                 }
                 break;
-                case Data::Kind::WeatherStationAbsoluteHumidityTimeseries:
+                case Types::Kind::WeatherStationAbsoluteHumidityTimeseries:
                 {
                     WriteColumnValue( destination, wsahtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationAirTemperatureTimeseries:
+                case Types::Kind::WeatherStationAirTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, wsattWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationBarometricPressureTimeseries:
+                case Types::Kind::WeatherStationBarometricPressureTimeseries:
                 {
                     WriteColumnValue( destination, wsbptWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationDewPointTimeseries:
+                case Types::Kind::WeatherStationDewPointTimeseries:
                 {
                     WriteColumnValue( destination, wsdptWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationRelativeHumidityTimeseries:
+                case Types::Kind::WeatherStationRelativeHumidityTimeseries:
                 {
                     WriteColumnValue( destination, wsrhtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWaterTemperatureTimeseries:
+                case Types::Kind::WeatherStationWaterTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, wswttWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWindDirectionTimeseries:
+                case Types::Kind::WeatherStationWindDirectionTimeseries:
                 {
                     WriteColumnValue( destination, wswdtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWindSpeedTimeseries:
+                case Types::Kind::WeatherStationWindSpeedTimeseries:
                 {
                     WriteColumnValue( destination, wswstWeatherStation_);
                 }
                 break;
-                case Data::Kind::AisAidToNavigationPositionTimeseries:
+                case Types::Kind::AisAidToNavigationPositionTimeseries:
                 {
                     WriteColumnValue( destination, aatnptAidToNavigation_);
                 }
                 break;
-                case Data::Kind::RadarAzimuthOffsetTimeseries:
+                case Types::Kind::RadarAzimuthOffsetTimeseries:
                 {
                     WriteColumnValue( destination, raotRadar_);
                 }
                 break;
-                case Data::Kind::RadarFastTimeConstantLevelTimeseries:
+                case Types::Kind::RadarFastTimeConstantLevelTimeseries:
                 {
                     WriteColumnValue( destination, rftcltRadar_);
                 }
                 break;
-                case Data::Kind::RadarFastTimeConstantModeTimeseries:
+                case Types::Kind::RadarFastTimeConstantModeTimeseries:
                 {
                     WriteColumnValue( destination, rftcmtRadar_);
                 }
                 break;
-                case Data::Kind::RadarPulseTimeseries:
+                case Types::Kind::RadarPulseTimeseries:
                 {
                     WriteColumnValue( destination, raptsRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector1EndTimeseries:
+                case Types::Kind::RadarSector1EndTimeseries:
                 {
                     WriteColumnValue( destination, rs1etRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector1StartTimeseries:
+                case Types::Kind::RadarSector1StartTimeseries:
                 {
                     WriteColumnValue( destination, rs1stRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector2EndTimeseries:
+                case Types::Kind::RadarSector2EndTimeseries:
                 {
                     WriteColumnValue( destination, rs2etRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector2StartTimeseries:
+                case Types::Kind::RadarSector2StartTimeseries:
                 {
                     WriteColumnValue( destination, rs2stRadar_);
                 }
                 break;
-                case Data::Kind::RadarSensitivityTimeControlLevelTimeseries:
+                case Types::Kind::RadarSensitivityTimeControlLevelTimeseries:
                 {
                     WriteColumnValue( destination, rstcltRadar_);
                 }
                 break;
-                case Data::Kind::RadarTuningTimeseries:
+                case Types::Kind::RadarTuningTimeseries:
                 {
                     WriteColumnValue( destination, ratutsRadar_);
                 }
                 break;
-                case Data::Kind::VesselPersonsOnBoardTimeseries:
+                case Types::Kind::VesselPersonsOnBoardTimeseries:
                 {
                     WriteColumnValue( destination, vpobtVessel_);
                 }
                 break;
-                case Data::Kind::RadomeStatusTimeseries:
+                case Types::Kind::RadomeStatusTimeseries:
                 {
                     WriteColumnValue( destination, rstRadome_);
                 }
@@ -7615,7 +7615,7 @@ namespace Barrelman::Database
     class ComplexBooleanTimeseriesColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -7752,67 +7752,67 @@ namespace Barrelman::Database
             WriteColumnValue( destination, maxRetention_);
             switch( kind_ )
             {
-                case Data::Kind::AisAidToNavigationOffPositionTimeseries:
+                case Types::Kind::AisAidToNavigationOffPositionTimeseries:
                 {
                     WriteColumnValue( destination, aatnoptAidToNavigation_);
                 }
                 break;
-                case Data::Kind::DeviceEnabledTimeseries:
+                case Types::Kind::DeviceEnabledTimeseries:
                 {
                     WriteColumnValue( destination, detDevice_);
                 }
                 break;
-                case Data::Kind::MediaProxySessionEnabledTimeseries:
+                case Types::Kind::MediaProxySessionEnabledTimeseries:
                 {
                     WriteColumnValue( destination, mpsetProxySession_);
                 }
                 break;
-                case Data::Kind::MediaServiceEnabledTimeseries:
+                case Types::Kind::MediaServiceEnabledTimeseries:
                 {
                     WriteColumnValue( destination, msetService_);
                 }
                 break;
-                case Data::Kind::RadarAutomaticSensitivityTimeControlTimeseries:
+                case Types::Kind::RadarAutomaticSensitivityTimeControlTimeseries:
                 {
                     WriteColumnValue( destination, rastctRadar_);
                 }
                 break;
-                case Data::Kind::RadarBlankSector1Timeseries:
+                case Types::Kind::RadarBlankSector1Timeseries:
                 {
                     WriteColumnValue( destination, rbs1tRadar_);
                 }
                 break;
-                case Data::Kind::RadarBlankSector2Timeseries:
+                case Types::Kind::RadarBlankSector2Timeseries:
                 {
                     WriteColumnValue( destination, rbs2tRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableAutomaticFrequencyControlTimeseries:
+                case Types::Kind::RadarEnableAutomaticFrequencyControlTimeseries:
                 {
                     WriteColumnValue( destination, reafctRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableFastTimeConstantTimeseries:
+                case Types::Kind::RadarEnableFastTimeConstantTimeseries:
                 {
                     WriteColumnValue( destination, reftctRadar_);
                 }
                 break;
-                case Data::Kind::RadarEnableSensitivityTimeControlTimeseries:
+                case Types::Kind::RadarEnableSensitivityTimeControlTimeseries:
                 {
                     WriteColumnValue( destination, restctRadar_);
                 }
                 break;
-                case Data::Kind::RadarPowerOnTimeseries:
+                case Types::Kind::RadarPowerOnTimeseries:
                 {
                     WriteColumnValue( destination, rpotRadar_);
                 }
                 break;
-                case Data::Kind::RadarSaveSettingsTimeseries:
+                case Types::Kind::RadarSaveSettingsTimeseries:
                 {
                     WriteColumnValue( destination, rsstRadar_);
                 }
                 break;
-                case Data::Kind::RadarTrackingTimeseries:
+                case Types::Kind::RadarTrackingTimeseries:
                 {
                     WriteColumnValue( destination, rttRadar_);
                 }
@@ -7826,7 +7826,7 @@ namespace Barrelman::Database
     class ComplexDoubleTimeseriesColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -8047,137 +8047,137 @@ namespace Barrelman::Database
             WriteColumnValue( destination, maxRetention_);
             switch( kind_ )
             {
-                case Data::Kind::GNSSAltitudeTimeseries:
+                case Types::Kind::GNSSAltitudeTimeseries:
                 {
                     WriteColumnValue( destination, gatsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GNSSLatitudeTimeseries:
+                case Types::Kind::GNSSLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, glatsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GNSSLongitudeTimeseries:
+                case Types::Kind::GNSSLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, glotsGNSSDevice_);
                 }
                 break;
-                case Data::Kind::GyroCourseTimeseries:
+                case Types::Kind::GyroCourseTimeseries:
                 {
                     WriteColumnValue( destination, gctGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroHeadingMagneticNorthTimeseries:
+                case Types::Kind::GyroHeadingMagneticNorthTimeseries:
                 {
                     WriteColumnValue( destination, ghmntGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroHeadingTrueNorthTimeseries:
+                case Types::Kind::GyroHeadingTrueNorthTimeseries:
                 {
                     WriteColumnValue( destination, ghtntGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroPitchTimeseries:
+                case Types::Kind::GyroPitchTimeseries:
                 {
                     WriteColumnValue( destination, gptGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroRateOfTurnTimeseries:
+                case Types::Kind::GyroRateOfTurnTimeseries:
                 {
                     WriteColumnValue( destination, grottGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroRollTimeseries:
+                case Types::Kind::GyroRollTimeseries:
                 {
                     WriteColumnValue( destination, grtGyroDevice_);
                 }
                 break;
-                case Data::Kind::GyroSpeedTimeseries:
+                case Types::Kind::GyroSpeedTimeseries:
                 {
                     WriteColumnValue( destination, gstGyroDevice_);
                 }
                 break;
-                case Data::Kind::RadarLatitudeTimeseries:
+                case Types::Kind::RadarLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, rlatsRadar_);
                 }
                 break;
-                case Data::Kind::RadarLongitudeTimeseries:
+                case Types::Kind::RadarLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, rlotsRadar_);
                 }
                 break;
-                case Data::Kind::RadomeDewPointTimeseries:
+                case Types::Kind::RadomeDewPointTimeseries:
                 {
                     WriteColumnValue( destination, rdptRadome_);
                 }
                 break;
-                case Data::Kind::RadomePressureTimeseries:
+                case Types::Kind::RadomePressureTimeseries:
                 {
                     WriteColumnValue( destination, rptRadome_);
                 }
                 break;
-                case Data::Kind::RadomeTemperatureTimeseries:
+                case Types::Kind::RadomeTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, rtetsRadome_);
                 }
                 break;
-                case Data::Kind::VesselDraughtTimeseries:
+                case Types::Kind::VesselDraughtTimeseries:
                 {
                     WriteColumnValue( destination, vdtVessel_);
                 }
                 break;
-                case Data::Kind::ViewLatitudeTimeseries:
+                case Types::Kind::ViewLatitudeTimeseries:
                 {
                     WriteColumnValue( destination, vlatsView_);
                 }
                 break;
-                case Data::Kind::ViewLongitudeTimeseries:
+                case Types::Kind::ViewLongitudeTimeseries:
                 {
                     WriteColumnValue( destination, vlotsView_);
                 }
                 break;
-                case Data::Kind::ViewZoomLevelTimeseries:
+                case Types::Kind::ViewZoomLevelTimeseries:
                 {
                     WriteColumnValue( destination, vzltView_);
                 }
                 break;
-                case Data::Kind::WeatherStationAbsoluteHumidityTimeseries:
+                case Types::Kind::WeatherStationAbsoluteHumidityTimeseries:
                 {
                     WriteColumnValue( destination, wsahtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationAirTemperatureTimeseries:
+                case Types::Kind::WeatherStationAirTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, wsattWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationBarometricPressureTimeseries:
+                case Types::Kind::WeatherStationBarometricPressureTimeseries:
                 {
                     WriteColumnValue( destination, wsbptWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationDewPointTimeseries:
+                case Types::Kind::WeatherStationDewPointTimeseries:
                 {
                     WriteColumnValue( destination, wsdptWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationRelativeHumidityTimeseries:
+                case Types::Kind::WeatherStationRelativeHumidityTimeseries:
                 {
                     WriteColumnValue( destination, wsrhtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWaterTemperatureTimeseries:
+                case Types::Kind::WeatherStationWaterTemperatureTimeseries:
                 {
                     WriteColumnValue( destination, wswttWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWindDirectionTimeseries:
+                case Types::Kind::WeatherStationWindDirectionTimeseries:
                 {
                     WriteColumnValue( destination, wswdtWeatherStation_);
                 }
                 break;
-                case Data::Kind::WeatherStationWindSpeedTimeseries:
+                case Types::Kind::WeatherStationWindSpeedTimeseries:
                 {
                     WriteColumnValue( destination, wswstWeatherStation_);
                 }
@@ -8191,7 +8191,7 @@ namespace Barrelman::Database
     class ComplexGeoPosition2DTimeseriesColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -8256,7 +8256,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, maxRetention_);
             switch( kind_ )
             {
-                case Data::Kind::AisAidToNavigationPositionTimeseries:
+                case Types::Kind::AisAidToNavigationPositionTimeseries:
                 {
                     WriteColumnValue( destination, aatnptAidToNavigation_);
                 }
@@ -8270,7 +8270,7 @@ namespace Barrelman::Database
     class ComplexInt32TimeseriesColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -8395,57 +8395,57 @@ namespace Barrelman::Database
             WriteColumnValue( destination, maxRetention_);
             switch( kind_ )
             {
-                case Data::Kind::RadarAzimuthOffsetTimeseries:
+                case Types::Kind::RadarAzimuthOffsetTimeseries:
                 {
                     WriteColumnValue( destination, raotRadar_);
                 }
                 break;
-                case Data::Kind::RadarFastTimeConstantLevelTimeseries:
+                case Types::Kind::RadarFastTimeConstantLevelTimeseries:
                 {
                     WriteColumnValue( destination, rftcltRadar_);
                 }
                 break;
-                case Data::Kind::RadarFastTimeConstantModeTimeseries:
+                case Types::Kind::RadarFastTimeConstantModeTimeseries:
                 {
                     WriteColumnValue( destination, rftcmtRadar_);
                 }
                 break;
-                case Data::Kind::RadarPulseTimeseries:
+                case Types::Kind::RadarPulseTimeseries:
                 {
                     WriteColumnValue( destination, raptsRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector1EndTimeseries:
+                case Types::Kind::RadarSector1EndTimeseries:
                 {
                     WriteColumnValue( destination, rs1etRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector1StartTimeseries:
+                case Types::Kind::RadarSector1StartTimeseries:
                 {
                     WriteColumnValue( destination, rs1stRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector2EndTimeseries:
+                case Types::Kind::RadarSector2EndTimeseries:
                 {
                     WriteColumnValue( destination, rs2etRadar_);
                 }
                 break;
-                case Data::Kind::RadarSector2StartTimeseries:
+                case Types::Kind::RadarSector2StartTimeseries:
                 {
                     WriteColumnValue( destination, rs2stRadar_);
                 }
                 break;
-                case Data::Kind::RadarSensitivityTimeControlLevelTimeseries:
+                case Types::Kind::RadarSensitivityTimeControlLevelTimeseries:
                 {
                     WriteColumnValue( destination, rstcltRadar_);
                 }
                 break;
-                case Data::Kind::RadarTuningTimeseries:
+                case Types::Kind::RadarTuningTimeseries:
                 {
                     WriteColumnValue( destination, ratutsRadar_);
                 }
                 break;
-                case Data::Kind::VesselPersonsOnBoardTimeseries:
+                case Types::Kind::VesselPersonsOnBoardTimeseries:
                 {
                     WriteColumnValue( destination, vpobtVessel_);
                 }
@@ -8459,7 +8459,7 @@ namespace Barrelman::Database
     class ComplexUInt32TimeseriesColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         DBGuid catalog_;
         FixedDBWideString<127> name_;
@@ -8524,7 +8524,7 @@ namespace Barrelman::Database
             WriteColumnValue( destination, maxRetention_);
             switch( kind_ )
             {
-                case Data::Kind::RadomeStatusTimeseries:
+                case Types::Kind::RadomeStatusTimeseries:
                 {
                     WriteColumnValue( destination, rstRadome_);
                 }
@@ -8538,7 +8538,7 @@ namespace Barrelman::Database
     class ComplexTrackBaseColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         Guid tracker_;
         Int64 trackNumber_ = 0;
@@ -8603,12 +8603,12 @@ namespace Barrelman::Database
     class ComplexZoneColumnData : public BaseColumnData
     {
         Guid id_;
-        Data::Kind kind_ = Data::Kind::Unknown;
+        Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
-        Data::ZoneAlarmType alarmType_ = Data::ZoneAlarmType::None;
+        Types::ZoneAlarmType alarmType_ = Types::ZoneAlarmType::None;
         TimeSpan alarmTime_;
         TimeSpan radarTrackMinimumLifetime_;
         double speed_ = 0.0;
@@ -8668,7 +8668,7 @@ namespace Barrelman::Database
         {
             return latitude_;
         }
-        Data::ZoneAlarmType AlarmType( ) const
+        Types::ZoneAlarmType AlarmType( ) const
         {
             return alarmType_;
         }
@@ -8717,12 +8717,12 @@ namespace Barrelman::Database
             WriteColumnValue( destination, fillColor_);
             switch( kind_ )
             {
-                case Data::Kind::CircularZone:
+                case Types::Kind::CircularZone:
                 {
                     WriteColumnValue( destination, czRadius_);
                 }
                 break;
-                case Data::Kind::PolygonZone:
+                case Types::Kind::PolygonZone:
                 {
                     WriteColumnValue( destination, pzPolygon_);
                 }

@@ -1,13 +1,13 @@
 #pragma once
-#ifndef DATA_DATATYPES_H_
-#define DATA_DATATYPES_H_
+#ifndef TYPES_DATATYPES_H_
+#define TYPES_DATATYPES_H_
 
-#include "Data/Enums.h"
+#include "Enums.h"
 #include <HODBC.h>
 #include <HCCData.h>
 
 
-namespace Barrelman::Data
+namespace Barrelman::Types
 {
     using namespace Harlinn;
     using namespace Harlinn::ODBC;
@@ -19,7 +19,7 @@ namespace Barrelman::Data
 
     BARRELMAN_EXPORT std::shared_ptr<BaseData<Kind, Guid>> DataFactory( Kind kind );
 
-    class AircraftTypeData : public BaseData<Kind, Guid>
+    class AircraftTypeObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28,7 +28,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
     public:
-        AircraftTypeData( ) = default;
+        AircraftTypeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -57,18 +57,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AircraftTypeData>( );
+            return std::make_shared<AircraftTypeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AircraftTypeData&>( target );
+            auto& dest = static_cast<AircraftTypeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AircraftTypeData& >( other );
+                const auto& dataObject = static_cast< const AircraftTypeObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -98,7 +98,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class AisDeviceCommandData : public BaseData<Kind, Guid>
+    class AisDeviceCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -107,11 +107,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         DBGuid reply_;
     public:
-        AisDeviceCommandData( ) = default;
+        AisDeviceCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -148,18 +148,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDeviceCommandData>( );
+            return std::make_shared<AisDeviceCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDeviceCommandData&>( target );
+            auto& dest = static_cast<AisDeviceCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDeviceCommandData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -212,11 +212,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -237,7 +237,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class AisDeviceCommandReplyData : public BaseData<Kind, Guid>
+    class AisDeviceCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -247,11 +247,11 @@ namespace Barrelman::Data
         Guid aisDevice_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        AisDeviceCommandReplyData( ) = default;
+        AisDeviceCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -288,18 +288,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDeviceCommandReplyData>( );
+            return std::make_shared<AisDeviceCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDeviceCommandReplyData&>( target );
+            auto& dest = static_cast<AisDeviceCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDeviceCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -360,11 +360,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -377,7 +377,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class AisDeviceConfigurationData : public BaseData<Kind, Guid>
+    class AisDeviceConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -408,7 +408,7 @@ namespace Barrelman::Data
         WideString urls_;
         SQLLEN urlsLength_ = SQL_NULL_DATA;
         Int32 udpPort_ = 0;
-        Data::AisDeviceConnectionType connectionType_ = Data::AisDeviceConnectionType::Unknown;
+        Types::AisDeviceConnectionType connectionType_ = Types::AisDeviceConnectionType::Unknown;
         bool enableRefreshAidToNavigationIn30sec_ = false;
         bool enableAidToNavigationFromFile_ = false;
         WideString aidToNavigationHeader_;
@@ -426,7 +426,7 @@ namespace Barrelman::Data
         bool storeSentMessages_ = false;
         bool storeUnsentMessages_ = false;
     public:
-        AisDeviceConfigurationData( ) = default;
+        AisDeviceConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -525,18 +525,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDeviceConfigurationData>( );
+            return std::make_shared<AisDeviceConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDeviceConfigurationData&>( target );
+            auto& dest = static_cast<AisDeviceConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDeviceConfigurationData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -873,11 +873,11 @@ namespace Barrelman::Data
         {
             udpPort_ = udpPort;
         }
-        Data::AisDeviceConnectionType ConnectionType( ) const
+        Types::AisDeviceConnectionType ConnectionType( ) const
         {
             return connectionType_;
         }
-        void SetConnectionType( Data::AisDeviceConnectionType connectionType )
+        void SetConnectionType( Types::AisDeviceConnectionType connectionType )
         {
             connectionType_ = connectionType;
         }
@@ -986,7 +986,7 @@ namespace Barrelman::Data
             storeUnsentMessages_ = storeUnsentMessages;
         }
     };
-    class AisDeviceRawMessageData : public BaseData<Kind, Guid>
+    class AisDeviceRawMessageObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -998,7 +998,7 @@ namespace Barrelman::Data
         bool isSent_ = false;
         FixedDBWideString<127> message_;
     public:
-        AisDeviceRawMessageData( ) = default;
+        AisDeviceRawMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1033,18 +1033,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDeviceRawMessageData>( );
+            return std::make_shared<AisDeviceRawMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDeviceRawMessageData&>( target );
+            auto& dest = static_cast<AisDeviceRawMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDeviceRawMessageData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceRawMessageObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -1110,7 +1110,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class AisDeviceRawSentenceData : public BaseData<Kind, Guid>
+    class AisDeviceRawSentenceObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -1122,7 +1122,7 @@ namespace Barrelman::Data
         WideString sentence_;
         SQLLEN sentenceLength_ = SQL_NULL_DATA;
     public:
-        AisDeviceRawSentenceData( ) = default;
+        AisDeviceRawSentenceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1155,18 +1155,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDeviceRawSentenceData>( );
+            return std::make_shared<AisDeviceRawSentenceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDeviceRawSentenceData&>( target );
+            auto& dest = static_cast<AisDeviceRawSentenceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDeviceRawSentenceData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceRawSentenceObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -1220,7 +1220,7 @@ namespace Barrelman::Data
             sentence_ = sentence;
         }
     };
-    class AisMessageData : public BaseData<Kind, Guid>
+    class AisMessageObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -1233,7 +1233,7 @@ namespace Barrelman::Data
         Int32 repeat_ = 0;
         Guid mmsi_;
     public:
-        AisMessageData( ) = default;
+        AisMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1270,18 +1270,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisMessageData>( );
+            return std::make_shared<AisMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisMessageData&>( target );
+            auto& dest = static_cast<AisMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisMessageData& >( other );
+                const auto& dataObject = static_cast< const AisMessageObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -1359,32 +1359,32 @@ namespace Barrelman::Data
             mmsi_ = mmsi;
         }
     };
-    class AidToNavigationReportMessageData : public AisMessageData
+    class AidToNavigationReportMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AidToNavigationReportMessage;
     private:
-        Data::NavigationalAidType navigationalAidType_ = Data::NavigationalAidType::NotSpecified;
+        Types::NavigationalAidType navigationalAidType_ = Types::NavigationalAidType::NotSpecified;
         FixedDBWideString<127> name_;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         Int32 dimensionToBow_ = 0;
         Int32 dimensionToStern_ = 0;
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
-        Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
+        Types::PositionFixType positionFixType_ = Types::PositionFixType::Undefined1;
         Int32 timestamp_ = 0;
         bool offPosition_ = false;
         Int32 regionalReserved_ = 0;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         bool virtualAid_ = false;
         bool assigned_ = false;
         Int32 spare_ = 0;
         FixedDBWideString<127> nameExtension_;
     public:
-        AidToNavigationReportMessageData( ) = default;
+        AidToNavigationReportMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1445,18 +1445,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AidToNavigationReportMessageData>( );
+            return std::make_shared<AidToNavigationReportMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AidToNavigationReportMessageData&>( target );
+            auto& dest = static_cast<AidToNavigationReportMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AidToNavigationReportMessageData& >( other );
+                const auto& dataObject = static_cast< const AidToNavigationReportMessageObject& >( other );
                 if ( dataObject.navigationalAidType_ != navigationalAidType_ )
                 {
                     return false;
@@ -1533,11 +1533,11 @@ namespace Barrelman::Data
             }
             return false;
         }
-        Data::NavigationalAidType NavigationalAidType( ) const
+        Types::NavigationalAidType NavigationalAidType( ) const
         {
             return navigationalAidType_;
         }
-        void SetNavigationalAidType( Data::NavigationalAidType navigationalAidType )
+        void SetNavigationalAidType( Types::NavigationalAidType navigationalAidType )
         {
             navigationalAidType_ = navigationalAidType;
         }
@@ -1549,11 +1549,11 @@ namespace Barrelman::Data
         {
             name_ = name;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -1605,11 +1605,11 @@ namespace Barrelman::Data
         {
             dimensionToStarboard_ = dimensionToStarboard;
         }
-        Data::PositionFixType PositionFixType( ) const
+        Types::PositionFixType PositionFixType( ) const
         {
             return positionFixType_;
         }
-        void SetPositionFixType( Data::PositionFixType positionFixType )
+        void SetPositionFixType( Types::PositionFixType positionFixType )
         {
             positionFixType_ = positionFixType;
         }
@@ -1637,11 +1637,11 @@ namespace Barrelman::Data
         {
             regionalReserved_ = regionalReserved;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -1678,10 +1678,10 @@ namespace Barrelman::Data
             nameExtension_ = nameExtension;
         }
     };
-    class AisAddressedSafetyRelatedMessageData : public AisMessageData
+    class AisAddressedSafetyRelatedMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisAddressedSafetyRelatedMessage;
     private:
         Int32 sequenceNumber_ = 0;
@@ -1690,7 +1690,7 @@ namespace Barrelman::Data
         Int32 spare_ = 0;
         FixedDBWideString<127> text_;
     public:
-        AisAddressedSafetyRelatedMessageData( ) = default;
+        AisAddressedSafetyRelatedMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1725,18 +1725,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisAddressedSafetyRelatedMessageData>( );
+            return std::make_shared<AisAddressedSafetyRelatedMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisAddressedSafetyRelatedMessageData&>( target );
+            auto& dest = static_cast<AisAddressedSafetyRelatedMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisAddressedSafetyRelatedMessageData& >( other );
+                const auto& dataObject = static_cast< const AisAddressedSafetyRelatedMessageObject& >( other );
                 if ( dataObject.sequenceNumber_ != sequenceNumber_ )
                 {
                     return false;
@@ -1802,22 +1802,22 @@ namespace Barrelman::Data
             text_ = text;
         }
     };
-    class AisBaseStationReportMessageData : public AisMessageData
+    class AisBaseStationReportMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisBaseStationReportMessage;
     private:
         DateTime timestamp_;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
-        Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
+        Types::PositionFixType positionFixType_ = Types::PositionFixType::Undefined1;
         Int32 spare_ = 0;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         Int32 radioStatus_ = 0;
     public:
-        AisBaseStationReportMessageData( ) = default;
+        AisBaseStationReportMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -1858,18 +1858,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisBaseStationReportMessageData>( );
+            return std::make_shared<AisBaseStationReportMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisBaseStationReportMessageData&>( target );
+            auto& dest = static_cast<AisBaseStationReportMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisBaseStationReportMessageData& >( other );
+                const auto& dataObject = static_cast< const AisBaseStationReportMessageObject& >( other );
                 if ( dataObject.timestamp_ != timestamp_ )
                 {
                     return false;
@@ -1914,11 +1914,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -1938,11 +1938,11 @@ namespace Barrelman::Data
         {
             latitude_ = latitude;
         }
-        Data::PositionFixType PositionFixType( ) const
+        Types::PositionFixType PositionFixType( ) const
         {
             return positionFixType_;
         }
-        void SetPositionFixType( Data::PositionFixType positionFixType )
+        void SetPositionFixType( Types::PositionFixType positionFixType )
         {
             positionFixType_ = positionFixType;
         }
@@ -1954,11 +1954,11 @@ namespace Barrelman::Data
         {
             spare_ = spare;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -1971,10 +1971,10 @@ namespace Barrelman::Data
             radioStatus_ = radioStatus;
         }
     };
-    class AisBinaryAcknowledgeMessageData : public AisMessageData
+    class AisBinaryAcknowledgeMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisBinaryAcknowledgeMessage;
     private:
         Int32 spare_ = 0;
@@ -1987,7 +1987,7 @@ namespace Barrelman::Data
         DBInt32 sequenceNumber4_;
         DBGuid mmsi4_;
     public:
-        AisBinaryAcknowledgeMessageData( ) = default;
+        AisBinaryAcknowledgeMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2030,18 +2030,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisBinaryAcknowledgeMessageData>( );
+            return std::make_shared<AisBinaryAcknowledgeMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisBinaryAcknowledgeMessageData&>( target );
+            auto& dest = static_cast<AisBinaryAcknowledgeMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisBinaryAcknowledgeMessageData& >( other );
+                const auto& dataObject = static_cast< const AisBinaryAcknowledgeMessageObject& >( other );
                 if ( dataObject.spare_ != spare_ )
                 {
                     return false;
@@ -2155,10 +2155,10 @@ namespace Barrelman::Data
             mmsi4_ = mmsi4;
         }
     };
-    class AisBinaryAddressedMessageData : public AisMessageData
+    class AisBinaryAddressedMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisBinaryAddressedMessage;
     private:
         Int32 sequenceNumber_ = 0;
@@ -2170,7 +2170,7 @@ namespace Barrelman::Data
         WideString data_;
         SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
-        AisBinaryAddressedMessageData( ) = default;
+        AisBinaryAddressedMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2209,18 +2209,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisBinaryAddressedMessageData>( );
+            return std::make_shared<AisBinaryAddressedMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisBinaryAddressedMessageData&>( target );
+            auto& dest = static_cast<AisBinaryAddressedMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisBinaryAddressedMessageData& >( other );
+                const auto& dataObject = static_cast< const AisBinaryAddressedMessageObject& >( other );
                 if ( dataObject.sequenceNumber_ != sequenceNumber_ )
                 {
                     return false;
@@ -2310,10 +2310,10 @@ namespace Barrelman::Data
             data_ = data;
         }
     };
-    class AisBinaryBroadcastMessageData : public AisMessageData
+    class AisBinaryBroadcastMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisBinaryBroadcastMessage;
     private:
         Int32 spare_ = 0;
@@ -2322,7 +2322,7 @@ namespace Barrelman::Data
         WideString data_;
         SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
-        AisBinaryBroadcastMessageData( ) = default;
+        AisBinaryBroadcastMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2355,18 +2355,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisBinaryBroadcastMessageData>( );
+            return std::make_shared<AisBinaryBroadcastMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisBinaryBroadcastMessageData&>( target );
+            auto& dest = static_cast<AisBinaryBroadcastMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisBinaryBroadcastMessageData& >( other );
+                const auto& dataObject = static_cast< const AisBinaryBroadcastMessageObject& >( other );
                 if ( dataObject.spare_ != spare_ )
                 {
                     return false;
@@ -2420,10 +2420,10 @@ namespace Barrelman::Data
             data_ = data;
         }
     };
-    class AisDataLinkManagementMessageData : public AisMessageData
+    class AisDataLinkManagementMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisDataLinkManagementMessage;
     private:
         Int32 spare_ = 0;
@@ -2444,7 +2444,7 @@ namespace Barrelman::Data
         DBInt32 timeout4_;
         DBInt32 increment4_;
     public:
-        AisDataLinkManagementMessageData( ) = default;
+        AisDataLinkManagementMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2503,18 +2503,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDataLinkManagementMessageData>( );
+            return std::make_shared<AisDataLinkManagementMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDataLinkManagementMessageData&>( target );
+            auto& dest = static_cast<AisDataLinkManagementMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDataLinkManagementMessageData& >( other );
+                const auto& dataObject = static_cast< const AisDataLinkManagementMessageObject& >( other );
                 if ( dataObject.spare_ != spare_ )
                 {
                     return false;
@@ -2724,15 +2724,15 @@ namespace Barrelman::Data
             increment4_ = increment4;
         }
     };
-    class AisExtendedClassBCsPositionReportMessageData : public AisMessageData
+    class AisExtendedClassBCsPositionReportMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisExtendedClassBCsPositionReportMessage;
     private:
         Int32 reserved_ = 0;
         double speedOverGround_ = 0.0;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
@@ -2740,18 +2740,18 @@ namespace Barrelman::Data
         Int32 timestamp_ = 0;
         Int32 regionalReserved_ = 0;
         Guid name_;
-        Data::ShipType shipType_ = Data::ShipType::NotAvailable;
+        Types::ShipType shipType_ = Types::ShipType::NotAvailable;
         Int32 dimensionToBow_ = 0;
         Int32 dimensionToStern_ = 0;
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
-        Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::PositionFixType positionFixType_ = Types::PositionFixType::Undefined1;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         bool dataTerminalReady_ = false;
         bool assigned_ = false;
         Int32 spare_ = 0;
     public:
-        AisExtendedClassBCsPositionReportMessageData( ) = default;
+        AisExtendedClassBCsPositionReportMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -2816,18 +2816,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisExtendedClassBCsPositionReportMessageData>( );
+            return std::make_shared<AisExtendedClassBCsPositionReportMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisExtendedClassBCsPositionReportMessageData&>( target );
+            auto& dest = static_cast<AisExtendedClassBCsPositionReportMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisExtendedClassBCsPositionReportMessageData& >( other );
+                const auto& dataObject = static_cast< const AisExtendedClassBCsPositionReportMessageObject& >( other );
                 if ( dataObject.reserved_ != reserved_ )
                 {
                     return false;
@@ -2928,11 +2928,11 @@ namespace Barrelman::Data
         {
             speedOverGround_ = speedOverGround;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -2992,11 +2992,11 @@ namespace Barrelman::Data
         {
             name_ = name;
         }
-        Data::ShipType ShipType( ) const
+        Types::ShipType ShipType( ) const
         {
             return shipType_;
         }
-        void SetShipType( Data::ShipType shipType )
+        void SetShipType( Types::ShipType shipType )
         {
             shipType_ = shipType;
         }
@@ -3032,19 +3032,19 @@ namespace Barrelman::Data
         {
             dimensionToStarboard_ = dimensionToStarboard;
         }
-        Data::PositionFixType PositionFixType( ) const
+        Types::PositionFixType PositionFixType( ) const
         {
             return positionFixType_;
         }
-        void SetPositionFixType( Data::PositionFixType positionFixType )
+        void SetPositionFixType( Types::PositionFixType positionFixType )
         {
             positionFixType_ = positionFixType;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -3073,22 +3073,22 @@ namespace Barrelman::Data
             spare_ = spare;
         }
     };
-    class AisInterrogationMessageData : public AisMessageData
+    class AisInterrogationMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisInterrogationMessage;
     private:
         Guid interrogatedMmsi_;
-        Data::AisMessageType firstMessageType_ = Data::AisMessageType::PositionReportClassA;
+        Types::AisMessageType firstMessageType_ = Types::AisMessageType::PositionReportClassA;
         Int32 firstSlotOffset_ = 0;
-        DBEnum<Data::AisMessageType> secondMessageType_;
+        DBEnum<Types::AisMessageType> secondMessageType_;
         DBInt32 secondSlotOffset_;
         DBGuid secondStationInterrogationMmsi_;
-        DBEnum<Data::AisMessageType> secondStationFirstMessageType_;
+        DBEnum<Types::AisMessageType> secondStationFirstMessageType_;
         DBInt32 secondStationFirstSlotOffset_;
     public:
-        AisInterrogationMessageData( ) = default;
+        AisInterrogationMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3129,18 +3129,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisInterrogationMessageData>( );
+            return std::make_shared<AisInterrogationMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisInterrogationMessageData&>( target );
+            auto& dest = static_cast<AisInterrogationMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisInterrogationMessageData& >( other );
+                const auto& dataObject = static_cast< const AisInterrogationMessageObject& >( other );
                 if ( dataObject.interrogatedMmsi_ != interrogatedMmsi_ )
                 {
                     return false;
@@ -3185,11 +3185,11 @@ namespace Barrelman::Data
         {
             interrogatedMmsi_ = interrogatedMmsi;
         }
-        Data::AisMessageType FirstMessageType( ) const
+        Types::AisMessageType FirstMessageType( ) const
         {
             return firstMessageType_;
         }
-        void SetFirstMessageType( Data::AisMessageType firstMessageType )
+        void SetFirstMessageType( Types::AisMessageType firstMessageType )
         {
             firstMessageType_ = firstMessageType;
         }
@@ -3201,11 +3201,11 @@ namespace Barrelman::Data
         {
             firstSlotOffset_ = firstSlotOffset;
         }
-        const DBEnum<Data::AisMessageType>& SecondMessageType( ) const
+        const DBEnum<Types::AisMessageType>& SecondMessageType( ) const
         {
             return secondMessageType_;
         }
-        void SetSecondMessageType( const DBEnum<Data::AisMessageType>& secondMessageType )
+        void SetSecondMessageType( const DBEnum<Types::AisMessageType>& secondMessageType )
         {
             secondMessageType_ = secondMessageType;
         }
@@ -3225,11 +3225,11 @@ namespace Barrelman::Data
         {
             secondStationInterrogationMmsi_ = secondStationInterrogationMmsi;
         }
-        const DBEnum<Data::AisMessageType>& SecondStationFirstMessageType( ) const
+        const DBEnum<Types::AisMessageType>& SecondStationFirstMessageType( ) const
         {
             return secondStationFirstMessageType_;
         }
-        void SetSecondStationFirstMessageType( const DBEnum<Data::AisMessageType>& secondStationFirstMessageType )
+        void SetSecondStationFirstMessageType( const DBEnum<Types::AisMessageType>& secondStationFirstMessageType )
         {
             secondStationFirstMessageType_ = secondStationFirstMessageType;
         }
@@ -3242,27 +3242,27 @@ namespace Barrelman::Data
             secondStationFirstSlotOffset_ = secondStationFirstSlotOffset;
         }
     };
-    class AisPositionReportClassAMessageBaseData : public AisMessageData
+    class AisPositionReportClassAMessageBaseObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisPositionReportClassAMessageBase;
     private:
-        Data::NavigationStatus navigationStatus_ = Data::NavigationStatus::UnderWayUsingEngine;
+        Types::NavigationStatus navigationStatus_ = Types::NavigationStatus::UnderWayUsingEngine;
         DBInt32 rateOfTurn_;
         double speedOverGround_ = 0.0;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
         DBInt32 trueHeading_;
         Int32 timestamp_ = 0;
-        Data::ManeuverIndicator maneuverIndicator_ = Data::ManeuverIndicator::NotAvailable;
+        Types::ManeuverIndicator maneuverIndicator_ = Types::ManeuverIndicator::NotAvailable;
         Int32 spare_ = 0;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         Int32 radioStatus_ = 0;
     public:
-        AisPositionReportClassAMessageBaseData( ) = default;
+        AisPositionReportClassAMessageBaseObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3313,18 +3313,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisPositionReportClassAMessageBaseData>( );
+            return std::make_shared<AisPositionReportClassAMessageBaseObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisPositionReportClassAMessageBaseData&>( target );
+            auto& dest = static_cast<AisPositionReportClassAMessageBaseObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisPositionReportClassAMessageBaseData& >( other );
+                const auto& dataObject = static_cast< const AisPositionReportClassAMessageBaseObject& >( other );
                 if ( dataObject.navigationStatus_ != navigationStatus_ )
                 {
                     return false;
@@ -3381,11 +3381,11 @@ namespace Barrelman::Data
             }
             return false;
         }
-        Data::NavigationStatus NavigationStatus( ) const
+        Types::NavigationStatus NavigationStatus( ) const
         {
             return navigationStatus_;
         }
-        void SetNavigationStatus( Data::NavigationStatus navigationStatus )
+        void SetNavigationStatus( Types::NavigationStatus navigationStatus )
         {
             navigationStatus_ = navigationStatus;
         }
@@ -3405,11 +3405,11 @@ namespace Barrelman::Data
         {
             speedOverGround_ = speedOverGround;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -3453,11 +3453,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::ManeuverIndicator ManeuverIndicator( ) const
+        Types::ManeuverIndicator ManeuverIndicator( ) const
         {
             return maneuverIndicator_;
         }
-        void SetManeuverIndicator( Data::ManeuverIndicator maneuverIndicator )
+        void SetManeuverIndicator( Types::ManeuverIndicator maneuverIndicator )
         {
             maneuverIndicator_ = maneuverIndicator;
         }
@@ -3469,11 +3469,11 @@ namespace Barrelman::Data
         {
             spare_ = spare;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -3486,14 +3486,14 @@ namespace Barrelman::Data
             radioStatus_ = radioStatus;
         }
     };
-    class AisPositionReportClassAAssignedScheduleMessageData : public AisPositionReportClassAMessageBaseData
+    class AisPositionReportClassAAssignedScheduleMessageObject : public AisPositionReportClassAMessageBaseObject
     {
     public:
-        using Base = AisPositionReportClassAMessageBaseData;
+        using Base = AisPositionReportClassAMessageBaseObject;
         static constexpr Kind KIND = Kind::AisPositionReportClassAAssignedScheduleMessage;
     private:
     public:
-        AisPositionReportClassAAssignedScheduleMessageData( ) = default;
+        AisPositionReportClassAAssignedScheduleMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3518,31 +3518,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisPositionReportClassAAssignedScheduleMessageData>( );
+            return std::make_shared<AisPositionReportClassAAssignedScheduleMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisPositionReportClassAAssignedScheduleMessageData&>( target );
+            auto& dest = static_cast<AisPositionReportClassAAssignedScheduleMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisPositionReportClassAAssignedScheduleMessageData& >( other );
+                const auto& dataObject = static_cast< const AisPositionReportClassAAssignedScheduleMessageObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisPositionReportClassAMessageData : public AisPositionReportClassAMessageBaseData
+    class AisPositionReportClassAMessageObject : public AisPositionReportClassAMessageBaseObject
     {
     public:
-        using Base = AisPositionReportClassAMessageBaseData;
+        using Base = AisPositionReportClassAMessageBaseObject;
         static constexpr Kind KIND = Kind::AisPositionReportClassAMessage;
     private:
     public:
-        AisPositionReportClassAMessageData( ) = default;
+        AisPositionReportClassAMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3567,31 +3567,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisPositionReportClassAMessageData>( );
+            return std::make_shared<AisPositionReportClassAMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisPositionReportClassAMessageData&>( target );
+            auto& dest = static_cast<AisPositionReportClassAMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisPositionReportClassAMessageData& >( other );
+                const auto& dataObject = static_cast< const AisPositionReportClassAMessageObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisPositionReportClassAResponseToInterrogationMessageData : public AisPositionReportClassAMessageBaseData
+    class AisPositionReportClassAResponseToInterrogationMessageObject : public AisPositionReportClassAMessageBaseObject
     {
     public:
-        using Base = AisPositionReportClassAMessageBaseData;
+        using Base = AisPositionReportClassAMessageBaseObject;
         static constexpr Kind KIND = Kind::AisPositionReportClassAResponseToInterrogationMessage;
     private:
     public:
-        AisPositionReportClassAResponseToInterrogationMessageData( ) = default;
+        AisPositionReportClassAResponseToInterrogationMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3616,40 +3616,40 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisPositionReportClassAResponseToInterrogationMessageData>( );
+            return std::make_shared<AisPositionReportClassAResponseToInterrogationMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisPositionReportClassAResponseToInterrogationMessageData&>( target );
+            auto& dest = static_cast<AisPositionReportClassAResponseToInterrogationMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisPositionReportClassAResponseToInterrogationMessageData& >( other );
+                const auto& dataObject = static_cast< const AisPositionReportClassAResponseToInterrogationMessageObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisPositionReportForLongRangeApplicationsMessageData : public AisMessageData
+    class AisPositionReportForLongRangeApplicationsMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisPositionReportForLongRangeApplicationsMessage;
     private:
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
-        Data::Raim raim_ = Data::Raim::NotInUse;
-        Data::NavigationStatus navigationStatus_ = Data::NavigationStatus::UnderWayUsingEngine;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
+        Types::Raim raim_ = Types::Raim::NotInUse;
+        Types::NavigationStatus navigationStatus_ = Types::NavigationStatus::UnderWayUsingEngine;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double speedOverGround_ = 0.0;
         double courseOverGround_ = 0.0;
-        Data::GnssPositionStatus gnssPositionStatus_ = Data::GnssPositionStatus::CurrentGnssPosition;
+        Types::GnssPositionStatus gnssPositionStatus_ = Types::GnssPositionStatus::CurrentGnssPosition;
         Int32 spare_ = 0;
     public:
-        AisPositionReportForLongRangeApplicationsMessageData( ) = default;
+        AisPositionReportForLongRangeApplicationsMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3692,18 +3692,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisPositionReportForLongRangeApplicationsMessageData>( );
+            return std::make_shared<AisPositionReportForLongRangeApplicationsMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisPositionReportForLongRangeApplicationsMessageData&>( target );
+            auto& dest = static_cast<AisPositionReportForLongRangeApplicationsMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisPositionReportForLongRangeApplicationsMessageData& >( other );
+                const auto& dataObject = static_cast< const AisPositionReportForLongRangeApplicationsMessageObject& >( other );
                 if ( dataObject.positionAccuracy_ != positionAccuracy_ )
                 {
                     return false;
@@ -3744,27 +3744,27 @@ namespace Barrelman::Data
             }
             return false;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
-        Data::NavigationStatus NavigationStatus( ) const
+        Types::NavigationStatus NavigationStatus( ) const
         {
             return navigationStatus_;
         }
-        void SetNavigationStatus( Data::NavigationStatus navigationStatus )
+        void SetNavigationStatus( Types::NavigationStatus navigationStatus )
         {
             navigationStatus_ = navigationStatus;
         }
@@ -3800,11 +3800,11 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        Data::GnssPositionStatus GnssPositionStatus( ) const
+        Types::GnssPositionStatus GnssPositionStatus( ) const
         {
             return gnssPositionStatus_;
         }
-        void SetGnssPositionStatus( Data::GnssPositionStatus gnssPositionStatus )
+        void SetGnssPositionStatus( Types::GnssPositionStatus gnssPositionStatus )
         {
             gnssPositionStatus_ = gnssPositionStatus;
         }
@@ -3817,10 +3817,10 @@ namespace Barrelman::Data
             spare_ = spare;
         }
     };
-    class AisSafetyRelatedAcknowledgmentMessageData : public AisMessageData
+    class AisSafetyRelatedAcknowledgmentMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisSafetyRelatedAcknowledgmentMessage;
     private:
         Int32 spare_ = 0;
@@ -3833,7 +3833,7 @@ namespace Barrelman::Data
         DBInt32 sequenceNumber4_;
         DBGuid mmsi4_;
     public:
-        AisSafetyRelatedAcknowledgmentMessageData( ) = default;
+        AisSafetyRelatedAcknowledgmentMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -3876,18 +3876,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisSafetyRelatedAcknowledgmentMessageData>( );
+            return std::make_shared<AisSafetyRelatedAcknowledgmentMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisSafetyRelatedAcknowledgmentMessageData&>( target );
+            auto& dest = static_cast<AisSafetyRelatedAcknowledgmentMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisSafetyRelatedAcknowledgmentMessageData& >( other );
+                const auto& dataObject = static_cast< const AisSafetyRelatedAcknowledgmentMessageObject& >( other );
                 if ( dataObject.spare_ != spare_ )
                 {
                     return false;
@@ -4001,15 +4001,15 @@ namespace Barrelman::Data
             mmsi4_ = mmsi4;
         }
     };
-    class AisStandardClassBCsPositionReportMessageData : public AisMessageData
+    class AisStandardClassBCsPositionReportMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisStandardClassBCsPositionReportMessage;
     private:
         Int32 reserved_ = 0;
         double speedOverGround_ = 0.0;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
@@ -4022,10 +4022,10 @@ namespace Barrelman::Data
         bool band_ = false;
         bool canAcceptMessage22_ = false;
         bool assigned_ = false;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         Int32 radioStatus_ = 0;
     public:
-        AisStandardClassBCsPositionReportMessageData( ) = default;
+        AisStandardClassBCsPositionReportMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4084,18 +4084,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisStandardClassBCsPositionReportMessageData>( );
+            return std::make_shared<AisStandardClassBCsPositionReportMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisStandardClassBCsPositionReportMessageData&>( target );
+            auto& dest = static_cast<AisStandardClassBCsPositionReportMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisStandardClassBCsPositionReportMessageData& >( other );
+                const auto& dataObject = static_cast< const AisStandardClassBCsPositionReportMessageObject& >( other );
                 if ( dataObject.reserved_ != reserved_ )
                 {
                     return false;
@@ -4184,11 +4184,11 @@ namespace Barrelman::Data
         {
             speedOverGround_ = speedOverGround;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -4288,11 +4288,11 @@ namespace Barrelman::Data
         {
             assigned_ = assigned;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -4305,15 +4305,15 @@ namespace Barrelman::Data
             radioStatus_ = radioStatus;
         }
     };
-    class AisStandardSarAircraftPositionReportMessageData : public AisMessageData
+    class AisStandardSarAircraftPositionReportMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisStandardSarAircraftPositionReportMessage;
     private:
         Int32 altitude_ = 0;
         Int32 speedOverGround_ = 0;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double courseOverGround_ = 0.0;
@@ -4322,10 +4322,10 @@ namespace Barrelman::Data
         bool dataTerminalReady_ = false;
         Int32 spare_ = 0;
         bool assigned_ = false;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         Int32 radioStatus_ = 0;
     public:
-        AisStandardSarAircraftPositionReportMessageData( ) = default;
+        AisStandardSarAircraftPositionReportMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4376,18 +4376,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisStandardSarAircraftPositionReportMessageData>( );
+            return std::make_shared<AisStandardSarAircraftPositionReportMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisStandardSarAircraftPositionReportMessageData&>( target );
+            auto& dest = static_cast<AisStandardSarAircraftPositionReportMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisStandardSarAircraftPositionReportMessageData& >( other );
+                const auto& dataObject = static_cast< const AisStandardSarAircraftPositionReportMessageObject& >( other );
                 if ( dataObject.altitude_ != altitude_ )
                 {
                     return false;
@@ -4460,11 +4460,11 @@ namespace Barrelman::Data
         {
             speedOverGround_ = speedOverGround;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -4532,11 +4532,11 @@ namespace Barrelman::Data
         {
             assigned_ = assigned;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -4549,29 +4549,29 @@ namespace Barrelman::Data
             radioStatus_ = radioStatus;
         }
     };
-    class AisStaticAndVoyageRelatedDataMessageData : public AisMessageData
+    class AisStaticAndVoyageRelatedDataMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisStaticAndVoyageRelatedDataMessage;
     private:
         Int32 aisVersion_ = 0;
         Guid imoNumber_;
         Guid callsign_;
         Guid shipName_;
-        Data::ShipType shipType_ = Data::ShipType::NotAvailable;
+        Types::ShipType shipType_ = Types::ShipType::NotAvailable;
         Int32 dimensionToBow_ = 0;
         Int32 dimensionToStern_ = 0;
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
-        Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
+        Types::PositionFixType positionFixType_ = Types::PositionFixType::Undefined1;
         DBDateTime estimatedTimeOfArrival_;
         double draught_ = 0.0;
         FixedDBWideString<127> destination_;
         bool dataTerminalReady_ = false;
         Int32 spare_ = 0;
     public:
-        AisStaticAndVoyageRelatedDataMessageData( ) = default;
+        AisStaticAndVoyageRelatedDataMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4626,18 +4626,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisStaticAndVoyageRelatedDataMessageData>( );
+            return std::make_shared<AisStaticAndVoyageRelatedDataMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisStaticAndVoyageRelatedDataMessageData&>( target );
+            auto& dest = static_cast<AisStaticAndVoyageRelatedDataMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisStaticAndVoyageRelatedDataMessageData& >( other );
+                const auto& dataObject = static_cast< const AisStaticAndVoyageRelatedDataMessageObject& >( other );
                 if ( dataObject.aisVersion_ != aisVersion_ )
                 {
                     return false;
@@ -4734,11 +4734,11 @@ namespace Barrelman::Data
         {
             shipName_ = shipName;
         }
-        Data::ShipType ShipType( ) const
+        Types::ShipType ShipType( ) const
         {
             return shipType_;
         }
-        void SetShipType( Data::ShipType shipType )
+        void SetShipType( Types::ShipType shipType )
         {
             shipType_ = shipType;
         }
@@ -4774,11 +4774,11 @@ namespace Barrelman::Data
         {
             dimensionToStarboard_ = dimensionToStarboard;
         }
-        Data::PositionFixType PositionFixType( ) const
+        Types::PositionFixType PositionFixType( ) const
         {
             return positionFixType_;
         }
-        void SetPositionFixType( Data::PositionFixType positionFixType )
+        void SetPositionFixType( Types::PositionFixType positionFixType )
         {
             positionFixType_ = positionFixType;
         }
@@ -4823,15 +4823,15 @@ namespace Barrelman::Data
             spare_ = spare;
         }
     };
-    class AisStaticDataReportMessageData : public AisMessageData
+    class AisStaticDataReportMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisStaticDataReportMessage;
     private:
         Int32 partNumber_ = 0;
     public:
-        AisStaticDataReportMessageData( ) = default;
+        AisStaticDataReportMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4858,18 +4858,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisStaticDataReportMessageData>( );
+            return std::make_shared<AisStaticDataReportMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisStaticDataReportMessageData&>( target );
+            auto& dest = static_cast<AisStaticDataReportMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisStaticDataReportMessageData& >( other );
+                const auto& dataObject = static_cast< const AisStaticDataReportMessageObject& >( other );
                 if ( dataObject.partNumber_ != partNumber_ )
                 {
                     return false;
@@ -4887,16 +4887,16 @@ namespace Barrelman::Data
             partNumber_ = partNumber;
         }
     };
-    class AisStaticDataReportPartAMessageData : public AisStaticDataReportMessageData
+    class AisStaticDataReportPartAMessageObject : public AisStaticDataReportMessageObject
     {
     public:
-        using Base = AisStaticDataReportMessageData;
+        using Base = AisStaticDataReportMessageObject;
         static constexpr Kind KIND = Kind::AisStaticDataReportPartAMessage;
     private:
         Guid shipName_;
         Int32 spare_ = 0;
     public:
-        AisStaticDataReportPartAMessageData( ) = default;
+        AisStaticDataReportPartAMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -4925,18 +4925,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisStaticDataReportPartAMessageData>( );
+            return std::make_shared<AisStaticDataReportPartAMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisStaticDataReportPartAMessageData&>( target );
+            auto& dest = static_cast<AisStaticDataReportPartAMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisStaticDataReportPartAMessageData& >( other );
+                const auto& dataObject = static_cast< const AisStaticDataReportPartAMessageObject& >( other );
                 if ( dataObject.shipName_ != shipName_ )
                 {
                     return false;
@@ -4966,13 +4966,13 @@ namespace Barrelman::Data
             spare_ = spare;
         }
     };
-    class AisStaticDataReportPartBMessageData : public AisStaticDataReportMessageData
+    class AisStaticDataReportPartBMessageObject : public AisStaticDataReportMessageObject
     {
     public:
-        using Base = AisStaticDataReportMessageData;
+        using Base = AisStaticDataReportMessageObject;
         static constexpr Kind KIND = Kind::AisStaticDataReportPartBMessage;
     private:
-        Data::ShipType shipType_ = Data::ShipType::NotAvailable;
+        Types::ShipType shipType_ = Types::ShipType::NotAvailable;
         FixedDBWideString<127> vendorId_;
         Int32 unitModelCode_ = 0;
         Int32 serialNumber_ = 0;
@@ -4982,10 +4982,10 @@ namespace Barrelman::Data
         Int32 dimensionToPort_ = 0;
         Int32 dimensionToStarboard_ = 0;
         DBGuid mothershipMmsi_;
-        Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
+        Types::PositionFixType positionFixType_ = Types::PositionFixType::Undefined1;
         Int32 spare_ = 0;
     public:
-        AisStaticDataReportPartBMessageData( ) = default;
+        AisStaticDataReportPartBMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5034,18 +5034,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisStaticDataReportPartBMessageData>( );
+            return std::make_shared<AisStaticDataReportPartBMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisStaticDataReportPartBMessageData&>( target );
+            auto& dest = static_cast<AisStaticDataReportPartBMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisStaticDataReportPartBMessageData& >( other );
+                const auto& dataObject = static_cast< const AisStaticDataReportPartBMessageObject& >( other );
                 if ( dataObject.shipType_ != shipType_ )
                 {
                     return false;
@@ -5098,11 +5098,11 @@ namespace Barrelman::Data
             }
             return false;
         }
-        Data::ShipType ShipType( ) const
+        Types::ShipType ShipType( ) const
         {
             return shipType_;
         }
-        void SetShipType( Data::ShipType shipType )
+        void SetShipType( Types::ShipType shipType )
         {
             shipType_ = shipType;
         }
@@ -5178,11 +5178,11 @@ namespace Barrelman::Data
         {
             mothershipMmsi_ = mothershipMmsi;
         }
-        Data::PositionFixType PositionFixType( ) const
+        Types::PositionFixType PositionFixType( ) const
         {
             return positionFixType_;
         }
-        void SetPositionFixType( Data::PositionFixType positionFixType )
+        void SetPositionFixType( Types::PositionFixType positionFixType )
         {
             positionFixType_ = positionFixType;
         }
@@ -5195,17 +5195,17 @@ namespace Barrelman::Data
             spare_ = spare;
         }
     };
-    class AisUtcAndDateInquiryMessageData : public AisMessageData
+    class AisUtcAndDateInquiryMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisUtcAndDateInquiryMessage;
     private:
         Int32 spare1_ = 0;
         Int32 destinationMmsi_ = 0;
         Int32 spare2_ = 0;
     public:
-        AisUtcAndDateInquiryMessageData( ) = default;
+        AisUtcAndDateInquiryMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5236,18 +5236,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisUtcAndDateInquiryMessageData>( );
+            return std::make_shared<AisUtcAndDateInquiryMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisUtcAndDateInquiryMessageData&>( target );
+            auto& dest = static_cast<AisUtcAndDateInquiryMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisUtcAndDateInquiryMessageData& >( other );
+                const auto& dataObject = static_cast< const AisUtcAndDateInquiryMessageObject& >( other );
                 if ( dataObject.spare1_ != spare1_ )
                 {
                     return false;
@@ -5289,22 +5289,22 @@ namespace Barrelman::Data
             spare2_ = spare2;
         }
     };
-    class AisUtcAndDateResponseMessageData : public AisMessageData
+    class AisUtcAndDateResponseMessageObject : public AisMessageObject
     {
     public:
-        using Base = AisMessageData;
+        using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisUtcAndDateResponseMessage;
     private:
         DateTime datetime_;
-        Data::PositionAccuracy positionAccuracy_ = Data::PositionAccuracy::Low;
+        Types::PositionAccuracy positionAccuracy_ = Types::PositionAccuracy::Low;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
-        Data::PositionFixType positionFixType_ = Data::PositionFixType::Undefined1;
+        Types::PositionFixType positionFixType_ = Types::PositionFixType::Undefined1;
         Int32 spare_ = 0;
-        Data::Raim raim_ = Data::Raim::NotInUse;
+        Types::Raim raim_ = Types::Raim::NotInUse;
         Int32 radioStatus_ = 0;
     public:
-        AisUtcAndDateResponseMessageData( ) = default;
+        AisUtcAndDateResponseMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5345,18 +5345,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisUtcAndDateResponseMessageData>( );
+            return std::make_shared<AisUtcAndDateResponseMessageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisUtcAndDateResponseMessageData&>( target );
+            auto& dest = static_cast<AisUtcAndDateResponseMessageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisUtcAndDateResponseMessageData& >( other );
+                const auto& dataObject = static_cast< const AisUtcAndDateResponseMessageObject& >( other );
                 if ( dataObject.datetime_ != datetime_ )
                 {
                     return false;
@@ -5401,11 +5401,11 @@ namespace Barrelman::Data
         {
             datetime_ = datetime;
         }
-        Data::PositionAccuracy PositionAccuracy( ) const
+        Types::PositionAccuracy PositionAccuracy( ) const
         {
             return positionAccuracy_;
         }
-        void SetPositionAccuracy( Data::PositionAccuracy positionAccuracy )
+        void SetPositionAccuracy( Types::PositionAccuracy positionAccuracy )
         {
             positionAccuracy_ = positionAccuracy;
         }
@@ -5425,11 +5425,11 @@ namespace Barrelman::Data
         {
             latitude_ = latitude;
         }
-        Data::PositionFixType PositionFixType( ) const
+        Types::PositionFixType PositionFixType( ) const
         {
             return positionFixType_;
         }
-        void SetPositionFixType( Data::PositionFixType positionFixType )
+        void SetPositionFixType( Types::PositionFixType positionFixType )
         {
             positionFixType_ = positionFixType;
         }
@@ -5441,11 +5441,11 @@ namespace Barrelman::Data
         {
             spare_ = spare;
         }
-        Data::Raim Raim( ) const
+        Types::Raim Raim( ) const
         {
             return raim_;
         }
-        void SetRaim( Data::Raim raim )
+        void SetRaim( Types::Raim raim )
         {
             raim_ = raim;
         }
@@ -5458,7 +5458,7 @@ namespace Barrelman::Data
             radioStatus_ = radioStatus;
         }
     };
-    class AlarmStateChangeData : public BaseData<Kind, Guid>
+    class AlarmStateChangeObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -5467,9 +5467,9 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid alarm_;
         DateTime timestamp_;
-        Data::AlarmState state_ = Data::AlarmState::Unknown;
+        Types::AlarmState state_ = Types::AlarmState::Unknown;
     public:
-        AlarmStateChangeData( ) = default;
+        AlarmStateChangeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5502,18 +5502,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AlarmStateChangeData>( );
+            return std::make_shared<AlarmStateChangeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AlarmStateChangeData&>( target );
+            auto& dest = static_cast<AlarmStateChangeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AlarmStateChangeData& >( other );
+                const auto& dataObject = static_cast< const AlarmStateChangeObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -5558,16 +5558,16 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::AlarmState State( ) const
+        Types::AlarmState State( ) const
         {
             return state_;
         }
-        void SetState( Data::AlarmState state )
+        void SetState( Types::AlarmState state )
         {
             state_ = state;
         }
     };
-    class BaseStationTypeData : public BaseData<Kind, Guid>
+    class BaseStationTypeObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -5576,7 +5576,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
     public:
-        BaseStationTypeData( ) = default;
+        BaseStationTypeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5605,18 +5605,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BaseStationTypeData>( );
+            return std::make_shared<BaseStationTypeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BaseStationTypeData&>( target );
+            auto& dest = static_cast<BaseStationTypeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BaseStationTypeData& >( other );
+                const auto& dataObject = static_cast< const BaseStationTypeObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -5646,7 +5646,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class BinaryTimeseriesValueData : public BaseData<Kind, Guid>
+    class BinaryTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -5658,7 +5658,7 @@ namespace Barrelman::Data
         Binary value_;
         SQLLEN valueLength_ = SQL_NULL_DATA;
     public:
-        BinaryTimeseriesValueData( ) = default;
+        BinaryTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5691,18 +5691,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BinaryTimeseriesValueData>( );
+            return std::make_shared<BinaryTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BinaryTimeseriesValueData&>( target );
+            auto& dest = static_cast<BinaryTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BinaryTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const BinaryTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -5756,7 +5756,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class BookmarkData : public BaseData<Kind, Guid>
+    class BookmarkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -5770,7 +5770,7 @@ namespace Barrelman::Data
         double longitude_ = 0.0;
         double zoomLevel_ = 0.0;
     public:
-        BookmarkData( ) = default;
+        BookmarkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5809,18 +5809,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BookmarkData>( );
+            return std::make_shared<BookmarkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BookmarkData&>( target );
+            auto& dest = static_cast<BookmarkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BookmarkData& >( other );
+                const auto& dataObject = static_cast< const BookmarkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -5910,7 +5910,7 @@ namespace Barrelman::Data
             zoomLevel_ = zoomLevel;
         }
     };
-    class BooleanTimeseriesValueData : public BaseData<Kind, Guid>
+    class BooleanTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -5921,7 +5921,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBBoolean  value_;
     public:
-        BooleanTimeseriesValueData( ) = default;
+        BooleanTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -5954,18 +5954,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BooleanTimeseriesValueData>( );
+            return std::make_shared<BooleanTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BooleanTimeseriesValueData&>( target );
+            auto& dest = static_cast<BooleanTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BooleanTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const BooleanTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -6019,7 +6019,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class ByteTimeseriesValueData : public BaseData<Kind, Guid>
+    class ByteTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -6030,7 +6030,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBByte value_;
     public:
-        ByteTimeseriesValueData( ) = default;
+        ByteTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6063,18 +6063,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ByteTimeseriesValueData>( );
+            return std::make_shared<ByteTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ByteTimeseriesValueData&>( target );
+            auto& dest = static_cast<ByteTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ByteTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const ByteTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -6128,7 +6128,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class CameraCommandData : public BaseData<Kind, Guid>
+    class CameraCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -6137,11 +6137,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        CameraCommandData( ) = default;
+        CameraCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6178,18 +6178,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandData>( );
+            return std::make_shared<CameraCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandData&>( target );
+            auto& dest = static_cast<CameraCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -6242,11 +6242,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -6267,24 +6267,24 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class CameraCommandAbsoluteMoveData : public CameraCommandData
+    class CameraCommandAbsoluteMoveObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandAbsoluteMove;
     private:
-        Data::CameraPanTiltMode positionPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
+        Types::CameraPanTiltMode positionPanTiltMode_ = Types::CameraPanTiltMode::Unknown;
         DBDouble panAngle_;
         DBDouble tiltAngle_;
-        Data::CameraFocalLengthMode positionFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
+        Types::CameraFocalLengthMode positionFocalLengthMode_ = Types::CameraFocalLengthMode::Unknown;
         DBDouble focalLength_;
-        Data::CameraPanTiltMode speedPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
+        Types::CameraPanTiltMode speedPanTiltMode_ = Types::CameraPanTiltMode::Unknown;
         DBDouble panSpeed_;
         DBDouble tiltSpeed_;
-        Data::CameraFocalLengthMode speedFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
+        Types::CameraFocalLengthMode speedFocalLengthMode_ = Types::CameraFocalLengthMode::Unknown;
         DBDouble zoomSpeed_;
     public:
-        CameraCommandAbsoluteMoveData( ) = default;
+        CameraCommandAbsoluteMoveObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6329,18 +6329,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandAbsoluteMoveData>( );
+            return std::make_shared<CameraCommandAbsoluteMoveObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandAbsoluteMoveData&>( target );
+            auto& dest = static_cast<CameraCommandAbsoluteMoveObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandAbsoluteMoveData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandAbsoluteMoveObject& >( other );
                 if ( dataObject.positionPanTiltMode_ != positionPanTiltMode_ )
                 {
                     return false;
@@ -6385,11 +6385,11 @@ namespace Barrelman::Data
             }
             return false;
         }
-        Data::CameraPanTiltMode PositionPanTiltMode( ) const
+        Types::CameraPanTiltMode PositionPanTiltMode( ) const
         {
             return positionPanTiltMode_;
         }
-        void SetPositionPanTiltMode( Data::CameraPanTiltMode positionPanTiltMode )
+        void SetPositionPanTiltMode( Types::CameraPanTiltMode positionPanTiltMode )
         {
             positionPanTiltMode_ = positionPanTiltMode;
         }
@@ -6409,11 +6409,11 @@ namespace Barrelman::Data
         {
             tiltAngle_ = tiltAngle;
         }
-        Data::CameraFocalLengthMode PositionFocalLengthMode( ) const
+        Types::CameraFocalLengthMode PositionFocalLengthMode( ) const
         {
             return positionFocalLengthMode_;
         }
-        void SetPositionFocalLengthMode( Data::CameraFocalLengthMode positionFocalLengthMode )
+        void SetPositionFocalLengthMode( Types::CameraFocalLengthMode positionFocalLengthMode )
         {
             positionFocalLengthMode_ = positionFocalLengthMode;
         }
@@ -6425,11 +6425,11 @@ namespace Barrelman::Data
         {
             focalLength_ = focalLength;
         }
-        Data::CameraPanTiltMode SpeedPanTiltMode( ) const
+        Types::CameraPanTiltMode SpeedPanTiltMode( ) const
         {
             return speedPanTiltMode_;
         }
-        void SetSpeedPanTiltMode( Data::CameraPanTiltMode speedPanTiltMode )
+        void SetSpeedPanTiltMode( Types::CameraPanTiltMode speedPanTiltMode )
         {
             speedPanTiltMode_ = speedPanTiltMode;
         }
@@ -6449,11 +6449,11 @@ namespace Barrelman::Data
         {
             tiltSpeed_ = tiltSpeed;
         }
-        Data::CameraFocalLengthMode SpeedFocalLengthMode( ) const
+        Types::CameraFocalLengthMode SpeedFocalLengthMode( ) const
         {
             return speedFocalLengthMode_;
         }
-        void SetSpeedFocalLengthMode( Data::CameraFocalLengthMode speedFocalLengthMode )
+        void SetSpeedFocalLengthMode( Types::CameraFocalLengthMode speedFocalLengthMode )
         {
             speedFocalLengthMode_ = speedFocalLengthMode;
         }
@@ -6466,17 +6466,17 @@ namespace Barrelman::Data
             zoomSpeed_ = zoomSpeed;
         }
     };
-    class CameraCommandAdjustPanTiltZoomData : public CameraCommandData
+    class CameraCommandAdjustPanTiltZoomObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandAdjustPanTiltZoom;
     private:
         DBDouble x_;
         DBDouble y_;
         DBDouble z_;
     public:
-        CameraCommandAdjustPanTiltZoomData( ) = default;
+        CameraCommandAdjustPanTiltZoomObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6507,18 +6507,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandAdjustPanTiltZoomData>( );
+            return std::make_shared<CameraCommandAdjustPanTiltZoomObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandAdjustPanTiltZoomData&>( target );
+            auto& dest = static_cast<CameraCommandAdjustPanTiltZoomObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandAdjustPanTiltZoomData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandAdjustPanTiltZoomObject& >( other );
                 if ( dataObject.x_ != x_ )
                 {
                     return false;
@@ -6560,10 +6560,10 @@ namespace Barrelman::Data
             z_ = z;
         }
     };
-    class CameraCommandContinuousMoveData : public CameraCommandData
+    class CameraCommandContinuousMoveObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandContinuousMove;
     private:
         bool normalized_ = false;
@@ -6572,7 +6572,7 @@ namespace Barrelman::Data
         DBDouble zoomVelocity_;
         DBTimeSpan duration_;
     public:
-        CameraCommandContinuousMoveData( ) = default;
+        CameraCommandContinuousMoveObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6607,18 +6607,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandContinuousMoveData>( );
+            return std::make_shared<CameraCommandContinuousMoveObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandContinuousMoveData&>( target );
+            auto& dest = static_cast<CameraCommandContinuousMoveObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandContinuousMoveData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandContinuousMoveObject& >( other );
                 if ( dataObject.normalized_ != normalized_ )
                 {
                     return false;
@@ -6684,10 +6684,10 @@ namespace Barrelman::Data
             duration_ = duration;
         }
     };
-    class CameraCommandGeoMoveData : public CameraCommandData
+    class CameraCommandGeoMoveObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandGeoMove;
     private:
         double latitude_ = 0.0;
@@ -6696,7 +6696,7 @@ namespace Barrelman::Data
         DBDouble viewportWidth_;
         DBDouble viewportHeight_;
     public:
-        CameraCommandGeoMoveData( ) = default;
+        CameraCommandGeoMoveObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6731,18 +6731,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandGeoMoveData>( );
+            return std::make_shared<CameraCommandGeoMoveObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandGeoMoveData&>( target );
+            auto& dest = static_cast<CameraCommandGeoMoveObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandGeoMoveData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandGeoMoveObject& >( other );
                 if ( dataObject.latitude_ != latitude_ )
                 {
                     return false;
@@ -6808,10 +6808,10 @@ namespace Barrelman::Data
             viewportHeight_ = viewportHeight;
         }
     };
-    class CameraCommandRelativeMoveData : public CameraCommandData
+    class CameraCommandRelativeMoveObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandRelativeMove;
     private:
         bool normalized_ = false;
@@ -6822,7 +6822,7 @@ namespace Barrelman::Data
         DBDouble tiltSpeed_;
         DBDouble zoomSpeed_;
     public:
-        CameraCommandRelativeMoveData( ) = default;
+        CameraCommandRelativeMoveObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6861,18 +6861,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandRelativeMoveData>( );
+            return std::make_shared<CameraCommandRelativeMoveObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandRelativeMoveData&>( target );
+            auto& dest = static_cast<CameraCommandRelativeMoveObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandRelativeMoveData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandRelativeMoveObject& >( other );
                 if ( dataObject.normalized_ != normalized_ )
                 {
                     return false;
@@ -6962,14 +6962,14 @@ namespace Barrelman::Data
             zoomSpeed_ = zoomSpeed;
         }
     };
-    class CameraCommandReleasePTZOwnershipData : public CameraCommandData
+    class CameraCommandReleasePTZOwnershipObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandReleasePTZOwnership;
     private:
     public:
-        CameraCommandReleasePTZOwnershipData( ) = default;
+        CameraCommandReleasePTZOwnershipObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -6994,31 +6994,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandReleasePTZOwnershipData>( );
+            return std::make_shared<CameraCommandReleasePTZOwnershipObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandReleasePTZOwnershipData&>( target );
+            auto& dest = static_cast<CameraCommandReleasePTZOwnershipObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandReleasePTZOwnershipData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandReleasePTZOwnershipObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class CameraCommandRequestPTZOwnershipData : public CameraCommandData
+    class CameraCommandRequestPTZOwnershipObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandRequestPTZOwnership;
     private:
     public:
-        CameraCommandRequestPTZOwnershipData( ) = default;
+        CameraCommandRequestPTZOwnershipObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7043,32 +7043,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandRequestPTZOwnershipData>( );
+            return std::make_shared<CameraCommandRequestPTZOwnershipObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandRequestPTZOwnershipData&>( target );
+            auto& dest = static_cast<CameraCommandRequestPTZOwnershipObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandRequestPTZOwnershipData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandRequestPTZOwnershipObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class CameraCommandSetAutoFocusData : public CameraCommandData
+    class CameraCommandSetAutoFocusObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandSetAutoFocus;
     private:
         bool enabled_ = false;
     public:
-        CameraCommandSetAutoFocusData( ) = default;
+        CameraCommandSetAutoFocusObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7095,18 +7095,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandSetAutoFocusData>( );
+            return std::make_shared<CameraCommandSetAutoFocusObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandSetAutoFocusData&>( target );
+            auto& dest = static_cast<CameraCommandSetAutoFocusObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandSetAutoFocusData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandSetAutoFocusObject& >( other );
                 if ( dataObject.enabled_ != enabled_ )
                 {
                     return false;
@@ -7124,15 +7124,15 @@ namespace Barrelman::Data
             enabled_ = enabled;
         }
     };
-    class CameraCommandSetBlackAndWhiteData : public CameraCommandData
+    class CameraCommandSetBlackAndWhiteObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandSetBlackAndWhite;
     private:
         bool enabled_ = false;
     public:
-        CameraCommandSetBlackAndWhiteData( ) = default;
+        CameraCommandSetBlackAndWhiteObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7159,18 +7159,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandSetBlackAndWhiteData>( );
+            return std::make_shared<CameraCommandSetBlackAndWhiteObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandSetBlackAndWhiteData&>( target );
+            auto& dest = static_cast<CameraCommandSetBlackAndWhiteObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandSetBlackAndWhiteData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandSetBlackAndWhiteObject& >( other );
                 if ( dataObject.enabled_ != enabled_ )
                 {
                     return false;
@@ -7188,16 +7188,16 @@ namespace Barrelman::Data
             enabled_ = enabled;
         }
     };
-    class CameraCommandSetFollowedData : public CameraCommandData
+    class CameraCommandSetFollowedObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandSetFollowed;
     private:
         Guid trackId_;
-        Data::CameraFollowReason reason_ = Data::CameraFollowReason::Alarm;
+        Types::CameraFollowReason reason_ = Types::CameraFollowReason::Alarm;
     public:
-        CameraCommandSetFollowedData( ) = default;
+        CameraCommandSetFollowedObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7226,18 +7226,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandSetFollowedData>( );
+            return std::make_shared<CameraCommandSetFollowedObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandSetFollowedData&>( target );
+            auto& dest = static_cast<CameraCommandSetFollowedObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandSetFollowedData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandSetFollowedObject& >( other );
                 if ( dataObject.trackId_ != trackId_ )
                 {
                     return false;
@@ -7258,24 +7258,24 @@ namespace Barrelman::Data
         {
             trackId_ = trackId;
         }
-        Data::CameraFollowReason Reason( ) const
+        Types::CameraFollowReason Reason( ) const
         {
             return reason_;
         }
-        void SetReason( Data::CameraFollowReason reason )
+        void SetReason( Types::CameraFollowReason reason )
         {
             reason_ = reason;
         }
     };
-    class CameraCommandSetInfraRedLampData : public CameraCommandData
+    class CameraCommandSetInfraRedLampObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandSetInfraRedLamp;
     private:
         bool enabled_ = false;
     public:
-        CameraCommandSetInfraRedLampData( ) = default;
+        CameraCommandSetInfraRedLampObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7302,18 +7302,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandSetInfraRedLampData>( );
+            return std::make_shared<CameraCommandSetInfraRedLampObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandSetInfraRedLampData&>( target );
+            auto& dest = static_cast<CameraCommandSetInfraRedLampObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandSetInfraRedLampData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandSetInfraRedLampObject& >( other );
                 if ( dataObject.enabled_ != enabled_ )
                 {
                     return false;
@@ -7331,15 +7331,15 @@ namespace Barrelman::Data
             enabled_ = enabled;
         }
     };
-    class CameraCommandSetWasherData : public CameraCommandData
+    class CameraCommandSetWasherObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandSetWasher;
     private:
         bool enabled_ = false;
     public:
-        CameraCommandSetWasherData( ) = default;
+        CameraCommandSetWasherObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7366,18 +7366,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandSetWasherData>( );
+            return std::make_shared<CameraCommandSetWasherObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandSetWasherData&>( target );
+            auto& dest = static_cast<CameraCommandSetWasherObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandSetWasherData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandSetWasherObject& >( other );
                 if ( dataObject.enabled_ != enabled_ )
                 {
                     return false;
@@ -7395,15 +7395,15 @@ namespace Barrelman::Data
             enabled_ = enabled;
         }
     };
-    class CameraCommandSetWiperData : public CameraCommandData
+    class CameraCommandSetWiperObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandSetWiper;
     private:
         bool enabled_ = false;
     public:
-        CameraCommandSetWiperData( ) = default;
+        CameraCommandSetWiperObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7430,18 +7430,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandSetWiperData>( );
+            return std::make_shared<CameraCommandSetWiperObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandSetWiperData&>( target );
+            auto& dest = static_cast<CameraCommandSetWiperObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandSetWiperData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandSetWiperObject& >( other );
                 if ( dataObject.enabled_ != enabled_ )
                 {
                     return false;
@@ -7459,16 +7459,16 @@ namespace Barrelman::Data
             enabled_ = enabled;
         }
     };
-    class CameraCommandStopData : public CameraCommandData
+    class CameraCommandStopObject : public CameraCommandObject
     {
     public:
-        using Base = CameraCommandData;
+        using Base = CameraCommandObject;
         static constexpr Kind KIND = Kind::CameraCommandStop;
     private:
         bool panTilt_ = false;
         bool zoom_ = false;
     public:
-        CameraCommandStopData( ) = default;
+        CameraCommandStopObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7497,18 +7497,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandStopData>( );
+            return std::make_shared<CameraCommandStopObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandStopData&>( target );
+            auto& dest = static_cast<CameraCommandStopObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandStopData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandStopObject& >( other );
                 if ( dataObject.panTilt_ != panTilt_ )
                 {
                     return false;
@@ -7538,7 +7538,7 @@ namespace Barrelman::Data
             zoom_ = zoom;
         }
     };
-    class CameraCommandReplyData : public BaseData<Kind, Guid>
+    class CameraCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -7548,14 +7548,14 @@ namespace Barrelman::Data
         Guid camera_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
         double panAngle_ = 0.0;
         double tiltAngle_ = 0.0;
         double focalLength_ = 0.0;
     public:
-        CameraCommandReplyData( ) = default;
+        CameraCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7598,18 +7598,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraCommandReplyData>( );
+            return std::make_shared<CameraCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraCommandReplyData&>( target );
+            auto& dest = static_cast<CameraCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const CameraCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -7682,11 +7682,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -7723,7 +7723,7 @@ namespace Barrelman::Data
             focalLength_ = focalLength;
         }
     };
-    class CameraConfigurationData : public BaseData<Kind, Guid>
+    class CameraConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -7732,7 +7732,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        Data::CameraControlProtocol cameraControlProtocol_ = Data::CameraControlProtocol::Unknown;
+        Types::CameraControlProtocol cameraControlProtocol_ = Types::CameraControlProtocol::Unknown;
         FixedDBWideString<127> cameraAddress_;
         Int32 cameraPort_ = 0;
         FixedDBWideString<127> cameraControlAddress_;
@@ -7747,7 +7747,7 @@ namespace Barrelman::Data
         bool useRelativePosition_ = false;
         double azimuthFromGPS_ = 0.0;
         double distanceFromGPS_ = 0.0;
-        Data::CameraPanTiltMode panTiltMode_ = Data::CameraPanTiltMode::Unknown;
+        Types::CameraPanTiltMode panTiltMode_ = Types::CameraPanTiltMode::Unknown;
         double minTiltAngle_ = 0.0;
         double maxTiltAngle_ = 0.0;
         double minTiltScaleAngle_ = 0.0;
@@ -7768,7 +7768,7 @@ namespace Barrelman::Data
         double maxPanVelocity_ = 0.0;
         double minPanSpeed_ = 0.0;
         double maxPanSpeed_ = 0.0;
-        Data::CameraFocalLengthMode focalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
+        Types::CameraFocalLengthMode focalLengthMode_ = Types::CameraFocalLengthMode::Unknown;
         double minFocalLength_ = 0.0;
         double maxFocalLength_ = 0.0;
         double minFocalLengthScale_ = 0.0;
@@ -7794,7 +7794,7 @@ namespace Barrelman::Data
         FixedDBWideString<127> ptzConfigurationToken_;
         FixedDBWideString<127> videoSourceToken_;
     public:
-        CameraConfigurationData( ) = default;
+        CameraConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -7947,18 +7947,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraConfigurationData>( );
+            return std::make_shared<CameraConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraConfigurationData&>( target );
+            auto& dest = static_cast<CameraConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraConfigurationData& >( other );
+                const auto& dataObject = static_cast< const CameraConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -8243,11 +8243,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::CameraControlProtocol CameraControlProtocol( ) const
+        Types::CameraControlProtocol CameraControlProtocol( ) const
         {
             return cameraControlProtocol_;
         }
-        void SetCameraControlProtocol( Data::CameraControlProtocol cameraControlProtocol )
+        void SetCameraControlProtocol( Types::CameraControlProtocol cameraControlProtocol )
         {
             cameraControlProtocol_ = cameraControlProtocol;
         }
@@ -8363,11 +8363,11 @@ namespace Barrelman::Data
         {
             distanceFromGPS_ = distanceFromGPS;
         }
-        Data::CameraPanTiltMode PanTiltMode( ) const
+        Types::CameraPanTiltMode PanTiltMode( ) const
         {
             return panTiltMode_;
         }
-        void SetPanTiltMode( Data::CameraPanTiltMode panTiltMode )
+        void SetPanTiltMode( Types::CameraPanTiltMode panTiltMode )
         {
             panTiltMode_ = panTiltMode;
         }
@@ -8531,11 +8531,11 @@ namespace Barrelman::Data
         {
             maxPanSpeed_ = maxPanSpeed;
         }
-        Data::CameraFocalLengthMode FocalLengthMode( ) const
+        Types::CameraFocalLengthMode FocalLengthMode( ) const
         {
             return focalLengthMode_;
         }
-        void SetFocalLengthMode( Data::CameraFocalLengthMode focalLengthMode )
+        void SetFocalLengthMode( Types::CameraFocalLengthMode focalLengthMode )
         {
             focalLengthMode_ = focalLengthMode;
         }
@@ -8732,7 +8732,7 @@ namespace Barrelman::Data
             videoSourceToken_ = videoSourceToken;
         }
     };
-    class CameraPanCalibrationData : public BaseData<Kind, Guid>
+    class CameraPanCalibrationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -8742,7 +8742,7 @@ namespace Barrelman::Data
         Guid camera_;
         DateTime timestamp_;
     public:
-        CameraPanCalibrationData( ) = default;
+        CameraPanCalibrationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -8773,18 +8773,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraPanCalibrationData>( );
+            return std::make_shared<CameraPanCalibrationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraPanCalibrationData&>( target );
+            auto& dest = static_cast<CameraPanCalibrationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraPanCalibrationData& >( other );
+                const auto& dataObject = static_cast< const CameraPanCalibrationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -8826,7 +8826,7 @@ namespace Barrelman::Data
             timestamp_ = timestamp;
         }
     };
-    class CameraPanCalibrationValueData : public BaseData<Kind, Guid>
+    class CameraPanCalibrationValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -8837,7 +8837,7 @@ namespace Barrelman::Data
         double panAngle_ = 0.0;
         double panOffset_ = 0.0;
     public:
-        CameraPanCalibrationValueData( ) = default;
+        CameraPanCalibrationValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -8870,18 +8870,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraPanCalibrationValueData>( );
+            return std::make_shared<CameraPanCalibrationValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraPanCalibrationValueData&>( target );
+            auto& dest = static_cast<CameraPanCalibrationValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraPanCalibrationValueData& >( other );
+                const auto& dataObject = static_cast< const CameraPanCalibrationValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -8935,7 +8935,7 @@ namespace Barrelman::Data
             panOffset_ = panOffset;
         }
     };
-    class CameraStatusData : public BaseData<Kind, Guid>
+    class CameraStatusObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -8945,23 +8945,23 @@ namespace Barrelman::Data
         Guid camera_;
         Guid track_;
         DateTime timestamp_;
-        Data::CameraPanTiltMode positionPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
+        Types::CameraPanTiltMode positionPanTiltMode_ = Types::CameraPanTiltMode::Unknown;
         double panAngle_ = 0.0;
         double tiltAngle_ = 0.0;
-        Data::CameraFocalLengthMode positionFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
+        Types::CameraFocalLengthMode positionFocalLengthMode_ = Types::CameraFocalLengthMode::Unknown;
         double focalLength_ = 0.0;
-        Data::CameraMoveStatus panTiltMoveStatus_ = Data::CameraMoveStatus::Unknown;
-        Data::CameraMoveStatus zoomMoveStatus_ = Data::CameraMoveStatus::Unknown;
-        Data::CameraPanTiltMode velocityPanTiltMode_ = Data::CameraPanTiltMode::Unknown;
+        Types::CameraMoveStatus panTiltMoveStatus_ = Types::CameraMoveStatus::Unknown;
+        Types::CameraMoveStatus zoomMoveStatus_ = Types::CameraMoveStatus::Unknown;
+        Types::CameraPanTiltMode velocityPanTiltMode_ = Types::CameraPanTiltMode::Unknown;
         DBDouble panVelocity_;
         DBDouble tiltVelocity_;
-        Data::CameraFocalLengthMode velocityFocalLengthMode_ = Data::CameraFocalLengthMode::Unknown;
+        Types::CameraFocalLengthMode velocityFocalLengthMode_ = Types::CameraFocalLengthMode::Unknown;
         DBDouble zoomVelocity_;
-        Data::CameraFeatures activeFeatures_ = Data::CameraFeatures::None;
+        Types::CameraFeatures activeFeatures_ = Types::CameraFeatures::None;
         WideString error_;
         SQLLEN errorLength_ = SQL_NULL_DATA;
     public:
-        CameraStatusData( ) = default;
+        CameraStatusObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9022,18 +9022,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraStatusData>( );
+            return std::make_shared<CameraStatusObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraStatusData&>( target );
+            auto& dest = static_cast<CameraStatusObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraStatusData& >( other );
+                const auto& dataObject = static_cast< const CameraStatusObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9142,11 +9142,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::CameraPanTiltMode PositionPanTiltMode( ) const
+        Types::CameraPanTiltMode PositionPanTiltMode( ) const
         {
             return positionPanTiltMode_;
         }
-        void SetPositionPanTiltMode( Data::CameraPanTiltMode positionPanTiltMode )
+        void SetPositionPanTiltMode( Types::CameraPanTiltMode positionPanTiltMode )
         {
             positionPanTiltMode_ = positionPanTiltMode;
         }
@@ -9166,11 +9166,11 @@ namespace Barrelman::Data
         {
             tiltAngle_ = tiltAngle;
         }
-        Data::CameraFocalLengthMode PositionFocalLengthMode( ) const
+        Types::CameraFocalLengthMode PositionFocalLengthMode( ) const
         {
             return positionFocalLengthMode_;
         }
-        void SetPositionFocalLengthMode( Data::CameraFocalLengthMode positionFocalLengthMode )
+        void SetPositionFocalLengthMode( Types::CameraFocalLengthMode positionFocalLengthMode )
         {
             positionFocalLengthMode_ = positionFocalLengthMode;
         }
@@ -9182,27 +9182,27 @@ namespace Barrelman::Data
         {
             focalLength_ = focalLength;
         }
-        Data::CameraMoveStatus PanTiltMoveStatus( ) const
+        Types::CameraMoveStatus PanTiltMoveStatus( ) const
         {
             return panTiltMoveStatus_;
         }
-        void SetPanTiltMoveStatus( Data::CameraMoveStatus panTiltMoveStatus )
+        void SetPanTiltMoveStatus( Types::CameraMoveStatus panTiltMoveStatus )
         {
             panTiltMoveStatus_ = panTiltMoveStatus;
         }
-        Data::CameraMoveStatus ZoomMoveStatus( ) const
+        Types::CameraMoveStatus ZoomMoveStatus( ) const
         {
             return zoomMoveStatus_;
         }
-        void SetZoomMoveStatus( Data::CameraMoveStatus zoomMoveStatus )
+        void SetZoomMoveStatus( Types::CameraMoveStatus zoomMoveStatus )
         {
             zoomMoveStatus_ = zoomMoveStatus;
         }
-        Data::CameraPanTiltMode VelocityPanTiltMode( ) const
+        Types::CameraPanTiltMode VelocityPanTiltMode( ) const
         {
             return velocityPanTiltMode_;
         }
-        void SetVelocityPanTiltMode( Data::CameraPanTiltMode velocityPanTiltMode )
+        void SetVelocityPanTiltMode( Types::CameraPanTiltMode velocityPanTiltMode )
         {
             velocityPanTiltMode_ = velocityPanTiltMode;
         }
@@ -9222,11 +9222,11 @@ namespace Barrelman::Data
         {
             tiltVelocity_ = tiltVelocity;
         }
-        Data::CameraFocalLengthMode VelocityFocalLengthMode( ) const
+        Types::CameraFocalLengthMode VelocityFocalLengthMode( ) const
         {
             return velocityFocalLengthMode_;
         }
-        void SetVelocityFocalLengthMode( Data::CameraFocalLengthMode velocityFocalLengthMode )
+        void SetVelocityFocalLengthMode( Types::CameraFocalLengthMode velocityFocalLengthMode )
         {
             velocityFocalLengthMode_ = velocityFocalLengthMode;
         }
@@ -9238,11 +9238,11 @@ namespace Barrelman::Data
         {
             zoomVelocity_ = zoomVelocity;
         }
-        Data::CameraFeatures ActiveFeatures( ) const
+        Types::CameraFeatures ActiveFeatures( ) const
         {
             return activeFeatures_;
         }
-        void SetActiveFeatures( Data::CameraFeatures activeFeatures )
+        void SetActiveFeatures( Types::CameraFeatures activeFeatures )
         {
             activeFeatures_ = activeFeatures;
         }
@@ -9255,7 +9255,7 @@ namespace Barrelman::Data
             error_ = error;
         }
     };
-    class CameraTiltCalibrationData : public BaseData<Kind, Guid>
+    class CameraTiltCalibrationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9265,7 +9265,7 @@ namespace Barrelman::Data
         Guid camera_;
         DateTime timestamp_;
     public:
-        CameraTiltCalibrationData( ) = default;
+        CameraTiltCalibrationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9296,18 +9296,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraTiltCalibrationData>( );
+            return std::make_shared<CameraTiltCalibrationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraTiltCalibrationData&>( target );
+            auto& dest = static_cast<CameraTiltCalibrationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraTiltCalibrationData& >( other );
+                const auto& dataObject = static_cast< const CameraTiltCalibrationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9349,7 +9349,7 @@ namespace Barrelman::Data
             timestamp_ = timestamp;
         }
     };
-    class CameraTiltCalibrationValueData : public BaseData<Kind, Guid>
+    class CameraTiltCalibrationValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9360,7 +9360,7 @@ namespace Barrelman::Data
         double panAngle_ = 0.0;
         double tiltOffset_ = 0.0;
     public:
-        CameraTiltCalibrationValueData( ) = default;
+        CameraTiltCalibrationValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9393,18 +9393,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraTiltCalibrationValueData>( );
+            return std::make_shared<CameraTiltCalibrationValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraTiltCalibrationValueData&>( target );
+            auto& dest = static_cast<CameraTiltCalibrationValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraTiltCalibrationValueData& >( other );
+                const auto& dataObject = static_cast< const CameraTiltCalibrationValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9458,7 +9458,7 @@ namespace Barrelman::Data
             tiltOffset_ = tiltOffset;
         }
     };
-    class CameraZoomCalibrationData : public BaseData<Kind, Guid>
+    class CameraZoomCalibrationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9468,7 +9468,7 @@ namespace Barrelman::Data
         Guid camera_;
         DateTime timestamp_;
     public:
-        CameraZoomCalibrationData( ) = default;
+        CameraZoomCalibrationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9499,18 +9499,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraZoomCalibrationData>( );
+            return std::make_shared<CameraZoomCalibrationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraZoomCalibrationData&>( target );
+            auto& dest = static_cast<CameraZoomCalibrationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraZoomCalibrationData& >( other );
+                const auto& dataObject = static_cast< const CameraZoomCalibrationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9552,7 +9552,7 @@ namespace Barrelman::Data
             timestamp_ = timestamp;
         }
     };
-    class CameraZoomCalibrationValueData : public BaseData<Kind, Guid>
+    class CameraZoomCalibrationValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9563,7 +9563,7 @@ namespace Barrelman::Data
         double focalLength_ = 0.0;
         double focalLengthOffset_ = 0.0;
     public:
-        CameraZoomCalibrationValueData( ) = default;
+        CameraZoomCalibrationValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9596,18 +9596,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraZoomCalibrationValueData>( );
+            return std::make_shared<CameraZoomCalibrationValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraZoomCalibrationValueData&>( target );
+            auto& dest = static_cast<CameraZoomCalibrationValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraZoomCalibrationValueData& >( other );
+                const auto& dataObject = static_cast< const CameraZoomCalibrationValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9661,7 +9661,7 @@ namespace Barrelman::Data
             focalLengthOffset_ = focalLengthOffset;
         }
     };
-    class CatalogElementData : public BaseData<Kind, Guid>
+    class CatalogElementObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9671,7 +9671,7 @@ namespace Barrelman::Data
         Guid catalog_;
         FixedDBWideString<127> name_;
     public:
-        CatalogElementData( ) = default;
+        CatalogElementObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9702,18 +9702,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CatalogElementData>( );
+            return std::make_shared<CatalogElementObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CatalogElementData&>( target );
+            auto& dest = static_cast<CatalogElementObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CatalogElementData& >( other );
+                const auto& dataObject = static_cast< const CatalogElementObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9755,14 +9755,14 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class CatalogData : public CatalogElementData
+    class CatalogObject : public CatalogElementObject
     {
     public:
-        using Base = CatalogElementData;
+        using Base = CatalogElementObject;
         static constexpr Kind KIND = Kind::Catalog;
     private:
     public:
-        CatalogData( ) = default;
+        CatalogObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9787,32 +9787,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CatalogData>( );
+            return std::make_shared<CatalogObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CatalogData&>( target );
+            auto& dest = static_cast<CatalogObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CatalogData& >( other );
+                const auto& dataObject = static_cast< const CatalogObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class ElementData : public CatalogElementData
+    class ElementObject : public CatalogElementObject
     {
     public:
-        using Base = CatalogElementData;
+        using Base = CatalogElementObject;
         static constexpr Kind KIND = Kind::Element;
     private:
         Guid elementType_;
     public:
-        ElementData( ) = default;
+        ElementObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9839,18 +9839,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ElementData>( );
+            return std::make_shared<ElementObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ElementData&>( target );
+            auto& dest = static_cast<ElementObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ElementData& >( other );
+                const auto& dataObject = static_cast< const ElementObject& >( other );
                 if ( dataObject.elementType_ != elementType_ )
                 {
                     return false;
@@ -9868,7 +9868,7 @@ namespace Barrelman::Data
             elementType_ = elementType;
         }
     };
-    class CollectionInfoData : public BaseData<Kind, Guid>
+    class CollectionInfoObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9877,7 +9877,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Int64 count_ = 0;
     public:
-        CollectionInfoData( ) = default;
+        CollectionInfoObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9906,18 +9906,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CollectionInfoData>( );
+            return std::make_shared<CollectionInfoObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CollectionInfoData&>( target );
+            auto& dest = static_cast<CollectionInfoObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CollectionInfoData& >( other );
+                const auto& dataObject = static_cast< const CollectionInfoObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -9947,7 +9947,7 @@ namespace Barrelman::Data
             count_ = count;
         }
     };
-    class CountryData : public BaseData<Kind, Guid>
+    class CountryObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -9959,7 +9959,7 @@ namespace Barrelman::Data
         FixedDBWideString<2> alpha2_;
         FixedDBWideString<3> alpha3_;
     public:
-        CountryData( ) = default;
+        CountryObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -9994,18 +9994,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CountryData>( );
+            return std::make_shared<CountryObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CountryData&>( target );
+            auto& dest = static_cast<CountryObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CountryData& >( other );
+                const auto& dataObject = static_cast< const CountryObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10071,7 +10071,7 @@ namespace Barrelman::Data
             alpha3_ = alpha3;
         }
     };
-    class CursorInfoData : public BaseData<Kind, Guid>
+    class CursorInfoObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10080,7 +10080,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Int32 typeCode_ = 0;
     public:
-        CursorInfoData( ) = default;
+        CursorInfoObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10109,18 +10109,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CursorInfoData>( );
+            return std::make_shared<CursorInfoObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CursorInfoData&>( target );
+            auto& dest = static_cast<CursorInfoObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CursorInfoData& >( other );
+                const auto& dataObject = static_cast< const CursorInfoObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10150,7 +10150,7 @@ namespace Barrelman::Data
             typeCode_ = typeCode;
         }
     };
-    class DateTimeTimeseriesValueData : public BaseData<Kind, Guid>
+    class DateTimeTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10161,7 +10161,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBDateTime value_;
     public:
-        DateTimeTimeseriesValueData( ) = default;
+        DateTimeTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10194,18 +10194,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DateTimeTimeseriesValueData>( );
+            return std::make_shared<DateTimeTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DateTimeTimeseriesValueData&>( target );
+            auto& dest = static_cast<DateTimeTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DateTimeTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const DateTimeTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10259,7 +10259,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class DeviceHostData : public BaseData<Kind, Guid>
+    class DeviceHostObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10268,7 +10268,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
     public:
-        DeviceHostData( ) = default;
+        DeviceHostObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10297,18 +10297,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DeviceHostData>( );
+            return std::make_shared<DeviceHostObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DeviceHostData&>( target );
+            auto& dest = static_cast<DeviceHostObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DeviceHostData& >( other );
+                const auto& dataObject = static_cast< const DeviceHostObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10338,7 +10338,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class DeviceHostConfigurationData : public BaseData<Kind, Guid>
+    class DeviceHostConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10351,7 +10351,7 @@ namespace Barrelman::Data
         Int32 port_ = 0;
         FixedDBWideString<127> queueName_;
     public:
-        DeviceHostConfigurationData( ) = default;
+        DeviceHostConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10388,18 +10388,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DeviceHostConfigurationData>( );
+            return std::make_shared<DeviceHostConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DeviceHostConfigurationData&>( target );
+            auto& dest = static_cast<DeviceHostConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DeviceHostConfigurationData& >( other );
+                const auto& dataObject = static_cast< const DeviceHostConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10477,7 +10477,7 @@ namespace Barrelman::Data
             queueName_ = queueName;
         }
     };
-    class DoubleTimeseriesValueData : public BaseData<Kind, Guid>
+    class DoubleTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10488,7 +10488,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBDouble value_;
     public:
-        DoubleTimeseriesValueData( ) = default;
+        DoubleTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10521,18 +10521,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DoubleTimeseriesValueData>( );
+            return std::make_shared<DoubleTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DoubleTimeseriesValueData&>( target );
+            auto& dest = static_cast<DoubleTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DoubleTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const DoubleTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10586,7 +10586,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class FacilityTypeData : public BaseData<Kind, Guid>
+    class FacilityTypeObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10595,7 +10595,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
     public:
-        FacilityTypeData( ) = default;
+        FacilityTypeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10624,18 +10624,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<FacilityTypeData>( );
+            return std::make_shared<FacilityTypeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<FacilityTypeData&>( target );
+            auto& dest = static_cast<FacilityTypeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const FacilityTypeData& >( other );
+                const auto& dataObject = static_cast< const FacilityTypeObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10665,7 +10665,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class GeoPosition2DTimeseriesValueData : public BaseData<Kind, Guid>
+    class GeoPosition2DTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10677,7 +10677,7 @@ namespace Barrelman::Data
         DBDouble latitude_;
         DBDouble longitude_;
     public:
-        GeoPosition2DTimeseriesValueData( ) = default;
+        GeoPosition2DTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10712,18 +10712,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GeoPosition2DTimeseriesValueData>( );
+            return std::make_shared<GeoPosition2DTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GeoPosition2DTimeseriesValueData&>( target );
+            auto& dest = static_cast<GeoPosition2DTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GeoPosition2DTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const GeoPosition2DTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10789,7 +10789,7 @@ namespace Barrelman::Data
             longitude_ = longitude;
         }
     };
-    class GeoPosition3DTimeseriesValueData : public BaseData<Kind, Guid>
+    class GeoPosition3DTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10802,7 +10802,7 @@ namespace Barrelman::Data
         DBDouble longitude_;
         DBDouble altitude_;
     public:
-        GeoPosition3DTimeseriesValueData( ) = default;
+        GeoPosition3DTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10839,18 +10839,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GeoPosition3DTimeseriesValueData>( );
+            return std::make_shared<GeoPosition3DTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GeoPosition3DTimeseriesValueData&>( target );
+            auto& dest = static_cast<GeoPosition3DTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GeoPosition3DTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const GeoPosition3DTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -10928,7 +10928,7 @@ namespace Barrelman::Data
             altitude_ = altitude;
         }
     };
-    class GNSSDeviceCommandData : public BaseData<Kind, Guid>
+    class GNSSDeviceCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -10937,11 +10937,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid gNSSDevice_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        GNSSDeviceCommandData( ) = default;
+        GNSSDeviceCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -10978,18 +10978,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSDeviceCommandData>( );
+            return std::make_shared<GNSSDeviceCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSDeviceCommandData&>( target );
+            auto& dest = static_cast<GNSSDeviceCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSDeviceCommandData& >( other );
+                const auto& dataObject = static_cast< const GNSSDeviceCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11042,11 +11042,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -11067,7 +11067,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class GNSSDeviceCommandReplyData : public BaseData<Kind, Guid>
+    class GNSSDeviceCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11077,11 +11077,11 @@ namespace Barrelman::Data
         Guid gNSSDevice_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        GNSSDeviceCommandReplyData( ) = default;
+        GNSSDeviceCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11118,18 +11118,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSDeviceCommandReplyData>( );
+            return std::make_shared<GNSSDeviceCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSDeviceCommandReplyData&>( target );
+            auto& dest = static_cast<GNSSDeviceCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSDeviceCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const GNSSDeviceCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11190,11 +11190,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -11207,7 +11207,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class GNSSDeviceConfigurationData : public BaseData<Kind, Guid>
+    class GNSSDeviceConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11223,7 +11223,7 @@ namespace Barrelman::Data
         double longitudeOffset_ = 0.0;
         double altitudeOffset_ = 0.0;
     public:
-        GNSSDeviceConfigurationData( ) = default;
+        GNSSDeviceConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11266,18 +11266,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSDeviceConfigurationData>( );
+            return std::make_shared<GNSSDeviceConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSDeviceConfigurationData&>( target );
+            auto& dest = static_cast<GNSSDeviceConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSDeviceConfigurationData& >( other );
+                const auto& dataObject = static_cast< const GNSSDeviceConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11391,7 +11391,7 @@ namespace Barrelman::Data
             altitudeOffset_ = altitudeOffset;
         }
     };
-    class GuidTimeseriesValueData : public BaseData<Kind, Guid>
+    class GuidTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11402,7 +11402,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBGuid value_;
     public:
-        GuidTimeseriesValueData( ) = default;
+        GuidTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11435,18 +11435,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GuidTimeseriesValueData>( );
+            return std::make_shared<GuidTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GuidTimeseriesValueData&>( target );
+            auto& dest = static_cast<GuidTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GuidTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const GuidTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11500,7 +11500,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class GyroDeviceCommandData : public BaseData<Kind, Guid>
+    class GyroDeviceCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11509,11 +11509,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid gyroDevice_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        GyroDeviceCommandData( ) = default;
+        GyroDeviceCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11550,18 +11550,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroDeviceCommandData>( );
+            return std::make_shared<GyroDeviceCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroDeviceCommandData&>( target );
+            auto& dest = static_cast<GyroDeviceCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroDeviceCommandData& >( other );
+                const auto& dataObject = static_cast< const GyroDeviceCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11614,11 +11614,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -11639,7 +11639,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class GyroDeviceCommandReplyData : public BaseData<Kind, Guid>
+    class GyroDeviceCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11649,11 +11649,11 @@ namespace Barrelman::Data
         Guid gyroDevice_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        GyroDeviceCommandReplyData( ) = default;
+        GyroDeviceCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11690,18 +11690,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroDeviceCommandReplyData>( );
+            return std::make_shared<GyroDeviceCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroDeviceCommandReplyData&>( target );
+            auto& dest = static_cast<GyroDeviceCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroDeviceCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const GyroDeviceCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11762,11 +11762,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -11779,7 +11779,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class GyroDeviceConfigurationData : public BaseData<Kind, Guid>
+    class GyroDeviceConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11795,7 +11795,7 @@ namespace Barrelman::Data
         FixedDBWideString<64> pitchTransducerName_;
         FixedDBWideString<64> rollTransducerName_;
     public:
-        GyroDeviceConfigurationData( ) = default;
+        GyroDeviceConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11838,18 +11838,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroDeviceConfigurationData>( );
+            return std::make_shared<GyroDeviceConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroDeviceConfigurationData&>( target );
+            auto& dest = static_cast<GyroDeviceConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroDeviceConfigurationData& >( other );
+                const auto& dataObject = static_cast< const GyroDeviceConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -11963,7 +11963,7 @@ namespace Barrelman::Data
             rollTransducerName_ = rollTransducerName;
         }
     };
-    class IdentityData : public BaseData<Kind, Guid>
+    class IdentityObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -11971,7 +11971,7 @@ namespace Barrelman::Data
     private:
         Int64 rowVersion_ = 0;
     public:
-        IdentityData( ) = default;
+        IdentityObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -11998,18 +11998,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<IdentityData>( );
+            return std::make_shared<IdentityObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<IdentityData&>( target );
+            auto& dest = static_cast<IdentityObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const IdentityData& >( other );
+                const auto& dataObject = static_cast< const IdentityObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -12027,15 +12027,15 @@ namespace Barrelman::Data
             rowVersion_ = rowVersion;
         }
     };
-    class CallsignData : public IdentityData
+    class CallsignObject : public IdentityObject
     {
     public:
-        using Base = IdentityData;
+        using Base = IdentityObject;
         static constexpr Kind KIND = Kind::Callsign;
     private:
         FixedDBWideString<127> identifier_;
     public:
-        CallsignData( ) = default;
+        CallsignObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12062,18 +12062,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CallsignData>( );
+            return std::make_shared<CallsignObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CallsignData&>( target );
+            auto& dest = static_cast<CallsignObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CallsignData& >( other );
+                const auto& dataObject = static_cast< const CallsignObject& >( other );
                 if ( dataObject.identifier_ != identifier_ )
                 {
                     return false;
@@ -12091,15 +12091,15 @@ namespace Barrelman::Data
             identifier_ = identifier;
         }
     };
-    class InternationalMaritimeOrganizationNumberData : public IdentityData
+    class InternationalMaritimeOrganizationNumberObject : public IdentityObject
     {
     public:
-        using Base = IdentityData;
+        using Base = IdentityObject;
         static constexpr Kind KIND = Kind::InternationalMaritimeOrganizationNumber;
     private:
         Int64 identifier_ = 0;
     public:
-        InternationalMaritimeOrganizationNumberData( ) = default;
+        InternationalMaritimeOrganizationNumberObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12126,18 +12126,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<InternationalMaritimeOrganizationNumberData>( );
+            return std::make_shared<InternationalMaritimeOrganizationNumberObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<InternationalMaritimeOrganizationNumberData&>( target );
+            auto& dest = static_cast<InternationalMaritimeOrganizationNumberObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const InternationalMaritimeOrganizationNumberData& >( other );
+                const auto& dataObject = static_cast< const InternationalMaritimeOrganizationNumberObject& >( other );
                 if ( dataObject.identifier_ != identifier_ )
                 {
                     return false;
@@ -12155,15 +12155,15 @@ namespace Barrelman::Data
             identifier_ = identifier;
         }
     };
-    class MaritimeMobileServiceIdentityData : public IdentityData
+    class MaritimeMobileServiceIdentityObject : public IdentityObject
     {
     public:
-        using Base = IdentityData;
+        using Base = IdentityObject;
         static constexpr Kind KIND = Kind::MaritimeMobileServiceIdentity;
     private:
         Int64 identifier_ = 0;
     public:
-        MaritimeMobileServiceIdentityData( ) = default;
+        MaritimeMobileServiceIdentityObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12190,18 +12190,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MaritimeMobileServiceIdentityData>( );
+            return std::make_shared<MaritimeMobileServiceIdentityObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MaritimeMobileServiceIdentityData&>( target );
+            auto& dest = static_cast<MaritimeMobileServiceIdentityObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MaritimeMobileServiceIdentityData& >( other );
+                const auto& dataObject = static_cast< const MaritimeMobileServiceIdentityObject& >( other );
                 if ( dataObject.identifier_ != identifier_ )
                 {
                     return false;
@@ -12219,15 +12219,15 @@ namespace Barrelman::Data
             identifier_ = identifier;
         }
     };
-    class NameData : public IdentityData
+    class NameObject : public IdentityObject
     {
     public:
-        using Base = IdentityData;
+        using Base = IdentityObject;
         static constexpr Kind KIND = Kind::Name;
     private:
         FixedDBWideString<127> text_;
     public:
-        NameData( ) = default;
+        NameObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12254,18 +12254,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<NameData>( );
+            return std::make_shared<NameObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<NameData&>( target );
+            auto& dest = static_cast<NameObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const NameData& >( other );
+                const auto& dataObject = static_cast< const NameObject& >( other );
                 if ( dataObject.text_ != text_ )
                 {
                     return false;
@@ -12283,7 +12283,7 @@ namespace Barrelman::Data
             text_ = text;
         }
     };
-    class Int16TimeseriesValueData : public BaseData<Kind, Guid>
+    class Int16TimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -12294,7 +12294,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBInt16 value_;
     public:
-        Int16TimeseriesValueData( ) = default;
+        Int16TimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12327,18 +12327,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int16TimeseriesValueData>( );
+            return std::make_shared<Int16TimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int16TimeseriesValueData&>( target );
+            auto& dest = static_cast<Int16TimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int16TimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const Int16TimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -12392,7 +12392,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class Int32TimeseriesValueData : public BaseData<Kind, Guid>
+    class Int32TimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -12403,7 +12403,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBInt32 value_;
     public:
-        Int32TimeseriesValueData( ) = default;
+        Int32TimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12436,18 +12436,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int32TimeseriesValueData>( );
+            return std::make_shared<Int32TimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int32TimeseriesValueData&>( target );
+            auto& dest = static_cast<Int32TimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int32TimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const Int32TimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -12501,7 +12501,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class Int64TimeseriesValueData : public BaseData<Kind, Guid>
+    class Int64TimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -12512,7 +12512,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBInt64 value_;
     public:
-        Int64TimeseriesValueData( ) = default;
+        Int64TimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12545,18 +12545,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int64TimeseriesValueData>( );
+            return std::make_shared<Int64TimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int64TimeseriesValueData&>( target );
+            auto& dest = static_cast<Int64TimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int64TimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const Int64TimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -12610,7 +12610,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class ItemData : public BaseData<Kind, Guid>
+    class ItemObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -12618,7 +12618,7 @@ namespace Barrelman::Data
     private:
         Int64 rowVersion_ = 0;
     public:
-        ItemData( ) = default;
+        ItemObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12645,18 +12645,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ItemData>( );
+            return std::make_shared<ItemObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ItemData&>( target );
+            auto& dest = static_cast<ItemObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ItemData& >( other );
+                const auto& dataObject = static_cast< const ItemObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -12674,16 +12674,16 @@ namespace Barrelman::Data
             rowVersion_ = rowVersion;
         }
     };
-    class BaseStationData : public ItemData
+    class BaseStationObject : public ItemObject
     {
     public:
-        using Base = ItemData;
+        using Base = ItemObject;
         static constexpr Kind KIND = Kind::BaseStation;
     private:
         FixedDBWideString<127> name_;
         Guid type_;
     public:
-        BaseStationData( ) = default;
+        BaseStationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12712,18 +12712,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BaseStationData>( );
+            return std::make_shared<BaseStationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BaseStationData&>( target );
+            auto& dest = static_cast<BaseStationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BaseStationData& >( other );
+                const auto& dataObject = static_cast< const BaseStationObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -12753,10 +12753,10 @@ namespace Barrelman::Data
             type_ = type;
         }
     };
-    class DeviceData : public ItemData
+    class DeviceObject : public ItemObject
     {
     public:
-        using Base = ItemData;
+        using Base = ItemObject;
         static constexpr Kind KIND = Kind::Device;
     private:
         Guid host_;
@@ -12765,7 +12765,7 @@ namespace Barrelman::Data
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
         Guid enabledTimeseries_;
     public:
-        DeviceData( ) = default;
+        DeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12798,18 +12798,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DeviceData>( );
+            return std::make_shared<DeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DeviceData&>( target );
+            auto& dest = static_cast<DeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DeviceData& >( other );
+                const auto& dataObject = static_cast< const DeviceObject& >( other );
                 if ( dataObject.host_ != host_ )
                 {
                     return false;
@@ -12863,14 +12863,14 @@ namespace Barrelman::Data
             enabledTimeseries_ = enabledTimeseries;
         }
     };
-    class CameraDeviceData : public DeviceData
+    class CameraDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::CameraDevice;
     private:
     public:
-        CameraDeviceData( ) = default;
+        CameraDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12895,34 +12895,34 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CameraDeviceData>( );
+            return std::make_shared<CameraDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CameraDeviceData&>( target );
+            auto& dest = static_cast<CameraDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CameraDeviceData& >( other );
+                const auto& dataObject = static_cast< const CameraDeviceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class GNSSDeviceData : public DeviceData
+    class GNSSDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::GNSSDevice;
     private:
         Guid latitudeTimeseries_;
         Guid longitudeTimeseries_;
         Guid altitudeTimeseries_;
     public:
-        GNSSDeviceData( ) = default;
+        GNSSDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -12953,18 +12953,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSDeviceData>( );
+            return std::make_shared<GNSSDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSDeviceData&>( target );
+            auto& dest = static_cast<GNSSDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSDeviceData& >( other );
+                const auto& dataObject = static_cast< const GNSSDeviceObject& >( other );
                 if ( dataObject.latitudeTimeseries_ != latitudeTimeseries_ )
                 {
                     return false;
@@ -13006,10 +13006,10 @@ namespace Barrelman::Data
             altitudeTimeseries_ = altitudeTimeseries;
         }
     };
-    class GyroDeviceData : public DeviceData
+    class GyroDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::GyroDevice;
     private:
         Guid headingTrueNorthTimeseries_;
@@ -13021,7 +13021,7 @@ namespace Barrelman::Data
         Guid speedTimeseries_;
         Guid gNSSDevice_;
     public:
-        GyroDeviceData( ) = default;
+        GyroDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13062,18 +13062,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroDeviceData>( );
+            return std::make_shared<GyroDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroDeviceData&>( target );
+            auto& dest = static_cast<GyroDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroDeviceData& >( other );
+                const auto& dataObject = static_cast< const GyroDeviceObject& >( other );
                 if ( dataObject.headingTrueNorthTimeseries_ != headingTrueNorthTimeseries_ )
                 {
                     return false;
@@ -13175,14 +13175,14 @@ namespace Barrelman::Data
             gNSSDevice_ = gNSSDevice;
         }
     };
-    class LineInputDeviceData : public DeviceData
+    class LineInputDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::LineInputDevice;
     private:
     public:
-        LineInputDeviceData( ) = default;
+        LineInputDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13207,31 +13207,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputDeviceData>( );
+            return std::make_shared<LineInputDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputDeviceData&>( target );
+            auto& dest = static_cast<LineInputDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputDeviceData& >( other );
+                const auto& dataObject = static_cast< const LineInputDeviceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class OilSpillDetectorDeviceData : public DeviceData
+    class OilSpillDetectorDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::OilSpillDetectorDevice;
     private:
     public:
-        OilSpillDetectorDeviceData( ) = default;
+        OilSpillDetectorDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13256,31 +13256,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilSpillDetectorDeviceData>( );
+            return std::make_shared<OilSpillDetectorDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilSpillDetectorDeviceData&>( target );
+            auto& dest = static_cast<OilSpillDetectorDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilSpillDetectorDeviceData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorDeviceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadioDeviceData : public DeviceData
+    class RadioDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::RadioDevice;
     private:
     public:
-        RadioDeviceData( ) = default;
+        RadioDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13305,27 +13305,27 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadioDeviceData>( );
+            return std::make_shared<RadioDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadioDeviceData&>( target );
+            auto& dest = static_cast<RadioDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadioDeviceData& >( other );
+                const auto& dataObject = static_cast< const RadioDeviceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadomeDeviceData : public DeviceData
+    class RadomeDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::RadomeDevice;
     private:
         DBGuid radar_;
@@ -13334,7 +13334,7 @@ namespace Barrelman::Data
         Guid dewPointTimeseries_;
         Guid statusTimeseries_;
     public:
-        RadomeDeviceData( ) = default;
+        RadomeDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13369,18 +13369,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeDeviceData>( );
+            return std::make_shared<RadomeDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeDeviceData&>( target );
+            auto& dest = static_cast<RadomeDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeDeviceData& >( other );
+                const auto& dataObject = static_cast< const RadomeDeviceObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -13446,14 +13446,14 @@ namespace Barrelman::Data
             statusTimeseries_ = statusTimeseries;
         }
     };
-    class TrackerDeviceData : public DeviceData
+    class TrackerDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::TrackerDevice;
     private:
     public:
-        TrackerDeviceData( ) = default;
+        TrackerDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13478,31 +13478,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackerDeviceData>( );
+            return std::make_shared<TrackerDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackerDeviceData&>( target );
+            auto& dest = static_cast<TrackerDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackerDeviceData& >( other );
+                const auto& dataObject = static_cast< const TrackerDeviceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisDeviceData : public TrackerDeviceData
+    class AisDeviceObject : public TrackerDeviceObject
     {
     public:
-        using Base = TrackerDeviceData;
+        using Base = TrackerDeviceObject;
         static constexpr Kind KIND = Kind::AisDevice;
     private:
     public:
-        AisDeviceData( ) = default;
+        AisDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13527,27 +13527,27 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisDeviceData>( );
+            return std::make_shared<AisDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisDeviceData&>( target );
+            auto& dest = static_cast<AisDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisDeviceData& >( other );
+                const auto& dataObject = static_cast< const AisDeviceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadarDeviceData : public TrackerDeviceData
+    class RadarDeviceObject : public TrackerDeviceObject
     {
     public:
-        using Base = TrackerDeviceData;
+        using Base = TrackerDeviceObject;
         static constexpr Kind KIND = Kind::RadarDevice;
     private:
         Guid saveSettingsTimeseries_;
@@ -13574,7 +13574,7 @@ namespace Barrelman::Data
         DBGuid radome_;
         DBGuid gNSSDevice_;
     public:
-        RadarDeviceData( ) = default;
+        RadarDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13645,18 +13645,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarDeviceData>( );
+            return std::make_shared<RadarDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarDeviceData&>( target );
+            auto& dest = static_cast<RadarDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarDeviceData& >( other );
+                const auto& dataObject = static_cast< const RadarDeviceObject& >( other );
                 if ( dataObject.saveSettingsTimeseries_ != saveSettingsTimeseries_ )
                 {
                     return false;
@@ -13938,10 +13938,10 @@ namespace Barrelman::Data
             gNSSDevice_ = gNSSDevice;
         }
     };
-    class WeatherStationDeviceData : public DeviceData
+    class WeatherStationDeviceObject : public DeviceObject
     {
     public:
-        using Base = DeviceData;
+        using Base = DeviceObject;
         static constexpr Kind KIND = Kind::WeatherStationDevice;
     private:
         Guid barometricPressureTimeseries_;
@@ -13954,7 +13954,7 @@ namespace Barrelman::Data
         Guid windSpeedTimeseries_;
         Guid gyro_;
     public:
-        WeatherStationDeviceData( ) = default;
+        WeatherStationDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -13997,18 +13997,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationDeviceData>( );
+            return std::make_shared<WeatherStationDeviceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationDeviceData&>( target );
+            auto& dest = static_cast<WeatherStationDeviceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationDeviceData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationDeviceObject& >( other );
                 if ( dataObject.barometricPressureTimeseries_ != barometricPressureTimeseries_ )
                 {
                     return false;
@@ -14122,10 +14122,10 @@ namespace Barrelman::Data
             gyro_ = gyro;
         }
     };
-    class FacilityData : public ItemData
+    class FacilityObject : public ItemObject
     {
     public:
-        using Base = ItemData;
+        using Base = ItemObject;
         static constexpr Kind KIND = Kind::Facility;
     private:
         FixedDBWideString<127> name_;
@@ -14134,7 +14134,7 @@ namespace Barrelman::Data
         double latitude_ = 0.0;
         double altitude_ = 0.0;
     public:
-        FacilityData( ) = default;
+        FacilityObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14169,18 +14169,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<FacilityData>( );
+            return std::make_shared<FacilityObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<FacilityData&>( target );
+            auto& dest = static_cast<FacilityObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const FacilityData& >( other );
+                const auto& dataObject = static_cast< const FacilityObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -14246,14 +14246,14 @@ namespace Barrelman::Data
             altitude_ = altitude;
         }
     };
-    class TrackableItemData : public ItemData
+    class TrackableItemObject : public ItemObject
     {
     public:
-        using Base = ItemData;
+        using Base = ItemObject;
         static constexpr Kind KIND = Kind::TrackableItem;
     private:
     public:
-        TrackableItemData( ) = default;
+        TrackableItemObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14278,33 +14278,33 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackableItemData>( );
+            return std::make_shared<TrackableItemObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackableItemData&>( target );
+            auto& dest = static_cast<TrackableItemObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackableItemData& >( other );
+                const auto& dataObject = static_cast< const TrackableItemObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AircraftData : public TrackableItemData
+    class AircraftObject : public TrackableItemObject
     {
     public:
-        using Base = TrackableItemData;
+        using Base = TrackableItemObject;
         static constexpr Kind KIND = Kind::Aircraft;
     private:
         FixedDBWideString<127> name_;
         Guid type_;
     public:
-        AircraftData( ) = default;
+        AircraftObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14333,18 +14333,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AircraftData>( );
+            return std::make_shared<AircraftObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AircraftData&>( target );
+            auto& dest = static_cast<AircraftObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AircraftData& >( other );
+                const auto& dataObject = static_cast< const AircraftObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -14374,15 +14374,15 @@ namespace Barrelman::Data
             type_ = type;
         }
     };
-    class AisAidToNavigationData : public TrackableItemData
+    class AisAidToNavigationObject : public TrackableItemObject
     {
     public:
-        using Base = TrackableItemData;
+        using Base = TrackableItemObject;
         static constexpr Kind KIND = Kind::AisAidToNavigation;
     private:
         FixedDBWideString<127> name_;
         Guid mMSI_;
-        Data::NavigationalAidType navigationalAidType_ = Data::NavigationalAidType::NotSpecified;
+        Types::NavigationalAidType navigationalAidType_ = Types::NavigationalAidType::NotSpecified;
         Guid position_;
         bool isVirtual_ = false;
         Int32 toBow_ = 0;
@@ -14391,7 +14391,7 @@ namespace Barrelman::Data
         Int32 toStarboard_ = 0;
         Guid offPositionTimeseries_;
     public:
-        AisAidToNavigationData( ) = default;
+        AisAidToNavigationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14436,18 +14436,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisAidToNavigationData>( );
+            return std::make_shared<AisAidToNavigationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisAidToNavigationData&>( target );
+            auto& dest = static_cast<AisAidToNavigationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisAidToNavigationData& >( other );
+                const auto& dataObject = static_cast< const AisAidToNavigationObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -14508,11 +14508,11 @@ namespace Barrelman::Data
         {
             mMSI_ = mMSI;
         }
-        Data::NavigationalAidType NavigationalAidType( ) const
+        Types::NavigationalAidType NavigationalAidType( ) const
         {
             return navigationalAidType_;
         }
-        void SetNavigationalAidType( Data::NavigationalAidType navigationalAidType )
+        void SetNavigationalAidType( Types::NavigationalAidType navigationalAidType )
         {
             navigationalAidType_ = navigationalAidType;
         }
@@ -14573,16 +14573,16 @@ namespace Barrelman::Data
             offPositionTimeseries_ = offPositionTimeseries;
         }
     };
-    class VehicleData : public TrackableItemData
+    class VehicleObject : public TrackableItemObject
     {
     public:
-        using Base = TrackableItemData;
+        using Base = TrackableItemObject;
         static constexpr Kind KIND = Kind::Vehicle;
     private:
         FixedDBWideString<127> name_;
         Guid type_;
     public:
-        VehicleData( ) = default;
+        VehicleObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14611,18 +14611,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<VehicleData>( );
+            return std::make_shared<VehicleObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<VehicleData&>( target );
+            auto& dest = static_cast<VehicleObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const VehicleData& >( other );
+                const auto& dataObject = static_cast< const VehicleObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -14652,10 +14652,10 @@ namespace Barrelman::Data
             type_ = type;
         }
     };
-    class VesselData : public TrackableItemData
+    class VesselObject : public TrackableItemObject
     {
     public:
-        using Base = TrackableItemData;
+        using Base = TrackableItemObject;
         static constexpr Kind KIND = Kind::Vessel;
     private:
         FixedDBWideString<127> name_;
@@ -14667,7 +14667,7 @@ namespace Barrelman::Data
         Guid draughtTimeseries_;
         Guid personsOnBoardTimeseries_;
     public:
-        VesselData( ) = default;
+        VesselObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14708,18 +14708,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<VesselData>( );
+            return std::make_shared<VesselObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<VesselData&>( target );
+            auto& dest = static_cast<VesselObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const VesselData& >( other );
+                const auto& dataObject = static_cast< const VesselObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -14821,7 +14821,7 @@ namespace Barrelman::Data
             personsOnBoardTimeseries_ = personsOnBoardTimeseries;
         }
     };
-    class ItemIdentityLinkData : public BaseData<Kind, Guid>
+    class ItemIdentityLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -14833,7 +14833,7 @@ namespace Barrelman::Data
         DateTime start_;
         DBDateTime end_;
     public:
-        ItemIdentityLinkData( ) = default;
+        ItemIdentityLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14868,18 +14868,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ItemIdentityLinkData>( );
+            return std::make_shared<ItemIdentityLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ItemIdentityLinkData&>( target );
+            auto& dest = static_cast<ItemIdentityLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ItemIdentityLinkData& >( other );
+                const auto& dataObject = static_cast< const ItemIdentityLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -14945,7 +14945,7 @@ namespace Barrelman::Data
             end_ = end;
         }
     };
-    class ItemParentChildLinkData : public BaseData<Kind, Guid>
+    class ItemParentChildLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -14956,7 +14956,7 @@ namespace Barrelman::Data
         Guid child_;
         DateTime timestamp_;
     public:
-        ItemParentChildLinkData( ) = default;
+        ItemParentChildLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -14989,18 +14989,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ItemParentChildLinkData>( );
+            return std::make_shared<ItemParentChildLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ItemParentChildLinkData&>( target );
+            auto& dest = static_cast<ItemParentChildLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ItemParentChildLinkData& >( other );
+                const auto& dataObject = static_cast< const ItemParentChildLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -15054,7 +15054,7 @@ namespace Barrelman::Data
             timestamp_ = timestamp;
         }
     };
-    class LineInputDeviceCommandData : public BaseData<Kind, Guid>
+    class LineInputDeviceCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -15063,11 +15063,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid lineInputDevice_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        LineInputDeviceCommandData( ) = default;
+        LineInputDeviceCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -15104,18 +15104,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputDeviceCommandData>( );
+            return std::make_shared<LineInputDeviceCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputDeviceCommandData&>( target );
+            auto& dest = static_cast<LineInputDeviceCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputDeviceCommandData& >( other );
+                const auto& dataObject = static_cast< const LineInputDeviceCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -15168,11 +15168,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -15193,7 +15193,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class LineInputDeviceCommandReplyData : public BaseData<Kind, Guid>
+    class LineInputDeviceCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -15203,11 +15203,11 @@ namespace Barrelman::Data
         Guid lineInputDevice_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        LineInputDeviceCommandReplyData( ) = default;
+        LineInputDeviceCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -15244,18 +15244,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputDeviceCommandReplyData>( );
+            return std::make_shared<LineInputDeviceCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputDeviceCommandReplyData&>( target );
+            auto& dest = static_cast<LineInputDeviceCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputDeviceCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const LineInputDeviceCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -15316,11 +15316,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -15333,7 +15333,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class LineInputDeviceConfigurationData : public BaseData<Kind, Guid>
+    class LineInputDeviceConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -15347,7 +15347,7 @@ namespace Barrelman::Data
         bool storeUnsentMessages_ = false;
         bool nMEA_ = false;
         bool strictNMEA_ = false;
-        Data::LineInputDeviceConnectionType connectionType_ = Data::LineInputDeviceConnectionType::Unknown;
+        Types::LineInputDeviceConnectionType connectionType_ = Types::LineInputDeviceConnectionType::Unknown;
         Int32 udpReceivePort_ = 0;
         FixedDBWideString<127> udpSendHostname_;
         Int32 udpSendPort_ = 0;
@@ -15363,20 +15363,20 @@ namespace Barrelman::Data
         Int32 dataBits_ = 0;
         bool discardNull_ = false;
         bool dtrEnable_ = false;
-        Data::Handshake handshake_ = Data::Handshake::None;
+        Types::Handshake handshake_ = Types::Handshake::None;
         FixedDBWideString<127> newLine_;
-        Data::Parity parity_ = Data::Parity::None;
+        Types::Parity parity_ = Types::Parity::None;
         Byte parityReplace_ = 0;
         Int32 readBufferSize_ = 0;
         TimeSpan readTimeout_;
         Int32 receivedBytesThreshold_ = 0;
         bool rtsEnable_ = false;
-        Data::StopBits stopBits_ = Data::StopBits::None;
+        Types::StopBits stopBits_ = Types::StopBits::None;
         Int32 writeBufferSize_ = 0;
         TimeSpan writeTimeout_;
         FixedDBWideString<127> pairedComPort_;
     public:
-        LineInputDeviceConfigurationData( ) = default;
+        LineInputDeviceConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -15473,18 +15473,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputDeviceConfigurationData>( );
+            return std::make_shared<LineInputDeviceConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputDeviceConfigurationData&>( target );
+            auto& dest = static_cast<LineInputDeviceConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputDeviceConfigurationData& >( other );
+                const auto& dataObject = static_cast< const LineInputDeviceConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -15697,11 +15697,11 @@ namespace Barrelman::Data
         {
             strictNMEA_ = strictNMEA;
         }
-        Data::LineInputDeviceConnectionType ConnectionType( ) const
+        Types::LineInputDeviceConnectionType ConnectionType( ) const
         {
             return connectionType_;
         }
-        void SetConnectionType( Data::LineInputDeviceConnectionType connectionType )
+        void SetConnectionType( Types::LineInputDeviceConnectionType connectionType )
         {
             connectionType_ = connectionType;
         }
@@ -15825,11 +15825,11 @@ namespace Barrelman::Data
         {
             dtrEnable_ = dtrEnable;
         }
-        Data::Handshake Handshake( ) const
+        Types::Handshake Handshake( ) const
         {
             return handshake_;
         }
-        void SetHandshake( Data::Handshake handshake )
+        void SetHandshake( Types::Handshake handshake )
         {
             handshake_ = handshake;
         }
@@ -15841,11 +15841,11 @@ namespace Barrelman::Data
         {
             newLine_ = newLine;
         }
-        Data::Parity Parity( ) const
+        Types::Parity Parity( ) const
         {
             return parity_;
         }
-        void SetParity( Data::Parity parity )
+        void SetParity( Types::Parity parity )
         {
             parity_ = parity;
         }
@@ -15889,11 +15889,11 @@ namespace Barrelman::Data
         {
             rtsEnable_ = rtsEnable;
         }
-        Data::StopBits StopBits( ) const
+        Types::StopBits StopBits( ) const
         {
             return stopBits_;
         }
-        void SetStopBits( Data::StopBits stopBits )
+        void SetStopBits( Types::StopBits stopBits )
         {
             stopBits_ = stopBits;
         }
@@ -15922,7 +15922,7 @@ namespace Barrelman::Data
             pairedComPort_ = pairedComPort;
         }
     };
-    class LineInputMessageRoutingData : public BaseData<Kind, Guid>
+    class LineInputMessageRoutingObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -15932,7 +15932,7 @@ namespace Barrelman::Data
         Guid lineInputDevice_;
         FixedDBWideString<127> type_;
     public:
-        LineInputMessageRoutingData( ) = default;
+        LineInputMessageRoutingObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -15963,18 +15963,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputMessageRoutingData>( );
+            return std::make_shared<LineInputMessageRoutingObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputMessageRoutingData&>( target );
+            auto& dest = static_cast<LineInputMessageRoutingObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputMessageRoutingData& >( other );
+                const auto& dataObject = static_cast< const LineInputMessageRoutingObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16016,7 +16016,7 @@ namespace Barrelman::Data
             type_ = type;
         }
     };
-    class LineInputMessageRoutingDestinationData : public BaseData<Kind, Guid>
+    class LineInputMessageRoutingDestinationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16026,7 +16026,7 @@ namespace Barrelman::Data
         Guid routing_;
         Guid listener_;
     public:
-        LineInputMessageRoutingDestinationData( ) = default;
+        LineInputMessageRoutingDestinationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -16057,18 +16057,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputMessageRoutingDestinationData>( );
+            return std::make_shared<LineInputMessageRoutingDestinationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputMessageRoutingDestinationData&>( target );
+            auto& dest = static_cast<LineInputMessageRoutingDestinationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputMessageRoutingDestinationData& >( other );
+                const auto& dataObject = static_cast< const LineInputMessageRoutingDestinationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16110,7 +16110,7 @@ namespace Barrelman::Data
             listener_ = listener;
         }
     };
-    class LineInputWhiteListEntryData : public BaseData<Kind, Guid>
+    class LineInputWhiteListEntryObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16121,7 +16121,7 @@ namespace Barrelman::Data
         FixedDBWideString<128> hostName_;
         Int32 port_ = 0;
     public:
-        LineInputWhiteListEntryData( ) = default;
+        LineInputWhiteListEntryObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -16154,18 +16154,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LineInputWhiteListEntryData>( );
+            return std::make_shared<LineInputWhiteListEntryObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LineInputWhiteListEntryData&>( target );
+            auto& dest = static_cast<LineInputWhiteListEntryObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LineInputWhiteListEntryData& >( other );
+                const auto& dataObject = static_cast< const LineInputWhiteListEntryObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16219,7 +16219,7 @@ namespace Barrelman::Data
             port_ = port;
         }
     };
-    class LogApplicationData : public BaseData<Kind, Guid>
+    class LogApplicationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16230,7 +16230,7 @@ namespace Barrelman::Data
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
-        LogApplicationData( ) = default;
+        LogApplicationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -16261,18 +16261,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogApplicationData>( );
+            return std::make_shared<LogApplicationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogApplicationData&>( target );
+            auto& dest = static_cast<LogApplicationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogApplicationData& >( other );
+                const auto& dataObject = static_cast< const LogApplicationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16314,7 +16314,7 @@ namespace Barrelman::Data
             description_ = description;
         }
     };
-    class LogApplicationConfigurationData : public BaseData<Kind, Guid>
+    class LogApplicationConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16336,7 +16336,7 @@ namespace Barrelman::Data
         bool fatal_ = false;
         bool emergency_ = false;
     public:
-        LogApplicationConfigurationData( ) = default;
+        LogApplicationConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -16391,18 +16391,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogApplicationConfigurationData>( );
+            return std::make_shared<LogApplicationConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogApplicationConfigurationData&>( target );
+            auto& dest = static_cast<LogApplicationConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogApplicationConfigurationData& >( other );
+                const auto& dataObject = static_cast< const LogApplicationConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16588,7 +16588,7 @@ namespace Barrelman::Data
             emergency_ = emergency;
         }
     };
-    class LogHostData : public BaseData<Kind, Guid>
+    class LogHostObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16599,7 +16599,7 @@ namespace Barrelman::Data
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
-        LogHostData( ) = default;
+        LogHostObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -16630,18 +16630,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogHostData>( );
+            return std::make_shared<LogHostObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogHostData&>( target );
+            auto& dest = static_cast<LogHostObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogHostData& >( other );
+                const auto& dataObject = static_cast< const LogHostObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16683,7 +16683,7 @@ namespace Barrelman::Data
             description_ = description;
         }
     };
-    class LogHostConfigurationData : public BaseData<Kind, Guid>
+    class LogHostConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16705,7 +16705,7 @@ namespace Barrelman::Data
         bool fatal_ = false;
         bool emergency_ = false;
     public:
-        LogHostConfigurationData( ) = default;
+        LogHostConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -16760,18 +16760,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogHostConfigurationData>( );
+            return std::make_shared<LogHostConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogHostConfigurationData&>( target );
+            auto& dest = static_cast<LogHostConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogHostConfigurationData& >( other );
+                const auto& dataObject = static_cast< const LogHostConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -16957,7 +16957,7 @@ namespace Barrelman::Data
             emergency_ = emergency;
         }
     };
-    class LogLocationData : public BaseData<Kind, Guid>
+    class LogLocationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -16972,7 +16972,7 @@ namespace Barrelman::Data
         SQLLEN classNameLength_ = SQL_NULL_DATA;
         FixedDBWideString<255> methodName_;
     public:
-        LogLocationData( ) = default;
+        LogLocationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -17009,18 +17009,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogLocationData>( );
+            return std::make_shared<LogLocationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogLocationData&>( target );
+            auto& dest = static_cast<LogLocationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogLocationData& >( other );
+                const auto& dataObject = static_cast< const LogLocationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -17098,7 +17098,7 @@ namespace Barrelman::Data
             methodName_ = methodName;
         }
     };
-    class LogProcessData : public BaseData<Kind, Guid>
+    class LogProcessObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -17114,7 +17114,7 @@ namespace Barrelman::Data
         SQLLEN pathLength_ = SQL_NULL_DATA;
         FixedDBWideString<127> identity_;
     public:
-        LogProcessData( ) = default;
+        LogProcessObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -17155,18 +17155,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogProcessData>( );
+            return std::make_shared<LogProcessObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogProcessData&>( target );
+            auto& dest = static_cast<LogProcessObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogProcessData& >( other );
+                const auto& dataObject = static_cast< const LogProcessObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -17268,7 +17268,7 @@ namespace Barrelman::Data
             identity_ = identity;
         }
     };
-    class LogRecordData : public BaseData<Kind, Guid>
+    class LogRecordObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -17277,7 +17277,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid thread_;
         Int64 sequenceNumber_ = 0;
-        Data::LogLevel level_ = Data::LogLevel::Unknown;
+        Types::LogLevel level_ = Types::LogLevel::Unknown;
         DateTime timestamp_;
         Int32 depth_ = 0;
         Guid location_;
@@ -17288,7 +17288,7 @@ namespace Barrelman::Data
         Binary propertiesData_;
         SQLLEN propertiesDataLength_ = SQL_NULL_DATA;
     public:
-        LogRecordData( ) = default;
+        LogRecordObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -17333,18 +17333,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogRecordData>( );
+            return std::make_shared<LogRecordObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogRecordData&>( target );
+            auto& dest = static_cast<LogRecordObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogRecordData& >( other );
+                const auto& dataObject = static_cast< const LogRecordObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -17413,11 +17413,11 @@ namespace Barrelman::Data
         {
             sequenceNumber_ = sequenceNumber;
         }
-        Data::LogLevel Level( ) const
+        Types::LogLevel Level( ) const
         {
             return level_;
         }
-        void SetLevel( Data::LogLevel level )
+        void SetLevel( Types::LogLevel level )
         {
             level_ = level;
         }
@@ -17470,7 +17470,7 @@ namespace Barrelman::Data
             propertiesData_ = propertiesData;
         }
     };
-    class LogThreadData : public BaseData<Kind, Guid>
+    class LogThreadObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -17483,7 +17483,7 @@ namespace Barrelman::Data
         Int64 threadId_ = 0;
         FixedDBWideString<127> name_;
     public:
-        LogThreadData( ) = default;
+        LogThreadObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -17520,18 +17520,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogThreadData>( );
+            return std::make_shared<LogThreadObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogThreadData&>( target );
+            auto& dest = static_cast<LogThreadObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogThreadData& >( other );
+                const auto& dataObject = static_cast< const LogThreadObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -17609,7 +17609,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class LogTraceEntryData : public BaseData<Kind, Guid>
+    class LogTraceEntryObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -17623,7 +17623,7 @@ namespace Barrelman::Data
         DateTime entered_;
         DBDateTime ended_;
     public:
-        LogTraceEntryData( ) = default;
+        LogTraceEntryObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -17662,18 +17662,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<LogTraceEntryData>( );
+            return std::make_shared<LogTraceEntryObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<LogTraceEntryData&>( target );
+            auto& dest = static_cast<LogTraceEntryObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const LogTraceEntryData& >( other );
+                const auto& dataObject = static_cast< const LogTraceEntryObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -17763,7 +17763,7 @@ namespace Barrelman::Data
             ended_ = ended;
         }
     };
-    class MapElementData : public BaseData<Kind, Guid>
+    class MapElementObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -17771,7 +17771,7 @@ namespace Barrelman::Data
     private:
         Int64 rowVersion_ = 0;
         Guid item_;
-        Data::MapElementType elementType_ = Data::MapElementType::Unknown;
+        Types::MapElementType elementType_ = Types::MapElementType::Unknown;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double angle_ = 0.0;
@@ -17783,7 +17783,7 @@ namespace Barrelman::Data
         Binary data_;
         SQLLEN dataLength_ = SQL_NULL_DATA;
     public:
-        MapElementData( ) = default;
+        MapElementObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -17832,18 +17832,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MapElementData>( );
+            return std::make_shared<MapElementObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MapElementData&>( target );
+            auto& dest = static_cast<MapElementObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MapElementData& >( other );
+                const auto& dataObject = static_cast< const MapElementObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -17912,11 +17912,11 @@ namespace Barrelman::Data
         {
             item_ = item;
         }
-        Data::MapElementType ElementType( ) const
+        Types::MapElementType ElementType( ) const
         {
             return elementType_;
         }
-        void SetElementType( Data::MapElementType elementType )
+        void SetElementType( Types::MapElementType elementType )
         {
             elementType_ = elementType;
         }
@@ -17993,7 +17993,7 @@ namespace Barrelman::Data
             data_ = data;
         }
     };
-    class MapInfoData : public BaseData<Kind, Guid>
+    class MapInfoObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18010,7 +18010,7 @@ namespace Barrelman::Data
         Binary image_;
         SQLLEN imageLength_ = SQL_NULL_DATA;
     public:
-        MapInfoData( ) = default;
+        MapInfoObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18053,18 +18053,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MapInfoData>( );
+            return std::make_shared<MapInfoObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MapInfoData&>( target );
+            auto& dest = static_cast<MapInfoObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MapInfoData& >( other );
+                const auto& dataObject = static_cast< const MapInfoObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18178,7 +18178,7 @@ namespace Barrelman::Data
             image_ = image;
         }
     };
-    class MapServiceOptionsData : public BaseData<Kind, Guid>
+    class MapServiceOptionsObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18193,7 +18193,7 @@ namespace Barrelman::Data
         double imageScaleFactorY_ = 0.0;
         double imageOffsetY_ = 0.0;
     public:
-        MapServiceOptionsData( ) = default;
+        MapServiceOptionsObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18234,18 +18234,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MapServiceOptionsData>( );
+            return std::make_shared<MapServiceOptionsObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MapServiceOptionsData&>( target );
+            auto& dest = static_cast<MapServiceOptionsObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MapServiceOptionsData& >( other );
+                const auto& dataObject = static_cast< const MapServiceOptionsObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18347,7 +18347,7 @@ namespace Barrelman::Data
             imageOffsetY_ = imageOffsetY;
         }
     };
-    class MaritimeIdentificationDigitsData : public BaseData<Kind, Guid>
+    class MaritimeIdentificationDigitsObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18357,7 +18357,7 @@ namespace Barrelman::Data
         Int32 code_ = 0;
         Guid country_;
     public:
-        MaritimeIdentificationDigitsData( ) = default;
+        MaritimeIdentificationDigitsObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18388,18 +18388,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MaritimeIdentificationDigitsData>( );
+            return std::make_shared<MaritimeIdentificationDigitsObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MaritimeIdentificationDigitsData&>( target );
+            auto& dest = static_cast<MaritimeIdentificationDigitsObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MaritimeIdentificationDigitsData& >( other );
+                const auto& dataObject = static_cast< const MaritimeIdentificationDigitsObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18441,7 +18441,7 @@ namespace Barrelman::Data
             country_ = country;
         }
     };
-    class MediaProxySessionData : public BaseData<Kind, Guid>
+    class MediaProxySessionObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18452,7 +18452,7 @@ namespace Barrelman::Data
         FixedDBWideString<128> name_;
         Guid enabledTimeseries_;
     public:
-        MediaProxySessionData( ) = default;
+        MediaProxySessionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18485,18 +18485,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaProxySessionData>( );
+            return std::make_shared<MediaProxySessionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaProxySessionData&>( target );
+            auto& dest = static_cast<MediaProxySessionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaProxySessionData& >( other );
+                const auto& dataObject = static_cast< const MediaProxySessionObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18550,7 +18550,7 @@ namespace Barrelman::Data
             enabledTimeseries_ = enabledTimeseries;
         }
     };
-    class MediaProxySessionFileData : public BaseData<Kind, Guid>
+    class MediaProxySessionFileObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18561,7 +18561,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         FixedDBWideString<127> streamName_;
     public:
-        MediaProxySessionFileData( ) = default;
+        MediaProxySessionFileObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18594,18 +18594,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaProxySessionFileData>( );
+            return std::make_shared<MediaProxySessionFileObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaProxySessionFileData&>( target );
+            auto& dest = static_cast<MediaProxySessionFileObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaProxySessionFileData& >( other );
+                const auto& dataObject = static_cast< const MediaProxySessionFileObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18659,7 +18659,7 @@ namespace Barrelman::Data
             streamName_ = streamName;
         }
     };
-    class MediaProxySessionOptionsData : public BaseData<Kind, Guid>
+    class MediaProxySessionOptionsObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18670,17 +18670,17 @@ namespace Barrelman::Data
         DateTime timestamp_;
         FixedDBWideString<255> sourceStreamUrl_;
         FixedDBWideString<255> streamName_;
-        Data::MediaProxySessionMode mode_ = Data::MediaProxySessionMode::Unknown;
+        Types::MediaProxySessionMode mode_ = Types::MediaProxySessionMode::Unknown;
         Int32 tunnelOverHTTPPortNumber_ = 0;
         FixedDBWideString<128> username_;
         FixedDBWideString<128> password_;
         Int32 recorderPortNumber_ = 0;
-        Data::MediaProxySessionType sessionType_ = Data::MediaProxySessionType::Unknown;
+        Types::MediaProxySessionType sessionType_ = Types::MediaProxySessionType::Unknown;
         TimeSpan maxFileTime_;
         TimeSpan maxFileRetention_;
         FixedDBWideString<260> videoDirectory_;
     public:
-        MediaProxySessionOptionsData( ) = default;
+        MediaProxySessionOptionsObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18733,18 +18733,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaProxySessionOptionsData>( );
+            return std::make_shared<MediaProxySessionOptionsObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaProxySessionOptionsData&>( target );
+            auto& dest = static_cast<MediaProxySessionOptionsObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaProxySessionOptionsData& >( other );
+                const auto& dataObject = static_cast< const MediaProxySessionOptionsObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18845,11 +18845,11 @@ namespace Barrelman::Data
         {
             streamName_ = streamName;
         }
-        Data::MediaProxySessionMode Mode( ) const
+        Types::MediaProxySessionMode Mode( ) const
         {
             return mode_;
         }
-        void SetMode( Data::MediaProxySessionMode mode )
+        void SetMode( Types::MediaProxySessionMode mode )
         {
             mode_ = mode;
         }
@@ -18885,11 +18885,11 @@ namespace Barrelman::Data
         {
             recorderPortNumber_ = recorderPortNumber;
         }
-        Data::MediaProxySessionType SessionType( ) const
+        Types::MediaProxySessionType SessionType( ) const
         {
             return sessionType_;
         }
-        void SetSessionType( Data::MediaProxySessionType sessionType )
+        void SetSessionType( Types::MediaProxySessionType sessionType )
         {
             sessionType_ = sessionType;
         }
@@ -18918,7 +18918,7 @@ namespace Barrelman::Data
             videoDirectory_ = videoDirectory;
         }
     };
-    class MediaServiceData : public BaseData<Kind, Guid>
+    class MediaServiceObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -18927,7 +18927,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid enabledTimeseries_;
     public:
-        MediaServiceData( ) = default;
+        MediaServiceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -18956,18 +18956,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaServiceData>( );
+            return std::make_shared<MediaServiceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaServiceData&>( target );
+            auto& dest = static_cast<MediaServiceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaServiceData& >( other );
+                const auto& dataObject = static_cast< const MediaServiceObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -18997,7 +18997,7 @@ namespace Barrelman::Data
             enabledTimeseries_ = enabledTimeseries;
         }
     };
-    class MediaServiceOptionsData : public BaseData<Kind, Guid>
+    class MediaServiceOptionsObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -19009,7 +19009,7 @@ namespace Barrelman::Data
         Int32 rtspPortNumber_ = 0;
         Int32 httpPortNumber_ = 0;
     public:
-        MediaServiceOptionsData( ) = default;
+        MediaServiceOptionsObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19044,18 +19044,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaServiceOptionsData>( );
+            return std::make_shared<MediaServiceOptionsObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaServiceOptionsData&>( target );
+            auto& dest = static_cast<MediaServiceOptionsObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaServiceOptionsData& >( other );
+                const auto& dataObject = static_cast< const MediaServiceOptionsObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19121,7 +19121,7 @@ namespace Barrelman::Data
             httpPortNumber_ = httpPortNumber;
         }
     };
-    class NamespaceElementData : public BaseData<Kind, Guid>
+    class NamespaceElementObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -19133,7 +19133,7 @@ namespace Barrelman::Data
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
-        NamespaceElementData( ) = default;
+        NamespaceElementObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19166,18 +19166,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<NamespaceElementData>( );
+            return std::make_shared<NamespaceElementObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<NamespaceElementData&>( target );
+            auto& dest = static_cast<NamespaceElementObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const NamespaceElementData& >( other );
+                const auto& dataObject = static_cast< const NamespaceElementObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19231,14 +19231,14 @@ namespace Barrelman::Data
             description_ = description;
         }
     };
-    class ElementTypeData : public NamespaceElementData
+    class ElementTypeObject : public NamespaceElementObject
     {
     public:
-        using Base = NamespaceElementData;
+        using Base = NamespaceElementObject;
         static constexpr Kind KIND = Kind::ElementType;
     private:
     public:
-        ElementTypeData( ) = default;
+        ElementTypeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19263,31 +19263,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ElementTypeData>( );
+            return std::make_shared<ElementTypeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ElementTypeData&>( target );
+            auto& dest = static_cast<ElementTypeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ElementTypeData& >( other );
+                const auto& dataObject = static_cast< const ElementTypeObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class NamespaceData : public NamespaceElementData
+    class NamespaceObject : public NamespaceElementObject
     {
     public:
-        using Base = NamespaceElementData;
+        using Base = NamespaceElementObject;
         static constexpr Kind KIND = Kind::Namespace;
     private:
     public:
-        NamespaceData( ) = default;
+        NamespaceObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19312,24 +19312,24 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<NamespaceData>( );
+            return std::make_shared<NamespaceObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<NamespaceData&>( target );
+            auto& dest = static_cast<NamespaceObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const NamespaceData& >( other );
+                const auto& dataObject = static_cast< const NamespaceObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class OilSpillData : public BaseData<Kind, Guid>
+    class OilSpillObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -19348,7 +19348,7 @@ namespace Barrelman::Data
         Binary trace_;
         SQLLEN traceLength_ = SQL_NULL_DATA;
     public:
-        OilSpillData( ) = default;
+        OilSpillObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19389,18 +19389,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilSpillData>( );
+            return std::make_shared<OilSpillObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilSpillData&>( target );
+            auto& dest = static_cast<OilSpillObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilSpillData& >( other );
+                const auto& dataObject = static_cast< const OilSpillObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19502,7 +19502,7 @@ namespace Barrelman::Data
             trace_ = trace;
         }
     };
-    class OilSpillDetectorCommandData : public BaseData<Kind, Guid>
+    class OilSpillDetectorCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -19511,11 +19511,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid oilSpillDetector_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        OilSpillDetectorCommandData( ) = default;
+        OilSpillDetectorCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19552,18 +19552,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilSpillDetectorCommandData>( );
+            return std::make_shared<OilSpillDetectorCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilSpillDetectorCommandData&>( target );
+            auto& dest = static_cast<OilSpillDetectorCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilSpillDetectorCommandData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19616,11 +19616,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -19641,7 +19641,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class OilSpillDetectorCommandReplyData : public BaseData<Kind, Guid>
+    class OilSpillDetectorCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -19651,11 +19651,11 @@ namespace Barrelman::Data
         Guid oilSpillDetector_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        OilSpillDetectorCommandReplyData( ) = default;
+        OilSpillDetectorCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19692,18 +19692,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilSpillDetectorCommandReplyData>( );
+            return std::make_shared<OilSpillDetectorCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilSpillDetectorCommandReplyData&>( target );
+            auto& dest = static_cast<OilSpillDetectorCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilSpillDetectorCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -19764,11 +19764,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -19781,7 +19781,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class OilSpillDetectorConfigurationData : public BaseData<Kind, Guid>
+    class OilSpillDetectorConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -19814,7 +19814,7 @@ namespace Barrelman::Data
         FixedDBWideString<127> proxyServer_;
         bool useProxyServer_ = false;
     public:
-        OilSpillDetectorConfigurationData( ) = default;
+        OilSpillDetectorConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -19889,18 +19889,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<OilSpillDetectorConfigurationData>( );
+            return std::make_shared<OilSpillDetectorConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<OilSpillDetectorConfigurationData&>( target );
+            auto& dest = static_cast<OilSpillDetectorConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const OilSpillDetectorConfigurationData& >( other );
+                const auto& dataObject = static_cast< const OilSpillDetectorConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -20206,7 +20206,7 @@ namespace Barrelman::Data
             useProxyServer_ = useProxyServer;
         }
     };
-    class Position2DTimeseriesValueData : public BaseData<Kind, Guid>
+    class Position2DTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -20218,7 +20218,7 @@ namespace Barrelman::Data
         DBDouble x_;
         DBDouble y_;
     public:
-        Position2DTimeseriesValueData( ) = default;
+        Position2DTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20253,18 +20253,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Position2DTimeseriesValueData>( );
+            return std::make_shared<Position2DTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Position2DTimeseriesValueData&>( target );
+            auto& dest = static_cast<Position2DTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Position2DTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const Position2DTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -20330,7 +20330,7 @@ namespace Barrelman::Data
             y_ = y;
         }
     };
-    class Position3DTimeseriesValueData : public BaseData<Kind, Guid>
+    class Position3DTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -20343,7 +20343,7 @@ namespace Barrelman::Data
         DBDouble y_;
         DBDouble z_;
     public:
-        Position3DTimeseriesValueData( ) = default;
+        Position3DTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20380,18 +20380,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Position3DTimeseriesValueData>( );
+            return std::make_shared<Position3DTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Position3DTimeseriesValueData&>( target );
+            auto& dest = static_cast<Position3DTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Position3DTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const Position3DTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -20469,7 +20469,7 @@ namespace Barrelman::Data
             z_ = z;
         }
     };
-    class ProcessTrackValueResultData : public BaseData<Kind, Guid>
+    class ProcessTrackValueResultObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -20479,7 +20479,7 @@ namespace Barrelman::Data
         bool createdNewTrack_ = false;
         Guid trackId_;
     public:
-        ProcessTrackValueResultData( ) = default;
+        ProcessTrackValueResultObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20510,18 +20510,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ProcessTrackValueResultData>( );
+            return std::make_shared<ProcessTrackValueResultObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ProcessTrackValueResultData&>( target );
+            auto& dest = static_cast<ProcessTrackValueResultObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ProcessTrackValueResultData& >( other );
+                const auto& dataObject = static_cast< const ProcessTrackValueResultObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -20563,7 +20563,7 @@ namespace Barrelman::Data
             trackId_ = trackId;
         }
     };
-    class PropertyData : public BaseData<Kind, Guid>
+    class PropertyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -20573,7 +20573,7 @@ namespace Barrelman::Data
         Guid element_;
         Guid definition_;
     public:
-        PropertyData( ) = default;
+        PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20604,18 +20604,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<PropertyData>( );
+            return std::make_shared<PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<PropertyData&>( target );
+            auto& dest = static_cast<PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const PropertyData& >( other );
+                const auto& dataObject = static_cast< const PropertyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -20657,16 +20657,16 @@ namespace Barrelman::Data
             definition_ = definition;
         }
     };
-    class BinaryPropertyData : public PropertyData
+    class BinaryPropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::BinaryProperty;
     private:
         Binary value_;
         SQLLEN valueLength_ = SQL_NULL_DATA;
     public:
-        BinaryPropertyData( ) = default;
+        BinaryPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20693,18 +20693,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BinaryPropertyData>( );
+            return std::make_shared<BinaryPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BinaryPropertyData&>( target );
+            auto& dest = static_cast<BinaryPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BinaryPropertyData& >( other );
+                const auto& dataObject = static_cast< const BinaryPropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -20722,15 +20722,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class BooleanPropertyData : public PropertyData
+    class BooleanPropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::BooleanProperty;
     private:
         bool value_ = false;
     public:
-        BooleanPropertyData( ) = default;
+        BooleanPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20757,18 +20757,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BooleanPropertyData>( );
+            return std::make_shared<BooleanPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BooleanPropertyData&>( target );
+            auto& dest = static_cast<BooleanPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BooleanPropertyData& >( other );
+                const auto& dataObject = static_cast< const BooleanPropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -20786,15 +20786,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class BytePropertyData : public PropertyData
+    class BytePropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::ByteProperty;
     private:
         Byte value_ = 0;
     public:
-        BytePropertyData( ) = default;
+        BytePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20821,18 +20821,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BytePropertyData>( );
+            return std::make_shared<BytePropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BytePropertyData&>( target );
+            auto& dest = static_cast<BytePropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BytePropertyData& >( other );
+                const auto& dataObject = static_cast< const BytePropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -20850,15 +20850,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class DateTimePropertyData : public PropertyData
+    class DateTimePropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::DateTimeProperty;
     private:
         DateTime value_;
     public:
-        DateTimePropertyData( ) = default;
+        DateTimePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20885,18 +20885,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DateTimePropertyData>( );
+            return std::make_shared<DateTimePropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DateTimePropertyData&>( target );
+            auto& dest = static_cast<DateTimePropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DateTimePropertyData& >( other );
+                const auto& dataObject = static_cast< const DateTimePropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -20914,15 +20914,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class DoublePropertyData : public PropertyData
+    class DoublePropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::DoubleProperty;
     private:
         double value_ = 0.0;
     public:
-        DoublePropertyData( ) = default;
+        DoublePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -20949,18 +20949,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DoublePropertyData>( );
+            return std::make_shared<DoublePropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DoublePropertyData&>( target );
+            auto& dest = static_cast<DoublePropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DoublePropertyData& >( other );
+                const auto& dataObject = static_cast< const DoublePropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -20978,15 +20978,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class GuidPropertyData : public PropertyData
+    class GuidPropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::GuidProperty;
     private:
         Guid value_;
     public:
-        GuidPropertyData( ) = default;
+        GuidPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21013,18 +21013,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GuidPropertyData>( );
+            return std::make_shared<GuidPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GuidPropertyData&>( target );
+            auto& dest = static_cast<GuidPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GuidPropertyData& >( other );
+                const auto& dataObject = static_cast< const GuidPropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21042,15 +21042,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class Int16PropertyData : public PropertyData
+    class Int16PropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::Int16Property;
     private:
         Int16 value_ = 0;
     public:
-        Int16PropertyData( ) = default;
+        Int16PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21077,18 +21077,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int16PropertyData>( );
+            return std::make_shared<Int16PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int16PropertyData&>( target );
+            auto& dest = static_cast<Int16PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int16PropertyData& >( other );
+                const auto& dataObject = static_cast< const Int16PropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21106,15 +21106,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class Int32PropertyData : public PropertyData
+    class Int32PropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::Int32Property;
     private:
         Int32 value_ = 0;
     public:
-        Int32PropertyData( ) = default;
+        Int32PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21141,18 +21141,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int32PropertyData>( );
+            return std::make_shared<Int32PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int32PropertyData&>( target );
+            auto& dest = static_cast<Int32PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int32PropertyData& >( other );
+                const auto& dataObject = static_cast< const Int32PropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21170,15 +21170,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class Int64PropertyData : public PropertyData
+    class Int64PropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::Int64Property;
     private:
         Int64 value_ = 0;
     public:
-        Int64PropertyData( ) = default;
+        Int64PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21205,18 +21205,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int64PropertyData>( );
+            return std::make_shared<Int64PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int64PropertyData&>( target );
+            auto& dest = static_cast<Int64PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int64PropertyData& >( other );
+                const auto& dataObject = static_cast< const Int64PropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21234,15 +21234,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class ReferencePropertyData : public PropertyData
+    class ReferencePropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::ReferenceProperty;
     private:
         Guid value_;
     public:
-        ReferencePropertyData( ) = default;
+        ReferencePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21269,18 +21269,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ReferencePropertyData>( );
+            return std::make_shared<ReferencePropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ReferencePropertyData&>( target );
+            auto& dest = static_cast<ReferencePropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ReferencePropertyData& >( other );
+                const auto& dataObject = static_cast< const ReferencePropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21298,15 +21298,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class SBytePropertyData : public PropertyData
+    class SBytePropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::SByteProperty;
     private:
         SByte value_ = 0;
     public:
-        SBytePropertyData( ) = default;
+        SBytePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21333,18 +21333,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SBytePropertyData>( );
+            return std::make_shared<SBytePropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SBytePropertyData&>( target );
+            auto& dest = static_cast<SBytePropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SBytePropertyData& >( other );
+                const auto& dataObject = static_cast< const SBytePropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21362,15 +21362,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class SinglePropertyData : public PropertyData
+    class SinglePropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::SingleProperty;
     private:
         float value_ = 0.0f;
     public:
-        SinglePropertyData( ) = default;
+        SinglePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21397,18 +21397,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SinglePropertyData>( );
+            return std::make_shared<SinglePropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SinglePropertyData&>( target );
+            auto& dest = static_cast<SinglePropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SinglePropertyData& >( other );
+                const auto& dataObject = static_cast< const SinglePropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21426,15 +21426,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class StringPropertyData : public PropertyData
+    class StringPropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::StringProperty;
     private:
         FixedDBWideString<127> value_;
     public:
-        StringPropertyData( ) = default;
+        StringPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21461,18 +21461,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<StringPropertyData>( );
+            return std::make_shared<StringPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<StringPropertyData&>( target );
+            auto& dest = static_cast<StringPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const StringPropertyData& >( other );
+                const auto& dataObject = static_cast< const StringPropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -21490,14 +21490,14 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class TimeseriesPropertyData : public PropertyData
+    class TimeseriesPropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::TimeseriesProperty;
     private:
     public:
-        TimeseriesPropertyData( ) = default;
+        TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21522,32 +21522,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeseriesPropertyData>( );
+            return std::make_shared<TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const TimeseriesPropertyObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class BinaryTimeseriesPropertyData : public TimeseriesPropertyData
+    class BinaryTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::BinaryTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        BinaryTimeseriesPropertyData( ) = default;
+        BinaryTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21574,18 +21574,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BinaryTimeseriesPropertyData>( );
+            return std::make_shared<BinaryTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BinaryTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<BinaryTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BinaryTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const BinaryTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21603,15 +21603,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class BooleanTimeseriesPropertyData : public TimeseriesPropertyData
+    class BooleanTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::BooleanTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        BooleanTimeseriesPropertyData( ) = default;
+        BooleanTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21638,18 +21638,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BooleanTimeseriesPropertyData>( );
+            return std::make_shared<BooleanTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BooleanTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<BooleanTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BooleanTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const BooleanTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21667,15 +21667,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class ByteTimeseriesPropertyData : public TimeseriesPropertyData
+    class ByteTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::ByteTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        ByteTimeseriesPropertyData( ) = default;
+        ByteTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21702,18 +21702,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ByteTimeseriesPropertyData>( );
+            return std::make_shared<ByteTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ByteTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<ByteTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ByteTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const ByteTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21731,15 +21731,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class DateTimeTimeseriesPropertyData : public TimeseriesPropertyData
+    class DateTimeTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::DateTimeTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        DateTimeTimeseriesPropertyData( ) = default;
+        DateTimeTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21766,18 +21766,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DateTimeTimeseriesPropertyData>( );
+            return std::make_shared<DateTimeTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DateTimeTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<DateTimeTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DateTimeTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const DateTimeTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21795,15 +21795,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class DoubleTimeseriesPropertyData : public TimeseriesPropertyData
+    class DoubleTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::DoubleTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        DoubleTimeseriesPropertyData( ) = default;
+        DoubleTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21830,18 +21830,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DoubleTimeseriesPropertyData>( );
+            return std::make_shared<DoubleTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DoubleTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<DoubleTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DoubleTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const DoubleTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21859,15 +21859,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class GuidTimeseriesPropertyData : public TimeseriesPropertyData
+    class GuidTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::GuidTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        GuidTimeseriesPropertyData( ) = default;
+        GuidTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21894,18 +21894,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GuidTimeseriesPropertyData>( );
+            return std::make_shared<GuidTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GuidTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<GuidTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GuidTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const GuidTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21923,15 +21923,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class Int16TimeseriesPropertyData : public TimeseriesPropertyData
+    class Int16TimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::Int16TimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        Int16TimeseriesPropertyData( ) = default;
+        Int16TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -21958,18 +21958,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int16TimeseriesPropertyData>( );
+            return std::make_shared<Int16TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int16TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<Int16TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int16TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const Int16TimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -21987,15 +21987,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class Int32TimeseriesPropertyData : public TimeseriesPropertyData
+    class Int32TimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::Int32TimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        Int32TimeseriesPropertyData( ) = default;
+        Int32TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22022,18 +22022,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int32TimeseriesPropertyData>( );
+            return std::make_shared<Int32TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int32TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<Int32TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int32TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const Int32TimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22051,15 +22051,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class Int64TimeseriesPropertyData : public TimeseriesPropertyData
+    class Int64TimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::Int64TimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        Int64TimeseriesPropertyData( ) = default;
+        Int64TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22086,18 +22086,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int64TimeseriesPropertyData>( );
+            return std::make_shared<Int64TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int64TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<Int64TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int64TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const Int64TimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22115,15 +22115,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class ReferenceTimeseriesPropertyData : public TimeseriesPropertyData
+    class ReferenceTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::ReferenceTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        ReferenceTimeseriesPropertyData( ) = default;
+        ReferenceTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22150,18 +22150,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ReferenceTimeseriesPropertyData>( );
+            return std::make_shared<ReferenceTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ReferenceTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<ReferenceTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ReferenceTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const ReferenceTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22179,15 +22179,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class SByteTimeseriesPropertyData : public TimeseriesPropertyData
+    class SByteTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::SByteTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        SByteTimeseriesPropertyData( ) = default;
+        SByteTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22214,18 +22214,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SByteTimeseriesPropertyData>( );
+            return std::make_shared<SByteTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SByteTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<SByteTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SByteTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const SByteTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22243,15 +22243,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class SingleTimeseriesPropertyData : public TimeseriesPropertyData
+    class SingleTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::SingleTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        SingleTimeseriesPropertyData( ) = default;
+        SingleTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22278,18 +22278,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SingleTimeseriesPropertyData>( );
+            return std::make_shared<SingleTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SingleTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<SingleTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SingleTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const SingleTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22307,15 +22307,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class StringTimeseriesPropertyData : public TimeseriesPropertyData
+    class StringTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::StringTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        StringTimeseriesPropertyData( ) = default;
+        StringTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22342,18 +22342,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<StringTimeseriesPropertyData>( );
+            return std::make_shared<StringTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<StringTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<StringTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const StringTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const StringTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22371,15 +22371,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class TimeSpanTimeseriesPropertyData : public TimeseriesPropertyData
+    class TimeSpanTimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::TimeSpanTimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        TimeSpanTimeseriesPropertyData( ) = default;
+        TimeSpanTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22406,18 +22406,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeSpanTimeseriesPropertyData>( );
+            return std::make_shared<TimeSpanTimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeSpanTimeseriesPropertyData&>( target );
+            auto& dest = static_cast<TimeSpanTimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeSpanTimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const TimeSpanTimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22435,15 +22435,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class UInt16TimeseriesPropertyData : public TimeseriesPropertyData
+    class UInt16TimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::UInt16TimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        UInt16TimeseriesPropertyData( ) = default;
+        UInt16TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22470,18 +22470,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt16TimeseriesPropertyData>( );
+            return std::make_shared<UInt16TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt16TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<UInt16TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt16TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const UInt16TimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22499,15 +22499,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class UInt32TimeseriesPropertyData : public TimeseriesPropertyData
+    class UInt32TimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::UInt32TimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        UInt32TimeseriesPropertyData( ) = default;
+        UInt32TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22534,18 +22534,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt32TimeseriesPropertyData>( );
+            return std::make_shared<UInt32TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt32TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<UInt32TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt32TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const UInt32TimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22563,15 +22563,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class UInt64TimeseriesPropertyData : public TimeseriesPropertyData
+    class UInt64TimeseriesPropertyObject : public TimeseriesPropertyObject
     {
     public:
-        using Base = TimeseriesPropertyData;
+        using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::UInt64TimeseriesProperty;
     private:
         Guid timeseries_;
     public:
-        UInt64TimeseriesPropertyData( ) = default;
+        UInt64TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22598,18 +22598,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt64TimeseriesPropertyData>( );
+            return std::make_shared<UInt64TimeseriesPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt64TimeseriesPropertyData&>( target );
+            auto& dest = static_cast<UInt64TimeseriesPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt64TimeseriesPropertyData& >( other );
+                const auto& dataObject = static_cast< const UInt64TimeseriesPropertyObject& >( other );
                 if ( dataObject.timeseries_ != timeseries_ )
                 {
                     return false;
@@ -22627,15 +22627,15 @@ namespace Barrelman::Data
             timeseries_ = timeseries;
         }
     };
-    class TimeSpanPropertyData : public PropertyData
+    class TimeSpanPropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::TimeSpanProperty;
     private:
         TimeSpan value_;
     public:
-        TimeSpanPropertyData( ) = default;
+        TimeSpanPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22662,18 +22662,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeSpanPropertyData>( );
+            return std::make_shared<TimeSpanPropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeSpanPropertyData&>( target );
+            auto& dest = static_cast<TimeSpanPropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeSpanPropertyData& >( other );
+                const auto& dataObject = static_cast< const TimeSpanPropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -22691,15 +22691,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class UInt16PropertyData : public PropertyData
+    class UInt16PropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::UInt16Property;
     private:
         UInt16 value_ = 0;
     public:
-        UInt16PropertyData( ) = default;
+        UInt16PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22726,18 +22726,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt16PropertyData>( );
+            return std::make_shared<UInt16PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt16PropertyData&>( target );
+            auto& dest = static_cast<UInt16PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt16PropertyData& >( other );
+                const auto& dataObject = static_cast< const UInt16PropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -22755,15 +22755,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class UInt32PropertyData : public PropertyData
+    class UInt32PropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::UInt32Property;
     private:
         UInt32 value_ = 0;
     public:
-        UInt32PropertyData( ) = default;
+        UInt32PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22790,18 +22790,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt32PropertyData>( );
+            return std::make_shared<UInt32PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt32PropertyData&>( target );
+            auto& dest = static_cast<UInt32PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt32PropertyData& >( other );
+                const auto& dataObject = static_cast< const UInt32PropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -22819,15 +22819,15 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class UInt64PropertyData : public PropertyData
+    class UInt64PropertyObject : public PropertyObject
     {
     public:
-        using Base = PropertyData;
+        using Base = PropertyObject;
         static constexpr Kind KIND = Kind::UInt64Property;
     private:
         Int64 value_ = 0;
     public:
-        UInt64PropertyData( ) = default;
+        UInt64PropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22854,18 +22854,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt64PropertyData>( );
+            return std::make_shared<UInt64PropertyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt64PropertyData&>( target );
+            auto& dest = static_cast<UInt64PropertyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt64PropertyData& >( other );
+                const auto& dataObject = static_cast< const UInt64PropertyObject& >( other );
                 if ( dataObject.value_ != value_ )
                 {
                     return false;
@@ -22883,7 +22883,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class PropertyDefinitionData : public BaseData<Kind, Guid>
+    class PropertyDefinitionObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -22895,7 +22895,7 @@ namespace Barrelman::Data
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
-        PropertyDefinitionData( ) = default;
+        PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -22928,18 +22928,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<PropertyDefinitionData>( );
+            return std::make_shared<PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<PropertyDefinitionData&>( target );
+            auto& dest = static_cast<PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const PropertyDefinitionObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -22993,16 +22993,16 @@ namespace Barrelman::Data
             description_ = description;
         }
     };
-    class BinaryPropertyDefinitionData : public PropertyDefinitionData
+    class BinaryPropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::BinaryPropertyDefinition;
     private:
         Binary defaultValue_;
         SQLLEN defaultValueLength_ = SQL_NULL_DATA;
     public:
-        BinaryPropertyDefinitionData( ) = default;
+        BinaryPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23029,18 +23029,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BinaryPropertyDefinitionData>( );
+            return std::make_shared<BinaryPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BinaryPropertyDefinitionData&>( target );
+            auto& dest = static_cast<BinaryPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BinaryPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const BinaryPropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23058,15 +23058,15 @@ namespace Barrelman::Data
             defaultValue_ = defaultValue;
         }
     };
-    class BooleanPropertyDefinitionData : public PropertyDefinitionData
+    class BooleanPropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::BooleanPropertyDefinition;
     private:
         bool defaultValue_ = false;
     public:
-        BooleanPropertyDefinitionData( ) = default;
+        BooleanPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23093,18 +23093,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BooleanPropertyDefinitionData>( );
+            return std::make_shared<BooleanPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BooleanPropertyDefinitionData&>( target );
+            auto& dest = static_cast<BooleanPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BooleanPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const BooleanPropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23122,17 +23122,17 @@ namespace Barrelman::Data
             defaultValue_ = defaultValue;
         }
     };
-    class BytePropertyDefinitionData : public PropertyDefinitionData
+    class BytePropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::BytePropertyDefinition;
     private:
         Byte defaultValue_ = 0;
         Byte minValue_ = 0;
         Byte maxValue_ = 0;
     public:
-        BytePropertyDefinitionData( ) = default;
+        BytePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23163,18 +23163,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BytePropertyDefinitionData>( );
+            return std::make_shared<BytePropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BytePropertyDefinitionData&>( target );
+            auto& dest = static_cast<BytePropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BytePropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const BytePropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23216,17 +23216,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class DateTimePropertyDefinitionData : public PropertyDefinitionData
+    class DateTimePropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::DateTimePropertyDefinition;
     private:
         FixedDBWideString<127> defaultValue_;
         FixedDBWideString<127> minValue_;
         FixedDBWideString<127> maxValue_;
     public:
-        DateTimePropertyDefinitionData( ) = default;
+        DateTimePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23257,18 +23257,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DateTimePropertyDefinitionData>( );
+            return std::make_shared<DateTimePropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DateTimePropertyDefinitionData&>( target );
+            auto& dest = static_cast<DateTimePropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DateTimePropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const DateTimePropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23310,17 +23310,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class DoublePropertyDefinitionData : public PropertyDefinitionData
+    class DoublePropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::DoublePropertyDefinition;
     private:
         double defaultValue_ = 0.0;
         double minValue_ = 0.0;
         double maxValue_ = 0.0;
     public:
-        DoublePropertyDefinitionData( ) = default;
+        DoublePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23351,18 +23351,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DoublePropertyDefinitionData>( );
+            return std::make_shared<DoublePropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DoublePropertyDefinitionData&>( target );
+            auto& dest = static_cast<DoublePropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DoublePropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const DoublePropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23404,15 +23404,15 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class GuidPropertyDefinitionData : public PropertyDefinitionData
+    class GuidPropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::GuidPropertyDefinition;
     private:
         Guid defaultValue_;
     public:
-        GuidPropertyDefinitionData( ) = default;
+        GuidPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23439,18 +23439,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GuidPropertyDefinitionData>( );
+            return std::make_shared<GuidPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GuidPropertyDefinitionData&>( target );
+            auto& dest = static_cast<GuidPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GuidPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const GuidPropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23468,17 +23468,17 @@ namespace Barrelman::Data
             defaultValue_ = defaultValue;
         }
     };
-    class Int16PropertyDefinitionData : public PropertyDefinitionData
+    class Int16PropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::Int16PropertyDefinition;
     private:
         Int16 defaultValue_ = 0;
         Int16 minValue_ = 0;
         Int16 maxValue_ = 0;
     public:
-        Int16PropertyDefinitionData( ) = default;
+        Int16PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23509,18 +23509,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int16PropertyDefinitionData>( );
+            return std::make_shared<Int16PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int16PropertyDefinitionData&>( target );
+            auto& dest = static_cast<Int16PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int16PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const Int16PropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23562,17 +23562,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class Int32PropertyDefinitionData : public PropertyDefinitionData
+    class Int32PropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::Int32PropertyDefinition;
     private:
         Int32 defaultValue_ = 0;
         Int32 minValue_ = 0;
         Int32 maxValue_ = 0;
     public:
-        Int32PropertyDefinitionData( ) = default;
+        Int32PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23603,18 +23603,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int32PropertyDefinitionData>( );
+            return std::make_shared<Int32PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int32PropertyDefinitionData&>( target );
+            auto& dest = static_cast<Int32PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int32PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const Int32PropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23656,17 +23656,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class Int64PropertyDefinitionData : public PropertyDefinitionData
+    class Int64PropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::Int64PropertyDefinition;
     private:
         Int64 defaultValue_ = 0;
         Int64 minValue_ = 0;
         Int64 maxValue_ = 0;
     public:
-        Int64PropertyDefinitionData( ) = default;
+        Int64PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23697,18 +23697,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int64PropertyDefinitionData>( );
+            return std::make_shared<Int64PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int64PropertyDefinitionData&>( target );
+            auto& dest = static_cast<Int64PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int64PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const Int64PropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23750,16 +23750,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class ReferencePropertyDefinitionData : public PropertyDefinitionData
+    class ReferencePropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::ReferencePropertyDefinition;
     private:
         Guid defaultValue_;
         Guid referencedElementType_;
     public:
-        ReferencePropertyDefinitionData( ) = default;
+        ReferencePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23788,18 +23788,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ReferencePropertyDefinitionData>( );
+            return std::make_shared<ReferencePropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ReferencePropertyDefinitionData&>( target );
+            auto& dest = static_cast<ReferencePropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ReferencePropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const ReferencePropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23829,17 +23829,17 @@ namespace Barrelman::Data
             referencedElementType_ = referencedElementType;
         }
     };
-    class SBytePropertyDefinitionData : public PropertyDefinitionData
+    class SBytePropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::SBytePropertyDefinition;
     private:
         SByte defaultValue_ = 0;
         SByte minValue_ = 0;
         SByte maxValue_ = 0;
     public:
-        SBytePropertyDefinitionData( ) = default;
+        SBytePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23870,18 +23870,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SBytePropertyDefinitionData>( );
+            return std::make_shared<SBytePropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SBytePropertyDefinitionData&>( target );
+            auto& dest = static_cast<SBytePropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SBytePropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const SBytePropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -23923,17 +23923,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class SinglePropertyDefinitionData : public PropertyDefinitionData
+    class SinglePropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::SinglePropertyDefinition;
     private:
         float defaultValue_ = 0.0f;
         float minValue_ = 0.0f;
         float maxValue_ = 0.0f;
     public:
-        SinglePropertyDefinitionData( ) = default;
+        SinglePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -23964,18 +23964,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SinglePropertyDefinitionData>( );
+            return std::make_shared<SinglePropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SinglePropertyDefinitionData&>( target );
+            auto& dest = static_cast<SinglePropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SinglePropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const SinglePropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -24017,16 +24017,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class StringPropertyDefinitionData : public PropertyDefinitionData
+    class StringPropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::StringPropertyDefinition;
     private:
         FixedDBWideString<127> defaultValue_;
         FixedDBWideString<127> pattern_;
     public:
-        StringPropertyDefinitionData( ) = default;
+        StringPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24055,18 +24055,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<StringPropertyDefinitionData>( );
+            return std::make_shared<StringPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<StringPropertyDefinitionData&>( target );
+            auto& dest = static_cast<StringPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const StringPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const StringPropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -24096,14 +24096,14 @@ namespace Barrelman::Data
             pattern_ = pattern;
         }
     };
-    class TimeseriesPropertyDefinitionData : public PropertyDefinitionData
+    class TimeseriesPropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::TimeseriesPropertyDefinition;
     private:
     public:
-        TimeseriesPropertyDefinitionData( ) = default;
+        TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24128,31 +24128,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const TimeseriesPropertyDefinitionObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class BinaryTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class BinaryTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::BinaryTimeseriesPropertyDefinition;
     private:
     public:
-        BinaryTimeseriesPropertyDefinitionData( ) = default;
+        BinaryTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24177,31 +24177,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BinaryTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<BinaryTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BinaryTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<BinaryTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BinaryTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const BinaryTimeseriesPropertyDefinitionObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class BooleanTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class BooleanTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::BooleanTimeseriesPropertyDefinition;
     private:
     public:
-        BooleanTimeseriesPropertyDefinitionData( ) = default;
+        BooleanTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24226,33 +24226,33 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BooleanTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<BooleanTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BooleanTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<BooleanTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BooleanTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const BooleanTimeseriesPropertyDefinitionObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class ByteTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class ByteTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::ByteTimeseriesPropertyDefinition;
     private:
         Byte minValue_ = 0;
         Byte maxValue_ = 0;
     public:
-        ByteTimeseriesPropertyDefinitionData( ) = default;
+        ByteTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24281,18 +24281,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ByteTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<ByteTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ByteTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<ByteTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ByteTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const ByteTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24322,16 +24322,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class DateTimeTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class DateTimeTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::DateTimeTimeseriesPropertyDefinition;
     private:
         FixedDBWideString<127> minValue_;
         FixedDBWideString<127> maxValue_;
     public:
-        DateTimeTimeseriesPropertyDefinitionData( ) = default;
+        DateTimeTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24360,18 +24360,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DateTimeTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<DateTimeTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DateTimeTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<DateTimeTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DateTimeTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const DateTimeTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24401,16 +24401,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class DoubleTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class DoubleTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::DoubleTimeseriesPropertyDefinition;
     private:
         double minValue_ = 0.0;
         double maxValue_ = 0.0;
     public:
-        DoubleTimeseriesPropertyDefinitionData( ) = default;
+        DoubleTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24439,18 +24439,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DoubleTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<DoubleTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DoubleTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<DoubleTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DoubleTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const DoubleTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24480,14 +24480,14 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class GuidTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class GuidTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::GuidTimeseriesPropertyDefinition;
     private:
     public:
-        GuidTimeseriesPropertyDefinitionData( ) = default;
+        GuidTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24512,33 +24512,33 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GuidTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<GuidTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GuidTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<GuidTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GuidTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const GuidTimeseriesPropertyDefinitionObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class Int16TimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class Int16TimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::Int16TimeseriesPropertyDefinition;
     private:
         Int16 minValue_ = 0;
         Int16 maxValue_ = 0;
     public:
-        Int16TimeseriesPropertyDefinitionData( ) = default;
+        Int16TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24567,18 +24567,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int16TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<Int16TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int16TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<Int16TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int16TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const Int16TimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24608,16 +24608,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class Int32TimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class Int32TimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::Int32TimeseriesPropertyDefinition;
     private:
         Int32 minValue_ = 0;
         Int32 maxValue_ = 0;
     public:
-        Int32TimeseriesPropertyDefinitionData( ) = default;
+        Int32TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24646,18 +24646,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int32TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<Int32TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int32TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<Int32TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int32TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const Int32TimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24687,16 +24687,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class Int64TimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class Int64TimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::Int64TimeseriesPropertyDefinition;
     private:
         Int64 minValue_ = 0;
         Int64 maxValue_ = 0;
     public:
-        Int64TimeseriesPropertyDefinitionData( ) = default;
+        Int64TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24725,18 +24725,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int64TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<Int64TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int64TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<Int64TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int64TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const Int64TimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24766,15 +24766,15 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class ReferenceTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class ReferenceTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::ReferenceTimeseriesPropertyDefinition;
     private:
         Guid referencedElementType_;
     public:
-        ReferenceTimeseriesPropertyDefinitionData( ) = default;
+        ReferenceTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24801,18 +24801,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ReferenceTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<ReferenceTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ReferenceTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<ReferenceTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ReferenceTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const ReferenceTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.referencedElementType_ != referencedElementType_ )
                 {
                     return false;
@@ -24830,16 +24830,16 @@ namespace Barrelman::Data
             referencedElementType_ = referencedElementType;
         }
     };
-    class SByteTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class SByteTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::SByteTimeseriesPropertyDefinition;
     private:
         SByte minValue_ = 0;
         SByte maxValue_ = 0;
     public:
-        SByteTimeseriesPropertyDefinitionData( ) = default;
+        SByteTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24868,18 +24868,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SByteTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<SByteTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SByteTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<SByteTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SByteTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const SByteTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24909,16 +24909,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class SingleTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class SingleTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::SingleTimeseriesPropertyDefinition;
     private:
         float minValue_ = 0.0f;
         float maxValue_ = 0.0f;
     public:
-        SingleTimeseriesPropertyDefinitionData( ) = default;
+        SingleTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -24947,18 +24947,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SingleTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<SingleTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SingleTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<SingleTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SingleTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const SingleTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -24988,15 +24988,15 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class StringTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class StringTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::StringTimeseriesPropertyDefinition;
     private:
         FixedDBWideString<127> pattern_;
     public:
-        StringTimeseriesPropertyDefinitionData( ) = default;
+        StringTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25023,18 +25023,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<StringTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<StringTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<StringTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<StringTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const StringTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const StringTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.pattern_ != pattern_ )
                 {
                     return false;
@@ -25052,16 +25052,16 @@ namespace Barrelman::Data
             pattern_ = pattern;
         }
     };
-    class TimeSpanTimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class TimeSpanTimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::TimeSpanTimeseriesPropertyDefinition;
     private:
         TimeSpan minValue_;
         TimeSpan maxValue_;
     public:
-        TimeSpanTimeseriesPropertyDefinitionData( ) = default;
+        TimeSpanTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25090,18 +25090,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeSpanTimeseriesPropertyDefinitionData>( );
+            return std::make_shared<TimeSpanTimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeSpanTimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<TimeSpanTimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeSpanTimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const TimeSpanTimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -25131,16 +25131,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class UInt16TimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class UInt16TimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::UInt16TimeseriesPropertyDefinition;
     private:
         UInt16 minValue_ = 0;
         UInt16 maxValue_ = 0;
     public:
-        UInt16TimeseriesPropertyDefinitionData( ) = default;
+        UInt16TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25169,18 +25169,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt16TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<UInt16TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt16TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<UInt16TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt16TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const UInt16TimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -25210,16 +25210,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class UInt32TimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class UInt32TimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::UInt32TimeseriesPropertyDefinition;
     private:
         UInt32 minValue_ = 0;
         UInt32 maxValue_ = 0;
     public:
-        UInt32TimeseriesPropertyDefinitionData( ) = default;
+        UInt32TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25248,18 +25248,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt32TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<UInt32TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt32TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<UInt32TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt32TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const UInt32TimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -25289,16 +25289,16 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class UInt64TimeseriesPropertyDefinitionData : public TimeseriesPropertyDefinitionData
+    class UInt64TimeseriesPropertyDefinitionObject : public TimeseriesPropertyDefinitionObject
     {
     public:
-        using Base = TimeseriesPropertyDefinitionData;
+        using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::UInt64TimeseriesPropertyDefinition;
     private:
         Int64 minValue_ = 0;
         Int64 maxValue_ = 0;
     public:
-        UInt64TimeseriesPropertyDefinitionData( ) = default;
+        UInt64TimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25327,18 +25327,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt64TimeseriesPropertyDefinitionData>( );
+            return std::make_shared<UInt64TimeseriesPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt64TimeseriesPropertyDefinitionData&>( target );
+            auto& dest = static_cast<UInt64TimeseriesPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt64TimeseriesPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const UInt64TimeseriesPropertyDefinitionObject& >( other );
                 if ( dataObject.minValue_ != minValue_ )
                 {
                     return false;
@@ -25368,17 +25368,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class TimeSpanPropertyDefinitionData : public PropertyDefinitionData
+    class TimeSpanPropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::TimeSpanPropertyDefinition;
     private:
         TimeSpan defaultValue_;
         TimeSpan minValue_;
         TimeSpan maxValue_;
     public:
-        TimeSpanPropertyDefinitionData( ) = default;
+        TimeSpanPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25409,18 +25409,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeSpanPropertyDefinitionData>( );
+            return std::make_shared<TimeSpanPropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeSpanPropertyDefinitionData&>( target );
+            auto& dest = static_cast<TimeSpanPropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeSpanPropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const TimeSpanPropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -25462,17 +25462,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class UInt16PropertyDefinitionData : public PropertyDefinitionData
+    class UInt16PropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::UInt16PropertyDefinition;
     private:
         UInt16 defaultValue_ = 0;
         UInt16 minValue_ = 0;
         UInt16 maxValue_ = 0;
     public:
-        UInt16PropertyDefinitionData( ) = default;
+        UInt16PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25503,18 +25503,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt16PropertyDefinitionData>( );
+            return std::make_shared<UInt16PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt16PropertyDefinitionData&>( target );
+            auto& dest = static_cast<UInt16PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt16PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const UInt16PropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -25556,17 +25556,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class UInt32PropertyDefinitionData : public PropertyDefinitionData
+    class UInt32PropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::UInt32PropertyDefinition;
     private:
         UInt32 defaultValue_ = 0;
         UInt32 minValue_ = 0;
         UInt32 maxValue_ = 0;
     public:
-        UInt32PropertyDefinitionData( ) = default;
+        UInt32PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25597,18 +25597,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt32PropertyDefinitionData>( );
+            return std::make_shared<UInt32PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt32PropertyDefinitionData&>( target );
+            auto& dest = static_cast<UInt32PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt32PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const UInt32PropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -25650,17 +25650,17 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class UInt64PropertyDefinitionData : public PropertyDefinitionData
+    class UInt64PropertyDefinitionObject : public PropertyDefinitionObject
     {
     public:
-        using Base = PropertyDefinitionData;
+        using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::UInt64PropertyDefinition;
     private:
         Int64 defaultValue_ = 0;
         Int64 minValue_ = 0;
         Int64 maxValue_ = 0;
     public:
-        UInt64PropertyDefinitionData( ) = default;
+        UInt64PropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25691,18 +25691,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt64PropertyDefinitionData>( );
+            return std::make_shared<UInt64PropertyDefinitionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt64PropertyDefinitionData&>( target );
+            auto& dest = static_cast<UInt64PropertyDefinitionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt64PropertyDefinitionData& >( other );
+                const auto& dataObject = static_cast< const UInt64PropertyDefinitionObject& >( other );
                 if ( dataObject.defaultValue_ != defaultValue_ )
                 {
                     return false;
@@ -25744,7 +25744,7 @@ namespace Barrelman::Data
             maxValue_ = maxValue;
         }
     };
-    class RadarAlarmStatusData : public BaseData<Kind, Guid>
+    class RadarAlarmStatusObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -25753,9 +25753,9 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
-        Data::AlarmState type_ = Data::AlarmState::Unknown;
+        Types::AlarmState type_ = Types::AlarmState::Unknown;
     public:
-        RadarAlarmStatusData( ) = default;
+        RadarAlarmStatusObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25788,18 +25788,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarAlarmStatusData>( );
+            return std::make_shared<RadarAlarmStatusObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarAlarmStatusData&>( target );
+            auto& dest = static_cast<RadarAlarmStatusObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarAlarmStatusData& >( other );
+                const auto& dataObject = static_cast< const RadarAlarmStatusObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -25844,16 +25844,16 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::AlarmState Type( ) const
+        Types::AlarmState Type( ) const
         {
             return type_;
         }
-        void SetType( Data::AlarmState type )
+        void SetType( Types::AlarmState type )
         {
             type_ = type;
         }
     };
-    class RadarCommandData : public BaseData<Kind, Guid>
+    class RadarCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -25862,11 +25862,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        RadarCommandData( ) = default;
+        RadarCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -25903,18 +25903,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarCommandData>( );
+            return std::make_shared<RadarCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarCommandData&>( target );
+            auto& dest = static_cast<RadarCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarCommandData& >( other );
+                const auto& dataObject = static_cast< const RadarCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -25967,11 +25967,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -25992,14 +25992,14 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class RadarCommandGetStatusData : public RadarCommandData
+    class RadarCommandGetStatusObject : public RadarCommandObject
     {
     public:
-        using Base = RadarCommandData;
+        using Base = RadarCommandObject;
         static constexpr Kind KIND = Kind::RadarCommandGetStatus;
     private:
     public:
-        RadarCommandGetStatusData( ) = default;
+        RadarCommandGetStatusObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -26024,24 +26024,24 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarCommandGetStatusData>( );
+            return std::make_shared<RadarCommandGetStatusObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarCommandGetStatusData&>( target );
+            auto& dest = static_cast<RadarCommandGetStatusObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarCommandGetStatusData& >( other );
+                const auto& dataObject = static_cast< const RadarCommandGetStatusObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadarCommandReplyData : public BaseData<Kind, Guid>
+    class RadarCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -26051,11 +26051,11 @@ namespace Barrelman::Data
         Guid radar_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        RadarCommandReplyData( ) = default;
+        RadarCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -26092,18 +26092,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarCommandReplyData>( );
+            return std::make_shared<RadarCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarCommandReplyData&>( target );
+            auto& dest = static_cast<RadarCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const RadarCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -26164,11 +26164,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -26181,19 +26181,19 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class RadarCommandReplyGetStatusData : public RadarCommandReplyData
+    class RadarCommandReplyGetStatusObject : public RadarCommandReplyObject
     {
     public:
-        using Base = RadarCommandReplyData;
+        using Base = RadarCommandReplyObject;
         static constexpr Kind KIND = Kind::RadarCommandReplyGetStatus;
     private:
         Int32 azimuthCount_ = 0;
         Int32 triggerCount_ = 0;
         TimeSpan rotationCount_;
-        Data::RadarPulse pulse_ = Data::RadarPulse::Short;
+        Types::RadarPulse pulse_ = Types::RadarPulse::Short;
         bool tx_ = false;
     public:
-        RadarCommandReplyGetStatusData( ) = default;
+        RadarCommandReplyGetStatusObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -26228,18 +26228,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarCommandReplyGetStatusData>( );
+            return std::make_shared<RadarCommandReplyGetStatusObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarCommandReplyGetStatusData&>( target );
+            auto& dest = static_cast<RadarCommandReplyGetStatusObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarCommandReplyGetStatusData& >( other );
+                const auto& dataObject = static_cast< const RadarCommandReplyGetStatusObject& >( other );
                 if ( dataObject.azimuthCount_ != azimuthCount_ )
                 {
                     return false;
@@ -26288,11 +26288,11 @@ namespace Barrelman::Data
         {
             rotationCount_ = rotationCount;
         }
-        Data::RadarPulse Pulse( ) const
+        Types::RadarPulse Pulse( ) const
         {
             return pulse_;
         }
-        void SetPulse( Data::RadarPulse pulse )
+        void SetPulse( Types::RadarPulse pulse )
         {
             pulse_ = pulse;
         }
@@ -26305,7 +26305,7 @@ namespace Barrelman::Data
             tx_ = tx;
         }
     };
-    class RadarConfigurationData : public BaseData<Kind, Guid>
+    class RadarConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -26332,7 +26332,7 @@ namespace Barrelman::Data
         double imageOffsetX_ = 0.0;
         double imageScaleFactorY_ = 0.0;
         double imageOffsetY_ = 0.0;
-        Data::RadarImageType radarImageType_ = Data::RadarImageType::MaskedProcessed;
+        Types::RadarImageType radarImageType_ = Types::RadarImageType::MaskedProcessed;
         UInt32 trackColor_ = 0;
         UInt32 vectorColor_ = 0;
         bool enableNmea_ = false;
@@ -26340,7 +26340,7 @@ namespace Barrelman::Data
         Int32 nmeaReceiverPort_ = 0;
         FixedDBWideString<127> nmeaReceiverSourceId_;
     public:
-        RadarConfigurationData( ) = default;
+        RadarConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -26421,18 +26421,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarConfigurationData>( );
+            return std::make_shared<RadarConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarConfigurationData&>( target );
+            auto& dest = static_cast<RadarConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarConfigurationData& >( other );
+                const auto& dataObject = static_cast< const RadarConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -26717,11 +26717,11 @@ namespace Barrelman::Data
         {
             imageOffsetY_ = imageOffsetY;
         }
-        Data::RadarImageType RadarImageType( ) const
+        Types::RadarImageType RadarImageType( ) const
         {
             return radarImageType_;
         }
-        void SetRadarImageType( Data::RadarImageType radarImageType )
+        void SetRadarImageType( Types::RadarImageType radarImageType )
         {
             radarImageType_ = radarImageType;
         }
@@ -26774,7 +26774,7 @@ namespace Barrelman::Data
             nmeaReceiverSourceId_ = nmeaReceiverSourceId;
         }
     };
-    class RadarImageData : public BaseData<Kind, Guid>
+    class RadarImageObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -26789,7 +26789,7 @@ namespace Barrelman::Data
         Binary image_;
         SQLLEN imageLength_ = SQL_NULL_DATA;
     public:
-        RadarImageData( ) = default;
+        RadarImageObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -26828,18 +26828,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarImageData>( );
+            return std::make_shared<RadarImageObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarImageData&>( target );
+            auto& dest = static_cast<RadarImageObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarImageData& >( other );
+                const auto& dataObject = static_cast< const RadarImageObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -26929,7 +26929,7 @@ namespace Barrelman::Data
             image_ = image;
         }
     };
-    class RadarRawTrackTableData : public BaseData<Kind, Guid>
+    class RadarRawTrackTableObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -26942,7 +26942,7 @@ namespace Barrelman::Data
         Binary table_;
         SQLLEN tableLength_ = SQL_NULL_DATA;
     public:
-        RadarRawTrackTableData( ) = default;
+        RadarRawTrackTableObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -26977,18 +26977,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarRawTrackTableData>( );
+            return std::make_shared<RadarRawTrackTableObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarRawTrackTableData&>( target );
+            auto& dest = static_cast<RadarRawTrackTableObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarRawTrackTableData& >( other );
+                const auto& dataObject = static_cast< const RadarRawTrackTableObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27054,7 +27054,7 @@ namespace Barrelman::Data
             table_ = table;
         }
     };
-    class RadarStatusData : public BaseData<Kind, Guid>
+    class RadarStatusObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -27066,11 +27066,11 @@ namespace Barrelman::Data
         Int32 azimuthCount_ = 0;
         Int32 triggerCount_ = 0;
         TimeSpan rotationTime_;
-        Data::RadarPulse pulse_ = Data::RadarPulse::Short;
+        Types::RadarPulse pulse_ = Types::RadarPulse::Short;
         bool tx_ = false;
         bool tracking_ = false;
     public:
-        RadarStatusData( ) = default;
+        RadarStatusObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -27113,18 +27113,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarStatusData>( );
+            return std::make_shared<RadarStatusObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarStatusData&>( target );
+            auto& dest = static_cast<RadarStatusObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarStatusData& >( other );
+                const auto& dataObject = static_cast< const RadarStatusObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27213,11 +27213,11 @@ namespace Barrelman::Data
         {
             rotationTime_ = rotationTime;
         }
-        Data::RadarPulse Pulse( ) const
+        Types::RadarPulse Pulse( ) const
         {
             return pulse_;
         }
-        void SetPulse( Data::RadarPulse pulse )
+        void SetPulse( Types::RadarPulse pulse )
         {
             pulse_ = pulse;
         }
@@ -27238,7 +27238,7 @@ namespace Barrelman::Data
             tracking_ = tracking;
         }
     };
-    class RadioCommandData : public BaseData<Kind, Guid>
+    class RadioCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -27247,11 +27247,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid radio_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        RadioCommandData( ) = default;
+        RadioCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -27288,18 +27288,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadioCommandData>( );
+            return std::make_shared<RadioCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadioCommandData&>( target );
+            auto& dest = static_cast<RadioCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadioCommandData& >( other );
+                const auto& dataObject = static_cast< const RadioCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27352,11 +27352,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -27377,7 +27377,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class RadioCommandReplyData : public BaseData<Kind, Guid>
+    class RadioCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -27387,11 +27387,11 @@ namespace Barrelman::Data
         Guid radio_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        RadioCommandReplyData( ) = default;
+        RadioCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -27428,18 +27428,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadioCommandReplyData>( );
+            return std::make_shared<RadioCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadioCommandReplyData&>( target );
+            auto& dest = static_cast<RadioCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadioCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const RadioCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27500,11 +27500,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -27517,7 +27517,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class RadioConfigurationData : public BaseData<Kind, Guid>
+    class RadioConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -27534,7 +27534,7 @@ namespace Barrelman::Data
         FixedDBWideString<127> ed137IPAddress_;
         Int32 ed137Port_ = 0;
     public:
-        RadioConfigurationData( ) = default;
+        RadioConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -27579,18 +27579,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadioConfigurationData>( );
+            return std::make_shared<RadioConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadioConfigurationData&>( target );
+            auto& dest = static_cast<RadioConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadioConfigurationData& >( other );
+                const auto& dataObject = static_cast< const RadioConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27716,7 +27716,7 @@ namespace Barrelman::Data
             ed137Port_ = ed137Port;
         }
     };
-    class RadomeCommandData : public BaseData<Kind, Guid>
+    class RadomeCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -27725,11 +27725,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid radome_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        RadomeCommandData( ) = default;
+        RadomeCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -27766,18 +27766,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeCommandData>( );
+            return std::make_shared<RadomeCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeCommandData&>( target );
+            auto& dest = static_cast<RadomeCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeCommandData& >( other );
+                const auto& dataObject = static_cast< const RadomeCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27830,11 +27830,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -27855,7 +27855,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class RadomeCommandReplyData : public BaseData<Kind, Guid>
+    class RadomeCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -27865,11 +27865,11 @@ namespace Barrelman::Data
         Guid radome_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        RadomeCommandReplyData( ) = default;
+        RadomeCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -27906,18 +27906,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeCommandReplyData>( );
+            return std::make_shared<RadomeCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeCommandReplyData&>( target );
+            auto& dest = static_cast<RadomeCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const RadomeCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -27978,11 +27978,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -27995,7 +27995,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class RadomeConfigurationData : public BaseData<Kind, Guid>
+    class RadomeConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28010,7 +28010,7 @@ namespace Barrelman::Data
         double lowTemperatureLimit_ = 0.0;
         double highTemperatureLimit_ = 0.0;
     public:
-        RadomeConfigurationData( ) = default;
+        RadomeConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28051,18 +28051,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeConfigurationData>( );
+            return std::make_shared<RadomeConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeConfigurationData&>( target );
+            auto& dest = static_cast<RadomeConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeConfigurationData& >( other );
+                const auto& dataObject = static_cast< const RadomeConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28164,7 +28164,7 @@ namespace Barrelman::Data
             highTemperatureLimit_ = highTemperatureLimit;
         }
     };
-    class ReferenceTimeseriesValueData : public BaseData<Kind, Guid>
+    class ReferenceTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28175,7 +28175,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         Guid value_;
     public:
-        ReferenceTimeseriesValueData( ) = default;
+        ReferenceTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28208,18 +28208,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ReferenceTimeseriesValueData>( );
+            return std::make_shared<ReferenceTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ReferenceTimeseriesValueData&>( target );
+            auto& dest = static_cast<ReferenceTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ReferenceTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const ReferenceTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28273,7 +28273,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class SByteTimeseriesValueData : public BaseData<Kind, Guid>
+    class SByteTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28284,7 +28284,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBSByte value_;
     public:
-        SByteTimeseriesValueData( ) = default;
+        SByteTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28317,18 +28317,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SByteTimeseriesValueData>( );
+            return std::make_shared<SByteTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SByteTimeseriesValueData&>( target );
+            auto& dest = static_cast<SByteTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SByteTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const SByteTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28382,7 +28382,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class SecurityDomainData : public BaseData<Kind, Guid>
+    class SecurityDomainObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28393,7 +28393,7 @@ namespace Barrelman::Data
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
-        SecurityDomainData( ) = default;
+        SecurityDomainObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28424,18 +28424,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityDomainData>( );
+            return std::make_shared<SecurityDomainObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityDomainData&>( target );
+            auto& dest = static_cast<SecurityDomainObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityDomainData& >( other );
+                const auto& dataObject = static_cast< const SecurityDomainObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28477,7 +28477,7 @@ namespace Barrelman::Data
             description_ = description;
         }
     };
-    class SecurityIdentifierData : public BaseData<Kind, Guid>
+    class SecurityIdentifierObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28489,7 +28489,7 @@ namespace Barrelman::Data
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
     public:
-        SecurityIdentifierData( ) = default;
+        SecurityIdentifierObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28522,18 +28522,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityIdentifierData>( );
+            return std::make_shared<SecurityIdentifierObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityIdentifierData&>( target );
+            auto& dest = static_cast<SecurityIdentifierObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityIdentifierData& >( other );
+                const auto& dataObject = static_cast< const SecurityIdentifierObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28587,14 +28587,14 @@ namespace Barrelman::Data
             description_ = description;
         }
     };
-    class SecurityLoginData : public SecurityIdentifierData
+    class SecurityLoginObject : public SecurityIdentifierObject
     {
     public:
-        using Base = SecurityIdentifierData;
+        using Base = SecurityIdentifierObject;
         static constexpr Kind KIND = Kind::SecurityLogin;
     private:
     public:
-        SecurityLoginData( ) = default;
+        SecurityLoginObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28619,32 +28619,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityLoginData>( );
+            return std::make_shared<SecurityLoginObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityLoginData&>( target );
+            auto& dest = static_cast<SecurityLoginObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityLoginData& >( other );
+                const auto& dataObject = static_cast< const SecurityLoginObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class SecurityRoleData : public SecurityIdentifierData
+    class SecurityRoleObject : public SecurityIdentifierObject
     {
     public:
-        using Base = SecurityIdentifierData;
+        using Base = SecurityIdentifierObject;
         static constexpr Kind KIND = Kind::SecurityRole;
     private:
         FixedDBWideString<127> name_;
     public:
-        SecurityRoleData( ) = default;
+        SecurityRoleObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28671,18 +28671,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityRoleData>( );
+            return std::make_shared<SecurityRoleObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityRoleData&>( target );
+            auto& dest = static_cast<SecurityRoleObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityRoleData& >( other );
+                const auto& dataObject = static_cast< const SecurityRoleObject& >( other );
                 if ( dataObject.name_ != name_ )
                 {
                     return false;
@@ -28700,7 +28700,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class SecurityIdentifierRoleLinkData : public BaseData<Kind, Guid>
+    class SecurityIdentifierRoleLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28712,7 +28712,7 @@ namespace Barrelman::Data
         DateTime start_;
         DBDateTime end_;
     public:
-        SecurityIdentifierRoleLinkData( ) = default;
+        SecurityIdentifierRoleLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28747,18 +28747,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityIdentifierRoleLinkData>( );
+            return std::make_shared<SecurityIdentifierRoleLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityIdentifierRoleLinkData&>( target );
+            auto& dest = static_cast<SecurityIdentifierRoleLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityIdentifierRoleLinkData& >( other );
+                const auto& dataObject = static_cast< const SecurityIdentifierRoleLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28824,7 +28824,7 @@ namespace Barrelman::Data
             end_ = end;
         }
     };
-    class SecurityLoginSessionData : public BaseData<Kind, Guid>
+    class SecurityLoginSessionObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28838,7 +28838,7 @@ namespace Barrelman::Data
         FixedDBWideString<260> notificationQueueName_;
         FixedDBWideString<260> messageQueueName_;
     public:
-        SecurityLoginSessionData( ) = default;
+        SecurityLoginSessionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -28877,18 +28877,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityLoginSessionData>( );
+            return std::make_shared<SecurityLoginSessionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityLoginSessionData&>( target );
+            auto& dest = static_cast<SecurityLoginSessionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityLoginSessionData& >( other );
+                const auto& dataObject = static_cast< const SecurityLoginSessionObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -28978,7 +28978,7 @@ namespace Barrelman::Data
             messageQueueName_ = messageQueueName;
         }
     };
-    class SecurityPermissionData : public BaseData<Kind, Guid>
+    class SecurityPermissionObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -28993,7 +28993,7 @@ namespace Barrelman::Data
         bool canUpdate_ = false;
         bool canDelete_ = false;
     public:
-        SecurityPermissionData( ) = default;
+        SecurityPermissionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29034,18 +29034,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SecurityPermissionData>( );
+            return std::make_shared<SecurityPermissionObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SecurityPermissionData&>( target );
+            auto& dest = static_cast<SecurityPermissionObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SecurityPermissionData& >( other );
+                const auto& dataObject = static_cast< const SecurityPermissionObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -29147,7 +29147,7 @@ namespace Barrelman::Data
             canDelete_ = canDelete;
         }
     };
-    class SingleTimeseriesValueData : public BaseData<Kind, Guid>
+    class SingleTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -29158,7 +29158,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBSingle value_;
     public:
-        SingleTimeseriesValueData( ) = default;
+        SingleTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29191,18 +29191,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SingleTimeseriesValueData>( );
+            return std::make_shared<SingleTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SingleTimeseriesValueData&>( target );
+            auto& dest = static_cast<SingleTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SingleTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const SingleTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -29256,7 +29256,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class StringTimeseriesValueData : public BaseData<Kind, Guid>
+    class StringTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -29268,7 +29268,7 @@ namespace Barrelman::Data
         WideString value_;
         SQLLEN valueLength_ = SQL_NULL_DATA;
     public:
-        StringTimeseriesValueData( ) = default;
+        StringTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29301,18 +29301,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<StringTimeseriesValueData>( );
+            return std::make_shared<StringTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<StringTimeseriesValueData&>( target );
+            auto& dest = static_cast<StringTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const StringTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const StringTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -29366,7 +29366,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class TimeseriesCatalogElementData : public BaseData<Kind, Guid>
+    class TimeseriesCatalogElementObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -29376,7 +29376,7 @@ namespace Barrelman::Data
         DBGuid catalog_;
         FixedDBWideString<127> name_;
     public:
-        TimeseriesCatalogElementData( ) = default;
+        TimeseriesCatalogElementObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29407,18 +29407,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeseriesCatalogElementData>( );
+            return std::make_shared<TimeseriesCatalogElementObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeseriesCatalogElementData&>( target );
+            auto& dest = static_cast<TimeseriesCatalogElementObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeseriesCatalogElementData& >( other );
+                const auto& dataObject = static_cast< const TimeseriesCatalogElementObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -29460,15 +29460,15 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class TimeseriesData : public TimeseriesCatalogElementData
+    class TimeseriesObject : public TimeseriesCatalogElementObject
     {
     public:
-        using Base = TimeseriesCatalogElementData;
+        using Base = TimeseriesCatalogElementObject;
         static constexpr Kind KIND = Kind::Timeseries;
     private:
         TimeSpan maxRetention_;
     public:
-        TimeseriesData( ) = default;
+        TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29495,18 +29495,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeseriesData>( );
+            return std::make_shared<TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeseriesData&>( target );
+            auto& dest = static_cast<TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const TimeseriesObject& >( other );
                 if ( dataObject.maxRetention_ != maxRetention_ )
                 {
                     return false;
@@ -29524,14 +29524,14 @@ namespace Barrelman::Data
             maxRetention_ = maxRetention;
         }
     };
-    class BinaryTimeseriesData : public TimeseriesData
+    class BinaryTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::BinaryTimeseries;
     private:
     public:
-        BinaryTimeseriesData( ) = default;
+        BinaryTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29556,31 +29556,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BinaryTimeseriesData>( );
+            return std::make_shared<BinaryTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BinaryTimeseriesData&>( target );
+            auto& dest = static_cast<BinaryTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BinaryTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const BinaryTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class BooleanTimeseriesData : public TimeseriesData
+    class BooleanTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::BooleanTimeseries;
     private:
     public:
-        BooleanTimeseriesData( ) = default;
+        BooleanTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29605,32 +29605,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<BooleanTimeseriesData>( );
+            return std::make_shared<BooleanTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<BooleanTimeseriesData&>( target );
+            auto& dest = static_cast<BooleanTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const BooleanTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const BooleanTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisAidToNavigationOffPositionTimeseriesData : public BooleanTimeseriesData
+    class AisAidToNavigationOffPositionTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::AisAidToNavigationOffPositionTimeseries;
     private:
         Guid aidToNavigation_;
     public:
-        AisAidToNavigationOffPositionTimeseriesData( ) = default;
+        AisAidToNavigationOffPositionTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29657,18 +29657,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisAidToNavigationOffPositionTimeseriesData>( );
+            return std::make_shared<AisAidToNavigationOffPositionTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisAidToNavigationOffPositionTimeseriesData&>( target );
+            auto& dest = static_cast<AisAidToNavigationOffPositionTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisAidToNavigationOffPositionTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const AisAidToNavigationOffPositionTimeseriesObject& >( other );
                 if ( dataObject.aidToNavigation_ != aidToNavigation_ )
                 {
                     return false;
@@ -29686,15 +29686,15 @@ namespace Barrelman::Data
             aidToNavigation_ = aidToNavigation;
         }
     };
-    class DeviceEnabledTimeseriesData : public BooleanTimeseriesData
+    class DeviceEnabledTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::DeviceEnabledTimeseries;
     private:
         DBGuid device_;
     public:
-        DeviceEnabledTimeseriesData( ) = default;
+        DeviceEnabledTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29721,18 +29721,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DeviceEnabledTimeseriesData>( );
+            return std::make_shared<DeviceEnabledTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DeviceEnabledTimeseriesData&>( target );
+            auto& dest = static_cast<DeviceEnabledTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DeviceEnabledTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const DeviceEnabledTimeseriesObject& >( other );
                 if ( dataObject.device_ != device_ )
                 {
                     return false;
@@ -29750,15 +29750,15 @@ namespace Barrelman::Data
             device_ = device;
         }
     };
-    class RadarAutomaticSensitivityTimeControlTimeseriesData : public BooleanTimeseriesData
+    class RadarAutomaticSensitivityTimeControlTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarAutomaticSensitivityTimeControlTimeseries;
     private:
         Guid radar_;
     public:
-        RadarAutomaticSensitivityTimeControlTimeseriesData( ) = default;
+        RadarAutomaticSensitivityTimeControlTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29785,18 +29785,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarAutomaticSensitivityTimeControlTimeseriesData>( );
+            return std::make_shared<RadarAutomaticSensitivityTimeControlTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarAutomaticSensitivityTimeControlTimeseriesData&>( target );
+            auto& dest = static_cast<RadarAutomaticSensitivityTimeControlTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarAutomaticSensitivityTimeControlTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarAutomaticSensitivityTimeControlTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -29814,15 +29814,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarBlankSector1TimeseriesData : public BooleanTimeseriesData
+    class RadarBlankSector1TimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarBlankSector1Timeseries;
     private:
         Guid radar_;
     public:
-        RadarBlankSector1TimeseriesData( ) = default;
+        RadarBlankSector1TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29849,18 +29849,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarBlankSector1TimeseriesData>( );
+            return std::make_shared<RadarBlankSector1TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarBlankSector1TimeseriesData&>( target );
+            auto& dest = static_cast<RadarBlankSector1TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarBlankSector1TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarBlankSector1TimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -29878,15 +29878,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarBlankSector2TimeseriesData : public BooleanTimeseriesData
+    class RadarBlankSector2TimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarBlankSector2Timeseries;
     private:
         Guid radar_;
     public:
-        RadarBlankSector2TimeseriesData( ) = default;
+        RadarBlankSector2TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29913,18 +29913,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarBlankSector2TimeseriesData>( );
+            return std::make_shared<RadarBlankSector2TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarBlankSector2TimeseriesData&>( target );
+            auto& dest = static_cast<RadarBlankSector2TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarBlankSector2TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarBlankSector2TimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -29942,15 +29942,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarEnableAutomaticFrequencyControlTimeseriesData : public BooleanTimeseriesData
+    class RadarEnableAutomaticFrequencyControlTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarEnableAutomaticFrequencyControlTimeseries;
     private:
         Guid radar_;
     public:
-        RadarEnableAutomaticFrequencyControlTimeseriesData( ) = default;
+        RadarEnableAutomaticFrequencyControlTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -29977,18 +29977,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarEnableAutomaticFrequencyControlTimeseriesData>( );
+            return std::make_shared<RadarEnableAutomaticFrequencyControlTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarEnableAutomaticFrequencyControlTimeseriesData&>( target );
+            auto& dest = static_cast<RadarEnableAutomaticFrequencyControlTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarEnableAutomaticFrequencyControlTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarEnableAutomaticFrequencyControlTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -30006,15 +30006,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarEnableFastTimeConstantTimeseriesData : public BooleanTimeseriesData
+    class RadarEnableFastTimeConstantTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarEnableFastTimeConstantTimeseries;
     private:
         Guid radar_;
     public:
-        RadarEnableFastTimeConstantTimeseriesData( ) = default;
+        RadarEnableFastTimeConstantTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30041,18 +30041,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarEnableFastTimeConstantTimeseriesData>( );
+            return std::make_shared<RadarEnableFastTimeConstantTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarEnableFastTimeConstantTimeseriesData&>( target );
+            auto& dest = static_cast<RadarEnableFastTimeConstantTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarEnableFastTimeConstantTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarEnableFastTimeConstantTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -30070,15 +30070,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarEnableSensitivityTimeControlTimeseriesData : public BooleanTimeseriesData
+    class RadarEnableSensitivityTimeControlTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarEnableSensitivityTimeControlTimeseries;
     private:
         Guid radar_;
     public:
-        RadarEnableSensitivityTimeControlTimeseriesData( ) = default;
+        RadarEnableSensitivityTimeControlTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30105,18 +30105,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarEnableSensitivityTimeControlTimeseriesData>( );
+            return std::make_shared<RadarEnableSensitivityTimeControlTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarEnableSensitivityTimeControlTimeseriesData&>( target );
+            auto& dest = static_cast<RadarEnableSensitivityTimeControlTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarEnableSensitivityTimeControlTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarEnableSensitivityTimeControlTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -30134,15 +30134,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarPowerOnTimeseriesData : public BooleanTimeseriesData
+    class RadarPowerOnTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarPowerOnTimeseries;
     private:
         Guid radar_;
     public:
-        RadarPowerOnTimeseriesData( ) = default;
+        RadarPowerOnTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30169,18 +30169,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarPowerOnTimeseriesData>( );
+            return std::make_shared<RadarPowerOnTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarPowerOnTimeseriesData&>( target );
+            auto& dest = static_cast<RadarPowerOnTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarPowerOnTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarPowerOnTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -30198,15 +30198,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarSaveSettingsTimeseriesData : public BooleanTimeseriesData
+    class RadarSaveSettingsTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarSaveSettingsTimeseries;
     private:
         Guid radar_;
     public:
-        RadarSaveSettingsTimeseriesData( ) = default;
+        RadarSaveSettingsTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30233,18 +30233,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarSaveSettingsTimeseriesData>( );
+            return std::make_shared<RadarSaveSettingsTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarSaveSettingsTimeseriesData&>( target );
+            auto& dest = static_cast<RadarSaveSettingsTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarSaveSettingsTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarSaveSettingsTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -30262,15 +30262,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarTrackingTimeseriesData : public BooleanTimeseriesData
+    class RadarTrackingTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarTrackingTimeseries;
     private:
         Guid radar_;
     public:
-        RadarTrackingTimeseriesData( ) = default;
+        RadarTrackingTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30297,18 +30297,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarTrackingTimeseriesData>( );
+            return std::make_shared<RadarTrackingTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarTrackingTimeseriesData&>( target );
+            auto& dest = static_cast<RadarTrackingTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarTrackingTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarTrackingTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -30326,15 +30326,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class MediaProxySessionEnabledTimeseriesData : public BooleanTimeseriesData
+    class MediaProxySessionEnabledTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::MediaProxySessionEnabledTimeseries;
     private:
         Guid proxySession_;
     public:
-        MediaProxySessionEnabledTimeseriesData( ) = default;
+        MediaProxySessionEnabledTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30361,18 +30361,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaProxySessionEnabledTimeseriesData>( );
+            return std::make_shared<MediaProxySessionEnabledTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaProxySessionEnabledTimeseriesData&>( target );
+            auto& dest = static_cast<MediaProxySessionEnabledTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaProxySessionEnabledTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const MediaProxySessionEnabledTimeseriesObject& >( other );
                 if ( dataObject.proxySession_ != proxySession_ )
                 {
                     return false;
@@ -30390,15 +30390,15 @@ namespace Barrelman::Data
             proxySession_ = proxySession;
         }
     };
-    class MediaServiceEnabledTimeseriesData : public BooleanTimeseriesData
+    class MediaServiceEnabledTimeseriesObject : public BooleanTimeseriesObject
     {
     public:
-        using Base = BooleanTimeseriesData;
+        using Base = BooleanTimeseriesObject;
         static constexpr Kind KIND = Kind::MediaServiceEnabledTimeseries;
     private:
         Guid service_;
     public:
-        MediaServiceEnabledTimeseriesData( ) = default;
+        MediaServiceEnabledTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30425,18 +30425,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<MediaServiceEnabledTimeseriesData>( );
+            return std::make_shared<MediaServiceEnabledTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<MediaServiceEnabledTimeseriesData&>( target );
+            auto& dest = static_cast<MediaServiceEnabledTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const MediaServiceEnabledTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const MediaServiceEnabledTimeseriesObject& >( other );
                 if ( dataObject.service_ != service_ )
                 {
                     return false;
@@ -30454,14 +30454,14 @@ namespace Barrelman::Data
             service_ = service;
         }
     };
-    class ByteTimeseriesData : public TimeseriesData
+    class ByteTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::ByteTimeseries;
     private:
     public:
-        ByteTimeseriesData( ) = default;
+        ByteTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30486,31 +30486,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ByteTimeseriesData>( );
+            return std::make_shared<ByteTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ByteTimeseriesData&>( target );
+            auto& dest = static_cast<ByteTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ByteTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const ByteTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class DateTimeTimeseriesData : public TimeseriesData
+    class DateTimeTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::DateTimeTimeseries;
     private:
     public:
-        DateTimeTimeseriesData( ) = default;
+        DateTimeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30535,31 +30535,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DateTimeTimeseriesData>( );
+            return std::make_shared<DateTimeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DateTimeTimeseriesData&>( target );
+            auto& dest = static_cast<DateTimeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DateTimeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const DateTimeTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class DoubleTimeseriesData : public TimeseriesData
+    class DoubleTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::DoubleTimeseries;
     private:
     public:
-        DoubleTimeseriesData( ) = default;
+        DoubleTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30584,32 +30584,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<DoubleTimeseriesData>( );
+            return std::make_shared<DoubleTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<DoubleTimeseriesData&>( target );
+            auto& dest = static_cast<DoubleTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const DoubleTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const DoubleTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class GNSSAltitudeTimeseriesData : public DoubleTimeseriesData
+    class GNSSAltitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GNSSAltitudeTimeseries;
     private:
         Guid gNSSDevice_;
     public:
-        GNSSAltitudeTimeseriesData( ) = default;
+        GNSSAltitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30636,18 +30636,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSAltitudeTimeseriesData>( );
+            return std::make_shared<GNSSAltitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSAltitudeTimeseriesData&>( target );
+            auto& dest = static_cast<GNSSAltitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSAltitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GNSSAltitudeTimeseriesObject& >( other );
                 if ( dataObject.gNSSDevice_ != gNSSDevice_ )
                 {
                     return false;
@@ -30665,15 +30665,15 @@ namespace Barrelman::Data
             gNSSDevice_ = gNSSDevice;
         }
     };
-    class GNSSLatitudeTimeseriesData : public DoubleTimeseriesData
+    class GNSSLatitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GNSSLatitudeTimeseries;
     private:
         Guid gNSSDevice_;
     public:
-        GNSSLatitudeTimeseriesData( ) = default;
+        GNSSLatitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30700,18 +30700,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSLatitudeTimeseriesData>( );
+            return std::make_shared<GNSSLatitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSLatitudeTimeseriesData&>( target );
+            auto& dest = static_cast<GNSSLatitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSLatitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GNSSLatitudeTimeseriesObject& >( other );
                 if ( dataObject.gNSSDevice_ != gNSSDevice_ )
                 {
                     return false;
@@ -30729,15 +30729,15 @@ namespace Barrelman::Data
             gNSSDevice_ = gNSSDevice;
         }
     };
-    class GNSSLongitudeTimeseriesData : public DoubleTimeseriesData
+    class GNSSLongitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GNSSLongitudeTimeseries;
     private:
         Guid gNSSDevice_;
     public:
-        GNSSLongitudeTimeseriesData( ) = default;
+        GNSSLongitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30764,18 +30764,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GNSSLongitudeTimeseriesData>( );
+            return std::make_shared<GNSSLongitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GNSSLongitudeTimeseriesData&>( target );
+            auto& dest = static_cast<GNSSLongitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GNSSLongitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GNSSLongitudeTimeseriesObject& >( other );
                 if ( dataObject.gNSSDevice_ != gNSSDevice_ )
                 {
                     return false;
@@ -30793,15 +30793,15 @@ namespace Barrelman::Data
             gNSSDevice_ = gNSSDevice;
         }
     };
-    class GyroCourseTimeseriesData : public DoubleTimeseriesData
+    class GyroCourseTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroCourseTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroCourseTimeseriesData( ) = default;
+        GyroCourseTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30828,18 +30828,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroCourseTimeseriesData>( );
+            return std::make_shared<GyroCourseTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroCourseTimeseriesData&>( target );
+            auto& dest = static_cast<GyroCourseTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroCourseTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroCourseTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -30857,15 +30857,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class GyroHeadingMagneticNorthTimeseriesData : public DoubleTimeseriesData
+    class GyroHeadingMagneticNorthTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroHeadingMagneticNorthTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroHeadingMagneticNorthTimeseriesData( ) = default;
+        GyroHeadingMagneticNorthTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30892,18 +30892,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroHeadingMagneticNorthTimeseriesData>( );
+            return std::make_shared<GyroHeadingMagneticNorthTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroHeadingMagneticNorthTimeseriesData&>( target );
+            auto& dest = static_cast<GyroHeadingMagneticNorthTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroHeadingMagneticNorthTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroHeadingMagneticNorthTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -30921,15 +30921,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class GyroHeadingTrueNorthTimeseriesData : public DoubleTimeseriesData
+    class GyroHeadingTrueNorthTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroHeadingTrueNorthTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroHeadingTrueNorthTimeseriesData( ) = default;
+        GyroHeadingTrueNorthTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -30956,18 +30956,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroHeadingTrueNorthTimeseriesData>( );
+            return std::make_shared<GyroHeadingTrueNorthTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroHeadingTrueNorthTimeseriesData&>( target );
+            auto& dest = static_cast<GyroHeadingTrueNorthTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroHeadingTrueNorthTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroHeadingTrueNorthTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -30985,15 +30985,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class GyroPitchTimeseriesData : public DoubleTimeseriesData
+    class GyroPitchTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroPitchTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroPitchTimeseriesData( ) = default;
+        GyroPitchTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31020,18 +31020,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroPitchTimeseriesData>( );
+            return std::make_shared<GyroPitchTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroPitchTimeseriesData&>( target );
+            auto& dest = static_cast<GyroPitchTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroPitchTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroPitchTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -31049,15 +31049,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class GyroRateOfTurnTimeseriesData : public DoubleTimeseriesData
+    class GyroRateOfTurnTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroRateOfTurnTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroRateOfTurnTimeseriesData( ) = default;
+        GyroRateOfTurnTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31084,18 +31084,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroRateOfTurnTimeseriesData>( );
+            return std::make_shared<GyroRateOfTurnTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroRateOfTurnTimeseriesData&>( target );
+            auto& dest = static_cast<GyroRateOfTurnTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroRateOfTurnTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroRateOfTurnTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -31113,15 +31113,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class GyroRollTimeseriesData : public DoubleTimeseriesData
+    class GyroRollTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroRollTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroRollTimeseriesData( ) = default;
+        GyroRollTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31148,18 +31148,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroRollTimeseriesData>( );
+            return std::make_shared<GyroRollTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroRollTimeseriesData&>( target );
+            auto& dest = static_cast<GyroRollTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroRollTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroRollTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -31177,15 +31177,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class GyroSpeedTimeseriesData : public DoubleTimeseriesData
+    class GyroSpeedTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::GyroSpeedTimeseries;
     private:
         Guid gyroDevice_;
     public:
-        GyroSpeedTimeseriesData( ) = default;
+        GyroSpeedTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31212,18 +31212,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GyroSpeedTimeseriesData>( );
+            return std::make_shared<GyroSpeedTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GyroSpeedTimeseriesData&>( target );
+            auto& dest = static_cast<GyroSpeedTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GyroSpeedTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GyroSpeedTimeseriesObject& >( other );
                 if ( dataObject.gyroDevice_ != gyroDevice_ )
                 {
                     return false;
@@ -31241,15 +31241,15 @@ namespace Barrelman::Data
             gyroDevice_ = gyroDevice;
         }
     };
-    class RadarLatitudeTimeseriesData : public DoubleTimeseriesData
+    class RadarLatitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarLatitudeTimeseries;
     private:
         Guid radar_;
     public:
-        RadarLatitudeTimeseriesData( ) = default;
+        RadarLatitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31276,18 +31276,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarLatitudeTimeseriesData>( );
+            return std::make_shared<RadarLatitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarLatitudeTimeseriesData&>( target );
+            auto& dest = static_cast<RadarLatitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarLatitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarLatitudeTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -31305,15 +31305,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarLongitudeTimeseriesData : public DoubleTimeseriesData
+    class RadarLongitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::RadarLongitudeTimeseries;
     private:
         Guid radar_;
     public:
-        RadarLongitudeTimeseriesData( ) = default;
+        RadarLongitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31340,18 +31340,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarLongitudeTimeseriesData>( );
+            return std::make_shared<RadarLongitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarLongitudeTimeseriesData&>( target );
+            auto& dest = static_cast<RadarLongitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarLongitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarLongitudeTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -31369,15 +31369,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadomeDewPointTimeseriesData : public DoubleTimeseriesData
+    class RadomeDewPointTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::RadomeDewPointTimeseries;
     private:
         Guid radome_;
     public:
-        RadomeDewPointTimeseriesData( ) = default;
+        RadomeDewPointTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31404,18 +31404,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeDewPointTimeseriesData>( );
+            return std::make_shared<RadomeDewPointTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeDewPointTimeseriesData&>( target );
+            auto& dest = static_cast<RadomeDewPointTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeDewPointTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadomeDewPointTimeseriesObject& >( other );
                 if ( dataObject.radome_ != radome_ )
                 {
                     return false;
@@ -31433,15 +31433,15 @@ namespace Barrelman::Data
             radome_ = radome;
         }
     };
-    class RadomePressureTimeseriesData : public DoubleTimeseriesData
+    class RadomePressureTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::RadomePressureTimeseries;
     private:
         Guid radome_;
     public:
-        RadomePressureTimeseriesData( ) = default;
+        RadomePressureTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31468,18 +31468,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomePressureTimeseriesData>( );
+            return std::make_shared<RadomePressureTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomePressureTimeseriesData&>( target );
+            auto& dest = static_cast<RadomePressureTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomePressureTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadomePressureTimeseriesObject& >( other );
                 if ( dataObject.radome_ != radome_ )
                 {
                     return false;
@@ -31497,15 +31497,15 @@ namespace Barrelman::Data
             radome_ = radome;
         }
     };
-    class RadomeTemperatureTimeseriesData : public DoubleTimeseriesData
+    class RadomeTemperatureTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::RadomeTemperatureTimeseries;
     private:
         Guid radome_;
     public:
-        RadomeTemperatureTimeseriesData( ) = default;
+        RadomeTemperatureTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31532,18 +31532,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeTemperatureTimeseriesData>( );
+            return std::make_shared<RadomeTemperatureTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeTemperatureTimeseriesData&>( target );
+            auto& dest = static_cast<RadomeTemperatureTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeTemperatureTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadomeTemperatureTimeseriesObject& >( other );
                 if ( dataObject.radome_ != radome_ )
                 {
                     return false;
@@ -31561,15 +31561,15 @@ namespace Barrelman::Data
             radome_ = radome;
         }
     };
-    class VesselDraughtTimeseriesData : public DoubleTimeseriesData
+    class VesselDraughtTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::VesselDraughtTimeseries;
     private:
         Guid vessel_;
     public:
-        VesselDraughtTimeseriesData( ) = default;
+        VesselDraughtTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31596,18 +31596,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<VesselDraughtTimeseriesData>( );
+            return std::make_shared<VesselDraughtTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<VesselDraughtTimeseriesData&>( target );
+            auto& dest = static_cast<VesselDraughtTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const VesselDraughtTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const VesselDraughtTimeseriesObject& >( other );
                 if ( dataObject.vessel_ != vessel_ )
                 {
                     return false;
@@ -31625,15 +31625,15 @@ namespace Barrelman::Data
             vessel_ = vessel;
         }
     };
-    class ViewLatitudeTimeseriesData : public DoubleTimeseriesData
+    class ViewLatitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::ViewLatitudeTimeseries;
     private:
         Guid view_;
     public:
-        ViewLatitudeTimeseriesData( ) = default;
+        ViewLatitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31660,18 +31660,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ViewLatitudeTimeseriesData>( );
+            return std::make_shared<ViewLatitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ViewLatitudeTimeseriesData&>( target );
+            auto& dest = static_cast<ViewLatitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ViewLatitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const ViewLatitudeTimeseriesObject& >( other );
                 if ( dataObject.view_ != view_ )
                 {
                     return false;
@@ -31689,15 +31689,15 @@ namespace Barrelman::Data
             view_ = view;
         }
     };
-    class ViewLongitudeTimeseriesData : public DoubleTimeseriesData
+    class ViewLongitudeTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::ViewLongitudeTimeseries;
     private:
         Guid view_;
     public:
-        ViewLongitudeTimeseriesData( ) = default;
+        ViewLongitudeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31724,18 +31724,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ViewLongitudeTimeseriesData>( );
+            return std::make_shared<ViewLongitudeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ViewLongitudeTimeseriesData&>( target );
+            auto& dest = static_cast<ViewLongitudeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ViewLongitudeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const ViewLongitudeTimeseriesObject& >( other );
                 if ( dataObject.view_ != view_ )
                 {
                     return false;
@@ -31753,15 +31753,15 @@ namespace Barrelman::Data
             view_ = view;
         }
     };
-    class ViewZoomLevelTimeseriesData : public DoubleTimeseriesData
+    class ViewZoomLevelTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::ViewZoomLevelTimeseries;
     private:
         Guid view_;
     public:
-        ViewZoomLevelTimeseriesData( ) = default;
+        ViewZoomLevelTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31788,18 +31788,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ViewZoomLevelTimeseriesData>( );
+            return std::make_shared<ViewZoomLevelTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ViewZoomLevelTimeseriesData&>( target );
+            auto& dest = static_cast<ViewZoomLevelTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ViewZoomLevelTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const ViewZoomLevelTimeseriesObject& >( other );
                 if ( dataObject.view_ != view_ )
                 {
                     return false;
@@ -31817,15 +31817,15 @@ namespace Barrelman::Data
             view_ = view;
         }
     };
-    class WeatherStationAbsoluteHumidityTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationAbsoluteHumidityTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationAbsoluteHumidityTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationAbsoluteHumidityTimeseriesData( ) = default;
+        WeatherStationAbsoluteHumidityTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31852,18 +31852,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationAbsoluteHumidityTimeseriesData>( );
+            return std::make_shared<WeatherStationAbsoluteHumidityTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationAbsoluteHumidityTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationAbsoluteHumidityTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationAbsoluteHumidityTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationAbsoluteHumidityTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -31881,15 +31881,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationAirTemperatureTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationAirTemperatureTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationAirTemperatureTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationAirTemperatureTimeseriesData( ) = default;
+        WeatherStationAirTemperatureTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31916,18 +31916,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationAirTemperatureTimeseriesData>( );
+            return std::make_shared<WeatherStationAirTemperatureTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationAirTemperatureTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationAirTemperatureTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationAirTemperatureTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationAirTemperatureTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -31945,15 +31945,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationBarometricPressureTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationBarometricPressureTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationBarometricPressureTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationBarometricPressureTimeseriesData( ) = default;
+        WeatherStationBarometricPressureTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -31980,18 +31980,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationBarometricPressureTimeseriesData>( );
+            return std::make_shared<WeatherStationBarometricPressureTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationBarometricPressureTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationBarometricPressureTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationBarometricPressureTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationBarometricPressureTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -32009,15 +32009,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationDewPointTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationDewPointTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationDewPointTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationDewPointTimeseriesData( ) = default;
+        WeatherStationDewPointTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32044,18 +32044,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationDewPointTimeseriesData>( );
+            return std::make_shared<WeatherStationDewPointTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationDewPointTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationDewPointTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationDewPointTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationDewPointTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -32073,15 +32073,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationRelativeHumidityTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationRelativeHumidityTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationRelativeHumidityTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationRelativeHumidityTimeseriesData( ) = default;
+        WeatherStationRelativeHumidityTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32108,18 +32108,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationRelativeHumidityTimeseriesData>( );
+            return std::make_shared<WeatherStationRelativeHumidityTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationRelativeHumidityTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationRelativeHumidityTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationRelativeHumidityTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationRelativeHumidityTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -32137,15 +32137,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationWaterTemperatureTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationWaterTemperatureTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationWaterTemperatureTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationWaterTemperatureTimeseriesData( ) = default;
+        WeatherStationWaterTemperatureTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32172,18 +32172,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationWaterTemperatureTimeseriesData>( );
+            return std::make_shared<WeatherStationWaterTemperatureTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationWaterTemperatureTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationWaterTemperatureTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationWaterTemperatureTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationWaterTemperatureTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -32201,15 +32201,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationWindDirectionTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationWindDirectionTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationWindDirectionTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationWindDirectionTimeseriesData( ) = default;
+        WeatherStationWindDirectionTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32236,18 +32236,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationWindDirectionTimeseriesData>( );
+            return std::make_shared<WeatherStationWindDirectionTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationWindDirectionTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationWindDirectionTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationWindDirectionTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationWindDirectionTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -32265,15 +32265,15 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class WeatherStationWindSpeedTimeseriesData : public DoubleTimeseriesData
+    class WeatherStationWindSpeedTimeseriesObject : public DoubleTimeseriesObject
     {
     public:
-        using Base = DoubleTimeseriesData;
+        using Base = DoubleTimeseriesObject;
         static constexpr Kind KIND = Kind::WeatherStationWindSpeedTimeseries;
     private:
         Guid weatherStation_;
     public:
-        WeatherStationWindSpeedTimeseriesData( ) = default;
+        WeatherStationWindSpeedTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32300,18 +32300,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationWindSpeedTimeseriesData>( );
+            return std::make_shared<WeatherStationWindSpeedTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationWindSpeedTimeseriesData&>( target );
+            auto& dest = static_cast<WeatherStationWindSpeedTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationWindSpeedTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationWindSpeedTimeseriesObject& >( other );
                 if ( dataObject.weatherStation_ != weatherStation_ )
                 {
                     return false;
@@ -32329,14 +32329,14 @@ namespace Barrelman::Data
             weatherStation_ = weatherStation;
         }
     };
-    class GeoPosition2DTimeseriesData : public TimeseriesData
+    class GeoPosition2DTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::GeoPosition2DTimeseries;
     private:
     public:
-        GeoPosition2DTimeseriesData( ) = default;
+        GeoPosition2DTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32361,32 +32361,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GeoPosition2DTimeseriesData>( );
+            return std::make_shared<GeoPosition2DTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GeoPosition2DTimeseriesData&>( target );
+            auto& dest = static_cast<GeoPosition2DTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GeoPosition2DTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GeoPosition2DTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class AisAidToNavigationPositionTimeseriesData : public GeoPosition2DTimeseriesData
+    class AisAidToNavigationPositionTimeseriesObject : public GeoPosition2DTimeseriesObject
     {
     public:
-        using Base = GeoPosition2DTimeseriesData;
+        using Base = GeoPosition2DTimeseriesObject;
         static constexpr Kind KIND = Kind::AisAidToNavigationPositionTimeseries;
     private:
         Guid aidToNavigation_;
     public:
-        AisAidToNavigationPositionTimeseriesData( ) = default;
+        AisAidToNavigationPositionTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32413,18 +32413,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<AisAidToNavigationPositionTimeseriesData>( );
+            return std::make_shared<AisAidToNavigationPositionTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<AisAidToNavigationPositionTimeseriesData&>( target );
+            auto& dest = static_cast<AisAidToNavigationPositionTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const AisAidToNavigationPositionTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const AisAidToNavigationPositionTimeseriesObject& >( other );
                 if ( dataObject.aidToNavigation_ != aidToNavigation_ )
                 {
                     return false;
@@ -32442,14 +32442,14 @@ namespace Barrelman::Data
             aidToNavigation_ = aidToNavigation;
         }
     };
-    class GeoPosition3DTimeseriesData : public TimeseriesData
+    class GeoPosition3DTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::GeoPosition3DTimeseries;
     private:
     public:
-        GeoPosition3DTimeseriesData( ) = default;
+        GeoPosition3DTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32474,31 +32474,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GeoPosition3DTimeseriesData>( );
+            return std::make_shared<GeoPosition3DTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GeoPosition3DTimeseriesData&>( target );
+            auto& dest = static_cast<GeoPosition3DTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GeoPosition3DTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GeoPosition3DTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class GuidTimeseriesData : public TimeseriesData
+    class GuidTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::GuidTimeseries;
     private:
     public:
-        GuidTimeseriesData( ) = default;
+        GuidTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32523,31 +32523,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<GuidTimeseriesData>( );
+            return std::make_shared<GuidTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<GuidTimeseriesData&>( target );
+            auto& dest = static_cast<GuidTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const GuidTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const GuidTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class Int16TimeseriesData : public TimeseriesData
+    class Int16TimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::Int16Timeseries;
     private:
     public:
-        Int16TimeseriesData( ) = default;
+        Int16TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32572,31 +32572,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int16TimeseriesData>( );
+            return std::make_shared<Int16TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int16TimeseriesData&>( target );
+            auto& dest = static_cast<Int16TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int16TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const Int16TimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class Int32TimeseriesData : public TimeseriesData
+    class Int32TimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::Int32Timeseries;
     private:
     public:
-        Int32TimeseriesData( ) = default;
+        Int32TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32621,32 +32621,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int32TimeseriesData>( );
+            return std::make_shared<Int32TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int32TimeseriesData&>( target );
+            auto& dest = static_cast<Int32TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int32TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const Int32TimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadarAzimuthOffsetTimeseriesData : public Int32TimeseriesData
+    class RadarAzimuthOffsetTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarAzimuthOffsetTimeseries;
     private:
         Guid radar_;
     public:
-        RadarAzimuthOffsetTimeseriesData( ) = default;
+        RadarAzimuthOffsetTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32673,18 +32673,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarAzimuthOffsetTimeseriesData>( );
+            return std::make_shared<RadarAzimuthOffsetTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarAzimuthOffsetTimeseriesData&>( target );
+            auto& dest = static_cast<RadarAzimuthOffsetTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarAzimuthOffsetTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarAzimuthOffsetTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -32702,15 +32702,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarFastTimeConstantLevelTimeseriesData : public Int32TimeseriesData
+    class RadarFastTimeConstantLevelTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarFastTimeConstantLevelTimeseries;
     private:
         Guid radar_;
     public:
-        RadarFastTimeConstantLevelTimeseriesData( ) = default;
+        RadarFastTimeConstantLevelTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32737,18 +32737,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarFastTimeConstantLevelTimeseriesData>( );
+            return std::make_shared<RadarFastTimeConstantLevelTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarFastTimeConstantLevelTimeseriesData&>( target );
+            auto& dest = static_cast<RadarFastTimeConstantLevelTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarFastTimeConstantLevelTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarFastTimeConstantLevelTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -32766,15 +32766,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarFastTimeConstantModeTimeseriesData : public Int32TimeseriesData
+    class RadarFastTimeConstantModeTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarFastTimeConstantModeTimeseries;
     private:
         Guid radar_;
     public:
-        RadarFastTimeConstantModeTimeseriesData( ) = default;
+        RadarFastTimeConstantModeTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32801,18 +32801,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarFastTimeConstantModeTimeseriesData>( );
+            return std::make_shared<RadarFastTimeConstantModeTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarFastTimeConstantModeTimeseriesData&>( target );
+            auto& dest = static_cast<RadarFastTimeConstantModeTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarFastTimeConstantModeTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarFastTimeConstantModeTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -32830,15 +32830,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarPulseTimeseriesData : public Int32TimeseriesData
+    class RadarPulseTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarPulseTimeseries;
     private:
         Guid radar_;
     public:
-        RadarPulseTimeseriesData( ) = default;
+        RadarPulseTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32865,18 +32865,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarPulseTimeseriesData>( );
+            return std::make_shared<RadarPulseTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarPulseTimeseriesData&>( target );
+            auto& dest = static_cast<RadarPulseTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarPulseTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarPulseTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -32894,15 +32894,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarSector1EndTimeseriesData : public Int32TimeseriesData
+    class RadarSector1EndTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarSector1EndTimeseries;
     private:
         Guid radar_;
     public:
-        RadarSector1EndTimeseriesData( ) = default;
+        RadarSector1EndTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32929,18 +32929,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarSector1EndTimeseriesData>( );
+            return std::make_shared<RadarSector1EndTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarSector1EndTimeseriesData&>( target );
+            auto& dest = static_cast<RadarSector1EndTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarSector1EndTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarSector1EndTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -32958,15 +32958,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarSector1StartTimeseriesData : public Int32TimeseriesData
+    class RadarSector1StartTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarSector1StartTimeseries;
     private:
         Guid radar_;
     public:
-        RadarSector1StartTimeseriesData( ) = default;
+        RadarSector1StartTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -32993,18 +32993,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarSector1StartTimeseriesData>( );
+            return std::make_shared<RadarSector1StartTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarSector1StartTimeseriesData&>( target );
+            auto& dest = static_cast<RadarSector1StartTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarSector1StartTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarSector1StartTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -33022,15 +33022,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarSector2EndTimeseriesData : public Int32TimeseriesData
+    class RadarSector2EndTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarSector2EndTimeseries;
     private:
         Guid radar_;
     public:
-        RadarSector2EndTimeseriesData( ) = default;
+        RadarSector2EndTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33057,18 +33057,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarSector2EndTimeseriesData>( );
+            return std::make_shared<RadarSector2EndTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarSector2EndTimeseriesData&>( target );
+            auto& dest = static_cast<RadarSector2EndTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarSector2EndTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarSector2EndTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -33086,15 +33086,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarSector2StartTimeseriesData : public Int32TimeseriesData
+    class RadarSector2StartTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarSector2StartTimeseries;
     private:
         Guid radar_;
     public:
-        RadarSector2StartTimeseriesData( ) = default;
+        RadarSector2StartTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33121,18 +33121,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarSector2StartTimeseriesData>( );
+            return std::make_shared<RadarSector2StartTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarSector2StartTimeseriesData&>( target );
+            auto& dest = static_cast<RadarSector2StartTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarSector2StartTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarSector2StartTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -33150,15 +33150,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarSensitivityTimeControlLevelTimeseriesData : public Int32TimeseriesData
+    class RadarSensitivityTimeControlLevelTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarSensitivityTimeControlLevelTimeseries;
     private:
         Guid radar_;
     public:
-        RadarSensitivityTimeControlLevelTimeseriesData( ) = default;
+        RadarSensitivityTimeControlLevelTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33185,18 +33185,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarSensitivityTimeControlLevelTimeseriesData>( );
+            return std::make_shared<RadarSensitivityTimeControlLevelTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarSensitivityTimeControlLevelTimeseriesData&>( target );
+            auto& dest = static_cast<RadarSensitivityTimeControlLevelTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarSensitivityTimeControlLevelTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarSensitivityTimeControlLevelTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -33214,15 +33214,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class RadarTuningTimeseriesData : public Int32TimeseriesData
+    class RadarTuningTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadarTuningTimeseries;
     private:
         Guid radar_;
     public:
-        RadarTuningTimeseriesData( ) = default;
+        RadarTuningTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33249,18 +33249,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadarTuningTimeseriesData>( );
+            return std::make_shared<RadarTuningTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadarTuningTimeseriesData&>( target );
+            auto& dest = static_cast<RadarTuningTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadarTuningTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadarTuningTimeseriesObject& >( other );
                 if ( dataObject.radar_ != radar_ )
                 {
                     return false;
@@ -33278,15 +33278,15 @@ namespace Barrelman::Data
             radar_ = radar;
         }
     };
-    class VesselPersonsOnBoardTimeseriesData : public Int32TimeseriesData
+    class VesselPersonsOnBoardTimeseriesObject : public Int32TimeseriesObject
     {
     public:
-        using Base = Int32TimeseriesData;
+        using Base = Int32TimeseriesObject;
         static constexpr Kind KIND = Kind::VesselPersonsOnBoardTimeseries;
     private:
         Guid vessel_;
     public:
-        VesselPersonsOnBoardTimeseriesData( ) = default;
+        VesselPersonsOnBoardTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33313,18 +33313,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<VesselPersonsOnBoardTimeseriesData>( );
+            return std::make_shared<VesselPersonsOnBoardTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<VesselPersonsOnBoardTimeseriesData&>( target );
+            auto& dest = static_cast<VesselPersonsOnBoardTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const VesselPersonsOnBoardTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const VesselPersonsOnBoardTimeseriesObject& >( other );
                 if ( dataObject.vessel_ != vessel_ )
                 {
                     return false;
@@ -33342,14 +33342,14 @@ namespace Barrelman::Data
             vessel_ = vessel;
         }
     };
-    class Int64TimeseriesData : public TimeseriesData
+    class Int64TimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::Int64Timeseries;
     private:
     public:
-        Int64TimeseriesData( ) = default;
+        Int64TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33374,31 +33374,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Int64TimeseriesData>( );
+            return std::make_shared<Int64TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Int64TimeseriesData&>( target );
+            auto& dest = static_cast<Int64TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Int64TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const Int64TimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class Position2DTimeseriesData : public TimeseriesData
+    class Position2DTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::Position2DTimeseries;
     private:
     public:
-        Position2DTimeseriesData( ) = default;
+        Position2DTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33423,31 +33423,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Position2DTimeseriesData>( );
+            return std::make_shared<Position2DTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Position2DTimeseriesData&>( target );
+            auto& dest = static_cast<Position2DTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Position2DTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const Position2DTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class Position3DTimeseriesData : public TimeseriesData
+    class Position3DTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::Position3DTimeseries;
     private:
     public:
-        Position3DTimeseriesData( ) = default;
+        Position3DTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33472,31 +33472,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Position3DTimeseriesData>( );
+            return std::make_shared<Position3DTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Position3DTimeseriesData&>( target );
+            auto& dest = static_cast<Position3DTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Position3DTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const Position3DTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class ReferenceTimeseriesData : public TimeseriesData
+    class ReferenceTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::ReferenceTimeseries;
     private:
     public:
-        ReferenceTimeseriesData( ) = default;
+        ReferenceTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33521,31 +33521,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ReferenceTimeseriesData>( );
+            return std::make_shared<ReferenceTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ReferenceTimeseriesData&>( target );
+            auto& dest = static_cast<ReferenceTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ReferenceTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const ReferenceTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class SByteTimeseriesData : public TimeseriesData
+    class SByteTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::SByteTimeseries;
     private:
     public:
-        SByteTimeseriesData( ) = default;
+        SByteTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33570,31 +33570,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SByteTimeseriesData>( );
+            return std::make_shared<SByteTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SByteTimeseriesData&>( target );
+            auto& dest = static_cast<SByteTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SByteTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const SByteTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class SingleTimeseriesData : public TimeseriesData
+    class SingleTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::SingleTimeseries;
     private:
     public:
-        SingleTimeseriesData( ) = default;
+        SingleTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33619,31 +33619,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<SingleTimeseriesData>( );
+            return std::make_shared<SingleTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<SingleTimeseriesData&>( target );
+            auto& dest = static_cast<SingleTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const SingleTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const SingleTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class StringTimeseriesData : public TimeseriesData
+    class StringTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::StringTimeseries;
     private:
     public:
-        StringTimeseriesData( ) = default;
+        StringTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33668,31 +33668,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<StringTimeseriesData>( );
+            return std::make_shared<StringTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<StringTimeseriesData&>( target );
+            auto& dest = static_cast<StringTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const StringTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const StringTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class TimeSpanTimeseriesData : public TimeseriesData
+    class TimeSpanTimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::TimeSpanTimeseries;
     private:
     public:
-        TimeSpanTimeseriesData( ) = default;
+        TimeSpanTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33717,31 +33717,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeSpanTimeseriesData>( );
+            return std::make_shared<TimeSpanTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeSpanTimeseriesData&>( target );
+            auto& dest = static_cast<TimeSpanTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeSpanTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const TimeSpanTimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class UInt16TimeseriesData : public TimeseriesData
+    class UInt16TimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::UInt16Timeseries;
     private:
     public:
-        UInt16TimeseriesData( ) = default;
+        UInt16TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33766,31 +33766,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt16TimeseriesData>( );
+            return std::make_shared<UInt16TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt16TimeseriesData&>( target );
+            auto& dest = static_cast<UInt16TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt16TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const UInt16TimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class UInt32TimeseriesData : public TimeseriesData
+    class UInt32TimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::UInt32Timeseries;
     private:
     public:
-        UInt32TimeseriesData( ) = default;
+        UInt32TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33815,32 +33815,32 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt32TimeseriesData>( );
+            return std::make_shared<UInt32TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt32TimeseriesData&>( target );
+            auto& dest = static_cast<UInt32TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt32TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const UInt32TimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class RadomeStatusTimeseriesData : public UInt32TimeseriesData
+    class RadomeStatusTimeseriesObject : public UInt32TimeseriesObject
     {
     public:
-        using Base = UInt32TimeseriesData;
+        using Base = UInt32TimeseriesObject;
         static constexpr Kind KIND = Kind::RadomeStatusTimeseries;
     private:
         Guid radome_;
     public:
-        RadomeStatusTimeseriesData( ) = default;
+        RadomeStatusTimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33867,18 +33867,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<RadomeStatusTimeseriesData>( );
+            return std::make_shared<RadomeStatusTimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<RadomeStatusTimeseriesData&>( target );
+            auto& dest = static_cast<RadomeStatusTimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const RadomeStatusTimeseriesData& >( other );
+                const auto& dataObject = static_cast< const RadomeStatusTimeseriesObject& >( other );
                 if ( dataObject.radome_ != radome_ )
                 {
                     return false;
@@ -33896,14 +33896,14 @@ namespace Barrelman::Data
             radome_ = radome;
         }
     };
-    class UInt64TimeseriesData : public TimeseriesData
+    class UInt64TimeseriesObject : public TimeseriesObject
     {
     public:
-        using Base = TimeseriesData;
+        using Base = TimeseriesObject;
         static constexpr Kind KIND = Kind::UInt64Timeseries;
     private:
     public:
-        UInt64TimeseriesData( ) = default;
+        UInt64TimeseriesObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33928,31 +33928,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt64TimeseriesData>( );
+            return std::make_shared<UInt64TimeseriesObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt64TimeseriesData&>( target );
+            auto& dest = static_cast<UInt64TimeseriesObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt64TimeseriesData& >( other );
+                const auto& dataObject = static_cast< const UInt64TimeseriesObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class TimeseriesCatalogData : public TimeseriesCatalogElementData
+    class TimeseriesCatalogObject : public TimeseriesCatalogElementObject
     {
     public:
-        using Base = TimeseriesCatalogElementData;
+        using Base = TimeseriesCatalogElementObject;
         static constexpr Kind KIND = Kind::TimeseriesCatalog;
     private:
     public:
-        TimeseriesCatalogData( ) = default;
+        TimeseriesCatalogObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -33977,24 +33977,24 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeseriesCatalogData>( );
+            return std::make_shared<TimeseriesCatalogObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeseriesCatalogData&>( target );
+            auto& dest = static_cast<TimeseriesCatalogObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeseriesCatalogData& >( other );
+                const auto& dataObject = static_cast< const TimeseriesCatalogObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class TimeseriesInfoData : public BaseData<Kind, Guid>
+    class TimeseriesInfoObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34005,7 +34005,7 @@ namespace Barrelman::Data
         DBDateTime lastTimestamp_;
         Int64 count_ = 0;
     public:
-        TimeseriesInfoData( ) = default;
+        TimeseriesInfoObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34038,18 +34038,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeseriesInfoData>( );
+            return std::make_shared<TimeseriesInfoObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeseriesInfoData&>( target );
+            auto& dest = static_cast<TimeseriesInfoObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeseriesInfoData& >( other );
+                const auto& dataObject = static_cast< const TimeseriesInfoObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -34103,7 +34103,7 @@ namespace Barrelman::Data
             count_ = count;
         }
     };
-    class TimeSpanTimeseriesValueData : public BaseData<Kind, Guid>
+    class TimeSpanTimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34114,7 +34114,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBTimeSpan value_;
     public:
-        TimeSpanTimeseriesValueData( ) = default;
+        TimeSpanTimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34147,18 +34147,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TimeSpanTimeseriesValueData>( );
+            return std::make_shared<TimeSpanTimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TimeSpanTimeseriesValueData&>( target );
+            auto& dest = static_cast<TimeSpanTimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TimeSpanTimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const TimeSpanTimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -34212,7 +34212,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class TrackableItemTrackLinkData : public BaseData<Kind, Guid>
+    class TrackableItemTrackLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34224,7 +34224,7 @@ namespace Barrelman::Data
         DateTime start_;
         DBDateTime end_;
     public:
-        TrackableItemTrackLinkData( ) = default;
+        TrackableItemTrackLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34259,18 +34259,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackableItemTrackLinkData>( );
+            return std::make_shared<TrackableItemTrackLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackableItemTrackLinkData&>( target );
+            auto& dest = static_cast<TrackableItemTrackLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackableItemTrackLinkData& >( other );
+                const auto& dataObject = static_cast< const TrackableItemTrackLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -34336,7 +34336,7 @@ namespace Barrelman::Data
             end_ = end;
         }
     };
-    class TrackBaseData : public BaseData<Kind, Guid>
+    class TrackBaseObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34347,7 +34347,7 @@ namespace Barrelman::Data
         Int64 trackNumber_ = 0;
         DateTime timestamp_;
     public:
-        TrackBaseData( ) = default;
+        TrackBaseObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34380,18 +34380,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackBaseData>( );
+            return std::make_shared<TrackBaseObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackBaseData&>( target );
+            auto& dest = static_cast<TrackBaseObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackBaseData& >( other );
+                const auto& dataObject = static_cast< const TrackBaseObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -34445,14 +34445,14 @@ namespace Barrelman::Data
             timestamp_ = timestamp;
         }
     };
-    class TrackData : public TrackBaseData
+    class TrackObject : public TrackBaseObject
     {
     public:
-        using Base = TrackBaseData;
+        using Base = TrackBaseObject;
         static constexpr Kind KIND = Kind::Track;
     private:
     public:
-        TrackData( ) = default;
+        TrackObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34477,31 +34477,31 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackData>( );
+            return std::make_shared<TrackObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackData&>( target );
+            auto& dest = static_cast<TrackObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackData& >( other );
+                const auto& dataObject = static_cast< const TrackObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class Track3DData : public TrackBaseData
+    class Track3DObject : public TrackBaseObject
     {
     public:
-        using Base = TrackBaseData;
+        using Base = TrackBaseObject;
         static constexpr Kind KIND = Kind::Track3D;
     private:
     public:
-        Track3DData( ) = default;
+        Track3DObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34526,24 +34526,24 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<Track3DData>( );
+            return std::make_shared<Track3DObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<Track3DData&>( target );
+            auto& dest = static_cast<Track3DObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const Track3DData& >( other );
+                const auto& dataObject = static_cast< const Track3DObject& >( other );
                 return true;
             }
             return false;
         }
     };
-    class TrackerFilterParametersData : public BaseData<Kind, Guid>
+    class TrackerFilterParametersObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34553,7 +34553,7 @@ namespace Barrelman::Data
         Guid tracker_;
         FixedDBWideString<127> name_;
     public:
-        TrackerFilterParametersData( ) = default;
+        TrackerFilterParametersObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34584,18 +34584,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackerFilterParametersData>( );
+            return std::make_shared<TrackerFilterParametersObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackerFilterParametersData&>( target );
+            auto& dest = static_cast<TrackerFilterParametersObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackerFilterParametersData& >( other );
+                const auto& dataObject = static_cast< const TrackerFilterParametersObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -34637,7 +34637,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class TrackerFilterParametersConfigurationData : public BaseData<Kind, Guid>
+    class TrackerFilterParametersConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34651,7 +34651,7 @@ namespace Barrelman::Data
         Int32 windowSize_ = 0;
         Int32 stabilizeCount_ = 0;
         Int32 maxBadPoints_ = 0;
-        Data::TrackerFilterModelType modelType_ = Data::TrackerFilterModelType::Unknown;
+        Types::TrackerFilterModelType modelType_ = Types::TrackerFilterModelType::Unknown;
         double sigmaR_ = 0.0;
         double sigmaAcc_ = 0.0;
         double tauVel_ = 0.0;
@@ -34660,7 +34660,7 @@ namespace Barrelman::Data
         double deltaVMax_ = 0.0;
         double deltaAMax_ = 0.0;
     public:
-        TrackerFilterParametersConfigurationData( ) = default;
+        TrackerFilterParametersConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34717,18 +34717,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackerFilterParametersConfigurationData>( );
+            return std::make_shared<TrackerFilterParametersConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackerFilterParametersConfigurationData&>( target );
+            auto& dest = static_cast<TrackerFilterParametersConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackerFilterParametersConfigurationData& >( other );
+                const auto& dataObject = static_cast< const TrackerFilterParametersConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -34861,11 +34861,11 @@ namespace Barrelman::Data
         {
             maxBadPoints_ = maxBadPoints;
         }
-        Data::TrackerFilterModelType ModelType( ) const
+        Types::TrackerFilterModelType ModelType( ) const
         {
             return modelType_;
         }
-        void SetModelType( Data::TrackerFilterModelType modelType )
+        void SetModelType( Types::TrackerFilterModelType modelType )
         {
             modelType_ = modelType;
         }
@@ -34926,7 +34926,7 @@ namespace Barrelman::Data
             deltaAMax_ = deltaAMax;
         }
     };
-    class TrackInfoData : public BaseData<Kind, Guid>
+    class TrackInfoObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -34941,7 +34941,7 @@ namespace Barrelman::Data
         DBDouble southEastLatitude_;
         DBDouble southEastLongitude_;
     public:
-        TrackInfoData( ) = default;
+        TrackInfoObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -34982,18 +34982,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackInfoData>( );
+            return std::make_shared<TrackInfoObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackInfoData&>( target );
+            auto& dest = static_cast<TrackInfoObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackInfoData& >( other );
+                const auto& dataObject = static_cast< const TrackInfoObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -35095,7 +35095,7 @@ namespace Barrelman::Data
             southEastLongitude_ = southEastLongitude;
         }
     };
-    class TrackingServiceOptionsData : public BaseData<Kind, Guid>
+    class TrackingServiceOptionsObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -35114,7 +35114,7 @@ namespace Barrelman::Data
         double maxSpeedDeviation_ = 0.0;
         double minimumSpeedThreshold_ = 0.0;
     public:
-        TrackingServiceOptionsData( ) = default;
+        TrackingServiceOptionsObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -35163,18 +35163,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackingServiceOptionsData>( );
+            return std::make_shared<TrackingServiceOptionsObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackingServiceOptionsData&>( target );
+            auto& dest = static_cast<TrackingServiceOptionsObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackingServiceOptionsData& >( other );
+                const auto& dataObject = static_cast< const TrackingServiceOptionsObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -35324,7 +35324,7 @@ namespace Barrelman::Data
             minimumSpeedThreshold_ = minimumSpeedThreshold;
         }
     };
-    class TrackLinkData : public BaseData<Kind, Guid>
+    class TrackLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -35336,7 +35336,7 @@ namespace Barrelman::Data
         DateTime start_;
         DBDateTime end_;
     public:
-        TrackLinkData( ) = default;
+        TrackLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -35371,18 +35371,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackLinkData>( );
+            return std::make_shared<TrackLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackLinkData&>( target );
+            auto& dest = static_cast<TrackLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackLinkData& >( other );
+                const auto& dataObject = static_cast< const TrackLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -35448,7 +35448,7 @@ namespace Barrelman::Data
             end_ = end;
         }
     };
-    class TrackValueData : public BaseData<Kind, Guid>
+    class TrackValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -35457,15 +35457,15 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid track_;
         DateTime timestamp_;
-        Data::TrackFlags flags_ = Data::TrackFlags::None;
-        Data::TrackStatus status_ = Data::TrackStatus::Unknown;
+        Types::TrackFlags flags_ = Types::TrackFlags::None;
+        Types::TrackStatus status_ = Types::TrackStatus::Unknown;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         double speed_ = 0.0;
         double course_ = 0.0;
         double heading_ = 0.0;
     public:
-        TrackValueData( ) = default;
+        TrackValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -35510,18 +35510,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackValueData>( );
+            return std::make_shared<TrackValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackValueData&>( target );
+            auto& dest = static_cast<TrackValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackValueData& >( other );
+                const auto& dataObject = static_cast< const TrackValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -35590,19 +35590,19 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::TrackFlags Flags( ) const
+        Types::TrackFlags Flags( ) const
         {
             return flags_;
         }
-        void SetFlags( Data::TrackFlags flags )
+        void SetFlags( Types::TrackFlags flags )
         {
             flags_ = flags;
         }
-        Data::TrackStatus Status( ) const
+        Types::TrackStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::TrackStatus status )
+        void SetStatus( Types::TrackStatus status )
         {
             status_ = status;
         }
@@ -35647,7 +35647,7 @@ namespace Barrelman::Data
             heading_ = heading;
         }
     };
-    class TrackValue3DData : public BaseData<Kind, Guid>
+    class TrackValue3DObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -35656,7 +35656,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid track_;
         DateTime timestamp_;
-        Data::TrackFlags3D flags_ = Data::TrackFlags3D::None;
+        Types::TrackFlags3D flags_ = Types::TrackFlags3D::None;
         UInt32 status_ = 0;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
@@ -35665,7 +35665,7 @@ namespace Barrelman::Data
         double course_ = 0.0;
         double rateOfClimb_ = 0.0;
     public:
-        TrackValue3DData( ) = default;
+        TrackValue3DObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -35712,18 +35712,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<TrackValue3DData>( );
+            return std::make_shared<TrackValue3DObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<TrackValue3DData&>( target );
+            auto& dest = static_cast<TrackValue3DObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const TrackValue3DData& >( other );
+                const auto& dataObject = static_cast< const TrackValue3DObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -35796,11 +35796,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::TrackFlags3D Flags( ) const
+        Types::TrackFlags3D Flags( ) const
         {
             return flags_;
         }
-        void SetFlags( Data::TrackFlags3D flags )
+        void SetFlags( Types::TrackFlags3D flags )
         {
             flags_ = flags;
         }
@@ -35861,7 +35861,7 @@ namespace Barrelman::Data
             rateOfClimb_ = rateOfClimb;
         }
     };
-    class UInt16TimeseriesValueData : public BaseData<Kind, Guid>
+    class UInt16TimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -35872,7 +35872,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBUInt16 value_;
     public:
-        UInt16TimeseriesValueData( ) = default;
+        UInt16TimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -35905,18 +35905,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt16TimeseriesValueData>( );
+            return std::make_shared<UInt16TimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt16TimeseriesValueData&>( target );
+            auto& dest = static_cast<UInt16TimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt16TimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const UInt16TimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -35970,7 +35970,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class UInt32TimeseriesValueData : public BaseData<Kind, Guid>
+    class UInt32TimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -35981,7 +35981,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBUInt32 value_;
     public:
-        UInt32TimeseriesValueData( ) = default;
+        UInt32TimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36014,18 +36014,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt32TimeseriesValueData>( );
+            return std::make_shared<UInt32TimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt32TimeseriesValueData&>( target );
+            auto& dest = static_cast<UInt32TimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt32TimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const UInt32TimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36079,7 +36079,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class UInt64TimeseriesValueData : public BaseData<Kind, Guid>
+    class UInt64TimeseriesValueObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36090,7 +36090,7 @@ namespace Barrelman::Data
         DateTime timestamp_;
         DBInt64 value_;
     public:
-        UInt64TimeseriesValueData( ) = default;
+        UInt64TimeseriesValueObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36123,18 +36123,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<UInt64TimeseriesValueData>( );
+            return std::make_shared<UInt64TimeseriesValueObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<UInt64TimeseriesValueData&>( target );
+            auto& dest = static_cast<UInt64TimeseriesValueObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const UInt64TimeseriesValueData& >( other );
+                const auto& dataObject = static_cast< const UInt64TimeseriesValueObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36188,7 +36188,7 @@ namespace Barrelman::Data
             value_ = value;
         }
     };
-    class VehicleTypeData : public BaseData<Kind, Guid>
+    class VehicleTypeObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36197,7 +36197,7 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
     public:
-        VehicleTypeData( ) = default;
+        VehicleTypeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36226,18 +36226,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<VehicleTypeData>( );
+            return std::make_shared<VehicleTypeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<VehicleTypeData&>( target );
+            auto& dest = static_cast<VehicleTypeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const VehicleTypeData& >( other );
+                const auto& dataObject = static_cast< const VehicleTypeObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36267,7 +36267,7 @@ namespace Barrelman::Data
             name_ = name;
         }
     };
-    class VesselTypeData : public BaseData<Kind, Guid>
+    class VesselTypeObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36277,7 +36277,7 @@ namespace Barrelman::Data
         FixedDBWideString<127> name_;
         Int32 code_ = 0;
     public:
-        VesselTypeData( ) = default;
+        VesselTypeObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36308,18 +36308,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<VesselTypeData>( );
+            return std::make_shared<VesselTypeObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<VesselTypeData&>( target );
+            auto& dest = static_cast<VesselTypeObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const VesselTypeData& >( other );
+                const auto& dataObject = static_cast< const VesselTypeObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36361,7 +36361,7 @@ namespace Barrelman::Data
             code_ = code;
         }
     };
-    class ViewData : public BaseData<Kind, Guid>
+    class ViewObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36373,7 +36373,7 @@ namespace Barrelman::Data
         Guid longitudeTimeseries_;
         Guid zoomLevelTimeseries_;
     public:
-        ViewData( ) = default;
+        ViewObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36408,18 +36408,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ViewData>( );
+            return std::make_shared<ViewObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ViewData&>( target );
+            auto& dest = static_cast<ViewObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ViewData& >( other );
+                const auto& dataObject = static_cast< const ViewObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36485,7 +36485,7 @@ namespace Barrelman::Data
             zoomLevelTimeseries_ = zoomLevelTimeseries;
         }
     };
-    class ViewCameraLinkData : public BaseData<Kind, Guid>
+    class ViewCameraLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36497,7 +36497,7 @@ namespace Barrelman::Data
         DateTime start_;
         DBDateTime end_;
     public:
-        ViewCameraLinkData( ) = default;
+        ViewCameraLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36532,18 +36532,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ViewCameraLinkData>( );
+            return std::make_shared<ViewCameraLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ViewCameraLinkData&>( target );
+            auto& dest = static_cast<ViewCameraLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ViewCameraLinkData& >( other );
+                const auto& dataObject = static_cast< const ViewCameraLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36609,7 +36609,7 @@ namespace Barrelman::Data
             end_ = end;
         }
     };
-    class ViewTrackerLinkData : public BaseData<Kind, Guid>
+    class ViewTrackerLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36621,7 +36621,7 @@ namespace Barrelman::Data
         DateTime start_;
         DBDateTime end_;
     public:
-        ViewTrackerLinkData( ) = default;
+        ViewTrackerLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36656,18 +36656,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ViewTrackerLinkData>( );
+            return std::make_shared<ViewTrackerLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ViewTrackerLinkData&>( target );
+            auto& dest = static_cast<ViewTrackerLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ViewTrackerLinkData& >( other );
+                const auto& dataObject = static_cast< const ViewTrackerLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36733,7 +36733,7 @@ namespace Barrelman::Data
             end_ = end;
         }
     };
-    class WeatherStationCommandData : public BaseData<Kind, Guid>
+    class WeatherStationCommandObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36742,11 +36742,11 @@ namespace Barrelman::Data
         Int64 rowVersion_ = 0;
         Guid weatherStation_;
         DateTime timestamp_;
-        Data::DeviceCommandSourceType deviceCommandSourceType_ = Data::DeviceCommandSourceType::Unknown;
+        Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
         Guid reply_;
     public:
-        WeatherStationCommandData( ) = default;
+        WeatherStationCommandObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36783,18 +36783,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationCommandData>( );
+            return std::make_shared<WeatherStationCommandObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationCommandData&>( target );
+            auto& dest = static_cast<WeatherStationCommandObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationCommandData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationCommandObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36847,11 +36847,11 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Data::DeviceCommandSourceType DeviceCommandSourceType( ) const
+        Types::DeviceCommandSourceType DeviceCommandSourceType( ) const
         {
             return deviceCommandSourceType_;
         }
-        void SetDeviceCommandSourceType( Data::DeviceCommandSourceType deviceCommandSourceType )
+        void SetDeviceCommandSourceType( Types::DeviceCommandSourceType deviceCommandSourceType )
         {
             deviceCommandSourceType_ = deviceCommandSourceType;
         }
@@ -36872,7 +36872,7 @@ namespace Barrelman::Data
             reply_ = reply;
         }
     };
-    class WeatherStationCommandReplyData : public BaseData<Kind, Guid>
+    class WeatherStationCommandReplyObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -36882,11 +36882,11 @@ namespace Barrelman::Data
         Guid weatherStation_;
         DateTime timestamp_;
         Guid command_;
-        Data::DeviceCommandReplyStatus status_ = Data::DeviceCommandReplyStatus::Unknown;
+        Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
     public:
-        WeatherStationCommandReplyData( ) = default;
+        WeatherStationCommandReplyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -36923,18 +36923,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationCommandReplyData>( );
+            return std::make_shared<WeatherStationCommandReplyObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationCommandReplyData&>( target );
+            auto& dest = static_cast<WeatherStationCommandReplyObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationCommandReplyData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationCommandReplyObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -36995,11 +36995,11 @@ namespace Barrelman::Data
         {
             command_ = command;
         }
-        Data::DeviceCommandReplyStatus Status( ) const
+        Types::DeviceCommandReplyStatus Status( ) const
         {
             return status_;
         }
-        void SetStatus( Data::DeviceCommandReplyStatus status )
+        void SetStatus( Types::DeviceCommandReplyStatus status )
         {
             status_ = status;
         }
@@ -37012,7 +37012,7 @@ namespace Barrelman::Data
             message_ = message;
         }
     };
-    class WeatherStationConfigurationData : public BaseData<Kind, Guid>
+    class WeatherStationConfigurationObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -37029,7 +37029,7 @@ namespace Barrelman::Data
         bool enableAveraging_ = false;
         TimeSpan averagingInterval_;
     public:
-        WeatherStationConfigurationData( ) = default;
+        WeatherStationConfigurationObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37074,18 +37074,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<WeatherStationConfigurationData>( );
+            return std::make_shared<WeatherStationConfigurationObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<WeatherStationConfigurationData&>( target );
+            auto& dest = static_cast<WeatherStationConfigurationObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const WeatherStationConfigurationData& >( other );
+                const auto& dataObject = static_cast< const WeatherStationConfigurationObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -37211,7 +37211,7 @@ namespace Barrelman::Data
             averagingInterval_ = averagingInterval;
         }
     };
-    class ZoneData : public BaseData<Kind, Guid>
+    class ZoneObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -37221,14 +37221,14 @@ namespace Barrelman::Data
         FixedDBWideString<127> name_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
-        Data::ZoneAlarmType alarmType_ = Data::ZoneAlarmType::None;
+        Types::ZoneAlarmType alarmType_ = Types::ZoneAlarmType::None;
         TimeSpan alarmTime_;
         TimeSpan radarTrackMinimumLifetime_;
         double speed_ = 0.0;
         UInt32 strokeColor_ = 0;
         UInt32 fillColor_ = 0;
     public:
-        ZoneData( ) = default;
+        ZoneObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37273,18 +37273,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ZoneData>( );
+            return std::make_shared<ZoneObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ZoneData&>( target );
+            auto& dest = static_cast<ZoneObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ZoneData& >( other );
+                const auto& dataObject = static_cast< const ZoneObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -37361,11 +37361,11 @@ namespace Barrelman::Data
         {
             latitude_ = latitude;
         }
-        Data::ZoneAlarmType AlarmType( ) const
+        Types::ZoneAlarmType AlarmType( ) const
         {
             return alarmType_;
         }
-        void SetAlarmType( Data::ZoneAlarmType alarmType )
+        void SetAlarmType( Types::ZoneAlarmType alarmType )
         {
             alarmType_ = alarmType;
         }
@@ -37410,15 +37410,15 @@ namespace Barrelman::Data
             fillColor_ = fillColor;
         }
     };
-    class CircularZoneData : public ZoneData
+    class CircularZoneObject : public ZoneObject
     {
     public:
-        using Base = ZoneData;
+        using Base = ZoneObject;
         static constexpr Kind KIND = Kind::CircularZone;
     private:
         double radius_ = 0.0;
     public:
-        CircularZoneData( ) = default;
+        CircularZoneObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37445,18 +37445,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<CircularZoneData>( );
+            return std::make_shared<CircularZoneObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<CircularZoneData&>( target );
+            auto& dest = static_cast<CircularZoneObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const CircularZoneData& >( other );
+                const auto& dataObject = static_cast< const CircularZoneObject& >( other );
                 if ( dataObject.radius_ != radius_ )
                 {
                     return false;
@@ -37474,16 +37474,16 @@ namespace Barrelman::Data
             radius_ = radius;
         }
     };
-    class PolygonZoneData : public ZoneData
+    class PolygonZoneObject : public ZoneObject
     {
     public:
-        using Base = ZoneData;
+        using Base = ZoneObject;
         static constexpr Kind KIND = Kind::PolygonZone;
     private:
         Binary polygon_;
         SQLLEN polygonLength_ = SQL_NULL_DATA;
     public:
-        PolygonZoneData( ) = default;
+        PolygonZoneObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37510,18 +37510,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<PolygonZoneData>( );
+            return std::make_shared<PolygonZoneObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<PolygonZoneData&>( target );
+            auto& dest = static_cast<PolygonZoneObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const PolygonZoneData& >( other );
+                const auto& dataObject = static_cast< const PolygonZoneObject& >( other );
                 if ( dataObject.polygon_ != polygon_ )
                 {
                     return false;
@@ -37539,7 +37539,7 @@ namespace Barrelman::Data
             polygon_ = polygon;
         }
     };
-    class ZoneExceptionsData : public BaseData<Kind, Guid>
+    class ZoneExceptionsObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -37549,7 +37549,7 @@ namespace Barrelman::Data
         Guid zone_;
         DateTime timestamp_;
     public:
-        ZoneExceptionsData( ) = default;
+        ZoneExceptionsObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37580,18 +37580,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ZoneExceptionsData>( );
+            return std::make_shared<ZoneExceptionsObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ZoneExceptionsData&>( target );
+            auto& dest = static_cast<ZoneExceptionsObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ZoneExceptionsData& >( other );
+                const auto& dataObject = static_cast< const ZoneExceptionsObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -37633,7 +37633,7 @@ namespace Barrelman::Data
             timestamp_ = timestamp;
         }
     };
-    class ZoneExceptionsVesselLinkData : public BaseData<Kind, Guid>
+    class ZoneExceptionsVesselLinkObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -37643,7 +37643,7 @@ namespace Barrelman::Data
         Guid zoneExceptions_;
         Guid vessel_;
     public:
-        ZoneExceptionsVesselLinkData( ) = default;
+        ZoneExceptionsVesselLinkObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37674,18 +37674,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ZoneExceptionsVesselLinkData>( );
+            return std::make_shared<ZoneExceptionsVesselLinkObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ZoneExceptionsVesselLinkData&>( target );
+            auto& dest = static_cast<ZoneExceptionsVesselLinkObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ZoneExceptionsVesselLinkData& >( other );
+                const auto& dataObject = static_cast< const ZoneExceptionsVesselLinkObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -37727,7 +37727,7 @@ namespace Barrelman::Data
             vessel_ = vessel;
         }
     };
-    class ZoneTrackAlarmData : public BaseData<Kind, Guid>
+    class ZoneTrackAlarmObject : public BaseData<Kind, Guid>
     {
     public:
         using Base = BaseData<Kind, Guid>;
@@ -37748,7 +37748,7 @@ namespace Barrelman::Data
         DBDouble leaveLatitude_;
         DBDouble leaveLongitude_;
     public:
-        ZoneTrackAlarmData( ) = default;
+        ZoneTrackAlarmObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -37801,18 +37801,18 @@ namespace Barrelman::Data
         }
         virtual [[nodiscard]] std::shared_ptr<BaseData> Create( ) const override
         {
-            return std::make_shared<ZoneTrackAlarmData>( );
+            return std::make_shared<ZoneTrackAlarmObject>( );
         }
         virtual void AssignTo( BaseData& target ) const override
         {
             Base::AssignTo( target );
-            auto& dest = static_cast<ZoneTrackAlarmData&>( target );
+            auto& dest = static_cast<ZoneTrackAlarmObject&>( target );
         }
         virtual [[nodiscard]] bool IsEqualTo( const BaseData& other ) const
         {
             if ( Base::IsEqualTo( other ) )
             {
-                const auto& dataObject = static_cast< const ZoneTrackAlarmData& >( other );
+                const auto& dataObject = static_cast< const ZoneTrackAlarmObject& >( other );
                 if ( dataObject.rowVersion_ != rowVersion_ )
                 {
                     return false;
@@ -37994,997 +37994,997 @@ namespace Barrelman::Data
         switch ( kind )
         {
             case Kind::AircraftType:
-                static_cast<AircraftTypeData&>(*newObject).ReadFrom( source );
+                static_cast<AircraftTypeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDeviceCommand:
-                static_cast<AisDeviceCommandData&>(*newObject).ReadFrom( source );
+                static_cast<AisDeviceCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDeviceCommandReply:
-                static_cast<AisDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<AisDeviceCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDeviceConfiguration:
-                static_cast<AisDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<AisDeviceConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDeviceRawMessage:
-                static_cast<AisDeviceRawMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisDeviceRawMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDeviceRawSentence:
-                static_cast<AisDeviceRawSentenceData&>(*newObject).ReadFrom( source );
+                static_cast<AisDeviceRawSentenceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AidToNavigationReportMessage:
-                static_cast<AidToNavigationReportMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AidToNavigationReportMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisAddressedSafetyRelatedMessage:
-                static_cast<AisAddressedSafetyRelatedMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisAddressedSafetyRelatedMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisBaseStationReportMessage:
-                static_cast<AisBaseStationReportMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisBaseStationReportMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisBinaryAcknowledgeMessage:
-                static_cast<AisBinaryAcknowledgeMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisBinaryAcknowledgeMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisBinaryAddressedMessage:
-                static_cast<AisBinaryAddressedMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisBinaryAddressedMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisBinaryBroadcastMessage:
-                static_cast<AisBinaryBroadcastMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisBinaryBroadcastMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDataLinkManagementMessage:
-                static_cast<AisDataLinkManagementMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisDataLinkManagementMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisExtendedClassBCsPositionReportMessage:
-                static_cast<AisExtendedClassBCsPositionReportMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisExtendedClassBCsPositionReportMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisInterrogationMessage:
-                static_cast<AisInterrogationMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisInterrogationMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisPositionReportClassAAssignedScheduleMessage:
-                static_cast<AisPositionReportClassAAssignedScheduleMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisPositionReportClassAAssignedScheduleMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisPositionReportClassAMessage:
-                static_cast<AisPositionReportClassAMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisPositionReportClassAMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisPositionReportClassAResponseToInterrogationMessage:
-                static_cast<AisPositionReportClassAResponseToInterrogationMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisPositionReportClassAResponseToInterrogationMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisPositionReportForLongRangeApplicationsMessage:
-                static_cast<AisPositionReportForLongRangeApplicationsMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisPositionReportForLongRangeApplicationsMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisSafetyRelatedAcknowledgmentMessage:
-                static_cast<AisSafetyRelatedAcknowledgmentMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisSafetyRelatedAcknowledgmentMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisStandardClassBCsPositionReportMessage:
-                static_cast<AisStandardClassBCsPositionReportMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisStandardClassBCsPositionReportMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisStandardSarAircraftPositionReportMessage:
-                static_cast<AisStandardSarAircraftPositionReportMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisStandardSarAircraftPositionReportMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisStaticAndVoyageRelatedDataMessage:
-                static_cast<AisStaticAndVoyageRelatedDataMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisStaticAndVoyageRelatedDataMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisStaticDataReportMessage:
-                static_cast<AisStaticDataReportMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisStaticDataReportMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisStaticDataReportPartAMessage:
-                static_cast<AisStaticDataReportPartAMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisStaticDataReportPartAMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisStaticDataReportPartBMessage:
-                static_cast<AisStaticDataReportPartBMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisStaticDataReportPartBMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisUtcAndDateInquiryMessage:
-                static_cast<AisUtcAndDateInquiryMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisUtcAndDateInquiryMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisUtcAndDateResponseMessage:
-                static_cast<AisUtcAndDateResponseMessageData&>(*newObject).ReadFrom( source );
+                static_cast<AisUtcAndDateResponseMessageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AlarmStateChange:
-                static_cast<AlarmStateChangeData&>(*newObject).ReadFrom( source );
+                static_cast<AlarmStateChangeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BaseStationType:
-                static_cast<BaseStationTypeData&>(*newObject).ReadFrom( source );
+                static_cast<BaseStationTypeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BinaryTimeseriesValue:
-                static_cast<BinaryTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<BinaryTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Bookmark:
-                static_cast<BookmarkData&>(*newObject).ReadFrom( source );
+                static_cast<BookmarkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BooleanTimeseriesValue:
-                static_cast<BooleanTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<BooleanTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ByteTimeseriesValue:
-                static_cast<ByteTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<ByteTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommand:
-                static_cast<CameraCommandData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandAbsoluteMove:
-                static_cast<CameraCommandAbsoluteMoveData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandAbsoluteMoveObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandAdjustPanTiltZoom:
-                static_cast<CameraCommandAdjustPanTiltZoomData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandAdjustPanTiltZoomObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandContinuousMove:
-                static_cast<CameraCommandContinuousMoveData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandContinuousMoveObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandGeoMove:
-                static_cast<CameraCommandGeoMoveData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandGeoMoveObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandRelativeMove:
-                static_cast<CameraCommandRelativeMoveData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandRelativeMoveObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandReleasePTZOwnership:
-                static_cast<CameraCommandReleasePTZOwnershipData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandReleasePTZOwnershipObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandRequestPTZOwnership:
-                static_cast<CameraCommandRequestPTZOwnershipData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandRequestPTZOwnershipObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandSetAutoFocus:
-                static_cast<CameraCommandSetAutoFocusData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandSetAutoFocusObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandSetBlackAndWhite:
-                static_cast<CameraCommandSetBlackAndWhiteData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandSetBlackAndWhiteObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandSetFollowed:
-                static_cast<CameraCommandSetFollowedData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandSetFollowedObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandSetInfraRedLamp:
-                static_cast<CameraCommandSetInfraRedLampData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandSetInfraRedLampObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandSetWasher:
-                static_cast<CameraCommandSetWasherData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandSetWasherObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandSetWiper:
-                static_cast<CameraCommandSetWiperData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandSetWiperObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandStop:
-                static_cast<CameraCommandStopData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandStopObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraCommandReply:
-                static_cast<CameraCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<CameraCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraConfiguration:
-                static_cast<CameraConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<CameraConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraPanCalibration:
-                static_cast<CameraPanCalibrationData&>(*newObject).ReadFrom( source );
+                static_cast<CameraPanCalibrationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraPanCalibrationValue:
-                static_cast<CameraPanCalibrationValueData&>(*newObject).ReadFrom( source );
+                static_cast<CameraPanCalibrationValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraStatus:
-                static_cast<CameraStatusData&>(*newObject).ReadFrom( source );
+                static_cast<CameraStatusObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraTiltCalibration:
-                static_cast<CameraTiltCalibrationData&>(*newObject).ReadFrom( source );
+                static_cast<CameraTiltCalibrationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraTiltCalibrationValue:
-                static_cast<CameraTiltCalibrationValueData&>(*newObject).ReadFrom( source );
+                static_cast<CameraTiltCalibrationValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraZoomCalibration:
-                static_cast<CameraZoomCalibrationData&>(*newObject).ReadFrom( source );
+                static_cast<CameraZoomCalibrationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraZoomCalibrationValue:
-                static_cast<CameraZoomCalibrationValueData&>(*newObject).ReadFrom( source );
+                static_cast<CameraZoomCalibrationValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Catalog:
-                static_cast<CatalogData&>(*newObject).ReadFrom( source );
+                static_cast<CatalogObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Element:
-                static_cast<ElementData&>(*newObject).ReadFrom( source );
+                static_cast<ElementObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CollectionInfo:
-                static_cast<CollectionInfoData&>(*newObject).ReadFrom( source );
+                static_cast<CollectionInfoObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Country:
-                static_cast<CountryData&>(*newObject).ReadFrom( source );
+                static_cast<CountryObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CursorInfo:
-                static_cast<CursorInfoData&>(*newObject).ReadFrom( source );
+                static_cast<CursorInfoObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DateTimeTimeseriesValue:
-                static_cast<DateTimeTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<DateTimeTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DeviceHost:
-                static_cast<DeviceHostData&>(*newObject).ReadFrom( source );
+                static_cast<DeviceHostObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DeviceHostConfiguration:
-                static_cast<DeviceHostConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<DeviceHostConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DoubleTimeseriesValue:
-                static_cast<DoubleTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<DoubleTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::FacilityType:
-                static_cast<FacilityTypeData&>(*newObject).ReadFrom( source );
+                static_cast<FacilityTypeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GeoPosition2DTimeseriesValue:
-                static_cast<GeoPosition2DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<GeoPosition2DTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GeoPosition3DTimeseriesValue:
-                static_cast<GeoPosition3DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<GeoPosition3DTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSDeviceCommand:
-                static_cast<GNSSDeviceCommandData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSDeviceCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSDeviceCommandReply:
-                static_cast<GNSSDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSDeviceCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSDeviceConfiguration:
-                static_cast<GNSSDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSDeviceConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GuidTimeseriesValue:
-                static_cast<GuidTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<GuidTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroDeviceCommand:
-                static_cast<GyroDeviceCommandData&>(*newObject).ReadFrom( source );
+                static_cast<GyroDeviceCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroDeviceCommandReply:
-                static_cast<GyroDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<GyroDeviceCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroDeviceConfiguration:
-                static_cast<GyroDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<GyroDeviceConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Callsign:
-                static_cast<CallsignData&>(*newObject).ReadFrom( source );
+                static_cast<CallsignObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::InternationalMaritimeOrganizationNumber:
-                static_cast<InternationalMaritimeOrganizationNumberData&>(*newObject).ReadFrom( source );
+                static_cast<InternationalMaritimeOrganizationNumberObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MaritimeMobileServiceIdentity:
-                static_cast<MaritimeMobileServiceIdentityData&>(*newObject).ReadFrom( source );
+                static_cast<MaritimeMobileServiceIdentityObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Name:
-                static_cast<NameData&>(*newObject).ReadFrom( source );
+                static_cast<NameObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int16TimeseriesValue:
-                static_cast<Int16TimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<Int16TimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int32TimeseriesValue:
-                static_cast<Int32TimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<Int32TimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int64TimeseriesValue:
-                static_cast<Int64TimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<Int64TimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BaseStation:
-                static_cast<BaseStationData&>(*newObject).ReadFrom( source );
+                static_cast<BaseStationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CameraDevice:
-                static_cast<CameraDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<CameraDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSDevice:
-                static_cast<GNSSDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroDevice:
-                static_cast<GyroDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<GyroDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputDevice:
-                static_cast<LineInputDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::OilSpillDetectorDevice:
-                static_cast<OilSpillDetectorDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<OilSpillDetectorDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadioDevice:
-                static_cast<RadioDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<RadioDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeDevice:
-                static_cast<RadomeDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisDevice:
-                static_cast<AisDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<AisDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarDevice:
-                static_cast<RadarDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<RadarDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationDevice:
-                static_cast<WeatherStationDeviceData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationDeviceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Facility:
-                static_cast<FacilityData&>(*newObject).ReadFrom( source );
+                static_cast<FacilityObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Aircraft:
-                static_cast<AircraftData&>(*newObject).ReadFrom( source );
+                static_cast<AircraftObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisAidToNavigation:
-                static_cast<AisAidToNavigationData&>(*newObject).ReadFrom( source );
+                static_cast<AisAidToNavigationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Vehicle:
-                static_cast<VehicleData&>(*newObject).ReadFrom( source );
+                static_cast<VehicleObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Vessel:
-                static_cast<VesselData&>(*newObject).ReadFrom( source );
+                static_cast<VesselObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ItemIdentityLink:
-                static_cast<ItemIdentityLinkData&>(*newObject).ReadFrom( source );
+                static_cast<ItemIdentityLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ItemParentChildLink:
-                static_cast<ItemParentChildLinkData&>(*newObject).ReadFrom( source );
+                static_cast<ItemParentChildLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputDeviceCommand:
-                static_cast<LineInputDeviceCommandData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputDeviceCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputDeviceCommandReply:
-                static_cast<LineInputDeviceCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputDeviceCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputDeviceConfiguration:
-                static_cast<LineInputDeviceConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputDeviceConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputMessageRouting:
-                static_cast<LineInputMessageRoutingData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputMessageRoutingObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputMessageRoutingDestination:
-                static_cast<LineInputMessageRoutingDestinationData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputMessageRoutingDestinationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LineInputWhiteListEntry:
-                static_cast<LineInputWhiteListEntryData&>(*newObject).ReadFrom( source );
+                static_cast<LineInputWhiteListEntryObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogApplication:
-                static_cast<LogApplicationData&>(*newObject).ReadFrom( source );
+                static_cast<LogApplicationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogApplicationConfiguration:
-                static_cast<LogApplicationConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<LogApplicationConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogHost:
-                static_cast<LogHostData&>(*newObject).ReadFrom( source );
+                static_cast<LogHostObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogHostConfiguration:
-                static_cast<LogHostConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<LogHostConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogLocation:
-                static_cast<LogLocationData&>(*newObject).ReadFrom( source );
+                static_cast<LogLocationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogProcess:
-                static_cast<LogProcessData&>(*newObject).ReadFrom( source );
+                static_cast<LogProcessObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogRecord:
-                static_cast<LogRecordData&>(*newObject).ReadFrom( source );
+                static_cast<LogRecordObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogThread:
-                static_cast<LogThreadData&>(*newObject).ReadFrom( source );
+                static_cast<LogThreadObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::LogTraceEntry:
-                static_cast<LogTraceEntryData&>(*newObject).ReadFrom( source );
+                static_cast<LogTraceEntryObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MapElement:
-                static_cast<MapElementData&>(*newObject).ReadFrom( source );
+                static_cast<MapElementObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MapInfo:
-                static_cast<MapInfoData&>(*newObject).ReadFrom( source );
+                static_cast<MapInfoObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MapServiceOptions:
-                static_cast<MapServiceOptionsData&>(*newObject).ReadFrom( source );
+                static_cast<MapServiceOptionsObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MaritimeIdentificationDigits:
-                static_cast<MaritimeIdentificationDigitsData&>(*newObject).ReadFrom( source );
+                static_cast<MaritimeIdentificationDigitsObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaProxySession:
-                static_cast<MediaProxySessionData&>(*newObject).ReadFrom( source );
+                static_cast<MediaProxySessionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaProxySessionFile:
-                static_cast<MediaProxySessionFileData&>(*newObject).ReadFrom( source );
+                static_cast<MediaProxySessionFileObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaProxySessionOptions:
-                static_cast<MediaProxySessionOptionsData&>(*newObject).ReadFrom( source );
+                static_cast<MediaProxySessionOptionsObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaService:
-                static_cast<MediaServiceData&>(*newObject).ReadFrom( source );
+                static_cast<MediaServiceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaServiceOptions:
-                static_cast<MediaServiceOptionsData&>(*newObject).ReadFrom( source );
+                static_cast<MediaServiceOptionsObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ElementType:
-                static_cast<ElementTypeData&>(*newObject).ReadFrom( source );
+                static_cast<ElementTypeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Namespace:
-                static_cast<NamespaceData&>(*newObject).ReadFrom( source );
+                static_cast<NamespaceObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::OilSpill:
-                static_cast<OilSpillData&>(*newObject).ReadFrom( source );
+                static_cast<OilSpillObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::OilSpillDetectorCommand:
-                static_cast<OilSpillDetectorCommandData&>(*newObject).ReadFrom( source );
+                static_cast<OilSpillDetectorCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::OilSpillDetectorCommandReply:
-                static_cast<OilSpillDetectorCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<OilSpillDetectorCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::OilSpillDetectorConfiguration:
-                static_cast<OilSpillDetectorConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<OilSpillDetectorConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Position2DTimeseriesValue:
-                static_cast<Position2DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<Position2DTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Position3DTimeseriesValue:
-                static_cast<Position3DTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<Position3DTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ProcessTrackValueResult:
-                static_cast<ProcessTrackValueResultData&>(*newObject).ReadFrom( source );
+                static_cast<ProcessTrackValueResultObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BinaryProperty:
-                static_cast<BinaryPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<BinaryPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BooleanProperty:
-                static_cast<BooleanPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<BooleanPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ByteProperty:
-                static_cast<BytePropertyData&>(*newObject).ReadFrom( source );
+                static_cast<BytePropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DateTimeProperty:
-                static_cast<DateTimePropertyData&>(*newObject).ReadFrom( source );
+                static_cast<DateTimePropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DoubleProperty:
-                static_cast<DoublePropertyData&>(*newObject).ReadFrom( source );
+                static_cast<DoublePropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GuidProperty:
-                static_cast<GuidPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<GuidPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int16Property:
-                static_cast<Int16PropertyData&>(*newObject).ReadFrom( source );
+                static_cast<Int16PropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int32Property:
-                static_cast<Int32PropertyData&>(*newObject).ReadFrom( source );
+                static_cast<Int32PropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int64Property:
-                static_cast<Int64PropertyData&>(*newObject).ReadFrom( source );
+                static_cast<Int64PropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ReferenceProperty:
-                static_cast<ReferencePropertyData&>(*newObject).ReadFrom( source );
+                static_cast<ReferencePropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SByteProperty:
-                static_cast<SBytePropertyData&>(*newObject).ReadFrom( source );
+                static_cast<SBytePropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SingleProperty:
-                static_cast<SinglePropertyData&>(*newObject).ReadFrom( source );
+                static_cast<SinglePropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::StringProperty:
-                static_cast<StringPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<StringPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BinaryTimeseriesProperty:
-                static_cast<BinaryTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<BinaryTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BooleanTimeseriesProperty:
-                static_cast<BooleanTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<BooleanTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ByteTimeseriesProperty:
-                static_cast<ByteTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<ByteTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DateTimeTimeseriesProperty:
-                static_cast<DateTimeTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<DateTimeTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DoubleTimeseriesProperty:
-                static_cast<DoubleTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<DoubleTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GuidTimeseriesProperty:
-                static_cast<GuidTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<GuidTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int16TimeseriesProperty:
-                static_cast<Int16TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<Int16TimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int32TimeseriesProperty:
-                static_cast<Int32TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<Int32TimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int64TimeseriesProperty:
-                static_cast<Int64TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<Int64TimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ReferenceTimeseriesProperty:
-                static_cast<ReferenceTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<ReferenceTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SByteTimeseriesProperty:
-                static_cast<SByteTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<SByteTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SingleTimeseriesProperty:
-                static_cast<SingleTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<SingleTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::StringTimeseriesProperty:
-                static_cast<StringTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<StringTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeSpanTimeseriesProperty:
-                static_cast<TimeSpanTimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<TimeSpanTimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt16TimeseriesProperty:
-                static_cast<UInt16TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<UInt16TimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt32TimeseriesProperty:
-                static_cast<UInt32TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<UInt32TimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt64TimeseriesProperty:
-                static_cast<UInt64TimeseriesPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<UInt64TimeseriesPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeSpanProperty:
-                static_cast<TimeSpanPropertyData&>(*newObject).ReadFrom( source );
+                static_cast<TimeSpanPropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt16Property:
-                static_cast<UInt16PropertyData&>(*newObject).ReadFrom( source );
+                static_cast<UInt16PropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt32Property:
-                static_cast<UInt32PropertyData&>(*newObject).ReadFrom( source );
+                static_cast<UInt32PropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt64Property:
-                static_cast<UInt64PropertyData&>(*newObject).ReadFrom( source );
+                static_cast<UInt64PropertyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BinaryPropertyDefinition:
-                static_cast<BinaryPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<BinaryPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BooleanPropertyDefinition:
-                static_cast<BooleanPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<BooleanPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BytePropertyDefinition:
-                static_cast<BytePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<BytePropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DateTimePropertyDefinition:
-                static_cast<DateTimePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<DateTimePropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DoublePropertyDefinition:
-                static_cast<DoublePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<DoublePropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GuidPropertyDefinition:
-                static_cast<GuidPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<GuidPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int16PropertyDefinition:
-                static_cast<Int16PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<Int16PropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int32PropertyDefinition:
-                static_cast<Int32PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<Int32PropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int64PropertyDefinition:
-                static_cast<Int64PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<Int64PropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ReferencePropertyDefinition:
-                static_cast<ReferencePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<ReferencePropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SBytePropertyDefinition:
-                static_cast<SBytePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<SBytePropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SinglePropertyDefinition:
-                static_cast<SinglePropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<SinglePropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::StringPropertyDefinition:
-                static_cast<StringPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<StringPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BinaryTimeseriesPropertyDefinition:
-                static_cast<BinaryTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<BinaryTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BooleanTimeseriesPropertyDefinition:
-                static_cast<BooleanTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<BooleanTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ByteTimeseriesPropertyDefinition:
-                static_cast<ByteTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<ByteTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DateTimeTimeseriesPropertyDefinition:
-                static_cast<DateTimeTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<DateTimeTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DoubleTimeseriesPropertyDefinition:
-                static_cast<DoubleTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<DoubleTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GuidTimeseriesPropertyDefinition:
-                static_cast<GuidTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<GuidTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int16TimeseriesPropertyDefinition:
-                static_cast<Int16TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<Int16TimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int32TimeseriesPropertyDefinition:
-                static_cast<Int32TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<Int32TimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int64TimeseriesPropertyDefinition:
-                static_cast<Int64TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<Int64TimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ReferenceTimeseriesPropertyDefinition:
-                static_cast<ReferenceTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<ReferenceTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SByteTimeseriesPropertyDefinition:
-                static_cast<SByteTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<SByteTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SingleTimeseriesPropertyDefinition:
-                static_cast<SingleTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<SingleTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::StringTimeseriesPropertyDefinition:
-                static_cast<StringTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<StringTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeSpanTimeseriesPropertyDefinition:
-                static_cast<TimeSpanTimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<TimeSpanTimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt16TimeseriesPropertyDefinition:
-                static_cast<UInt16TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<UInt16TimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt32TimeseriesPropertyDefinition:
-                static_cast<UInt32TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<UInt32TimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt64TimeseriesPropertyDefinition:
-                static_cast<UInt64TimeseriesPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<UInt64TimeseriesPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeSpanPropertyDefinition:
-                static_cast<TimeSpanPropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<TimeSpanPropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt16PropertyDefinition:
-                static_cast<UInt16PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<UInt16PropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt32PropertyDefinition:
-                static_cast<UInt32PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<UInt32PropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt64PropertyDefinition:
-                static_cast<UInt64PropertyDefinitionData&>(*newObject).ReadFrom( source );
+                static_cast<UInt64PropertyDefinitionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarAlarmStatus:
-                static_cast<RadarAlarmStatusData&>(*newObject).ReadFrom( source );
+                static_cast<RadarAlarmStatusObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarCommand:
-                static_cast<RadarCommandData&>(*newObject).ReadFrom( source );
+                static_cast<RadarCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarCommandGetStatus:
-                static_cast<RadarCommandGetStatusData&>(*newObject).ReadFrom( source );
+                static_cast<RadarCommandGetStatusObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarCommandReply:
-                static_cast<RadarCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<RadarCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarCommandReplyGetStatus:
-                static_cast<RadarCommandReplyGetStatusData&>(*newObject).ReadFrom( source );
+                static_cast<RadarCommandReplyGetStatusObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarConfiguration:
-                static_cast<RadarConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<RadarConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarImage:
-                static_cast<RadarImageData&>(*newObject).ReadFrom( source );
+                static_cast<RadarImageObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarRawTrackTable:
-                static_cast<RadarRawTrackTableData&>(*newObject).ReadFrom( source );
+                static_cast<RadarRawTrackTableObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarStatus:
-                static_cast<RadarStatusData&>(*newObject).ReadFrom( source );
+                static_cast<RadarStatusObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadioCommand:
-                static_cast<RadioCommandData&>(*newObject).ReadFrom( source );
+                static_cast<RadioCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadioCommandReply:
-                static_cast<RadioCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<RadioCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadioConfiguration:
-                static_cast<RadioConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<RadioConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeCommand:
-                static_cast<RadomeCommandData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeCommandReply:
-                static_cast<RadomeCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeConfiguration:
-                static_cast<RadomeConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ReferenceTimeseriesValue:
-                static_cast<ReferenceTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<ReferenceTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SByteTimeseriesValue:
-                static_cast<SByteTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<SByteTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SecurityDomain:
-                static_cast<SecurityDomainData&>(*newObject).ReadFrom( source );
+                static_cast<SecurityDomainObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SecurityLogin:
-                static_cast<SecurityLoginData&>(*newObject).ReadFrom( source );
+                static_cast<SecurityLoginObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SecurityRole:
-                static_cast<SecurityRoleData&>(*newObject).ReadFrom( source );
+                static_cast<SecurityRoleObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SecurityIdentifierRoleLink:
-                static_cast<SecurityIdentifierRoleLinkData&>(*newObject).ReadFrom( source );
+                static_cast<SecurityIdentifierRoleLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SecurityLoginSession:
-                static_cast<SecurityLoginSessionData&>(*newObject).ReadFrom( source );
+                static_cast<SecurityLoginSessionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SecurityPermission:
-                static_cast<SecurityPermissionData&>(*newObject).ReadFrom( source );
+                static_cast<SecurityPermissionObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SingleTimeseriesValue:
-                static_cast<SingleTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<SingleTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::StringTimeseriesValue:
-                static_cast<StringTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<StringTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BinaryTimeseries:
-                static_cast<BinaryTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<BinaryTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::BooleanTimeseries:
-                static_cast<BooleanTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<BooleanTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisAidToNavigationOffPositionTimeseries:
-                static_cast<AisAidToNavigationOffPositionTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<AisAidToNavigationOffPositionTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DeviceEnabledTimeseries:
-                static_cast<DeviceEnabledTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<DeviceEnabledTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
-                static_cast<RadarAutomaticSensitivityTimeControlTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarAutomaticSensitivityTimeControlTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarBlankSector1Timeseries:
-                static_cast<RadarBlankSector1TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarBlankSector1TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarBlankSector2Timeseries:
-                static_cast<RadarBlankSector2TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarBlankSector2TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
-                static_cast<RadarEnableAutomaticFrequencyControlTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarEnableAutomaticFrequencyControlTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarEnableFastTimeConstantTimeseries:
-                static_cast<RadarEnableFastTimeConstantTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarEnableFastTimeConstantTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarEnableSensitivityTimeControlTimeseries:
-                static_cast<RadarEnableSensitivityTimeControlTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarEnableSensitivityTimeControlTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarPowerOnTimeseries:
-                static_cast<RadarPowerOnTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarPowerOnTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarSaveSettingsTimeseries:
-                static_cast<RadarSaveSettingsTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarSaveSettingsTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarTrackingTimeseries:
-                static_cast<RadarTrackingTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarTrackingTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaProxySessionEnabledTimeseries:
-                static_cast<MediaProxySessionEnabledTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<MediaProxySessionEnabledTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::MediaServiceEnabledTimeseries:
-                static_cast<MediaServiceEnabledTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<MediaServiceEnabledTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ByteTimeseries:
-                static_cast<ByteTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<ByteTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DateTimeTimeseries:
-                static_cast<DateTimeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<DateTimeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::DoubleTimeseries:
-                static_cast<DoubleTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<DoubleTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSAltitudeTimeseries:
-                static_cast<GNSSAltitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSAltitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSLatitudeTimeseries:
-                static_cast<GNSSLatitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSLatitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GNSSLongitudeTimeseries:
-                static_cast<GNSSLongitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GNSSLongitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroCourseTimeseries:
-                static_cast<GyroCourseTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroCourseTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroHeadingMagneticNorthTimeseries:
-                static_cast<GyroHeadingMagneticNorthTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroHeadingMagneticNorthTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroHeadingTrueNorthTimeseries:
-                static_cast<GyroHeadingTrueNorthTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroHeadingTrueNorthTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroPitchTimeseries:
-                static_cast<GyroPitchTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroPitchTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroRateOfTurnTimeseries:
-                static_cast<GyroRateOfTurnTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroRateOfTurnTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroRollTimeseries:
-                static_cast<GyroRollTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroRollTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GyroSpeedTimeseries:
-                static_cast<GyroSpeedTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GyroSpeedTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarLatitudeTimeseries:
-                static_cast<RadarLatitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarLatitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarLongitudeTimeseries:
-                static_cast<RadarLongitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarLongitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeDewPointTimeseries:
-                static_cast<RadomeDewPointTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeDewPointTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomePressureTimeseries:
-                static_cast<RadomePressureTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadomePressureTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeTemperatureTimeseries:
-                static_cast<RadomeTemperatureTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeTemperatureTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::VesselDraughtTimeseries:
-                static_cast<VesselDraughtTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<VesselDraughtTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ViewLatitudeTimeseries:
-                static_cast<ViewLatitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<ViewLatitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ViewLongitudeTimeseries:
-                static_cast<ViewLongitudeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<ViewLongitudeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ViewZoomLevelTimeseries:
-                static_cast<ViewZoomLevelTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<ViewZoomLevelTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationAbsoluteHumidityTimeseries:
-                static_cast<WeatherStationAbsoluteHumidityTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationAbsoluteHumidityTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationAirTemperatureTimeseries:
-                static_cast<WeatherStationAirTemperatureTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationAirTemperatureTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationBarometricPressureTimeseries:
-                static_cast<WeatherStationBarometricPressureTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationBarometricPressureTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationDewPointTimeseries:
-                static_cast<WeatherStationDewPointTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationDewPointTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationRelativeHumidityTimeseries:
-                static_cast<WeatherStationRelativeHumidityTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationRelativeHumidityTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationWaterTemperatureTimeseries:
-                static_cast<WeatherStationWaterTemperatureTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationWaterTemperatureTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationWindDirectionTimeseries:
-                static_cast<WeatherStationWindDirectionTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationWindDirectionTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationWindSpeedTimeseries:
-                static_cast<WeatherStationWindSpeedTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationWindSpeedTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GeoPosition2DTimeseries:
-                static_cast<GeoPosition2DTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GeoPosition2DTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::AisAidToNavigationPositionTimeseries:
-                static_cast<AisAidToNavigationPositionTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<AisAidToNavigationPositionTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GeoPosition3DTimeseries:
-                static_cast<GeoPosition3DTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GeoPosition3DTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::GuidTimeseries:
-                static_cast<GuidTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<GuidTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int16Timeseries:
-                static_cast<Int16TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<Int16TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int32Timeseries:
-                static_cast<Int32TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<Int32TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarAzimuthOffsetTimeseries:
-                static_cast<RadarAzimuthOffsetTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarAzimuthOffsetTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarFastTimeConstantLevelTimeseries:
-                static_cast<RadarFastTimeConstantLevelTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarFastTimeConstantLevelTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarFastTimeConstantModeTimeseries:
-                static_cast<RadarFastTimeConstantModeTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarFastTimeConstantModeTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarPulseTimeseries:
-                static_cast<RadarPulseTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarPulseTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarSector1EndTimeseries:
-                static_cast<RadarSector1EndTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarSector1EndTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarSector1StartTimeseries:
-                static_cast<RadarSector1StartTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarSector1StartTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarSector2EndTimeseries:
-                static_cast<RadarSector2EndTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarSector2EndTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarSector2StartTimeseries:
-                static_cast<RadarSector2StartTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarSector2StartTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarSensitivityTimeControlLevelTimeseries:
-                static_cast<RadarSensitivityTimeControlLevelTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarSensitivityTimeControlLevelTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadarTuningTimeseries:
-                static_cast<RadarTuningTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadarTuningTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::VesselPersonsOnBoardTimeseries:
-                static_cast<VesselPersonsOnBoardTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<VesselPersonsOnBoardTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Int64Timeseries:
-                static_cast<Int64TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<Int64TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Position2DTimeseries:
-                static_cast<Position2DTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<Position2DTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Position3DTimeseries:
-                static_cast<Position3DTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<Position3DTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ReferenceTimeseries:
-                static_cast<ReferenceTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<ReferenceTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SByteTimeseries:
-                static_cast<SByteTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<SByteTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::SingleTimeseries:
-                static_cast<SingleTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<SingleTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::StringTimeseries:
-                static_cast<StringTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<StringTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeSpanTimeseries:
-                static_cast<TimeSpanTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<TimeSpanTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt16Timeseries:
-                static_cast<UInt16TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<UInt16TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt32Timeseries:
-                static_cast<UInt32TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<UInt32TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::RadomeStatusTimeseries:
-                static_cast<RadomeStatusTimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<RadomeStatusTimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt64Timeseries:
-                static_cast<UInt64TimeseriesData&>(*newObject).ReadFrom( source );
+                static_cast<UInt64TimeseriesObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeseriesCatalog:
-                static_cast<TimeseriesCatalogData&>(*newObject).ReadFrom( source );
+                static_cast<TimeseriesCatalogObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeseriesInfo:
-                static_cast<TimeseriesInfoData&>(*newObject).ReadFrom( source );
+                static_cast<TimeseriesInfoObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TimeSpanTimeseriesValue:
-                static_cast<TimeSpanTimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<TimeSpanTimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackableItemTrackLink:
-                static_cast<TrackableItemTrackLinkData&>(*newObject).ReadFrom( source );
+                static_cast<TrackableItemTrackLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Track:
-                static_cast<TrackData&>(*newObject).ReadFrom( source );
+                static_cast<TrackObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::Track3D:
-                static_cast<Track3DData&>(*newObject).ReadFrom( source );
+                static_cast<Track3DObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackerFilterParameters:
-                static_cast<TrackerFilterParametersData&>(*newObject).ReadFrom( source );
+                static_cast<TrackerFilterParametersObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackerFilterParametersConfiguration:
-                static_cast<TrackerFilterParametersConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<TrackerFilterParametersConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackInfo:
-                static_cast<TrackInfoData&>(*newObject).ReadFrom( source );
+                static_cast<TrackInfoObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackingServiceOptions:
-                static_cast<TrackingServiceOptionsData&>(*newObject).ReadFrom( source );
+                static_cast<TrackingServiceOptionsObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackLink:
-                static_cast<TrackLinkData&>(*newObject).ReadFrom( source );
+                static_cast<TrackLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackValue:
-                static_cast<TrackValueData&>(*newObject).ReadFrom( source );
+                static_cast<TrackValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::TrackValue3D:
-                static_cast<TrackValue3DData&>(*newObject).ReadFrom( source );
+                static_cast<TrackValue3DObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt16TimeseriesValue:
-                static_cast<UInt16TimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<UInt16TimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt32TimeseriesValue:
-                static_cast<UInt32TimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<UInt32TimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::UInt64TimeseriesValue:
-                static_cast<UInt64TimeseriesValueData&>(*newObject).ReadFrom( source );
+                static_cast<UInt64TimeseriesValueObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::VehicleType:
-                static_cast<VehicleTypeData&>(*newObject).ReadFrom( source );
+                static_cast<VehicleTypeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::VesselType:
-                static_cast<VesselTypeData&>(*newObject).ReadFrom( source );
+                static_cast<VesselTypeObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::View:
-                static_cast<ViewData&>(*newObject).ReadFrom( source );
+                static_cast<ViewObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ViewCameraLink:
-                static_cast<ViewCameraLinkData&>(*newObject).ReadFrom( source );
+                static_cast<ViewCameraLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ViewTrackerLink:
-                static_cast<ViewTrackerLinkData&>(*newObject).ReadFrom( source );
+                static_cast<ViewTrackerLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationCommand:
-                static_cast<WeatherStationCommandData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationCommandObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationCommandReply:
-                static_cast<WeatherStationCommandReplyData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationCommandReplyObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::WeatherStationConfiguration:
-                static_cast<WeatherStationConfigurationData&>(*newObject).ReadFrom( source );
+                static_cast<WeatherStationConfigurationObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::CircularZone:
-                static_cast<CircularZoneData&>(*newObject).ReadFrom( source );
+                static_cast<CircularZoneObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::PolygonZone:
-                static_cast<PolygonZoneData&>(*newObject).ReadFrom( source );
+                static_cast<PolygonZoneObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ZoneExceptions:
-                static_cast<ZoneExceptionsData&>(*newObject).ReadFrom( source );
+                static_cast<ZoneExceptionsObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ZoneExceptionsVesselLink:
-                static_cast<ZoneExceptionsVesselLinkData&>(*newObject).ReadFrom( source );
+                static_cast<ZoneExceptionsVesselLinkObject&>(*newObject).ReadFrom( source );
                 break;
             case Kind::ZoneTrackAlarm:
-                static_cast<ZoneTrackAlarmData&>(*newObject).ReadFrom( source );
+                static_cast<ZoneTrackAlarmObject&>(*newObject).ReadFrom( source );
                 break;
         }
         return newObject;
@@ -38997,997 +38997,997 @@ namespace Barrelman::Data
         switch ( kind )
         {
             case Kind::AircraftType:
-                static_cast<const AircraftTypeData&>(data).WriteTo( destination );
+                static_cast<const AircraftTypeObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDeviceCommand:
-                static_cast<const AisDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const AisDeviceCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDeviceCommandReply:
-                static_cast<const AisDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const AisDeviceCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDeviceConfiguration:
-                static_cast<const AisDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const AisDeviceConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDeviceRawMessage:
-                static_cast<const AisDeviceRawMessageData&>(data).WriteTo( destination );
+                static_cast<const AisDeviceRawMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDeviceRawSentence:
-                static_cast<const AisDeviceRawSentenceData&>(data).WriteTo( destination );
+                static_cast<const AisDeviceRawSentenceObject&>(data).WriteTo( destination );
                 break;
             case Kind::AidToNavigationReportMessage:
-                static_cast<const AidToNavigationReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AidToNavigationReportMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisAddressedSafetyRelatedMessage:
-                static_cast<const AisAddressedSafetyRelatedMessageData&>(data).WriteTo( destination );
+                static_cast<const AisAddressedSafetyRelatedMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisBaseStationReportMessage:
-                static_cast<const AisBaseStationReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBaseStationReportMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisBinaryAcknowledgeMessage:
-                static_cast<const AisBinaryAcknowledgeMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBinaryAcknowledgeMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisBinaryAddressedMessage:
-                static_cast<const AisBinaryAddressedMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBinaryAddressedMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisBinaryBroadcastMessage:
-                static_cast<const AisBinaryBroadcastMessageData&>(data).WriteTo( destination );
+                static_cast<const AisBinaryBroadcastMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDataLinkManagementMessage:
-                static_cast<const AisDataLinkManagementMessageData&>(data).WriteTo( destination );
+                static_cast<const AisDataLinkManagementMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisExtendedClassBCsPositionReportMessage:
-                static_cast<const AisExtendedClassBCsPositionReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisExtendedClassBCsPositionReportMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisInterrogationMessage:
-                static_cast<const AisInterrogationMessageData&>(data).WriteTo( destination );
+                static_cast<const AisInterrogationMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportClassAAssignedScheduleMessage:
-                static_cast<const AisPositionReportClassAAssignedScheduleMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportClassAAssignedScheduleMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportClassAMessage:
-                static_cast<const AisPositionReportClassAMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportClassAMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportClassAResponseToInterrogationMessage:
-                static_cast<const AisPositionReportClassAResponseToInterrogationMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportClassAResponseToInterrogationMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisPositionReportForLongRangeApplicationsMessage:
-                static_cast<const AisPositionReportForLongRangeApplicationsMessageData&>(data).WriteTo( destination );
+                static_cast<const AisPositionReportForLongRangeApplicationsMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisSafetyRelatedAcknowledgmentMessage:
-                static_cast<const AisSafetyRelatedAcknowledgmentMessageData&>(data).WriteTo( destination );
+                static_cast<const AisSafetyRelatedAcknowledgmentMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisStandardClassBCsPositionReportMessage:
-                static_cast<const AisStandardClassBCsPositionReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStandardClassBCsPositionReportMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisStandardSarAircraftPositionReportMessage:
-                static_cast<const AisStandardSarAircraftPositionReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStandardSarAircraftPositionReportMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticAndVoyageRelatedDataMessage:
-                static_cast<const AisStaticAndVoyageRelatedDataMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticAndVoyageRelatedDataMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticDataReportMessage:
-                static_cast<const AisStaticDataReportMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticDataReportMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticDataReportPartAMessage:
-                static_cast<const AisStaticDataReportPartAMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticDataReportPartAMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisStaticDataReportPartBMessage:
-                static_cast<const AisStaticDataReportPartBMessageData&>(data).WriteTo( destination );
+                static_cast<const AisStaticDataReportPartBMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisUtcAndDateInquiryMessage:
-                static_cast<const AisUtcAndDateInquiryMessageData&>(data).WriteTo( destination );
+                static_cast<const AisUtcAndDateInquiryMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisUtcAndDateResponseMessage:
-                static_cast<const AisUtcAndDateResponseMessageData&>(data).WriteTo( destination );
+                static_cast<const AisUtcAndDateResponseMessageObject&>(data).WriteTo( destination );
                 break;
             case Kind::AlarmStateChange:
-                static_cast<const AlarmStateChangeData&>(data).WriteTo( destination );
+                static_cast<const AlarmStateChangeObject&>(data).WriteTo( destination );
                 break;
             case Kind::BaseStationType:
-                static_cast<const BaseStationTypeData&>(data).WriteTo( destination );
+                static_cast<const BaseStationTypeObject&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseriesValue:
-                static_cast<const BinaryTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::Bookmark:
-                static_cast<const BookmarkData&>(data).WriteTo( destination );
+                static_cast<const BookmarkObject&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseriesValue:
-                static_cast<const BooleanTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseriesValue:
-                static_cast<const ByteTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommand:
-                static_cast<const CameraCommandData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandAbsoluteMove:
-                static_cast<const CameraCommandAbsoluteMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandAbsoluteMoveObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandAdjustPanTiltZoom:
-                static_cast<const CameraCommandAdjustPanTiltZoomData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandAdjustPanTiltZoomObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandContinuousMove:
-                static_cast<const CameraCommandContinuousMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandContinuousMoveObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandGeoMove:
-                static_cast<const CameraCommandGeoMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandGeoMoveObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandRelativeMove:
-                static_cast<const CameraCommandRelativeMoveData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandRelativeMoveObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandReleasePTZOwnership:
-                static_cast<const CameraCommandReleasePTZOwnershipData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandReleasePTZOwnershipObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandRequestPTZOwnership:
-                static_cast<const CameraCommandRequestPTZOwnershipData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandRequestPTZOwnershipObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetAutoFocus:
-                static_cast<const CameraCommandSetAutoFocusData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetAutoFocusObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetBlackAndWhite:
-                static_cast<const CameraCommandSetBlackAndWhiteData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetBlackAndWhiteObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetFollowed:
-                static_cast<const CameraCommandSetFollowedData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetFollowedObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetInfraRedLamp:
-                static_cast<const CameraCommandSetInfraRedLampData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetInfraRedLampObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetWasher:
-                static_cast<const CameraCommandSetWasherData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetWasherObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandSetWiper:
-                static_cast<const CameraCommandSetWiperData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandSetWiperObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandStop:
-                static_cast<const CameraCommandStopData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandStopObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraCommandReply:
-                static_cast<const CameraCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const CameraCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraConfiguration:
-                static_cast<const CameraConfigurationData&>(data).WriteTo( destination );
+                static_cast<const CameraConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraPanCalibration:
-                static_cast<const CameraPanCalibrationData&>(data).WriteTo( destination );
+                static_cast<const CameraPanCalibrationObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraPanCalibrationValue:
-                static_cast<const CameraPanCalibrationValueData&>(data).WriteTo( destination );
+                static_cast<const CameraPanCalibrationValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraStatus:
-                static_cast<const CameraStatusData&>(data).WriteTo( destination );
+                static_cast<const CameraStatusObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraTiltCalibration:
-                static_cast<const CameraTiltCalibrationData&>(data).WriteTo( destination );
+                static_cast<const CameraTiltCalibrationObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraTiltCalibrationValue:
-                static_cast<const CameraTiltCalibrationValueData&>(data).WriteTo( destination );
+                static_cast<const CameraTiltCalibrationValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraZoomCalibration:
-                static_cast<const CameraZoomCalibrationData&>(data).WriteTo( destination );
+                static_cast<const CameraZoomCalibrationObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraZoomCalibrationValue:
-                static_cast<const CameraZoomCalibrationValueData&>(data).WriteTo( destination );
+                static_cast<const CameraZoomCalibrationValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::Catalog:
-                static_cast<const CatalogData&>(data).WriteTo( destination );
+                static_cast<const CatalogObject&>(data).WriteTo( destination );
                 break;
             case Kind::Element:
-                static_cast<const ElementData&>(data).WriteTo( destination );
+                static_cast<const ElementObject&>(data).WriteTo( destination );
                 break;
             case Kind::CollectionInfo:
-                static_cast<const CollectionInfoData&>(data).WriteTo( destination );
+                static_cast<const CollectionInfoObject&>(data).WriteTo( destination );
                 break;
             case Kind::Country:
-                static_cast<const CountryData&>(data).WriteTo( destination );
+                static_cast<const CountryObject&>(data).WriteTo( destination );
                 break;
             case Kind::CursorInfo:
-                static_cast<const CursorInfoData&>(data).WriteTo( destination );
+                static_cast<const CursorInfoObject&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseriesValue:
-                static_cast<const DateTimeTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::DeviceHost:
-                static_cast<const DeviceHostData&>(data).WriteTo( destination );
+                static_cast<const DeviceHostObject&>(data).WriteTo( destination );
                 break;
             case Kind::DeviceHostConfiguration:
-                static_cast<const DeviceHostConfigurationData&>(data).WriteTo( destination );
+                static_cast<const DeviceHostConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseriesValue:
-                static_cast<const DoubleTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::FacilityType:
-                static_cast<const FacilityTypeData&>(data).WriteTo( destination );
+                static_cast<const FacilityTypeObject&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition2DTimeseriesValue:
-                static_cast<const GeoPosition2DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition2DTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition3DTimeseriesValue:
-                static_cast<const GeoPosition3DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition3DTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDeviceCommand:
-                static_cast<const GNSSDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDeviceCommandReply:
-                static_cast<const GNSSDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDeviceConfiguration:
-                static_cast<const GNSSDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseriesValue:
-                static_cast<const GuidTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDeviceCommand:
-                static_cast<const GyroDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDeviceCommandReply:
-                static_cast<const GyroDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDeviceConfiguration:
-                static_cast<const GyroDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::Callsign:
-                static_cast<const CallsignData&>(data).WriteTo( destination );
+                static_cast<const CallsignObject&>(data).WriteTo( destination );
                 break;
             case Kind::InternationalMaritimeOrganizationNumber:
-                static_cast<const InternationalMaritimeOrganizationNumberData&>(data).WriteTo( destination );
+                static_cast<const InternationalMaritimeOrganizationNumberObject&>(data).WriteTo( destination );
                 break;
             case Kind::MaritimeMobileServiceIdentity:
-                static_cast<const MaritimeMobileServiceIdentityData&>(data).WriteTo( destination );
+                static_cast<const MaritimeMobileServiceIdentityObject&>(data).WriteTo( destination );
                 break;
             case Kind::Name:
-                static_cast<const NameData&>(data).WriteTo( destination );
+                static_cast<const NameObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int16TimeseriesValue:
-                static_cast<const Int16TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int32TimeseriesValue:
-                static_cast<const Int32TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int64TimeseriesValue:
-                static_cast<const Int64TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::BaseStation:
-                static_cast<const BaseStationData&>(data).WriteTo( destination );
+                static_cast<const BaseStationObject&>(data).WriteTo( destination );
                 break;
             case Kind::CameraDevice:
-                static_cast<const CameraDeviceData&>(data).WriteTo( destination );
+                static_cast<const CameraDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSDevice:
-                static_cast<const GNSSDeviceData&>(data).WriteTo( destination );
+                static_cast<const GNSSDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroDevice:
-                static_cast<const GyroDeviceData&>(data).WriteTo( destination );
+                static_cast<const GyroDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDevice:
-                static_cast<const LineInputDeviceData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::OilSpillDetectorDevice:
-                static_cast<const OilSpillDetectorDeviceData&>(data).WriteTo( destination );
+                static_cast<const OilSpillDetectorDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadioDevice:
-                static_cast<const RadioDeviceData&>(data).WriteTo( destination );
+                static_cast<const RadioDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeDevice:
-                static_cast<const RadomeDeviceData&>(data).WriteTo( destination );
+                static_cast<const RadomeDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisDevice:
-                static_cast<const AisDeviceData&>(data).WriteTo( destination );
+                static_cast<const AisDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarDevice:
-                static_cast<const RadarDeviceData&>(data).WriteTo( destination );
+                static_cast<const RadarDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationDevice:
-                static_cast<const WeatherStationDeviceData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationDeviceObject&>(data).WriteTo( destination );
                 break;
             case Kind::Facility:
-                static_cast<const FacilityData&>(data).WriteTo( destination );
+                static_cast<const FacilityObject&>(data).WriteTo( destination );
                 break;
             case Kind::Aircraft:
-                static_cast<const AircraftData&>(data).WriteTo( destination );
+                static_cast<const AircraftObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisAidToNavigation:
-                static_cast<const AisAidToNavigationData&>(data).WriteTo( destination );
+                static_cast<const AisAidToNavigationObject&>(data).WriteTo( destination );
                 break;
             case Kind::Vehicle:
-                static_cast<const VehicleData&>(data).WriteTo( destination );
+                static_cast<const VehicleObject&>(data).WriteTo( destination );
                 break;
             case Kind::Vessel:
-                static_cast<const VesselData&>(data).WriteTo( destination );
+                static_cast<const VesselObject&>(data).WriteTo( destination );
                 break;
             case Kind::ItemIdentityLink:
-                static_cast<const ItemIdentityLinkData&>(data).WriteTo( destination );
+                static_cast<const ItemIdentityLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::ItemParentChildLink:
-                static_cast<const ItemParentChildLinkData&>(data).WriteTo( destination );
+                static_cast<const ItemParentChildLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDeviceCommand:
-                static_cast<const LineInputDeviceCommandData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDeviceCommandReply:
-                static_cast<const LineInputDeviceCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputDeviceConfiguration:
-                static_cast<const LineInputDeviceConfigurationData&>(data).WriteTo( destination );
+                static_cast<const LineInputDeviceConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputMessageRouting:
-                static_cast<const LineInputMessageRoutingData&>(data).WriteTo( destination );
+                static_cast<const LineInputMessageRoutingObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputMessageRoutingDestination:
-                static_cast<const LineInputMessageRoutingDestinationData&>(data).WriteTo( destination );
+                static_cast<const LineInputMessageRoutingDestinationObject&>(data).WriteTo( destination );
                 break;
             case Kind::LineInputWhiteListEntry:
-                static_cast<const LineInputWhiteListEntryData&>(data).WriteTo( destination );
+                static_cast<const LineInputWhiteListEntryObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogApplication:
-                static_cast<const LogApplicationData&>(data).WriteTo( destination );
+                static_cast<const LogApplicationObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogApplicationConfiguration:
-                static_cast<const LogApplicationConfigurationData&>(data).WriteTo( destination );
+                static_cast<const LogApplicationConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogHost:
-                static_cast<const LogHostData&>(data).WriteTo( destination );
+                static_cast<const LogHostObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogHostConfiguration:
-                static_cast<const LogHostConfigurationData&>(data).WriteTo( destination );
+                static_cast<const LogHostConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogLocation:
-                static_cast<const LogLocationData&>(data).WriteTo( destination );
+                static_cast<const LogLocationObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogProcess:
-                static_cast<const LogProcessData&>(data).WriteTo( destination );
+                static_cast<const LogProcessObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogRecord:
-                static_cast<const LogRecordData&>(data).WriteTo( destination );
+                static_cast<const LogRecordObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogThread:
-                static_cast<const LogThreadData&>(data).WriteTo( destination );
+                static_cast<const LogThreadObject&>(data).WriteTo( destination );
                 break;
             case Kind::LogTraceEntry:
-                static_cast<const LogTraceEntryData&>(data).WriteTo( destination );
+                static_cast<const LogTraceEntryObject&>(data).WriteTo( destination );
                 break;
             case Kind::MapElement:
-                static_cast<const MapElementData&>(data).WriteTo( destination );
+                static_cast<const MapElementObject&>(data).WriteTo( destination );
                 break;
             case Kind::MapInfo:
-                static_cast<const MapInfoData&>(data).WriteTo( destination );
+                static_cast<const MapInfoObject&>(data).WriteTo( destination );
                 break;
             case Kind::MapServiceOptions:
-                static_cast<const MapServiceOptionsData&>(data).WriteTo( destination );
+                static_cast<const MapServiceOptionsObject&>(data).WriteTo( destination );
                 break;
             case Kind::MaritimeIdentificationDigits:
-                static_cast<const MaritimeIdentificationDigitsData&>(data).WriteTo( destination );
+                static_cast<const MaritimeIdentificationDigitsObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySession:
-                static_cast<const MediaProxySessionData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySessionFile:
-                static_cast<const MediaProxySessionFileData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionFileObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySessionOptions:
-                static_cast<const MediaProxySessionOptionsData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionOptionsObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaService:
-                static_cast<const MediaServiceData&>(data).WriteTo( destination );
+                static_cast<const MediaServiceObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaServiceOptions:
-                static_cast<const MediaServiceOptionsData&>(data).WriteTo( destination );
+                static_cast<const MediaServiceOptionsObject&>(data).WriteTo( destination );
                 break;
             case Kind::ElementType:
-                static_cast<const ElementTypeData&>(data).WriteTo( destination );
+                static_cast<const ElementTypeObject&>(data).WriteTo( destination );
                 break;
             case Kind::Namespace:
-                static_cast<const NamespaceData&>(data).WriteTo( destination );
+                static_cast<const NamespaceObject&>(data).WriteTo( destination );
                 break;
             case Kind::OilSpill:
-                static_cast<const OilSpillData&>(data).WriteTo( destination );
+                static_cast<const OilSpillObject&>(data).WriteTo( destination );
                 break;
             case Kind::OilSpillDetectorCommand:
-                static_cast<const OilSpillDetectorCommandData&>(data).WriteTo( destination );
+                static_cast<const OilSpillDetectorCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::OilSpillDetectorCommandReply:
-                static_cast<const OilSpillDetectorCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const OilSpillDetectorCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::OilSpillDetectorConfiguration:
-                static_cast<const OilSpillDetectorConfigurationData&>(data).WriteTo( destination );
+                static_cast<const OilSpillDetectorConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::Position2DTimeseriesValue:
-                static_cast<const Position2DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Position2DTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::Position3DTimeseriesValue:
-                static_cast<const Position3DTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const Position3DTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::ProcessTrackValueResult:
-                static_cast<const ProcessTrackValueResultData&>(data).WriteTo( destination );
+                static_cast<const ProcessTrackValueResultObject&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryProperty:
-                static_cast<const BinaryPropertyData&>(data).WriteTo( destination );
+                static_cast<const BinaryPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanProperty:
-                static_cast<const BooleanPropertyData&>(data).WriteTo( destination );
+                static_cast<const BooleanPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::ByteProperty:
-                static_cast<const BytePropertyData&>(data).WriteTo( destination );
+                static_cast<const BytePropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeProperty:
-                static_cast<const DateTimePropertyData&>(data).WriteTo( destination );
+                static_cast<const DateTimePropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleProperty:
-                static_cast<const DoublePropertyData&>(data).WriteTo( destination );
+                static_cast<const DoublePropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::GuidProperty:
-                static_cast<const GuidPropertyData&>(data).WriteTo( destination );
+                static_cast<const GuidPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int16Property:
-                static_cast<const Int16PropertyData&>(data).WriteTo( destination );
+                static_cast<const Int16PropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int32Property:
-                static_cast<const Int32PropertyData&>(data).WriteTo( destination );
+                static_cast<const Int32PropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int64Property:
-                static_cast<const Int64PropertyData&>(data).WriteTo( destination );
+                static_cast<const Int64PropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceProperty:
-                static_cast<const ReferencePropertyData&>(data).WriteTo( destination );
+                static_cast<const ReferencePropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::SByteProperty:
-                static_cast<const SBytePropertyData&>(data).WriteTo( destination );
+                static_cast<const SBytePropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::SingleProperty:
-                static_cast<const SinglePropertyData&>(data).WriteTo( destination );
+                static_cast<const SinglePropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::StringProperty:
-                static_cast<const StringPropertyData&>(data).WriteTo( destination );
+                static_cast<const StringPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseriesProperty:
-                static_cast<const BinaryTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseriesProperty:
-                static_cast<const BooleanTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseriesProperty:
-                static_cast<const ByteTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseriesProperty:
-                static_cast<const DateTimeTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseriesProperty:
-                static_cast<const DoubleTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseriesProperty:
-                static_cast<const GuidTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int16TimeseriesProperty:
-                static_cast<const Int16TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int32TimeseriesProperty:
-                static_cast<const Int32TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int64TimeseriesProperty:
-                static_cast<const Int64TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseriesProperty:
-                static_cast<const ReferenceTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseriesProperty:
-                static_cast<const SByteTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseriesProperty:
-                static_cast<const SingleTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseriesProperty:
-                static_cast<const StringTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseriesProperty:
-                static_cast<const TimeSpanTimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16TimeseriesProperty:
-                static_cast<const UInt16TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32TimeseriesProperty:
-                static_cast<const UInt32TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64TimeseriesProperty:
-                static_cast<const UInt64TimeseriesPropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanProperty:
-                static_cast<const TimeSpanPropertyData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanPropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16Property:
-                static_cast<const UInt16PropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt16PropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32Property:
-                static_cast<const UInt32PropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt32PropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64Property:
-                static_cast<const UInt64PropertyData&>(data).WriteTo( destination );
+                static_cast<const UInt64PropertyObject&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryPropertyDefinition:
-                static_cast<const BinaryPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BinaryPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanPropertyDefinition:
-                static_cast<const BooleanPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BooleanPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::BytePropertyDefinition:
-                static_cast<const BytePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BytePropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimePropertyDefinition:
-                static_cast<const DateTimePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DateTimePropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::DoublePropertyDefinition:
-                static_cast<const DoublePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DoublePropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::GuidPropertyDefinition:
-                static_cast<const GuidPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const GuidPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int16PropertyDefinition:
-                static_cast<const Int16PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int16PropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int32PropertyDefinition:
-                static_cast<const Int32PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int32PropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int64PropertyDefinition:
-                static_cast<const Int64PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int64PropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::ReferencePropertyDefinition:
-                static_cast<const ReferencePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const ReferencePropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::SBytePropertyDefinition:
-                static_cast<const SBytePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SBytePropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::SinglePropertyDefinition:
-                static_cast<const SinglePropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SinglePropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::StringPropertyDefinition:
-                static_cast<const StringPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const StringPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseriesPropertyDefinition:
-                static_cast<const BinaryTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseriesPropertyDefinition:
-                static_cast<const BooleanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseriesPropertyDefinition:
-                static_cast<const ByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseriesPropertyDefinition:
-                static_cast<const DateTimeTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseriesPropertyDefinition:
-                static_cast<const DoubleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseriesPropertyDefinition:
-                static_cast<const GuidTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int16TimeseriesPropertyDefinition:
-                static_cast<const Int16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int32TimeseriesPropertyDefinition:
-                static_cast<const Int32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int64TimeseriesPropertyDefinition:
-                static_cast<const Int64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseriesPropertyDefinition:
-                static_cast<const ReferenceTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseriesPropertyDefinition:
-                static_cast<const SByteTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseriesPropertyDefinition:
-                static_cast<const SingleTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseriesPropertyDefinition:
-                static_cast<const StringTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseriesPropertyDefinition:
-                static_cast<const TimeSpanTimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16TimeseriesPropertyDefinition:
-                static_cast<const UInt16TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32TimeseriesPropertyDefinition:
-                static_cast<const UInt32TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64TimeseriesPropertyDefinition:
-                static_cast<const UInt64TimeseriesPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanPropertyDefinition:
-                static_cast<const TimeSpanPropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanPropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16PropertyDefinition:
-                static_cast<const UInt16PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt16PropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32PropertyDefinition:
-                static_cast<const UInt32PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt32PropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64PropertyDefinition:
-                static_cast<const UInt64PropertyDefinitionData&>(data).WriteTo( destination );
+                static_cast<const UInt64PropertyDefinitionObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarAlarmStatus:
-                static_cast<const RadarAlarmStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarAlarmStatusObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommand:
-                static_cast<const RadarCommandData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommandGetStatus:
-                static_cast<const RadarCommandGetStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandGetStatusObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommandReply:
-                static_cast<const RadarCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarCommandReplyGetStatus:
-                static_cast<const RadarCommandReplyGetStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarCommandReplyGetStatusObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarConfiguration:
-                static_cast<const RadarConfigurationData&>(data).WriteTo( destination );
+                static_cast<const RadarConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarImage:
-                static_cast<const RadarImageData&>(data).WriteTo( destination );
+                static_cast<const RadarImageObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarRawTrackTable:
-                static_cast<const RadarRawTrackTableData&>(data).WriteTo( destination );
+                static_cast<const RadarRawTrackTableObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarStatus:
-                static_cast<const RadarStatusData&>(data).WriteTo( destination );
+                static_cast<const RadarStatusObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadioCommand:
-                static_cast<const RadioCommandData&>(data).WriteTo( destination );
+                static_cast<const RadioCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadioCommandReply:
-                static_cast<const RadioCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const RadioCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadioConfiguration:
-                static_cast<const RadioConfigurationData&>(data).WriteTo( destination );
+                static_cast<const RadioConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeCommand:
-                static_cast<const RadomeCommandData&>(data).WriteTo( destination );
+                static_cast<const RadomeCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeCommandReply:
-                static_cast<const RadomeCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const RadomeCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeConfiguration:
-                static_cast<const RadomeConfigurationData&>(data).WriteTo( destination );
+                static_cast<const RadomeConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseriesValue:
-                static_cast<const ReferenceTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseriesValue:
-                static_cast<const SByteTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityDomain:
-                static_cast<const SecurityDomainData&>(data).WriteTo( destination );
+                static_cast<const SecurityDomainObject&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityLogin:
-                static_cast<const SecurityLoginData&>(data).WriteTo( destination );
+                static_cast<const SecurityLoginObject&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityRole:
-                static_cast<const SecurityRoleData&>(data).WriteTo( destination );
+                static_cast<const SecurityRoleObject&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityIdentifierRoleLink:
-                static_cast<const SecurityIdentifierRoleLinkData&>(data).WriteTo( destination );
+                static_cast<const SecurityIdentifierRoleLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityLoginSession:
-                static_cast<const SecurityLoginSessionData&>(data).WriteTo( destination );
+                static_cast<const SecurityLoginSessionObject&>(data).WriteTo( destination );
                 break;
             case Kind::SecurityPermission:
-                static_cast<const SecurityPermissionData&>(data).WriteTo( destination );
+                static_cast<const SecurityPermissionObject&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseriesValue:
-                static_cast<const SingleTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseriesValue:
-                static_cast<const StringTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::BinaryTimeseries:
-                static_cast<const BinaryTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const BinaryTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::BooleanTimeseries:
-                static_cast<const BooleanTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const BooleanTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisAidToNavigationOffPositionTimeseries:
-                static_cast<const AisAidToNavigationOffPositionTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const AisAidToNavigationOffPositionTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::DeviceEnabledTimeseries:
-                static_cast<const DeviceEnabledTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const DeviceEnabledTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarAutomaticSensitivityTimeControlTimeseries:
-                static_cast<const RadarAutomaticSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarAutomaticSensitivityTimeControlTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarBlankSector1Timeseries:
-                static_cast<const RadarBlankSector1TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarBlankSector1TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarBlankSector2Timeseries:
-                static_cast<const RadarBlankSector2TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarBlankSector2TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarEnableAutomaticFrequencyControlTimeseries:
-                static_cast<const RadarEnableAutomaticFrequencyControlTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarEnableAutomaticFrequencyControlTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarEnableFastTimeConstantTimeseries:
-                static_cast<const RadarEnableFastTimeConstantTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarEnableFastTimeConstantTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarEnableSensitivityTimeControlTimeseries:
-                static_cast<const RadarEnableSensitivityTimeControlTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarEnableSensitivityTimeControlTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarPowerOnTimeseries:
-                static_cast<const RadarPowerOnTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarPowerOnTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSaveSettingsTimeseries:
-                static_cast<const RadarSaveSettingsTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSaveSettingsTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarTrackingTimeseries:
-                static_cast<const RadarTrackingTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarTrackingTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaProxySessionEnabledTimeseries:
-                static_cast<const MediaProxySessionEnabledTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const MediaProxySessionEnabledTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::MediaServiceEnabledTimeseries:
-                static_cast<const MediaServiceEnabledTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const MediaServiceEnabledTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::ByteTimeseries:
-                static_cast<const ByteTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ByteTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::DateTimeTimeseries:
-                static_cast<const DateTimeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const DateTimeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::DoubleTimeseries:
-                static_cast<const DoubleTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const DoubleTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSAltitudeTimeseries:
-                static_cast<const GNSSAltitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GNSSAltitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSLatitudeTimeseries:
-                static_cast<const GNSSLatitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GNSSLatitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GNSSLongitudeTimeseries:
-                static_cast<const GNSSLongitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GNSSLongitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroCourseTimeseries:
-                static_cast<const GyroCourseTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroCourseTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroHeadingMagneticNorthTimeseries:
-                static_cast<const GyroHeadingMagneticNorthTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroHeadingMagneticNorthTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroHeadingTrueNorthTimeseries:
-                static_cast<const GyroHeadingTrueNorthTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroHeadingTrueNorthTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroPitchTimeseries:
-                static_cast<const GyroPitchTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroPitchTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroRateOfTurnTimeseries:
-                static_cast<const GyroRateOfTurnTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroRateOfTurnTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroRollTimeseries:
-                static_cast<const GyroRollTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroRollTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GyroSpeedTimeseries:
-                static_cast<const GyroSpeedTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GyroSpeedTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarLatitudeTimeseries:
-                static_cast<const RadarLatitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarLatitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarLongitudeTimeseries:
-                static_cast<const RadarLongitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarLongitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeDewPointTimeseries:
-                static_cast<const RadomeDewPointTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomeDewPointTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomePressureTimeseries:
-                static_cast<const RadomePressureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomePressureTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeTemperatureTimeseries:
-                static_cast<const RadomeTemperatureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomeTemperatureTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::VesselDraughtTimeseries:
-                static_cast<const VesselDraughtTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const VesselDraughtTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::ViewLatitudeTimeseries:
-                static_cast<const ViewLatitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ViewLatitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::ViewLongitudeTimeseries:
-                static_cast<const ViewLongitudeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ViewLongitudeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::ViewZoomLevelTimeseries:
-                static_cast<const ViewZoomLevelTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ViewZoomLevelTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationAbsoluteHumidityTimeseries:
-                static_cast<const WeatherStationAbsoluteHumidityTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationAbsoluteHumidityTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationAirTemperatureTimeseries:
-                static_cast<const WeatherStationAirTemperatureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationAirTemperatureTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationBarometricPressureTimeseries:
-                static_cast<const WeatherStationBarometricPressureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationBarometricPressureTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationDewPointTimeseries:
-                static_cast<const WeatherStationDewPointTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationDewPointTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationRelativeHumidityTimeseries:
-                static_cast<const WeatherStationRelativeHumidityTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationRelativeHumidityTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationWaterTemperatureTimeseries:
-                static_cast<const WeatherStationWaterTemperatureTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationWaterTemperatureTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationWindDirectionTimeseries:
-                static_cast<const WeatherStationWindDirectionTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationWindDirectionTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationWindSpeedTimeseries:
-                static_cast<const WeatherStationWindSpeedTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationWindSpeedTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition2DTimeseries:
-                static_cast<const GeoPosition2DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition2DTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::AisAidToNavigationPositionTimeseries:
-                static_cast<const AisAidToNavigationPositionTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const AisAidToNavigationPositionTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GeoPosition3DTimeseries:
-                static_cast<const GeoPosition3DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GeoPosition3DTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::GuidTimeseries:
-                static_cast<const GuidTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const GuidTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int16Timeseries:
-                static_cast<const Int16TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Int16TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int32Timeseries:
-                static_cast<const Int32TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Int32TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarAzimuthOffsetTimeseries:
-                static_cast<const RadarAzimuthOffsetTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarAzimuthOffsetTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarFastTimeConstantLevelTimeseries:
-                static_cast<const RadarFastTimeConstantLevelTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarFastTimeConstantLevelTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarFastTimeConstantModeTimeseries:
-                static_cast<const RadarFastTimeConstantModeTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarFastTimeConstantModeTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarPulseTimeseries:
-                static_cast<const RadarPulseTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarPulseTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector1EndTimeseries:
-                static_cast<const RadarSector1EndTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector1EndTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector1StartTimeseries:
-                static_cast<const RadarSector1StartTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector1StartTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector2EndTimeseries:
-                static_cast<const RadarSector2EndTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector2EndTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSector2StartTimeseries:
-                static_cast<const RadarSector2StartTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSector2StartTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarSensitivityTimeControlLevelTimeseries:
-                static_cast<const RadarSensitivityTimeControlLevelTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarSensitivityTimeControlLevelTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadarTuningTimeseries:
-                static_cast<const RadarTuningTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadarTuningTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::VesselPersonsOnBoardTimeseries:
-                static_cast<const VesselPersonsOnBoardTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const VesselPersonsOnBoardTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::Int64Timeseries:
-                static_cast<const Int64TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Int64TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::Position2DTimeseries:
-                static_cast<const Position2DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Position2DTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::Position3DTimeseries:
-                static_cast<const Position3DTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const Position3DTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::ReferenceTimeseries:
-                static_cast<const ReferenceTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const ReferenceTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::SByteTimeseries:
-                static_cast<const SByteTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const SByteTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::SingleTimeseries:
-                static_cast<const SingleTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const SingleTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::StringTimeseries:
-                static_cast<const StringTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const StringTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseries:
-                static_cast<const TimeSpanTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16Timeseries:
-                static_cast<const UInt16TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32Timeseries:
-                static_cast<const UInt32TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::RadomeStatusTimeseries:
-                static_cast<const RadomeStatusTimeseriesData&>(data).WriteTo( destination );
+                static_cast<const RadomeStatusTimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64Timeseries:
-                static_cast<const UInt64TimeseriesData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeseriesCatalog:
-                static_cast<const TimeseriesCatalogData&>(data).WriteTo( destination );
+                static_cast<const TimeseriesCatalogObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeseriesInfo:
-                static_cast<const TimeseriesInfoData&>(data).WriteTo( destination );
+                static_cast<const TimeseriesInfoObject&>(data).WriteTo( destination );
                 break;
             case Kind::TimeSpanTimeseriesValue:
-                static_cast<const TimeSpanTimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const TimeSpanTimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackableItemTrackLink:
-                static_cast<const TrackableItemTrackLinkData&>(data).WriteTo( destination );
+                static_cast<const TrackableItemTrackLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::Track:
-                static_cast<const TrackData&>(data).WriteTo( destination );
+                static_cast<const TrackObject&>(data).WriteTo( destination );
                 break;
             case Kind::Track3D:
-                static_cast<const Track3DData&>(data).WriteTo( destination );
+                static_cast<const Track3DObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackerFilterParameters:
-                static_cast<const TrackerFilterParametersData&>(data).WriteTo( destination );
+                static_cast<const TrackerFilterParametersObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackerFilterParametersConfiguration:
-                static_cast<const TrackerFilterParametersConfigurationData&>(data).WriteTo( destination );
+                static_cast<const TrackerFilterParametersConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackInfo:
-                static_cast<const TrackInfoData&>(data).WriteTo( destination );
+                static_cast<const TrackInfoObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackingServiceOptions:
-                static_cast<const TrackingServiceOptionsData&>(data).WriteTo( destination );
+                static_cast<const TrackingServiceOptionsObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackLink:
-                static_cast<const TrackLinkData&>(data).WriteTo( destination );
+                static_cast<const TrackLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackValue:
-                static_cast<const TrackValueData&>(data).WriteTo( destination );
+                static_cast<const TrackValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::TrackValue3D:
-                static_cast<const TrackValue3DData&>(data).WriteTo( destination );
+                static_cast<const TrackValue3DObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt16TimeseriesValue:
-                static_cast<const UInt16TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const UInt16TimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt32TimeseriesValue:
-                static_cast<const UInt32TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const UInt32TimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::UInt64TimeseriesValue:
-                static_cast<const UInt64TimeseriesValueData&>(data).WriteTo( destination );
+                static_cast<const UInt64TimeseriesValueObject&>(data).WriteTo( destination );
                 break;
             case Kind::VehicleType:
-                static_cast<const VehicleTypeData&>(data).WriteTo( destination );
+                static_cast<const VehicleTypeObject&>(data).WriteTo( destination );
                 break;
             case Kind::VesselType:
-                static_cast<const VesselTypeData&>(data).WriteTo( destination );
+                static_cast<const VesselTypeObject&>(data).WriteTo( destination );
                 break;
             case Kind::View:
-                static_cast<const ViewData&>(data).WriteTo( destination );
+                static_cast<const ViewObject&>(data).WriteTo( destination );
                 break;
             case Kind::ViewCameraLink:
-                static_cast<const ViewCameraLinkData&>(data).WriteTo( destination );
+                static_cast<const ViewCameraLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::ViewTrackerLink:
-                static_cast<const ViewTrackerLinkData&>(data).WriteTo( destination );
+                static_cast<const ViewTrackerLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationCommand:
-                static_cast<const WeatherStationCommandData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationCommandObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationCommandReply:
-                static_cast<const WeatherStationCommandReplyData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationCommandReplyObject&>(data).WriteTo( destination );
                 break;
             case Kind::WeatherStationConfiguration:
-                static_cast<const WeatherStationConfigurationData&>(data).WriteTo( destination );
+                static_cast<const WeatherStationConfigurationObject&>(data).WriteTo( destination );
                 break;
             case Kind::CircularZone:
-                static_cast<const CircularZoneData&>(data).WriteTo( destination );
+                static_cast<const CircularZoneObject&>(data).WriteTo( destination );
                 break;
             case Kind::PolygonZone:
-                static_cast<const PolygonZoneData&>(data).WriteTo( destination );
+                static_cast<const PolygonZoneObject&>(data).WriteTo( destination );
                 break;
             case Kind::ZoneExceptions:
-                static_cast<const ZoneExceptionsData&>(data).WriteTo( destination );
+                static_cast<const ZoneExceptionsObject&>(data).WriteTo( destination );
                 break;
             case Kind::ZoneExceptionsVesselLink:
-                static_cast<const ZoneExceptionsVesselLinkData&>(data).WriteTo( destination );
+                static_cast<const ZoneExceptionsVesselLinkObject&>(data).WriteTo( destination );
                 break;
             case Kind::ZoneTrackAlarm:
-                static_cast<const ZoneTrackAlarmData&>(data).WriteTo( destination );
+                static_cast<const ZoneTrackAlarmObject&>(data).WriteTo( destination );
                 break;
         }
     }

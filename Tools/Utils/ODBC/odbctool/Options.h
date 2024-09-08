@@ -40,6 +40,8 @@ namespace Harlinn::ODBC::Tool
             return IO::Path::Combine( owner.OutputDirectory( ), outputDirectory);
         }
 
+
+
         template<typename OwnerT>
         WideString GetOutputDirectory( const OwnerT& owner )
         {
@@ -422,6 +424,7 @@ namespace Harlinn::ODBC::Tool
             : Base( owner, L"DataTypes.h" )
         {
         }
+
     };
 
     class CppDataTypesSourceOptions : public OptionsFile<CppDataOptions>
@@ -444,7 +447,7 @@ namespace Harlinn::ODBC::Tool
     public:
         using Base = OptionsContainer<CppOptions>;
         CppDataOptions( const CppOptions& owner )
-            : Base( owner, L"Data" ), enums_(*this), dataTypes_(*this), dataTypesSource_( *this )
+            : Base( owner, L"Types" ), enums_(*this), dataTypes_(*this), dataTypesSource_( *this )
         { }
 
         const CppEnumsOptions& Enums( ) const
@@ -530,7 +533,7 @@ namespace Harlinn::ODBC::Tool
     public:
         using Base = OptionsContainer<CppTestOptions>;
         CppDataTestOptions( const CppTestOptions& owner )
-            : Base( owner, L"Data" ), dataTypes_( *this )
+            : Base( owner, L"Types" ), dataTypes_( *this )
         {
         }
 
@@ -545,7 +548,7 @@ namespace Harlinn::ODBC::Tool
     public:
         using Base = OptionsContainer<CppTestOptions>;
         CppDatabaseTestOptions( const CppTestOptions& owner )
-            : Base( owner, L"Data" )
+            : Base( owner, L"Database" )
         {
         }
 
@@ -696,7 +699,7 @@ namespace Harlinn::ODBC::Tool
         using Base = OptionsContainer<CSharpOptions>;
 
         CSharpDataOptions(const CSharpOptions& owner )
-            : Base( owner, L"Data" ), enums_( *this ), dataTypes_( *this )
+            : Base( owner, L"Types" ), enums_( *this ), dataTypes_( *this )
         { }
 
         const CSharpEnumsOptions& Enums( ) const

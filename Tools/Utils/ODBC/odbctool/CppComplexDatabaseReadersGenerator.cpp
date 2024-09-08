@@ -94,7 +94,7 @@ namespace Harlinn::ODBC::Tool
             }
             if ( member->PrimaryKey( ) )
             {
-                WriteLine( L"        Data::Kind kind_ = Data::Kind::Unknown;"  );
+                WriteLine( L"        Types::Kind kind_ = Types::Kind::Unknown;"  );
             }
         }
 
@@ -298,7 +298,7 @@ namespace Harlinn::ODBC::Tool
                     auto derivedPersistentMembers = derivedClass->DerivedPersistentMembersUntil( classInfo );
                     if ( derivedPersistentMembers.size( ) )
                     {
-                        WriteLine( L"                case Data::Kind::{}:", derivedClass->Name( ) );
+                        WriteLine( L"                case Types::Kind::{}:", derivedClass->Name( ) );
                         WriteLine( L"                {" );
 
                         for ( const auto& member : derivedPersistentMembers )

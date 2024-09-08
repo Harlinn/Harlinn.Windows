@@ -27,7 +27,7 @@ namespace Harlinn::ODBC::Tool
         auto cppOptionsNamespace = cppOptions.Namespace( L"::" );
         auto cppDataTypesOptionsNamespace = cppDataTypesOptions.Namespace( L"::" );
         WriteLine( L"#include <HCCIO.h>" );
-        WriteLine( L"#include \"Data/DataTypes.h\"" );
+        WriteLine( L"#include \"Types/DataTypes.h\"" );
         WriteLine( );
         WriteLine( L"#define BOOST_TEST_DYN_LINK" );
         WriteLine( L"#include <boost/test/unit_test.hpp>" );

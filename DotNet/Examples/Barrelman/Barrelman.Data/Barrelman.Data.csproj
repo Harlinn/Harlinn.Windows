@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\Harlinn.Common.Core.Net\Harlinn.Common.Core.Net.csproj" />
+  </ItemGroup>
+
 </Project>

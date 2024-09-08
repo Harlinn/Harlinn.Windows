@@ -1,7 +1,7 @@
 
 using System;
 
-namespace Barrelman.Data.Data
+namespace Barrelman.Data.Types
 {
 
     public enum Kind : int

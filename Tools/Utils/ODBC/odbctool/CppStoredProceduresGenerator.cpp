@@ -33,7 +33,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( "#include <HODBC.h>" );
         WriteLine( "#include <HCCData.h>" );
-        WriteLine( "#include \"Data/DataTypes.h\"" );
+        WriteLine( "#include \"Types/DataTypes.h\"" );
         WriteLine( );
 
         WriteLine( );

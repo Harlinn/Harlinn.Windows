@@ -108,11 +108,11 @@ namespace Harlinn::ODBC::Tool
                 {
                     if ( member.Nullable( ) )
                     {
-                        result = Format( L"DBEnum<Data::{}>", enumType->Name( ) );
+                        result = Format( L"DBEnum<Types::{}>", enumType->Name( ) );
                     }
                     else
                     {
-                        result = Format( L"Data::{}", enumType->Name( ) );
+                        result = Format( L"Types::{}", enumType->Name( ) );
                     }
                 }
             }
@@ -254,7 +254,7 @@ namespace Harlinn::ODBC::Tool
                     auto defaultValue = enumType->Default( );
                     if ( defaultValue )
                     {
-                        result = Format( L"Data::{}::{}", enumName, defaultValue->Name() );
+                        result = Format( L"Types::{}::{}", enumName, defaultValue->Name() );
                     }
                 }
             }
@@ -724,7 +724,7 @@ namespace Harlinn::ODBC::Tool
                 auto enumType = enumMemberInfo.EnumType( );
                 if ( enumType )
                 {
-                    result = Format( L"DBEnum<Data::{}>", enumType->Name( ) );
+                    result = Format( L"DBEnum<Types::{}>", enumType->Name( ) );
                 }
             }
             break;
@@ -922,7 +922,7 @@ namespace Harlinn::ODBC::Tool
 
     WideString CppHelper::GetDataType( const ClassInfo& classInfo )
     {
-        return Format( L"{}Data", classInfo.Name( ).FirstToUpper( ) );
+        return Format( L"{}Object", classInfo.Name( ).FirstToUpper( ) );
     }
 
     WideString CppHelper::GetSimpleTestValue( const ClassInfo& classInfo, const MemberInfo& member )

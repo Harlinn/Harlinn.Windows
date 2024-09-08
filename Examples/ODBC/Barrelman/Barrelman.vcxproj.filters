@@ -19,9 +19,6 @@
     <Filter Include="Generated\Cpp">
       <UniqueIdentifier>{da67578d-57f8-44e4-8885-a6283b1b0d89}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated\Cpp\Data">
-      <UniqueIdentifier>{ff1b8b3b-3089-41f1-b2fe-7e8aa4129fa1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Generated\Database">
       <UniqueIdentifier>{93000314-a070-4c57-b2eb-edad5246a1cb}</UniqueIdentifier>
     </Filter>
@@ -31,6 +28,9 @@
     <Filter Include="Generated\Cpp\Database">
       <UniqueIdentifier>{406d8bb0-51f2-4ae0-acf3-e739ed0f9ac1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated\Cpp\Types">
+      <UniqueIdentifier>{c3c2069b-6019-45dc-a2d5-979e65102444}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -38,12 +38,6 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Generated\Cpp\Data\DataTypes.h">
-      <Filter>Generated\Cpp\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="Generated\Cpp\Data\Enums.h">
-      <Filter>Generated\Cpp\Data</Filter>
     </ClInclude>
     <ClInclude Include="Generated\Cpp\Database\DatabaseReaders.h">
       <Filter>Generated\Cpp\Database</Filter>
@@ -57,6 +51,12 @@
     <ClInclude Include="Generated\Cpp\Database\StoredProcedures.h">
       <Filter>Generated\Cpp\Database</Filter>
     </ClInclude>
+    <ClInclude Include="Generated\Cpp\Types\DataTypes.h">
+      <Filter>Generated\Cpp\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\Types\Enums.h">
+      <Filter>Generated\Cpp\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -64,9 +64,6 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Generated\Cpp\Data\DataTypes.cpp">
-      <Filter>Generated\Cpp\Data</Filter>
     </ClCompile>
     <ClCompile Include="Generated\Cpp\Database\DatabaseReaders.cpp">
       <Filter>Generated\Cpp\Database</Filter>
@@ -76,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="Generated\Cpp\Database\StoredProcedures.cpp">
       <Filter>Generated\Cpp\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Types\DataTypes.cpp">
+      <Filter>Generated\Cpp\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

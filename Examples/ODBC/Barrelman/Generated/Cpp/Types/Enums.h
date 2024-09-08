@@ -1,11 +1,11 @@
 #pragma once
-#ifndef DATA_ENUMS_H_
-#define DATA_ENUMS_H_
+#ifndef TYPES_ENUMS_H_
+#define TYPES_ENUMS_H_
 
 #include <HCCDef.h>
 #include "BarrelmanExport.h"
 
-namespace Barrelman::Data
+namespace Barrelman::Types
 {
     using namespace Harlinn::Common::Core;
 

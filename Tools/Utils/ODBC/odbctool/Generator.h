@@ -686,11 +686,13 @@ namespace Harlinn::ODBC::Tool
 
         inline CSharpDataTypesGenerator( const CSharpDataGenerator& owner );
 
-        void Run( )
-        {
-            Flush( );
-        }
-
+        void Run( );
+    private:
+        void CreateDataType( const ClassInfo& classInfo );
+        void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateReadDataFrom( );
+        void CreateWriteDataTo( );
     };
 
     
