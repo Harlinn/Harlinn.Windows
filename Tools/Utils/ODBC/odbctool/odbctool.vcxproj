@@ -171,6 +171,7 @@
     <ClCompile Include="CSharpDataTypesGenerator.cpp" />
     <ClCompile Include="CSharpEnumsGenerator.cpp" />
     <ClCompile Include="CSharpHelper.cpp" />
+    <ClCompile Include="CSharpStoredProceduresGenerator.cpp" />
     <ClCompile Include="EnumMemberInfo.cpp" />
     <ClCompile Include="IndexInfo.cpp" />
     <ClCompile Include="MemberInfo.cpp" />

@@ -55,6 +55,29 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AircraftType );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AircraftTypeObject GetDataObject( )
+        {
+            return new AircraftTypeObject( ObjectState.Stored, Id, RowVersion, Name );
+        }
+
     }
 
     public class SimpleAisDeviceCommandDataReader : DataReaderWrapper
@@ -134,6 +157,33 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AisDeviceCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( AisDevice );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AisDeviceCommandObject GetDataObject( )
+        {
+            return new AisDeviceCommandObject( ObjectState.Stored, Id, RowVersion, AisDevice, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleAisDeviceCommandReplyDataReader : DataReaderWrapper
@@ -213,6 +263,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AisDeviceCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( AisDevice );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AisDeviceCommandReplyObject GetDataObject( )
+        {
+            return new AisDeviceCommandReplyObject( ObjectState.Stored, Id, RowVersion, AisDevice, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleAisDeviceConfigurationDataReader : DataReaderWrapper
@@ -427,6 +504,48 @@ namespace Barrelman.Data.Database
                 return GetBoolean( STORERECEIVEDSENTENCES_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AisDeviceConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( AisDevice );
+            destination.Write( Timestamp );
+            destination.Write( Filter );
+            destination.Write( NorthWestLatitude );
+            destination.Write( NorthWestLongitude );
+            destination.Write( SouthEastLatitude );
+            destination.Write( SouthEastLongitude );
+            destination.Write( ComPort );
+            destination.Write( BaudRate );
+            destination.Write( IPAddress );
+            destination.Write( Port );
+            destination.Write( UdpPort );
+            destination.Write( Authenticate );
+            destination.Write( UserName );
+            destination.Write( Password );
+            destination.Write( AuthenticationURL );
+            destination.Write( ConnectionType );
+            destination.Write( SourceUpdateRate );
+            destination.Write( ConfigurationURL );
+            destination.Write( StoreReceivedSentences );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AisDeviceConfigurationObject GetDataObject( )
+        {
+            return new AisDeviceConfigurationObject( ObjectState.Stored, Id, RowVersion, AisDevice, Timestamp, Filter, NorthWestLatitude, NorthWestLongitude, SouthEastLatitude, SouthEastLongitude, ComPort, BaudRate, IPAddress, Port, UdpPort, Authenticate, UserName, Password, AuthenticationURL, ConnectionType, SourceUpdateRate, ConfigurationURL, StoreReceivedSentences );
+        }
+
     }
 
     public class SimpleAisDeviceRawMessageDataReader : DataReaderWrapper
@@ -497,6 +616,32 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AisDeviceRawMessage );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( AisDevice );
+            destination.Write( Timestamp );
+            destination.Write( IsSent );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AisDeviceRawMessageObject GetDataObject( )
+        {
+            return new AisDeviceRawMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, Timestamp, IsSent, Message );
+        }
+
     }
 
     public class SimpleAisDeviceRawSentenceDataReader : DataReaderWrapper
@@ -558,9 +703,34 @@ namespace Barrelman.Data.Database
                 return GetString( SENTENCE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AisDeviceRawSentence );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( AisDevice );
+            destination.Write( Timestamp );
+            destination.Write( Sentence );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AisDeviceRawSentenceObject GetDataObject( )
+        {
+            return new AisDeviceRawSentenceObject( ObjectState.Stored, Id, RowVersion, AisDevice, Timestamp, Sentence );
+        }
+
     }
 
-    public class SimpleAisMessageDataReader : DataReaderWrapper
+    public abstract class SimpleAisMessageDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  am.[Id], \r\n" +
@@ -646,6 +816,30 @@ namespace Barrelman.Data.Database
                 return GetGuid( MMSI_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AisMessage );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( AisDevice );
+            destination.Write( ReceivedTimestamp );
+            destination.Write( MessageSequenceNumber );
+            destination.Write( Repeat );
+            destination.Write( Mmsi );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract AisMessageObject GetDataObject( );
+
     }
 
     public class SimpleAidToNavigationReportMessageDataReader : SimpleAisMessageDataReader
@@ -832,6 +1026,34 @@ namespace Barrelman.Data.Database
                 return GetString( NAMEEXTENSION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( NavigationalAidType );
+            destination.Write( Name );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( DimensionToBow );
+            destination.Write( DimensionToStern );
+            destination.Write( DimensionToPort );
+            destination.Write( DimensionToStarboard );
+            destination.Write( PositionFixType );
+            destination.Write( Timestamp );
+            destination.Write( OffPosition );
+            destination.Write( RegionalReserved );
+            destination.Write( Raim );
+            destination.Write( VirtualAid );
+            destination.Write( Assigned );
+            destination.Write( Spare );
+            destination.Write( NameExtension );
+        }
+
+        public override AidToNavigationReportMessageObject GetDataObject( )
+        {
+            return new AidToNavigationReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationalAidType, Name, PositionAccuracy, Longitude, Latitude, DimensionToBow, DimensionToStern, DimensionToPort, DimensionToStarboard, PositionFixType, Timestamp, OffPosition, RegionalReserved, Raim, VirtualAid, Assigned, Spare, NameExtension );
+        }
+
     }
 
     public class SimpleAisAddressedSafetyRelatedMessageDataReader : SimpleAisMessageDataReader
@@ -901,6 +1123,21 @@ namespace Barrelman.Data.Database
                 return GetString( TEXT_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( SequenceNumber );
+            destination.Write( DestinationMmsi );
+            destination.Write( RetransmitFlag );
+            destination.Write( Spare );
+            destination.Write( Text );
+        }
+
+        public override AisAddressedSafetyRelatedMessageObject GetDataObject( )
+        {
+            return new AisAddressedSafetyRelatedMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, SequenceNumber, DestinationMmsi, RetransmitFlag, Spare, Text );
+        }
+
     }
 
     public class SimpleAisBaseStationReportMessageDataReader : SimpleAisMessageDataReader
@@ -997,6 +1234,24 @@ namespace Barrelman.Data.Database
                 return GetInt32( RADIOSTATUS_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timestamp );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( PositionFixType );
+            destination.Write( Spare );
+            destination.Write( Raim );
+            destination.Write( RadioStatus );
+        }
+
+        public override AisBaseStationReportMessageObject GetDataObject( )
+        {
+            return new AisBaseStationReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Timestamp, PositionAccuracy, Longitude, Latitude, PositionFixType, Spare, Raim, RadioStatus );
+        }
+
     }
 
     public class SimpleAisBinaryAcknowledgeMessageDataReader : SimpleAisMessageDataReader
@@ -1102,6 +1357,25 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( MMSI4_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Spare );
+            destination.Write( SequenceNumber1 );
+            destination.Write( Mmsi1 );
+            destination.Write( SequenceNumber2 );
+            destination.Write( Mmsi2 );
+            destination.Write( SequenceNumber3 );
+            destination.Write( Mmsi3 );
+            destination.Write( SequenceNumber4 );
+            destination.Write( Mmsi4 );
+        }
+
+        public override AisBinaryAcknowledgeMessageObject GetDataObject( )
+        {
+            return new AisBinaryAcknowledgeMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Spare, SequenceNumber1, Mmsi1, SequenceNumber2, Mmsi2, SequenceNumber3, Mmsi3, SequenceNumber4, Mmsi4 );
+        }
+
     }
 
     public class SimpleAisBinaryAddressedMessageDataReader : SimpleAisMessageDataReader
@@ -1189,6 +1463,23 @@ namespace Barrelman.Data.Database
                 return GetString( DATA_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( SequenceNumber );
+            destination.Write( DestinationMmsi );
+            destination.Write( RetransmitFlag );
+            destination.Write( Spare );
+            destination.Write( DesignatedAreaCode );
+            destination.Write( FunctionalId );
+            destination.Write( Data );
+        }
+
+        public override AisBinaryAddressedMessageObject GetDataObject( )
+        {
+            return new AisBinaryAddressedMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, SequenceNumber, DestinationMmsi, RetransmitFlag, Spare, DesignatedAreaCode, FunctionalId, Data );
+        }
+
     }
 
     public class SimpleAisBinaryBroadcastMessageDataReader : SimpleAisMessageDataReader
@@ -1249,6 +1540,20 @@ namespace Barrelman.Data.Database
                 return GetString( DATA_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Spare );
+            destination.Write( DesignatedAreaCode );
+            destination.Write( FunctionalId );
+            destination.Write( Data );
+        }
+
+        public override AisBinaryBroadcastMessageObject GetDataObject( )
+        {
+            return new AisBinaryBroadcastMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Spare, DesignatedAreaCode, FunctionalId, Data );
+        }
+
     }
 
     public class SimpleAisDataLinkManagementMessageDataReader : SimpleAisMessageDataReader
@@ -1426,6 +1731,33 @@ namespace Barrelman.Data.Database
                 return GetNullableInt32( INCREMENT4_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Spare );
+            destination.Write( Offset1 );
+            destination.Write( ReservedSlots1 );
+            destination.Write( Timeout1 );
+            destination.Write( Increment1 );
+            destination.Write( Offset2 );
+            destination.Write( ReservedSlots2 );
+            destination.Write( Timeout2 );
+            destination.Write( Increment2 );
+            destination.Write( Offset3 );
+            destination.Write( ReservedSlots3 );
+            destination.Write( Timeout3 );
+            destination.Write( Increment3 );
+            destination.Write( Offset4 );
+            destination.Write( ReservedSlots4 );
+            destination.Write( Timeout4 );
+            destination.Write( Increment4 );
+        }
+
+        public override AisDataLinkManagementMessageObject GetDataObject( )
+        {
+            return new AisDataLinkManagementMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Spare, Offset1, ReservedSlots1, Timeout1, Increment1, Offset2, ReservedSlots2, Timeout2, Increment2, Offset3, ReservedSlots3, Timeout3, Increment3, Offset4, ReservedSlots4, Timeout4, Increment4 );
+        }
+
     }
 
     public class SimpleAisExtendedClassBCsPositionReportMessageDataReader : SimpleAisMessageDataReader
@@ -1630,6 +1962,36 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Reserved );
+            destination.Write( SpeedOverGround );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( CourseOverGround );
+            destination.Write( TrueHeading );
+            destination.Write( Timestamp );
+            destination.Write( RegionalReserved );
+            destination.Write( Name );
+            destination.Write( ShipType );
+            destination.Write( DimensionToBow );
+            destination.Write( DimensionToStern );
+            destination.Write( DimensionToPort );
+            destination.Write( DimensionToStarboard );
+            destination.Write( PositionFixType );
+            destination.Write( Raim );
+            destination.Write( DataTerminalReady );
+            destination.Write( Assigned );
+            destination.Write( Spare );
+        }
+
+        public override AisExtendedClassBCsPositionReportMessageObject GetDataObject( )
+        {
+            return new AisExtendedClassBCsPositionReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Reserved, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, RegionalReserved, Name, ShipType, DimensionToBow, DimensionToStern, DimensionToPort, DimensionToStarboard, PositionFixType, Raim, DataTerminalReady, Assigned, Spare );
+        }
+
     }
 
     public class SimpleAisInterrogationMessageDataReader : SimpleAisMessageDataReader
@@ -1726,9 +2088,27 @@ namespace Barrelman.Data.Database
                 return GetNullableInt32( SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( InterrogatedMmsi );
+            destination.Write( FirstMessageType );
+            destination.Write( FirstSlotOffset );
+            destination.Write( SecondMessageType );
+            destination.Write( SecondSlotOffset );
+            destination.Write( SecondStationInterrogationMmsi );
+            destination.Write( SecondStationFirstMessageType );
+            destination.Write( SecondStationFirstSlotOffset );
+        }
+
+        public override AisInterrogationMessageObject GetDataObject( )
+        {
+            return new AisInterrogationMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, InterrogatedMmsi, FirstMessageType, FirstSlotOffset, SecondMessageType, SecondSlotOffset, SecondStationInterrogationMmsi, SecondStationFirstMessageType, SecondStationFirstSlotOffset );
+        }
+
     }
 
-    public class SimpleAisPositionReportClassAMessageBaseDataReader : SimpleAisMessageDataReader
+    public abstract class SimpleAisPositionReportClassAMessageBaseDataReader : SimpleAisMessageDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  aprcab.[Id], \r\n" +
@@ -1867,6 +2247,24 @@ namespace Barrelman.Data.Database
                 return GetInt32( RADIOSTATUS_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( NavigationStatus );
+            destination.Write( RateOfTurn );
+            destination.Write( SpeedOverGround );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( CourseOverGround );
+            destination.Write( TrueHeading );
+            destination.Write( Timestamp );
+            destination.Write( ManeuverIndicator );
+            destination.Write( Spare );
+            destination.Write( Raim );
+            destination.Write( RadioStatus );
+        }
+
     }
 
     public class SimpleAisPositionReportClassAAssignedScheduleMessageDataReader : SimpleAisPositionReportClassAMessageBaseDataReader
@@ -1901,6 +2299,16 @@ namespace Barrelman.Data.Database
         public SimpleAisPositionReportClassAAssignedScheduleMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override AisPositionReportClassAAssignedScheduleMessageObject GetDataObject( )
+        {
+            return new AisPositionReportClassAAssignedScheduleMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationStatus, RateOfTurn, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, ManeuverIndicator, Spare, Raim, RadioStatus );
         }
 
     }
@@ -1939,6 +2347,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override AisPositionReportClassAMessageObject GetDataObject( )
+        {
+            return new AisPositionReportClassAMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationStatus, RateOfTurn, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, ManeuverIndicator, Spare, Raim, RadioStatus );
+        }
+
     }
 
     public class SimpleAisPositionReportClassAResponseToInterrogationMessageDataReader : SimpleAisPositionReportClassAMessageBaseDataReader
@@ -1973,6 +2391,16 @@ namespace Barrelman.Data.Database
         public SimpleAisPositionReportClassAResponseToInterrogationMessageDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override AisPositionReportClassAResponseToInterrogationMessageObject GetDataObject( )
+        {
+            return new AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationStatus, RateOfTurn, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, ManeuverIndicator, Spare, Raim, RadioStatus );
         }
 
     }
@@ -2080,6 +2508,25 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( PositionAccuracy );
+            destination.Write( Raim );
+            destination.Write( NavigationStatus );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( SpeedOverGround );
+            destination.Write( CourseOverGround );
+            destination.Write( GnssPositionStatus );
+            destination.Write( Spare );
+        }
+
+        public override AisPositionReportForLongRangeApplicationsMessageObject GetDataObject( )
+        {
+            return new AisPositionReportForLongRangeApplicationsMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PositionAccuracy, Raim, NavigationStatus, Longitude, Latitude, SpeedOverGround, CourseOverGround, GnssPositionStatus, Spare );
+        }
+
     }
 
     public class SimpleAisSafetyRelatedAcknowledgmentMessageDataReader : SimpleAisMessageDataReader
@@ -2185,6 +2632,25 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( MMSI4_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Spare );
+            destination.Write( SequenceNumber1 );
+            destination.Write( Mmsi1 );
+            destination.Write( SequenceNumber2 );
+            destination.Write( Mmsi2 );
+            destination.Write( SequenceNumber3 );
+            destination.Write( Mmsi3 );
+            destination.Write( SequenceNumber4 );
+            destination.Write( Mmsi4 );
+        }
+
+        public override AisSafetyRelatedAcknowledgmentMessageObject GetDataObject( )
+        {
+            return new AisSafetyRelatedAcknowledgmentMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Spare, SequenceNumber1, Mmsi1, SequenceNumber2, Mmsi2, SequenceNumber3, Mmsi3, SequenceNumber4, Mmsi4 );
+        }
+
     }
 
     public class SimpleAisStandardClassBCsPositionReportMessageDataReader : SimpleAisMessageDataReader
@@ -2362,6 +2828,33 @@ namespace Barrelman.Data.Database
                 return GetInt32( RADIOSTATUS_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Reserved );
+            destination.Write( SpeedOverGround );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( CourseOverGround );
+            destination.Write( TrueHeading );
+            destination.Write( Timestamp );
+            destination.Write( RegionalReserved );
+            destination.Write( IsCsUnit );
+            destination.Write( HasDisplay );
+            destination.Write( HasDscCapability );
+            destination.Write( Band );
+            destination.Write( CanAcceptMessage22 );
+            destination.Write( Assigned );
+            destination.Write( Raim );
+            destination.Write( RadioStatus );
+        }
+
+        public override AisStandardClassBCsPositionReportMessageObject GetDataObject( )
+        {
+            return new AisStandardClassBCsPositionReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Reserved, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, RegionalReserved, IsCsUnit, HasDisplay, HasDscCapability, Band, CanAcceptMessage22, Assigned, Raim, RadioStatus );
+        }
+
     }
 
     public class SimpleAisStandardSarAircraftPositionReportMessageDataReader : SimpleAisMessageDataReader
@@ -2503,6 +2996,29 @@ namespace Barrelman.Data.Database
                 return GetInt32( RADIOSTATUS_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Altitude );
+            destination.Write( SpeedOverGround );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( CourseOverGround );
+            destination.Write( Timestamp );
+            destination.Write( Reserved );
+            destination.Write( DataTerminalReady );
+            destination.Write( Spare );
+            destination.Write( Assigned );
+            destination.Write( Raim );
+            destination.Write( RadioStatus );
+        }
+
+        public override AisStandardSarAircraftPositionReportMessageObject GetDataObject( )
+        {
+            return new AisStandardSarAircraftPositionReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Altitude, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, Timestamp, Reserved, DataTerminalReady, Spare, Assigned, Raim, RadioStatus );
+        }
+
     }
 
     public class SimpleAisStaticAndVoyageRelatedDataMessageDataReader : SimpleAisMessageDataReader
@@ -2667,6 +3183,31 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( AisVersion );
+            destination.Write( ImoNumber );
+            destination.Write( Callsign );
+            destination.Write( ShipName );
+            destination.Write( ShipType );
+            destination.Write( DimensionToBow );
+            destination.Write( DimensionToStern );
+            destination.Write( DimensionToPort );
+            destination.Write( DimensionToStarboard );
+            destination.Write( PositionFixType );
+            destination.Write( EstimatedTimeOfArrival );
+            destination.Write( Draught );
+            destination.Write( Destination );
+            destination.Write( DataTerminalReady );
+            destination.Write( Spare );
+        }
+
+        public override AisStaticAndVoyageRelatedDataMessageObject GetDataObject( )
+        {
+            return new AisStaticAndVoyageRelatedDataMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisVersion, ImoNumber, Callsign, ShipName, ShipType, DimensionToBow, DimensionToStern, DimensionToPort, DimensionToStarboard, PositionFixType, EstimatedTimeOfArrival, Draught, Destination, DataTerminalReady, Spare );
+        }
+
     }
 
     public class SimpleAisStaticDataReportMessageDataReader : SimpleAisMessageDataReader
@@ -2700,6 +3241,17 @@ namespace Barrelman.Data.Database
                 return GetInt32( PARTNUMBER_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( PartNumber );
+        }
+
+        public override AisStaticDataReportMessageObject GetDataObject( )
+        {
+            return new AisStaticDataReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PartNumber );
+        }
+
     }
 
     public class SimpleAisStaticDataReportPartAMessageDataReader : SimpleAisStaticDataReportMessageDataReader
@@ -2743,6 +3295,18 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( ShipName );
+            destination.Write( Spare );
+        }
+
+        public override AisStaticDataReportPartAMessageObject GetDataObject( )
+        {
+            return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PartNumber, ShipName, Spare );
+        }
+
     }
 
     public class SimpleAisStaticDataReportPartBMessageDataReader : SimpleAisStaticDataReportMessageDataReader
@@ -2876,6 +3440,28 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( ShipType );
+            destination.Write( VendorId );
+            destination.Write( UnitModelCode );
+            destination.Write( SerialNumber );
+            destination.Write( Callsign );
+            destination.Write( DimensionToBow );
+            destination.Write( DimensionToStern );
+            destination.Write( DimensionToPort );
+            destination.Write( DimensionToStarboard );
+            destination.Write( MothershipMmsi );
+            destination.Write( PositionFixType );
+            destination.Write( Spare );
+        }
+
+        public override AisStaticDataReportPartBMessageObject GetDataObject( )
+        {
+            return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PartNumber, ShipType, VendorId, UnitModelCode, SerialNumber, Callsign, DimensionToBow, DimensionToStern, DimensionToPort, DimensionToStarboard, MothershipMmsi, PositionFixType, Spare );
+        }
+
     }
 
     public class SimpleAisUtcAndDateInquiryMessageDataReader : SimpleAisMessageDataReader
@@ -2927,6 +3513,19 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE2_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Spare1 );
+            destination.Write( DestinationMmsi );
+            destination.Write( Spare2 );
+        }
+
+        public override AisUtcAndDateInquiryMessageObject GetDataObject( )
+        {
+            return new AisUtcAndDateInquiryMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Spare1, DestinationMmsi, Spare2 );
+        }
+
     }
 
     public class SimpleAisUtcAndDateResponseMessageDataReader : SimpleAisMessageDataReader
@@ -3023,6 +3622,24 @@ namespace Barrelman.Data.Database
                 return GetInt32( RADIOSTATUS_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Datetime );
+            destination.Write( PositionAccuracy );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( PositionFixType );
+            destination.Write( Spare );
+            destination.Write( Raim );
+            destination.Write( RadioStatus );
+        }
+
+        public override AisUtcAndDateResponseMessageObject GetDataObject( )
+        {
+            return new AisUtcAndDateResponseMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, Datetime, PositionAccuracy, Longitude, Latitude, PositionFixType, Spare, Raim, RadioStatus );
+        }
+
     }
 
     public class SimpleAlarmStateChangeDataReader : DataReaderWrapper
@@ -3084,6 +3701,31 @@ namespace Barrelman.Data.Database
                 return GetEnum<Types.AlarmState>( STATE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.AlarmStateChange );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Alarm );
+            destination.Write( Timestamp );
+            destination.Write( State );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public AlarmStateChangeObject GetDataObject( )
+        {
+            return new AlarmStateChangeObject( ObjectState.Stored, Id, RowVersion, Alarm, Timestamp, State );
+        }
+
     }
 
     public class SimpleBaseStationTypeDataReader : DataReaderWrapper
@@ -3127,6 +3769,29 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.BaseStationType );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public BaseStationTypeObject GetDataObject( )
+        {
+            return new BaseStationTypeObject( ObjectState.Stored, Id, RowVersion, Name );
+        }
+
     }
 
     public class SimpleBinaryTimeseriesValueDataReader : DataReaderWrapper
@@ -3188,6 +3853,31 @@ namespace Barrelman.Data.Database
                 return GetBytes( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.BinaryTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.WriteArray( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public BinaryTimeseriesValueObject GetDataObject( )
+        {
+            return new BinaryTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleBookmarkDataReader : DataReaderWrapper
@@ -3281,6 +3971,34 @@ namespace Barrelman.Data.Database
                 return GetDouble( ZOOMLEVEL_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Bookmark );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( View );
+            destination.Write( Name );
+            destination.Write( Timestamp );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( ZoomLevel );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public BookmarkObject GetDataObject( )
+        {
+            return new BookmarkObject( ObjectState.Stored, Id, RowVersion, View, Name, Timestamp, Latitude, Longitude, ZoomLevel );
+        }
+
     }
 
     public class SimpleBooleanTimeseriesValueDataReader : DataReaderWrapper
@@ -3342,6 +4060,31 @@ namespace Barrelman.Data.Database
                 return GetNullableBoolean( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.BooleanTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public BooleanTimeseriesValueObject GetDataObject( )
+        {
+            return new BooleanTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleByteTimeseriesValueDataReader : DataReaderWrapper
@@ -3403,6 +4146,31 @@ namespace Barrelman.Data.Database
                 return GetNullableByte( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ByteTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ByteTimeseriesValueObject GetDataObject( )
+        {
+            return new ByteTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleCameraCommandDataReader : DataReaderWrapper
@@ -3491,6 +4259,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public virtual CameraCommandObject GetDataObject( )
+        {
+            return new CameraCommandObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleCameraCommandAbsoluteMoveDataReader : SimpleCameraCommandDataReader
@@ -3605,6 +4400,26 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( ZOOMSPEED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( PositionPanTiltMode );
+            destination.Write( PanAngle );
+            destination.Write( TiltAngle );
+            destination.Write( PositionFocalLengthMode );
+            destination.Write( FocalLength );
+            destination.Write( SpeedPanTiltMode );
+            destination.Write( PanSpeed );
+            destination.Write( TiltSpeed );
+            destination.Write( SpeedFocalLengthMode );
+            destination.Write( ZoomSpeed );
+        }
+
+        public override CameraCommandAbsoluteMoveObject GetDataObject( )
+        {
+            return new CameraCommandAbsoluteMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, PositionPanTiltMode, PanAngle, TiltAngle, PositionFocalLengthMode, FocalLength, SpeedPanTiltMode, PanSpeed, TiltSpeed, SpeedFocalLengthMode, ZoomSpeed );
+        }
+
     }
 
     public class SimpleCameraCommandAdjustPanTiltZoomDataReader : SimpleCameraCommandDataReader
@@ -3656,6 +4471,19 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( Z_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( X );
+            destination.Write( Y );
+            destination.Write( Z );
+        }
+
+        public override CameraCommandAdjustPanTiltZoomObject GetDataObject( )
+        {
+            return new CameraCommandAdjustPanTiltZoomObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, X, Y, Z );
+        }
+
     }
 
     public class SimpleCameraCommandContinuousMoveDataReader : SimpleCameraCommandDataReader
@@ -3730,6 +4558,21 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Normalized );
+            destination.Write( PanVelocity );
+            destination.Write( TiltVelocity );
+            destination.Write( ZoomVelocity );
+            destination.Write( Duration );
+        }
+
+        public override CameraCommandContinuousMoveObject GetDataObject( )
+        {
+            return new CameraCommandContinuousMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Normalized, PanVelocity, TiltVelocity, ZoomVelocity, Duration );
+        }
+
     }
 
     public class SimpleCameraCommandGeoMoveDataReader : SimpleCameraCommandDataReader
@@ -3799,6 +4642,21 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( VIEWPORTHEIGHT_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Altitude );
+            destination.Write( ViewportWidth );
+            destination.Write( ViewportHeight );
+        }
+
+        public override CameraCommandGeoMoveObject GetDataObject( )
+        {
+            return new CameraCommandGeoMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Latitude, Longitude, Altitude, ViewportWidth, ViewportHeight );
+        }
+
     }
 
     public class SimpleCameraCommandRelativeMoveDataReader : SimpleCameraCommandDataReader
@@ -3886,6 +4744,23 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( ZOOMSPEED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Normalized );
+            destination.Write( PanAngle );
+            destination.Write( TiltAngle );
+            destination.Write( FocalLength );
+            destination.Write( PanSpeed );
+            destination.Write( TiltSpeed );
+            destination.Write( ZoomSpeed );
+        }
+
+        public override CameraCommandRelativeMoveObject GetDataObject( )
+        {
+            return new CameraCommandRelativeMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Normalized, PanAngle, TiltAngle, FocalLength, PanSpeed, TiltSpeed, ZoomSpeed );
+        }
+
     }
 
     public class SimpleCameraCommandReleasePTZOwnershipDataReader : SimpleCameraCommandDataReader
@@ -3909,6 +4784,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override CameraCommandReleasePTZOwnershipObject GetDataObject( )
+        {
+            return new CameraCommandReleasePTZOwnershipObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleCameraCommandRequestPTZOwnershipDataReader : SimpleCameraCommandDataReader
@@ -3930,6 +4815,16 @@ namespace Barrelman.Data.Database
         public SimpleCameraCommandRequestPTZOwnershipDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override CameraCommandRequestPTZOwnershipObject GetDataObject( )
+        {
+            return new CameraCommandRequestPTZOwnershipObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
         }
 
     }
@@ -3965,6 +4860,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( ENABLED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Enabled );
+        }
+
+        public override CameraCommandSetAutoFocusObject GetDataObject( )
+        {
+            return new CameraCommandSetAutoFocusObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Enabled );
+        }
+
     }
 
     public class SimpleCameraCommandSetBlackAndWhiteDataReader : SimpleCameraCommandDataReader
@@ -3998,6 +4904,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( ENABLED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Enabled );
+        }
+
+        public override CameraCommandSetBlackAndWhiteObject GetDataObject( )
+        {
+            return new CameraCommandSetBlackAndWhiteObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Enabled );
+        }
+
     }
 
     public class SimpleCameraCommandSetFollowedDataReader : SimpleCameraCommandDataReader
@@ -4040,6 +4957,18 @@ namespace Barrelman.Data.Database
                 return GetEnum<Types.CameraFollowReason>( REASON_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( TrackId );
+            destination.Write( Reason );
+        }
+
+        public override CameraCommandSetFollowedObject GetDataObject( )
+        {
+            return new CameraCommandSetFollowedObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, TrackId, Reason );
+        }
+
     }
 
     public class SimpleCameraCommandSetInfraRedLampDataReader : SimpleCameraCommandDataReader
@@ -4073,6 +5002,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( ENABLED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Enabled );
+        }
+
+        public override CameraCommandSetInfraRedLampObject GetDataObject( )
+        {
+            return new CameraCommandSetInfraRedLampObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Enabled );
+        }
+
     }
 
     public class SimpleCameraCommandSetWasherDataReader : SimpleCameraCommandDataReader
@@ -4106,6 +5046,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( ENABLED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Enabled );
+        }
+
+        public override CameraCommandSetWasherObject GetDataObject( )
+        {
+            return new CameraCommandSetWasherObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Enabled );
+        }
+
     }
 
     public class SimpleCameraCommandSetWiperDataReader : SimpleCameraCommandDataReader
@@ -4139,6 +5090,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( ENABLED_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Enabled );
+        }
+
+        public override CameraCommandSetWiperObject GetDataObject( )
+        {
+            return new CameraCommandSetWiperObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, Enabled );
+        }
+
     }
 
     public class SimpleCameraCommandStopDataReader : SimpleCameraCommandDataReader
@@ -4181,6 +5143,18 @@ namespace Barrelman.Data.Database
                 return GetBoolean( ZOOM_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( PanTilt );
+            destination.Write( Zoom );
+        }
+
+        public override CameraCommandStopObject GetDataObject( )
+        {
+            return new CameraCommandStopObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, PanTilt, Zoom );
+        }
+
     }
 
     public class SimpleCameraCommandReplyDataReader : DataReaderWrapper
@@ -4287,6 +5261,36 @@ namespace Barrelman.Data.Database
                 return GetDouble( FOCALLENGTH_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+            destination.Write( PanAngle );
+            destination.Write( TiltAngle );
+            destination.Write( FocalLength );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraCommandReplyObject GetDataObject( )
+        {
+            return new CameraCommandReplyObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, Command, Status, Message, PanAngle, TiltAngle, FocalLength );
+        }
+
     }
 
     public class SimpleCameraConfigurationDataReader : DataReaderWrapper
@@ -4852,6 +5856,87 @@ namespace Barrelman.Data.Database
                 return GetString( VIDEOSOURCETOKEN_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Timestamp );
+            destination.Write( CameraControlProtocol );
+            destination.Write( CameraURL );
+            destination.Write( ConfigurationURL );
+            destination.Write( UserName );
+            destination.Write( Password );
+            destination.Write( UseRtspUriOverride );
+            destination.Write( RtspUriOverride );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Altitude );
+            destination.Write( UseRelativePosition );
+            destination.Write( PanTiltMode );
+            destination.Write( MinTiltAngle );
+            destination.Write( MaxTiltAngle );
+            destination.Write( MinTiltScaleAngle );
+            destination.Write( MaxTiltScaleAngle );
+            destination.Write( UseReverseTiltAngle );
+            destination.Write( UseReverseNormalizedTiltAngle );
+            destination.Write( MinTiltVelocity );
+            destination.Write( MaxTiltVelocity );
+            destination.Write( MinTiltSpeed );
+            destination.Write( MaxTiltSpeed );
+            destination.Write( MinPanAngle );
+            destination.Write( MaxPanAngle );
+            destination.Write( MinPanScaleAngle );
+            destination.Write( MaxPanScaleAngle );
+            destination.Write( UseReversePanAngle );
+            destination.Write( UseReverseNormalizedPanAngle );
+            destination.Write( MinPanVelocity );
+            destination.Write( MaxPanVelocity );
+            destination.Write( MinPanSpeed );
+            destination.Write( MaxPanSpeed );
+            destination.Write( FocalLengthMode );
+            destination.Write( MinFocalLength );
+            destination.Write( MaxFocalLength );
+            destination.Write( MinFocalLengthScale );
+            destination.Write( MaxFocalLengthScale );
+            destination.Write( MinZoomVelocity );
+            destination.Write( MaxZoomVelocity );
+            destination.Write( MinZoomSpeed );
+            destination.Write( MaxZoomSpeed );
+            destination.Write( ImageSensorWidth );
+            destination.Write( ImageSensorHeight );
+            destination.Write( HomePanAngle );
+            destination.Write( HomeTiltAngle );
+            destination.Write( HomeFocalLength );
+            destination.Write( PanOffset );
+            destination.Write( TiltOffset );
+            destination.Write( AimAltitude );
+            destination.Write( MinimumTargetWidth );
+            destination.Write( TargetLockTimeout );
+            destination.Write( UpdateStatusInterval );
+            destination.Write( ReadTimeout );
+            destination.Write( MoveCommandStatusDelay );
+            destination.Write( PtzProfileName );
+            destination.Write( PtzConfigurationToken );
+            destination.Write( VideoSourceToken );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraConfigurationObject GetDataObject( )
+        {
+            return new CameraConfigurationObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, CameraControlProtocol, CameraURL, ConfigurationURL, UserName, Password, UseRtspUriOverride, RtspUriOverride, Latitude, Longitude, Altitude, UseRelativePosition, PanTiltMode, MinTiltAngle, MaxTiltAngle, MinTiltScaleAngle, MaxTiltScaleAngle, UseReverseTiltAngle, UseReverseNormalizedTiltAngle, MinTiltVelocity, MaxTiltVelocity, MinTiltSpeed, MaxTiltSpeed, MinPanAngle, MaxPanAngle, MinPanScaleAngle, MaxPanScaleAngle, UseReversePanAngle, UseReverseNormalizedPanAngle, MinPanVelocity, MaxPanVelocity, MinPanSpeed, MaxPanSpeed, FocalLengthMode, MinFocalLength, MaxFocalLength, MinFocalLengthScale, MaxFocalLengthScale, MinZoomVelocity, MaxZoomVelocity, MinZoomSpeed, MaxZoomSpeed, ImageSensorWidth, ImageSensorHeight, HomePanAngle, HomeTiltAngle, HomeFocalLength, PanOffset, TiltOffset, AimAltitude, MinimumTargetWidth, TargetLockTimeout, UpdateStatusInterval, ReadTimeout, MoveCommandStatusDelay, PtzProfileName, PtzConfigurationToken, VideoSourceToken );
+        }
+
     }
 
     public class SimpleCameraPanCalibrationDataReader : DataReaderWrapper
@@ -4904,6 +5989,30 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraPanCalibration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Timestamp );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraPanCalibrationObject GetDataObject( )
+        {
+            return new CameraPanCalibrationObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp );
+        }
+
     }
 
     public class SimpleCameraPanCalibrationValueDataReader : DataReaderWrapper
@@ -4965,6 +6074,31 @@ namespace Barrelman.Data.Database
                 return GetDouble( PANOFFSET_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraPanCalibrationValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( PanCalibration );
+            destination.Write( PanAngle );
+            destination.Write( PanOffset );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraPanCalibrationValueObject GetDataObject( )
+        {
+            return new CameraPanCalibrationValueObject( ObjectState.Stored, Id, RowVersion, PanCalibration, PanAngle, PanOffset );
+        }
+
     }
 
     public class SimpleCameraStatusDataReader : DataReaderWrapper
@@ -5152,6 +6286,45 @@ namespace Barrelman.Data.Database
                 return GetString( ERROR_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraStatus );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Track );
+            destination.Write( Timestamp );
+            destination.Write( PositionPanTiltMode );
+            destination.Write( PanAngle );
+            destination.Write( TiltAngle );
+            destination.Write( PositionFocalLengthMode );
+            destination.Write( FocalLength );
+            destination.Write( PanTiltMoveStatus );
+            destination.Write( ZoomMoveStatus );
+            destination.Write( VelocityPanTiltMode );
+            destination.Write( PanVelocity );
+            destination.Write( TiltVelocity );
+            destination.Write( VelocityFocalLengthMode );
+            destination.Write( ZoomVelocity );
+            destination.Write( ActiveFeatures );
+            destination.Write( Error );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraStatusObject GetDataObject( )
+        {
+            return new CameraStatusObject( ObjectState.Stored, Id, RowVersion, Camera, Track, Timestamp, PositionPanTiltMode, PanAngle, TiltAngle, PositionFocalLengthMode, FocalLength, PanTiltMoveStatus, ZoomMoveStatus, VelocityPanTiltMode, PanVelocity, TiltVelocity, VelocityFocalLengthMode, ZoomVelocity, ActiveFeatures, Error );
+        }
+
     }
 
     public class SimpleCameraTiltCalibrationDataReader : DataReaderWrapper
@@ -5204,6 +6377,30 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraTiltCalibration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Timestamp );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraTiltCalibrationObject GetDataObject( )
+        {
+            return new CameraTiltCalibrationObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp );
+        }
+
     }
 
     public class SimpleCameraTiltCalibrationValueDataReader : DataReaderWrapper
@@ -5265,6 +6462,31 @@ namespace Barrelman.Data.Database
                 return GetDouble( TILTOFFSET_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraTiltCalibrationValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( TiltCalibration );
+            destination.Write( PanAngle );
+            destination.Write( TiltOffset );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraTiltCalibrationValueObject GetDataObject( )
+        {
+            return new CameraTiltCalibrationValueObject( ObjectState.Stored, Id, RowVersion, TiltCalibration, PanAngle, TiltOffset );
+        }
+
     }
 
     public class SimpleCameraZoomCalibrationDataReader : DataReaderWrapper
@@ -5317,6 +6539,30 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraZoomCalibration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Camera );
+            destination.Write( Timestamp );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraZoomCalibrationObject GetDataObject( )
+        {
+            return new CameraZoomCalibrationObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp );
+        }
+
     }
 
     public class SimpleCameraZoomCalibrationValueDataReader : DataReaderWrapper
@@ -5378,9 +6624,34 @@ namespace Barrelman.Data.Database
                 return GetDouble( FOCALLENGTHOFFSET_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CameraZoomCalibrationValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( ZoomCalibration );
+            destination.Write( FocalLength );
+            destination.Write( FocalLengthOffset );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CameraZoomCalibrationValueObject GetDataObject( )
+        {
+            return new CameraZoomCalibrationValueObject( ObjectState.Stored, Id, RowVersion, ZoomCalibration, FocalLength, FocalLengthOffset );
+        }
+
     }
 
-    public class SimpleCatalogElementDataReader : DataReaderWrapper
+    public abstract class SimpleCatalogElementDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  ce.[Id], \r\n" +
@@ -5439,6 +6710,27 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CatalogElement );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Catalog );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract CatalogElementObject GetDataObject( );
+
     }
 
     public class SimpleCatalogDataReader : SimpleCatalogElementDataReader
@@ -5457,6 +6749,16 @@ namespace Barrelman.Data.Database
         public SimpleCatalogDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override CatalogObject GetDataObject( )
+        {
+            return new CatalogObject( ObjectState.Stored, Id, RowVersion, Catalog, Name );
         }
 
     }
@@ -5489,6 +6791,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( ELEMENTTYPE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( ElementType );
+        }
+
+        public override ElementObject GetDataObject( )
+        {
+            return new ElementObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, ElementType );
+        }
+
     }
 
     public class SimpleCollectionInfoDataReader : DataReaderWrapper
@@ -5532,6 +6845,29 @@ namespace Barrelman.Data.Database
                 return GetInt64( COUNT_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CollectionInfo );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Count );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CollectionInfoObject GetDataObject( )
+        {
+            return new CollectionInfoObject( ObjectState.Stored, Id, RowVersion, Count );
+        }
+
     }
 
     public class SimpleCountryDataReader : DataReaderWrapper
@@ -5602,6 +6938,32 @@ namespace Barrelman.Data.Database
                 return GetString( ALPHA3_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Country );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+            destination.Write( Code );
+            destination.Write( Alpha2 );
+            destination.Write( Alpha3 );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CountryObject GetDataObject( )
+        {
+            return new CountryObject( ObjectState.Stored, Id, RowVersion, Name, Code, Alpha2, Alpha3 );
+        }
+
     }
 
     public class SimpleCursorInfoDataReader : DataReaderWrapper
@@ -5645,6 +7007,29 @@ namespace Barrelman.Data.Database
                 return GetInt32( TYPECODE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.CursorInfo );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( TypeCode );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public CursorInfoObject GetDataObject( )
+        {
+            return new CursorInfoObject( ObjectState.Stored, Id, RowVersion, TypeCode );
+        }
+
     }
 
     public class SimpleDateTimeTimeseriesValueDataReader : DataReaderWrapper
@@ -5711,6 +7096,31 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.DateTimeTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public DateTimeTimeseriesValueObject GetDataObject( )
+        {
+            return new DateTimeTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleDeviceHostDataReader : DataReaderWrapper
@@ -5754,6 +7164,29 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.DeviceHost );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public DeviceHostObject GetDataObject( )
+        {
+            return new DeviceHostObject( ObjectState.Stored, Id, RowVersion, Name );
+        }
+
     }
 
     public class SimpleDeviceHostConfigurationDataReader : DataReaderWrapper
@@ -5833,6 +7266,33 @@ namespace Barrelman.Data.Database
                 return GetString( QUEUENAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.DeviceHostConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Host );
+            destination.Write( Timestamp );
+            destination.Write( Hostname );
+            destination.Write( Port );
+            destination.Write( QueueName );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public DeviceHostConfigurationObject GetDataObject( )
+        {
+            return new DeviceHostConfigurationObject( ObjectState.Stored, Id, RowVersion, Host, Timestamp, Hostname, Port, QueueName );
+        }
+
     }
 
     public class SimpleDoubleTimeseriesValueDataReader : DataReaderWrapper
@@ -5894,6 +7354,31 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.DoubleTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public DoubleTimeseriesValueObject GetDataObject( )
+        {
+            return new DoubleTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleFacilityTypeDataReader : DataReaderWrapper
@@ -5937,6 +7422,29 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.FacilityType );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public FacilityTypeObject GetDataObject( )
+        {
+            return new FacilityTypeObject( ObjectState.Stored, Id, RowVersion, Name );
+        }
+
     }
 
     public class SimpleGeoPosition2DTimeseriesValueDataReader : DataReaderWrapper
@@ -6007,6 +7515,32 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( LONGITUDE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GeoPosition2DTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GeoPosition2DTimeseriesValueObject GetDataObject( )
+        {
+            return new GeoPosition2DTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Latitude, Longitude );
+        }
+
     }
 
     public class SimpleGeoPosition3DTimeseriesValueDataReader : DataReaderWrapper
@@ -6086,6 +7620,33 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( ALTITUDE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GeoPosition3DTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Altitude );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GeoPosition3DTimeseriesValueObject GetDataObject( )
+        {
+            return new GeoPosition3DTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Latitude, Longitude, Altitude );
+        }
+
     }
 
     public class SimpleGNSSDeviceCommandDataReader : DataReaderWrapper
@@ -6165,6 +7726,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GNSSDeviceCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( GNSSDevice );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GNSSDeviceCommandObject GetDataObject( )
+        {
+            return new GNSSDeviceCommandObject( ObjectState.Stored, Id, RowVersion, GNSSDevice, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleGNSSDeviceCommandReplyDataReader : DataReaderWrapper
@@ -6244,6 +7832,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GNSSDeviceCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( GNSSDevice );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GNSSDeviceCommandReplyObject GetDataObject( )
+        {
+            return new GNSSDeviceCommandReplyObject( ObjectState.Stored, Id, RowVersion, GNSSDevice, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleGNSSDeviceConfigurationDataReader : DataReaderWrapper
@@ -6350,6 +7965,36 @@ namespace Barrelman.Data.Database
                 return GetDouble( ALTITUDEOFFSET_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GNSSDeviceConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( GNSSDevice );
+            destination.Write( Timestamp );
+            destination.Write( DefaultLatitude );
+            destination.Write( DefaultLongitude );
+            destination.Write( DefaultAltitude );
+            destination.Write( LatitudeOffset );
+            destination.Write( LongitudeOffset );
+            destination.Write( AltitudeOffset );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GNSSDeviceConfigurationObject GetDataObject( )
+        {
+            return new GNSSDeviceConfigurationObject( ObjectState.Stored, Id, RowVersion, GNSSDevice, Timestamp, DefaultLatitude, DefaultLongitude, DefaultAltitude, LatitudeOffset, LongitudeOffset, AltitudeOffset );
+        }
+
     }
 
     public class SimpleGuidTimeseriesValueDataReader : DataReaderWrapper
@@ -6411,6 +8056,31 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GuidTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GuidTimeseriesValueObject GetDataObject( )
+        {
+            return new GuidTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleGyroDeviceCommandDataReader : DataReaderWrapper
@@ -6490,6 +8160,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GyroDeviceCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( GyroDevice );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GyroDeviceCommandObject GetDataObject( )
+        {
+            return new GyroDeviceCommandObject( ObjectState.Stored, Id, RowVersion, GyroDevice, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleGyroDeviceCommandReplyDataReader : DataReaderWrapper
@@ -6569,6 +8266,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GyroDeviceCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( GyroDevice );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GyroDeviceCommandReplyObject GetDataObject( )
+        {
+            return new GyroDeviceCommandReplyObject( ObjectState.Stored, Id, RowVersion, GyroDevice, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleGyroDeviceConfigurationDataReader : DataReaderWrapper
@@ -6675,9 +8399,39 @@ namespace Barrelman.Data.Database
                 return GetString( ROLLTRANSDUCERNAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.GyroDeviceConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( GyroDevice );
+            destination.Write( Timestamp );
+            destination.Write( DefaultHeadingTrueNorth );
+            destination.Write( DefaultMagneticTrueNorth );
+            destination.Write( HeadingTrueNorthOffset );
+            destination.Write( HeadingMagneticNorthOffset );
+            destination.Write( PitchTransducerName );
+            destination.Write( RollTransducerName );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public GyroDeviceConfigurationObject GetDataObject( )
+        {
+            return new GyroDeviceConfigurationObject( ObjectState.Stored, Id, RowVersion, GyroDevice, Timestamp, DefaultHeadingTrueNorth, DefaultMagneticTrueNorth, HeadingTrueNorthOffset, HeadingMagneticNorthOffset, PitchTransducerName, RollTransducerName );
+        }
+
     }
 
-    public class SimpleIdentityDataReader : DataReaderWrapper
+    public abstract class SimpleIdentityDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  i.[Id], \r\n" +
@@ -6718,6 +8472,25 @@ namespace Barrelman.Data.Database
                 return GetInt64( ROWVERSION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Identity );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract IdentityObject GetDataObject( );
+
     }
 
     public class SimpleCallsignDataReader : SimpleIdentityDataReader
@@ -6746,6 +8519,17 @@ namespace Barrelman.Data.Database
                 return GetString( IDENTIFIER_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Identifier );
+        }
+
+        public override CallsignObject GetDataObject( )
+        {
+            return new CallsignObject( ObjectState.Stored, Id, RowVersion, Identifier );
+        }
+
     }
 
     public class SimpleInternationalMaritimeOrganizationNumberDataReader : SimpleIdentityDataReader
@@ -6774,6 +8558,17 @@ namespace Barrelman.Data.Database
                 return GetInt64( IDENTIFIER_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Identifier );
+        }
+
+        public override InternationalMaritimeOrganizationNumberObject GetDataObject( )
+        {
+            return new InternationalMaritimeOrganizationNumberObject( ObjectState.Stored, Id, RowVersion, Identifier );
+        }
+
     }
 
     public class SimpleMaritimeMobileServiceIdentityDataReader : SimpleIdentityDataReader
@@ -6802,6 +8597,17 @@ namespace Barrelman.Data.Database
                 return GetInt64( IDENTIFIER_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Identifier );
+        }
+
+        public override MaritimeMobileServiceIdentityObject GetDataObject( )
+        {
+            return new MaritimeMobileServiceIdentityObject( ObjectState.Stored, Id, RowVersion, Identifier );
+        }
+
     }
 
     public class SimpleNameDataReader : SimpleIdentityDataReader
@@ -6830,6 +8636,17 @@ namespace Barrelman.Data.Database
                 return GetString( TEXT_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Text );
+        }
+
+        public override NameObject GetDataObject( )
+        {
+            return new NameObject( ObjectState.Stored, Id, RowVersion, Text );
+        }
+
     }
 
     public class SimpleInt16TimeseriesValueDataReader : DataReaderWrapper
@@ -6891,6 +8708,31 @@ namespace Barrelman.Data.Database
                 return GetNullableInt16( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Int16TimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public Int16TimeseriesValueObject GetDataObject( )
+        {
+            return new Int16TimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleInt32TimeseriesValueDataReader : DataReaderWrapper
@@ -6952,6 +8794,31 @@ namespace Barrelman.Data.Database
                 return GetNullableInt32( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Int32TimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public Int32TimeseriesValueObject GetDataObject( )
+        {
+            return new Int32TimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleInt64TimeseriesValueDataReader : DataReaderWrapper
@@ -7013,9 +8880,34 @@ namespace Barrelman.Data.Database
                 return GetNullableInt64( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Int64TimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public Int64TimeseriesValueObject GetDataObject( )
+        {
+            return new Int64TimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
-    public class SimpleItemDataReader : DataReaderWrapper
+    public abstract class SimpleItemDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  i.[Id], \r\n" +
@@ -7056,6 +8948,25 @@ namespace Barrelman.Data.Database
                 return GetInt64( ROWVERSION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Item );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract ItemObject GetDataObject( );
+
     }
 
     public class SimpleBaseStationDataReader : SimpleItemDataReader
@@ -7093,9 +9004,21 @@ namespace Barrelman.Data.Database
                 return GetGuid( TYPE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+            destination.Write( Type );
+        }
+
+        public override BaseStationObject GetDataObject( )
+        {
+            return new BaseStationObject( ObjectState.Stored, Id, RowVersion, Name, Type );
+        }
+
     }
 
-    public class SimpleDeviceDataReader : SimpleItemDataReader
+    public abstract class SimpleDeviceDataReader : SimpleItemDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  d.[Id], \r\n" +
@@ -7148,6 +9071,15 @@ namespace Barrelman.Data.Database
                 return GetGuid( ENABLEDTIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Host );
+            destination.Write( Name );
+            destination.Write( Description );
+            destination.Write( EnabledTimeseries );
+        }
+
     }
 
     public class SimpleCameraDeviceDataReader : SimpleDeviceDataReader
@@ -7168,6 +9100,16 @@ namespace Barrelman.Data.Database
         public SimpleCameraDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override CameraDeviceObject GetDataObject( )
+        {
+            return new CameraDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
         }
 
     }
@@ -7220,6 +9162,19 @@ namespace Barrelman.Data.Database
                 return GetGuid( ALTITUDETIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( LatitudeTimeseries );
+            destination.Write( LongitudeTimeseries );
+            destination.Write( AltitudeTimeseries );
+        }
+
+        public override GNSSDeviceObject GetDataObject( )
+        {
+            return new GNSSDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, LatitudeTimeseries, LongitudeTimeseries, AltitudeTimeseries );
+        }
+
     }
 
     public class SimpleGyroDeviceDataReader : SimpleDeviceDataReader
@@ -7315,6 +9270,24 @@ namespace Barrelman.Data.Database
                 return GetGuid( GNSSDEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( HeadingTrueNorthTimeseries );
+            destination.Write( HeadingMagneticNorthTimeseries );
+            destination.Write( PitchTimeseries );
+            destination.Write( RateOfTurnTimeseries );
+            destination.Write( RollTimeseries );
+            destination.Write( CourseTimeseries );
+            destination.Write( SpeedTimeseries );
+            destination.Write( GNSSDevice );
+        }
+
+        public override GyroDeviceObject GetDataObject( )
+        {
+            return new GyroDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, HeadingTrueNorthTimeseries, HeadingMagneticNorthTimeseries, PitchTimeseries, RateOfTurnTimeseries, RollTimeseries, CourseTimeseries, SpeedTimeseries, GNSSDevice );
+        }
+
     }
 
     public class SimpleLineInputDeviceDataReader : SimpleDeviceDataReader
@@ -7335,6 +9308,16 @@ namespace Barrelman.Data.Database
         public SimpleLineInputDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override LineInputDeviceObject GetDataObject( )
+        {
+            return new LineInputDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
         }
 
     }
@@ -7359,6 +9342,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override OilSpillDetectorDeviceObject GetDataObject( )
+        {
+            return new OilSpillDetectorDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+        }
+
     }
 
     public class SimpleRadioDeviceDataReader : SimpleDeviceDataReader
@@ -7379,6 +9372,16 @@ namespace Barrelman.Data.Database
         public SimpleRadioDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override RadioDeviceObject GetDataObject( )
+        {
+            return new RadioDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
         }
 
     }
@@ -7449,9 +9452,24 @@ namespace Barrelman.Data.Database
                 return GetGuid( STATUSTIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+            destination.Write( PressureTimeseries );
+            destination.Write( TemperatureTimeseries );
+            destination.Write( DewPointTimeseries );
+            destination.Write( StatusTimeseries );
+        }
+
+        public override RadomeDeviceObject GetDataObject( )
+        {
+            return new RadomeDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, Radar, PressureTimeseries, TemperatureTimeseries, DewPointTimeseries, StatusTimeseries );
+        }
+
     }
 
-    public class SimpleTrackerDeviceDataReader : SimpleDeviceDataReader
+    public abstract class SimpleTrackerDeviceDataReader : SimpleDeviceDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  td.[Id], \r\n" +
@@ -7469,6 +9487,11 @@ namespace Barrelman.Data.Database
         public SimpleTrackerDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
         }
 
     }
@@ -7491,6 +9514,16 @@ namespace Barrelman.Data.Database
         public SimpleAisDeviceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override AisDeviceObject GetDataObject( )
+        {
+            return new AisDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
         }
 
     }
@@ -7723,6 +9756,39 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( GNSSDEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( SaveSettingsTimeseries );
+            destination.Write( PowerOnTimeseries );
+            destination.Write( TrackingOnTimeseries );
+            destination.Write( RadarPulseTimeseries );
+            destination.Write( TuningTimeseries );
+            destination.Write( BlankSector1Timeseries );
+            destination.Write( Sector1StartTimeseries );
+            destination.Write( Sector1EndTimeseries );
+            destination.Write( BlankSector2Timeseries );
+            destination.Write( Sector2StartTimeseries );
+            destination.Write( Sector2EndTimeseries );
+            destination.Write( EnableAutomaticFrequencyControlTimeseries );
+            destination.Write( AzimuthOffsetTimeseries );
+            destination.Write( EnableSensitivityTimeControlTimeseries );
+            destination.Write( AutomaticSensitivityTimeControlTimeseries );
+            destination.Write( SensitivityTimeControlLevelTimeseries );
+            destination.Write( EnableFastTimeConstantTimeseries );
+            destination.Write( FastTimeConstantLevelTimeseries );
+            destination.Write( FastTimeConstantModeTimeseries );
+            destination.Write( LatitudeTimeseries );
+            destination.Write( LongitudeTimeseries );
+            destination.Write( Radome );
+            destination.Write( GNSSDevice );
+        }
+
+        public override RadarDeviceObject GetDataObject( )
+        {
+            return new RadarDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, SaveSettingsTimeseries, PowerOnTimeseries, TrackingOnTimeseries, RadarPulseTimeseries, TuningTimeseries, BlankSector1Timeseries, Sector1StartTimeseries, Sector1EndTimeseries, BlankSector2Timeseries, Sector2StartTimeseries, Sector2EndTimeseries, EnableAutomaticFrequencyControlTimeseries, AzimuthOffsetTimeseries, EnableSensitivityTimeControlTimeseries, AutomaticSensitivityTimeControlTimeseries, SensitivityTimeControlLevelTimeseries, EnableFastTimeConstantTimeseries, FastTimeConstantLevelTimeseries, FastTimeConstantModeTimeseries, LatitudeTimeseries, LongitudeTimeseries, Radome, GNSSDevice );
+        }
+
     }
 
     public class SimpleWeatherStationDeviceDataReader : SimpleDeviceDataReader
@@ -7827,6 +9893,25 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRO_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( BarometricPressureTimeseries );
+            destination.Write( AirTemperatureTimeseries );
+            destination.Write( WaterTemperatureTimeseries );
+            destination.Write( RelativeHumidityTimeseries );
+            destination.Write( AbsoluteHumidityTimeseries );
+            destination.Write( DewPointTimeseries );
+            destination.Write( WindDirectionTimeseries );
+            destination.Write( WindSpeedTimeseries );
+            destination.Write( Gyro );
+        }
+
+        public override WeatherStationDeviceObject GetDataObject( )
+        {
+            return new WeatherStationDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, BarometricPressureTimeseries, AirTemperatureTimeseries, WaterTemperatureTimeseries, RelativeHumidityTimeseries, AbsoluteHumidityTimeseries, DewPointTimeseries, WindDirectionTimeseries, WindSpeedTimeseries, Gyro );
+        }
+
     }
 
     public class SimpleFacilityDataReader : SimpleItemDataReader
@@ -7891,9 +9976,24 @@ namespace Barrelman.Data.Database
                 return GetDouble( ALTITUDE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+            destination.Write( Type );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( Altitude );
+        }
+
+        public override FacilityObject GetDataObject( )
+        {
+            return new FacilityObject( ObjectState.Stored, Id, RowVersion, Name, Type, Longitude, Latitude, Altitude );
+        }
+
     }
 
-    public class SimpleTrackableItemDataReader : SimpleItemDataReader
+    public abstract class SimpleTrackableItemDataReader : SimpleItemDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  ti.[Id], \r\n" +
@@ -7907,6 +10007,11 @@ namespace Barrelman.Data.Database
         public SimpleTrackableItemDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
         }
 
     }
@@ -7946,6 +10051,18 @@ namespace Barrelman.Data.Database
                 return GetGuid( TYPE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+            destination.Write( Type );
+        }
+
+        public override AircraftObject GetDataObject( )
+        {
+            return new AircraftObject( ObjectState.Stored, Id, RowVersion, Name, Type );
+        }
+
     }
 
     public class SimpleAisAidToNavigationDataReader : SimpleTrackableItemDataReader
@@ -8055,6 +10172,26 @@ namespace Barrelman.Data.Database
                 return GetGuid( OFFPOSITIONTIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+            destination.Write( MMSI );
+            destination.Write( NavigationalAidType );
+            destination.Write( Position );
+            destination.Write( IsVirtual );
+            destination.Write( ToBow );
+            destination.Write( ToStern );
+            destination.Write( ToPort );
+            destination.Write( ToStarboard );
+            destination.Write( OffPositionTimeseries );
+        }
+
+        public override AisAidToNavigationObject GetDataObject( )
+        {
+            return new AisAidToNavigationObject( ObjectState.Stored, Id, RowVersion, Name, MMSI, NavigationalAidType, Position, IsVirtual, ToBow, ToStern, ToPort, ToStarboard, OffPositionTimeseries );
+        }
+
     }
 
     public class SimpleVehicleDataReader : SimpleTrackableItemDataReader
@@ -8092,6 +10229,18 @@ namespace Barrelman.Data.Database
                 return GetGuid( TYPE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+            destination.Write( Type );
+        }
+
+        public override VehicleObject GetDataObject( )
+        {
+            return new VehicleObject( ObjectState.Stored, Id, RowVersion, Name, Type );
+        }
+
     }
 
     public class SimpleVesselDataReader : SimpleTrackableItemDataReader
@@ -8183,6 +10332,24 @@ namespace Barrelman.Data.Database
                 return GetGuid( PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+            destination.Write( Type );
+            destination.Write( ToBow );
+            destination.Write( ToStern );
+            destination.Write( ToPort );
+            destination.Write( ToStarboard );
+            destination.Write( DraughtTimeseries );
+            destination.Write( PersonsOnBoardTimeseries );
+        }
+
+        public override VesselObject GetDataObject( )
+        {
+            return new VesselObject( ObjectState.Stored, Id, RowVersion, Name, Type, ToBow, ToStern, ToPort, ToStarboard, DraughtTimeseries, PersonsOnBoardTimeseries );
+        }
+
     }
 
     public class SimpleItemIdentityLinkDataReader : DataReaderWrapper
@@ -8258,6 +10425,32 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ItemIdentityLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Item );
+            destination.Write( Identity );
+            destination.Write( Start );
+            destination.Write( End );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ItemIdentityLinkObject GetDataObject( )
+        {
+            return new ItemIdentityLinkObject( ObjectState.Stored, Id, RowVersion, Item, Identity, Start, End );
+        }
+
     }
 
     public class SimpleItemParentChildLinkDataReader : DataReaderWrapper
@@ -8319,6 +10512,31 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ItemParentChildLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Parent );
+            destination.Write( Child );
+            destination.Write( Timestamp );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ItemParentChildLinkObject GetDataObject( )
+        {
+            return new ItemParentChildLinkObject( ObjectState.Stored, Id, RowVersion, Parent, Child, Timestamp );
+        }
+
     }
 
     public class SimpleLineInputDeviceCommandDataReader : DataReaderWrapper
@@ -8398,6 +10616,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LineInputDeviceCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( LineInputDevice );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LineInputDeviceCommandObject GetDataObject( )
+        {
+            return new LineInputDeviceCommandObject( ObjectState.Stored, Id, RowVersion, LineInputDevice, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleLineInputDeviceCommandReplyDataReader : DataReaderWrapper
@@ -8477,6 +10722,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LineInputDeviceCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( LineInputDevice );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LineInputDeviceCommandReplyObject GetDataObject( )
+        {
+            return new LineInputDeviceCommandReplyObject( ObjectState.Stored, Id, RowVersion, LineInputDevice, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleLineInputDeviceConfigurationDataReader : DataReaderWrapper
@@ -8826,6 +11098,63 @@ namespace Barrelman.Data.Database
                 return GetString( PAIREDCOMPORT_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LineInputDeviceConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( LineInputDevice );
+            destination.Write( Timestamp );
+            destination.Write( StoreReceivedSentences );
+            destination.Write( StoreSentMessages );
+            destination.Write( StoreUnsentMessages );
+            destination.Write( NMEA );
+            destination.Write( StrictNMEA );
+            destination.Write( ConnectionType );
+            destination.Write( UdpReceivePort );
+            destination.Write( UdpSendHostname );
+            destination.Write( UdpSendPort );
+            destination.Write( TcpHostname );
+            destination.Write( TcpPort );
+            destination.Write( UseHttpLogin );
+            destination.Write( LoginHostname );
+            destination.Write( LoginPort );
+            destination.Write( UserName );
+            destination.Write( Password );
+            destination.Write( ComPort );
+            destination.Write( BaudRate );
+            destination.Write( DataBits );
+            destination.Write( DiscardNull );
+            destination.Write( DtrEnable );
+            destination.Write( Handshake );
+            destination.Write( NewLine );
+            destination.Write( Parity );
+            destination.Write( ParityReplace );
+            destination.Write( ReadBufferSize );
+            destination.Write( ReadTimeout );
+            destination.Write( ReceivedBytesThreshold );
+            destination.Write( RtsEnable );
+            destination.Write( StopBits );
+            destination.Write( WriteBufferSize );
+            destination.Write( WriteTimeout );
+            destination.Write( PairedComPort );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LineInputDeviceConfigurationObject GetDataObject( )
+        {
+            return new LineInputDeviceConfigurationObject( ObjectState.Stored, Id, RowVersion, LineInputDevice, Timestamp, StoreReceivedSentences, StoreSentMessages, StoreUnsentMessages, NMEA, StrictNMEA, ConnectionType, UdpReceivePort, UdpSendHostname, UdpSendPort, TcpHostname, TcpPort, UseHttpLogin, LoginHostname, LoginPort, UserName, Password, ComPort, BaudRate, DataBits, DiscardNull, DtrEnable, Handshake, NewLine, Parity, ParityReplace, ReadBufferSize, ReadTimeout, ReceivedBytesThreshold, RtsEnable, StopBits, WriteBufferSize, WriteTimeout, PairedComPort );
+        }
+
     }
 
     public class SimpleLineInputMessageRoutingDataReader : DataReaderWrapper
@@ -8878,6 +11207,30 @@ namespace Barrelman.Data.Database
                 return GetString( TYPE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LineInputMessageRouting );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( LineInputDevice );
+            destination.Write( Type );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LineInputMessageRoutingObject GetDataObject( )
+        {
+            return new LineInputMessageRoutingObject( ObjectState.Stored, Id, RowVersion, LineInputDevice, Type );
+        }
+
     }
 
     public class SimpleLineInputMessageRoutingDestinationDataReader : DataReaderWrapper
@@ -8930,6 +11283,30 @@ namespace Barrelman.Data.Database
                 return GetGuid( LISTENER_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LineInputMessageRoutingDestination );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Routing );
+            destination.Write( Listener );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LineInputMessageRoutingDestinationObject GetDataObject( )
+        {
+            return new LineInputMessageRoutingDestinationObject( ObjectState.Stored, Id, RowVersion, Routing, Listener );
+        }
+
     }
 
     public class SimpleLineInputWhiteListEntryDataReader : DataReaderWrapper
@@ -8991,6 +11368,31 @@ namespace Barrelman.Data.Database
                 return GetInt32( PORT_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LineInputWhiteListEntry );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( LineInputDevice );
+            destination.Write( HostName );
+            destination.Write( Port );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LineInputWhiteListEntryObject GetDataObject( )
+        {
+            return new LineInputWhiteListEntryObject( ObjectState.Stored, Id, RowVersion, LineInputDevice, HostName, Port );
+        }
+
     }
 
     public class SimpleLogApplicationDataReader : DataReaderWrapper
@@ -9043,6 +11445,30 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogApplication );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+            destination.Write( Description );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogApplicationObject GetDataObject( )
+        {
+            return new LogApplicationObject( ObjectState.Stored, Id, RowVersion, Name, Description );
+        }
+
     }
 
     public class SimpleLogApplicationConfigurationDataReader : DataReaderWrapper
@@ -9203,6 +11629,42 @@ namespace Barrelman.Data.Database
                 return GetBoolean( EMERGENCY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogApplicationConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Application );
+            destination.Write( Timestamp );
+            destination.Write( Finest );
+            destination.Write( Finer );
+            destination.Write( Fine );
+            destination.Write( Info );
+            destination.Write( Notice );
+            destination.Write( Warn );
+            destination.Write( Error );
+            destination.Write( Severe );
+            destination.Write( Critical );
+            destination.Write( Alert );
+            destination.Write( Fatal );
+            destination.Write( Emergency );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogApplicationConfigurationObject GetDataObject( )
+        {
+            return new LogApplicationConfigurationObject( ObjectState.Stored, Id, RowVersion, Application, Timestamp, Finest, Finer, Fine, Info, Notice, Warn, Error, Severe, Critical, Alert, Fatal, Emergency );
+        }
+
     }
 
     public class SimpleLogHostDataReader : DataReaderWrapper
@@ -9255,6 +11717,30 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogHost );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( ComputerName );
+            destination.Write( Description );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogHostObject GetDataObject( )
+        {
+            return new LogHostObject( ObjectState.Stored, Id, RowVersion, ComputerName, Description );
+        }
+
     }
 
     public class SimpleLogHostConfigurationDataReader : DataReaderWrapper
@@ -9415,6 +11901,42 @@ namespace Barrelman.Data.Database
                 return GetBoolean( EMERGENCY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogHostConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Host );
+            destination.Write( Timestamp );
+            destination.Write( Finest );
+            destination.Write( Finer );
+            destination.Write( Fine );
+            destination.Write( Info );
+            destination.Write( Notice );
+            destination.Write( Warn );
+            destination.Write( Error );
+            destination.Write( Severe );
+            destination.Write( Critical );
+            destination.Write( Alert );
+            destination.Write( Fatal );
+            destination.Write( Emergency );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogHostConfigurationObject GetDataObject( )
+        {
+            return new LogHostConfigurationObject( ObjectState.Stored, Id, RowVersion, Host, Timestamp, Finest, Finer, Fine, Info, Notice, Warn, Error, Severe, Critical, Alert, Fatal, Emergency );
+        }
+
     }
 
     public class SimpleLogLocationDataReader : DataReaderWrapper
@@ -9494,6 +12016,33 @@ namespace Barrelman.Data.Database
                 return GetString( METHODNAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogLocation );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( FileName );
+            destination.Write( LineNumber );
+            destination.Write( Namespace );
+            destination.Write( ClassName );
+            destination.Write( MethodName );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogLocationObject GetDataObject( )
+        {
+            return new LogLocationObject( ObjectState.Stored, Id, RowVersion, FileName, LineNumber, Namespace, ClassName, MethodName );
+        }
+
     }
 
     public class SimpleLogProcessDataReader : DataReaderWrapper
@@ -9596,6 +12145,35 @@ namespace Barrelman.Data.Database
                 return GetString( IDENTITY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogProcess );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Application );
+            destination.Write( Host );
+            destination.Write( Started );
+            destination.Write( Stopped );
+            destination.Write( ProcessId );
+            destination.Write( Path );
+            destination.Write( Identity );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogProcessObject GetDataObject( )
+        {
+            return new LogProcessObject( ObjectState.Stored, Id, RowVersion, Application, Host, Started, Stopped, ProcessId, Path, Identity );
+        }
+
     }
 
     public class SimpleLogRecordDataReader : DataReaderWrapper
@@ -9711,6 +12289,37 @@ namespace Barrelman.Data.Database
                 return GetBytes( PROPERTIESDATA_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogRecord );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Thread );
+            destination.Write( SequenceNumber );
+            destination.Write( Level );
+            destination.Write( Timestamp );
+            destination.Write( Depth );
+            destination.Write( Location );
+            destination.Write( Message );
+            destination.Write( ExceptionString );
+            destination.WriteArray( PropertiesData );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogRecordObject GetDataObject( )
+        {
+            return new LogRecordObject( ObjectState.Stored, Id, RowVersion, Thread, SequenceNumber, Level, Timestamp, Depth, Location, Message, ExceptionString, PropertiesData );
+        }
+
     }
 
     public class SimpleLogThreadDataReader : DataReaderWrapper
@@ -9795,6 +12404,33 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogThread );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Process );
+            destination.Write( Started );
+            destination.Write( Stopped );
+            destination.Write( ThreadId );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogThreadObject GetDataObject( )
+        {
+            return new LogThreadObject( ObjectState.Stored, Id, RowVersion, Process, Started, Stopped, ThreadId, Name );
+        }
+
     }
 
     public class SimpleLogTraceEntryDataReader : DataReaderWrapper
@@ -9888,6 +12524,34 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.LogTraceEntry );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Thread );
+            destination.Write( SequenceNumber );
+            destination.Write( Location );
+            destination.Write( Depth );
+            destination.Write( Entered );
+            destination.Write( Ended );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public LogTraceEntryObject GetDataObject( )
+        {
+            return new LogTraceEntryObject( ObjectState.Stored, Id, RowVersion, Thread, SequenceNumber, Location, Depth, Entered, Ended );
+        }
+
     }
 
     public class SimpleMapElementDataReader : DataReaderWrapper
@@ -10021,6 +12685,39 @@ namespace Barrelman.Data.Database
                 return GetBytes( DATA_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MapElement );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Item );
+            destination.Write( ElementType );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Angle );
+            destination.Write( Left );
+            destination.Write( Top );
+            destination.Write( Width );
+            destination.Write( Height );
+            destination.Write( Label );
+            destination.WriteArray( Data );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MapElementObject GetDataObject( )
+        {
+            return new MapElementObject( ObjectState.Stored, Id, RowVersion, Item, ElementType, Latitude, Longitude, Angle, Left, Top, Width, Height, Label, Data );
+        }
+
     }
 
     public class SimpleMapInfoDataReader : DataReaderWrapper
@@ -10127,6 +12824,36 @@ namespace Barrelman.Data.Database
                 return GetBytes( IMAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MapInfo );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Scale );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( NorthWestLatitude );
+            destination.Write( NorthWestLongitude );
+            destination.Write( SouthEastLatitude );
+            destination.Write( SouthEastLongitude );
+            destination.WriteArray( Image );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MapInfoObject GetDataObject( )
+        {
+            return new MapInfoObject( ObjectState.Stored, Id, RowVersion, Scale, Latitude, Longitude, NorthWestLatitude, NorthWestLongitude, SouthEastLatitude, SouthEastLongitude, Image );
+        }
+
     }
 
     public class SimpleMapServiceOptionsDataReader : DataReaderWrapper
@@ -10224,6 +12951,35 @@ namespace Barrelman.Data.Database
                 return GetDouble( IMAGEOFFSETY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MapServiceOptions );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timestamp );
+            destination.Write( IpAddress );
+            destination.Write( Port );
+            destination.Write( ImageScaleFactorX );
+            destination.Write( ImageOffsetX );
+            destination.Write( ImageScaleFactorY );
+            destination.Write( ImageOffsetY );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MapServiceOptionsObject GetDataObject( )
+        {
+            return new MapServiceOptionsObject( ObjectState.Stored, Id, RowVersion, Timestamp, IpAddress, Port, ImageScaleFactorX, ImageOffsetX, ImageScaleFactorY, ImageOffsetY );
+        }
+
     }
 
     public class SimpleMaritimeIdentificationDigitsDataReader : DataReaderWrapper
@@ -10276,6 +13032,30 @@ namespace Barrelman.Data.Database
                 return GetGuid( COUNTRY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MaritimeIdentificationDigits );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Code );
+            destination.Write( Country );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MaritimeIdentificationDigitsObject GetDataObject( )
+        {
+            return new MaritimeIdentificationDigitsObject( ObjectState.Stored, Id, RowVersion, Code, Country );
+        }
+
     }
 
     public class SimpleMediaProxySessionDataReader : DataReaderWrapper
@@ -10337,6 +13117,31 @@ namespace Barrelman.Data.Database
                 return GetGuid( ENABLEDTIMESERIES_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MediaProxySession );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Service );
+            destination.Write( Name );
+            destination.Write( EnabledTimeseries );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MediaProxySessionObject GetDataObject( )
+        {
+            return new MediaProxySessionObject( ObjectState.Stored, Id, RowVersion, Service, Name, EnabledTimeseries );
+        }
+
     }
 
     public class SimpleMediaProxySessionFileDataReader : DataReaderWrapper
@@ -10398,6 +13203,31 @@ namespace Barrelman.Data.Database
                 return GetString( STREAMNAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MediaProxySessionFile );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( ProxySession );
+            destination.Write( Timestamp );
+            destination.Write( StreamName );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MediaProxySessionFileObject GetDataObject( )
+        {
+            return new MediaProxySessionFileObject( ObjectState.Stored, Id, RowVersion, ProxySession, Timestamp, StreamName );
+        }
+
     }
 
     public class SimpleMediaProxySessionOptionsDataReader : DataReaderWrapper
@@ -10549,6 +13379,41 @@ namespace Barrelman.Data.Database
                 return GetString( VIDEODIRECTORY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MediaProxySessionOptions );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( ProxySession );
+            destination.Write( Timestamp );
+            destination.Write( SourceStreamUrl );
+            destination.Write( StreamName );
+            destination.Write( Mode );
+            destination.Write( TunnelOverHTTPPortNumber );
+            destination.Write( Username );
+            destination.Write( Password );
+            destination.Write( RecorderPortNumber );
+            destination.Write( SessionType );
+            destination.Write( MaxFileTime );
+            destination.Write( MaxFileRetention );
+            destination.Write( VideoDirectory );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MediaProxySessionOptionsObject GetDataObject( )
+        {
+            return new MediaProxySessionOptionsObject( ObjectState.Stored, Id, RowVersion, ProxySession, Timestamp, SourceStreamUrl, StreamName, Mode, TunnelOverHTTPPortNumber, Username, Password, RecorderPortNumber, SessionType, MaxFileTime, MaxFileRetention, VideoDirectory );
+        }
+
     }
 
     public class SimpleMediaServiceDataReader : DataReaderWrapper
@@ -10592,6 +13457,29 @@ namespace Barrelman.Data.Database
                 return GetGuid( ENABLEDTIMESERIES_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MediaService );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( EnabledTimeseries );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MediaServiceObject GetDataObject( )
+        {
+            return new MediaServiceObject( ObjectState.Stored, Id, RowVersion, EnabledTimeseries );
+        }
+
     }
 
     public class SimpleMediaServiceOptionsDataReader : DataReaderWrapper
@@ -10662,9 +13550,35 @@ namespace Barrelman.Data.Database
                 return GetInt32( HTTPPORTNUMBER_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.MediaServiceOptions );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( MediaService );
+            destination.Write( Timestamp );
+            destination.Write( RtspPortNumber );
+            destination.Write( HttpPortNumber );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public MediaServiceOptionsObject GetDataObject( )
+        {
+            return new MediaServiceOptionsObject( ObjectState.Stored, Id, RowVersion, MediaService, Timestamp, RtspPortNumber, HttpPortNumber );
+        }
+
     }
 
-    public class SimpleNamespaceElementDataReader : DataReaderWrapper
+    public abstract class SimpleNamespaceElementDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  ne.[Id], \r\n" +
@@ -10732,6 +13646,28 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.NamespaceElement );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Namespace );
+            destination.Write( Name );
+            destination.Write( Description );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract NamespaceElementObject GetDataObject( );
+
     }
 
     public class SimpleElementTypeDataReader : SimpleNamespaceElementDataReader
@@ -10753,6 +13689,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override ElementTypeObject GetDataObject( )
+        {
+            return new ElementTypeObject( ObjectState.Stored, Id, RowVersion, Namespace, Name, Description );
+        }
+
     }
 
     public class SimpleNamespaceDataReader : SimpleNamespaceElementDataReader
@@ -10772,6 +13718,16 @@ namespace Barrelman.Data.Database
         public SimpleNamespaceDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override NamespaceObject GetDataObject( )
+        {
+            return new NamespaceObject( ObjectState.Stored, Id, RowVersion, Namespace, Name, Description );
         }
 
     }
@@ -10871,6 +13827,35 @@ namespace Barrelman.Data.Database
                 return GetBytes( TRACE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.OilSpill );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( OilSpillDetector );
+            destination.Write( Timestamp );
+            destination.Write( OilArea );
+            destination.WriteArray( Shape );
+            destination.WriteArray( BSI );
+            destination.WriteArray( Oil );
+            destination.WriteArray( Trace );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public OilSpillObject GetDataObject( )
+        {
+            return new OilSpillObject( ObjectState.Stored, Id, RowVersion, OilSpillDetector, Timestamp, OilArea, Shape, BSI, Oil, Trace );
+        }
+
     }
 
     public class SimpleOilSpillDetectorCommandDataReader : DataReaderWrapper
@@ -10950,6 +13935,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.OilSpillDetectorCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( OilSpillDetector );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public OilSpillDetectorCommandObject GetDataObject( )
+        {
+            return new OilSpillDetectorCommandObject( ObjectState.Stored, Id, RowVersion, OilSpillDetector, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleOilSpillDetectorCommandReplyDataReader : DataReaderWrapper
@@ -11029,6 +14041,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.OilSpillDetectorCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( OilSpillDetector );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public OilSpillDetectorCommandReplyObject GetDataObject( )
+        {
+            return new OilSpillDetectorCommandReplyObject( ObjectState.Stored, Id, RowVersion, OilSpillDetector, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleOilSpillDetectorConfigurationDataReader : DataReaderWrapper
@@ -11279,6 +14318,52 @@ namespace Barrelman.Data.Database
                 return GetBoolean( USEPROXYSERVER_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.OilSpillDetectorConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( OilSpillDetector );
+            destination.Write( Timestamp );
+            destination.Write( Range );
+            destination.Write( StartAngle );
+            destination.Write( EndAngle );
+            destination.Write( StartRange );
+            destination.Write( EndRange );
+            destination.Write( UpdateRate );
+            destination.Write( StatusSendTime );
+            destination.Write( DrawBorder );
+            destination.WriteArray( Colors );
+            destination.Write( SendToServer );
+            destination.Write( Directory );
+            destination.Write( TransparentWater );
+            destination.Write( SavePictures );
+            destination.Write( SendAsTarget );
+            destination.Write( WriteLog );
+            destination.Write( TargetFilePrefix );
+            destination.Write( TargetMMSI );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( TestSourceEnabled );
+            destination.Write( ProxyServer );
+            destination.Write( UseProxyServer );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public OilSpillDetectorConfigurationObject GetDataObject( )
+        {
+            return new OilSpillDetectorConfigurationObject( ObjectState.Stored, Id, RowVersion, OilSpillDetector, Timestamp, Range, StartAngle, EndAngle, StartRange, EndRange, UpdateRate, StatusSendTime, DrawBorder, Colors, SendToServer, Directory, TransparentWater, SavePictures, SendAsTarget, WriteLog, TargetFilePrefix, TargetMMSI, Latitude, Longitude, TestSourceEnabled, ProxyServer, UseProxyServer );
+        }
+
     }
 
     public class SimplePosition2DTimeseriesValueDataReader : DataReaderWrapper
@@ -11349,6 +14434,32 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( Y_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Position2DTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( X );
+            destination.Write( Y );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public Position2DTimeseriesValueObject GetDataObject( )
+        {
+            return new Position2DTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, X, Y );
+        }
+
     }
 
     public class SimplePosition3DTimeseriesValueDataReader : DataReaderWrapper
@@ -11428,6 +14539,33 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( Z_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Position3DTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( X );
+            destination.Write( Y );
+            destination.Write( Z );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public Position3DTimeseriesValueObject GetDataObject( )
+        {
+            return new Position3DTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, X, Y, Z );
+        }
+
     }
 
     public class SimpleProcessTrackValueResultDataReader : DataReaderWrapper
@@ -11480,9 +14618,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( TRACKID_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ProcessTrackValueResult );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( CreatedNewTrack );
+            destination.Write( TrackId );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ProcessTrackValueResultObject GetDataObject( )
+        {
+            return new ProcessTrackValueResultObject( ObjectState.Stored, Id, RowVersion, CreatedNewTrack, TrackId );
+        }
+
     }
 
-    public class SimplePropertyDataReader : DataReaderWrapper
+    public abstract class SimplePropertyDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  p.[Id], \r\n" +
@@ -11541,6 +14703,27 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEFINITION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Property );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Element );
+            destination.Write( Definition );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract PropertyObject GetDataObject( );
+
     }
 
     public class SimpleBinaryPropertyDataReader : SimplePropertyDataReader
@@ -11571,6 +14754,17 @@ namespace Barrelman.Data.Database
                 return GetBytes( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.WriteArray( Value );
+        }
+
+        public override BinaryPropertyObject GetDataObject( )
+        {
+            return new BinaryPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleBooleanPropertyDataReader : SimplePropertyDataReader
@@ -11601,6 +14795,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override BooleanPropertyObject GetDataObject( )
+        {
+            return new BooleanPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleBytePropertyDataReader : SimplePropertyDataReader
@@ -11631,6 +14836,17 @@ namespace Barrelman.Data.Database
                 return GetByte( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override BytePropertyObject GetDataObject( )
+        {
+            return new BytePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleDateTimePropertyDataReader : SimplePropertyDataReader
@@ -11661,6 +14877,17 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( VALUE_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override DateTimePropertyObject GetDataObject( )
+        {
+            return new DateTimePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleDoublePropertyDataReader : SimplePropertyDataReader
@@ -11691,6 +14918,17 @@ namespace Barrelman.Data.Database
                 return GetDouble( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override DoublePropertyObject GetDataObject( )
+        {
+            return new DoublePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleGuidPropertyDataReader : SimplePropertyDataReader
@@ -11721,6 +14959,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override GuidPropertyObject GetDataObject( )
+        {
+            return new GuidPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleInt16PropertyDataReader : SimplePropertyDataReader
@@ -11751,6 +15000,17 @@ namespace Barrelman.Data.Database
                 return GetInt16( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override Int16PropertyObject GetDataObject( )
+        {
+            return new Int16PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleInt32PropertyDataReader : SimplePropertyDataReader
@@ -11781,6 +15041,17 @@ namespace Barrelman.Data.Database
                 return GetInt32( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override Int32PropertyObject GetDataObject( )
+        {
+            return new Int32PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleInt64PropertyDataReader : SimplePropertyDataReader
@@ -11811,6 +15082,17 @@ namespace Barrelman.Data.Database
                 return GetInt64( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override Int64PropertyObject GetDataObject( )
+        {
+            return new Int64PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleReferencePropertyDataReader : SimplePropertyDataReader
@@ -11841,6 +15123,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override ReferencePropertyObject GetDataObject( )
+        {
+            return new ReferencePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleSBytePropertyDataReader : SimplePropertyDataReader
@@ -11871,6 +15164,17 @@ namespace Barrelman.Data.Database
                 return GetSByte( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override SBytePropertyObject GetDataObject( )
+        {
+            return new SBytePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleSinglePropertyDataReader : SimplePropertyDataReader
@@ -11901,6 +15205,17 @@ namespace Barrelman.Data.Database
                 return GetFloat( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override SinglePropertyObject GetDataObject( )
+        {
+            return new SinglePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleStringPropertyDataReader : SimplePropertyDataReader
@@ -11931,9 +15246,20 @@ namespace Barrelman.Data.Database
                 return GetString( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override StringPropertyObject GetDataObject( )
+        {
+            return new StringPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
-    public class SimpleTimeseriesPropertyDataReader : SimplePropertyDataReader
+    public abstract class SimpleTimeseriesPropertyDataReader : SimplePropertyDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  tp.[Id], \r\n" +
@@ -11949,6 +15275,11 @@ namespace Barrelman.Data.Database
         public SimpleTimeseriesPropertyDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
         }
 
     }
@@ -11981,6 +15312,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override BinaryTimeseriesPropertyObject GetDataObject( )
+        {
+            return new BinaryTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleBooleanTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12011,6 +15353,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override BooleanTimeseriesPropertyObject GetDataObject( )
+        {
+            return new BooleanTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleByteTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12041,6 +15394,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override ByteTimeseriesPropertyObject GetDataObject( )
+        {
+            return new ByteTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleDateTimeTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12071,6 +15435,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override DateTimeTimeseriesPropertyObject GetDataObject( )
+        {
+            return new DateTimeTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleDoubleTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12101,6 +15476,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override DoubleTimeseriesPropertyObject GetDataObject( )
+        {
+            return new DoubleTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleGuidTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12131,6 +15517,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override GuidTimeseriesPropertyObject GetDataObject( )
+        {
+            return new GuidTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleInt16TimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12161,6 +15558,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override Int16TimeseriesPropertyObject GetDataObject( )
+        {
+            return new Int16TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleInt32TimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12191,6 +15599,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override Int32TimeseriesPropertyObject GetDataObject( )
+        {
+            return new Int32TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleInt64TimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12221,6 +15640,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override Int64TimeseriesPropertyObject GetDataObject( )
+        {
+            return new Int64TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleReferenceTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12251,6 +15681,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override ReferenceTimeseriesPropertyObject GetDataObject( )
+        {
+            return new ReferenceTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleSByteTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12281,6 +15722,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override SByteTimeseriesPropertyObject GetDataObject( )
+        {
+            return new SByteTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleSingleTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12311,6 +15763,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override SingleTimeseriesPropertyObject GetDataObject( )
+        {
+            return new SingleTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleStringTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12341,6 +15804,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override StringTimeseriesPropertyObject GetDataObject( )
+        {
+            return new StringTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleTimeSpanTimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12371,6 +15845,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override TimeSpanTimeseriesPropertyObject GetDataObject( )
+        {
+            return new TimeSpanTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleUInt16TimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12401,6 +15886,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override UInt16TimeseriesPropertyObject GetDataObject( )
+        {
+            return new UInt16TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleUInt32TimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12431,6 +15927,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override UInt32TimeseriesPropertyObject GetDataObject( )
+        {
+            return new UInt32TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleUInt64TimeseriesPropertyDataReader : SimpleTimeseriesPropertyDataReader
@@ -12461,6 +15968,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( TIMESERIES_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Timeseries );
+        }
+
+        public override UInt64TimeseriesPropertyObject GetDataObject( )
+        {
+            return new UInt64TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Timeseries );
+        }
+
     }
 
     public class SimpleTimeSpanPropertyDataReader : SimplePropertyDataReader
@@ -12491,6 +16009,17 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( VALUE_FIELD_ID ) );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override TimeSpanPropertyObject GetDataObject( )
+        {
+            return new TimeSpanPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleUInt16PropertyDataReader : SimplePropertyDataReader
@@ -12521,6 +16050,17 @@ namespace Barrelman.Data.Database
                 return GetUInt16( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override UInt16PropertyObject GetDataObject( )
+        {
+            return new UInt16PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleUInt32PropertyDataReader : SimplePropertyDataReader
@@ -12551,6 +16091,17 @@ namespace Barrelman.Data.Database
                 return GetUInt32( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override UInt32PropertyObject GetDataObject( )
+        {
+            return new UInt32PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
     public class SimpleUInt64PropertyDataReader : SimplePropertyDataReader
@@ -12581,9 +16132,20 @@ namespace Barrelman.Data.Database
                 return GetInt64( VALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Value );
+        }
+
+        public override UInt64PropertyObject GetDataObject( )
+        {
+            return new UInt64PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Value );
+        }
+
     }
 
-    public class SimplePropertyDefinitionDataReader : DataReaderWrapper
+    public abstract class SimplePropertyDefinitionDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  pd.[Id], \r\n" +
@@ -12651,6 +16213,28 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.PropertyDefinition );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( ElementType );
+            destination.Write( Name );
+            destination.Write( Description );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract PropertyDefinitionObject GetDataObject( );
+
     }
 
     public class SimpleBinaryPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12682,6 +16266,17 @@ namespace Barrelman.Data.Database
                 return GetBytes( DEFAULTVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.WriteArray( DefaultValue );
+        }
+
+        public override BinaryPropertyDefinitionObject GetDataObject( )
+        {
+            return new BinaryPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue );
+        }
+
     }
 
     public class SimpleBooleanPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12713,6 +16308,17 @@ namespace Barrelman.Data.Database
                 return GetBoolean( DEFAULTVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+        }
+
+        public override BooleanPropertyDefinitionObject GetDataObject( )
+        {
+            return new BooleanPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue );
+        }
+
     }
 
     public class SimpleBytePropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12762,6 +16368,19 @@ namespace Barrelman.Data.Database
                 return GetByte( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override BytePropertyDefinitionObject GetDataObject( )
+        {
+            return new BytePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleDateTimePropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12811,6 +16430,19 @@ namespace Barrelman.Data.Database
                 return GetString( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override DateTimePropertyDefinitionObject GetDataObject( )
+        {
+            return new DateTimePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleDoublePropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12860,6 +16492,19 @@ namespace Barrelman.Data.Database
                 return GetDouble( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override DoublePropertyDefinitionObject GetDataObject( )
+        {
+            return new DoublePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleGuidPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12891,6 +16536,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEFAULTVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+        }
+
+        public override GuidPropertyDefinitionObject GetDataObject( )
+        {
+            return new GuidPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue );
+        }
+
     }
 
     public class SimpleInt16PropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12940,6 +16596,19 @@ namespace Barrelman.Data.Database
                 return GetInt16( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override Int16PropertyDefinitionObject GetDataObject( )
+        {
+            return new Int16PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleInt32PropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -12989,6 +16658,19 @@ namespace Barrelman.Data.Database
                 return GetInt32( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override Int32PropertyDefinitionObject GetDataObject( )
+        {
+            return new Int32PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleInt64PropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13038,6 +16720,19 @@ namespace Barrelman.Data.Database
                 return GetInt64( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override Int64PropertyDefinitionObject GetDataObject( )
+        {
+            return new Int64PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleReferencePropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13078,6 +16773,18 @@ namespace Barrelman.Data.Database
                 return GetGuid( REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( ReferencedElementType );
+        }
+
+        public override ReferencePropertyDefinitionObject GetDataObject( )
+        {
+            return new ReferencePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, ReferencedElementType );
+        }
+
     }
 
     public class SimpleSBytePropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13127,6 +16834,19 @@ namespace Barrelman.Data.Database
                 return GetSByte( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override SBytePropertyDefinitionObject GetDataObject( )
+        {
+            return new SBytePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleSinglePropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13176,6 +16896,19 @@ namespace Barrelman.Data.Database
                 return GetFloat( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override SinglePropertyDefinitionObject GetDataObject( )
+        {
+            return new SinglePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleStringPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13216,9 +16949,21 @@ namespace Barrelman.Data.Database
                 return GetString( PATTERN_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( Pattern );
+        }
+
+        public override StringPropertyDefinitionObject GetDataObject( )
+        {
+            return new StringPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, Pattern );
+        }
+
     }
 
-    public class SimpleTimeseriesPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
+    public abstract class SimpleTimeseriesPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  tpd.[Id], \r\n" +
@@ -13235,6 +16980,11 @@ namespace Barrelman.Data.Database
         public SimpleTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
         }
 
     }
@@ -13258,6 +17008,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override BinaryTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new BinaryTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+        }
+
     }
 
     public class SimpleBooleanTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13277,6 +17037,16 @@ namespace Barrelman.Data.Database
         public SimpleBooleanTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override BooleanTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new BooleanTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
         }
 
     }
@@ -13319,6 +17089,18 @@ namespace Barrelman.Data.Database
                 return GetByte( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override ByteTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new ByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleDateTimeTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13359,6 +17141,18 @@ namespace Barrelman.Data.Database
                 return GetString( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override DateTimeTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new DateTimeTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleDoubleTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13399,6 +17193,18 @@ namespace Barrelman.Data.Database
                 return GetDouble( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override DoubleTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new DoubleTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleGuidTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13418,6 +17224,16 @@ namespace Barrelman.Data.Database
         public SimpleGuidTimeseriesPropertyDefinitionDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override GuidTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new GuidTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
         }
 
     }
@@ -13460,6 +17276,18 @@ namespace Barrelman.Data.Database
                 return GetInt16( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override Int16TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new Int16TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleInt32TimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13500,6 +17328,18 @@ namespace Barrelman.Data.Database
                 return GetInt32( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override Int32TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new Int32TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleInt64TimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13540,6 +17380,18 @@ namespace Barrelman.Data.Database
                 return GetInt64( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override Int64TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new Int64TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleReferenceTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13571,6 +17423,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( ReferencedElementType );
+        }
+
+        public override ReferenceTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new ReferenceTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, ReferencedElementType );
+        }
+
     }
 
     public class SimpleSByteTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13611,6 +17474,18 @@ namespace Barrelman.Data.Database
                 return GetSByte( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override SByteTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new SByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleSingleTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13651,6 +17526,18 @@ namespace Barrelman.Data.Database
                 return GetFloat( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override SingleTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new SingleTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleStringTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13682,6 +17569,17 @@ namespace Barrelman.Data.Database
                 return GetString( PATTERN_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Pattern );
+        }
+
+        public override StringTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new StringTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Pattern );
+        }
+
     }
 
     public class SimpleTimeSpanTimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13722,6 +17620,18 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( MAXVALUE_FIELD_ID ) );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override TimeSpanTimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new TimeSpanTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleUInt16TimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13762,6 +17672,18 @@ namespace Barrelman.Data.Database
                 return GetUInt16( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override UInt16TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new UInt16TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleUInt32TimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13802,6 +17724,18 @@ namespace Barrelman.Data.Database
                 return GetUInt32( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override UInt32TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new UInt32TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleUInt64TimeseriesPropertyDefinitionDataReader : SimpleTimeseriesPropertyDefinitionDataReader
@@ -13842,6 +17776,18 @@ namespace Barrelman.Data.Database
                 return GetInt64( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override UInt64TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            return new UInt64TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleTimeSpanPropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13891,6 +17837,19 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( MAXVALUE_FIELD_ID ) );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override TimeSpanPropertyDefinitionObject GetDataObject( )
+        {
+            return new TimeSpanPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleUInt16PropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13940,6 +17899,19 @@ namespace Barrelman.Data.Database
                 return GetUInt16( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override UInt16PropertyDefinitionObject GetDataObject( )
+        {
+            return new UInt16PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleUInt32PropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -13989,6 +17961,19 @@ namespace Barrelman.Data.Database
                 return GetUInt32( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override UInt32PropertyDefinitionObject GetDataObject( )
+        {
+            return new UInt32PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleUInt64PropertyDefinitionDataReader : SimplePropertyDefinitionDataReader
@@ -14038,6 +18023,19 @@ namespace Barrelman.Data.Database
                 return GetInt64( MAXVALUE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( DefaultValue );
+            destination.Write( MinValue );
+            destination.Write( MaxValue );
+        }
+
+        public override UInt64PropertyDefinitionObject GetDataObject( )
+        {
+            return new UInt64PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DefaultValue, MinValue, MaxValue );
+        }
+
     }
 
     public class SimpleRadarAlarmStatusDataReader : DataReaderWrapper
@@ -14099,6 +18097,31 @@ namespace Barrelman.Data.Database
                 return GetEnum<Types.AlarmState>( TYPE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarAlarmStatus );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( Type );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadarAlarmStatusObject GetDataObject( )
+        {
+            return new RadarAlarmStatusObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Type );
+        }
+
     }
 
     public class SimpleRadarCommandDataReader : DataReaderWrapper
@@ -14187,6 +18210,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public virtual RadarCommandObject GetDataObject( )
+        {
+            return new RadarCommandObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleRadarCommandGetStatusDataReader : SimpleRadarCommandDataReader
@@ -14208,6 +18258,16 @@ namespace Barrelman.Data.Database
         public SimpleRadarCommandGetStatusDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override RadarCommandGetStatusObject GetDataObject( )
+        {
+            return new RadarCommandGetStatusObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
         }
 
     }
@@ -14298,6 +18358,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public virtual RadarCommandReplyObject GetDataObject( )
+        {
+            return new RadarCommandReplyObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleRadarCommandReplyGetStatusDataReader : SimpleRadarCommandReplyDataReader
@@ -14367,6 +18454,21 @@ namespace Barrelman.Data.Database
                 return GetBoolean( TX_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( AzimuthCount );
+            destination.Write( TriggerCount );
+            destination.Write( RotationCount );
+            destination.Write( Pulse );
+            destination.Write( Tx );
+        }
+
+        public override RadarCommandReplyGetStatusObject GetDataObject( )
+        {
+            return new RadarCommandReplyGetStatusObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Command, Status, Message, AzimuthCount, TriggerCount, RotationCount, Pulse, Tx );
+        }
+
     }
 
     public class SimpleRadarConfigurationDataReader : DataReaderWrapper
@@ -14644,6 +18746,55 @@ namespace Barrelman.Data.Database
                 return GetString( NMEARECEIVERSOURCEID_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( RadarProtocolVersion );
+            destination.Write( RadarIPAddress );
+            destination.Write( RadarPort );
+            destination.Write( RadarConfigurationPort );
+            destination.Write( SkipMagicTimeout );
+            destination.Write( ReadTimeout );
+            destination.Write( SynchronizationInterval );
+            destination.Write( TargetsRefreshRate );
+            destination.Write( Range );
+            destination.Write( SectorCount );
+            destination.Write( SectorOffset );
+            destination.Write( ImageColor );
+            destination.Write( ImageSubstitutionColor );
+            destination.Write( TransparentColor );
+            destination.Write( ImageScaleFactorX );
+            destination.Write( ImageOffsetX );
+            destination.Write( ImageScaleFactorY );
+            destination.Write( ImageOffsetY );
+            destination.Write( RadarImageType );
+            destination.Write( TrackColor );
+            destination.Write( VectorColor );
+            destination.Write( EnableNmea );
+            destination.Write( NmeaReceiverIPAddress );
+            destination.Write( NmeaReceiverPort );
+            destination.Write( NmeaReceiverSourceId );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadarConfigurationObject GetDataObject( )
+        {
+            return new RadarConfigurationObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, RadarProtocolVersion, RadarIPAddress, RadarPort, RadarConfigurationPort, SkipMagicTimeout, ReadTimeout, SynchronizationInterval, TargetsRefreshRate, Range, SectorCount, SectorOffset, ImageColor, ImageSubstitutionColor, TransparentColor, ImageScaleFactorX, ImageOffsetX, ImageScaleFactorY, ImageOffsetY, RadarImageType, TrackColor, VectorColor, EnableNmea, NmeaReceiverIPAddress, NmeaReceiverPort, NmeaReceiverSourceId );
+        }
+
     }
 
     public class SimpleRadarImageDataReader : DataReaderWrapper
@@ -14732,6 +18883,34 @@ namespace Barrelman.Data.Database
                 return GetBytes( IMAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarImage );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( Depth );
+            destination.Write( Resolution );
+            destination.Write( Range );
+            destination.WriteArray( Image );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadarImageObject GetDataObject( )
+        {
+            return new RadarImageObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Depth, Resolution, Range, Image );
+        }
+
     }
 
     public class SimpleRadarRawTrackTableDataReader : DataReaderWrapper
@@ -14802,6 +18981,32 @@ namespace Barrelman.Data.Database
                 return GetBytes( TABLE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarRawTrackTable );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( Count );
+            destination.WriteArray( Table );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadarRawTrackTableObject GetDataObject( )
+        {
+            return new RadarRawTrackTableObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Count, Table );
+        }
+
     }
 
     public class SimpleRadarStatusDataReader : DataReaderWrapper
@@ -14908,6 +19113,36 @@ namespace Barrelman.Data.Database
                 return GetBoolean( TRACKING_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadarStatus );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radar );
+            destination.Write( Timestamp );
+            destination.Write( AzimuthCount );
+            destination.Write( TriggerCount );
+            destination.Write( RotationTime );
+            destination.Write( Pulse );
+            destination.Write( Tx );
+            destination.Write( Tracking );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadarStatusObject GetDataObject( )
+        {
+            return new RadarStatusObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, AzimuthCount, TriggerCount, RotationTime, Pulse, Tx, Tracking );
+        }
+
     }
 
     public class SimpleRadioCommandDataReader : DataReaderWrapper
@@ -14987,6 +19222,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadioCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radio );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadioCommandObject GetDataObject( )
+        {
+            return new RadioCommandObject( ObjectState.Stored, Id, RowVersion, Radio, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleRadioCommandReplyDataReader : DataReaderWrapper
@@ -15066,6 +19328,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadioCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radio );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadioCommandReplyObject GetDataObject( )
+        {
+            return new RadioCommandReplyObject( ObjectState.Stored, Id, RowVersion, Radio, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleRadioConfigurationDataReader : DataReaderWrapper
@@ -15181,6 +19470,37 @@ namespace Barrelman.Data.Database
                 return GetInt32( ED137PORT_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadioConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radio );
+            destination.Write( Timestamp );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( PlaybackUrl );
+            destination.Write( RadioIPAddress );
+            destination.Write( RadioPort );
+            destination.Write( Ed137IPAddress );
+            destination.Write( Ed137Port );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadioConfigurationObject GetDataObject( )
+        {
+            return new RadioConfigurationObject( ObjectState.Stored, Id, RowVersion, Radio, Timestamp, Longitude, Latitude, PlaybackUrl, RadioIPAddress, RadioPort, Ed137IPAddress, Ed137Port );
+        }
+
     }
 
     public class SimpleRadomeCommandDataReader : DataReaderWrapper
@@ -15260,6 +19580,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadomeCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radome );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadomeCommandObject GetDataObject( )
+        {
+            return new RadomeCommandObject( ObjectState.Stored, Id, RowVersion, Radome, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleRadomeCommandReplyDataReader : DataReaderWrapper
@@ -15339,6 +19686,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadomeCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radome );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadomeCommandReplyObject GetDataObject( )
+        {
+            return new RadomeCommandReplyObject( ObjectState.Stored, Id, RowVersion, Radome, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleRadomeConfigurationDataReader : DataReaderWrapper
@@ -15436,6 +19810,35 @@ namespace Barrelman.Data.Database
                 return GetDouble( HIGHTEMPERATURELIMIT_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.RadomeConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Radome );
+            destination.Write( Timestamp );
+            destination.Write( Interval );
+            destination.Write( LowPressureLimit );
+            destination.Write( HighPressureLimit );
+            destination.Write( LowTemperatureLimit );
+            destination.Write( HighTemperatureLimit );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public RadomeConfigurationObject GetDataObject( )
+        {
+            return new RadomeConfigurationObject( ObjectState.Stored, Id, RowVersion, Radome, Timestamp, Interval, LowPressureLimit, HighPressureLimit, LowTemperatureLimit, HighTemperatureLimit );
+        }
+
     }
 
     public class SimpleReferenceTimeseriesValueDataReader : DataReaderWrapper
@@ -15497,6 +19900,31 @@ namespace Barrelman.Data.Database
                 return GetGuid( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ReferenceTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ReferenceTimeseriesValueObject GetDataObject( )
+        {
+            return new ReferenceTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleSByteTimeseriesValueDataReader : DataReaderWrapper
@@ -15558,6 +19986,31 @@ namespace Barrelman.Data.Database
                 return GetNullableSByte( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SByteTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public SByteTimeseriesValueObject GetDataObject( )
+        {
+            return new SByteTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleSecurityDomainDataReader : DataReaderWrapper
@@ -15610,9 +20063,33 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SecurityDomain );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+            destination.Write( Description );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public SecurityDomainObject GetDataObject( )
+        {
+            return new SecurityDomainObject( ObjectState.Stored, Id, RowVersion, Name, Description );
+        }
+
     }
 
-    public class SimpleSecurityIdentifierDataReader : DataReaderWrapper
+    public abstract class SimpleSecurityIdentifierDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  si.[Id], \r\n" +
@@ -15680,6 +20157,28 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SecurityIdentifier );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Domain );
+            destination.Write( Identity );
+            destination.Write( Description );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract SecurityIdentifierObject GetDataObject( );
+
     }
 
     public class SimpleSecurityLoginDataReader : SimpleSecurityIdentifierDataReader
@@ -15699,6 +20198,16 @@ namespace Barrelman.Data.Database
         public SimpleSecurityLoginDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override SecurityLoginObject GetDataObject( )
+        {
+            return new SecurityLoginObject( ObjectState.Stored, Id, RowVersion, Domain, Identity, Description );
         }
 
     }
@@ -15732,6 +20241,17 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Name );
+        }
+
+        public override SecurityRoleObject GetDataObject( )
+        {
+            return new SecurityRoleObject( ObjectState.Stored, Id, RowVersion, Domain, Identity, Description, Name );
+        }
+
     }
 
     public class SimpleSecurityIdentifierRoleLinkDataReader : DataReaderWrapper
@@ -15807,6 +20327,32 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SecurityIdentifierRoleLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Member );
+            destination.Write( Role );
+            destination.Write( Start );
+            destination.Write( End );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public SecurityIdentifierRoleLinkObject GetDataObject( )
+        {
+            return new SecurityIdentifierRoleLinkObject( ObjectState.Stored, Id, RowVersion, Member, Role, Start, End );
+        }
+
     }
 
     public class SimpleSecurityLoginSessionDataReader : DataReaderWrapper
@@ -15900,6 +20446,34 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGEQUEUENAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SecurityLoginSession );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Login );
+            destination.Write( FromTime );
+            destination.Write( ThroughTime );
+            destination.Write( ClientSession );
+            destination.Write( NotificationQueueName );
+            destination.Write( MessageQueueName );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public SecurityLoginSessionObject GetDataObject( )
+        {
+            return new SecurityLoginSessionObject( ObjectState.Stored, Id, RowVersion, Login, FromTime, ThroughTime, ClientSession, NotificationQueueName, MessageQueueName );
+        }
+
     }
 
     public class SimpleSecurityPermissionDataReader : DataReaderWrapper
@@ -15997,6 +20571,35 @@ namespace Barrelman.Data.Database
                 return GetBoolean( CANDELETE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SecurityPermission );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Identifier );
+            destination.Write( Timestamp );
+            destination.Write( TypeCode );
+            destination.Write( CanCreate );
+            destination.Write( CanRead );
+            destination.Write( CanUpdate );
+            destination.Write( CanDelete );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public SecurityPermissionObject GetDataObject( )
+        {
+            return new SecurityPermissionObject( ObjectState.Stored, Id, RowVersion, Identifier, Timestamp, TypeCode, CanCreate, CanRead, CanUpdate, CanDelete );
+        }
+
     }
 
     public class SimpleSingleTimeseriesValueDataReader : DataReaderWrapper
@@ -16058,6 +20661,31 @@ namespace Barrelman.Data.Database
                 return GetNullableFloat( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.SingleTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public SingleTimeseriesValueObject GetDataObject( )
+        {
+            return new SingleTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleStringTimeseriesValueDataReader : DataReaderWrapper
@@ -16119,9 +20747,34 @@ namespace Barrelman.Data.Database
                 return GetString( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.StringTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public StringTimeseriesValueObject GetDataObject( )
+        {
+            return new StringTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
-    public class SimpleTimeseriesCatalogElementDataReader : DataReaderWrapper
+    public abstract class SimpleTimeseriesCatalogElementDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  tce.[Id], \r\n" +
@@ -16180,9 +20833,30 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TimeseriesCatalogElement );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Catalog );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract TimeseriesCatalogElementObject GetDataObject( );
+
     }
 
-    public class SimpleTimeseriesDataReader : SimpleTimeseriesCatalogElementDataReader
+    public abstract class SimpleTimeseriesDataReader : SimpleTimeseriesCatalogElementDataReader
     {
         public new const string BaseQuery = "SELECT \r\n" +
             "  t.[Id], \r\n" +
@@ -16210,6 +20884,12 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( MAXRETENTION_FIELD_ID ) );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( MaxRetention );
+        }
+
     }
 
     public class SimpleBinaryTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -16231,6 +20911,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override BinaryTimeseriesObject GetDataObject( )
+        {
+            return new BinaryTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleBooleanTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -16250,6 +20940,16 @@ namespace Barrelman.Data.Database
         public SimpleBooleanTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override BooleanTimeseriesObject GetDataObject( )
+        {
+            return new BooleanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -16283,6 +20983,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( AIDTONAVIGATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( AidToNavigation );
+        }
+
+        public override AisAidToNavigationOffPositionTimeseriesObject GetDataObject( )
+        {
+            return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, AidToNavigation );
+        }
+
     }
 
     public class SimpleDeviceEnabledTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16314,6 +21025,17 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( DEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Device );
+        }
+
+        public override DeviceEnabledTimeseriesObject GetDataObject( )
+        {
+            return new DeviceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Device );
+        }
+
     }
 
     public class SimpleRadarAutomaticSensitivityTimeControlTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16345,6 +21067,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarAutomaticSensitivityTimeControlTimeseriesObject GetDataObject( )
+        {
+            return new RadarAutomaticSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarBlankSector1TimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16376,6 +21109,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarBlankSector1TimeseriesObject GetDataObject( )
+        {
+            return new RadarBlankSector1TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarBlankSector2TimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16407,6 +21151,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarBlankSector2TimeseriesObject GetDataObject( )
+        {
+            return new RadarBlankSector2TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarEnableAutomaticFrequencyControlTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16438,6 +21193,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarEnableAutomaticFrequencyControlTimeseriesObject GetDataObject( )
+        {
+            return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarEnableFastTimeConstantTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16469,6 +21235,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarEnableFastTimeConstantTimeseriesObject GetDataObject( )
+        {
+            return new RadarEnableFastTimeConstantTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarEnableSensitivityTimeControlTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16500,6 +21277,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarEnableSensitivityTimeControlTimeseriesObject GetDataObject( )
+        {
+            return new RadarEnableSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarPowerOnTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16531,6 +21319,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarPowerOnTimeseriesObject GetDataObject( )
+        {
+            return new RadarPowerOnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarSaveSettingsTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16562,6 +21361,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarSaveSettingsTimeseriesObject GetDataObject( )
+        {
+            return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarTrackingTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16593,6 +21403,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarTrackingTimeseriesObject GetDataObject( )
+        {
+            return new RadarTrackingTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleMediaProxySessionEnabledTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16624,6 +21445,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( PROXYSESSION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( ProxySession );
+        }
+
+        public override MediaProxySessionEnabledTimeseriesObject GetDataObject( )
+        {
+            return new MediaProxySessionEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ProxySession );
+        }
+
     }
 
     public class SimpleMediaServiceEnabledTimeseriesDataReader : SimpleBooleanTimeseriesDataReader
@@ -16655,6 +21487,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( SERVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Service );
+        }
+
+        public override MediaServiceEnabledTimeseriesObject GetDataObject( )
+        {
+            return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Service );
+        }
+
     }
 
     public class SimpleByteTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -16674,6 +21517,16 @@ namespace Barrelman.Data.Database
         public SimpleByteTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override ByteTimeseriesObject GetDataObject( )
+        {
+            return new ByteTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -16697,6 +21550,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override DateTimeTimeseriesObject GetDataObject( )
+        {
+            return new DateTimeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleDoubleTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -16716,6 +21579,16 @@ namespace Barrelman.Data.Database
         public SimpleDoubleTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override DoubleTimeseriesObject GetDataObject( )
+        {
+            return new DoubleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -16749,6 +21622,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GNSSDEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GNSSDevice );
+        }
+
+        public override GNSSAltitudeTimeseriesObject GetDataObject( )
+        {
+            return new GNSSAltitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSDevice );
+        }
+
     }
 
     public class SimpleGNSSLatitudeTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16780,6 +21664,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GNSSDEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GNSSDevice );
+        }
+
+        public override GNSSLatitudeTimeseriesObject GetDataObject( )
+        {
+            return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSDevice );
+        }
+
     }
 
     public class SimpleGNSSLongitudeTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16811,6 +21706,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GNSSDEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GNSSDevice );
+        }
+
+        public override GNSSLongitudeTimeseriesObject GetDataObject( )
+        {
+            return new GNSSLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSDevice );
+        }
+
     }
 
     public class SimpleGyroCourseTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16842,6 +21748,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroCourseTimeseriesObject GetDataObject( )
+        {
+            return new GyroCourseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleGyroHeadingMagneticNorthTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16873,6 +21790,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroHeadingMagneticNorthTimeseriesObject GetDataObject( )
+        {
+            return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleGyroHeadingTrueNorthTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16904,6 +21832,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroHeadingTrueNorthTimeseriesObject GetDataObject( )
+        {
+            return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleGyroPitchTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16935,6 +21874,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroPitchTimeseriesObject GetDataObject( )
+        {
+            return new GyroPitchTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleGyroRateOfTurnTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16966,6 +21916,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroRateOfTurnTimeseriesObject GetDataObject( )
+        {
+            return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleGyroRollTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -16997,6 +21958,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroRollTimeseriesObject GetDataObject( )
+        {
+            return new GyroRollTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleGyroSpeedTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17028,6 +22000,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( GYRODEVICE_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( GyroDevice );
+        }
+
+        public override GyroSpeedTimeseriesObject GetDataObject( )
+        {
+            return new GyroSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroDevice );
+        }
+
     }
 
     public class SimpleRadarLatitudeTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17059,6 +22042,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarLatitudeTimeseriesObject GetDataObject( )
+        {
+            return new RadarLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarLongitudeTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17090,6 +22084,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarLongitudeTimeseriesObject GetDataObject( )
+        {
+            return new RadarLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadomeDewPointTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17121,6 +22126,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADOME_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radome );
+        }
+
+        public override RadomeDewPointTimeseriesObject GetDataObject( )
+        {
+            return new RadomeDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radome );
+        }
+
     }
 
     public class SimpleRadomePressureTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17152,6 +22168,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADOME_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radome );
+        }
+
+        public override RadomePressureTimeseriesObject GetDataObject( )
+        {
+            return new RadomePressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radome );
+        }
+
     }
 
     public class SimpleRadomeTemperatureTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17183,6 +22210,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADOME_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radome );
+        }
+
+        public override RadomeTemperatureTimeseriesObject GetDataObject( )
+        {
+            return new RadomeTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radome );
+        }
+
     }
 
     public class SimpleVesselDraughtTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17214,6 +22252,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VESSEL_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Vessel );
+        }
+
+        public override VesselDraughtTimeseriesObject GetDataObject( )
+        {
+            return new VesselDraughtTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Vessel );
+        }
+
     }
 
     public class SimpleViewLatitudeTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17245,6 +22294,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VIEW_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( View );
+        }
+
+        public override ViewLatitudeTimeseriesObject GetDataObject( )
+        {
+            return new ViewLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, View );
+        }
+
     }
 
     public class SimpleViewLongitudeTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17276,6 +22336,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VIEW_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( View );
+        }
+
+        public override ViewLongitudeTimeseriesObject GetDataObject( )
+        {
+            return new ViewLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, View );
+        }
+
     }
 
     public class SimpleViewZoomLevelTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17307,6 +22378,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VIEW_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( View );
+        }
+
+        public override ViewZoomLevelTimeseriesObject GetDataObject( )
+        {
+            return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, View );
+        }
+
     }
 
     public class SimpleWeatherStationAbsoluteHumidityTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17338,6 +22420,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationAbsoluteHumidityTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationAirTemperatureTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17369,6 +22462,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationAirTemperatureTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationBarometricPressureTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17400,6 +22504,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationBarometricPressureTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationDewPointTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17431,6 +22546,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationDewPointTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationRelativeHumidityTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17462,6 +22588,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationRelativeHumidityTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationRelativeHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationWaterTemperatureTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17493,6 +22630,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationWaterTemperatureTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationWaterTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationWindDirectionTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17524,6 +22672,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationWindDirectionTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationWindDirectionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleWeatherStationWindSpeedTimeseriesDataReader : SimpleDoubleTimeseriesDataReader
@@ -17555,6 +22714,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( WEATHERSTATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( WeatherStation );
+        }
+
+        public override WeatherStationWindSpeedTimeseriesObject GetDataObject( )
+        {
+            return new WeatherStationWindSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStation );
+        }
+
     }
 
     public class SimpleGeoPosition2DTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -17574,6 +22744,16 @@ namespace Barrelman.Data.Database
         public SimpleGeoPosition2DTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override GeoPosition2DTimeseriesObject GetDataObject( )
+        {
+            return new GeoPosition2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -17607,6 +22787,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( AIDTONAVIGATION_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( AidToNavigation );
+        }
+
+        public override AisAidToNavigationPositionTimeseriesObject GetDataObject( )
+        {
+            return new AisAidToNavigationPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, AidToNavigation );
+        }
+
     }
 
     public class SimpleGeoPosition3DTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -17626,6 +22817,16 @@ namespace Barrelman.Data.Database
         public SimpleGeoPosition3DTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override GeoPosition3DTimeseriesObject GetDataObject( )
+        {
+            return new GeoPosition3DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -17649,6 +22850,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override GuidTimeseriesObject GetDataObject( )
+        {
+            return new GuidTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleInt16TimeseriesDataReader : SimpleTimeseriesDataReader
@@ -17670,6 +22881,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override Int16TimeseriesObject GetDataObject( )
+        {
+            return new Int16TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleInt32TimeseriesDataReader : SimpleTimeseriesDataReader
@@ -17689,6 +22910,16 @@ namespace Barrelman.Data.Database
         public SimpleInt32TimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override Int32TimeseriesObject GetDataObject( )
+        {
+            return new Int32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -17722,6 +22953,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarAzimuthOffsetTimeseriesObject GetDataObject( )
+        {
+            return new RadarAzimuthOffsetTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarFastTimeConstantLevelTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17753,6 +22995,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarFastTimeConstantLevelTimeseriesObject GetDataObject( )
+        {
+            return new RadarFastTimeConstantLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarFastTimeConstantModeTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17784,6 +23037,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarFastTimeConstantModeTimeseriesObject GetDataObject( )
+        {
+            return new RadarFastTimeConstantModeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarPulseTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17815,6 +23079,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarPulseTimeseriesObject GetDataObject( )
+        {
+            return new RadarPulseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarSector1EndTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17846,6 +23121,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarSector1EndTimeseriesObject GetDataObject( )
+        {
+            return new RadarSector1EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarSector1StartTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17877,6 +23163,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarSector1StartTimeseriesObject GetDataObject( )
+        {
+            return new RadarSector1StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarSector2EndTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17908,6 +23205,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarSector2EndTimeseriesObject GetDataObject( )
+        {
+            return new RadarSector2EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarSector2StartTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17939,6 +23247,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarSector2StartTimeseriesObject GetDataObject( )
+        {
+            return new RadarSector2StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarSensitivityTimeControlLevelTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -17970,6 +23289,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarSensitivityTimeControlLevelTimeseriesObject GetDataObject( )
+        {
+            return new RadarSensitivityTimeControlLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleRadarTuningTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -18001,6 +23331,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADAR_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radar );
+        }
+
+        public override RadarTuningTimeseriesObject GetDataObject( )
+        {
+            return new RadarTuningTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radar );
+        }
+
     }
 
     public class SimpleVesselPersonsOnBoardTimeseriesDataReader : SimpleInt32TimeseriesDataReader
@@ -18032,6 +23373,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( VESSEL_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Vessel );
+        }
+
+        public override VesselPersonsOnBoardTimeseriesObject GetDataObject( )
+        {
+            return new VesselPersonsOnBoardTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Vessel );
+        }
+
     }
 
     public class SimpleInt64TimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18051,6 +23403,16 @@ namespace Barrelman.Data.Database
         public SimpleInt64TimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override Int64TimeseriesObject GetDataObject( )
+        {
+            return new Int64TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -18074,6 +23436,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override Position2DTimeseriesObject GetDataObject( )
+        {
+            return new Position2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimplePosition3DTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18093,6 +23465,16 @@ namespace Barrelman.Data.Database
         public SimplePosition3DTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override Position3DTimeseriesObject GetDataObject( )
+        {
+            return new Position3DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -18116,6 +23498,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override ReferenceTimeseriesObject GetDataObject( )
+        {
+            return new ReferenceTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleSByteTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18135,6 +23527,16 @@ namespace Barrelman.Data.Database
         public SimpleSByteTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override SByteTimeseriesObject GetDataObject( )
+        {
+            return new SByteTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -18158,6 +23560,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override SingleTimeseriesObject GetDataObject( )
+        {
+            return new SingleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleStringTimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18177,6 +23589,16 @@ namespace Barrelman.Data.Database
         public SimpleStringTimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override StringTimeseriesObject GetDataObject( )
+        {
+            return new StringTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -18200,6 +23622,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override TimeSpanTimeseriesObject GetDataObject( )
+        {
+            return new TimeSpanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleUInt16TimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18221,6 +23653,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override UInt16TimeseriesObject GetDataObject( )
+        {
+            return new UInt16TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleUInt32TimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18240,6 +23682,16 @@ namespace Barrelman.Data.Database
         public SimpleUInt32TimeseriesDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override UInt32TimeseriesObject GetDataObject( )
+        {
+            return new UInt32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
         }
 
     }
@@ -18273,6 +23725,17 @@ namespace Barrelman.Data.Database
                 return GetGuid( RADOME_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radome );
+        }
+
+        public override RadomeStatusTimeseriesObject GetDataObject( )
+        {
+            return new RadomeStatusTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, Radome );
+        }
+
     }
 
     public class SimpleUInt64TimeseriesDataReader : SimpleTimeseriesDataReader
@@ -18294,6 +23757,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override UInt64TimeseriesObject GetDataObject( )
+        {
+            return new UInt64TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+        }
+
     }
 
     public class SimpleTimeseriesCatalogDataReader : SimpleTimeseriesCatalogElementDataReader
@@ -18312,6 +23785,16 @@ namespace Barrelman.Data.Database
         public SimpleTimeseriesCatalogDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override TimeseriesCatalogObject GetDataObject( )
+        {
+            return new TimeseriesCatalogObject( ObjectState.Stored, Id, RowVersion, Catalog, Name );
         }
 
     }
@@ -18385,6 +23868,31 @@ namespace Barrelman.Data.Database
                 return GetInt64( COUNT_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TimeseriesInfo );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( FirstTimestamp );
+            destination.Write( LastTimestamp );
+            destination.Write( Count );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TimeseriesInfoObject GetDataObject( )
+        {
+            return new TimeseriesInfoObject( ObjectState.Stored, Id, RowVersion, FirstTimestamp, LastTimestamp, Count );
+        }
+
     }
 
     public class SimpleTimeSpanTimeseriesValueDataReader : DataReaderWrapper
@@ -18451,6 +23959,31 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TimeSpanTimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TimeSpanTimeseriesValueObject GetDataObject( )
+        {
+            return new TimeSpanTimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleTrackableItemTrackLinkDataReader : DataReaderWrapper
@@ -18526,9 +24059,35 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackableItemTrackLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Item );
+            destination.Write( Track );
+            destination.Write( Start );
+            destination.Write( End );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackableItemTrackLinkObject GetDataObject( )
+        {
+            return new TrackableItemTrackLinkObject( ObjectState.Stored, Id, RowVersion, Item, Track, Start, End );
+        }
+
     }
 
-    public class SimpleTrackBaseDataReader : DataReaderWrapper
+    public abstract class SimpleTrackBaseDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  tb.[Id], \r\n" +
@@ -18596,6 +24155,28 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackBase );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Tracker );
+            destination.Write( TrackNumber );
+            destination.Write( Timestamp );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract TrackBaseObject GetDataObject( );
+
     }
 
     public class SimpleTrackDataReader : SimpleTrackBaseDataReader
@@ -18617,6 +24198,16 @@ namespace Barrelman.Data.Database
         {
         }
 
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override TrackObject GetDataObject( )
+        {
+            return new TrackObject( ObjectState.Stored, Id, RowVersion, Tracker, TrackNumber, Timestamp );
+        }
+
     }
 
     public class SimpleTrack3DDataReader : SimpleTrackBaseDataReader
@@ -18636,6 +24227,16 @@ namespace Barrelman.Data.Database
         public SimpleTrack3DDataReader( [ DisallowNull ] ILoggerFactory loggerFactory, [ DisallowNull ] SqlDataReader sqlDataReader, bool ownsReader = true )
             : base(loggerFactory, sqlDataReader, ownsReader )
         {
+        }
+
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+        }
+
+        public override Track3DObject GetDataObject( )
+        {
+            return new Track3DObject( ObjectState.Stored, Id, RowVersion, Tracker, TrackNumber, Timestamp );
         }
 
     }
@@ -18690,6 +24291,30 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackerFilterParameters );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Tracker );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackerFilterParametersObject GetDataObject( )
+        {
+            return new TrackerFilterParametersObject( ObjectState.Stored, Id, RowVersion, Tracker, Name );
+        }
+
     }
 
     public class SimpleTrackerFilterParametersConfigurationDataReader : DataReaderWrapper
@@ -18859,6 +24484,43 @@ namespace Barrelman.Data.Database
                 return GetDouble( DELTAAMAX_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackerFilterParametersConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Parameters );
+            destination.Write( Timestamp );
+            destination.Write( UseNaivePredictor );
+            destination.Write( NumberOfPoints );
+            destination.Write( WindowSize );
+            destination.Write( StabilizeCount );
+            destination.Write( MaxBadPoints );
+            destination.Write( ModelType );
+            destination.Write( SigmaR );
+            destination.Write( SigmaAcc );
+            destination.Write( TauVel );
+            destination.Write( TauAcc );
+            destination.Write( DeltaRMin );
+            destination.Write( DeltaVMax );
+            destination.Write( DeltaAMax );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackerFilterParametersConfigurationObject GetDataObject( )
+        {
+            return new TrackerFilterParametersConfigurationObject( ObjectState.Stored, Id, RowVersion, Parameters, Timestamp, UseNaivePredictor, NumberOfPoints, WindowSize, StabilizeCount, MaxBadPoints, ModelType, SigmaR, SigmaAcc, TauVel, TauAcc, DeltaRMin, DeltaVMax, DeltaAMax );
+        }
+
     }
 
     public class SimpleTrackInfoDataReader : DataReaderWrapper
@@ -18966,6 +24628,35 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( SOUTHEASTLONGITUDE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackInfo );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( FirstTimestamp );
+            destination.Write( LastTimestamp );
+            destination.Write( Count );
+            destination.Write( NorthWestLatitude );
+            destination.Write( NorthWestLongitude );
+            destination.Write( SouthEastLatitude );
+            destination.Write( SouthEastLongitude );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackInfoObject GetDataObject( )
+        {
+            return new TrackInfoObject( ObjectState.Stored, Id, RowVersion, FirstTimestamp, LastTimestamp, Count, NorthWestLatitude, NorthWestLongitude, SouthEastLatitude, SouthEastLongitude );
+        }
+
     }
 
     public class SimpleTrackingServiceOptionsDataReader : DataReaderWrapper
@@ -19099,6 +24790,39 @@ namespace Barrelman.Data.Database
                 return GetDouble( MINIMUMSPEEDTHRESHOLD_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackingServiceOptions );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timestamp );
+            destination.Write( TimerInterval );
+            destination.Write( MaxAgeOfCurrentTrackValue );
+            destination.Write( FalseThreshold );
+            destination.Write( DistanceThreshold );
+            destination.Write( DistanceUnmergeThreshold );
+            destination.Write( UnmergeLatency );
+            destination.Write( KalmanFiltering );
+            destination.Write( MaxCourseDeviation );
+            destination.Write( MaxSpeedDeviation );
+            destination.Write( MinimumSpeedThreshold );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackingServiceOptionsObject GetDataObject( )
+        {
+            return new TrackingServiceOptionsObject( ObjectState.Stored, Id, RowVersion, Timestamp, TimerInterval, MaxAgeOfCurrentTrackValue, FalseThreshold, DistanceThreshold, DistanceUnmergeThreshold, UnmergeLatency, KalmanFiltering, MaxCourseDeviation, MaxSpeedDeviation, MinimumSpeedThreshold );
+        }
+
     }
 
     public class SimpleTrackLinkDataReader : DataReaderWrapper
@@ -19174,6 +24898,32 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Primary );
+            destination.Write( Secondary );
+            destination.Write( Start );
+            destination.Write( End );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackLinkObject GetDataObject( )
+        {
+            return new TrackLinkObject( ObjectState.Stored, Id, RowVersion, Primary, Secondary, Start, End );
+        }
+
     }
 
     public class SimpleTrackValueDataReader : DataReaderWrapper
@@ -19289,6 +25039,37 @@ namespace Barrelman.Data.Database
                 return GetDouble( HEADING_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Track );
+            destination.Write( Timestamp );
+            destination.Write( Flags );
+            destination.Write( Status );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Speed );
+            destination.Write( Course );
+            destination.Write( Heading );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackValueObject GetDataObject( )
+        {
+            return new TrackValueObject( ObjectState.Stored, Id, RowVersion, Track, Timestamp, Flags, Status, Latitude, Longitude, Speed, Course, Heading );
+        }
+
     }
 
     public class SimpleTrackValue3DDataReader : DataReaderWrapper
@@ -19413,6 +25194,38 @@ namespace Barrelman.Data.Database
                 return GetDouble( RATEOFCLIMB_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.TrackValue3D );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Track );
+            destination.Write( Timestamp );
+            destination.Write( Flags );
+            destination.Write( Status );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Altitude );
+            destination.Write( Speed );
+            destination.Write( Course );
+            destination.Write( RateOfClimb );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public TrackValue3DObject GetDataObject( )
+        {
+            return new TrackValue3DObject( ObjectState.Stored, Id, RowVersion, Track, Timestamp, Flags, Status, Latitude, Longitude, Altitude, Speed, Course, RateOfClimb );
+        }
+
     }
 
     public class SimpleUInt16TimeseriesValueDataReader : DataReaderWrapper
@@ -19474,6 +25287,31 @@ namespace Barrelman.Data.Database
                 return GetNullableUInt16( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.UInt16TimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public UInt16TimeseriesValueObject GetDataObject( )
+        {
+            return new UInt16TimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleUInt32TimeseriesValueDataReader : DataReaderWrapper
@@ -19535,6 +25373,31 @@ namespace Barrelman.Data.Database
                 return GetNullableUInt32( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.UInt32TimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public UInt32TimeseriesValueObject GetDataObject( )
+        {
+            return new UInt32TimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleUInt64TimeseriesValueDataReader : DataReaderWrapper
@@ -19596,6 +25459,31 @@ namespace Barrelman.Data.Database
                 return GetNullableInt64( VALUE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.UInt64TimeseriesValue );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Timeseries );
+            destination.Write( Timestamp );
+            destination.Write( Value );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public UInt64TimeseriesValueObject GetDataObject( )
+        {
+            return new UInt64TimeseriesValueObject( ObjectState.Stored, Id, RowVersion, Timeseries, Timestamp, Value );
+        }
+
     }
 
     public class SimpleVehicleTypeDataReader : DataReaderWrapper
@@ -19639,6 +25527,29 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.VehicleType );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public VehicleTypeObject GetDataObject( )
+        {
+            return new VehicleTypeObject( ObjectState.Stored, Id, RowVersion, Name );
+        }
+
     }
 
     public class SimpleVesselTypeDataReader : DataReaderWrapper
@@ -19691,6 +25602,30 @@ namespace Barrelman.Data.Database
                 return GetInt32( CODE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.VesselType );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+            destination.Write( Code );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public VesselTypeObject GetDataObject( )
+        {
+            return new VesselTypeObject( ObjectState.Stored, Id, RowVersion, Name, Code );
+        }
+
     }
 
     public class SimpleViewDataReader : DataReaderWrapper
@@ -19761,6 +25696,32 @@ namespace Barrelman.Data.Database
                 return GetGuid( ZOOMLEVELTIMESERIES_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.View );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+            destination.Write( LatitudeTimeseries );
+            destination.Write( LongitudeTimeseries );
+            destination.Write( ZoomLevelTimeseries );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ViewObject GetDataObject( )
+        {
+            return new ViewObject( ObjectState.Stored, Id, RowVersion, Name, LatitudeTimeseries, LongitudeTimeseries, ZoomLevelTimeseries );
+        }
+
     }
 
     public class SimpleViewCameraLinkDataReader : DataReaderWrapper
@@ -19836,6 +25797,32 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ViewCameraLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( View );
+            destination.Write( Camera );
+            destination.Write( Start );
+            destination.Write( End );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ViewCameraLinkObject GetDataObject( )
+        {
+            return new ViewCameraLinkObject( ObjectState.Stored, Id, RowVersion, View, Camera, Start, End );
+        }
+
     }
 
     public class SimpleViewTrackerLinkDataReader : DataReaderWrapper
@@ -19911,6 +25898,32 @@ namespace Barrelman.Data.Database
                 return null;
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ViewTrackerLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( View );
+            destination.Write( Tracker );
+            destination.Write( Start );
+            destination.Write( End );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ViewTrackerLinkObject GetDataObject( )
+        {
+            return new ViewTrackerLinkObject( ObjectState.Stored, Id, RowVersion, View, Tracker, Start, End );
+        }
+
     }
 
     public class SimpleWeatherStationCommandDataReader : DataReaderWrapper
@@ -19990,6 +26003,33 @@ namespace Barrelman.Data.Database
                 return GetGuid( REPLY_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.WeatherStationCommand );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( WeatherStation );
+            destination.Write( Timestamp );
+            destination.Write( DeviceCommandSourceType );
+            destination.Write( DeviceCommandSourceId );
+            destination.Write( Reply );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public WeatherStationCommandObject GetDataObject( )
+        {
+            return new WeatherStationCommandObject( ObjectState.Stored, Id, RowVersion, WeatherStation, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+        }
+
     }
 
     public class SimpleWeatherStationCommandReplyDataReader : DataReaderWrapper
@@ -20069,6 +26109,33 @@ namespace Barrelman.Data.Database
                 return GetString( MESSAGE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.WeatherStationCommandReply );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( WeatherStation );
+            destination.Write( Timestamp );
+            destination.Write( Command );
+            destination.Write( Status );
+            destination.Write( Message );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public WeatherStationCommandReplyObject GetDataObject( )
+        {
+            return new WeatherStationCommandReplyObject( ObjectState.Stored, Id, RowVersion, WeatherStation, Timestamp, Command, Status, Message );
+        }
+
     }
 
     public class SimpleWeatherStationConfigurationDataReader : DataReaderWrapper
@@ -20184,9 +26251,40 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( AVERAGINGINTERVAL_FIELD_ID ) );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.WeatherStationConfiguration );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( WeatherStation );
+            destination.Write( Timestamp );
+            destination.Write( NoDataTimeOut );
+            destination.Write( SendInterval );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( GyroOffset );
+            destination.Write( EnableAveraging );
+            destination.Write( AveragingInterval );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public WeatherStationConfigurationObject GetDataObject( )
+        {
+            return new WeatherStationConfigurationObject( ObjectState.Stored, Id, RowVersion, WeatherStation, Timestamp, NoDataTimeOut, SendInterval, Latitude, Longitude, GyroOffset, EnableAveraging, AveragingInterval );
+        }
+
     }
 
-    public class SimpleZoneDataReader : DataReaderWrapper
+    public abstract class SimpleZoneDataReader : DataReaderWrapper
     {
         public const string BaseQuery = "SELECT \r\n" +
             "  z.[Id], \r\n" +
@@ -20308,6 +26406,34 @@ namespace Barrelman.Data.Database
                 return GetUInt32( FILLCOLOR_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.Zone );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Name );
+            destination.Write( Longitude );
+            destination.Write( Latitude );
+            destination.Write( AlarmType );
+            destination.Write( AlarmTime );
+            destination.Write( RadarTrackMinimumLifetime );
+            destination.Write( Speed );
+            destination.Write( StrokeColor );
+            destination.Write( FillColor );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public abstract ZoneObject GetDataObject( );
+
     }
 
     public class SimpleCircularZoneDataReader : SimpleZoneDataReader
@@ -20345,6 +26471,17 @@ namespace Barrelman.Data.Database
                 return GetDouble( RADIUS_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.Write( Radius );
+        }
+
+        public override CircularZoneObject GetDataObject( )
+        {
+            return new CircularZoneObject( ObjectState.Stored, Id, RowVersion, Name, Longitude, Latitude, AlarmType, AlarmTime, RadarTrackMinimumLifetime, Speed, StrokeColor, FillColor, Radius );
+        }
+
     }
 
     public class SimplePolygonZoneDataReader : SimpleZoneDataReader
@@ -20382,6 +26519,17 @@ namespace Barrelman.Data.Database
                 return GetBytes( POLYGON_FIELD_ID );
             }
         }
+        public override void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            base.WriteTo( destination );
+            destination.WriteArray( Polygon );
+        }
+
+        public override PolygonZoneObject GetDataObject( )
+        {
+            return new PolygonZoneObject( ObjectState.Stored, Id, RowVersion, Name, Longitude, Latitude, AlarmType, AlarmTime, RadarTrackMinimumLifetime, Speed, StrokeColor, FillColor, Polygon );
+        }
+
     }
 
     public class SimpleZoneExceptionsDataReader : DataReaderWrapper
@@ -20434,6 +26582,30 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ZoneExceptions );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Zone );
+            destination.Write( Timestamp );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ZoneExceptionsObject GetDataObject( )
+        {
+            return new ZoneExceptionsObject( ObjectState.Stored, Id, RowVersion, Zone, Timestamp );
+        }
+
     }
 
     public class SimpleZoneExceptionsVesselLinkDataReader : DataReaderWrapper
@@ -20486,6 +26658,30 @@ namespace Barrelman.Data.Database
                 return GetGuid( VESSEL_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ZoneExceptionsVesselLink );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( ZoneExceptions );
+            destination.Write( Vessel );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ZoneExceptionsVesselLinkObject GetDataObject( )
+        {
+            return new ZoneExceptionsVesselLinkObject( ObjectState.Stored, Id, RowVersion, ZoneExceptions, Vessel );
+        }
+
     }
 
     public class SimpleZoneTrackAlarmDataReader : DataReaderWrapper
@@ -20637,6 +26833,41 @@ namespace Barrelman.Data.Database
                 return GetNullableDouble( LEAVELONGITUDE_FIELD_ID );
             }
         }
+        public virtual void WriteTo([DisallowNull] BinaryWriter destination)
+        {
+            destination.Write( Types.Kind.ZoneTrackAlarm );
+            destination.Write( Id );
+            destination.Write( RowVersion );
+            destination.Write( Track );
+            destination.Write( Zone );
+            destination.Write( RadarTrack );
+            destination.Write( Timestamp );
+            destination.Write( Latitude );
+            destination.Write( Longitude );
+            destination.Write( Speed );
+            destination.Write( Course );
+            destination.Write( Heading );
+            destination.Write( EnterLatitude );
+            destination.Write( EnterLongitude );
+            destination.Write( LeaveLatitude );
+            destination.Write( LeaveLongitude );
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
+        public ZoneTrackAlarmObject GetDataObject( )
+        {
+            return new ZoneTrackAlarmObject( ObjectState.Stored, Id, RowVersion, Track, Zone, RadarTrack, Timestamp, Latitude, Longitude, Speed, Course, Heading, EnterLatitude, EnterLongitude, LeaveLatitude, LeaveLongitude );
+        }
+
     }
 
 }

@@ -145,7 +145,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             }
         }
 
-        public int Depth
+        int IDataReader.Depth
         {
             get
             {
@@ -319,11 +319,11 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
 
 
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferOffset, int length)
         {
             try
             {
-                return _reader.GetBytes(i, fieldOffset, buffer, bufferoffset, length);
+                return _reader.GetBytes(i, fieldOffset, buffer, bufferOffset, length);
             }
             catch (Exception exc)
             {

@@ -603,7 +603,7 @@ namespace Harlinn::ODBC::Tool
         void CreateFieldIds( const ClassInfo& classInfo );
         void CreateAccessors( const ClassInfo& classInfo );
         void CreateWriteColumns( const ClassInfo& classInfo );
-        void CreateAssignTo( const ClassInfo& classInfo );
+        void CreateGetDataObject( const ClassInfo& classInfo );
     };
 
     class CSharpComplexDatabaseReadersGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpComplexDatabaseReadersOptions>
@@ -627,10 +627,13 @@ namespace Harlinn::ODBC::Tool
 
         inline CSharpStoredProceduresGenerator( const CSharpDatabaseGenerator& owner );
 
-        void Run( )
-        {
-            Flush( );
-        }
+        void Run( );
+    private:
+        void CreateInsert( const ClassInfo& classInfo );
+        void CreateUpdate( const ClassInfo& classInfo );
+        void CreateDelete( const ClassInfo& classInfo );
+        void AddInsertParameter( const MemberInfo& memberInfo );
+        void AddUpdateParameter( const MemberInfo& memberInfo );
     };
 
     class CSharpDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>

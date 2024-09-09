@@ -85,10 +85,28 @@ namespace Harlinn::ODBC::Tool
             }
         }
 
+        auto constructorArguments = CSharpHelper::GetDataTypeConstructorArguments( classInfo );
+        auto baseConstructorCallArguments = CSharpHelper::GetDataTypeBaseConstructorCallArguments( classInfo );
+
+
         if ( classInfo.Abstract( ) == false )
         {
             WriteLine( L"        public {}( )", className );
             WriteLine( L"        {" );
+            WriteLine( L"        }" );
+            WriteLine( );
+            WriteLine( L"        public {}( {} )", className, constructorArguments );
+            WriteLine( L"            : base( {} )", baseConstructorCallArguments );
+            WriteLine( L"        {" );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto argumentName = CSharpHelper::GetInputArgumentName( *member );
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    WriteLine( L"            {} = {};", fieldName, argumentName );
+                }
+            }
             WriteLine( L"        }" );
             WriteLine( );
             WriteLine( L"        public override Kind GetObjectType()" );
@@ -107,6 +125,20 @@ namespace Harlinn::ODBC::Tool
         {
             WriteLine( L"        protected {}( )", className );
             WriteLine( L"        {" );
+            WriteLine( L"        }" );
+            WriteLine( );
+            WriteLine( L"        protected {}( {} )", className, constructorArguments );
+            WriteLine( L"            : base( {} )", baseConstructorCallArguments );
+            WriteLine( L"        {" );
+            for ( const auto& member : persistentMembers )
+            {
+                if ( member->PrimaryKey( ) == false )
+                {
+                    auto argumentName = CSharpHelper::GetInputArgumentName( *member );
+                    auto fieldName = CSharpHelper::GetMemberFieldName( *member );
+                    WriteLine( L"            {} = {};", fieldName, argumentName );
+                }
+            }
             WriteLine( L"        }" );
             WriteLine( );
         }

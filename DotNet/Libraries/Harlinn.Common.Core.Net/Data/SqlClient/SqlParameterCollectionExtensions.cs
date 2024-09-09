@@ -198,7 +198,20 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return self.Add(parameter);
         }
 
-
+        public static SqlParameter AddCurrency([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, Currency? value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
+            parameter.Value = (value is Currency v) ? v.ToScaled( ) : DBNull.Value;
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+        public static SqlParameter AddCurrency([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, Currency value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
+            parameter.Value = value.ToScaled();
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
 
         public static SqlParameter AddDateTime([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, DateTime? value, ParameterDirection parameterDirection = ParameterDirection.Input)
         {
@@ -211,6 +224,21 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         {
             SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.DateTime2);
             parameter.Value = value;
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+
+        public static SqlParameter AddDateTimeAsInt64([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, DateTime? value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
+            parameter.Value = (value is DateTime v) ? v.ToUniversalTime().Ticks : DBNull.Value;
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+        public static SqlParameter AddDateTimeAsInt64([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, DateTime value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
+            parameter.Value = value.ToUniversalTime().Ticks;
             parameter.Direction = parameterDirection;
             return self.Add(parameter);
         }
@@ -238,6 +266,21 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             return self.Add(parameter);
         }
         public static SqlParameter AddTimeSpan([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, TimeSpan value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
+            parameter.Value = value.Ticks;
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+
+        public static SqlParameter AddTimeSpanAsInt64([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, TimeSpan? value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
+            parameter.Value = (value is TimeSpan v) ? v.Ticks : DBNull.Value;
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+        public static SqlParameter AddTimeSpanAsInt64([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, TimeSpan value, ParameterDirection parameterDirection = ParameterDirection.Input)
         {
             SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.BigInt);
             parameter.Value = value.Ticks;
@@ -369,9 +412,7 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
         }
         public static SqlParameter AddVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
         {
-            var parameterType = size <= 8000 ? SqlDbType.VarChar : SqlDbType.Text;
-
-            SqlParameter parameter = new SqlParameter(parameterName, parameterType, size <= 8000 ? size : -1);
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.VarChar, size <= 8000 ? size : -1);
             if (value != null)
             {
                 parameter.Value = value;
@@ -383,11 +424,40 @@ namespace Harlinn.Common.Core.Net.Data.SqlClient
             parameter.Direction = parameterDirection;
             return self.Add(parameter);
         }
+
+        public static SqlParameter AddVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.VarChar, -1);
+            if (value != null)
+            {
+                parameter.Value = value;
+            }
+            else
+            {
+                parameter.Value = DBNull.Value;
+            }
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+
         public static SqlParameter AddNVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, int size, ParameterDirection parameterDirection = ParameterDirection.Input)
         {
-            var parameterType = size <= 4000 ? SqlDbType.NVarChar : SqlDbType.NText;
-
             SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.NVarChar, size <= 4000 ? size : -1);
+            if (value != null)
+            {
+                parameter.Value = value;
+            }
+            else
+            {
+                parameter.Value = DBNull.Value;
+            }
+            parameter.Direction = parameterDirection;
+            return self.Add(parameter);
+        }
+
+        public static SqlParameter AddNVarChar([DisallowNull] this SqlParameterCollection self, [DisallowNull] string parameterName, string value, ParameterDirection parameterDirection = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(parameterName, SqlDbType.NVarChar, -1);
             if (value != null)
             {
                 parameter.Value = value;

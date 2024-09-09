@@ -31,6 +31,10 @@ namespace Harlinn::ODBC::Tool
         static WideString GetInputArgumentName( const MemberInfo& member );
         static WideString GetDataTypeBaseClassName( const ClassInfo& classInfo );
         static WideString GetDataType( const ClassInfo& classInfo );
+        static WideString GetDataTypeConstructorArguments( const ClassInfo& classInfo );
+        static WideString GetDataTypeConstructorCallArguments( const ClassInfo& classInfo );
+        static WideString GetDataTypeConstructorCallPropertiesArguments( const ClassInfo& classInfo );
+        static WideString GetDataTypeBaseConstructorCallArguments( const ClassInfo& classInfo );
 
         static WideString GetMemberFieldType( const MemberInfo& member );
         static WideString GetMemberFieldName( const MemberInfo& member );
@@ -41,6 +45,22 @@ namespace Harlinn::ODBC::Tool
         static WideString GetSimpleDataReaderName( const ClassInfo& classInfo );
         static WideString GetComplexDataReaderName( const ClassInfo& classInfo );
         static WideString GetDataReaderGetFunctionName( const MemberInfo& member );
+
+        static WideString GetInsertFunctionName( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionName( const ClassInfo& classInfo );
+        static WideString GetDeleteFunctionName( const ClassInfo& classInfo );
+
+        static WideString GetInsertFunctionParameters( const ClassInfo& classInfo );
+        static WideString GetInsertFunctionCallParameters( const ClassInfo& classInfo );
+
+        static WideString GetUpdateFunctionParameters( const ClassInfo& classInfo );
+        static WideString GetUpdateFunctionCallParameters( const ClassInfo& classInfo );
+
+        static WideString GetDeleteFunctionParameters( const ClassInfo& classInfo );
+        static WideString GetDeleteFunctionCallParameters( const ClassInfo& classInfo );
+
+        static WideString GetSqlCommandParametersAddFunctionName( const MemberInfo& member );
+
 
     };
 }

@@ -68,7 +68,15 @@ namespace Harlinn::ODBC::Tool
             auto baseClass = classInfo.BaseClass( );
             baseClassName = CSharpHelper::GetSimpleDataReaderName( *baseClass );
         }
-        WriteLine( L"    public class {} : {}", className, baseClassName );
+
+        if ( classInfo.Abstract( ) )
+        {
+            WriteLine( L"    public abstract class {} : {}", className, baseClassName );
+        }
+        else
+        {
+            WriteLine( L"    public class {} : {}", className, baseClassName );
+        }
         WriteLine( L"    {" );
         CreateQuery( classInfo );
         CreateFieldIds( classInfo );
@@ -78,11 +86,14 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         WriteLine( );
         CreateAccessors( classInfo );
+        CreateWriteColumns( classInfo );
+        CreateGetDataObject( classInfo );
         WriteLine( L"    }" );
         WriteLine( );
     }
     void CSharpDatabaseReadersGenerator::CreateQuery( const ClassInfo& classInfo )
     {
+
         auto topLevelClass = classInfo.TopLevelClass( );
 
         auto className = CSharpHelper::GetSimpleDataReaderName( classInfo );
@@ -266,11 +277,92 @@ namespace Harlinn::ODBC::Tool
     }
     void CSharpDatabaseReadersGenerator::CreateWriteColumns( const ClassInfo& classInfo )
     {
+        auto members = classInfo.OwnPersistentMembers( );
+        auto memberCount = members.size( );
+        
+        if ( classInfo.IsTopLevel( ) == false )
+        {
+            WriteLine( L"        public override void WriteTo([DisallowNull] BinaryWriter destination)" );
+            WriteLine( L"        {" );
+            WriteLine( L"            base.WriteTo( destination );" );
+        }
+        else
+        {
+            WriteLine( L"        public virtual void WriteTo([DisallowNull] BinaryWriter destination)" );
+            WriteLine( L"        {" );
+            WriteLine( L"            destination.Write( Types.Kind.{} );", classInfo.Name( ) );
+        }
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto fieldName = member.Name().FirstToUpper( );
+            auto memberType = member.Type( );
+            if ( memberType == MemberInfoType::Binary )
+            {
+                WriteLine( L"            destination.WriteArray( {} );", fieldName );
+            }
+            else
+            {
+                WriteLine( L"            destination.Write( {} );", fieldName );
+            }
+        }
+        WriteLine( L"        }" );
+        WriteLine( );
+
+        if ( classInfo.IsTopLevel( ) )
+        {
+            WriteLine( L"        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )");
+            WriteLine( L"        {");
+            WriteLine( L"            while ( Read( ) )");
+            WriteLine( L"            {");
+            WriteLine( L"                destination.Write( true );");
+            WriteLine( L"                WriteTo( destination );");
+            WriteLine( L"            }");
+            WriteLine( L"            destination.Write( false );");
+            WriteLine( L"        }" );
+            WriteLine( );
+        }
 
     }
-    void CSharpDatabaseReadersGenerator::CreateAssignTo( const ClassInfo& classInfo )
+    void CSharpDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
     {
-
+        auto className = CSharpHelper::GetDataType( classInfo );
+        if ( classInfo.IsTopLevel( ) )
+        {
+            
+            if ( classInfo.HasDescendants( ) )
+            {
+                if ( classInfo.Abstract( ) )
+                {
+                    WriteLine( L"        public abstract {} GetDataObject( );", className );
+                    WriteLine( );
+                    return;
+                }
+                WriteLine( L"        public virtual {} GetDataObject( )", className );
+            }
+            else
+            {
+                WriteLine( L"        public {} GetDataObject( )", className );
+            }
+            WriteLine( L"        {" );
+            auto arguments = CSharpHelper::GetDataTypeConstructorCallPropertiesArguments( classInfo );
+            WriteLine( L"            return new {}( {} );", className, arguments );
+            WriteLine( L"        }" );
+            WriteLine( );
+        }
+        else
+        {
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto topLevelClassInfo = classInfo.TopLevelClass( );
+                auto topLevelClassName = CSharpHelper::GetDataType( classInfo );
+                WriteLine( L"        public override {} GetDataObject( )", topLevelClassName );
+                WriteLine( L"        {" );
+                auto arguments = CSharpHelper::GetDataTypeConstructorCallPropertiesArguments( classInfo );
+                WriteLine( L"            return new {}( {} );", className, arguments );
+                WriteLine( L"        }" );
+                WriteLine( );
+            }
+        }
     }
-
 }

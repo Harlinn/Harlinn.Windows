@@ -17,6 +17,7 @@
 #include "Generator.h"
 #include "SqlServerHelper.h"
 #include "CSharpHelper.h"
+#include "HCCStringBuilder.h"
 
 namespace Harlinn::ODBC::Tool
 {
@@ -475,7 +476,7 @@ namespace Harlinn::ODBC::Tool
     }
     WideString CSharpHelper::GetMemberFieldName( const MemberInfo& member )
     {
-        return Format( L"{}_", member.Name( ).FirstToLower( ) );
+        return Format( L"_{}", member.Name( ).FirstToLower( ) );
     }
 
     bool CSharpHelper::MemberFieldRequiresDefaultValue( const MemberInfo& member )
@@ -762,5 +763,374 @@ namespace Harlinn::ODBC::Tool
         return result;
     }
 
+
+    WideString CSharpHelper::GetDataTypeConstructorArguments( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        auto memberCount = members.size( );
+        StringBuilder<wchar_t> sb;
+
+        auto primaryKey = classInfo.PrimaryKey( );
+        if ( primaryKey->Type( ) == MemberInfoType::Guid )
+        {
+            sb.Append( L"ObjectState objectState, Guid id" );
+        }
+        else if ( primaryKey->Type( ) == MemberInfoType::Int64 )
+        {
+            sb.Append( L"ObjectState objectState, long id" );
+        }
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto argumentType = GetInputArgumentType( member );
+                auto argumentName = GetInputArgumentName( member );
+                sb.Append( L", {} {}", argumentType, argumentName );
+            }
+        }
+        return sb.ToString( );
+    }
+    WideString CSharpHelper::GetDataTypeConstructorCallArguments( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        auto memberCount = members.size( );
+        StringBuilder<wchar_t> sb;
+
+        sb.Append( L"objectState, id" );
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto argumentName = GetInputArgumentName( member );
+                sb.Append( L", {}", argumentName );
+            }
+        }
+        return sb.ToString( );
+    }
+
+    WideString CSharpHelper::GetDataTypeConstructorCallPropertiesArguments( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        auto memberCount = members.size( );
+        StringBuilder<wchar_t> sb;
+
+        sb.Append( L"ObjectState.Stored, Id" );
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto argumentName = member.Name().FirstToUpper( );
+                sb.Append( L", {}", argumentName );
+            }
+        }
+        return sb.ToString( );
+    }
+    
+
+    WideString CSharpHelper::GetDataTypeBaseConstructorCallArguments( const ClassInfo& classInfo )
+    {
+        if ( classInfo.IsTopLevel( ) )
+        {
+            return L"objectState, id";
+        }
+        else
+        {
+            auto baseClass = classInfo.BaseClass( );
+            return GetDataTypeConstructorCallArguments( *baseClass );
+        }
+    }
+
+    WideString CSharpHelper::GetInsertFunctionName( const ClassInfo& classInfo )
+    {
+        return Format( L"Insert{}", classInfo.Name( ) );
+    }
+    WideString CSharpHelper::GetUpdateFunctionName( const ClassInfo& classInfo )
+    {
+        return Format( L"Update{}", classInfo.Name( ) );
+    }
+    WideString CSharpHelper::GetDeleteFunctionName( const ClassInfo& classInfo )
+    {
+        return Format( L"Delete{}", classInfo.Name( ) );
+    }
+
+    WideString CSharpHelper::GetInsertFunctionParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"ref {} {}", primaryKeyArgumentType, primaryKeyName );
+
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    auto variableName = GetInputArgumentName( member );
+                    auto variableType = GetInputArgumentType( member );
+
+                    parameters.Append( L", {} {}", variableType, variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CSharpHelper::GetInsertFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"ref {}", primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                if ( memberType != MemberInfoType::RowVersion )
+                {
+                    auto variableName = GetInputArgumentName( member );
+                    auto variableType = GetInputArgumentType( member );
+
+                    parameters.Append( L", {}", variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CSharpHelper::GetUpdateFunctionParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{} {}", primaryKeyArgumentType, primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto memberType = member.Type( );
+                auto variableName = GetInputArgumentName( member );
+                auto variableType = GetInputArgumentType( member );
+
+                if ( memberType == MemberInfoType::RowVersion )
+                {
+                    parameters.Append( L", ref {} {}", variableType, variableName );
+                }
+                else
+                {
+                    parameters.Append( L", {} {}", variableType, variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+    WideString CSharpHelper::GetUpdateFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        const auto& members = classInfo.PersistentMembers( );
+        size_t membersCount = members.size( );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+
+        for ( size_t i = 0; i < membersCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                auto variableName = GetInputArgumentName( member );
+                auto memberType = member.Type( );
+
+                if ( memberType == MemberInfoType::RowVersion )
+                {
+                    parameters.Append( L", ref {}", variableName );
+                }
+                else
+                {
+                    parameters.Append( L", {}", variableName );
+                }
+            }
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CSharpHelper::GetDeleteFunctionParameters( const ClassInfo& classInfo )
+    {
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+        auto primaryKeyArgumentType = GetBaseType( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{} {}", primaryKeyArgumentType, primaryKeyName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionName = GetInputArgumentName( *rowVersion );
+            parameters.Append( L", long {}", rowVersionName );
+        }
+        return parameters.ToString( );
+    }
+    WideString CSharpHelper::GetDeleteFunctionCallParameters( const ClassInfo& classInfo )
+    {
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyName = GetInputArgumentName( *primaryKey );
+
+        StringBuilder<wchar_t> parameters;
+
+        parameters.Append( L"{}", primaryKeyName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionName = GetInputArgumentName( *rowVersion );
+            parameters.Append( L", {}", rowVersionName );
+        }
+        return parameters.ToString( );
+    }
+
+    WideString CSharpHelper::GetSqlCommandParametersAddFunctionName( const MemberInfo& member )
+    {
+        WideString result = L"<Unknown>";
+        auto memberType = member.Type( );
+        switch ( memberType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = L"AddBoolean";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = L"AddSByte";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = L"AddByte";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = L"AddInt16";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = L"AddUInt16";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = L"AddInt32";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = L"AddUInt32";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = L"AddInt64";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = L"AddUInt64";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                result = L"AddEnum";
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = L"AddSingle";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = L"AddDouble";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = L"AddCurrency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = L"AddDateTimeAsInt64";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = L"AddTimeSpanAsInt64";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = L"AddGuid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = L"AddNVarChar";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = L"AddBinary";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = L"AddInt64";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = L"AddReference";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = L"AddReference";
+            }
+            break;
+        }
+        return result;
+    }
 
 }

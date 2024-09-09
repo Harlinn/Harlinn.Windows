@@ -40,6 +40,11 @@ namespace Harlinn.Common.Core.Net.Data
         public BaseData()
         { }
 
+        public BaseData(ObjectState objectState)
+        {
+            objectState_ = ObjectState;
+        }
+
         protected void OnPropertyChanged()
         {
             if (objectState_ == Data.ObjectState.Stored || objectState_ == Data.ObjectState.ConcurrencyConflict)
@@ -99,24 +104,30 @@ namespace Harlinn.Common.Core.Net.Data
 
     public abstract class BaseDataInt64<TEnum> : BaseData<TEnum> where TEnum : struct, System.Enum
     {
-        long id_ = default;
+        long _id = default;
 
         public BaseDataInt64()
         { }
 
+        public BaseDataInt64(ObjectState objectState, long id)
+            : base(objectState) 
+        {
+            _id = id;
+        }
 
-        public long Id_ { get => id_; set => id_ = value; }
+
+        public long Id { get => _id; set => _id = value; }
 
         public override void WriteTo([DisallowNull] BinaryWriter destination)
         {
             base.WriteTo(destination);
-            destination.Write(id_);
+            destination.Write(_id);
         }
 
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom(source);
-            id_ = source.ReadInt64();
+            _id = source.ReadInt64();
         }
 
 
@@ -124,7 +135,7 @@ namespace Harlinn.Common.Core.Net.Data
         {
             base.AssignTo(target);
             var other = (BaseDataInt64<TEnum>)target;
-            other.id_ = id_;
+            other._id = _id;
         }
 
         public override bool Equals(Data.BaseData<TEnum>? other)
@@ -132,7 +143,7 @@ namespace Harlinn.Common.Core.Net.Data
             if (base.Equals(other))
             {
                 var obj = (BaseDataInt64<TEnum>)other;
-                if (obj.id_ != id_)
+                if (obj._id != _id)
                 {
                     return false;
                 }
@@ -144,24 +155,30 @@ namespace Harlinn.Common.Core.Net.Data
 
     public abstract class BaseDataGuid<TEnum> : BaseData<TEnum> where TEnum : struct, System.Enum
     {
-        Guid id_ = default;
+        Guid _id = default;
 
         public BaseDataGuid()
         { }
 
+        public BaseDataGuid(ObjectState objectState, Guid id)
+            : base(objectState) 
+        {
+            _id = id;
+        }
 
-        public Guid Id_ { get => id_; set => id_ = value; }
+
+        public Guid Id { get => _id; set => _id = value; }
 
         public override void WriteTo([DisallowNull] BinaryWriter destination)
         {
             base.WriteTo(destination);
-            destination.Write(id_);
+            destination.Write(_id);
         }
 
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom(source);
-            id_ = source.ReadGuid();
+            _id = source.ReadGuid();
         }
 
 
@@ -169,7 +186,7 @@ namespace Harlinn.Common.Core.Net.Data
         {
             base.AssignTo(target);
             var other = (BaseDataGuid<TEnum>)target;
-            other.id_ = id_;
+            other._id = _id;
         }
 
         public override bool Equals(Data.BaseData<TEnum>? other)
@@ -177,7 +194,7 @@ namespace Harlinn.Common.Core.Net.Data
             if (base.Equals(other))
             {
                 var obj = (BaseDataGuid<TEnum>)other;
-                if (obj.id_ != id_)
+                if (obj._id != _id)
                 {
                     return false;
                 }
