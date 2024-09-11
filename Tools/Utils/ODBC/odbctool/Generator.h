@@ -634,6 +634,7 @@ namespace Harlinn::ODBC::Tool
         void CreateDelete( const ClassInfo& classInfo );
         void AddInsertParameter( const MemberInfo& memberInfo );
         void AddUpdateParameter( const MemberInfo& memberInfo );
+        void AddDeleteParameter( const MemberInfo& memberInfo );
     };
 
     class CSharpDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>

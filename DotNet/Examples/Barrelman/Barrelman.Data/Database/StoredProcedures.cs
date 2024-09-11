@@ -76,8 +76,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AircraftTypeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -96,7 +96,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAircraftType( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AircraftTypeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDeviceCommand( ref Guid id, Guid aisDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
@@ -138,8 +158,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDeviceCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -162,7 +182,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDeviceCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDeviceCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDeviceCommandReply( ref Guid id, Guid aisDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -204,8 +244,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDeviceCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -228,7 +268,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDeviceCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDeviceCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDeviceConfiguration( ref Guid id, Guid aisDevice, DateTime timestamp, bool filter, double northWestLatitude, double northWestLongitude, double southEastLatitude, double southEastLongitude, string comPort, int baudRate, string iPAddress, int port, int udpPort, bool authenticate, string userName, string password, string authenticationURL, Types.AisDeviceConnectionType connectionType, int sourceUpdateRate, string configurationURL, bool storeReceivedSentences )
@@ -285,8 +345,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDeviceConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var filterParameter = sqlCommandParameters.AddBoolean( "@Filter", filter );
@@ -324,7 +384,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDeviceConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDeviceConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDeviceRawMessage( ref Guid id, Guid aisDevice, DateTime timestamp, bool isSent, string message )
@@ -365,8 +445,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDeviceRawMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var isSentParameter = sqlCommandParameters.AddBoolean( "@IsSent", isSent );
@@ -388,7 +468,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDeviceRawMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDeviceRawMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDeviceRawSentence( ref Guid id, Guid aisDevice, DateTime timestamp, string sentence )
@@ -428,8 +528,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDeviceRawSentenceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var sentenceParameter = sqlCommandParameters.AddNVarChar( "@Sentence", sentence, 1024 );
@@ -450,7 +550,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDeviceRawSentence( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDeviceRawSentenceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAidToNavigationReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
@@ -510,8 +630,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AidToNavigationReportMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -552,7 +672,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAidToNavigationReportMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AidToNavigationReportMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisAddressedSafetyRelatedMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, string text )
@@ -599,8 +739,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisAddressedSafetyRelatedMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -628,7 +768,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisAddressedSafetyRelatedMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisAddressedSafetyRelatedMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisBaseStationReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
@@ -678,8 +838,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisBaseStationReportMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -710,7 +870,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisBaseStationReportMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisBaseStationReportMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisBinaryAcknowledgeMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
@@ -761,8 +941,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisBinaryAcknowledgeMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -794,7 +974,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisBinaryAcknowledgeMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisBinaryAcknowledgeMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisBinaryAddressedMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
@@ -843,8 +1043,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisBinaryAddressedMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -874,7 +1074,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisBinaryAddressedMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisBinaryAddressedMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisBinaryBroadcastMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int designatedAreaCode, int functionalId, string data )
@@ -920,8 +1140,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisBinaryBroadcastMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -948,7 +1168,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisBinaryBroadcastMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisBinaryBroadcastMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDataLinkManagementMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
@@ -1007,8 +1247,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDataLinkManagementMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1048,7 +1288,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDataLinkManagementMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDataLinkManagementMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisExtendedClassBCsPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
@@ -1110,8 +1370,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisExtendedClassBCsPositionReportMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1154,7 +1414,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisExtendedClassBCsPositionReportMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisExtendedClassBCsPositionReportMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisInterrogationMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Guid interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
@@ -1204,8 +1484,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisInterrogationMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1236,7 +1516,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisInterrogationMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisInterrogationMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisPositionReportClassAAssignedScheduleMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
@@ -1291,8 +1591,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisPositionReportClassAAssignedScheduleMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1328,7 +1628,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisPositionReportClassAAssignedScheduleMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisPositionReportClassAAssignedScheduleMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisPositionReportClassAMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
@@ -1383,8 +1703,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisPositionReportClassAMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1420,7 +1740,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisPositionReportClassAMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisPositionReportClassAMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisPositionReportClassAResponseToInterrogationMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
@@ -1475,8 +1815,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisPositionReportClassAResponseToInterrogationMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1512,7 +1852,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisPositionReportClassAResponseToInterrogationMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisPositionReportClassAResponseToInterrogationMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisPositionReportForLongRangeApplicationsMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
@@ -1563,8 +1923,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisPositionReportForLongRangeApplicationsMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1596,7 +1956,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisPositionReportForLongRangeApplicationsMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisPositionReportForLongRangeApplicationsMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisSafetyRelatedAcknowledgmentMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
@@ -1647,8 +2027,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisSafetyRelatedAcknowledgmentMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1680,7 +2060,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisSafetyRelatedAcknowledgmentMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisSafetyRelatedAcknowledgmentMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisStandardClassBCsPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
@@ -1739,8 +2139,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisStandardClassBCsPositionReportMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1780,7 +2180,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisStandardClassBCsPositionReportMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisStandardClassBCsPositionReportMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisStandardSarAircraftPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
@@ -1835,8 +2255,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisStandardSarAircraftPositionReportMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1872,7 +2292,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisStandardSarAircraftPositionReportMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisStandardSarAircraftPositionReportMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisStaticAndVoyageRelatedDataMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int aisVersion, Guid imoNumber, Guid callsign, Guid shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
@@ -1929,8 +2369,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisStaticAndVoyageRelatedDataMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -1968,7 +2408,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisStaticAndVoyageRelatedDataMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisStaticAndVoyageRelatedDataMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisStaticDataReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber )
@@ -2011,8 +2471,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisStaticDataReportMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -2036,7 +2496,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisStaticDataReportMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisStaticDataReportMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisStaticDataReportPartAMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Guid shipName, int spare )
@@ -2081,8 +2561,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisStaticDataReportPartAMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -2108,7 +2588,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisStaticDataReportPartAMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisStaticDataReportPartAMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisStaticDataReportPartBMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
@@ -2163,8 +2663,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisStaticDataReportPartBMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -2200,7 +2700,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisStaticDataReportPartBMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisStaticDataReportPartBMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisUtcAndDateInquiryMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare1, int destinationMmsi, int spare2 )
@@ -2245,8 +2765,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisUtcAndDateInquiryMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -2272,7 +2792,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisUtcAndDateInquiryMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisUtcAndDateInquiryMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisUtcAndDateResponseMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
@@ -2322,8 +2862,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisUtcAndDateResponseMessageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var aisDeviceParameter = sqlCommandParameters.AddReference( "@AisDevice", aisDevice );
                 var receivedTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ReceivedTimestamp", receivedTimestamp );
                 var messageSequenceNumberParameter = sqlCommandParameters.AddInt64( "@MessageSequenceNumber", messageSequenceNumber );
@@ -2354,7 +2894,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisUtcAndDateResponseMessage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisUtcAndDateResponseMessageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAlarmStateChange( ref Guid id, Guid alarm, DateTime timestamp, Types.AlarmState state )
@@ -2394,8 +2954,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AlarmStateChangeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var alarmParameter = sqlCommandParameters.AddReference( "@Alarm", alarm );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var stateParameter = sqlCommandParameters.AddEnum( "@State", state );
@@ -2416,7 +2976,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAlarmStateChange( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AlarmStateChangeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBaseStationType( ref Guid id, string name )
@@ -2454,8 +3034,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BaseStationTypeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -2474,7 +3054,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBaseStationType( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BaseStationTypeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBinaryTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, byte[] value__ )
@@ -2514,8 +3114,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BinaryTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddBinary( "@Value", value__, 0 );
@@ -2536,7 +3136,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBinaryTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BinaryTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBookmark( ref Guid id, Guid view, string name, DateTime? timestamp, double latitude, double longitude, double zoomLevel )
@@ -2579,8 +3199,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BookmarkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var viewParameter = sqlCommandParameters.AddReference( "@View", view );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
@@ -2604,7 +3224,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBookmark( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BookmarkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBooleanTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, bool? value__ )
@@ -2644,8 +3284,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BooleanTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddBoolean( "@Value", value__ );
@@ -2666,7 +3306,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBooleanTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BooleanTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertByteTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, byte? value__ )
@@ -2706,8 +3366,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ByteTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddByte( "@Value", value__ );
@@ -2728,7 +3388,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteByteTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ByteTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommand( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -2770,8 +3450,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -2794,7 +3474,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandAbsoluteMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Types.CameraPanTiltMode positionPanTiltMode, double? panAngle, double? tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double? focalLength, Types.CameraPanTiltMode speedPanTiltMode, double? panSpeed, double? tiltSpeed, Types.CameraFocalLengthMode speedFocalLengthMode, double? zoomSpeed )
@@ -2846,8 +3546,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandAbsoluteMoveUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -2880,7 +3580,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandAbsoluteMove( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandAbsoluteMoveDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandAdjustPanTiltZoom( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double? x, double? y, double? z )
@@ -2925,8 +3645,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandAdjustPanTiltZoomUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -2952,7 +3672,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandAdjustPanTiltZoom( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandAdjustPanTiltZoomDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandContinuousMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool normalized, double? panVelocity, double? tiltVelocity, double? zoomVelocity, TimeSpan? duration )
@@ -2999,8 +3739,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandContinuousMoveUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3028,7 +3768,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandContinuousMove( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandContinuousMoveDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandGeoMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double latitude, double longitude, double? altitude, double? viewportWidth, double? viewportHeight )
@@ -3075,8 +3835,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandGeoMoveUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3104,7 +3864,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandGeoMove( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandGeoMoveDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandRelativeMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool normalized, double? panAngle, double? tiltAngle, double? focalLength, double? panSpeed, double? tiltSpeed, double? zoomSpeed )
@@ -3153,8 +3933,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandRelativeMoveUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3184,7 +3964,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandRelativeMove( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandRelativeMoveDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandReleasePTZOwnership( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -3226,8 +4026,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandReleasePTZOwnershipUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3250,7 +4050,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandReleasePTZOwnership( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandReleasePTZOwnershipDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandRequestPTZOwnership( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -3292,8 +4112,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandRequestPTZOwnershipUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3316,7 +4136,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandRequestPTZOwnership( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandRequestPTZOwnershipDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandSetAutoFocus( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
@@ -3359,8 +4199,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandSetAutoFocusUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3384,7 +4224,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandSetAutoFocus( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandSetAutoFocusDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandSetBlackAndWhite( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
@@ -3427,8 +4287,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandSetBlackAndWhiteUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3452,7 +4312,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandSetBlackAndWhite( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandSetBlackAndWhiteDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandSetFollowed( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Guid trackId, Types.CameraFollowReason reason )
@@ -3496,8 +4376,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandSetFollowedUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3522,7 +4402,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandSetFollowed( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandSetFollowedDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandSetInfraRedLamp( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
@@ -3565,8 +4465,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandSetInfraRedLampUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3590,7 +4490,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandSetInfraRedLamp( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandSetInfraRedLampDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandSetWasher( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
@@ -3633,8 +4553,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandSetWasherUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3658,7 +4578,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandSetWasher( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandSetWasherDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandSetWiper( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
@@ -3701,8 +4641,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandSetWiperUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3726,7 +4666,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandSetWiper( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandSetWiperDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandStop( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool panTilt, bool zoom )
@@ -3770,8 +4730,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandStopUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -3796,7 +4756,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandStop( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandStopDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraCommandReply( ref Guid id, Guid camera, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
@@ -3841,8 +4821,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -3868,7 +4848,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraConfiguration( ref Guid id, Guid camera, DateTime timestamp, Types.CameraControlProtocol cameraControlProtocol, string cameraURL, string configurationURL, string userName, string password, bool useRtspUriOverride, string rtspUriOverride, double latitude, double longitude, double altitude, bool useRelativePosition, Types.CameraPanTiltMode panTiltMode, double minTiltAngle, double maxTiltAngle, double minTiltScaleAngle, double maxTiltScaleAngle, bool useReverseTiltAngle, bool useReverseNormalizedTiltAngle, double minTiltVelocity, double maxTiltVelocity, double minTiltSpeed, double maxTiltSpeed, double minPanAngle, double maxPanAngle, double minPanScaleAngle, double maxPanScaleAngle, bool useReversePanAngle, bool useReverseNormalizedPanAngle, double minPanVelocity, double maxPanVelocity, double minPanSpeed, double maxPanSpeed, Types.CameraFocalLengthMode focalLengthMode, double minFocalLength, double maxFocalLength, double minFocalLengthScale, double maxFocalLengthScale, double minZoomVelocity, double maxZoomVelocity, double minZoomSpeed, double maxZoomSpeed, double imageSensorWidth, double imageSensorHeight, double homePanAngle, double homeTiltAngle, double homeFocalLength, double panOffset, double tiltOffset, double aimAltitude, double minimumTargetWidth, TimeSpan targetLockTimeout, TimeSpan updateStatusInterval, TimeSpan readTimeout, TimeSpan moveCommandStatusDelay, string ptzProfileName, string ptzConfigurationToken, string videoSourceToken )
@@ -3964,8 +4964,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var cameraControlProtocolParameter = sqlCommandParameters.AddEnum( "@CameraControlProtocol", cameraControlProtocol );
@@ -4042,7 +5042,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraPanCalibration( ref Guid id, Guid camera, DateTime timestamp )
@@ -4081,8 +5101,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraPanCalibrationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -4102,7 +5122,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraPanCalibration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraPanCalibrationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraPanCalibrationValue( ref Guid id, Guid panCalibration, double panAngle, double panOffset )
@@ -4142,8 +5182,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraPanCalibrationValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var panCalibrationParameter = sqlCommandParameters.AddReference( "@PanCalibration", panCalibration );
                 var panAngleParameter = sqlCommandParameters.AddDouble( "@PanAngle", panAngle );
                 var panOffsetParameter = sqlCommandParameters.AddDouble( "@PanOffset", panOffset );
@@ -4164,7 +5204,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraPanCalibrationValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraPanCalibrationValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraStatus( ref Guid id, Guid camera, Guid track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
@@ -4218,8 +5278,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraStatusUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var trackParameter = sqlCommandParameters.AddReference( "@Track", track );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
@@ -4254,7 +5314,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraStatus( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraStatusDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraTiltCalibration( ref Guid id, Guid camera, DateTime timestamp )
@@ -4293,8 +5373,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraTiltCalibrationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -4314,7 +5394,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraTiltCalibration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraTiltCalibrationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraTiltCalibrationValue( ref Guid id, Guid tiltCalibration, double panAngle, double tiltOffset )
@@ -4354,8 +5454,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraTiltCalibrationValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var tiltCalibrationParameter = sqlCommandParameters.AddReference( "@TiltCalibration", tiltCalibration );
                 var panAngleParameter = sqlCommandParameters.AddDouble( "@PanAngle", panAngle );
                 var tiltOffsetParameter = sqlCommandParameters.AddDouble( "@TiltOffset", tiltOffset );
@@ -4376,7 +5476,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraTiltCalibrationValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraTiltCalibrationValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraZoomCalibration( ref Guid id, Guid camera, DateTime timestamp )
@@ -4415,8 +5535,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraZoomCalibrationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -4436,7 +5556,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraZoomCalibration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraZoomCalibrationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraZoomCalibrationValue( ref Guid id, Guid zoomCalibration, double focalLength, double focalLengthOffset )
@@ -4476,8 +5616,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraZoomCalibrationValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var zoomCalibrationParameter = sqlCommandParameters.AddReference( "@ZoomCalibration", zoomCalibration );
                 var focalLengthParameter = sqlCommandParameters.AddDouble( "@FocalLength", focalLength );
                 var focalLengthOffsetParameter = sqlCommandParameters.AddDouble( "@FocalLengthOffset", focalLengthOffset );
@@ -4498,7 +5638,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraZoomCalibrationValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraZoomCalibrationValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCatalog( ref Guid id, Guid catalog, string name )
@@ -4537,8 +5697,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CatalogUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -4558,7 +5718,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCatalog( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CatalogDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertElement( ref Guid id, Guid catalog, string name, Guid elementType )
@@ -4598,8 +5778,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ElementUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
@@ -4620,7 +5800,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteElement( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ElementDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCollectionInfo( ref Guid id, long count )
@@ -4658,8 +5858,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CollectionInfoUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var countParameter = sqlCommandParameters.AddInt64( "@Count", count );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -4678,7 +5878,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCollectionInfo( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CollectionInfoDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCountry( ref Guid id, string name, int code, string alpha2, string alpha3 )
@@ -4719,8 +5939,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CountryUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var codeParameter = sqlCommandParameters.AddInt32( "@Code", code );
                 var alpha2Parameter = sqlCommandParameters.AddNVarChar( "@Alpha2", alpha2, 2 );
@@ -4742,7 +5962,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCountry( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CountryDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCursorInfo( ref Guid id, int typeCode )
@@ -4780,8 +6020,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CursorInfoUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var typeCodeParameter = sqlCommandParameters.AddInt32( "@TypeCode", typeCode );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -4800,7 +6040,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCursorInfo( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CursorInfoDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDateTimeTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, DateTime? value__ )
@@ -4840,8 +6100,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DateTimeTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Value", value__ );
@@ -4862,7 +6122,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDateTimeTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DateTimeTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDeviceHost( ref Guid id, string name )
@@ -4900,8 +6180,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DeviceHostUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -4920,7 +6200,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDeviceHost( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DeviceHostDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDeviceHostConfiguration( ref Guid id, Guid host, DateTime timestamp, string hostname, int port, string queueName )
@@ -4962,8 +6262,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DeviceHostConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var hostnameParameter = sqlCommandParameters.AddNVarChar( "@Hostname", hostname, 127 );
@@ -4986,7 +6286,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDeviceHostConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DeviceHostConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDoubleTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, double? value__ )
@@ -5026,8 +6346,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DoubleTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddDouble( "@Value", value__ );
@@ -5048,7 +6368,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDoubleTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DoubleTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertFacilityType( ref Guid id, string name )
@@ -5086,8 +6426,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "FacilityTypeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -5106,7 +6446,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteFacilityType( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "FacilityTypeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGeoPosition2DTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, double? latitude, double? longitude )
@@ -5147,8 +6507,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GeoPosition2DTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var latitudeParameter = sqlCommandParameters.AddDouble( "@Latitude", latitude );
@@ -5170,7 +6530,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGeoPosition2DTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GeoPosition2DTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGeoPosition3DTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, double? latitude, double? longitude, double? altitude )
@@ -5212,8 +6592,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GeoPosition3DTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var latitudeParameter = sqlCommandParameters.AddDouble( "@Latitude", latitude );
@@ -5236,7 +6616,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGeoPosition3DTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GeoPosition3DTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSDeviceCommand( ref Guid id, Guid gNSSDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -5278,8 +6678,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSDeviceCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var gNSSDeviceParameter = sqlCommandParameters.AddReference( "@GNSSDevice", gNSSDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -5302,7 +6702,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSDeviceCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSDeviceCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSDeviceCommandReply( ref Guid id, Guid gNSSDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -5344,8 +6764,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSDeviceCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var gNSSDeviceParameter = sqlCommandParameters.AddReference( "@GNSSDevice", gNSSDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -5368,7 +6788,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSDeviceCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSDeviceCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSDeviceConfiguration( ref Guid id, Guid gNSSDevice, DateTime timestamp, double defaultLatitude, double defaultLongitude, double defaultAltitude, double latitudeOffset, double longitudeOffset, double altitudeOffset )
@@ -5413,8 +6853,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSDeviceConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var gNSSDeviceParameter = sqlCommandParameters.AddReference( "@GNSSDevice", gNSSDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var defaultLatitudeParameter = sqlCommandParameters.AddDouble( "@DefaultLatitude", defaultLatitude );
@@ -5440,7 +6880,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSDeviceConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSDeviceConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGuidTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, Guid? value__ )
@@ -5480,8 +6940,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GuidTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddGuid( "@Value", value__ );
@@ -5502,7 +6962,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGuidTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GuidTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroDeviceCommand( ref Guid id, Guid gyroDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -5544,8 +7024,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroDeviceCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var gyroDeviceParameter = sqlCommandParameters.AddReference( "@GyroDevice", gyroDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -5568,7 +7048,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroDeviceCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroDeviceCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroDeviceCommandReply( ref Guid id, Guid gyroDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -5610,8 +7110,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroDeviceCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var gyroDeviceParameter = sqlCommandParameters.AddReference( "@GyroDevice", gyroDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -5634,7 +7134,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroDeviceCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroDeviceCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroDeviceConfiguration( ref Guid id, Guid gyroDevice, DateTime timestamp, double defaultHeadingTrueNorth, double defaultMagneticTrueNorth, double headingTrueNorthOffset, double headingMagneticNorthOffset, string pitchTransducerName, string rollTransducerName )
@@ -5679,8 +7199,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroDeviceConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var gyroDeviceParameter = sqlCommandParameters.AddReference( "@GyroDevice", gyroDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var defaultHeadingTrueNorthParameter = sqlCommandParameters.AddDouble( "@DefaultHeadingTrueNorth", defaultHeadingTrueNorth );
@@ -5706,7 +7226,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroDeviceConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroDeviceConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCallsign( ref Guid id, string identifier )
@@ -5744,8 +7284,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CallsignUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var identifierParameter = sqlCommandParameters.AddNVarChar( "@Identifier", identifier, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -5764,7 +7304,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCallsign( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CallsignDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInternationalMaritimeOrganizationNumber( ref Guid id, long identifier )
@@ -5802,8 +7362,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "InternationalMaritimeOrganizationNumberUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var identifierParameter = sqlCommandParameters.AddInt64( "@Identifier", identifier );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -5822,7 +7382,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInternationalMaritimeOrganizationNumber( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "InternationalMaritimeOrganizationNumberDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMaritimeMobileServiceIdentity( ref Guid id, long identifier )
@@ -5860,8 +7440,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MaritimeMobileServiceIdentityUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var identifierParameter = sqlCommandParameters.AddInt64( "@Identifier", identifier );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -5880,7 +7460,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMaritimeMobileServiceIdentity( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MaritimeMobileServiceIdentityDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertName( ref Guid id, string text )
@@ -5918,8 +7518,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "NameUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var textParameter = sqlCommandParameters.AddNVarChar( "@Text", text, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -5938,7 +7538,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteName( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "NameDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt16TimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, short? value__ )
@@ -5978,8 +7598,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int16TimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddInt16( "@Value", value__ );
@@ -6000,7 +7620,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt16TimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int16TimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt32TimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, int? value__ )
@@ -6040,8 +7680,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int32TimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddInt32( "@Value", value__ );
@@ -6062,7 +7702,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt32TimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int32TimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt64TimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, long? value__ )
@@ -6102,8 +7762,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int64TimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddInt64( "@Value", value__ );
@@ -6124,7 +7784,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt64TimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int64TimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBaseStation( ref Guid id, string name, Guid type )
@@ -6163,8 +7843,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BaseStationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var typeParameter = sqlCommandParameters.AddReference( "@Type", type );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -6184,7 +7864,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBaseStation( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BaseStationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCameraDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
@@ -6225,8 +7925,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CameraDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6248,7 +7948,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCameraDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CameraDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid altitudeTimeseries )
@@ -6292,8 +8012,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6318,7 +8038,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid headingTrueNorthTimeseries, Guid headingMagneticNorthTimeseries, Guid pitchTimeseries, Guid rateOfTurnTimeseries, Guid rollTimeseries, Guid courseTimeseries, Guid speedTimeseries, Guid gNSSDevice )
@@ -6367,8 +8107,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6398,7 +8138,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
@@ -6439,8 +8199,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6462,7 +8222,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertOilSpillDetectorDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
@@ -6503,8 +8283,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "OilSpillDetectorDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6526,7 +8306,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteOilSpillDetectorDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "OilSpillDetectorDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadioDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
@@ -6567,8 +8367,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadioDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6590,7 +8390,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadioDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadioDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid? radar, Guid pressureTimeseries, Guid temperatureTimeseries, Guid dewPointTimeseries, Guid statusTimeseries )
@@ -6636,8 +8456,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6664,7 +8484,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
@@ -6705,8 +8545,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6728,7 +8568,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid saveSettingsTimeseries, Guid powerOnTimeseries, Guid trackingOnTimeseries, Guid radarPulseTimeseries, Guid tuningTimeseries, Guid blankSector1Timeseries, Guid sector1StartTimeseries, Guid sector1EndTimeseries, Guid blankSector2Timeseries, Guid sector2StartTimeseries, Guid sector2EndTimeseries, Guid enableAutomaticFrequencyControlTimeseries, Guid azimuthOffsetTimeseries, Guid enableSensitivityTimeControlTimeseries, Guid automaticSensitivityTimeControlTimeseries, Guid sensitivityTimeControlLevelTimeseries, Guid enableFastTimeConstantTimeseries, Guid fastTimeConstantLevelTimeseries, Guid fastTimeConstantModeTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid? radome, Guid? gNSSDevice )
@@ -6792,8 +8652,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6838,7 +8698,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid barometricPressureTimeseries, Guid airTemperatureTimeseries, Guid waterTemperatureTimeseries, Guid relativeHumidityTimeseries, Guid absoluteHumidityTimeseries, Guid dewPointTimeseries, Guid windDirectionTimeseries, Guid windSpeedTimeseries, Guid gyro )
@@ -6888,8 +8768,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationDeviceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -6920,7 +8800,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationDevice( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationDeviceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertFacility( ref Guid id, string name, Guid type, double longitude, double latitude, double altitude )
@@ -6962,8 +8862,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "FacilityUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var typeParameter = sqlCommandParameters.AddReference( "@Type", type );
                 var longitudeParameter = sqlCommandParameters.AddDouble( "@Longitude", longitude );
@@ -6986,7 +8886,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteFacility( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "FacilityDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAircraft( ref Guid id, string name, Guid type )
@@ -7025,8 +8945,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AircraftUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var typeParameter = sqlCommandParameters.AddReference( "@Type", type );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -7046,7 +8966,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAircraft( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AircraftDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisAidToNavigation( ref Guid id, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid offPositionTimeseries )
@@ -7093,8 +9033,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisAidToNavigationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var mMSIParameter = sqlCommandParameters.AddReference( "@MMSI", mMSI );
                 var navigationalAidTypeParameter = sqlCommandParameters.AddEnum( "@NavigationalAidType", navigationalAidType );
@@ -7122,7 +9062,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisAidToNavigation( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisAidToNavigationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertVehicle( ref Guid id, string name, Guid type )
@@ -7161,8 +9121,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "VehicleUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var typeParameter = sqlCommandParameters.AddReference( "@Type", type );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -7182,7 +9142,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteVehicle( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "VehicleDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertVessel( ref Guid id, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid draughtTimeseries, Guid personsOnBoardTimeseries )
@@ -7227,8 +9207,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "VesselUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var typeParameter = sqlCommandParameters.AddReference( "@Type", type );
                 var toBowParameter = sqlCommandParameters.AddInt32( "@ToBow", toBow );
@@ -7254,7 +9234,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteVessel( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "VesselDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertItemIdentityLink( ref Guid id, Guid item, Guid identity, DateTime start, DateTime? end )
@@ -7295,8 +9295,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ItemIdentityLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var itemParameter = sqlCommandParameters.AddReference( "@Item", item );
                 var identityParameter = sqlCommandParameters.AddReference( "@Identity", identity );
                 var startParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Start", start );
@@ -7318,7 +9318,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteItemIdentityLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ItemIdentityLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertItemParentChildLink( ref Guid id, Guid parent, Guid child, DateTime timestamp )
@@ -7358,8 +9378,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ItemParentChildLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var parentParameter = sqlCommandParameters.AddReference( "@Parent", parent );
                 var childParameter = sqlCommandParameters.AddReference( "@Child", child );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
@@ -7380,7 +9400,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteItemParentChildLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ItemParentChildLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputDeviceCommand( ref Guid id, Guid lineInputDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -7422,8 +9462,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputDeviceCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var lineInputDeviceParameter = sqlCommandParameters.AddReference( "@LineInputDevice", lineInputDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -7446,7 +9486,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputDeviceCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputDeviceCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputDeviceCommandReply( ref Guid id, Guid lineInputDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -7488,8 +9548,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputDeviceCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var lineInputDeviceParameter = sqlCommandParameters.AddReference( "@LineInputDevice", lineInputDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -7512,7 +9572,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputDeviceCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputDeviceCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputDeviceConfiguration( ref Guid id, Guid lineInputDevice, DateTime timestamp, bool storeReceivedSentences, bool storeSentMessages, bool storeUnsentMessages, bool nMEA, bool strictNMEA, Types.LineInputDeviceConnectionType connectionType, int udpReceivePort, string udpSendHostname, int udpSendPort, string tcpHostname, int tcpPort, bool useHttpLogin, string loginHostname, int loginPort, string userName, string password, string comPort, int baudRate, int dataBits, bool discardNull, bool dtrEnable, Types.Handshake handshake, string newLine, Types.Parity parity, byte parityReplace, int readBufferSize, TimeSpan readTimeout, int receivedBytesThreshold, bool rtsEnable, Types.StopBits stopBits, int writeBufferSize, TimeSpan writeTimeout, string pairedComPort )
@@ -7584,8 +9664,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputDeviceConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var lineInputDeviceParameter = sqlCommandParameters.AddReference( "@LineInputDevice", lineInputDevice );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var storeReceivedSentencesParameter = sqlCommandParameters.AddBoolean( "@StoreReceivedSentences", storeReceivedSentences );
@@ -7638,7 +9718,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputDeviceConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputDeviceConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputMessageRouting( ref Guid id, Guid lineInputDevice, string type )
@@ -7677,8 +9777,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputMessageRoutingUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var lineInputDeviceParameter = sqlCommandParameters.AddReference( "@LineInputDevice", lineInputDevice );
                 var typeParameter = sqlCommandParameters.AddNVarChar( "@Type", type, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -7698,7 +9798,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputMessageRouting( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputMessageRoutingDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputMessageRoutingDestination( ref Guid id, Guid routing, Guid listener )
@@ -7737,8 +9857,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputMessageRoutingDestinationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var routingParameter = sqlCommandParameters.AddReference( "@Routing", routing );
                 var listenerParameter = sqlCommandParameters.AddReference( "@Listener", listener );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -7758,7 +9878,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputMessageRoutingDestination( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputMessageRoutingDestinationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLineInputWhiteListEntry( ref Guid id, Guid lineInputDevice, string hostName, int port )
@@ -7798,8 +9938,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LineInputWhiteListEntryUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var lineInputDeviceParameter = sqlCommandParameters.AddReference( "@LineInputDevice", lineInputDevice );
                 var hostNameParameter = sqlCommandParameters.AddNVarChar( "@HostName", hostName, 128 );
                 var portParameter = sqlCommandParameters.AddInt32( "@Port", port );
@@ -7820,7 +9960,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLineInputWhiteListEntry( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LineInputWhiteListEntryDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogApplication( ref Guid id, string name, string description )
@@ -7859,8 +10019,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogApplicationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -7880,7 +10040,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogApplication( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogApplicationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogApplicationConfiguration( ref Guid id, Guid application, DateTime timestamp, bool finest, bool finer, bool fine, bool info, bool notice, bool warn, bool error, bool severe, bool critical, bool alert, bool fatal, bool emergency )
@@ -7931,8 +10111,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogApplicationConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var applicationParameter = sqlCommandParameters.AddReference( "@Application", application );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var finestParameter = sqlCommandParameters.AddBoolean( "@Finest", finest );
@@ -7964,7 +10144,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogApplicationConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogApplicationConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogHost( ref Guid id, string computerName, string description )
@@ -8003,8 +10203,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogHostUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var computerNameParameter = sqlCommandParameters.AddNVarChar( "@ComputerName", computerName, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -8024,7 +10224,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogHost( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogHostDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogHostConfiguration( ref Guid id, Guid host, DateTime timestamp, bool finest, bool finer, bool fine, bool info, bool notice, bool warn, bool error, bool severe, bool critical, bool alert, bool fatal, bool emergency )
@@ -8075,8 +10295,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogHostConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var finestParameter = sqlCommandParameters.AddBoolean( "@Finest", finest );
@@ -8108,7 +10328,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogHostConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogHostConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogLocation( ref Guid id, string fileName, int lineNumber, string namespace__, string className, string methodName )
@@ -8150,8 +10390,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogLocationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var fileNameParameter = sqlCommandParameters.AddNVarChar( "@FileName", fileName, 260 );
                 var lineNumberParameter = sqlCommandParameters.AddInt32( "@LineNumber", lineNumber );
                 var namespaceParameter = sqlCommandParameters.AddNVarChar( "@Namespace", namespace__, 512 );
@@ -8174,7 +10414,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogLocation( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogLocationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogProcess( ref Guid id, Guid application, Guid host, DateTime started, DateTime? stopped, long processId, string path, string identity )
@@ -8218,8 +10478,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogProcessUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var applicationParameter = sqlCommandParameters.AddReference( "@Application", application );
                 var hostParameter = sqlCommandParameters.AddReference( "@Host", host );
                 var startedParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Started", started );
@@ -8244,7 +10504,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogProcess( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogProcessDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogRecord( ref Guid id, Guid thread, long sequenceNumber, Types.LogLevel level, DateTime timestamp, int depth, Guid location, string message, string exceptionString, byte[] propertiesData )
@@ -8290,8 +10570,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogRecordUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var threadParameter = sqlCommandParameters.AddReference( "@Thread", thread );
                 var sequenceNumberParameter = sqlCommandParameters.AddInt64( "@SequenceNumber", sequenceNumber );
                 var levelParameter = sqlCommandParameters.AddEnum( "@Level", level );
@@ -8318,7 +10598,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogRecord( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogRecordDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogThread( ref Guid id, Guid process, DateTime started, DateTime? stopped, long threadId, string name )
@@ -8360,8 +10660,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogThreadUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var processParameter = sqlCommandParameters.AddReference( "@Process", process );
                 var startedParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Started", started );
                 var stoppedParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Stopped", stopped );
@@ -8384,7 +10684,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogThread( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogThreadDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertLogTraceEntry( ref Guid id, Guid thread, long sequenceNumber, Guid location, int depth, DateTime entered, DateTime? ended )
@@ -8427,8 +10747,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "LogTraceEntryUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var threadParameter = sqlCommandParameters.AddReference( "@Thread", thread );
                 var sequenceNumberParameter = sqlCommandParameters.AddInt64( "@SequenceNumber", sequenceNumber );
                 var locationParameter = sqlCommandParameters.AddReference( "@Location", location );
@@ -8452,7 +10772,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteLogTraceEntry( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "LogTraceEntryDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMapElement( ref Guid id, Guid item, Types.MapElementType elementType, double latitude, double longitude, double angle, double left, double top, double width, double height, string label, byte[] data )
@@ -8500,8 +10840,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MapElementUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var itemParameter = sqlCommandParameters.AddReference( "@Item", item );
                 var elementTypeParameter = sqlCommandParameters.AddEnum( "@ElementType", elementType );
                 var latitudeParameter = sqlCommandParameters.AddDouble( "@Latitude", latitude );
@@ -8530,7 +10870,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMapElement( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MapElementDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMapInfo( ref Guid id, int scale, double latitude, double longitude, double northWestLatitude, double northWestLongitude, double southEastLatitude, double southEastLongitude, byte[] image )
@@ -8575,8 +10935,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MapInfoUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var scaleParameter = sqlCommandParameters.AddInt32( "@Scale", scale );
                 var latitudeParameter = sqlCommandParameters.AddDouble( "@Latitude", latitude );
                 var longitudeParameter = sqlCommandParameters.AddDouble( "@Longitude", longitude );
@@ -8602,7 +10962,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMapInfo( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MapInfoDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMapServiceOptions( ref Guid id, DateTime timestamp, string ipAddress, int port, double imageScaleFactorX, double imageOffsetX, double imageScaleFactorY, double imageOffsetY )
@@ -8646,8 +11026,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MapServiceOptionsUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var ipAddressParameter = sqlCommandParameters.AddNVarChar( "@IpAddress", ipAddress, 127 );
                 var portParameter = sqlCommandParameters.AddInt32( "@Port", port );
@@ -8672,7 +11052,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMapServiceOptions( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MapServiceOptionsDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMaritimeIdentificationDigits( ref Guid id, int code, Guid country )
@@ -8711,8 +11111,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MaritimeIdentificationDigitsUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var codeParameter = sqlCommandParameters.AddInt32( "@Code", code );
                 var countryParameter = sqlCommandParameters.AddReference( "@Country", country );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -8732,7 +11132,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMaritimeIdentificationDigits( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MaritimeIdentificationDigitsDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaProxySession( ref Guid id, Guid service, string name, Guid enabledTimeseries )
@@ -8772,8 +11192,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaProxySessionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var serviceParameter = sqlCommandParameters.AddReference( "@Service", service );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 128 );
                 var enabledTimeseriesParameter = sqlCommandParameters.AddReference( "@EnabledTimeseries", enabledTimeseries );
@@ -8794,7 +11214,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaProxySession( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaProxySessionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaProxySessionFile( ref Guid id, Guid proxySession, DateTime timestamp, string streamName )
@@ -8834,8 +11274,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaProxySessionFileUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var proxySessionParameter = sqlCommandParameters.AddReference( "@ProxySession", proxySession );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var streamNameParameter = sqlCommandParameters.AddNVarChar( "@StreamName", streamName, 127 );
@@ -8856,7 +11296,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaProxySessionFile( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaProxySessionFileDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaProxySessionOptions( ref Guid id, Guid proxySession, DateTime timestamp, string sourceStreamUrl, string streamName, Types.MediaProxySessionMode mode, int tunnelOverHTTPPortNumber, string username, string password, int recorderPortNumber, Types.MediaProxySessionType sessionType, TimeSpan maxFileTime, TimeSpan maxFileRetention, string videoDirectory )
@@ -8906,8 +11366,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaProxySessionOptionsUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var proxySessionParameter = sqlCommandParameters.AddReference( "@ProxySession", proxySession );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var sourceStreamUrlParameter = sqlCommandParameters.AddNVarChar( "@SourceStreamUrl", sourceStreamUrl, 255 );
@@ -8938,7 +11398,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaProxySessionOptions( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaProxySessionOptionsDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaService( ref Guid id, Guid enabledTimeseries )
@@ -8976,8 +11456,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaServiceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var enabledTimeseriesParameter = sqlCommandParameters.AddReference( "@EnabledTimeseries", enabledTimeseries );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -8996,7 +11476,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaService( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaServiceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaServiceOptions( ref Guid id, Guid mediaService, DateTime timestamp, int rtspPortNumber, int httpPortNumber )
@@ -9037,8 +11537,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaServiceOptionsUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var mediaServiceParameter = sqlCommandParameters.AddReference( "@MediaService", mediaService );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var rtspPortNumberParameter = sqlCommandParameters.AddInt32( "@RtspPortNumber", rtspPortNumber );
@@ -9060,7 +11560,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaServiceOptions( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaServiceOptionsDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertElementType( ref Guid id, Guid namespace__, string name, string description )
@@ -9100,8 +11620,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ElementTypeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var namespaceParameter = sqlCommandParameters.AddReference( "@Namespace", namespace__ );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -9122,7 +11642,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteElementType( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ElementTypeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertNamespace( ref Guid id, Guid namespace__, string name, string description )
@@ -9162,8 +11702,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "NamespaceUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var namespaceParameter = sqlCommandParameters.AddReference( "@Namespace", namespace__ );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -9184,7 +11724,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteNamespace( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "NamespaceDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertOilSpill( ref Guid id, Guid oilSpillDetector, DateTime timestamp, double oilArea, byte[] shape, byte[] bSI, byte[] oil, byte[] trace )
@@ -9228,8 +11788,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "OilSpillUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var oilSpillDetectorParameter = sqlCommandParameters.AddReference( "@OilSpillDetector", oilSpillDetector );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var oilAreaParameter = sqlCommandParameters.AddDouble( "@OilArea", oilArea );
@@ -9254,7 +11814,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteOilSpill( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "OilSpillDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertOilSpillDetectorCommand( ref Guid id, Guid oilSpillDetector, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -9296,8 +11876,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "OilSpillDetectorCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var oilSpillDetectorParameter = sqlCommandParameters.AddReference( "@OilSpillDetector", oilSpillDetector );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -9320,7 +11900,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteOilSpillDetectorCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "OilSpillDetectorCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertOilSpillDetectorCommandReply( ref Guid id, Guid oilSpillDetector, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -9362,8 +11962,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "OilSpillDetectorCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var oilSpillDetectorParameter = sqlCommandParameters.AddReference( "@OilSpillDetector", oilSpillDetector );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -9386,7 +11986,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteOilSpillDetectorCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "OilSpillDetectorCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertOilSpillDetectorConfiguration( ref Guid id, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
@@ -9447,8 +12067,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "OilSpillDetectorConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var oilSpillDetectorParameter = sqlCommandParameters.AddReference( "@OilSpillDetector", oilSpillDetector );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var rangeParameter = sqlCommandParameters.AddDouble( "@Range", range );
@@ -9490,7 +12110,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteOilSpillDetectorConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "OilSpillDetectorConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertPosition2DTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, double? x, double? y )
@@ -9531,8 +12171,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Position2DTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var xParameter = sqlCommandParameters.AddDouble( "@X", x );
@@ -9554,7 +12194,27 @@ namespace Barrelman.Data.Database
 
         public bool DeletePosition2DTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Position2DTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertPosition3DTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, double? x, double? y, double? z )
@@ -9596,8 +12256,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Position3DTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var xParameter = sqlCommandParameters.AddDouble( "@X", x );
@@ -9620,7 +12280,27 @@ namespace Barrelman.Data.Database
 
         public bool DeletePosition3DTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Position3DTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertProcessTrackValueResult( ref Guid id, bool createdNewTrack, Guid trackId )
@@ -9659,8 +12339,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ProcessTrackValueResultUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var createdNewTrackParameter = sqlCommandParameters.AddBoolean( "@CreatedNewTrack", createdNewTrack );
                 var trackIdParameter = sqlCommandParameters.AddGuid( "@TrackId", trackId );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -9680,7 +12360,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteProcessTrackValueResult( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ProcessTrackValueResultDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBinaryProperty( ref Guid id, Guid element, Guid definition, byte[] value__ )
@@ -9720,8 +12420,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BinaryPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddBinary( "@Value", value__, 0 );
@@ -9742,7 +12442,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBinaryProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BinaryPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBooleanProperty( ref Guid id, Guid element, Guid definition, bool value__ )
@@ -9782,8 +12502,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BooleanPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddBoolean( "@Value", value__ );
@@ -9804,7 +12524,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBooleanProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BooleanPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertByteProperty( ref Guid id, Guid element, Guid definition, byte value__ )
@@ -9844,8 +12584,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BytePropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddByte( "@Value", value__ );
@@ -9866,7 +12606,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteByteProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BytePropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDateTimeProperty( ref Guid id, Guid element, Guid definition, DateTime value__ )
@@ -9906,8 +12666,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DateTimePropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Value", value__ );
@@ -9928,7 +12688,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDateTimeProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DateTimePropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDoubleProperty( ref Guid id, Guid element, Guid definition, double value__ )
@@ -9968,8 +12748,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DoublePropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddDouble( "@Value", value__ );
@@ -9990,7 +12770,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDoubleProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DoublePropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGuidProperty( ref Guid id, Guid element, Guid definition, Guid value__ )
@@ -10030,8 +12830,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GuidPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddGuid( "@Value", value__ );
@@ -10052,7 +12852,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGuidProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GuidPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt16Property( ref Guid id, Guid element, Guid definition, short value__ )
@@ -10092,8 +12912,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int16PropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddInt16( "@Value", value__ );
@@ -10114,7 +12934,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt16Property( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int16PropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt32Property( ref Guid id, Guid element, Guid definition, int value__ )
@@ -10154,8 +12994,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int32PropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddInt32( "@Value", value__ );
@@ -10176,7 +13016,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt32Property( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int32PropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt64Property( ref Guid id, Guid element, Guid definition, long value__ )
@@ -10216,8 +13076,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int64PropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddInt64( "@Value", value__ );
@@ -10238,7 +13098,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt64Property( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int64PropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertReferenceProperty( ref Guid id, Guid element, Guid definition, Guid value__ )
@@ -10278,8 +13158,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ReferencePropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddReference( "@Value", value__ );
@@ -10300,7 +13180,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteReferenceProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ReferencePropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSByteProperty( ref Guid id, Guid element, Guid definition, sbyte value__ )
@@ -10340,8 +13240,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SBytePropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddSByte( "@Value", value__ );
@@ -10362,7 +13262,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSByteProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SBytePropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSingleProperty( ref Guid id, Guid element, Guid definition, float value__ )
@@ -10402,8 +13322,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SinglePropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddSingle( "@Value", value__ );
@@ -10424,7 +13344,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSingleProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SinglePropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertStringProperty( ref Guid id, Guid element, Guid definition, string value__ )
@@ -10464,8 +13404,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "StringPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddNVarChar( "@Value", value__, 127 );
@@ -10486,7 +13426,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteStringProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "StringPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBinaryTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10526,8 +13486,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BinaryTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10548,7 +13508,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBinaryTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BinaryTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBooleanTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10588,8 +13568,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BooleanTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10610,7 +13590,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBooleanTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BooleanTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertByteTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10650,8 +13650,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ByteTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10672,7 +13672,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteByteTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ByteTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDateTimeTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10712,8 +13732,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DateTimeTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10734,7 +13754,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDateTimeTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DateTimeTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDoubleTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10774,8 +13814,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DoubleTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10796,7 +13836,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDoubleTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DoubleTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGuidTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10836,8 +13896,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GuidTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10858,7 +13918,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGuidTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GuidTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt16TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10898,8 +13978,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int16TimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10920,7 +14000,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt16TimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int16TimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt32TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -10960,8 +14060,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int32TimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -10982,7 +14082,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt32TimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int32TimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt64TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11022,8 +14142,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int64TimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11044,7 +14164,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt64TimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int64TimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertReferenceTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11084,8 +14224,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ReferenceTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11106,7 +14246,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteReferenceTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ReferenceTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSByteTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11146,8 +14306,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SByteTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11168,7 +14328,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSByteTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SByteTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSingleTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11208,8 +14388,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SingleTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11230,7 +14410,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSingleTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SingleTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertStringTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11270,8 +14470,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "StringTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11292,7 +14492,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteStringTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "StringTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeSpanTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11332,8 +14552,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeSpanTimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11354,7 +14574,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeSpanTimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeSpanTimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt16TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11394,8 +14634,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt16TimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11416,7 +14656,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt16TimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt16TimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt32TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11456,8 +14716,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt32TimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11478,7 +14738,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt32TimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt32TimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt64TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
@@ -11518,8 +14798,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt64TimeseriesPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
@@ -11540,7 +14820,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt64TimeseriesProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt64TimeseriesPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeSpanProperty( ref Guid id, Guid element, Guid definition, TimeSpan value__ )
@@ -11580,8 +14880,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeSpanPropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@Value", value__ );
@@ -11602,7 +14902,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeSpanProperty( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeSpanPropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt16Property( ref Guid id, Guid element, Guid definition, ushort value__ )
@@ -11642,8 +14962,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt16PropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddUInt16( "@Value", value__ );
@@ -11664,7 +14984,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt16Property( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt16PropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt32Property( ref Guid id, Guid element, Guid definition, uint value__ )
@@ -11704,8 +15044,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt32PropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddUInt32( "@Value", value__ );
@@ -11726,7 +15066,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt32Property( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt32PropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt64Property( ref Guid id, Guid element, Guid definition, long value__ )
@@ -11766,8 +15126,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt64PropertyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementParameter = sqlCommandParameters.AddReference( "@Element", element );
                 var definitionParameter = sqlCommandParameters.AddReference( "@Definition", definition );
                 var valueParameter = sqlCommandParameters.AddInt64( "@Value", value__ );
@@ -11788,7 +15148,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt64Property( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt64PropertyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBinaryPropertyDefinition( ref Guid id, Guid elementType, string name, string description, byte[] defaultValue )
@@ -11829,8 +15209,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BinaryPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -11852,7 +15232,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBinaryPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BinaryPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBooleanPropertyDefinition( ref Guid id, Guid elementType, string name, string description, bool defaultValue )
@@ -11893,8 +15293,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BooleanPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -11916,7 +15316,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBooleanPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BooleanPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBytePropertyDefinition( ref Guid id, Guid elementType, string name, string description, byte defaultValue, byte minValue, byte maxValue )
@@ -11959,8 +15379,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BytePropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -11984,7 +15404,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBytePropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BytePropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDateTimePropertyDefinition( ref Guid id, Guid elementType, string name, string description, string defaultValue, string minValue, string maxValue )
@@ -12027,8 +15467,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DateTimePropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12052,7 +15492,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDateTimePropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DateTimePropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDoublePropertyDefinition( ref Guid id, Guid elementType, string name, string description, double defaultValue, double minValue, double maxValue )
@@ -12095,8 +15555,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DoublePropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12120,7 +15580,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDoublePropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DoublePropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGuidPropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid defaultValue )
@@ -12161,8 +15641,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GuidPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12184,7 +15664,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGuidPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GuidPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt16PropertyDefinition( ref Guid id, Guid elementType, string name, string description, short defaultValue, short minValue, short maxValue )
@@ -12227,8 +15727,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int16PropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12252,7 +15752,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt16PropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int16PropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt32PropertyDefinition( ref Guid id, Guid elementType, string name, string description, int defaultValue, int minValue, int maxValue )
@@ -12295,8 +15815,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int32PropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12320,7 +15840,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt32PropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int32PropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt64PropertyDefinition( ref Guid id, Guid elementType, string name, string description, long defaultValue, long minValue, long maxValue )
@@ -12363,8 +15903,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int64PropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12388,7 +15928,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt64PropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int64PropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertReferencePropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid defaultValue, Guid referencedElementType )
@@ -12430,8 +15990,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ReferencePropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12454,7 +16014,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteReferencePropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ReferencePropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSBytePropertyDefinition( ref Guid id, Guid elementType, string name, string description, sbyte defaultValue, sbyte minValue, sbyte maxValue )
@@ -12497,8 +16077,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SBytePropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12522,7 +16102,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSBytePropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SBytePropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSinglePropertyDefinition( ref Guid id, Guid elementType, string name, string description, float defaultValue, float minValue, float maxValue )
@@ -12565,8 +16165,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SinglePropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12590,7 +16190,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSinglePropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SinglePropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertStringPropertyDefinition( ref Guid id, Guid elementType, string name, string description, string defaultValue, string pattern )
@@ -12632,8 +16252,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "StringPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12656,7 +16276,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteStringPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "StringPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBinaryTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description )
@@ -12696,8 +16336,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BinaryTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12718,7 +16358,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBinaryTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BinaryTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBooleanTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description )
@@ -12758,8 +16418,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BooleanTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12780,7 +16440,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBooleanTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BooleanTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertByteTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, byte minValue, byte maxValue )
@@ -12822,8 +16502,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ByteTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12846,7 +16526,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteByteTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ByteTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDateTimeTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, string minValue, string maxValue )
@@ -12888,8 +16588,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DateTimeTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12912,7 +16612,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDateTimeTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DateTimeTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDoubleTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, double minValue, double maxValue )
@@ -12954,8 +16674,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DoubleTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -12978,7 +16698,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDoubleTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DoubleTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGuidTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description )
@@ -13018,8 +16758,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GuidTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13040,7 +16780,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGuidTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GuidTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt16TimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, short minValue, short maxValue )
@@ -13082,8 +16842,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int16TimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13106,7 +16866,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt16TimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int16TimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt32TimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, int minValue, int maxValue )
@@ -13148,8 +16928,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int32TimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13172,7 +16952,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt32TimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int32TimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt64TimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, long minValue, long maxValue )
@@ -13214,8 +17014,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int64TimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13238,7 +17038,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt64TimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int64TimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertReferenceTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid referencedElementType )
@@ -13279,8 +17099,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ReferenceTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13302,7 +17122,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteReferenceTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ReferenceTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSByteTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, sbyte minValue, sbyte maxValue )
@@ -13344,8 +17184,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SByteTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13368,7 +17208,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSByteTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SByteTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSingleTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, float minValue, float maxValue )
@@ -13410,8 +17270,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SingleTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13434,7 +17294,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSingleTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SingleTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertStringTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, string pattern )
@@ -13475,8 +17355,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "StringTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13498,7 +17378,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteStringTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "StringTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeSpanTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, TimeSpan minValue, TimeSpan maxValue )
@@ -13540,8 +17440,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeSpanTimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13564,7 +17464,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeSpanTimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeSpanTimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt16TimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, ushort minValue, ushort maxValue )
@@ -13606,8 +17526,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt16TimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13630,7 +17550,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt16TimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt16TimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt32TimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, uint minValue, uint maxValue )
@@ -13672,8 +17612,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt32TimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13696,7 +17636,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt32TimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt32TimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt64TimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, long minValue, long maxValue )
@@ -13738,8 +17698,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt64TimeseriesPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13762,7 +17722,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt64TimeseriesPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt64TimeseriesPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeSpanPropertyDefinition( ref Guid id, Guid elementType, string name, string description, TimeSpan defaultValue, TimeSpan minValue, TimeSpan maxValue )
@@ -13805,8 +17785,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeSpanPropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13830,7 +17810,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeSpanPropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeSpanPropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt16PropertyDefinition( ref Guid id, Guid elementType, string name, string description, ushort defaultValue, ushort minValue, ushort maxValue )
@@ -13873,8 +17873,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt16PropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13898,7 +17898,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt16PropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt16PropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt32PropertyDefinition( ref Guid id, Guid elementType, string name, string description, uint defaultValue, uint minValue, uint maxValue )
@@ -13941,8 +17961,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt32PropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -13966,7 +17986,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt32PropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt32PropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt64PropertyDefinition( ref Guid id, Guid elementType, string name, string description, long defaultValue, long minValue, long maxValue )
@@ -14009,8 +18049,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt64PropertyDefinitionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var elementTypeParameter = sqlCommandParameters.AddReference( "@ElementType", elementType );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -14034,7 +18074,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt64PropertyDefinition( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt64PropertyDefinitionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarAlarmStatus( ref Guid id, Guid radar, DateTime timestamp, Types.AlarmState type )
@@ -14074,8 +18134,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarAlarmStatusUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var typeParameter = sqlCommandParameters.AddEnum( "@Type", type );
@@ -14096,7 +18156,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarAlarmStatus( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarAlarmStatusDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarCommand( ref Guid id, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -14138,8 +18218,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -14162,7 +18242,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarCommandGetStatus( ref Guid id, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -14204,8 +18304,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarCommandGetStatusUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -14228,7 +18328,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarCommandGetStatus( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarCommandGetStatusDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarCommandReply( ref Guid id, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -14270,8 +18390,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -14294,7 +18414,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarCommandReplyGetStatus( ref Guid id, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
@@ -14341,8 +18481,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarCommandReplyGetStatusUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -14370,7 +18510,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarCommandReplyGetStatus( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarCommandReplyGetStatusDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarConfiguration( ref Guid id, Guid radar, DateTime timestamp, int radarProtocolVersion, string radarIPAddress, int radarPort, int radarConfigurationPort, TimeSpan skipMagicTimeout, TimeSpan readTimeout, TimeSpan synchronizationInterval, int targetsRefreshRate, int range, int sectorCount, int sectorOffset, uint imageColor, uint? imageSubstitutionColor, uint transparentColor, double imageScaleFactorX, double imageOffsetX, double imageScaleFactorY, double imageOffsetY, Types.RadarImageType radarImageType, uint trackColor, uint vectorColor, bool enableNmea, string nmeaReceiverIPAddress, int nmeaReceiverPort, string nmeaReceiverSourceId )
@@ -14434,8 +18594,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var radarProtocolVersionParameter = sqlCommandParameters.AddInt32( "@RadarProtocolVersion", radarProtocolVersion );
@@ -14480,7 +18640,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarImage( ref Guid id, Guid radar, DateTime timestamp, uint depth, int resolution, int range, byte[] image )
@@ -14523,8 +18703,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarImageUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var depthParameter = sqlCommandParameters.AddUInt32( "@Depth", depth );
@@ -14548,7 +18728,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarImage( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarImageDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarRawTrackTable( ref Guid id, Guid radar, DateTime timestamp, int count, byte[] table )
@@ -14589,8 +18789,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarRawTrackTableUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var countParameter = sqlCommandParameters.AddInt32( "@Count", count );
@@ -14612,7 +18812,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarRawTrackTable( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarRawTrackTableDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarStatus( ref Guid id, Guid radar, DateTime timestamp, int azimuthCount, int triggerCount, TimeSpan rotationTime, Types.RadarPulse pulse, bool tx, bool tracking )
@@ -14657,8 +18877,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarStatusUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radarParameter = sqlCommandParameters.AddReference( "@Radar", radar );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var azimuthCountParameter = sqlCommandParameters.AddInt32( "@AzimuthCount", azimuthCount );
@@ -14684,7 +18904,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarStatus( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarStatusDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadioCommand( ref Guid id, Guid radio, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -14726,8 +18966,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadioCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radioParameter = sqlCommandParameters.AddReference( "@Radio", radio );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -14750,7 +18990,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadioCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadioCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadioCommandReply( ref Guid id, Guid radio, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -14792,8 +19052,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadioCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radioParameter = sqlCommandParameters.AddReference( "@Radio", radio );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -14816,7 +19076,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadioCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadioCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadioConfiguration( ref Guid id, Guid radio, DateTime timestamp, double longitude, double latitude, string playbackUrl, string radioIPAddress, int radioPort, string ed137IPAddress, int ed137Port )
@@ -14862,8 +19142,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadioConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radioParameter = sqlCommandParameters.AddReference( "@Radio", radio );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var longitudeParameter = sqlCommandParameters.AddDouble( "@Longitude", longitude );
@@ -14890,7 +19170,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadioConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadioConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeCommand( ref Guid id, Guid radome, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -14932,8 +19232,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radomeParameter = sqlCommandParameters.AddReference( "@Radome", radome );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -14956,7 +19256,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeCommandReply( ref Guid id, Guid radome, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -14998,8 +19318,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radomeParameter = sqlCommandParameters.AddReference( "@Radome", radome );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -15022,7 +19342,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeConfiguration( ref Guid id, Guid radome, DateTime timestamp, TimeSpan interval, double lowPressureLimit, double highPressureLimit, double lowTemperatureLimit, double highTemperatureLimit )
@@ -15066,8 +19406,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var radomeParameter = sqlCommandParameters.AddReference( "@Radome", radome );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var intervalParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@Interval", interval );
@@ -15092,7 +19432,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertReferenceTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, Guid value__ )
@@ -15132,8 +19492,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ReferenceTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddReference( "@Value", value__ );
@@ -15154,7 +19514,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteReferenceTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ReferenceTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSByteTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, sbyte? value__ )
@@ -15194,8 +19574,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SByteTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddSByte( "@Value", value__ );
@@ -15216,7 +19596,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSByteTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SByteTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSecurityDomain( ref Guid id, string name, string description )
@@ -15255,8 +19655,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SecurityDomainUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -15276,7 +19676,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSecurityDomain( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SecurityDomainDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSecurityLogin( ref Guid id, Guid domain, string identity, string description )
@@ -15316,8 +19736,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SecurityLoginUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var domainParameter = sqlCommandParameters.AddReference( "@Domain", domain );
                 var identityParameter = sqlCommandParameters.AddNVarChar( "@Identity", identity, 255 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -15338,7 +19758,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSecurityLogin( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SecurityLoginDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSecurityRole( ref Guid id, Guid domain, string identity, string description, string name )
@@ -15379,8 +19819,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SecurityRoleUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var domainParameter = sqlCommandParameters.AddReference( "@Domain", domain );
                 var identityParameter = sqlCommandParameters.AddNVarChar( "@Identity", identity, 255 );
                 var descriptionParameter = sqlCommandParameters.AddNVarChar( "@Description", description, 0 );
@@ -15402,7 +19842,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSecurityRole( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SecurityRoleDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSecurityIdentifierRoleLink( ref Guid id, Guid member, Guid role, DateTime start, DateTime? end )
@@ -15443,8 +19903,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SecurityIdentifierRoleLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var memberParameter = sqlCommandParameters.AddReference( "@Member", member );
                 var roleParameter = sqlCommandParameters.AddReference( "@Role", role );
                 var startParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Start", start );
@@ -15466,7 +19926,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSecurityIdentifierRoleLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SecurityIdentifierRoleLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSecurityLoginSession( ref Guid id, Guid login, DateTime fromTime, DateTime? throughTime, Guid clientSession, string notificationQueueName, string messageQueueName )
@@ -15509,8 +19989,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SecurityLoginSessionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var loginParameter = sqlCommandParameters.AddReference( "@Login", login );
                 var fromTimeParameter = sqlCommandParameters.AddDateTimeAsInt64( "@FromTime", fromTime );
                 var throughTimeParameter = sqlCommandParameters.AddDateTimeAsInt64( "@ThroughTime", throughTime );
@@ -15534,7 +20014,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSecurityLoginSession( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SecurityLoginSessionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSecurityPermission( ref Guid id, Guid identifier, DateTime timestamp, int typeCode, bool canCreate, bool canRead, bool canUpdate, bool canDelete )
@@ -15578,8 +20078,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SecurityPermissionUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var identifierParameter = sqlCommandParameters.AddReference( "@Identifier", identifier );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var typeCodeParameter = sqlCommandParameters.AddInt32( "@TypeCode", typeCode );
@@ -15604,7 +20104,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSecurityPermission( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SecurityPermissionDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSingleTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, float? value__ )
@@ -15644,8 +20164,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SingleTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddSingle( "@Value", value__ );
@@ -15666,7 +20186,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSingleTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SingleTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertStringTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, string value__ )
@@ -15706,8 +20246,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "StringTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddNVarChar( "@Value", value__, 0 );
@@ -15728,7 +20268,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteStringTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "StringTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBinaryTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -15768,8 +20328,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BinaryTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -15790,7 +20350,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBinaryTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BinaryTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertBooleanTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -15830,8 +20410,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "BooleanTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -15852,7 +20432,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteBooleanTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "BooleanTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisAidToNavigationOffPositionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid aidToNavigation )
@@ -15893,8 +20493,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisAidToNavigationOffPositionTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -15916,7 +20516,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisAidToNavigationOffPositionTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisAidToNavigationOffPositionTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDeviceEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? device )
@@ -15957,8 +20577,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DeviceEnabledTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -15980,7 +20600,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDeviceEnabledTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DeviceEnabledTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarAutomaticSensitivityTimeControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16021,8 +20661,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarAutomaticSensitivityTimeControlTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16044,7 +20684,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarAutomaticSensitivityTimeControlTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarAutomaticSensitivityTimeControlTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarBlankSector1Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16085,8 +20745,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarBlankSector1TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16108,7 +20768,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarBlankSector1Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarBlankSector1TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarBlankSector2Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16149,8 +20829,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarBlankSector2TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16172,7 +20852,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarBlankSector2Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarBlankSector2TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarEnableAutomaticFrequencyControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16213,8 +20913,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarEnableAutomaticFrequencyControlTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16236,7 +20936,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarEnableAutomaticFrequencyControlTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarEnableAutomaticFrequencyControlTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarEnableFastTimeConstantTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16277,8 +20997,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarEnableFastTimeConstantTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16300,7 +21020,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarEnableFastTimeConstantTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarEnableFastTimeConstantTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarEnableSensitivityTimeControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16341,8 +21081,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarEnableSensitivityTimeControlTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16364,7 +21104,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarEnableSensitivityTimeControlTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarEnableSensitivityTimeControlTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarPowerOnTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16405,8 +21165,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarPowerOnTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16428,7 +21188,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarPowerOnTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarPowerOnTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarSaveSettingsTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16469,8 +21249,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarSaveSettingsTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16492,7 +21272,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarSaveSettingsTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarSaveSettingsTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarTrackingTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -16533,8 +21333,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarTrackingTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16556,7 +21356,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarTrackingTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarTrackingTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaProxySessionEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid proxySession )
@@ -16597,8 +21417,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaProxySessionEnabledTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16620,7 +21440,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaProxySessionEnabledTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaProxySessionEnabledTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertMediaServiceEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid service )
@@ -16661,8 +21501,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "MediaServiceEnabledTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16684,7 +21524,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteMediaServiceEnabledTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "MediaServiceEnabledTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertByteTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -16724,8 +21584,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ByteTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16746,7 +21606,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteByteTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ByteTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDateTimeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -16786,8 +21666,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DateTimeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16808,7 +21688,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDateTimeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DateTimeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertDoubleTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -16848,8 +21748,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "DoubleTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16870,7 +21770,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteDoubleTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "DoubleTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSAltitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
@@ -16911,8 +21831,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSAltitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16934,7 +21854,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSAltitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSAltitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
@@ -16975,8 +21915,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSLatitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -16998,7 +21938,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSLatitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSLatitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGNSSLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
@@ -17039,8 +21999,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GNSSLongitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17062,7 +22022,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGNSSLongitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GNSSLongitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroCourseTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17103,8 +22083,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroCourseTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17126,7 +22106,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroCourseTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroCourseTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroHeadingMagneticNorthTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17167,8 +22167,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroHeadingMagneticNorthTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17190,7 +22190,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroHeadingMagneticNorthTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroHeadingMagneticNorthTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroHeadingTrueNorthTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17231,8 +22251,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroHeadingTrueNorthTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17254,7 +22274,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroHeadingTrueNorthTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroHeadingTrueNorthTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroPitchTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17295,8 +22335,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroPitchTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17318,7 +22358,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroPitchTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroPitchTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroRateOfTurnTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17359,8 +22419,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroRateOfTurnTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17382,7 +22442,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroRateOfTurnTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroRateOfTurnTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroRollTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17423,8 +22503,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroRollTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17446,7 +22526,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroRollTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroRollTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGyroSpeedTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
@@ -17487,8 +22587,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GyroSpeedTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17510,7 +22610,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGyroSpeedTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GyroSpeedTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -17551,8 +22671,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarLatitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17574,7 +22694,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarLatitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarLatitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -17615,8 +22755,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarLongitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17638,7 +22778,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarLongitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarLongitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeDewPointTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
@@ -17679,8 +22839,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeDewPointTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17702,7 +22862,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeDewPointTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeDewPointTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomePressureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
@@ -17743,8 +22923,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomePressureTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17766,7 +22946,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomePressureTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomePressureTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
@@ -17807,8 +23007,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeTemperatureTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17830,7 +23030,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeTemperatureTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeTemperatureTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertVesselDraughtTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid vessel )
@@ -17871,8 +23091,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "VesselDraughtTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17894,7 +23114,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteVesselDraughtTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "VesselDraughtTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertViewLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
@@ -17935,8 +23175,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ViewLatitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -17958,7 +23198,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteViewLatitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ViewLatitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertViewLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
@@ -17999,8 +23259,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ViewLongitudeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18022,7 +23282,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteViewLongitudeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ViewLongitudeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertViewZoomLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
@@ -18063,8 +23343,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ViewZoomLevelTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18086,7 +23366,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteViewZoomLevelTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ViewZoomLevelTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationAbsoluteHumidityTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18127,8 +23427,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationAbsoluteHumidityTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18150,7 +23450,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationAbsoluteHumidityTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationAbsoluteHumidityTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationAirTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18191,8 +23511,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationAirTemperatureTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18214,7 +23534,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationAirTemperatureTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationAirTemperatureTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationBarometricPressureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18255,8 +23595,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationBarometricPressureTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18278,7 +23618,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationBarometricPressureTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationBarometricPressureTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationDewPointTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18319,8 +23679,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationDewPointTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18342,7 +23702,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationDewPointTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationDewPointTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationRelativeHumidityTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18383,8 +23763,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationRelativeHumidityTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18406,7 +23786,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationRelativeHumidityTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationRelativeHumidityTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationWaterTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18447,8 +23847,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationWaterTemperatureTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18470,7 +23870,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationWaterTemperatureTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationWaterTemperatureTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationWindDirectionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18511,8 +23931,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationWindDirectionTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18534,7 +23954,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationWindDirectionTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationWindDirectionTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationWindSpeedTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
@@ -18575,8 +24015,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationWindSpeedTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18598,7 +24038,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationWindSpeedTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationWindSpeedTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGeoPosition2DTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -18638,8 +24098,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GeoPosition2DTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18660,7 +24120,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGeoPosition2DTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GeoPosition2DTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertAisAidToNavigationPositionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid aidToNavigation )
@@ -18701,8 +24181,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "AisAidToNavigationPositionTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18724,7 +24204,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteAisAidToNavigationPositionTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "AisAidToNavigationPositionTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGeoPosition3DTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -18764,8 +24264,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GeoPosition3DTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18786,7 +24286,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGeoPosition3DTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GeoPosition3DTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertGuidTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -18826,8 +24346,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "GuidTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18848,7 +24368,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteGuidTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "GuidTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt16Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -18888,8 +24428,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int16TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18910,7 +24450,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt16Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int16TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt32Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -18950,8 +24510,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int32TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -18972,7 +24532,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt32Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int32TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarAzimuthOffsetTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19013,8 +24593,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarAzimuthOffsetTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19036,7 +24616,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarAzimuthOffsetTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarAzimuthOffsetTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarFastTimeConstantLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19077,8 +24677,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarFastTimeConstantLevelTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19100,7 +24700,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarFastTimeConstantLevelTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarFastTimeConstantLevelTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarFastTimeConstantModeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19141,8 +24761,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarFastTimeConstantModeTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19164,7 +24784,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarFastTimeConstantModeTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarFastTimeConstantModeTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarPulseTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19205,8 +24845,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarPulseTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19228,7 +24868,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarPulseTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarPulseTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarSector1EndTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19269,8 +24929,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarSector1EndTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19292,7 +24952,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarSector1EndTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarSector1EndTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarSector1StartTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19333,8 +25013,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarSector1StartTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19356,7 +25036,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarSector1StartTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarSector1StartTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarSector2EndTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19397,8 +25097,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarSector2EndTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19420,7 +25120,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarSector2EndTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarSector2EndTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarSector2StartTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19461,8 +25181,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarSector2StartTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19484,7 +25204,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarSector2StartTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarSector2StartTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarSensitivityTimeControlLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19525,8 +25265,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarSensitivityTimeControlLevelTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19548,7 +25288,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarSensitivityTimeControlLevelTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarSensitivityTimeControlLevelTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadarTuningTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
@@ -19589,8 +25349,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadarTuningTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19612,7 +25372,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadarTuningTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadarTuningTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertVesselPersonsOnBoardTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid vessel )
@@ -19653,8 +25433,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "VesselPersonsOnBoardTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19676,7 +25456,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteVesselPersonsOnBoardTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "VesselPersonsOnBoardTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertInt64Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -19716,8 +25516,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Int64TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19738,7 +25538,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteInt64Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Int64TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertPosition2DTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -19778,8 +25598,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Position2DTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19800,7 +25620,27 @@ namespace Barrelman.Data.Database
 
         public bool DeletePosition2DTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Position2DTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertPosition3DTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -19840,8 +25680,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Position3DTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19862,7 +25702,27 @@ namespace Barrelman.Data.Database
 
         public bool DeletePosition3DTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Position3DTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertReferenceTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -19902,8 +25762,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ReferenceTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19924,7 +25784,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteReferenceTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ReferenceTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSByteTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -19964,8 +25844,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SByteTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -19986,7 +25866,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSByteTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SByteTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertSingleTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -20026,8 +25926,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "SingleTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20048,7 +25948,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteSingleTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "SingleTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertStringTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -20088,8 +26008,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "StringTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20110,7 +26030,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteStringTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "StringTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeSpanTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -20150,8 +26090,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeSpanTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20172,7 +26112,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeSpanTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeSpanTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt16Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -20212,8 +26172,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt16TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20234,7 +26194,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt16Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt16TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt32Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -20274,8 +26254,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt32TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20296,7 +26276,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt32Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt32TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertRadomeStatusTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
@@ -20337,8 +26337,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "RadomeStatusTimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20360,7 +26360,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteRadomeStatusTimeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "RadomeStatusTimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt64Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention )
@@ -20400,8 +26420,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt64TimeseriesUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var maxRetentionParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxRetention", maxRetention );
@@ -20422,7 +26442,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt64Timeseries( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt64TimeseriesDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeseriesCatalog( ref Guid id, Guid? catalog, string name )
@@ -20461,8 +26501,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeseriesCatalogUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var catalogParameter = sqlCommandParameters.AddReference( "@Catalog", catalog );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -20482,7 +26522,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeseriesCatalog( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeseriesCatalogDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeseriesInfo( ref Guid id, DateTime? firstTimestamp, DateTime? lastTimestamp, long count )
@@ -20522,8 +26582,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeseriesInfoUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var firstTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@FirstTimestamp", firstTimestamp );
                 var lastTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@LastTimestamp", lastTimestamp );
                 var countParameter = sqlCommandParameters.AddInt64( "@Count", count );
@@ -20544,7 +26604,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeseriesInfo( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeseriesInfoDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTimeSpanTimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, TimeSpan? value__ )
@@ -20584,8 +26664,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TimeSpanTimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@Value", value__ );
@@ -20606,7 +26686,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTimeSpanTimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TimeSpanTimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackableItemTrackLink( ref Guid id, Guid item, Guid track, DateTime start, DateTime? end )
@@ -20647,8 +26747,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackableItemTrackLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var itemParameter = sqlCommandParameters.AddReference( "@Item", item );
                 var trackParameter = sqlCommandParameters.AddReference( "@Track", track );
                 var startParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Start", start );
@@ -20670,7 +26770,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackableItemTrackLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackableItemTrackLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrack( ref Guid id, Guid tracker, long trackNumber, DateTime timestamp )
@@ -20710,8 +26830,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var trackerParameter = sqlCommandParameters.AddReference( "@Tracker", tracker );
                 var trackNumberParameter = sqlCommandParameters.AddInt64( "@TrackNumber", trackNumber );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
@@ -20732,7 +26852,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrack( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrack3D( ref Guid id, Guid tracker, long trackNumber, DateTime timestamp )
@@ -20772,8 +26912,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "Track3DUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var trackerParameter = sqlCommandParameters.AddReference( "@Tracker", tracker );
                 var trackNumberParameter = sqlCommandParameters.AddInt64( "@TrackNumber", trackNumber );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
@@ -20794,7 +26934,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrack3D( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "Track3DDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackerFilterParameters( ref Guid id, Guid tracker, string name )
@@ -20833,8 +26993,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackerFilterParametersUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var trackerParameter = sqlCommandParameters.AddReference( "@Tracker", tracker );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -20854,7 +27014,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackerFilterParameters( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackerFilterParametersDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackerFilterParametersConfiguration( ref Guid id, Guid parameters, DateTime timestamp, bool useNaivePredictor, int numberOfPoints, int windowSize, int stabilizeCount, int maxBadPoints, Types.TrackerFilterModelType modelType, double sigmaR, double sigmaAcc, double tauVel, double tauAcc, double deltaRMin, double deltaVMax, double deltaAMax )
@@ -20906,8 +27086,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackerFilterParametersConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var parametersParameter = sqlCommandParameters.AddReference( "@Parameters", parameters );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var useNaivePredictorParameter = sqlCommandParameters.AddBoolean( "@UseNaivePredictor", useNaivePredictor );
@@ -20940,7 +27120,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackerFilterParametersConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackerFilterParametersConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackInfo( ref Guid id, DateTime? firstTimestamp, DateTime? lastTimestamp, long count, double? northWestLatitude, double? northWestLongitude, double? southEastLatitude, double? southEastLongitude )
@@ -20984,8 +27184,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackInfoUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var firstTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@FirstTimestamp", firstTimestamp );
                 var lastTimestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@LastTimestamp", lastTimestamp );
                 var countParameter = sqlCommandParameters.AddInt64( "@Count", count );
@@ -21010,7 +27210,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackInfo( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackInfoDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackingServiceOptions( ref Guid id, DateTime timestamp, TimeSpan timerInterval, TimeSpan maxAgeOfCurrentTrackValue, double falseThreshold, double distanceThreshold, double distanceUnmergeThreshold, long unmergeLatency, bool kalmanFiltering, double maxCourseDeviation, double maxSpeedDeviation, double minimumSpeedThreshold )
@@ -21058,8 +27278,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackingServiceOptionsUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var timerIntervalParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@TimerInterval", timerInterval );
                 var maxAgeOfCurrentTrackValueParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@MaxAgeOfCurrentTrackValue", maxAgeOfCurrentTrackValue );
@@ -21088,7 +27308,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackingServiceOptions( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackingServiceOptionsDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackLink( ref Guid id, Guid primary, Guid secondary, DateTime start, DateTime? end )
@@ -21129,8 +27369,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var primaryParameter = sqlCommandParameters.AddReference( "@Primary", primary );
                 var secondaryParameter = sqlCommandParameters.AddReference( "@Secondary", secondary );
                 var startParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Start", start );
@@ -21152,7 +27392,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackValue( ref Guid id, Guid track, DateTime timestamp, Types.TrackFlags flags, Types.TrackStatus status, double latitude, double longitude, double speed, double course, double heading )
@@ -21198,8 +27458,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var trackParameter = sqlCommandParameters.AddReference( "@Track", track );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var flagsParameter = sqlCommandParameters.AddEnum( "@Flags", flags );
@@ -21226,7 +27486,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertTrackValue3D( ref Guid id, Guid track, DateTime timestamp, Types.TrackFlags3D flags, uint status, double latitude, double longitude, double altitude, double speed, double course, double rateOfClimb )
@@ -21273,8 +27553,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "TrackValue3DUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var trackParameter = sqlCommandParameters.AddReference( "@Track", track );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var flagsParameter = sqlCommandParameters.AddEnum( "@Flags", flags );
@@ -21302,7 +27582,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteTrackValue3D( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "TrackValue3DDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt16TimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, ushort? value__ )
@@ -21342,8 +27642,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt16TimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddUInt16( "@Value", value__ );
@@ -21364,7 +27664,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt16TimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt16TimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt32TimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, uint? value__ )
@@ -21404,8 +27724,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt32TimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddUInt32( "@Value", value__ );
@@ -21426,7 +27746,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt32TimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt32TimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertUInt64TimeseriesValue( ref Guid id, Guid timeseries, DateTime timestamp, long? value__ )
@@ -21466,8 +27806,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "UInt64TimeseriesValueUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var timeseriesParameter = sqlCommandParameters.AddReference( "@Timeseries", timeseries );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var valueParameter = sqlCommandParameters.AddInt64( "@Value", value__ );
@@ -21488,7 +27828,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteUInt64TimeseriesValue( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "UInt64TimeseriesValueDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertVehicleType( ref Guid id, string name )
@@ -21526,8 +27886,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "VehicleTypeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -21546,7 +27906,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteVehicleType( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "VehicleTypeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertVesselType( ref Guid id, string name, int code )
@@ -21585,8 +27965,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "VesselTypeUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var codeParameter = sqlCommandParameters.AddInt32( "@Code", code );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -21606,7 +27986,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteVesselType( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "VesselTypeDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertView( ref Guid id, string name, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid zoomLevelTimeseries )
@@ -21647,8 +28047,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ViewUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var latitudeTimeseriesParameter = sqlCommandParameters.AddReference( "@LatitudeTimeseries", latitudeTimeseries );
                 var longitudeTimeseriesParameter = sqlCommandParameters.AddReference( "@LongitudeTimeseries", longitudeTimeseries );
@@ -21670,7 +28070,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteView( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ViewDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertViewCameraLink( ref Guid id, Guid view, Guid camera, DateTime start, DateTime? end )
@@ -21711,8 +28131,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ViewCameraLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var viewParameter = sqlCommandParameters.AddReference( "@View", view );
                 var cameraParameter = sqlCommandParameters.AddReference( "@Camera", camera );
                 var startParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Start", start );
@@ -21734,7 +28154,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteViewCameraLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ViewCameraLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertViewTrackerLink( ref Guid id, Guid view, Guid tracker, DateTime start, DateTime? end )
@@ -21775,8 +28215,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ViewTrackerLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var viewParameter = sqlCommandParameters.AddReference( "@View", view );
                 var trackerParameter = sqlCommandParameters.AddReference( "@Tracker", tracker );
                 var startParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Start", start );
@@ -21798,7 +28238,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteViewTrackerLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ViewTrackerLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationCommand( ref Guid id, Guid weatherStation, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
@@ -21840,8 +28300,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationCommandUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var weatherStationParameter = sqlCommandParameters.AddReference( "@WeatherStation", weatherStation );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var deviceCommandSourceTypeParameter = sqlCommandParameters.AddEnum( "@DeviceCommandSourceType", deviceCommandSourceType );
@@ -21864,7 +28324,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationCommand( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationCommandDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationCommandReply( ref Guid id, Guid weatherStation, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
@@ -21906,8 +28386,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationCommandReplyUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var weatherStationParameter = sqlCommandParameters.AddReference( "@WeatherStation", weatherStation );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var commandParameter = sqlCommandParameters.AddReference( "@Command", command );
@@ -21930,7 +28410,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationCommandReply( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationCommandReplyDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertWeatherStationConfiguration( ref Guid id, Guid weatherStation, DateTime timestamp, TimeSpan noDataTimeOut, TimeSpan sendInterval, double latitude, double longitude, double gyroOffset, bool enableAveraging, TimeSpan averagingInterval )
@@ -21976,8 +28476,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "WeatherStationConfigurationUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var weatherStationParameter = sqlCommandParameters.AddReference( "@WeatherStation", weatherStation );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 var noDataTimeOutParameter = sqlCommandParameters.AddTimeSpanAsInt64( "@NoDataTimeOut", noDataTimeOut );
@@ -22004,7 +28504,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteWeatherStationConfiguration( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "WeatherStationConfigurationDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertCircularZone( ref Guid id, string name, double longitude, double latitude, Types.ZoneAlarmType alarmType, TimeSpan alarmTime, TimeSpan radarTrackMinimumLifetime, double speed, uint strokeColor, uint fillColor, double radius )
@@ -22051,8 +28571,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "CircularZoneUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var longitudeParameter = sqlCommandParameters.AddDouble( "@Longitude", longitude );
                 var latitudeParameter = sqlCommandParameters.AddDouble( "@Latitude", latitude );
@@ -22080,7 +28600,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteCircularZone( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "CircularZoneDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertPolygonZone( ref Guid id, string name, double longitude, double latitude, Types.ZoneAlarmType alarmType, TimeSpan alarmTime, TimeSpan radarTrackMinimumLifetime, double speed, uint strokeColor, uint fillColor, byte[] polygon )
@@ -22127,8 +28667,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "PolygonZoneUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var nameParameter = sqlCommandParameters.AddNVarChar( "@Name", name, 127 );
                 var longitudeParameter = sqlCommandParameters.AddDouble( "@Longitude", longitude );
                 var latitudeParameter = sqlCommandParameters.AddDouble( "@Latitude", latitude );
@@ -22156,7 +28696,27 @@ namespace Barrelman.Data.Database
 
         public bool DeletePolygonZone( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "PolygonZoneDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertZoneExceptions( ref Guid id, Guid zone, DateTime timestamp )
@@ -22195,8 +28755,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ZoneExceptionsUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var zoneParameter = sqlCommandParameters.AddReference( "@Zone", zone );
                 var timestampParameter = sqlCommandParameters.AddDateTimeAsInt64( "@Timestamp", timestamp );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -22216,7 +28776,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteZoneExceptions( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ZoneExceptionsDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertZoneExceptionsVesselLink( ref Guid id, Guid zoneExceptions, Guid vessel )
@@ -22255,8 +28835,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ZoneExceptionsVesselLinkUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var zoneExceptionsParameter = sqlCommandParameters.AddReference( "@ZoneExceptions", zoneExceptions );
                 var vesselParameter = sqlCommandParameters.AddReference( "@Vessel", vessel );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
@@ -22276,7 +28856,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteZoneExceptionsVesselLink( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ZoneExceptionsVesselLinkDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
         public bool InsertZoneTrackAlarm( ref Guid id, Guid track, Guid zone, Guid radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
@@ -22326,8 +28926,8 @@ namespace Barrelman.Data.Database
                 sqlCommand.CommandText = "ZoneTrackAlarmUpdate";
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                 var sqlCommandParameters = sqlCommand.Parameters;
-                var idParameter = sqlCommandParameters.AddGuid( "@Id", id, System.Data.ParameterDirection.InputOutput );
-                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion, System.Data.ParameterDirection.InputOutput );
                 var trackParameter = sqlCommandParameters.AddReference( "@Track", track );
                 var zoneParameter = sqlCommandParameters.AddReference( "@Zone", zone );
                 var radarTrackParameter = sqlCommandParameters.AddReference( "@RadarTrack", radarTrack );
@@ -22358,7 +28958,27 @@ namespace Barrelman.Data.Database
 
         public bool DeleteZoneTrackAlarm( Guid id, long rowVersion )
         {
-            return false;
+            bool result = false;
+            try
+            {
+                var sqlCommand = _connection.CreateCommand( );
+                sqlCommand.CommandText = "ZoneTrackAlarmDelete";
+                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                var sqlCommandParameters = sqlCommand.Parameters;
+                var idParameter = sqlCommandParameters.AddGuid( "@Id", id );
+                var rowVersionParameter = sqlCommandParameters.AddInt64( "@RowVersion", rowVersion );
+                int rowsAffected = sqlCommand.ExecuteNonQuery( );
+                if(rowsAffected > 0)
+                {
+                    result = true;
+                }
+            }
+            catch ( Exception exc )
+            {
+                LogException( exc );
+                throw;
+            }
+            return result;
         }
 
     }

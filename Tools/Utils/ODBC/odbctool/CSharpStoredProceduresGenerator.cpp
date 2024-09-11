@@ -168,13 +168,13 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"                sqlCommand.CommandText = \"{}\";", storedProcedureName );
         WriteLine( L"                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;" );
         WriteLine( L"                var sqlCommandParameters = sqlCommand.Parameters;" );
-        AddInsertParameter( *primaryKey );
+        AddUpdateParameter( *primaryKey );
         for ( size_t i = 0; i < membersCount; i++ )
         {
             const auto& member = *members[ i ];
             if ( member.PrimaryKey( ) == false )
             {
-                AddInsertParameter( member );
+                AddUpdateParameter( member );
             }
         }
         WriteLine( L"                int rowsAffected = sqlCommand.ExecuteNonQuery( );" );
@@ -204,9 +204,40 @@ namespace Harlinn::ODBC::Tool
     {
         auto functionName = CSharpHelper::GetDeleteFunctionName( classInfo );
         auto functionParameters = CSharpHelper::GetDeleteFunctionParameters( classInfo );
+        auto storedProcedureName = SqlServerHelper::GetDeleteProcedureName( classInfo );
+
+        auto primaryKey = classInfo.PrimaryKey( );
+
+
         WriteLine( L"        public bool {}( {} )", functionName, functionParameters );
         WriteLine( L"        {" );
-        WriteLine( L"            return false;" );
+        WriteLine( L"            bool result = false;" );
+        WriteLine( L"            try" );
+        WriteLine( L"            {" );
+        WriteLine( L"                var sqlCommand = _connection.CreateCommand( );" );
+        WriteLine( L"                sqlCommand.CommandText = \"{}\";", storedProcedureName );
+        WriteLine( L"                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;" );
+        WriteLine( L"                var sqlCommandParameters = sqlCommand.Parameters;" );
+        AddDeleteParameter( *primaryKey );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            AddDeleteParameter( *rowVersion );
+        }
+        
+        WriteLine( L"                int rowsAffected = sqlCommand.ExecuteNonQuery( );" );
+        WriteLine( L"                if(rowsAffected > 0)" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    result = true;" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"            catch ( Exception exc )" );
+        WriteLine( L"            {" );
+        WriteLine( L"                LogException( exc );" );
+        WriteLine( L"                throw;" );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
         WriteLine( L"        }" );
         WriteLine( );
     }
@@ -253,7 +284,6 @@ namespace Harlinn::ODBC::Tool
                 WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName );
             }
         }
-
     }
     void CSharpStoredProceduresGenerator::AddUpdateParameter( const MemberInfo& memberInfo )
     {
@@ -289,6 +319,43 @@ namespace Harlinn::ODBC::Tool
         else if ( memberType == MemberInfoType::RowVersion )
         {
             WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {}, System.Data.ParameterDirection.InputOutput );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName );
+        }
+        else
+        {
+            WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName );
+        }
+    }
+
+    void CSharpStoredProceduresGenerator::AddDeleteParameter( const MemberInfo& memberInfo )
+    {
+        auto sqlCommandParametersAddFunctionName = CSharpHelper::GetSqlCommandParametersAddFunctionName( memberInfo );
+        auto storedProcedureArgumentName = Format( L"@{}", memberInfo.Name( ).FirstToUpper( ) );
+        auto parameterVariableName = memberInfo.Name( ).FirstToLower( ) + L"Parameter";
+        auto argumentName = CSharpHelper::GetInputArgumentName( memberInfo );
+        auto memberType = memberInfo.Type( );
+        if ( memberType == MemberInfoType::String )
+        {
+            const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( memberInfo );
+            if ( stringMemberInfo.Size( ) <= 4000 )
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {}, {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName, stringMemberInfo.Size( ) );
+            }
+            else
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName );
+            }
+        }
+        else if ( memberType == MemberInfoType::Binary )
+        {
+            const auto& binaryMemberInfo = static_cast< const BinaryMemberInfo& >( memberInfo );
+            if ( binaryMemberInfo.Size( ) <= 8000 )
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {}, {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName, binaryMemberInfo.Size( ) );
+            }
+            else
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName );
+            }
         }
         else
         {
