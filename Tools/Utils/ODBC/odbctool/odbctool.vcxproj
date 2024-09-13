@@ -167,6 +167,7 @@
     <ClCompile Include="CppHelper.cpp" />
     <ClCompile Include="CppStoredProceduresGenerator.cpp" />
     <ClCompile Include="CppStoredProceduresSourceGenerator.cpp" />
+    <ClCompile Include="CSharpComplexDatabaseReadersGenerator.cpp" />
     <ClCompile Include="CSharpDatabaseReadersGenerator.cpp" />
     <ClCompile Include="CSharpDataTypesGenerator.cpp" />
     <ClCompile Include="CSharpEnumsGenerator.cpp" />

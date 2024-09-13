@@ -613,10 +613,15 @@ namespace Harlinn::ODBC::Tool
 
         inline CSharpComplexDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner );
 
-        void Run( )
-        {
-            Flush( );
-        }
+        void Run( );
+    private:
+        void CreateReader( const ClassInfo& classInfo );
+        void CreateQuery( const ClassInfo& classInfo );
+        void CreateFieldIds( const ClassInfo& classInfo );
+        void CreateAccessors( const ClassInfo& classInfo );
+
+        void CreateWriteTo( const ClassInfo& classInfo );
+        void CreateGetDataObject( const ClassInfo& classInfo );
 
     };
 

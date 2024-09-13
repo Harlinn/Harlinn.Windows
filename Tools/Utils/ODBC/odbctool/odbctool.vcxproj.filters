@@ -117,6 +117,9 @@
     <ClCompile Include="CSharpStoredProceduresGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CSharpComplexDatabaseReadersGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Options.h">
