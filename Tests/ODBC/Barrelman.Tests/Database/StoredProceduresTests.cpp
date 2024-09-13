@@ -10,7 +10,7 @@ using namespace Harlinn::Common;
 using namespace Harlinn::ODBC;
 using namespace Harlinn;
 using namespace Barrelman;
-using namespace Barrelman::Data;
+using namespace Barrelman::Types;
 
 class StoredProceduresLocalFixture
 {

@@ -151,7 +151,7 @@
   <ItemGroup>
     <ClCompile Include="Barrelman.Tests.cpp" />
     <ClCompile Include="Database\StoredProceduresTests.cpp" />
-    <ClCompile Include="Generated\Cpp\Data\DataTypesTests.cpp" />
+    <ClCompile Include="Generated\Cpp\Types\DataTypesTests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

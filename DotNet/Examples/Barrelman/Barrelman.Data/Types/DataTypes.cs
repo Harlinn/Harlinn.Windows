@@ -107,6 +107,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDeviceCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -291,6 +292,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -475,6 +477,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDeviceConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -974,6 +977,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDeviceRawMessageObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -1137,6 +1141,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDeviceRawSentenceObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -1279,6 +1284,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class AisMessageObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -1453,6 +1459,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AidToNavigationReportMessageObject : AisMessageObject
     {
         Types.NavigationalAidType _navigationalAidType = Types.NavigationalAidType.NotSpecified;
@@ -1889,6 +1896,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisAddressedSafetyRelatedMessageObject : AisMessageObject
     {
         int _sequenceNumber = 0;
@@ -2052,6 +2060,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisBaseStationReportMessageObject : AisMessageObject
     {
         DateTime _timestamp;
@@ -2278,6 +2287,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisBinaryAcknowledgeMessageObject : AisMessageObject
     {
         int _spare = 0;
@@ -2525,6 +2535,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisBinaryAddressedMessageObject : AisMessageObject
     {
         int _sequenceNumber = 0;
@@ -2730,6 +2741,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisBinaryBroadcastMessageObject : AisMessageObject
     {
         int _spare = 0;
@@ -2872,6 +2884,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDataLinkManagementMessageObject : AisMessageObject
     {
         int _spare = 0;
@@ -3287,6 +3300,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisExtendedClassBCsPositionReportMessageObject : AisMessageObject
     {
         int _reserved = 0;
@@ -3765,6 +3779,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisInterrogationMessageObject : AisMessageObject
     {
         Guid _interrogatedMmsi;
@@ -3991,6 +4006,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class AisPositionReportClassAMessageBaseObject : AisMessageObject
     {
         Types.NavigationStatus _navigationStatus = Types.NavigationStatus.UnderWayUsingEngine;
@@ -4312,6 +4328,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisPositionReportClassAAssignedScheduleMessageObject : AisPositionReportClassAMessageBaseObject
     {
         public AisPositionReportClassAAssignedScheduleMessageObject( )
@@ -4343,6 +4360,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisPositionReportClassAMessageObject : AisPositionReportClassAMessageBaseObject
     {
         public AisPositionReportClassAMessageObject( )
@@ -4374,6 +4392,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisPositionReportClassAResponseToInterrogationMessageObject : AisPositionReportClassAMessageBaseObject
     {
         public AisPositionReportClassAResponseToInterrogationMessageObject( )
@@ -4405,6 +4424,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisPositionReportForLongRangeApplicationsMessageObject : AisMessageObject
     {
         Types.PositionAccuracy _positionAccuracy = Types.PositionAccuracy.Low;
@@ -4652,6 +4672,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisSafetyRelatedAcknowledgmentMessageObject : AisMessageObject
     {
         int _spare = 0;
@@ -4899,6 +4920,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisStandardClassBCsPositionReportMessageObject : AisMessageObject
     {
         int _reserved = 0;
@@ -5314,6 +5336,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisStandardSarAircraftPositionReportMessageObject : AisMessageObject
     {
         int _altitude = 0;
@@ -5645,6 +5668,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisStaticAndVoyageRelatedDataMessageObject : AisMessageObject
     {
         int _aisVersion = 0;
@@ -6018,6 +6042,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisStaticDataReportMessageObject : AisMessageObject
     {
         int _partNumber = 0;
@@ -6097,6 +6122,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisStaticDataReportPartAMessageObject : AisStaticDataReportMessageObject
     {
         Guid _shipName;
@@ -6197,6 +6223,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisStaticDataReportPartBMessageObject : AisStaticDataReportMessageObject
     {
         Types.ShipType _shipType = Types.ShipType.NotAvailable;
@@ -6507,6 +6534,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisUtcAndDateInquiryMessageObject : AisMessageObject
     {
         int _spare1 = 0;
@@ -6628,6 +6656,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisUtcAndDateResponseMessageObject : AisMessageObject
     {
         DateTime _datetime;
@@ -6854,6 +6883,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AlarmStateChangeObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -6996,6 +7026,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BaseStationTypeObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -7096,6 +7127,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BinaryTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -7238,6 +7270,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BookmarkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -7443,6 +7476,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BooleanTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -7585,6 +7619,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ByteTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -7727,6 +7762,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -7911,6 +7947,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandAbsoluteMoveObject : CameraCommandObject
     {
         Types.CameraPanTiltMode _positionPanTiltMode = Types.CameraPanTiltMode.Unknown;
@@ -8179,6 +8216,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandAdjustPanTiltZoomObject : CameraCommandObject
     {
         double? _x;
@@ -8300,6 +8338,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandContinuousMoveObject : CameraCommandObject
     {
         bool _normalized = false;
@@ -8463,6 +8502,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandGeoMoveObject : CameraCommandObject
     {
         double _latitude = 0.0;
@@ -8626,6 +8666,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandRelativeMoveObject : CameraCommandObject
     {
         bool _normalized = false;
@@ -8831,6 +8872,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandReleasePTZOwnershipObject : CameraCommandObject
     {
         public CameraCommandReleasePTZOwnershipObject( )
@@ -8862,6 +8904,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandRequestPTZOwnershipObject : CameraCommandObject
     {
         public CameraCommandRequestPTZOwnershipObject( )
@@ -8893,6 +8936,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandSetAutoFocusObject : CameraCommandObject
     {
         bool _enabled = false;
@@ -8972,6 +9016,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandSetBlackAndWhiteObject : CameraCommandObject
     {
         bool _enabled = false;
@@ -9051,6 +9096,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandSetFollowedObject : CameraCommandObject
     {
         Guid _trackId;
@@ -9151,6 +9197,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandSetInfraRedLampObject : CameraCommandObject
     {
         bool _enabled = false;
@@ -9230,6 +9277,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandSetWasherObject : CameraCommandObject
     {
         bool _enabled = false;
@@ -9309,6 +9357,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandSetWiperObject : CameraCommandObject
     {
         bool _enabled = false;
@@ -9388,6 +9437,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandStopObject : CameraCommandObject
     {
         bool _panTilt = false;
@@ -9488,6 +9538,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -9735,6 +9786,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -11053,6 +11105,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraPanCalibrationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -11174,6 +11227,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraPanCalibrationValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -11316,6 +11370,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraStatusObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -11752,6 +11807,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraTiltCalibrationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -11873,6 +11929,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraTiltCalibrationValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12015,6 +12072,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraZoomCalibrationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12136,6 +12194,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraZoomCalibrationValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12278,6 +12337,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class CatalogElementObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12389,6 +12449,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CatalogObject : CatalogElementObject
     {
         public CatalogObject( )
@@ -12420,6 +12481,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ElementObject : CatalogElementObject
     {
         Guid _elementType;
@@ -12499,6 +12561,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CollectionInfoObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12599,6 +12662,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CountryObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12762,6 +12826,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CursorInfoObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -12862,6 +12927,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DateTimeTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13004,6 +13070,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DeviceHostObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13104,6 +13171,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DeviceHostConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13288,6 +13356,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DoubleTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13430,6 +13499,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class FacilityTypeObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13530,6 +13600,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GeoPosition2DTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13693,6 +13764,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GeoPosition3DTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -13877,6 +13949,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSDeviceCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -14061,6 +14134,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -14245,6 +14319,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSDeviceConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -14492,6 +14567,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GuidTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -14634,6 +14710,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroDeviceCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -14818,6 +14895,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -15002,6 +15080,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroDeviceConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -15249,6 +15328,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class IdentityObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -15318,6 +15398,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CallsignObject : IdentityObject
     {
         string _identifier = string.Empty;
@@ -15397,6 +15478,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class InternationalMaritimeOrganizationNumberObject : IdentityObject
     {
         long _identifier = 0;
@@ -15476,6 +15558,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MaritimeMobileServiceIdentityObject : IdentityObject
     {
         long _identifier = 0;
@@ -15555,6 +15638,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class NameObject : IdentityObject
     {
         string _text = string.Empty;
@@ -15634,6 +15718,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int16TimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -15776,6 +15861,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int32TimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -15918,6 +16004,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int64TimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -16060,6 +16147,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class ItemObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -16129,6 +16217,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BaseStationObject : ItemObject
     {
         string _name = string.Empty;
@@ -16229,6 +16318,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class DeviceObject : ItemObject
     {
         Guid _host;
@@ -16361,6 +16451,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CameraDeviceObject : DeviceObject
     {
         public CameraDeviceObject( )
@@ -16392,6 +16483,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSDeviceObject : DeviceObject
     {
         Guid _latitudeTimeseries;
@@ -16513,6 +16605,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroDeviceObject : DeviceObject
     {
         Guid _headingTrueNorthTimeseries;
@@ -16739,6 +16832,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputDeviceObject : DeviceObject
     {
         public LineInputDeviceObject( )
@@ -16770,6 +16864,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class OilSpillDetectorDeviceObject : DeviceObject
     {
         public OilSpillDetectorDeviceObject( )
@@ -16801,6 +16896,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadioDeviceObject : DeviceObject
     {
         public RadioDeviceObject( )
@@ -16832,6 +16928,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeDeviceObject : DeviceObject
     {
         Guid? _radar;
@@ -16995,6 +17092,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TrackerDeviceObject : DeviceObject
     {
         protected TrackerDeviceObject( )
@@ -17016,6 +17114,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisDeviceObject : TrackerDeviceObject
     {
         public AisDeviceObject( )
@@ -17047,6 +17146,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarDeviceObject : TrackerDeviceObject
     {
         Guid _saveSettingsTimeseries;
@@ -17588,6 +17688,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationDeviceObject : DeviceObject
     {
         Guid _barometricPressureTimeseries;
@@ -17835,6 +17936,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class FacilityObject : ItemObject
     {
         string _name = string.Empty;
@@ -17998,6 +18100,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TrackableItemObject : ItemObject
     {
         protected TrackableItemObject( )
@@ -18019,6 +18122,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AircraftObject : TrackableItemObject
     {
         string _name = string.Empty;
@@ -18119,6 +18223,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisAidToNavigationObject : TrackableItemObject
     {
         string _name = string.Empty;
@@ -18387,6 +18492,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class VehicleObject : TrackableItemObject
     {
         string _name = string.Empty;
@@ -18487,6 +18593,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class VesselObject : TrackableItemObject
     {
         string _name = string.Empty;
@@ -18713,6 +18820,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ItemIdentityLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -18876,6 +18984,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ItemParentChildLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -19018,6 +19127,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputDeviceCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -19202,6 +19312,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputDeviceCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -19386,6 +19497,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputDeviceConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -20200,6 +20312,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputMessageRoutingObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -20321,6 +20434,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputMessageRoutingDestinationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -20442,6 +20556,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LineInputWhiteListEntryObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -20584,6 +20699,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogApplicationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -20705,6 +20821,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogApplicationConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -21078,6 +21195,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogHostObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -21199,6 +21317,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogHostConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -21572,6 +21691,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogLocationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -21756,6 +21876,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogProcessObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -21982,6 +22103,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogRecordObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -22250,6 +22372,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogThreadObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -22434,6 +22557,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class LogTraceEntryObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -22639,6 +22763,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MapElementObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -22949,6 +23074,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MapInfoObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -23196,6 +23322,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MapServiceOptionsObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -23422,6 +23549,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MaritimeIdentificationDigitsObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -23543,6 +23671,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaProxySessionObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -23685,6 +23814,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaProxySessionFileObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -23827,6 +23957,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaProxySessionOptionsObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -24179,6 +24310,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaServiceObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -24279,6 +24411,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaServiceOptionsObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -24442,6 +24575,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class NamespaceElementObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -24574,6 +24708,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ElementTypeObject : NamespaceElementObject
     {
         public ElementTypeObject( )
@@ -24605,6 +24740,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class NamespaceObject : NamespaceElementObject
     {
         public NamespaceObject( )
@@ -24636,6 +24772,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class OilSpillObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -24862,6 +24999,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class OilSpillDetectorCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -25046,6 +25184,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class OilSpillDetectorCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -25230,6 +25369,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class OilSpillDetectorConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -25813,6 +25953,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Position2DTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -25976,6 +26117,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Position3DTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -26160,6 +26302,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ProcessTrackValueResultObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -26281,6 +26424,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class PropertyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -26392,6 +26536,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BinaryPropertyObject : PropertyObject
     {
         byte[] _value = Array.Empty<byte>();
@@ -26471,6 +26616,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BooleanPropertyObject : PropertyObject
     {
         bool _value = false;
@@ -26550,6 +26696,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BytePropertyObject : PropertyObject
     {
         byte _value = 0;
@@ -26629,6 +26776,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DateTimePropertyObject : PropertyObject
     {
         DateTime _value;
@@ -26708,6 +26856,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DoublePropertyObject : PropertyObject
     {
         double _value = 0.0;
@@ -26787,6 +26936,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GuidPropertyObject : PropertyObject
     {
         Guid _value;
@@ -26866,6 +27016,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int16PropertyObject : PropertyObject
     {
         short _value = 0;
@@ -26945,6 +27096,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int32PropertyObject : PropertyObject
     {
         int _value = 0;
@@ -27024,6 +27176,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int64PropertyObject : PropertyObject
     {
         long _value = 0;
@@ -27103,6 +27256,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ReferencePropertyObject : PropertyObject
     {
         Guid _value;
@@ -27182,6 +27336,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SBytePropertyObject : PropertyObject
     {
         sbyte _value = 0;
@@ -27261,6 +27416,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SinglePropertyObject : PropertyObject
     {
         float _value = 0.0f;
@@ -27340,6 +27496,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class StringPropertyObject : PropertyObject
     {
         string _value = string.Empty;
@@ -27419,6 +27576,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TimeseriesPropertyObject : PropertyObject
     {
         protected TimeseriesPropertyObject( )
@@ -27440,6 +27598,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BinaryTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27519,6 +27678,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BooleanTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27598,6 +27758,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ByteTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27677,6 +27838,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DateTimeTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27756,6 +27918,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DoubleTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27835,6 +27998,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GuidTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27914,6 +28078,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int16TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -27993,6 +28158,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int32TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28072,6 +28238,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int64TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28151,6 +28318,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ReferenceTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28230,6 +28398,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SByteTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28309,6 +28478,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SingleTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28388,6 +28558,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class StringTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28467,6 +28638,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeSpanTimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28546,6 +28718,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt16TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28625,6 +28798,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt32TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28704,6 +28878,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt64TimeseriesPropertyObject : TimeseriesPropertyObject
     {
         Guid _timeseries;
@@ -28783,6 +28958,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeSpanPropertyObject : PropertyObject
     {
         TimeSpan _value;
@@ -28862,6 +29038,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt16PropertyObject : PropertyObject
     {
         ushort _value = 0;
@@ -28941,6 +29118,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt32PropertyObject : PropertyObject
     {
         uint _value = 0;
@@ -29020,6 +29198,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt64PropertyObject : PropertyObject
     {
         long _value = 0;
@@ -29099,6 +29278,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class PropertyDefinitionObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -29231,6 +29411,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BinaryPropertyDefinitionObject : PropertyDefinitionObject
     {
         byte[] _defaultValue = Array.Empty<byte>();
@@ -29310,6 +29491,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BooleanPropertyDefinitionObject : PropertyDefinitionObject
     {
         bool _defaultValue = false;
@@ -29389,6 +29571,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BytePropertyDefinitionObject : PropertyDefinitionObject
     {
         byte _defaultValue = 0;
@@ -29510,6 +29693,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DateTimePropertyDefinitionObject : PropertyDefinitionObject
     {
         string _defaultValue = string.Empty;
@@ -29631,6 +29815,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DoublePropertyDefinitionObject : PropertyDefinitionObject
     {
         double _defaultValue = 0.0;
@@ -29752,6 +29937,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GuidPropertyDefinitionObject : PropertyDefinitionObject
     {
         Guid _defaultValue;
@@ -29831,6 +30017,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int16PropertyDefinitionObject : PropertyDefinitionObject
     {
         short _defaultValue = 0;
@@ -29952,6 +30139,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int32PropertyDefinitionObject : PropertyDefinitionObject
     {
         int _defaultValue = 0;
@@ -30073,6 +30261,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int64PropertyDefinitionObject : PropertyDefinitionObject
     {
         long _defaultValue = 0;
@@ -30194,6 +30383,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ReferencePropertyDefinitionObject : PropertyDefinitionObject
     {
         Guid _defaultValue;
@@ -30294,6 +30484,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SBytePropertyDefinitionObject : PropertyDefinitionObject
     {
         sbyte _defaultValue = 0;
@@ -30415,6 +30606,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SinglePropertyDefinitionObject : PropertyDefinitionObject
     {
         float _defaultValue = 0.0f;
@@ -30536,6 +30728,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class StringPropertyDefinitionObject : PropertyDefinitionObject
     {
         string _defaultValue = string.Empty;
@@ -30636,6 +30829,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TimeseriesPropertyDefinitionObject : PropertyDefinitionObject
     {
         protected TimeseriesPropertyDefinitionObject( )
@@ -30657,6 +30851,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BinaryTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         public BinaryTimeseriesPropertyDefinitionObject( )
@@ -30688,6 +30883,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BooleanTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         public BooleanTimeseriesPropertyDefinitionObject( )
@@ -30719,6 +30915,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ByteTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         byte _minValue = 0;
@@ -30819,6 +31016,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DateTimeTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         string _minValue = string.Empty;
@@ -30919,6 +31117,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DoubleTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         double _minValue = 0.0;
@@ -31019,6 +31218,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GuidTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         public GuidTimeseriesPropertyDefinitionObject( )
@@ -31050,6 +31250,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int16TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         short _minValue = 0;
@@ -31150,6 +31351,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int32TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         int _minValue = 0;
@@ -31250,6 +31452,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int64TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         long _minValue = 0;
@@ -31350,6 +31553,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ReferenceTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         Guid _referencedElementType;
@@ -31429,6 +31633,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SByteTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         sbyte _minValue = 0;
@@ -31529,6 +31734,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SingleTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         float _minValue = 0.0f;
@@ -31629,6 +31835,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class StringTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         string _pattern = string.Empty;
@@ -31708,6 +31915,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeSpanTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         TimeSpan _minValue;
@@ -31808,6 +32016,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt16TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         ushort _minValue = 0;
@@ -31908,6 +32117,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt32TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         uint _minValue = 0;
@@ -32008,6 +32218,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt64TimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
         long _minValue = 0;
@@ -32108,6 +32319,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeSpanPropertyDefinitionObject : PropertyDefinitionObject
     {
         TimeSpan _defaultValue;
@@ -32229,6 +32441,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt16PropertyDefinitionObject : PropertyDefinitionObject
     {
         ushort _defaultValue = 0;
@@ -32350,6 +32563,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt32PropertyDefinitionObject : PropertyDefinitionObject
     {
         uint _defaultValue = 0;
@@ -32471,6 +32685,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt64PropertyDefinitionObject : PropertyDefinitionObject
     {
         long _defaultValue = 0;
@@ -32592,6 +32807,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarAlarmStatusObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -32734,6 +32950,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -32918,6 +33135,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarCommandGetStatusObject : RadarCommandObject
     {
         public RadarCommandGetStatusObject( )
@@ -32949,6 +33167,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -33133,6 +33352,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarCommandReplyGetStatusObject : RadarCommandReplyObject
     {
         int _azimuthCount = 0;
@@ -33296,6 +33516,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -33942,6 +34163,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarImageObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -34147,6 +34369,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarRawTrackTableObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -34310,6 +34533,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarStatusObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -34557,6 +34781,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadioCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -34741,6 +34966,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadioCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -34925,6 +35151,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadioConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -35193,6 +35420,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -35377,6 +35605,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -35561,6 +35790,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -35787,6 +36017,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ReferenceTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -35929,6 +36160,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SByteTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -36071,6 +36303,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SecurityDomainObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -36192,6 +36425,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class SecurityIdentifierObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -36324,6 +36558,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SecurityLoginObject : SecurityIdentifierObject
     {
         public SecurityLoginObject( )
@@ -36355,6 +36590,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SecurityRoleObject : SecurityIdentifierObject
     {
         string _name = string.Empty;
@@ -36434,6 +36670,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SecurityIdentifierRoleLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -36597,6 +36834,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SecurityLoginSessionObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -36802,6 +37040,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SecurityPermissionObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -37028,6 +37267,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SingleTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -37170,6 +37410,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class StringTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -37312,6 +37553,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TimeseriesCatalogElementObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -37423,6 +37665,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TimeseriesObject : TimeseriesCatalogElementObject
     {
         TimeSpan _maxRetention;
@@ -37492,6 +37735,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BinaryTimeseriesObject : TimeseriesObject
     {
         public BinaryTimeseriesObject( )
@@ -37523,6 +37767,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class BooleanTimeseriesObject : TimeseriesObject
     {
         public BooleanTimeseriesObject( )
@@ -37554,6 +37799,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisAidToNavigationOffPositionTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _aidToNavigation;
@@ -37633,6 +37879,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DeviceEnabledTimeseriesObject : BooleanTimeseriesObject
     {
         Guid? _device;
@@ -37712,6 +37959,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarAutomaticSensitivityTimeControlTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -37791,6 +38039,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarBlankSector1TimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -37870,6 +38119,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarBlankSector2TimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -37949,6 +38199,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarEnableAutomaticFrequencyControlTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -38028,6 +38279,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarEnableFastTimeConstantTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -38107,6 +38359,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarEnableSensitivityTimeControlTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -38186,6 +38439,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarPowerOnTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -38265,6 +38519,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarSaveSettingsTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -38344,6 +38599,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarTrackingTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _radar;
@@ -38423,6 +38679,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaProxySessionEnabledTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _proxySession;
@@ -38502,6 +38759,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class MediaServiceEnabledTimeseriesObject : BooleanTimeseriesObject
     {
         Guid _service;
@@ -38581,6 +38839,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ByteTimeseriesObject : TimeseriesObject
     {
         public ByteTimeseriesObject( )
@@ -38612,6 +38871,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DateTimeTimeseriesObject : TimeseriesObject
     {
         public DateTimeTimeseriesObject( )
@@ -38643,6 +38903,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class DoubleTimeseriesObject : TimeseriesObject
     {
         public DoubleTimeseriesObject( )
@@ -38674,6 +38935,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSAltitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gNSSDevice;
@@ -38753,6 +39015,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSLatitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gNSSDevice;
@@ -38832,6 +39095,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GNSSLongitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gNSSDevice;
@@ -38911,6 +39175,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroCourseTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -38990,6 +39255,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroHeadingMagneticNorthTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -39069,6 +39335,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroHeadingTrueNorthTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -39148,6 +39415,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroPitchTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -39227,6 +39495,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroRateOfTurnTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -39306,6 +39575,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroRollTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -39385,6 +39655,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GyroSpeedTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _gyroDevice;
@@ -39464,6 +39735,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarLatitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _radar;
@@ -39543,6 +39815,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarLongitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _radar;
@@ -39622,6 +39895,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeDewPointTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _radome;
@@ -39701,6 +39975,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomePressureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _radome;
@@ -39780,6 +40055,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeTemperatureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _radome;
@@ -39859,6 +40135,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class VesselDraughtTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _vessel;
@@ -39938,6 +40215,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ViewLatitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _view;
@@ -40017,6 +40295,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ViewLongitudeTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _view;
@@ -40096,6 +40375,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ViewZoomLevelTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _view;
@@ -40175,6 +40455,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationAbsoluteHumidityTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40254,6 +40535,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationAirTemperatureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40333,6 +40615,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationBarometricPressureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40412,6 +40695,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationDewPointTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40491,6 +40775,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationRelativeHumidityTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40570,6 +40855,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationWaterTemperatureTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40649,6 +40935,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationWindDirectionTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40728,6 +41015,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationWindSpeedTimeseriesObject : DoubleTimeseriesObject
     {
         Guid _weatherStation;
@@ -40807,6 +41095,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GeoPosition2DTimeseriesObject : TimeseriesObject
     {
         public GeoPosition2DTimeseriesObject( )
@@ -40838,6 +41127,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class AisAidToNavigationPositionTimeseriesObject : GeoPosition2DTimeseriesObject
     {
         Guid _aidToNavigation;
@@ -40917,6 +41207,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GeoPosition3DTimeseriesObject : TimeseriesObject
     {
         public GeoPosition3DTimeseriesObject( )
@@ -40948,6 +41239,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class GuidTimeseriesObject : TimeseriesObject
     {
         public GuidTimeseriesObject( )
@@ -40979,6 +41271,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int16TimeseriesObject : TimeseriesObject
     {
         public Int16TimeseriesObject( )
@@ -41010,6 +41303,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int32TimeseriesObject : TimeseriesObject
     {
         public Int32TimeseriesObject( )
@@ -41041,6 +41335,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarAzimuthOffsetTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41120,6 +41415,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarFastTimeConstantLevelTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41199,6 +41495,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarFastTimeConstantModeTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41278,6 +41575,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarPulseTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41357,6 +41655,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarSector1EndTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41436,6 +41735,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarSector1StartTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41515,6 +41815,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarSector2EndTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41594,6 +41895,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarSector2StartTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41673,6 +41975,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarSensitivityTimeControlLevelTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41752,6 +42055,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadarTuningTimeseriesObject : Int32TimeseriesObject
     {
         Guid _radar;
@@ -41831,6 +42135,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class VesselPersonsOnBoardTimeseriesObject : Int32TimeseriesObject
     {
         Guid _vessel;
@@ -41910,6 +42215,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Int64TimeseriesObject : TimeseriesObject
     {
         public Int64TimeseriesObject( )
@@ -41941,6 +42247,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Position2DTimeseriesObject : TimeseriesObject
     {
         public Position2DTimeseriesObject( )
@@ -41972,6 +42279,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Position3DTimeseriesObject : TimeseriesObject
     {
         public Position3DTimeseriesObject( )
@@ -42003,6 +42311,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ReferenceTimeseriesObject : TimeseriesObject
     {
         public ReferenceTimeseriesObject( )
@@ -42034,6 +42343,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SByteTimeseriesObject : TimeseriesObject
     {
         public SByteTimeseriesObject( )
@@ -42065,6 +42375,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class SingleTimeseriesObject : TimeseriesObject
     {
         public SingleTimeseriesObject( )
@@ -42096,6 +42407,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class StringTimeseriesObject : TimeseriesObject
     {
         public StringTimeseriesObject( )
@@ -42127,6 +42439,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeSpanTimeseriesObject : TimeseriesObject
     {
         public TimeSpanTimeseriesObject( )
@@ -42158,6 +42471,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt16TimeseriesObject : TimeseriesObject
     {
         public UInt16TimeseriesObject( )
@@ -42189,6 +42503,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt32TimeseriesObject : TimeseriesObject
     {
         public UInt32TimeseriesObject( )
@@ -42220,6 +42535,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class RadomeStatusTimeseriesObject : UInt32TimeseriesObject
     {
         Guid _radome;
@@ -42299,6 +42615,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt64TimeseriesObject : TimeseriesObject
     {
         public UInt64TimeseriesObject( )
@@ -42330,6 +42647,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeseriesCatalogObject : TimeseriesCatalogElementObject
     {
         public TimeseriesCatalogObject( )
@@ -42361,6 +42679,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeseriesInfoObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -42503,6 +42822,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TimeSpanTimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -42645,6 +42965,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackableItemTrackLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -42808,6 +43129,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class TrackBaseObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -42940,6 +43262,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackObject : TrackBaseObject
     {
         public TrackObject( )
@@ -42971,6 +43294,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class Track3DObject : TrackBaseObject
     {
         public Track3DObject( )
@@ -43002,6 +43326,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackerFilterParametersObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -43123,6 +43448,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackerFilterParametersConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -43517,6 +43843,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackInfoObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -43743,6 +44070,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackingServiceOptionsObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -44053,6 +44381,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -44216,6 +44545,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -44484,6 +44814,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class TrackValue3DObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -44773,6 +45104,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt16TimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -44915,6 +45247,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt32TimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45057,6 +45390,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class UInt64TimeseriesValueObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45199,6 +45533,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class VehicleTypeObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45299,6 +45634,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class VesselTypeObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45420,6 +45756,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ViewObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45583,6 +45920,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ViewCameraLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45746,6 +46084,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ViewTrackerLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -45909,6 +46248,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationCommandObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -46093,6 +46433,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationCommandReplyObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -46277,6 +46618,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class WeatherStationConfigurationObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -46545,6 +46887,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public abstract class ZoneObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -46803,6 +47146,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class CircularZoneObject : ZoneObject
     {
         double _radius = 0.0;
@@ -46882,6 +47226,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class PolygonZoneObject : ZoneObject
     {
         byte[] _polygon = Array.Empty<byte>();
@@ -46961,6 +47306,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ZoneExceptionsObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -47082,6 +47428,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ZoneExceptionsVesselLinkObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -47203,6 +47550,7 @@ namespace Barrelman.Data.Types
         }
 
     }
+
     public class ZoneTrackAlarmObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
@@ -47555,4 +47903,1348 @@ namespace Barrelman.Data.Types
         }
 
     }
+
+    public interface IDataObjectFactory
+    {
+        BaseDataGuid<Kind> Create( Kind kind );
+    }
+
+    public class DataObjectFactory : IDataObjectFactory
+    {
+        public BaseDataGuid<Kind> Create( Kind kind )
+        {
+            switch( kind )
+            {
+                case Kind.AircraftType:
+                {
+                    return new AircraftTypeObject( );
+                }
+                case Kind.AisDeviceCommand:
+                {
+                    return new AisDeviceCommandObject( );
+                }
+                case Kind.AisDeviceCommandReply:
+                {
+                    return new AisDeviceCommandReplyObject( );
+                }
+                case Kind.AisDeviceConfiguration:
+                {
+                    return new AisDeviceConfigurationObject( );
+                }
+                case Kind.AisDeviceRawMessage:
+                {
+                    return new AisDeviceRawMessageObject( );
+                }
+                case Kind.AisDeviceRawSentence:
+                {
+                    return new AisDeviceRawSentenceObject( );
+                }
+                case Kind.AidToNavigationReportMessage:
+                {
+                    return new AidToNavigationReportMessageObject( );
+                }
+                case Kind.AisAddressedSafetyRelatedMessage:
+                {
+                    return new AisAddressedSafetyRelatedMessageObject( );
+                }
+                case Kind.AisBaseStationReportMessage:
+                {
+                    return new AisBaseStationReportMessageObject( );
+                }
+                case Kind.AisBinaryAcknowledgeMessage:
+                {
+                    return new AisBinaryAcknowledgeMessageObject( );
+                }
+                case Kind.AisBinaryAddressedMessage:
+                {
+                    return new AisBinaryAddressedMessageObject( );
+                }
+                case Kind.AisBinaryBroadcastMessage:
+                {
+                    return new AisBinaryBroadcastMessageObject( );
+                }
+                case Kind.AisDataLinkManagementMessage:
+                {
+                    return new AisDataLinkManagementMessageObject( );
+                }
+                case Kind.AisExtendedClassBCsPositionReportMessage:
+                {
+                    return new AisExtendedClassBCsPositionReportMessageObject( );
+                }
+                case Kind.AisInterrogationMessage:
+                {
+                    return new AisInterrogationMessageObject( );
+                }
+                case Kind.AisPositionReportClassAAssignedScheduleMessage:
+                {
+                    return new AisPositionReportClassAAssignedScheduleMessageObject( );
+                }
+                case Kind.AisPositionReportClassAMessage:
+                {
+                    return new AisPositionReportClassAMessageObject( );
+                }
+                case Kind.AisPositionReportClassAResponseToInterrogationMessage:
+                {
+                    return new AisPositionReportClassAResponseToInterrogationMessageObject( );
+                }
+                case Kind.AisPositionReportForLongRangeApplicationsMessage:
+                {
+                    return new AisPositionReportForLongRangeApplicationsMessageObject( );
+                }
+                case Kind.AisSafetyRelatedAcknowledgmentMessage:
+                {
+                    return new AisSafetyRelatedAcknowledgmentMessageObject( );
+                }
+                case Kind.AisStandardClassBCsPositionReportMessage:
+                {
+                    return new AisStandardClassBCsPositionReportMessageObject( );
+                }
+                case Kind.AisStandardSarAircraftPositionReportMessage:
+                {
+                    return new AisStandardSarAircraftPositionReportMessageObject( );
+                }
+                case Kind.AisStaticAndVoyageRelatedDataMessage:
+                {
+                    return new AisStaticAndVoyageRelatedDataMessageObject( );
+                }
+                case Kind.AisStaticDataReportMessage:
+                {
+                    return new AisStaticDataReportMessageObject( );
+                }
+                case Kind.AisStaticDataReportPartAMessage:
+                {
+                    return new AisStaticDataReportPartAMessageObject( );
+                }
+                case Kind.AisStaticDataReportPartBMessage:
+                {
+                    return new AisStaticDataReportPartBMessageObject( );
+                }
+                case Kind.AisUtcAndDateInquiryMessage:
+                {
+                    return new AisUtcAndDateInquiryMessageObject( );
+                }
+                case Kind.AisUtcAndDateResponseMessage:
+                {
+                    return new AisUtcAndDateResponseMessageObject( );
+                }
+                case Kind.AlarmStateChange:
+                {
+                    return new AlarmStateChangeObject( );
+                }
+                case Kind.BaseStationType:
+                {
+                    return new BaseStationTypeObject( );
+                }
+                case Kind.BinaryTimeseriesValue:
+                {
+                    return new BinaryTimeseriesValueObject( );
+                }
+                case Kind.Bookmark:
+                {
+                    return new BookmarkObject( );
+                }
+                case Kind.BooleanTimeseriesValue:
+                {
+                    return new BooleanTimeseriesValueObject( );
+                }
+                case Kind.ByteTimeseriesValue:
+                {
+                    return new ByteTimeseriesValueObject( );
+                }
+                case Kind.CameraCommand:
+                {
+                    return new CameraCommandObject( );
+                }
+                case Kind.CameraCommandAbsoluteMove:
+                {
+                    return new CameraCommandAbsoluteMoveObject( );
+                }
+                case Kind.CameraCommandAdjustPanTiltZoom:
+                {
+                    return new CameraCommandAdjustPanTiltZoomObject( );
+                }
+                case Kind.CameraCommandContinuousMove:
+                {
+                    return new CameraCommandContinuousMoveObject( );
+                }
+                case Kind.CameraCommandGeoMove:
+                {
+                    return new CameraCommandGeoMoveObject( );
+                }
+                case Kind.CameraCommandRelativeMove:
+                {
+                    return new CameraCommandRelativeMoveObject( );
+                }
+                case Kind.CameraCommandReleasePTZOwnership:
+                {
+                    return new CameraCommandReleasePTZOwnershipObject( );
+                }
+                case Kind.CameraCommandRequestPTZOwnership:
+                {
+                    return new CameraCommandRequestPTZOwnershipObject( );
+                }
+                case Kind.CameraCommandSetAutoFocus:
+                {
+                    return new CameraCommandSetAutoFocusObject( );
+                }
+                case Kind.CameraCommandSetBlackAndWhite:
+                {
+                    return new CameraCommandSetBlackAndWhiteObject( );
+                }
+                case Kind.CameraCommandSetFollowed:
+                {
+                    return new CameraCommandSetFollowedObject( );
+                }
+                case Kind.CameraCommandSetInfraRedLamp:
+                {
+                    return new CameraCommandSetInfraRedLampObject( );
+                }
+                case Kind.CameraCommandSetWasher:
+                {
+                    return new CameraCommandSetWasherObject( );
+                }
+                case Kind.CameraCommandSetWiper:
+                {
+                    return new CameraCommandSetWiperObject( );
+                }
+                case Kind.CameraCommandStop:
+                {
+                    return new CameraCommandStopObject( );
+                }
+                case Kind.CameraCommandReply:
+                {
+                    return new CameraCommandReplyObject( );
+                }
+                case Kind.CameraConfiguration:
+                {
+                    return new CameraConfigurationObject( );
+                }
+                case Kind.CameraPanCalibration:
+                {
+                    return new CameraPanCalibrationObject( );
+                }
+                case Kind.CameraPanCalibrationValue:
+                {
+                    return new CameraPanCalibrationValueObject( );
+                }
+                case Kind.CameraStatus:
+                {
+                    return new CameraStatusObject( );
+                }
+                case Kind.CameraTiltCalibration:
+                {
+                    return new CameraTiltCalibrationObject( );
+                }
+                case Kind.CameraTiltCalibrationValue:
+                {
+                    return new CameraTiltCalibrationValueObject( );
+                }
+                case Kind.CameraZoomCalibration:
+                {
+                    return new CameraZoomCalibrationObject( );
+                }
+                case Kind.CameraZoomCalibrationValue:
+                {
+                    return new CameraZoomCalibrationValueObject( );
+                }
+                case Kind.Catalog:
+                {
+                    return new CatalogObject( );
+                }
+                case Kind.Element:
+                {
+                    return new ElementObject( );
+                }
+                case Kind.CollectionInfo:
+                {
+                    return new CollectionInfoObject( );
+                }
+                case Kind.Country:
+                {
+                    return new CountryObject( );
+                }
+                case Kind.CursorInfo:
+                {
+                    return new CursorInfoObject( );
+                }
+                case Kind.DateTimeTimeseriesValue:
+                {
+                    return new DateTimeTimeseriesValueObject( );
+                }
+                case Kind.DeviceHost:
+                {
+                    return new DeviceHostObject( );
+                }
+                case Kind.DeviceHostConfiguration:
+                {
+                    return new DeviceHostConfigurationObject( );
+                }
+                case Kind.DoubleTimeseriesValue:
+                {
+                    return new DoubleTimeseriesValueObject( );
+                }
+                case Kind.FacilityType:
+                {
+                    return new FacilityTypeObject( );
+                }
+                case Kind.GeoPosition2DTimeseriesValue:
+                {
+                    return new GeoPosition2DTimeseriesValueObject( );
+                }
+                case Kind.GeoPosition3DTimeseriesValue:
+                {
+                    return new GeoPosition3DTimeseriesValueObject( );
+                }
+                case Kind.GNSSDeviceCommand:
+                {
+                    return new GNSSDeviceCommandObject( );
+                }
+                case Kind.GNSSDeviceCommandReply:
+                {
+                    return new GNSSDeviceCommandReplyObject( );
+                }
+                case Kind.GNSSDeviceConfiguration:
+                {
+                    return new GNSSDeviceConfigurationObject( );
+                }
+                case Kind.GuidTimeseriesValue:
+                {
+                    return new GuidTimeseriesValueObject( );
+                }
+                case Kind.GyroDeviceCommand:
+                {
+                    return new GyroDeviceCommandObject( );
+                }
+                case Kind.GyroDeviceCommandReply:
+                {
+                    return new GyroDeviceCommandReplyObject( );
+                }
+                case Kind.GyroDeviceConfiguration:
+                {
+                    return new GyroDeviceConfigurationObject( );
+                }
+                case Kind.Callsign:
+                {
+                    return new CallsignObject( );
+                }
+                case Kind.InternationalMaritimeOrganizationNumber:
+                {
+                    return new InternationalMaritimeOrganizationNumberObject( );
+                }
+                case Kind.MaritimeMobileServiceIdentity:
+                {
+                    return new MaritimeMobileServiceIdentityObject( );
+                }
+                case Kind.Name:
+                {
+                    return new NameObject( );
+                }
+                case Kind.Int16TimeseriesValue:
+                {
+                    return new Int16TimeseriesValueObject( );
+                }
+                case Kind.Int32TimeseriesValue:
+                {
+                    return new Int32TimeseriesValueObject( );
+                }
+                case Kind.Int64TimeseriesValue:
+                {
+                    return new Int64TimeseriesValueObject( );
+                }
+                case Kind.BaseStation:
+                {
+                    return new BaseStationObject( );
+                }
+                case Kind.CameraDevice:
+                {
+                    return new CameraDeviceObject( );
+                }
+                case Kind.GNSSDevice:
+                {
+                    return new GNSSDeviceObject( );
+                }
+                case Kind.GyroDevice:
+                {
+                    return new GyroDeviceObject( );
+                }
+                case Kind.LineInputDevice:
+                {
+                    return new LineInputDeviceObject( );
+                }
+                case Kind.OilSpillDetectorDevice:
+                {
+                    return new OilSpillDetectorDeviceObject( );
+                }
+                case Kind.RadioDevice:
+                {
+                    return new RadioDeviceObject( );
+                }
+                case Kind.RadomeDevice:
+                {
+                    return new RadomeDeviceObject( );
+                }
+                case Kind.AisDevice:
+                {
+                    return new AisDeviceObject( );
+                }
+                case Kind.RadarDevice:
+                {
+                    return new RadarDeviceObject( );
+                }
+                case Kind.WeatherStationDevice:
+                {
+                    return new WeatherStationDeviceObject( );
+                }
+                case Kind.Facility:
+                {
+                    return new FacilityObject( );
+                }
+                case Kind.Aircraft:
+                {
+                    return new AircraftObject( );
+                }
+                case Kind.AisAidToNavigation:
+                {
+                    return new AisAidToNavigationObject( );
+                }
+                case Kind.Vehicle:
+                {
+                    return new VehicleObject( );
+                }
+                case Kind.Vessel:
+                {
+                    return new VesselObject( );
+                }
+                case Kind.ItemIdentityLink:
+                {
+                    return new ItemIdentityLinkObject( );
+                }
+                case Kind.ItemParentChildLink:
+                {
+                    return new ItemParentChildLinkObject( );
+                }
+                case Kind.LineInputDeviceCommand:
+                {
+                    return new LineInputDeviceCommandObject( );
+                }
+                case Kind.LineInputDeviceCommandReply:
+                {
+                    return new LineInputDeviceCommandReplyObject( );
+                }
+                case Kind.LineInputDeviceConfiguration:
+                {
+                    return new LineInputDeviceConfigurationObject( );
+                }
+                case Kind.LineInputMessageRouting:
+                {
+                    return new LineInputMessageRoutingObject( );
+                }
+                case Kind.LineInputMessageRoutingDestination:
+                {
+                    return new LineInputMessageRoutingDestinationObject( );
+                }
+                case Kind.LineInputWhiteListEntry:
+                {
+                    return new LineInputWhiteListEntryObject( );
+                }
+                case Kind.LogApplication:
+                {
+                    return new LogApplicationObject( );
+                }
+                case Kind.LogApplicationConfiguration:
+                {
+                    return new LogApplicationConfigurationObject( );
+                }
+                case Kind.LogHost:
+                {
+                    return new LogHostObject( );
+                }
+                case Kind.LogHostConfiguration:
+                {
+                    return new LogHostConfigurationObject( );
+                }
+                case Kind.LogLocation:
+                {
+                    return new LogLocationObject( );
+                }
+                case Kind.LogProcess:
+                {
+                    return new LogProcessObject( );
+                }
+                case Kind.LogRecord:
+                {
+                    return new LogRecordObject( );
+                }
+                case Kind.LogThread:
+                {
+                    return new LogThreadObject( );
+                }
+                case Kind.LogTraceEntry:
+                {
+                    return new LogTraceEntryObject( );
+                }
+                case Kind.MapElement:
+                {
+                    return new MapElementObject( );
+                }
+                case Kind.MapInfo:
+                {
+                    return new MapInfoObject( );
+                }
+                case Kind.MapServiceOptions:
+                {
+                    return new MapServiceOptionsObject( );
+                }
+                case Kind.MaritimeIdentificationDigits:
+                {
+                    return new MaritimeIdentificationDigitsObject( );
+                }
+                case Kind.MediaProxySession:
+                {
+                    return new MediaProxySessionObject( );
+                }
+                case Kind.MediaProxySessionFile:
+                {
+                    return new MediaProxySessionFileObject( );
+                }
+                case Kind.MediaProxySessionOptions:
+                {
+                    return new MediaProxySessionOptionsObject( );
+                }
+                case Kind.MediaService:
+                {
+                    return new MediaServiceObject( );
+                }
+                case Kind.MediaServiceOptions:
+                {
+                    return new MediaServiceOptionsObject( );
+                }
+                case Kind.ElementType:
+                {
+                    return new ElementTypeObject( );
+                }
+                case Kind.Namespace:
+                {
+                    return new NamespaceObject( );
+                }
+                case Kind.OilSpill:
+                {
+                    return new OilSpillObject( );
+                }
+                case Kind.OilSpillDetectorCommand:
+                {
+                    return new OilSpillDetectorCommandObject( );
+                }
+                case Kind.OilSpillDetectorCommandReply:
+                {
+                    return new OilSpillDetectorCommandReplyObject( );
+                }
+                case Kind.OilSpillDetectorConfiguration:
+                {
+                    return new OilSpillDetectorConfigurationObject( );
+                }
+                case Kind.Position2DTimeseriesValue:
+                {
+                    return new Position2DTimeseriesValueObject( );
+                }
+                case Kind.Position3DTimeseriesValue:
+                {
+                    return new Position3DTimeseriesValueObject( );
+                }
+                case Kind.ProcessTrackValueResult:
+                {
+                    return new ProcessTrackValueResultObject( );
+                }
+                case Kind.BinaryProperty:
+                {
+                    return new BinaryPropertyObject( );
+                }
+                case Kind.BooleanProperty:
+                {
+                    return new BooleanPropertyObject( );
+                }
+                case Kind.ByteProperty:
+                {
+                    return new BytePropertyObject( );
+                }
+                case Kind.DateTimeProperty:
+                {
+                    return new DateTimePropertyObject( );
+                }
+                case Kind.DoubleProperty:
+                {
+                    return new DoublePropertyObject( );
+                }
+                case Kind.GuidProperty:
+                {
+                    return new GuidPropertyObject( );
+                }
+                case Kind.Int16Property:
+                {
+                    return new Int16PropertyObject( );
+                }
+                case Kind.Int32Property:
+                {
+                    return new Int32PropertyObject( );
+                }
+                case Kind.Int64Property:
+                {
+                    return new Int64PropertyObject( );
+                }
+                case Kind.ReferenceProperty:
+                {
+                    return new ReferencePropertyObject( );
+                }
+                case Kind.SByteProperty:
+                {
+                    return new SBytePropertyObject( );
+                }
+                case Kind.SingleProperty:
+                {
+                    return new SinglePropertyObject( );
+                }
+                case Kind.StringProperty:
+                {
+                    return new StringPropertyObject( );
+                }
+                case Kind.BinaryTimeseriesProperty:
+                {
+                    return new BinaryTimeseriesPropertyObject( );
+                }
+                case Kind.BooleanTimeseriesProperty:
+                {
+                    return new BooleanTimeseriesPropertyObject( );
+                }
+                case Kind.ByteTimeseriesProperty:
+                {
+                    return new ByteTimeseriesPropertyObject( );
+                }
+                case Kind.DateTimeTimeseriesProperty:
+                {
+                    return new DateTimeTimeseriesPropertyObject( );
+                }
+                case Kind.DoubleTimeseriesProperty:
+                {
+                    return new DoubleTimeseriesPropertyObject( );
+                }
+                case Kind.GuidTimeseriesProperty:
+                {
+                    return new GuidTimeseriesPropertyObject( );
+                }
+                case Kind.Int16TimeseriesProperty:
+                {
+                    return new Int16TimeseriesPropertyObject( );
+                }
+                case Kind.Int32TimeseriesProperty:
+                {
+                    return new Int32TimeseriesPropertyObject( );
+                }
+                case Kind.Int64TimeseriesProperty:
+                {
+                    return new Int64TimeseriesPropertyObject( );
+                }
+                case Kind.ReferenceTimeseriesProperty:
+                {
+                    return new ReferenceTimeseriesPropertyObject( );
+                }
+                case Kind.SByteTimeseriesProperty:
+                {
+                    return new SByteTimeseriesPropertyObject( );
+                }
+                case Kind.SingleTimeseriesProperty:
+                {
+                    return new SingleTimeseriesPropertyObject( );
+                }
+                case Kind.StringTimeseriesProperty:
+                {
+                    return new StringTimeseriesPropertyObject( );
+                }
+                case Kind.TimeSpanTimeseriesProperty:
+                {
+                    return new TimeSpanTimeseriesPropertyObject( );
+                }
+                case Kind.UInt16TimeseriesProperty:
+                {
+                    return new UInt16TimeseriesPropertyObject( );
+                }
+                case Kind.UInt32TimeseriesProperty:
+                {
+                    return new UInt32TimeseriesPropertyObject( );
+                }
+                case Kind.UInt64TimeseriesProperty:
+                {
+                    return new UInt64TimeseriesPropertyObject( );
+                }
+                case Kind.TimeSpanProperty:
+                {
+                    return new TimeSpanPropertyObject( );
+                }
+                case Kind.UInt16Property:
+                {
+                    return new UInt16PropertyObject( );
+                }
+                case Kind.UInt32Property:
+                {
+                    return new UInt32PropertyObject( );
+                }
+                case Kind.UInt64Property:
+                {
+                    return new UInt64PropertyObject( );
+                }
+                case Kind.BinaryPropertyDefinition:
+                {
+                    return new BinaryPropertyDefinitionObject( );
+                }
+                case Kind.BooleanPropertyDefinition:
+                {
+                    return new BooleanPropertyDefinitionObject( );
+                }
+                case Kind.BytePropertyDefinition:
+                {
+                    return new BytePropertyDefinitionObject( );
+                }
+                case Kind.DateTimePropertyDefinition:
+                {
+                    return new DateTimePropertyDefinitionObject( );
+                }
+                case Kind.DoublePropertyDefinition:
+                {
+                    return new DoublePropertyDefinitionObject( );
+                }
+                case Kind.GuidPropertyDefinition:
+                {
+                    return new GuidPropertyDefinitionObject( );
+                }
+                case Kind.Int16PropertyDefinition:
+                {
+                    return new Int16PropertyDefinitionObject( );
+                }
+                case Kind.Int32PropertyDefinition:
+                {
+                    return new Int32PropertyDefinitionObject( );
+                }
+                case Kind.Int64PropertyDefinition:
+                {
+                    return new Int64PropertyDefinitionObject( );
+                }
+                case Kind.ReferencePropertyDefinition:
+                {
+                    return new ReferencePropertyDefinitionObject( );
+                }
+                case Kind.SBytePropertyDefinition:
+                {
+                    return new SBytePropertyDefinitionObject( );
+                }
+                case Kind.SinglePropertyDefinition:
+                {
+                    return new SinglePropertyDefinitionObject( );
+                }
+                case Kind.StringPropertyDefinition:
+                {
+                    return new StringPropertyDefinitionObject( );
+                }
+                case Kind.BinaryTimeseriesPropertyDefinition:
+                {
+                    return new BinaryTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.BooleanTimeseriesPropertyDefinition:
+                {
+                    return new BooleanTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.ByteTimeseriesPropertyDefinition:
+                {
+                    return new ByteTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.DateTimeTimeseriesPropertyDefinition:
+                {
+                    return new DateTimeTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.DoubleTimeseriesPropertyDefinition:
+                {
+                    return new DoubleTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.GuidTimeseriesPropertyDefinition:
+                {
+                    return new GuidTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.Int16TimeseriesPropertyDefinition:
+                {
+                    return new Int16TimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.Int32TimeseriesPropertyDefinition:
+                {
+                    return new Int32TimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.Int64TimeseriesPropertyDefinition:
+                {
+                    return new Int64TimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.ReferenceTimeseriesPropertyDefinition:
+                {
+                    return new ReferenceTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.SByteTimeseriesPropertyDefinition:
+                {
+                    return new SByteTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.SingleTimeseriesPropertyDefinition:
+                {
+                    return new SingleTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.StringTimeseriesPropertyDefinition:
+                {
+                    return new StringTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.TimeSpanTimeseriesPropertyDefinition:
+                {
+                    return new TimeSpanTimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.UInt16TimeseriesPropertyDefinition:
+                {
+                    return new UInt16TimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.UInt32TimeseriesPropertyDefinition:
+                {
+                    return new UInt32TimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.UInt64TimeseriesPropertyDefinition:
+                {
+                    return new UInt64TimeseriesPropertyDefinitionObject( );
+                }
+                case Kind.TimeSpanPropertyDefinition:
+                {
+                    return new TimeSpanPropertyDefinitionObject( );
+                }
+                case Kind.UInt16PropertyDefinition:
+                {
+                    return new UInt16PropertyDefinitionObject( );
+                }
+                case Kind.UInt32PropertyDefinition:
+                {
+                    return new UInt32PropertyDefinitionObject( );
+                }
+                case Kind.UInt64PropertyDefinition:
+                {
+                    return new UInt64PropertyDefinitionObject( );
+                }
+                case Kind.RadarAlarmStatus:
+                {
+                    return new RadarAlarmStatusObject( );
+                }
+                case Kind.RadarCommand:
+                {
+                    return new RadarCommandObject( );
+                }
+                case Kind.RadarCommandGetStatus:
+                {
+                    return new RadarCommandGetStatusObject( );
+                }
+                case Kind.RadarCommandReply:
+                {
+                    return new RadarCommandReplyObject( );
+                }
+                case Kind.RadarCommandReplyGetStatus:
+                {
+                    return new RadarCommandReplyGetStatusObject( );
+                }
+                case Kind.RadarConfiguration:
+                {
+                    return new RadarConfigurationObject( );
+                }
+                case Kind.RadarImage:
+                {
+                    return new RadarImageObject( );
+                }
+                case Kind.RadarRawTrackTable:
+                {
+                    return new RadarRawTrackTableObject( );
+                }
+                case Kind.RadarStatus:
+                {
+                    return new RadarStatusObject( );
+                }
+                case Kind.RadioCommand:
+                {
+                    return new RadioCommandObject( );
+                }
+                case Kind.RadioCommandReply:
+                {
+                    return new RadioCommandReplyObject( );
+                }
+                case Kind.RadioConfiguration:
+                {
+                    return new RadioConfigurationObject( );
+                }
+                case Kind.RadomeCommand:
+                {
+                    return new RadomeCommandObject( );
+                }
+                case Kind.RadomeCommandReply:
+                {
+                    return new RadomeCommandReplyObject( );
+                }
+                case Kind.RadomeConfiguration:
+                {
+                    return new RadomeConfigurationObject( );
+                }
+                case Kind.ReferenceTimeseriesValue:
+                {
+                    return new ReferenceTimeseriesValueObject( );
+                }
+                case Kind.SByteTimeseriesValue:
+                {
+                    return new SByteTimeseriesValueObject( );
+                }
+                case Kind.SecurityDomain:
+                {
+                    return new SecurityDomainObject( );
+                }
+                case Kind.SecurityLogin:
+                {
+                    return new SecurityLoginObject( );
+                }
+                case Kind.SecurityRole:
+                {
+                    return new SecurityRoleObject( );
+                }
+                case Kind.SecurityIdentifierRoleLink:
+                {
+                    return new SecurityIdentifierRoleLinkObject( );
+                }
+                case Kind.SecurityLoginSession:
+                {
+                    return new SecurityLoginSessionObject( );
+                }
+                case Kind.SecurityPermission:
+                {
+                    return new SecurityPermissionObject( );
+                }
+                case Kind.SingleTimeseriesValue:
+                {
+                    return new SingleTimeseriesValueObject( );
+                }
+                case Kind.StringTimeseriesValue:
+                {
+                    return new StringTimeseriesValueObject( );
+                }
+                case Kind.BinaryTimeseries:
+                {
+                    return new BinaryTimeseriesObject( );
+                }
+                case Kind.BooleanTimeseries:
+                {
+                    return new BooleanTimeseriesObject( );
+                }
+                case Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    return new AisAidToNavigationOffPositionTimeseriesObject( );
+                }
+                case Kind.DeviceEnabledTimeseries:
+                {
+                    return new DeviceEnabledTimeseriesObject( );
+                }
+                case Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    return new RadarAutomaticSensitivityTimeControlTimeseriesObject( );
+                }
+                case Kind.RadarBlankSector1Timeseries:
+                {
+                    return new RadarBlankSector1TimeseriesObject( );
+                }
+                case Kind.RadarBlankSector2Timeseries:
+                {
+                    return new RadarBlankSector2TimeseriesObject( );
+                }
+                case Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    return new RadarEnableAutomaticFrequencyControlTimeseriesObject( );
+                }
+                case Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    return new RadarEnableFastTimeConstantTimeseriesObject( );
+                }
+                case Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    return new RadarEnableSensitivityTimeControlTimeseriesObject( );
+                }
+                case Kind.RadarPowerOnTimeseries:
+                {
+                    return new RadarPowerOnTimeseriesObject( );
+                }
+                case Kind.RadarSaveSettingsTimeseries:
+                {
+                    return new RadarSaveSettingsTimeseriesObject( );
+                }
+                case Kind.RadarTrackingTimeseries:
+                {
+                    return new RadarTrackingTimeseriesObject( );
+                }
+                case Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    return new MediaProxySessionEnabledTimeseriesObject( );
+                }
+                case Kind.MediaServiceEnabledTimeseries:
+                {
+                    return new MediaServiceEnabledTimeseriesObject( );
+                }
+                case Kind.ByteTimeseries:
+                {
+                    return new ByteTimeseriesObject( );
+                }
+                case Kind.DateTimeTimeseries:
+                {
+                    return new DateTimeTimeseriesObject( );
+                }
+                case Kind.DoubleTimeseries:
+                {
+                    return new DoubleTimeseriesObject( );
+                }
+                case Kind.GNSSAltitudeTimeseries:
+                {
+                    return new GNSSAltitudeTimeseriesObject( );
+                }
+                case Kind.GNSSLatitudeTimeseries:
+                {
+                    return new GNSSLatitudeTimeseriesObject( );
+                }
+                case Kind.GNSSLongitudeTimeseries:
+                {
+                    return new GNSSLongitudeTimeseriesObject( );
+                }
+                case Kind.GyroCourseTimeseries:
+                {
+                    return new GyroCourseTimeseriesObject( );
+                }
+                case Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    return new GyroHeadingMagneticNorthTimeseriesObject( );
+                }
+                case Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    return new GyroHeadingTrueNorthTimeseriesObject( );
+                }
+                case Kind.GyroPitchTimeseries:
+                {
+                    return new GyroPitchTimeseriesObject( );
+                }
+                case Kind.GyroRateOfTurnTimeseries:
+                {
+                    return new GyroRateOfTurnTimeseriesObject( );
+                }
+                case Kind.GyroRollTimeseries:
+                {
+                    return new GyroRollTimeseriesObject( );
+                }
+                case Kind.GyroSpeedTimeseries:
+                {
+                    return new GyroSpeedTimeseriesObject( );
+                }
+                case Kind.RadarLatitudeTimeseries:
+                {
+                    return new RadarLatitudeTimeseriesObject( );
+                }
+                case Kind.RadarLongitudeTimeseries:
+                {
+                    return new RadarLongitudeTimeseriesObject( );
+                }
+                case Kind.RadomeDewPointTimeseries:
+                {
+                    return new RadomeDewPointTimeseriesObject( );
+                }
+                case Kind.RadomePressureTimeseries:
+                {
+                    return new RadomePressureTimeseriesObject( );
+                }
+                case Kind.RadomeTemperatureTimeseries:
+                {
+                    return new RadomeTemperatureTimeseriesObject( );
+                }
+                case Kind.VesselDraughtTimeseries:
+                {
+                    return new VesselDraughtTimeseriesObject( );
+                }
+                case Kind.ViewLatitudeTimeseries:
+                {
+                    return new ViewLatitudeTimeseriesObject( );
+                }
+                case Kind.ViewLongitudeTimeseries:
+                {
+                    return new ViewLongitudeTimeseriesObject( );
+                }
+                case Kind.ViewZoomLevelTimeseries:
+                {
+                    return new ViewZoomLevelTimeseriesObject( );
+                }
+                case Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    return new WeatherStationAbsoluteHumidityTimeseriesObject( );
+                }
+                case Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    return new WeatherStationAirTemperatureTimeseriesObject( );
+                }
+                case Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    return new WeatherStationBarometricPressureTimeseriesObject( );
+                }
+                case Kind.WeatherStationDewPointTimeseries:
+                {
+                    return new WeatherStationDewPointTimeseriesObject( );
+                }
+                case Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    return new WeatherStationRelativeHumidityTimeseriesObject( );
+                }
+                case Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    return new WeatherStationWaterTemperatureTimeseriesObject( );
+                }
+                case Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    return new WeatherStationWindDirectionTimeseriesObject( );
+                }
+                case Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    return new WeatherStationWindSpeedTimeseriesObject( );
+                }
+                case Kind.GeoPosition2DTimeseries:
+                {
+                    return new GeoPosition2DTimeseriesObject( );
+                }
+                case Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    return new AisAidToNavigationPositionTimeseriesObject( );
+                }
+                case Kind.GeoPosition3DTimeseries:
+                {
+                    return new GeoPosition3DTimeseriesObject( );
+                }
+                case Kind.GuidTimeseries:
+                {
+                    return new GuidTimeseriesObject( );
+                }
+                case Kind.Int16Timeseries:
+                {
+                    return new Int16TimeseriesObject( );
+                }
+                case Kind.Int32Timeseries:
+                {
+                    return new Int32TimeseriesObject( );
+                }
+                case Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    return new RadarAzimuthOffsetTimeseriesObject( );
+                }
+                case Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    return new RadarFastTimeConstantLevelTimeseriesObject( );
+                }
+                case Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    return new RadarFastTimeConstantModeTimeseriesObject( );
+                }
+                case Kind.RadarPulseTimeseries:
+                {
+                    return new RadarPulseTimeseriesObject( );
+                }
+                case Kind.RadarSector1EndTimeseries:
+                {
+                    return new RadarSector1EndTimeseriesObject( );
+                }
+                case Kind.RadarSector1StartTimeseries:
+                {
+                    return new RadarSector1StartTimeseriesObject( );
+                }
+                case Kind.RadarSector2EndTimeseries:
+                {
+                    return new RadarSector2EndTimeseriesObject( );
+                }
+                case Kind.RadarSector2StartTimeseries:
+                {
+                    return new RadarSector2StartTimeseriesObject( );
+                }
+                case Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    return new RadarSensitivityTimeControlLevelTimeseriesObject( );
+                }
+                case Kind.RadarTuningTimeseries:
+                {
+                    return new RadarTuningTimeseriesObject( );
+                }
+                case Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    return new VesselPersonsOnBoardTimeseriesObject( );
+                }
+                case Kind.Int64Timeseries:
+                {
+                    return new Int64TimeseriesObject( );
+                }
+                case Kind.Position2DTimeseries:
+                {
+                    return new Position2DTimeseriesObject( );
+                }
+                case Kind.Position3DTimeseries:
+                {
+                    return new Position3DTimeseriesObject( );
+                }
+                case Kind.ReferenceTimeseries:
+                {
+                    return new ReferenceTimeseriesObject( );
+                }
+                case Kind.SByteTimeseries:
+                {
+                    return new SByteTimeseriesObject( );
+                }
+                case Kind.SingleTimeseries:
+                {
+                    return new SingleTimeseriesObject( );
+                }
+                case Kind.StringTimeseries:
+                {
+                    return new StringTimeseriesObject( );
+                }
+                case Kind.TimeSpanTimeseries:
+                {
+                    return new TimeSpanTimeseriesObject( );
+                }
+                case Kind.UInt16Timeseries:
+                {
+                    return new UInt16TimeseriesObject( );
+                }
+                case Kind.UInt32Timeseries:
+                {
+                    return new UInt32TimeseriesObject( );
+                }
+                case Kind.RadomeStatusTimeseries:
+                {
+                    return new RadomeStatusTimeseriesObject( );
+                }
+                case Kind.UInt64Timeseries:
+                {
+                    return new UInt64TimeseriesObject( );
+                }
+                case Kind.TimeseriesCatalog:
+                {
+                    return new TimeseriesCatalogObject( );
+                }
+                case Kind.TimeseriesInfo:
+                {
+                    return new TimeseriesInfoObject( );
+                }
+                case Kind.TimeSpanTimeseriesValue:
+                {
+                    return new TimeSpanTimeseriesValueObject( );
+                }
+                case Kind.TrackableItemTrackLink:
+                {
+                    return new TrackableItemTrackLinkObject( );
+                }
+                case Kind.Track:
+                {
+                    return new TrackObject( );
+                }
+                case Kind.Track3D:
+                {
+                    return new Track3DObject( );
+                }
+                case Kind.TrackerFilterParameters:
+                {
+                    return new TrackerFilterParametersObject( );
+                }
+                case Kind.TrackerFilterParametersConfiguration:
+                {
+                    return new TrackerFilterParametersConfigurationObject( );
+                }
+                case Kind.TrackInfo:
+                {
+                    return new TrackInfoObject( );
+                }
+                case Kind.TrackingServiceOptions:
+                {
+                    return new TrackingServiceOptionsObject( );
+                }
+                case Kind.TrackLink:
+                {
+                    return new TrackLinkObject( );
+                }
+                case Kind.TrackValue:
+                {
+                    return new TrackValueObject( );
+                }
+                case Kind.TrackValue3D:
+                {
+                    return new TrackValue3DObject( );
+                }
+                case Kind.UInt16TimeseriesValue:
+                {
+                    return new UInt16TimeseriesValueObject( );
+                }
+                case Kind.UInt32TimeseriesValue:
+                {
+                    return new UInt32TimeseriesValueObject( );
+                }
+                case Kind.UInt64TimeseriesValue:
+                {
+                    return new UInt64TimeseriesValueObject( );
+                }
+                case Kind.VehicleType:
+                {
+                    return new VehicleTypeObject( );
+                }
+                case Kind.VesselType:
+                {
+                    return new VesselTypeObject( );
+                }
+                case Kind.View:
+                {
+                    return new ViewObject( );
+                }
+                case Kind.ViewCameraLink:
+                {
+                    return new ViewCameraLinkObject( );
+                }
+                case Kind.ViewTrackerLink:
+                {
+                    return new ViewTrackerLinkObject( );
+                }
+                case Kind.WeatherStationCommand:
+                {
+                    return new WeatherStationCommandObject( );
+                }
+                case Kind.WeatherStationCommandReply:
+                {
+                    return new WeatherStationCommandReplyObject( );
+                }
+                case Kind.WeatherStationConfiguration:
+                {
+                    return new WeatherStationConfigurationObject( );
+                }
+                case Kind.CircularZone:
+                {
+                    return new CircularZoneObject( );
+                }
+                case Kind.PolygonZone:
+                {
+                    return new PolygonZoneObject( );
+                }
+                case Kind.ZoneExceptions:
+                {
+                    return new ZoneExceptionsObject( );
+                }
+                case Kind.ZoneExceptionsVesselLink:
+                {
+                    return new ZoneExceptionsVesselLinkObject( );
+                }
+                case Kind.ZoneTrackAlarm:
+                {
+                    return new ZoneTrackAlarmObject( );
+                }
+                default:
+                {
+                    throw new ArgumentException( $"Cannot create an object for kind={kind}.", "kind" );
+                }
+            }
+        }
+    }
+
 }

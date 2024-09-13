@@ -630,11 +630,19 @@ namespace Harlinn::ODBC::Tool
         void Run( );
     private:
         void CreateInsert( const ClassInfo& classInfo );
+        void CreateInsertObject( const ClassInfo& classInfo );
         void CreateUpdate( const ClassInfo& classInfo );
+        void CreateUpdateObject( const ClassInfo& classInfo );
         void CreateDelete( const ClassInfo& classInfo );
+        void CreateDeleteObject( const ClassInfo& classInfo );
         void AddInsertParameter( const MemberInfo& memberInfo );
         void AddUpdateParameter( const MemberInfo& memberInfo );
         void AddDeleteParameter( const MemberInfo& memberInfo );
+
+        void CreateInsertDataObject( );
+        void CreateUpdateDataObject( );
+        void CreateDeleteDataObject( );
+        void CreateMergeDataObject( );
     };
 
     class CSharpDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>
@@ -697,6 +705,7 @@ namespace Harlinn::ODBC::Tool
         void Run( );
     private:
         void CreateDataType( const ClassInfo& classInfo );
+        void CreateFactory( );
     };
 
     

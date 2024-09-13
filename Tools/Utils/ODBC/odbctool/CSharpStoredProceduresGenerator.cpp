@@ -79,11 +79,18 @@ namespace Harlinn::ODBC::Tool
             if ( classInfo.Abstract( ) == false )
             {
                 CreateInsert( classInfo );
+                CreateInsertObject( classInfo );
                 CreateUpdate( classInfo );
+                CreateUpdateObject( classInfo );
                 CreateDelete( classInfo );
+                CreateDeleteObject( classInfo );
             }
             
         }
+        CreateInsertDataObject( );
+        CreateUpdateDataObject( );
+        CreateDeleteDataObject( );
+        CreateMergeDataObject( );
         WriteLine( L"    }" );
         WriteLine( L"}" );
 
@@ -148,6 +155,51 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         WriteLine( );
     }
+
+    void CSharpStoredProceduresGenerator::CreateInsertObject( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetInsertFunctionName( classInfo );
+        auto functionParameters = CSharpHelper::GetInsertFunctionCallParameters( classInfo );
+
+        auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+        auto argumentName = dataTypeName.FirstToLower( );
+        const auto& members = classInfo.PersistentMembers( );
+        auto memberCount = members.size( );
+
+        WriteLine( L"        public bool {}( {} {} )", functionName, dataTypeName, argumentName );
+        WriteLine( L"        {" );
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto memberType = member.Type( );
+            if ( memberType != MemberInfoType::RowVersion )
+            {
+                auto variableType = CSharpHelper::GetMemberFieldType( member );
+                auto variableName = CSharpHelper::GetInputArgumentName( member );
+                auto propertyName = member.Name( ).FirstToUpper( );
+                WriteLine( L"            {} {} = {}.{};", variableType, variableName, argumentName, propertyName );
+            }
+        }
+        
+        WriteLine( L"            var result = {}( {} );", functionName, functionParameters );
+        WriteLine( L"            if( result )" );
+        WriteLine( L"            {" );
+        auto primaryKey = classInfo.PrimaryKey( );
+        auto primaryKeyVariableName = CSharpHelper::GetInputArgumentName( *primaryKey );
+        WriteLine( L"                {}.Id = {};", argumentName, primaryKeyVariableName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto propertyName = rowVersion->Name( ).FirstToUpper( );
+            WriteLine( L"                {}.{} = 0;", argumentName, propertyName );
+        }
+        WriteLine( L"                {}.ObjectState = ObjectState.Stored;", argumentName );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+
     void CSharpStoredProceduresGenerator::CreateUpdate( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetUpdateFunctionName( classInfo );
@@ -200,6 +252,47 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         WriteLine( );
     }
+
+    void CSharpStoredProceduresGenerator::CreateUpdateObject( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetUpdateFunctionName( classInfo );
+        auto functionParameters = CSharpHelper::GetUpdateFunctionCallParameters( classInfo );
+        
+        auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+        auto argumentName = dataTypeName.FirstToLower( );
+
+        const auto& members = classInfo.PersistentMembers( );
+        auto memberCount = members.size( );
+
+        WriteLine( L"        public bool {}( {} {} )", functionName, dataTypeName, argumentName );
+        WriteLine( L"        {" );
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto variableType = CSharpHelper::GetMemberFieldType( member );
+            auto variableName = CSharpHelper::GetInputArgumentName( member );
+            auto propertyName = member.Name( ).FirstToUpper( );
+            WriteLine( L"            {} {} = {}.{};", variableType, variableName, argumentName, propertyName );
+        }
+
+        WriteLine( L"            var result = {}( {} );", functionName, functionParameters );
+        WriteLine( L"            if( result )" );
+        WriteLine( L"            {" );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionVariableName = CSharpHelper::GetInputArgumentName( *rowVersion );
+            auto propertyName = rowVersion->Name( ).FirstToUpper( );
+            WriteLine( L"                {}.{} = {};", argumentName, propertyName, rowVersionVariableName );
+        }
+        WriteLine( L"                {}.ObjectState = ObjectState.Stored;", argumentName );
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;" );
+
+        WriteLine( L"        }" );
+    }
+
     void CSharpStoredProceduresGenerator::CreateDelete( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetDeleteFunctionName( classInfo );
@@ -214,6 +307,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"            bool result = false;" );
         WriteLine( L"            try" );
         WriteLine( L"            {" );
+        WriteLine( L"                int rowCountValue = 0;" );
         WriteLine( L"                var sqlCommand = _connection.CreateCommand( );" );
         WriteLine( L"                sqlCommand.CommandText = \"{}\";", storedProcedureName );
         WriteLine( L"                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;" );
@@ -224,6 +318,7 @@ namespace Harlinn::ODBC::Tool
         {
             AddDeleteParameter( *rowVersion );
         }
+        WriteLine( L"                var rowCountParameter = sqlCommandParameters.AddInt32( \"@RowCount\", rowCountValue, System.Data.ParameterDirection.Output );");
         
         WriteLine( L"                int rowsAffected = sqlCommand.ExecuteNonQuery( );" );
         WriteLine( L"                if(rowsAffected > 0)" );
@@ -240,6 +335,31 @@ namespace Harlinn::ODBC::Tool
 
         WriteLine( L"        }" );
         WriteLine( );
+    }
+
+    void CSharpStoredProceduresGenerator::CreateDeleteObject( const ClassInfo& classInfo )
+    {
+        auto functionName = CSharpHelper::GetDeleteFunctionName( classInfo );
+        auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+        auto argumentName = dataTypeName.FirstToLower( );
+
+        WriteLine( L"        public bool {}( {} {} )", functionName, dataTypeName, argumentName );
+        WriteLine( L"        {" );
+        WriteLine( L"            var id = {}.Id;", argumentName );
+        auto rowVersion = classInfo.RowVersion( );
+        if ( rowVersion )
+        {
+            auto rowVersionVariableName = CSharpHelper::GetInputArgumentName( *rowVersion );
+            auto propertyName = rowVersion->Name( ).FirstToUpper( );
+            WriteLine( L"            var {} = {}.{};", rowVersionVariableName, argumentName, propertyName );
+            WriteLine( L"            var result = {}( id, {} );", functionName, rowVersionVariableName );
+        }
+        else
+        {
+            WriteLine( L"            var result = {}( id );", functionName );
+        }
+        WriteLine( L"            return result;" );
+        WriteLine( L"        }" );
     }
 
     void CSharpStoredProceduresGenerator::AddInsertParameter( const MemberInfo& memberInfo )
@@ -361,6 +481,128 @@ namespace Harlinn::ODBC::Tool
         {
             WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, storedProcedureArgumentName, argumentName );
         }
+    }
+
+    void CSharpStoredProceduresGenerator::CreateInsertDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        WriteLine( L"        public bool Insert( BaseDataGuid<Kind> dataObject )");
+        WriteLine( L"        {");
+        WriteLine( L"            bool result = false;");
+        WriteLine( L"            var kind = dataObject.GetObjectType( );");
+        WriteLine( L"            switch ( kind )");
+        WriteLine( L"            {");
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto functionName = CSharpHelper::GetInsertFunctionName( classInfo );
+                auto dataClassName = CSharpHelper::GetDataType( classInfo );
+                WriteLine( L"                case Types.Kind.{}:", classInfo.Name().FirstToUpper() );
+                WriteLine( L"                {" );
+                WriteLine( L"                    result = {}( ({})dataObject );", functionName, dataClassName );
+                WriteLine( L"                }" );
+                WriteLine( L"                break;" );
+            }
+        }
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;");
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpStoredProceduresGenerator::CreateUpdateDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        WriteLine( L"        public bool Update( BaseDataGuid<Kind> dataObject )");
+        WriteLine( L"        {");
+        WriteLine( L"            bool result = false;");
+        WriteLine( L"            var kind = dataObject.GetObjectType( );" );
+        WriteLine( L"            switch ( kind )" );
+        WriteLine( L"            {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto functionName = CSharpHelper::GetUpdateFunctionName( classInfo );
+                auto dataClassName = CSharpHelper::GetDataType( classInfo );
+                WriteLine( L"                case Types.Kind.{}:", classInfo.Name( ).FirstToUpper( ) );
+                WriteLine( L"                {" );
+                WriteLine( L"                    result = {}( ({})dataObject );", functionName, dataClassName );
+                WriteLine( L"                }" );
+                WriteLine( L"                break;" );
+            }
+        }
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;");
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpStoredProceduresGenerator::CreateDeleteDataObject( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        WriteLine( L"        public bool Delete( BaseDataGuid<Kind> dataObject )");
+        WriteLine( L"        {");
+        WriteLine( L"            bool result = false;");
+        WriteLine( L"            var kind = dataObject.GetObjectType( );" );
+        WriteLine( L"            switch ( kind )" );
+        WriteLine( L"            {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto functionName = CSharpHelper::GetDeleteFunctionName( classInfo );
+                auto dataClassName = CSharpHelper::GetDataType( classInfo );
+                WriteLine( L"                case Types.Kind.{}:", classInfo.Name( ).FirstToUpper( ) );
+                WriteLine( L"                {" );
+                WriteLine( L"                    result = {}( ({})dataObject );", functionName, dataClassName );
+                WriteLine( L"                }" );
+                WriteLine( L"                break;" );
+            }
+        }
+        WriteLine( L"            }" );
+        WriteLine( L"            return result;");
+        WriteLine( L"        }" );
+        WriteLine( );
+    }
+    void CSharpStoredProceduresGenerator::CreateMergeDataObject( )
+    {
+        WriteLine( L"        bool Merge( BaseDataGuid<Kind> dataObject )");
+        WriteLine( L"        {");
+        WriteLine( L"            bool result = false;");
+        WriteLine( L"            var objectState = dataObject.ObjectState;");
+        WriteLine( L"            switch ( objectState )");
+        WriteLine( L"            {");
+        WriteLine( L"                case ObjectState.New:");
+        WriteLine( L"                {");
+        WriteLine( L"                    result = Insert( dataObject );");
+        WriteLine( L"                }");
+        WriteLine( L"                break;");
+        WriteLine( L"                case ObjectState.Changed:");
+        WriteLine( L"                {");
+        WriteLine( L"                    result = Update( dataObject );");
+        WriteLine( L"                }");
+        WriteLine( L"                break;");
+        WriteLine( L"                case ObjectState.Deleted:");
+        WriteLine( L"                {");
+        WriteLine( L"                    result = Delete( dataObject );");
+        WriteLine( L"                }");
+        WriteLine( L"                break;");
+        WriteLine( L"            }");
+        WriteLine( L"            return result;");
+        WriteLine( L"        }" );
+        WriteLine( );
     }
 
 

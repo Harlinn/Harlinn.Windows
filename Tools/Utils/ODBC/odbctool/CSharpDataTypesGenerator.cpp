@@ -45,6 +45,7 @@ namespace Harlinn::ODBC::Tool
             const auto& classInfo = *classes[ i ];
             CreateDataType( classInfo );
         }
+        CreateFactory( );
 
         WriteLine( L"}" );
         Flush( );
@@ -273,5 +274,49 @@ namespace Harlinn::ODBC::Tool
         }
 
         WriteLine( L"    }" );
+        WriteLine( );
+    }
+
+    void CSharpDataTypesGenerator::CreateFactory( )
+    {
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        auto classCount = classes.size( );
+
+        WriteLine( L"    public interface IDataObjectFactory" );
+        WriteLine( L"    {" );
+        WriteLine( L"        BaseDataGuid<Kind> Create( Kind kind );" );
+        WriteLine( L"    }" );
+        WriteLine( );
+
+        WriteLine( L"    public class DataObjectFactory : IDataObjectFactory" );
+        WriteLine( L"    {" );
+        WriteLine( L"        public BaseDataGuid<Kind> Create( Kind kind )" );
+        WriteLine( L"        {" );
+        WriteLine( L"            switch( kind )" );
+        WriteLine( L"            {" );
+        for ( size_t i = 0; i < classCount; i++ )
+        {
+            const auto& classInfo = *classes[ i ];
+            if ( classInfo.Abstract( ) == false )
+            {
+                auto dataTypeName = CSharpHelper::GetDataType( classInfo );
+            
+                WriteLine( L"                case Kind.{}:", classInfo.Name() );
+                WriteLine( L"                {" );
+                WriteLine( L"                    return new {}( );", dataTypeName );
+                WriteLine( L"                }" );
+            }
+        }
+        WriteLine( L"                default:" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    throw new ArgumentException( $\"Cannot create an object for kind={kind}.\", \"kind\" );" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+        WriteLine( L"    }" );
+        WriteLine( );
+
+
     }
 }

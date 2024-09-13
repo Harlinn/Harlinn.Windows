@@ -19,22 +19,22 @@
     <Filter Include="Generated\Cpp">
       <UniqueIdentifier>{be004b5f-1a5a-4f92-ae6d-5195157c7896}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated\Cpp\Data">
-      <UniqueIdentifier>{5e1bc5a2-7b62-484f-a874-20a8de010fed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Database">
       <UniqueIdentifier>{bbd834eb-6839-42c0-af15-f50282ac541a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Cpp\Types">
+      <UniqueIdentifier>{a73c52b2-4740-4e7e-beed-7c44df8294ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Barrelman.Tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Generated\Cpp\Data\DataTypesTests.cpp">
-      <Filter>Generated\Cpp\Data</Filter>
-    </ClCompile>
     <ClCompile Include="Database\StoredProceduresTests.cpp">
       <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Types\DataTypesTests.cpp">
+      <Filter>Generated\Cpp\Types</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
