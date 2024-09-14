@@ -196,75 +196,29 @@ namespace Harlinn::ODBC::Tool
     }
     void CSharpComplexDatabaseReadersGenerator::CreateAccessors( const ClassInfo& classInfo )
     {
-        auto shortName = classInfo.ShortName( ).ToLower( );
+        auto shortName = classInfo.ShortName( ).ToUpper( );
         const auto& viewMembers = classInfo.ViewMembers( );
         for ( const auto& member : viewMembers )
         {
             auto getFunctionName = CSharpHelper::GetDataReaderGetFunctionName( *member );
-            auto propertyType = CSharpHelper::GetMemberFieldType( *member );
             auto propertyName = member->Name( ).FirstToUpper( );
-            auto memberType = member->Type( );
 
-            auto fieldId = Format( L"{}_{}_FIELD_ID", shortName.ToUpper( ), member->Name( ).ToUpper( ) );
+            auto fieldId = Format( L"{}_{}_FIELD_ID", shortName, member->Name( ).ToUpper( ) );
 
-            WriteLine( L"        public {} {}", propertyType, propertyName );
-            WriteLine( L"        {" );
-            WriteLine( L"            get" );
-            WriteLine( L"            {" );
-            if ( memberType == MemberInfoType::DateTime )
+            CreateAccessor( *member, propertyName, fieldId );
+
+            if ( member->PrimaryKey( ) )
             {
-                if ( member->Nullable( ) )
-                {
-                    WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
-                    WriteLine( L"                if( v is long value )" );
-                    WriteLine( L"                {" );
-                    WriteLine( L"                    return new DateTime( value , DateTimeKind.Utc );" );
-                    WriteLine( L"                }" );
-                    WriteLine( L"                return null;" );
-                }
-                else
-                {
-                    WriteLine( L"                return new DateTime( {}( {} ), DateTimeKind.Utc );", getFunctionName, fieldId );
-                }
+                WriteLine( L"        public Types.Kind Kind" );
+                WriteLine( L"        {" );
+                WriteLine( L"            get" );
+                WriteLine( L"            {" );
+                fieldId = Format( L"{}_KIND_FIELD_ID", shortName );
+                WriteLine( L"                return (Types.Kind)GetInt32( {} );", fieldId );
+                WriteLine( L"            }" );
+                WriteLine( L"        }" );
             }
-            else if ( memberType == MemberInfoType::TimeSpan )
-            {
-                if ( member->Nullable( ) )
-                {
-                    WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
-                    WriteLine( L"                if( v is long value )" );
-                    WriteLine( L"                {" );
-                    WriteLine( L"                    return new TimeSpan( value );" );
-                    WriteLine( L"                }" );
-                    WriteLine( L"                return null;" );
-                }
-                else
-                {
-                    WriteLine( L"                return new TimeSpan( {}( {} ) );", getFunctionName, fieldId );
-                }
-            }
-            else if ( memberType == MemberInfoType::Currency )
-            {
-                if ( member->Nullable( ) )
-                {
-                    WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
-                    WriteLine( L"                if( v is long value )" );
-                    WriteLine( L"                {" );
-                    WriteLine( L"                    return Currency.FromScaled( value );" );
-                    WriteLine( L"                }" );
-                    WriteLine( L"                return null;" );
-                }
-                else
-                {
-                    WriteLine( L"                return Currency.FromScaled( {}( {} ) );", getFunctionName, fieldId );
-                }
-            }
-            else
-            {
-                WriteLine( L"                return {}( {} );", getFunctionName, fieldId );
-            }
-            WriteLine( L"            }" );
-            WriteLine( L"        }" );
+
         }
 
         auto derivedClasses = classInfo.AllDerivedClasses( );
@@ -274,75 +228,82 @@ namespace Harlinn::ODBC::Tool
             for ( const auto& member : ownPersistentMembers )
             {
                 auto owner = member->Owner( );
-                auto getFunctionName = CSharpHelper::GetDataReaderGetFunctionName( *member );
-                auto propertyType = CSharpHelper::GetMemberFieldType( *member );
                 auto propertyName = owner->Name( ).FirstToUpper() + member->Name( ).FirstToUpper( );
-                auto memberType = member->Type( );
 
                 auto derivedShortName = owner->ShortName( ).ToUpper( );
                 auto fieldId = Format( L"{}_{}_FIELD_ID", derivedShortName, member->Name( ).ToUpper( ) );
 
-                WriteLine( L"        public {} {}", propertyType, propertyName );
-                WriteLine( L"        {" );
-                WriteLine( L"            get" );
-                WriteLine( L"            {" );
-                if ( memberType == MemberInfoType::DateTime )
-                {
-                    if ( member->Nullable( ) )
-                    {
-                        WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
-                        WriteLine( L"                if( v is long value )" );
-                        WriteLine( L"                {" );
-                        WriteLine( L"                    return new DateTime( value , DateTimeKind.Utc );" );
-                        WriteLine( L"                }" );
-                        WriteLine( L"                return null;" );
-                    }
-                    else
-                    {
-                        WriteLine( L"                return new DateTime( {}( {} ), DateTimeKind.Utc );", getFunctionName, fieldId );
-                    }
-                }
-                else if ( memberType == MemberInfoType::TimeSpan )
-                {
-                    if ( member->Nullable( ) )
-                    {
-                        WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
-                        WriteLine( L"                if( v is long value )" );
-                        WriteLine( L"                {" );
-                        WriteLine( L"                    return new TimeSpan( value );" );
-                        WriteLine( L"                }" );
-                        WriteLine( L"                return null;" );
-                    }
-                    else
-                    {
-                        WriteLine( L"                return new TimeSpan( {}( {} ) );", getFunctionName, fieldId );
-                    }
-                }
-                else if ( memberType == MemberInfoType::Currency )
-                {
-                    if ( member->Nullable( ) )
-                    {
-                        WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
-                        WriteLine( L"                if( v is long value )" );
-                        WriteLine( L"                {" );
-                        WriteLine( L"                    return Currency.FromScaled( value );" );
-                        WriteLine( L"                }" );
-                        WriteLine( L"                return null;" );
-                    }
-                    else
-                    {
-                        WriteLine( L"                return Currency.FromScaled( {}( {} ) );", getFunctionName, fieldId );
-                    }
-                }
-                else
-                {
-                    WriteLine( L"                return {}( {} );", getFunctionName, fieldId );
-                }
-                WriteLine( L"            }" );
-                WriteLine( L"        }" );
+                CreateAccessor( *member, propertyName, fieldId );
             }
         }
     }
+
+    void CSharpComplexDatabaseReadersGenerator::CreateAccessor( const MemberInfo& member, const WideString& propertyName, const WideString& fieldId )
+    {
+        auto getFunctionName = CSharpHelper::GetDataReaderGetFunctionName( member );
+        auto propertyType = CSharpHelper::GetMemberFieldType( member );
+        auto memberType = member.Type( );
+
+        WriteLine( L"        public {} {}", propertyType, propertyName );
+        WriteLine( L"        {" );
+        WriteLine( L"            get" );
+        WriteLine( L"            {" );
+        if ( memberType == MemberInfoType::DateTime )
+        {
+            if ( member.Nullable( ) )
+            {
+                WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
+                WriteLine( L"                if( v is long value )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    return new DateTime( value , DateTimeKind.Utc );" );
+                WriteLine( L"                }" );
+                WriteLine( L"                return null;" );
+            }
+            else
+            {
+                WriteLine( L"                return new DateTime( {}( {} ), DateTimeKind.Utc );", getFunctionName, fieldId );
+            }
+        }
+        else if ( memberType == MemberInfoType::TimeSpan )
+        {
+            if ( member.Nullable( ) )
+            {
+                WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
+                WriteLine( L"                if( v is long value )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    return new TimeSpan( value );" );
+                WriteLine( L"                }" );
+                WriteLine( L"                return null;" );
+            }
+            else
+            {
+                WriteLine( L"                return new TimeSpan( {}( {} ) );", getFunctionName, fieldId );
+            }
+        }
+        else if ( memberType == MemberInfoType::Currency )
+        {
+            if ( member.Nullable( ) )
+            {
+                WriteLine( L"                var v = {}( {} );", getFunctionName, fieldId );
+                WriteLine( L"                if( v is long value )" );
+                WriteLine( L"                {" );
+                WriteLine( L"                    return Currency.FromScaled( value );" );
+                WriteLine( L"                }" );
+                WriteLine( L"                return null;" );
+            }
+            else
+            {
+                WriteLine( L"                return Currency.FromScaled( {}( {} ) );", getFunctionName, fieldId );
+            }
+        }
+        else
+        {
+            WriteLine( L"                return {}( {} );", getFunctionName, fieldId );
+        }
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+    }
+
 
     void CSharpComplexDatabaseReadersGenerator::CreateWriteTo( const ClassInfo& classInfo )
     {
@@ -351,6 +312,33 @@ namespace Harlinn::ODBC::Tool
 
     void CSharpComplexDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
     {
-
+        auto className = CSharpHelper::GetDataType( classInfo );
+        auto descendantClassesAndSelf = classInfo.AllDerivedClassesAndSelf( );
+        WriteLine( L"        public {} GetDataObject( )", className );
+        WriteLine( L"        {" );
+        WriteLine( L"            var kind = Kind;" );
+        WriteLine( L"            switch(kind)" );
+        WriteLine( L"            {" );
+        for ( const auto clazz : descendantClassesAndSelf )
+        {
+            if ( clazz->Abstract( ) == false )
+            {
+                WriteLine( L"                case Types.Kind.{}:", clazz->Name() );
+                WriteLine( L"                {" );
+                auto clazzName = CSharpHelper::GetDataType( *clazz );
+                auto arguments = CSharpHelper::GetDataTypeConstructorCallComplexReaderPropertiesArguments( classInfo, *clazz );
+                WriteLine( L"                    return new {}( {} );", clazzName, arguments );
+                WriteLine( L"                }" );
+            }
+        }
+        WriteLine( L"                default:" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    var exc = new Exception( $\"Cannot create an object for kind={kind}.\" );" );
+        WriteLine( L"                    LogException( exc );" );
+        WriteLine( L"                    throw exc;" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+        WriteLine( );
     }
 }

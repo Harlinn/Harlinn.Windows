@@ -831,6 +831,36 @@ namespace Harlinn::ODBC::Tool
         }
         return sb.ToString( );
     }
+
+    WideString CSharpHelper::GetDataTypeConstructorCallComplexReaderPropertiesArguments( const ClassInfo& classInfo, const ClassInfo& derivedOrSelfClassInfo )
+    {
+        const auto& members = derivedOrSelfClassInfo.PersistentMembers( );
+        auto memberCount = members.size( );
+        StringBuilder<wchar_t> sb;
+
+        sb.Append( L"ObjectState.Stored, Id" );
+
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            if ( member.PrimaryKey( ) == false )
+            {
+                
+                if ( classInfo.IsViewMember( member ) )
+                {
+                    auto argumentName = member.Name( ).FirstToUpper( );
+                    sb.Append( L", {}", argumentName );
+                }
+                else
+                {
+                    auto owner = member.Owner( );
+                    auto argumentName = owner->Name( ).FirstToUpper( ) + member.Name( ).FirstToUpper( );
+                    sb.Append( L", {}", argumentName );
+                }
+            }
+        }
+        return sb.ToString( );
+    }
     
 
     WideString CSharpHelper::GetDataTypeBaseConstructorCallArguments( const ClassInfo& classInfo )

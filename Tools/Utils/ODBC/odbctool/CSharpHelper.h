@@ -34,6 +34,7 @@ namespace Harlinn::ODBC::Tool
         static WideString GetDataTypeConstructorArguments( const ClassInfo& classInfo );
         static WideString GetDataTypeConstructorCallArguments( const ClassInfo& classInfo );
         static WideString GetDataTypeConstructorCallPropertiesArguments( const ClassInfo& classInfo );
+        static WideString GetDataTypeConstructorCallComplexReaderPropertiesArguments( const ClassInfo& classInfo, const ClassInfo& derivedOrSelfClassInfo );
         static WideString GetDataTypeBaseConstructorCallArguments( const ClassInfo& classInfo );
 
         static WideString GetMemberFieldType( const MemberInfo& member );

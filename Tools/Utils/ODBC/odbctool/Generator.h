@@ -619,6 +619,7 @@ namespace Harlinn::ODBC::Tool
         void CreateQuery( const ClassInfo& classInfo );
         void CreateFieldIds( const ClassInfo& classInfo );
         void CreateAccessors( const ClassInfo& classInfo );
+        void CreateAccessor( const MemberInfo& member, const WideString& propertyName, const WideString& fieldId );
 
         void CreateWriteTo( const ClassInfo& classInfo );
         void CreateGetDataObject( const ClassInfo& classInfo );

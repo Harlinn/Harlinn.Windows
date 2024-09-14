@@ -469,6 +469,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( AM_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( AM_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -1902,6 +1909,108 @@ namespace Barrelman.Data.Database
                 return GetInt32( AUADRM_RADIOSTATUS_FIELD_ID );
             }
         }
+        public AisMessageObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AidToNavigationReportMessage:
+                {
+                    return new AidToNavigationReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AidToNavigationReportMessageNavigationalAidType, AidToNavigationReportMessageName, AidToNavigationReportMessagePositionAccuracy, AidToNavigationReportMessageLongitude, AidToNavigationReportMessageLatitude, AidToNavigationReportMessageDimensionToBow, AidToNavigationReportMessageDimensionToStern, AidToNavigationReportMessageDimensionToPort, AidToNavigationReportMessageDimensionToStarboard, AidToNavigationReportMessagePositionFixType, AidToNavigationReportMessageTimestamp, AidToNavigationReportMessageOffPosition, AidToNavigationReportMessageRegionalReserved, AidToNavigationReportMessageRaim, AidToNavigationReportMessageVirtualAid, AidToNavigationReportMessageAssigned, AidToNavigationReportMessageSpare, AidToNavigationReportMessageNameExtension );
+                }
+                case Types.Kind.AisAddressedSafetyRelatedMessage:
+                {
+                    return new AisAddressedSafetyRelatedMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisAddressedSafetyRelatedMessageSequenceNumber, AisAddressedSafetyRelatedMessageDestinationMmsi, AisAddressedSafetyRelatedMessageRetransmitFlag, AisAddressedSafetyRelatedMessageSpare, AisAddressedSafetyRelatedMessageText );
+                }
+                case Types.Kind.AisBaseStationReportMessage:
+                {
+                    return new AisBaseStationReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisBaseStationReportMessageTimestamp, AisBaseStationReportMessagePositionAccuracy, AisBaseStationReportMessageLongitude, AisBaseStationReportMessageLatitude, AisBaseStationReportMessagePositionFixType, AisBaseStationReportMessageSpare, AisBaseStationReportMessageRaim, AisBaseStationReportMessageRadioStatus );
+                }
+                case Types.Kind.AisBinaryAcknowledgeMessage:
+                {
+                    return new AisBinaryAcknowledgeMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisBinaryAcknowledgeMessageSpare, AisBinaryAcknowledgeMessageSequenceNumber1, AisBinaryAcknowledgeMessageMmsi1, AisBinaryAcknowledgeMessageSequenceNumber2, AisBinaryAcknowledgeMessageMmsi2, AisBinaryAcknowledgeMessageSequenceNumber3, AisBinaryAcknowledgeMessageMmsi3, AisBinaryAcknowledgeMessageSequenceNumber4, AisBinaryAcknowledgeMessageMmsi4 );
+                }
+                case Types.Kind.AisBinaryAddressedMessage:
+                {
+                    return new AisBinaryAddressedMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisBinaryAddressedMessageSequenceNumber, AisBinaryAddressedMessageDestinationMmsi, AisBinaryAddressedMessageRetransmitFlag, AisBinaryAddressedMessageSpare, AisBinaryAddressedMessageDesignatedAreaCode, AisBinaryAddressedMessageFunctionalId, AisBinaryAddressedMessageData );
+                }
+                case Types.Kind.AisBinaryBroadcastMessage:
+                {
+                    return new AisBinaryBroadcastMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisBinaryBroadcastMessageSpare, AisBinaryBroadcastMessageDesignatedAreaCode, AisBinaryBroadcastMessageFunctionalId, AisBinaryBroadcastMessageData );
+                }
+                case Types.Kind.AisDataLinkManagementMessage:
+                {
+                    return new AisDataLinkManagementMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisDataLinkManagementMessageSpare, AisDataLinkManagementMessageOffset1, AisDataLinkManagementMessageReservedSlots1, AisDataLinkManagementMessageTimeout1, AisDataLinkManagementMessageIncrement1, AisDataLinkManagementMessageOffset2, AisDataLinkManagementMessageReservedSlots2, AisDataLinkManagementMessageTimeout2, AisDataLinkManagementMessageIncrement2, AisDataLinkManagementMessageOffset3, AisDataLinkManagementMessageReservedSlots3, AisDataLinkManagementMessageTimeout3, AisDataLinkManagementMessageIncrement3, AisDataLinkManagementMessageOffset4, AisDataLinkManagementMessageReservedSlots4, AisDataLinkManagementMessageTimeout4, AisDataLinkManagementMessageIncrement4 );
+                }
+                case Types.Kind.AisExtendedClassBCsPositionReportMessage:
+                {
+                    return new AisExtendedClassBCsPositionReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisExtendedClassBCsPositionReportMessageReserved, AisExtendedClassBCsPositionReportMessageSpeedOverGround, AisExtendedClassBCsPositionReportMessagePositionAccuracy, AisExtendedClassBCsPositionReportMessageLongitude, AisExtendedClassBCsPositionReportMessageLatitude, AisExtendedClassBCsPositionReportMessageCourseOverGround, AisExtendedClassBCsPositionReportMessageTrueHeading, AisExtendedClassBCsPositionReportMessageTimestamp, AisExtendedClassBCsPositionReportMessageRegionalReserved, AisExtendedClassBCsPositionReportMessageName, AisExtendedClassBCsPositionReportMessageShipType, AisExtendedClassBCsPositionReportMessageDimensionToBow, AisExtendedClassBCsPositionReportMessageDimensionToStern, AisExtendedClassBCsPositionReportMessageDimensionToPort, AisExtendedClassBCsPositionReportMessageDimensionToStarboard, AisExtendedClassBCsPositionReportMessagePositionFixType, AisExtendedClassBCsPositionReportMessageRaim, AisExtendedClassBCsPositionReportMessageDataTerminalReady, AisExtendedClassBCsPositionReportMessageAssigned, AisExtendedClassBCsPositionReportMessageSpare );
+                }
+                case Types.Kind.AisInterrogationMessage:
+                {
+                    return new AisInterrogationMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisInterrogationMessageInterrogatedMmsi, AisInterrogationMessageFirstMessageType, AisInterrogationMessageFirstSlotOffset, AisInterrogationMessageSecondMessageType, AisInterrogationMessageSecondSlotOffset, AisInterrogationMessageSecondStationInterrogationMmsi, AisInterrogationMessageSecondStationFirstMessageType, AisInterrogationMessageSecondStationFirstSlotOffset );
+                }
+                case Types.Kind.AisPositionReportClassAAssignedScheduleMessage:
+                {
+                    return new AisPositionReportClassAAssignedScheduleMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisPositionReportClassAMessageBaseNavigationStatus, AisPositionReportClassAMessageBaseRateOfTurn, AisPositionReportClassAMessageBaseSpeedOverGround, AisPositionReportClassAMessageBasePositionAccuracy, AisPositionReportClassAMessageBaseLongitude, AisPositionReportClassAMessageBaseLatitude, AisPositionReportClassAMessageBaseCourseOverGround, AisPositionReportClassAMessageBaseTrueHeading, AisPositionReportClassAMessageBaseTimestamp, AisPositionReportClassAMessageBaseManeuverIndicator, AisPositionReportClassAMessageBaseSpare, AisPositionReportClassAMessageBaseRaim, AisPositionReportClassAMessageBaseRadioStatus );
+                }
+                case Types.Kind.AisPositionReportClassAMessage:
+                {
+                    return new AisPositionReportClassAMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisPositionReportClassAMessageBaseNavigationStatus, AisPositionReportClassAMessageBaseRateOfTurn, AisPositionReportClassAMessageBaseSpeedOverGround, AisPositionReportClassAMessageBasePositionAccuracy, AisPositionReportClassAMessageBaseLongitude, AisPositionReportClassAMessageBaseLatitude, AisPositionReportClassAMessageBaseCourseOverGround, AisPositionReportClassAMessageBaseTrueHeading, AisPositionReportClassAMessageBaseTimestamp, AisPositionReportClassAMessageBaseManeuverIndicator, AisPositionReportClassAMessageBaseSpare, AisPositionReportClassAMessageBaseRaim, AisPositionReportClassAMessageBaseRadioStatus );
+                }
+                case Types.Kind.AisPositionReportClassAResponseToInterrogationMessage:
+                {
+                    return new AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisPositionReportClassAMessageBaseNavigationStatus, AisPositionReportClassAMessageBaseRateOfTurn, AisPositionReportClassAMessageBaseSpeedOverGround, AisPositionReportClassAMessageBasePositionAccuracy, AisPositionReportClassAMessageBaseLongitude, AisPositionReportClassAMessageBaseLatitude, AisPositionReportClassAMessageBaseCourseOverGround, AisPositionReportClassAMessageBaseTrueHeading, AisPositionReportClassAMessageBaseTimestamp, AisPositionReportClassAMessageBaseManeuverIndicator, AisPositionReportClassAMessageBaseSpare, AisPositionReportClassAMessageBaseRaim, AisPositionReportClassAMessageBaseRadioStatus );
+                }
+                case Types.Kind.AisPositionReportForLongRangeApplicationsMessage:
+                {
+                    return new AisPositionReportForLongRangeApplicationsMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisPositionReportForLongRangeApplicationsMessagePositionAccuracy, AisPositionReportForLongRangeApplicationsMessageRaim, AisPositionReportForLongRangeApplicationsMessageNavigationStatus, AisPositionReportForLongRangeApplicationsMessageLongitude, AisPositionReportForLongRangeApplicationsMessageLatitude, AisPositionReportForLongRangeApplicationsMessageSpeedOverGround, AisPositionReportForLongRangeApplicationsMessageCourseOverGround, AisPositionReportForLongRangeApplicationsMessageGnssPositionStatus, AisPositionReportForLongRangeApplicationsMessageSpare );
+                }
+                case Types.Kind.AisSafetyRelatedAcknowledgmentMessage:
+                {
+                    return new AisSafetyRelatedAcknowledgmentMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisSafetyRelatedAcknowledgmentMessageSpare, AisSafetyRelatedAcknowledgmentMessageSequenceNumber1, AisSafetyRelatedAcknowledgmentMessageMmsi1, AisSafetyRelatedAcknowledgmentMessageSequenceNumber2, AisSafetyRelatedAcknowledgmentMessageMmsi2, AisSafetyRelatedAcknowledgmentMessageSequenceNumber3, AisSafetyRelatedAcknowledgmentMessageMmsi3, AisSafetyRelatedAcknowledgmentMessageSequenceNumber4, AisSafetyRelatedAcknowledgmentMessageMmsi4 );
+                }
+                case Types.Kind.AisStandardClassBCsPositionReportMessage:
+                {
+                    return new AisStandardClassBCsPositionReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisStandardClassBCsPositionReportMessageReserved, AisStandardClassBCsPositionReportMessageSpeedOverGround, AisStandardClassBCsPositionReportMessagePositionAccuracy, AisStandardClassBCsPositionReportMessageLongitude, AisStandardClassBCsPositionReportMessageLatitude, AisStandardClassBCsPositionReportMessageCourseOverGround, AisStandardClassBCsPositionReportMessageTrueHeading, AisStandardClassBCsPositionReportMessageTimestamp, AisStandardClassBCsPositionReportMessageRegionalReserved, AisStandardClassBCsPositionReportMessageIsCsUnit, AisStandardClassBCsPositionReportMessageHasDisplay, AisStandardClassBCsPositionReportMessageHasDscCapability, AisStandardClassBCsPositionReportMessageBand, AisStandardClassBCsPositionReportMessageCanAcceptMessage22, AisStandardClassBCsPositionReportMessageAssigned, AisStandardClassBCsPositionReportMessageRaim, AisStandardClassBCsPositionReportMessageRadioStatus );
+                }
+                case Types.Kind.AisStandardSarAircraftPositionReportMessage:
+                {
+                    return new AisStandardSarAircraftPositionReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisStandardSarAircraftPositionReportMessageAltitude, AisStandardSarAircraftPositionReportMessageSpeedOverGround, AisStandardSarAircraftPositionReportMessagePositionAccuracy, AisStandardSarAircraftPositionReportMessageLongitude, AisStandardSarAircraftPositionReportMessageLatitude, AisStandardSarAircraftPositionReportMessageCourseOverGround, AisStandardSarAircraftPositionReportMessageTimestamp, AisStandardSarAircraftPositionReportMessageReserved, AisStandardSarAircraftPositionReportMessageDataTerminalReady, AisStandardSarAircraftPositionReportMessageSpare, AisStandardSarAircraftPositionReportMessageAssigned, AisStandardSarAircraftPositionReportMessageRaim, AisStandardSarAircraftPositionReportMessageRadioStatus );
+                }
+                case Types.Kind.AisStaticAndVoyageRelatedDataMessage:
+                {
+                    return new AisStaticAndVoyageRelatedDataMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisStaticAndVoyageRelatedDataMessageAisVersion, AisStaticAndVoyageRelatedDataMessageImoNumber, AisStaticAndVoyageRelatedDataMessageCallsign, AisStaticAndVoyageRelatedDataMessageShipName, AisStaticAndVoyageRelatedDataMessageShipType, AisStaticAndVoyageRelatedDataMessageDimensionToBow, AisStaticAndVoyageRelatedDataMessageDimensionToStern, AisStaticAndVoyageRelatedDataMessageDimensionToPort, AisStaticAndVoyageRelatedDataMessageDimensionToStarboard, AisStaticAndVoyageRelatedDataMessagePositionFixType, AisStaticAndVoyageRelatedDataMessageEstimatedTimeOfArrival, AisStaticAndVoyageRelatedDataMessageDraught, AisStaticAndVoyageRelatedDataMessageDestination, AisStaticAndVoyageRelatedDataMessageDataTerminalReady, AisStaticAndVoyageRelatedDataMessageSpare );
+                }
+                case Types.Kind.AisStaticDataReportMessage:
+                {
+                    return new AisStaticDataReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisStaticDataReportMessagePartNumber );
+                }
+                case Types.Kind.AisStaticDataReportPartAMessage:
+                {
+                    return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisStaticDataReportMessagePartNumber, AisStaticDataReportPartAMessageShipName, AisStaticDataReportPartAMessageSpare );
+                }
+                case Types.Kind.AisStaticDataReportPartBMessage:
+                {
+                    return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisStaticDataReportMessagePartNumber, AisStaticDataReportPartBMessageShipType, AisStaticDataReportPartBMessageVendorId, AisStaticDataReportPartBMessageUnitModelCode, AisStaticDataReportPartBMessageSerialNumber, AisStaticDataReportPartBMessageCallsign, AisStaticDataReportPartBMessageDimensionToBow, AisStaticDataReportPartBMessageDimensionToStern, AisStaticDataReportPartBMessageDimensionToPort, AisStaticDataReportPartBMessageDimensionToStarboard, AisStaticDataReportPartBMessageMothershipMmsi, AisStaticDataReportPartBMessagePositionFixType, AisStaticDataReportPartBMessageSpare );
+                }
+                case Types.Kind.AisUtcAndDateInquiryMessage:
+                {
+                    return new AisUtcAndDateInquiryMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisUtcAndDateInquiryMessageSpare1, AisUtcAndDateInquiryMessageDestinationMmsi, AisUtcAndDateInquiryMessageSpare2 );
+                }
+                case Types.Kind.AisUtcAndDateResponseMessage:
+                {
+                    return new AisUtcAndDateResponseMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, AisUtcAndDateResponseMessageDatetime, AisUtcAndDateResponseMessagePositionAccuracy, AisUtcAndDateResponseMessageLongitude, AisUtcAndDateResponseMessageLatitude, AisUtcAndDateResponseMessagePositionFixType, AisUtcAndDateResponseMessageSpare, AisUtcAndDateResponseMessageRaim, AisUtcAndDateResponseMessageRadioStatus );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexAisPositionReportClassAMessageBaseDataReader : DataReaderWrapper
@@ -1967,6 +2076,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( APRCAB_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( APRCAB_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -2102,6 +2218,32 @@ namespace Barrelman.Data.Database
                 return GetInt32( APRCAB_RADIOSTATUS_FIELD_ID );
             }
         }
+        public AisPositionReportClassAMessageBaseObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AisPositionReportClassAAssignedScheduleMessage:
+                {
+                    return new AisPositionReportClassAAssignedScheduleMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationStatus, RateOfTurn, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, ManeuverIndicator, Spare, Raim, RadioStatus );
+                }
+                case Types.Kind.AisPositionReportClassAMessage:
+                {
+                    return new AisPositionReportClassAMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationStatus, RateOfTurn, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, ManeuverIndicator, Spare, Raim, RadioStatus );
+                }
+                case Types.Kind.AisPositionReportClassAResponseToInterrogationMessage:
+                {
+                    return new AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, NavigationStatus, RateOfTurn, SpeedOverGround, PositionAccuracy, Longitude, Latitude, CourseOverGround, TrueHeading, Timestamp, ManeuverIndicator, Spare, Raim, RadioStatus );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexAisStaticDataReportMessageDataReader : DataReaderWrapper
@@ -2170,6 +2312,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( ASDRM_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( ASDRM_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -2319,6 +2468,32 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRPB_SPARE_FIELD_ID );
             }
         }
+        public AisStaticDataReportMessageObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AisStaticDataReportMessage:
+                {
+                    return new AisStaticDataReportMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PartNumber );
+                }
+                case Types.Kind.AisStaticDataReportPartAMessage:
+                {
+                    return new AisStaticDataReportPartAMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PartNumber, AisStaticDataReportPartAMessageShipName, AisStaticDataReportPartAMessageSpare );
+                }
+                case Types.Kind.AisStaticDataReportPartBMessage:
+                {
+                    return new AisStaticDataReportPartBMessageObject( ObjectState.Stored, Id, RowVersion, AisDevice, ReceivedTimestamp, MessageSequenceNumber, Repeat, Mmsi, PartNumber, AisStaticDataReportPartBMessageShipType, AisStaticDataReportPartBMessageVendorId, AisStaticDataReportPartBMessageUnitModelCode, AisStaticDataReportPartBMessageSerialNumber, AisStaticDataReportPartBMessageCallsign, AisStaticDataReportPartBMessageDimensionToBow, AisStaticDataReportPartBMessageDimensionToStern, AisStaticDataReportPartBMessageDimensionToPort, AisStaticDataReportPartBMessageDimensionToStarboard, AisStaticDataReportPartBMessageMothershipMmsi, AisStaticDataReportPartBMessagePositionFixType, AisStaticDataReportPartBMessageSpare );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexCameraCommandDataReader : DataReaderWrapper
@@ -2447,6 +2622,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( CC_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( CC_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -2769,6 +2951,80 @@ namespace Barrelman.Data.Database
                 return GetBoolean( CCS_ZOOM_FIELD_ID );
             }
         }
+        public CameraCommandObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.CameraCommand:
+                {
+                    return new CameraCommandObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+                }
+                case Types.Kind.CameraCommandAbsoluteMove:
+                {
+                    return new CameraCommandAbsoluteMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandAbsoluteMovePositionPanTiltMode, CameraCommandAbsoluteMovePanAngle, CameraCommandAbsoluteMoveTiltAngle, CameraCommandAbsoluteMovePositionFocalLengthMode, CameraCommandAbsoluteMoveFocalLength, CameraCommandAbsoluteMoveSpeedPanTiltMode, CameraCommandAbsoluteMovePanSpeed, CameraCommandAbsoluteMoveTiltSpeed, CameraCommandAbsoluteMoveSpeedFocalLengthMode, CameraCommandAbsoluteMoveZoomSpeed );
+                }
+                case Types.Kind.CameraCommandAdjustPanTiltZoom:
+                {
+                    return new CameraCommandAdjustPanTiltZoomObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandAdjustPanTiltZoomX, CameraCommandAdjustPanTiltZoomY, CameraCommandAdjustPanTiltZoomZ );
+                }
+                case Types.Kind.CameraCommandContinuousMove:
+                {
+                    return new CameraCommandContinuousMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandContinuousMoveNormalized, CameraCommandContinuousMovePanVelocity, CameraCommandContinuousMoveTiltVelocity, CameraCommandContinuousMoveZoomVelocity, CameraCommandContinuousMoveDuration );
+                }
+                case Types.Kind.CameraCommandGeoMove:
+                {
+                    return new CameraCommandGeoMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandGeoMoveLatitude, CameraCommandGeoMoveLongitude, CameraCommandGeoMoveAltitude, CameraCommandGeoMoveViewportWidth, CameraCommandGeoMoveViewportHeight );
+                }
+                case Types.Kind.CameraCommandRelativeMove:
+                {
+                    return new CameraCommandRelativeMoveObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandRelativeMoveNormalized, CameraCommandRelativeMovePanAngle, CameraCommandRelativeMoveTiltAngle, CameraCommandRelativeMoveFocalLength, CameraCommandRelativeMovePanSpeed, CameraCommandRelativeMoveTiltSpeed, CameraCommandRelativeMoveZoomSpeed );
+                }
+                case Types.Kind.CameraCommandReleasePTZOwnership:
+                {
+                    return new CameraCommandReleasePTZOwnershipObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+                }
+                case Types.Kind.CameraCommandRequestPTZOwnership:
+                {
+                    return new CameraCommandRequestPTZOwnershipObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+                }
+                case Types.Kind.CameraCommandSetAutoFocus:
+                {
+                    return new CameraCommandSetAutoFocusObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandSetAutoFocusEnabled );
+                }
+                case Types.Kind.CameraCommandSetBlackAndWhite:
+                {
+                    return new CameraCommandSetBlackAndWhiteObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandSetBlackAndWhiteEnabled );
+                }
+                case Types.Kind.CameraCommandSetFollowed:
+                {
+                    return new CameraCommandSetFollowedObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandSetFollowedTrackId, CameraCommandSetFollowedReason );
+                }
+                case Types.Kind.CameraCommandSetInfraRedLamp:
+                {
+                    return new CameraCommandSetInfraRedLampObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandSetInfraRedLampEnabled );
+                }
+                case Types.Kind.CameraCommandSetWasher:
+                {
+                    return new CameraCommandSetWasherObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandSetWasherEnabled );
+                }
+                case Types.Kind.CameraCommandSetWiper:
+                {
+                    return new CameraCommandSetWiperObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandSetWiperEnabled );
+                }
+                case Types.Kind.CameraCommandStop:
+                {
+                    return new CameraCommandStopObject( ObjectState.Stored, Id, RowVersion, Camera, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply, CameraCommandStopPanTilt, CameraCommandStopZoom );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexCatalogElementDataReader : DataReaderWrapper
@@ -2805,6 +3061,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( CE_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( CE_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -2833,6 +3096,28 @@ namespace Barrelman.Data.Database
                 return GetGuid( E_ELEMENTTYPE_FIELD_ID );
             }
         }
+        public CatalogElementObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Catalog:
+                {
+                    return new CatalogObject( ObjectState.Stored, Id, RowVersion, Catalog, Name );
+                }
+                case Types.Kind.Element:
+                {
+                    return new ElementObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, ElementElementType );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexIdentityDataReader : DataReaderWrapper
@@ -2873,6 +3158,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( I_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( I_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -2908,6 +3200,36 @@ namespace Barrelman.Data.Database
                 return GetString( N_TEXT_FIELD_ID );
             }
         }
+        public IdentityObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Callsign:
+                {
+                    return new CallsignObject( ObjectState.Stored, Id, RowVersion, CallsignIdentifier );
+                }
+                case Types.Kind.InternationalMaritimeOrganizationNumber:
+                {
+                    return new InternationalMaritimeOrganizationNumberObject( ObjectState.Stored, Id, RowVersion, InternationalMaritimeOrganizationNumberIdentifier );
+                }
+                case Types.Kind.MaritimeMobileServiceIdentity:
+                {
+                    return new MaritimeMobileServiceIdentityObject( ObjectState.Stored, Id, RowVersion, MaritimeMobileServiceIdentityIdentifier );
+                }
+                case Types.Kind.Name:
+                {
+                    return new NameObject( ObjectState.Stored, Id, RowVersion, NameText );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexItemDataReader : DataReaderWrapper
@@ -3115,6 +3437,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( I_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( I_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -3691,6 +4020,84 @@ namespace Barrelman.Data.Database
                 return GetGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
+        public ItemObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BaseStation:
+                {
+                    return new BaseStationObject( ObjectState.Stored, Id, RowVersion, BaseStationName, BaseStationType );
+                }
+                case Types.Kind.CameraDevice:
+                {
+                    return new CameraDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries );
+                }
+                case Types.Kind.GNSSDevice:
+                {
+                    return new GNSSDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries, GNSSDeviceLatitudeTimeseries, GNSSDeviceLongitudeTimeseries, GNSSDeviceAltitudeTimeseries );
+                }
+                case Types.Kind.GyroDevice:
+                {
+                    return new GyroDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries, GyroDeviceHeadingTrueNorthTimeseries, GyroDeviceHeadingMagneticNorthTimeseries, GyroDevicePitchTimeseries, GyroDeviceRateOfTurnTimeseries, GyroDeviceRollTimeseries, GyroDeviceCourseTimeseries, GyroDeviceSpeedTimeseries, GyroDeviceGNSSDevice );
+                }
+                case Types.Kind.LineInputDevice:
+                {
+                    return new LineInputDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries );
+                }
+                case Types.Kind.OilSpillDetectorDevice:
+                {
+                    return new OilSpillDetectorDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries );
+                }
+                case Types.Kind.RadioDevice:
+                {
+                    return new RadioDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries );
+                }
+                case Types.Kind.RadomeDevice:
+                {
+                    return new RadomeDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries, RadomeDeviceRadar, RadomeDevicePressureTimeseries, RadomeDeviceTemperatureTimeseries, RadomeDeviceDewPointTimeseries, RadomeDeviceStatusTimeseries );
+                }
+                case Types.Kind.AisDevice:
+                {
+                    return new AisDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries );
+                }
+                case Types.Kind.RadarDevice:
+                {
+                    return new RadarDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries, RadarDeviceSaveSettingsTimeseries, RadarDevicePowerOnTimeseries, RadarDeviceTrackingOnTimeseries, RadarDeviceRadarPulseTimeseries, RadarDeviceTuningTimeseries, RadarDeviceBlankSector1Timeseries, RadarDeviceSector1StartTimeseries, RadarDeviceSector1EndTimeseries, RadarDeviceBlankSector2Timeseries, RadarDeviceSector2StartTimeseries, RadarDeviceSector2EndTimeseries, RadarDeviceEnableAutomaticFrequencyControlTimeseries, RadarDeviceAzimuthOffsetTimeseries, RadarDeviceEnableSensitivityTimeControlTimeseries, RadarDeviceAutomaticSensitivityTimeControlTimeseries, RadarDeviceSensitivityTimeControlLevelTimeseries, RadarDeviceEnableFastTimeConstantTimeseries, RadarDeviceFastTimeConstantLevelTimeseries, RadarDeviceFastTimeConstantModeTimeseries, RadarDeviceLatitudeTimeseries, RadarDeviceLongitudeTimeseries, RadarDeviceRadome, RadarDeviceGNSSDevice );
+                }
+                case Types.Kind.WeatherStationDevice:
+                {
+                    return new WeatherStationDeviceObject( ObjectState.Stored, Id, RowVersion, DeviceHost, DeviceName, DeviceDescription, DeviceEnabledTimeseries, WeatherStationDeviceBarometricPressureTimeseries, WeatherStationDeviceAirTemperatureTimeseries, WeatherStationDeviceWaterTemperatureTimeseries, WeatherStationDeviceRelativeHumidityTimeseries, WeatherStationDeviceAbsoluteHumidityTimeseries, WeatherStationDeviceDewPointTimeseries, WeatherStationDeviceWindDirectionTimeseries, WeatherStationDeviceWindSpeedTimeseries, WeatherStationDeviceGyro );
+                }
+                case Types.Kind.Facility:
+                {
+                    return new FacilityObject( ObjectState.Stored, Id, RowVersion, FacilityName, FacilityType, FacilityLongitude, FacilityLatitude, FacilityAltitude );
+                }
+                case Types.Kind.Aircraft:
+                {
+                    return new AircraftObject( ObjectState.Stored, Id, RowVersion, AircraftName, AircraftType );
+                }
+                case Types.Kind.AisAidToNavigation:
+                {
+                    return new AisAidToNavigationObject( ObjectState.Stored, Id, RowVersion, AisAidToNavigationName, AisAidToNavigationMMSI, AisAidToNavigationNavigationalAidType, AisAidToNavigationPosition, AisAidToNavigationIsVirtual, AisAidToNavigationToBow, AisAidToNavigationToStern, AisAidToNavigationToPort, AisAidToNavigationToStarboard, AisAidToNavigationOffPositionTimeseries );
+                }
+                case Types.Kind.Vehicle:
+                {
+                    return new VehicleObject( ObjectState.Stored, Id, RowVersion, VehicleName, VehicleType );
+                }
+                case Types.Kind.Vessel:
+                {
+                    return new VesselObject( ObjectState.Stored, Id, RowVersion, VesselName, VesselType, VesselToBow, VesselToStern, VesselToPort, VesselToStarboard, VesselDraughtTimeseries, VesselPersonsOnBoardTimeseries );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexDeviceDataReader : DataReaderWrapper
@@ -3832,6 +4239,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( D_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( D_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -4205,6 +4619,60 @@ namespace Barrelman.Data.Database
                 return GetGuid( WSD_GYRO_FIELD_ID );
             }
         }
+        public DeviceObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.CameraDevice:
+                {
+                    return new CameraDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+                }
+                case Types.Kind.GNSSDevice:
+                {
+                    return new GNSSDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, GNSSDeviceLatitudeTimeseries, GNSSDeviceLongitudeTimeseries, GNSSDeviceAltitudeTimeseries );
+                }
+                case Types.Kind.GyroDevice:
+                {
+                    return new GyroDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, GyroDeviceHeadingTrueNorthTimeseries, GyroDeviceHeadingMagneticNorthTimeseries, GyroDevicePitchTimeseries, GyroDeviceRateOfTurnTimeseries, GyroDeviceRollTimeseries, GyroDeviceCourseTimeseries, GyroDeviceSpeedTimeseries, GyroDeviceGNSSDevice );
+                }
+                case Types.Kind.LineInputDevice:
+                {
+                    return new LineInputDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+                }
+                case Types.Kind.OilSpillDetectorDevice:
+                {
+                    return new OilSpillDetectorDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+                }
+                case Types.Kind.RadioDevice:
+                {
+                    return new RadioDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+                }
+                case Types.Kind.RadomeDevice:
+                {
+                    return new RadomeDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, RadomeDeviceRadar, RadomeDevicePressureTimeseries, RadomeDeviceTemperatureTimeseries, RadomeDeviceDewPointTimeseries, RadomeDeviceStatusTimeseries );
+                }
+                case Types.Kind.AisDevice:
+                {
+                    return new AisDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+                }
+                case Types.Kind.RadarDevice:
+                {
+                    return new RadarDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, RadarDeviceSaveSettingsTimeseries, RadarDevicePowerOnTimeseries, RadarDeviceTrackingOnTimeseries, RadarDeviceRadarPulseTimeseries, RadarDeviceTuningTimeseries, RadarDeviceBlankSector1Timeseries, RadarDeviceSector1StartTimeseries, RadarDeviceSector1EndTimeseries, RadarDeviceBlankSector2Timeseries, RadarDeviceSector2StartTimeseries, RadarDeviceSector2EndTimeseries, RadarDeviceEnableAutomaticFrequencyControlTimeseries, RadarDeviceAzimuthOffsetTimeseries, RadarDeviceEnableSensitivityTimeControlTimeseries, RadarDeviceAutomaticSensitivityTimeControlTimeseries, RadarDeviceSensitivityTimeControlLevelTimeseries, RadarDeviceEnableFastTimeConstantTimeseries, RadarDeviceFastTimeConstantLevelTimeseries, RadarDeviceFastTimeConstantModeTimeseries, RadarDeviceLatitudeTimeseries, RadarDeviceLongitudeTimeseries, RadarDeviceRadome, RadarDeviceGNSSDevice );
+                }
+                case Types.Kind.WeatherStationDevice:
+                {
+                    return new WeatherStationDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, WeatherStationDeviceBarometricPressureTimeseries, WeatherStationDeviceAirTemperatureTimeseries, WeatherStationDeviceWaterTemperatureTimeseries, WeatherStationDeviceRelativeHumidityTimeseries, WeatherStationDeviceAbsoluteHumidityTimeseries, WeatherStationDeviceDewPointTimeseries, WeatherStationDeviceWindDirectionTimeseries, WeatherStationDeviceWindSpeedTimeseries, WeatherStationDeviceGyro );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTrackerDeviceDataReader : DataReaderWrapper
@@ -4287,6 +4755,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( TD_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( TD_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -4485,6 +4960,28 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RD_GNSSDEVICE_FIELD_ID );
             }
         }
+        public TrackerDeviceObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AisDevice:
+                {
+                    return new AisDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries );
+                }
+                case Types.Kind.RadarDevice:
+                {
+                    return new RadarDeviceObject( ObjectState.Stored, Id, RowVersion, Host, Name, Description, EnabledTimeseries, RadarDeviceSaveSettingsTimeseries, RadarDevicePowerOnTimeseries, RadarDeviceTrackingOnTimeseries, RadarDeviceRadarPulseTimeseries, RadarDeviceTuningTimeseries, RadarDeviceBlankSector1Timeseries, RadarDeviceSector1StartTimeseries, RadarDeviceSector1EndTimeseries, RadarDeviceBlankSector2Timeseries, RadarDeviceSector2StartTimeseries, RadarDeviceSector2EndTimeseries, RadarDeviceEnableAutomaticFrequencyControlTimeseries, RadarDeviceAzimuthOffsetTimeseries, RadarDeviceEnableSensitivityTimeControlTimeseries, RadarDeviceAutomaticSensitivityTimeControlTimeseries, RadarDeviceSensitivityTimeControlLevelTimeseries, RadarDeviceEnableFastTimeConstantTimeseries, RadarDeviceFastTimeConstantLevelTimeseries, RadarDeviceFastTimeConstantModeTimeseries, RadarDeviceLatitudeTimeseries, RadarDeviceLongitudeTimeseries, RadarDeviceRadome, RadarDeviceGNSSDevice );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTrackableItemDataReader : DataReaderWrapper
@@ -4559,6 +5056,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( TI_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( TI_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -4722,6 +5226,36 @@ namespace Barrelman.Data.Database
                 return GetGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
+        public TrackableItemObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Aircraft:
+                {
+                    return new AircraftObject( ObjectState.Stored, Id, RowVersion, AircraftName, AircraftType );
+                }
+                case Types.Kind.AisAidToNavigation:
+                {
+                    return new AisAidToNavigationObject( ObjectState.Stored, Id, RowVersion, AisAidToNavigationName, AisAidToNavigationMMSI, AisAidToNavigationNavigationalAidType, AisAidToNavigationPosition, AisAidToNavigationIsVirtual, AisAidToNavigationToBow, AisAidToNavigationToStern, AisAidToNavigationToPort, AisAidToNavigationToStarboard, AisAidToNavigationOffPositionTimeseries );
+                }
+                case Types.Kind.Vehicle:
+                {
+                    return new VehicleObject( ObjectState.Stored, Id, RowVersion, VehicleName, VehicleType );
+                }
+                case Types.Kind.Vessel:
+                {
+                    return new VesselObject( ObjectState.Stored, Id, RowVersion, VesselName, VesselType, VesselToBow, VesselToStern, VesselToPort, VesselToStarboard, VesselDraughtTimeseries, VesselPersonsOnBoardTimeseries );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexNamespaceElementDataReader : DataReaderWrapper
@@ -4758,6 +5292,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( NE_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( NE_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -4786,6 +5327,28 @@ namespace Barrelman.Data.Database
                 return GetString( NE_DESCRIPTION_FIELD_ID );
             }
         }
+        public NamespaceElementObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.ElementType:
+                {
+                    return new ElementTypeObject( ObjectState.Stored, Id, RowVersion, Namespace, Name, Description );
+                }
+                case Types.Kind.Namespace:
+                {
+                    return new NamespaceObject( ObjectState.Stored, Id, RowVersion, Namespace, Name, Description );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexPropertyDataReader : DataReaderWrapper
@@ -4919,6 +5482,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( P_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( P_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -5180,6 +5750,156 @@ namespace Barrelman.Data.Database
                 return GetInt64( U64P_VALUE_FIELD_ID );
             }
         }
+        public PropertyObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryProperty:
+                {
+                    return new BinaryPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BinaryPropertyValue );
+                }
+                case Types.Kind.BooleanProperty:
+                {
+                    return new BooleanPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BooleanPropertyValue );
+                }
+                case Types.Kind.ByteProperty:
+                {
+                    return new BytePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BytePropertyValue );
+                }
+                case Types.Kind.DateTimeProperty:
+                {
+                    return new DateTimePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, DateTimePropertyValue );
+                }
+                case Types.Kind.DoubleProperty:
+                {
+                    return new DoublePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, DoublePropertyValue );
+                }
+                case Types.Kind.GuidProperty:
+                {
+                    return new GuidPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, GuidPropertyValue );
+                }
+                case Types.Kind.Int16Property:
+                {
+                    return new Int16PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int16PropertyValue );
+                }
+                case Types.Kind.Int32Property:
+                {
+                    return new Int32PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int32PropertyValue );
+                }
+                case Types.Kind.Int64Property:
+                {
+                    return new Int64PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int64PropertyValue );
+                }
+                case Types.Kind.ReferenceProperty:
+                {
+                    return new ReferencePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, ReferencePropertyValue );
+                }
+                case Types.Kind.SByteProperty:
+                {
+                    return new SBytePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, SBytePropertyValue );
+                }
+                case Types.Kind.SingleProperty:
+                {
+                    return new SinglePropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, SinglePropertyValue );
+                }
+                case Types.Kind.StringProperty:
+                {
+                    return new StringPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, StringPropertyValue );
+                }
+                case Types.Kind.BinaryTimeseriesProperty:
+                {
+                    return new BinaryTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BinaryTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.BooleanTimeseriesProperty:
+                {
+                    return new BooleanTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BooleanTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.ByteTimeseriesProperty:
+                {
+                    return new ByteTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, ByteTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.DateTimeTimeseriesProperty:
+                {
+                    return new DateTimeTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, DateTimeTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.DoubleTimeseriesProperty:
+                {
+                    return new DoubleTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, DoubleTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.GuidTimeseriesProperty:
+                {
+                    return new GuidTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, GuidTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.Int16TimeseriesProperty:
+                {
+                    return new Int16TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int16TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.Int32TimeseriesProperty:
+                {
+                    return new Int32TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int32TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.Int64TimeseriesProperty:
+                {
+                    return new Int64TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int64TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.ReferenceTimeseriesProperty:
+                {
+                    return new ReferenceTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, ReferenceTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.SByteTimeseriesProperty:
+                {
+                    return new SByteTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, SByteTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.SingleTimeseriesProperty:
+                {
+                    return new SingleTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, SingleTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.StringTimeseriesProperty:
+                {
+                    return new StringTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, StringTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.TimeSpanTimeseriesProperty:
+                {
+                    return new TimeSpanTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, TimeSpanTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.UInt16TimeseriesProperty:
+                {
+                    return new UInt16TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt16TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.UInt32TimeseriesProperty:
+                {
+                    return new UInt32TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt32TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.UInt64TimeseriesProperty:
+                {
+                    return new UInt64TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt64TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.TimeSpanProperty:
+                {
+                    return new TimeSpanPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, TimeSpanPropertyValue );
+                }
+                case Types.Kind.UInt16Property:
+                {
+                    return new UInt16PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt16PropertyValue );
+                }
+                case Types.Kind.UInt32Property:
+                {
+                    return new UInt32PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt32PropertyValue );
+                }
+                case Types.Kind.UInt64Property:
+                {
+                    return new UInt64PropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt64PropertyValue );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTimeseriesPropertyDataReader : DataReaderWrapper
@@ -5261,6 +5981,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( TP_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( TP_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -5403,6 +6130,88 @@ namespace Barrelman.Data.Database
                 return GetGuid( U64TP_TIMESERIES_FIELD_ID );
             }
         }
+        public TimeseriesPropertyObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseriesProperty:
+                {
+                    return new BinaryTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BinaryTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.BooleanTimeseriesProperty:
+                {
+                    return new BooleanTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, BooleanTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.ByteTimeseriesProperty:
+                {
+                    return new ByteTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, ByteTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.DateTimeTimeseriesProperty:
+                {
+                    return new DateTimeTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, DateTimeTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.DoubleTimeseriesProperty:
+                {
+                    return new DoubleTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, DoubleTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.GuidTimeseriesProperty:
+                {
+                    return new GuidTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, GuidTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.Int16TimeseriesProperty:
+                {
+                    return new Int16TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int16TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.Int32TimeseriesProperty:
+                {
+                    return new Int32TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int32TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.Int64TimeseriesProperty:
+                {
+                    return new Int64TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, Int64TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.ReferenceTimeseriesProperty:
+                {
+                    return new ReferenceTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, ReferenceTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.SByteTimeseriesProperty:
+                {
+                    return new SByteTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, SByteTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.SingleTimeseriesProperty:
+                {
+                    return new SingleTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, SingleTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.StringTimeseriesProperty:
+                {
+                    return new StringTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, StringTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.TimeSpanTimeseriesProperty:
+                {
+                    return new TimeSpanTimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, TimeSpanTimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.UInt16TimeseriesProperty:
+                {
+                    return new UInt16TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt16TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.UInt32TimeseriesProperty:
+                {
+                    return new UInt32TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt32TimeseriesPropertyTimeseries );
+                }
+                case Types.Kind.UInt64TimeseriesProperty:
+                {
+                    return new UInt64TimeseriesPropertyObject( ObjectState.Stored, Id, RowVersion, Element, Definition, UInt64TimeseriesPropertyTimeseries );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexPropertyDefinitionDataReader : DataReaderWrapper
@@ -5608,6 +6417,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( PD_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( PD_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -6121,6 +6937,156 @@ namespace Barrelman.Data.Database
                 return GetInt64( U64PD_MAXVALUE_FIELD_ID );
             }
         }
+        public PropertyDefinitionObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryPropertyDefinition:
+                {
+                    return new BinaryPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, BinaryPropertyDefinitionDefaultValue );
+                }
+                case Types.Kind.BooleanPropertyDefinition:
+                {
+                    return new BooleanPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, BooleanPropertyDefinitionDefaultValue );
+                }
+                case Types.Kind.BytePropertyDefinition:
+                {
+                    return new BytePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, BytePropertyDefinitionDefaultValue, BytePropertyDefinitionMinValue, BytePropertyDefinitionMaxValue );
+                }
+                case Types.Kind.DateTimePropertyDefinition:
+                {
+                    return new DateTimePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DateTimePropertyDefinitionDefaultValue, DateTimePropertyDefinitionMinValue, DateTimePropertyDefinitionMaxValue );
+                }
+                case Types.Kind.DoublePropertyDefinition:
+                {
+                    return new DoublePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DoublePropertyDefinitionDefaultValue, DoublePropertyDefinitionMinValue, DoublePropertyDefinitionMaxValue );
+                }
+                case Types.Kind.GuidPropertyDefinition:
+                {
+                    return new GuidPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, GuidPropertyDefinitionDefaultValue );
+                }
+                case Types.Kind.Int16PropertyDefinition:
+                {
+                    return new Int16PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int16PropertyDefinitionDefaultValue, Int16PropertyDefinitionMinValue, Int16PropertyDefinitionMaxValue );
+                }
+                case Types.Kind.Int32PropertyDefinition:
+                {
+                    return new Int32PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int32PropertyDefinitionDefaultValue, Int32PropertyDefinitionMinValue, Int32PropertyDefinitionMaxValue );
+                }
+                case Types.Kind.Int64PropertyDefinition:
+                {
+                    return new Int64PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int64PropertyDefinitionDefaultValue, Int64PropertyDefinitionMinValue, Int64PropertyDefinitionMaxValue );
+                }
+                case Types.Kind.ReferencePropertyDefinition:
+                {
+                    return new ReferencePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, ReferencePropertyDefinitionDefaultValue, ReferencePropertyDefinitionReferencedElementType );
+                }
+                case Types.Kind.SBytePropertyDefinition:
+                {
+                    return new SBytePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, SBytePropertyDefinitionDefaultValue, SBytePropertyDefinitionMinValue, SBytePropertyDefinitionMaxValue );
+                }
+                case Types.Kind.SinglePropertyDefinition:
+                {
+                    return new SinglePropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, SinglePropertyDefinitionDefaultValue, SinglePropertyDefinitionMinValue, SinglePropertyDefinitionMaxValue );
+                }
+                case Types.Kind.StringPropertyDefinition:
+                {
+                    return new StringPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, StringPropertyDefinitionDefaultValue, StringPropertyDefinitionPattern );
+                }
+                case Types.Kind.BinaryTimeseriesPropertyDefinition:
+                {
+                    return new BinaryTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+                }
+                case Types.Kind.BooleanTimeseriesPropertyDefinition:
+                {
+                    return new BooleanTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+                }
+                case Types.Kind.ByteTimeseriesPropertyDefinition:
+                {
+                    return new ByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, ByteTimeseriesPropertyDefinitionMinValue, ByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.DateTimeTimeseriesPropertyDefinition:
+                {
+                    return new DateTimeTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DateTimeTimeseriesPropertyDefinitionMinValue, DateTimeTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.DoubleTimeseriesPropertyDefinition:
+                {
+                    return new DoubleTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DoubleTimeseriesPropertyDefinitionMinValue, DoubleTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.GuidTimeseriesPropertyDefinition:
+                {
+                    return new GuidTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+                }
+                case Types.Kind.Int16TimeseriesPropertyDefinition:
+                {
+                    return new Int16TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int16TimeseriesPropertyDefinitionMinValue, Int16TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.Int32TimeseriesPropertyDefinition:
+                {
+                    return new Int32TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int32TimeseriesPropertyDefinitionMinValue, Int32TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.Int64TimeseriesPropertyDefinition:
+                {
+                    return new Int64TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int64TimeseriesPropertyDefinitionMinValue, Int64TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.ReferenceTimeseriesPropertyDefinition:
+                {
+                    return new ReferenceTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, ReferenceTimeseriesPropertyDefinitionReferencedElementType );
+                }
+                case Types.Kind.SByteTimeseriesPropertyDefinition:
+                {
+                    return new SByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, SByteTimeseriesPropertyDefinitionMinValue, SByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.SingleTimeseriesPropertyDefinition:
+                {
+                    return new SingleTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, SingleTimeseriesPropertyDefinitionMinValue, SingleTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.StringTimeseriesPropertyDefinition:
+                {
+                    return new StringTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, StringTimeseriesPropertyDefinitionPattern );
+                }
+                case Types.Kind.TimeSpanTimeseriesPropertyDefinition:
+                {
+                    return new TimeSpanTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, TimeSpanTimeseriesPropertyDefinitionMinValue, TimeSpanTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt16TimeseriesPropertyDefinition:
+                {
+                    return new UInt16TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt16TimeseriesPropertyDefinitionMinValue, UInt16TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt32TimeseriesPropertyDefinition:
+                {
+                    return new UInt32TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt32TimeseriesPropertyDefinitionMinValue, UInt32TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt64TimeseriesPropertyDefinition:
+                {
+                    return new UInt64TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt64TimeseriesPropertyDefinitionMinValue, UInt64TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.TimeSpanPropertyDefinition:
+                {
+                    return new TimeSpanPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, TimeSpanPropertyDefinitionDefaultValue, TimeSpanPropertyDefinitionMinValue, TimeSpanPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt16PropertyDefinition:
+                {
+                    return new UInt16PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt16PropertyDefinitionDefaultValue, UInt16PropertyDefinitionMinValue, UInt16PropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt32PropertyDefinition:
+                {
+                    return new UInt32PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt32PropertyDefinitionDefaultValue, UInt32PropertyDefinitionMinValue, UInt32PropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt64PropertyDefinition:
+                {
+                    return new UInt64PropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt64PropertyDefinitionDefaultValue, UInt64PropertyDefinitionMinValue, UInt64PropertyDefinitionMaxValue );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTimeseriesPropertyDefinitionDataReader : DataReaderWrapper
@@ -6222,6 +7188,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( TPD_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( TPD_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -6434,6 +7407,88 @@ namespace Barrelman.Data.Database
                 return GetInt64( U64TPD_MAXVALUE_FIELD_ID );
             }
         }
+        public TimeseriesPropertyDefinitionObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseriesPropertyDefinition:
+                {
+                    return new BinaryTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+                }
+                case Types.Kind.BooleanTimeseriesPropertyDefinition:
+                {
+                    return new BooleanTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+                }
+                case Types.Kind.ByteTimeseriesPropertyDefinition:
+                {
+                    return new ByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, ByteTimeseriesPropertyDefinitionMinValue, ByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.DateTimeTimeseriesPropertyDefinition:
+                {
+                    return new DateTimeTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DateTimeTimeseriesPropertyDefinitionMinValue, DateTimeTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.DoubleTimeseriesPropertyDefinition:
+                {
+                    return new DoubleTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, DoubleTimeseriesPropertyDefinitionMinValue, DoubleTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.GuidTimeseriesPropertyDefinition:
+                {
+                    return new GuidTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description );
+                }
+                case Types.Kind.Int16TimeseriesPropertyDefinition:
+                {
+                    return new Int16TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int16TimeseriesPropertyDefinitionMinValue, Int16TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.Int32TimeseriesPropertyDefinition:
+                {
+                    return new Int32TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int32TimeseriesPropertyDefinitionMinValue, Int32TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.Int64TimeseriesPropertyDefinition:
+                {
+                    return new Int64TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, Int64TimeseriesPropertyDefinitionMinValue, Int64TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.ReferenceTimeseriesPropertyDefinition:
+                {
+                    return new ReferenceTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, ReferenceTimeseriesPropertyDefinitionReferencedElementType );
+                }
+                case Types.Kind.SByteTimeseriesPropertyDefinition:
+                {
+                    return new SByteTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, SByteTimeseriesPropertyDefinitionMinValue, SByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.SingleTimeseriesPropertyDefinition:
+                {
+                    return new SingleTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, SingleTimeseriesPropertyDefinitionMinValue, SingleTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.StringTimeseriesPropertyDefinition:
+                {
+                    return new StringTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, StringTimeseriesPropertyDefinitionPattern );
+                }
+                case Types.Kind.TimeSpanTimeseriesPropertyDefinition:
+                {
+                    return new TimeSpanTimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, TimeSpanTimeseriesPropertyDefinitionMinValue, TimeSpanTimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt16TimeseriesPropertyDefinition:
+                {
+                    return new UInt16TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt16TimeseriesPropertyDefinitionMinValue, UInt16TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt32TimeseriesPropertyDefinition:
+                {
+                    return new UInt32TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt32TimeseriesPropertyDefinitionMinValue, UInt32TimeseriesPropertyDefinitionMaxValue );
+                }
+                case Types.Kind.UInt64TimeseriesPropertyDefinition:
+                {
+                    return new UInt64TimeseriesPropertyDefinitionObject( ObjectState.Stored, Id, RowVersion, ElementType, Name, Description, UInt64TimeseriesPropertyDefinitionMinValue, UInt64TimeseriesPropertyDefinitionMaxValue );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexRadarCommandDataReader : DataReaderWrapper
@@ -6471,6 +7526,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( RC_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( RC_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -6515,6 +7577,28 @@ namespace Barrelman.Data.Database
                 return GetGuid( RC_REPLY_FIELD_ID );
             }
         }
+        public RadarCommandObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.RadarCommand:
+                {
+                    return new RadarCommandObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+                }
+                case Types.Kind.RadarCommandGetStatus:
+                {
+                    return new RadarCommandGetStatusObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, DeviceCommandSourceType, DeviceCommandSourceId, Reply );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexRadarCommandReplyDataReader : DataReaderWrapper
@@ -6562,6 +7646,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( RCR_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( RCR_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -6641,6 +7732,28 @@ namespace Barrelman.Data.Database
                 return GetBoolean( RCRGS_TX_FIELD_ID );
             }
         }
+        public RadarCommandReplyObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.RadarCommandReply:
+                {
+                    return new RadarCommandReplyObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Command, Status, Message );
+                }
+                case Types.Kind.RadarCommandReplyGetStatus:
+                {
+                    return new RadarCommandReplyGetStatusObject( ObjectState.Stored, Id, RowVersion, Radar, Timestamp, Command, Status, Message, RadarCommandReplyGetStatusAzimuthCount, RadarCommandReplyGetStatusTriggerCount, RadarCommandReplyGetStatusRotationCount, RadarCommandReplyGetStatusPulse, RadarCommandReplyGetStatusTx );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexSecurityIdentifierDataReader : DataReaderWrapper
@@ -6679,6 +7792,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( SI_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( SI_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -6714,6 +7834,28 @@ namespace Barrelman.Data.Database
                 return GetString( SR_NAME_FIELD_ID );
             }
         }
+        public SecurityIdentifierObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.SecurityLogin:
+                {
+                    return new SecurityLoginObject( ObjectState.Stored, Id, RowVersion, Domain, Identity, Description );
+                }
+                case Types.Kind.SecurityRole:
+                {
+                    return new SecurityRoleObject( ObjectState.Stored, Id, RowVersion, Domain, Identity, Description, SecurityRoleName );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTimeseriesCatalogElementDataReader : DataReaderWrapper
@@ -6928,6 +8070,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( TCE_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( TCE_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -7329,6 +8478,320 @@ namespace Barrelman.Data.Database
                 return GetGuid( RST_RADOME_FIELD_ID );
             }
         }
+        public TimeseriesCatalogElementObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseries:
+                {
+                    return new BinaryTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.BooleanTimeseries:
+                {
+                    return new BooleanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, AisAidToNavigationOffPositionTimeseriesAidToNavigation );
+                }
+                case Types.Kind.DeviceEnabledTimeseries:
+                {
+                    return new DeviceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, DeviceEnabledTimeseriesDevice );
+                }
+                case Types.Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    return new MediaProxySessionEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, MediaProxySessionEnabledTimeseriesProxySession );
+                }
+                case Types.Kind.MediaServiceEnabledTimeseries:
+                {
+                    return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, MediaServiceEnabledTimeseriesService );
+                }
+                case Types.Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    return new RadarAutomaticSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarAutomaticSensitivityTimeControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarBlankSector1Timeseries:
+                {
+                    return new RadarBlankSector1TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarBlankSector1TimeseriesRadar );
+                }
+                case Types.Kind.RadarBlankSector2Timeseries:
+                {
+                    return new RadarBlankSector2TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarBlankSector2TimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarEnableAutomaticFrequencyControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    return new RadarEnableFastTimeConstantTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarEnableFastTimeConstantTimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    return new RadarEnableSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarEnableSensitivityTimeControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarPowerOnTimeseries:
+                {
+                    return new RadarPowerOnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarPowerOnTimeseriesRadar );
+                }
+                case Types.Kind.RadarSaveSettingsTimeseries:
+                {
+                    return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarSaveSettingsTimeseriesRadar );
+                }
+                case Types.Kind.RadarTrackingTimeseries:
+                {
+                    return new RadarTrackingTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarTrackingTimeseriesRadar );
+                }
+                case Types.Kind.ByteTimeseries:
+                {
+                    return new ByteTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.DateTimeTimeseries:
+                {
+                    return new DateTimeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.DoubleTimeseries:
+                {
+                    return new DoubleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.GNSSAltitudeTimeseries:
+                {
+                    return new GNSSAltitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GNSSAltitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GNSSLatitudeTimeseries:
+                {
+                    return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GNSSLatitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GNSSLongitudeTimeseries:
+                {
+                    return new GNSSLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GNSSLongitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GyroCourseTimeseries:
+                {
+                    return new GyroCourseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroCourseTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroHeadingMagneticNorthTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroHeadingTrueNorthTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroPitchTimeseries:
+                {
+                    return new GyroPitchTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroPitchTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroRateOfTurnTimeseries:
+                {
+                    return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroRateOfTurnTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroRollTimeseries:
+                {
+                    return new GyroRollTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroRollTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroSpeedTimeseries:
+                {
+                    return new GyroSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, GyroSpeedTimeseriesGyroDevice );
+                }
+                case Types.Kind.RadarLatitudeTimeseries:
+                {
+                    return new RadarLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarLatitudeTimeseriesRadar );
+                }
+                case Types.Kind.RadarLongitudeTimeseries:
+                {
+                    return new RadarLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarLongitudeTimeseriesRadar );
+                }
+                case Types.Kind.RadomeDewPointTimeseries:
+                {
+                    return new RadomeDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadomeDewPointTimeseriesRadome );
+                }
+                case Types.Kind.RadomePressureTimeseries:
+                {
+                    return new RadomePressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadomePressureTimeseriesRadome );
+                }
+                case Types.Kind.RadomeTemperatureTimeseries:
+                {
+                    return new RadomeTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadomeTemperatureTimeseriesRadome );
+                }
+                case Types.Kind.VesselDraughtTimeseries:
+                {
+                    return new VesselDraughtTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, VesselDraughtTimeseriesVessel );
+                }
+                case Types.Kind.ViewLatitudeTimeseries:
+                {
+                    return new ViewLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, ViewLatitudeTimeseriesView );
+                }
+                case Types.Kind.ViewLongitudeTimeseries:
+                {
+                    return new ViewLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, ViewLongitudeTimeseriesView );
+                }
+                case Types.Kind.ViewZoomLevelTimeseries:
+                {
+                    return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, ViewZoomLevelTimeseriesView );
+                }
+                case Types.Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationAbsoluteHumidityTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationAirTemperatureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationBarometricPressureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationDewPointTimeseries:
+                {
+                    return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationDewPointTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    return new WeatherStationRelativeHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationRelativeHumidityTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    return new WeatherStationWaterTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationWaterTemperatureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    return new WeatherStationWindDirectionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationWindDirectionTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    return new WeatherStationWindSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, WeatherStationWindSpeedTimeseriesWeatherStation );
+                }
+                case Types.Kind.GeoPosition2DTimeseries:
+                {
+                    return new GeoPosition2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    return new AisAidToNavigationPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, AisAidToNavigationPositionTimeseriesAidToNavigation );
+                }
+                case Types.Kind.GeoPosition3DTimeseries:
+                {
+                    return new GeoPosition3DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.GuidTimeseries:
+                {
+                    return new GuidTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.Int16Timeseries:
+                {
+                    return new Int16TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.Int32Timeseries:
+                {
+                    return new Int32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    return new RadarAzimuthOffsetTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarAzimuthOffsetTimeseriesRadar );
+                }
+                case Types.Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    return new RadarFastTimeConstantLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarFastTimeConstantLevelTimeseriesRadar );
+                }
+                case Types.Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    return new RadarFastTimeConstantModeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarFastTimeConstantModeTimeseriesRadar );
+                }
+                case Types.Kind.RadarPulseTimeseries:
+                {
+                    return new RadarPulseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarPulseTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector1EndTimeseries:
+                {
+                    return new RadarSector1EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarSector1EndTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector1StartTimeseries:
+                {
+                    return new RadarSector1StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarSector1StartTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector2EndTimeseries:
+                {
+                    return new RadarSector2EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarSector2EndTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector2StartTimeseries:
+                {
+                    return new RadarSector2StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarSector2StartTimeseriesRadar );
+                }
+                case Types.Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    return new RadarSensitivityTimeControlLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarSensitivityTimeControlLevelTimeseriesRadar );
+                }
+                case Types.Kind.RadarTuningTimeseries:
+                {
+                    return new RadarTuningTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadarTuningTimeseriesRadar );
+                }
+                case Types.Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    return new VesselPersonsOnBoardTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, VesselPersonsOnBoardTimeseriesVessel );
+                }
+                case Types.Kind.Int64Timeseries:
+                {
+                    return new Int64TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.Position2DTimeseries:
+                {
+                    return new Position2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.Position3DTimeseries:
+                {
+                    return new Position3DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.ReferenceTimeseries:
+                {
+                    return new ReferenceTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.SByteTimeseries:
+                {
+                    return new SByteTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.SingleTimeseries:
+                {
+                    return new SingleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.StringTimeseries:
+                {
+                    return new StringTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.TimeSpanTimeseries:
+                {
+                    return new TimeSpanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.UInt16Timeseries:
+                {
+                    return new UInt16TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.UInt32Timeseries:
+                {
+                    return new UInt32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.RadomeStatusTimeseries:
+                {
+                    return new RadomeStatusTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention, RadomeStatusTimeseriesRadome );
+                }
+                case Types.Kind.UInt64Timeseries:
+                {
+                    return new UInt64TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, TimeseriesMaxRetention );
+                }
+                case Types.Kind.TimeseriesCatalog:
+                {
+                    return new TimeseriesCatalogObject( ObjectState.Stored, Id, RowVersion, Catalog, Name );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTimeseriesDataReader : DataReaderWrapper
@@ -7541,6 +9004,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( T_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( T_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -7942,6 +9412,316 @@ namespace Barrelman.Data.Database
                 return GetGuid( RST_RADOME_FIELD_ID );
             }
         }
+        public TimeseriesObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseries:
+                {
+                    return new BinaryTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.BooleanTimeseries:
+                {
+                    return new BooleanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, AisAidToNavigationOffPositionTimeseriesAidToNavigation );
+                }
+                case Types.Kind.DeviceEnabledTimeseries:
+                {
+                    return new DeviceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, DeviceEnabledTimeseriesDevice );
+                }
+                case Types.Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    return new MediaProxySessionEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, MediaProxySessionEnabledTimeseriesProxySession );
+                }
+                case Types.Kind.MediaServiceEnabledTimeseries:
+                {
+                    return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, MediaServiceEnabledTimeseriesService );
+                }
+                case Types.Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    return new RadarAutomaticSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarAutomaticSensitivityTimeControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarBlankSector1Timeseries:
+                {
+                    return new RadarBlankSector1TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarBlankSector1TimeseriesRadar );
+                }
+                case Types.Kind.RadarBlankSector2Timeseries:
+                {
+                    return new RadarBlankSector2TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarBlankSector2TimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarEnableAutomaticFrequencyControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    return new RadarEnableFastTimeConstantTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarEnableFastTimeConstantTimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    return new RadarEnableSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarEnableSensitivityTimeControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarPowerOnTimeseries:
+                {
+                    return new RadarPowerOnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarPowerOnTimeseriesRadar );
+                }
+                case Types.Kind.RadarSaveSettingsTimeseries:
+                {
+                    return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSaveSettingsTimeseriesRadar );
+                }
+                case Types.Kind.RadarTrackingTimeseries:
+                {
+                    return new RadarTrackingTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarTrackingTimeseriesRadar );
+                }
+                case Types.Kind.ByteTimeseries:
+                {
+                    return new ByteTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.DateTimeTimeseries:
+                {
+                    return new DateTimeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.DoubleTimeseries:
+                {
+                    return new DoubleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.GNSSAltitudeTimeseries:
+                {
+                    return new GNSSAltitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSAltitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GNSSLatitudeTimeseries:
+                {
+                    return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSLatitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GNSSLongitudeTimeseries:
+                {
+                    return new GNSSLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSLongitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GyroCourseTimeseries:
+                {
+                    return new GyroCourseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroCourseTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroHeadingMagneticNorthTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroHeadingTrueNorthTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroPitchTimeseries:
+                {
+                    return new GyroPitchTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroPitchTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroRateOfTurnTimeseries:
+                {
+                    return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroRateOfTurnTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroRollTimeseries:
+                {
+                    return new GyroRollTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroRollTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroSpeedTimeseries:
+                {
+                    return new GyroSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroSpeedTimeseriesGyroDevice );
+                }
+                case Types.Kind.RadarLatitudeTimeseries:
+                {
+                    return new RadarLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarLatitudeTimeseriesRadar );
+                }
+                case Types.Kind.RadarLongitudeTimeseries:
+                {
+                    return new RadarLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarLongitudeTimeseriesRadar );
+                }
+                case Types.Kind.RadomeDewPointTimeseries:
+                {
+                    return new RadomeDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomeDewPointTimeseriesRadome );
+                }
+                case Types.Kind.RadomePressureTimeseries:
+                {
+                    return new RadomePressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomePressureTimeseriesRadome );
+                }
+                case Types.Kind.RadomeTemperatureTimeseries:
+                {
+                    return new RadomeTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomeTemperatureTimeseriesRadome );
+                }
+                case Types.Kind.VesselDraughtTimeseries:
+                {
+                    return new VesselDraughtTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, VesselDraughtTimeseriesVessel );
+                }
+                case Types.Kind.ViewLatitudeTimeseries:
+                {
+                    return new ViewLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ViewLatitudeTimeseriesView );
+                }
+                case Types.Kind.ViewLongitudeTimeseries:
+                {
+                    return new ViewLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ViewLongitudeTimeseriesView );
+                }
+                case Types.Kind.ViewZoomLevelTimeseries:
+                {
+                    return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ViewZoomLevelTimeseriesView );
+                }
+                case Types.Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationAbsoluteHumidityTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationAirTemperatureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationBarometricPressureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationDewPointTimeseries:
+                {
+                    return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationDewPointTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    return new WeatherStationRelativeHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationRelativeHumidityTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    return new WeatherStationWaterTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationWaterTemperatureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    return new WeatherStationWindDirectionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationWindDirectionTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    return new WeatherStationWindSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationWindSpeedTimeseriesWeatherStation );
+                }
+                case Types.Kind.GeoPosition2DTimeseries:
+                {
+                    return new GeoPosition2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    return new AisAidToNavigationPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, AisAidToNavigationPositionTimeseriesAidToNavigation );
+                }
+                case Types.Kind.GeoPosition3DTimeseries:
+                {
+                    return new GeoPosition3DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.GuidTimeseries:
+                {
+                    return new GuidTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.Int16Timeseries:
+                {
+                    return new Int16TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.Int32Timeseries:
+                {
+                    return new Int32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    return new RadarAzimuthOffsetTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarAzimuthOffsetTimeseriesRadar );
+                }
+                case Types.Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    return new RadarFastTimeConstantLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarFastTimeConstantLevelTimeseriesRadar );
+                }
+                case Types.Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    return new RadarFastTimeConstantModeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarFastTimeConstantModeTimeseriesRadar );
+                }
+                case Types.Kind.RadarPulseTimeseries:
+                {
+                    return new RadarPulseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarPulseTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector1EndTimeseries:
+                {
+                    return new RadarSector1EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector1EndTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector1StartTimeseries:
+                {
+                    return new RadarSector1StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector1StartTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector2EndTimeseries:
+                {
+                    return new RadarSector2EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector2EndTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector2StartTimeseries:
+                {
+                    return new RadarSector2StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector2StartTimeseriesRadar );
+                }
+                case Types.Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    return new RadarSensitivityTimeControlLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSensitivityTimeControlLevelTimeseriesRadar );
+                }
+                case Types.Kind.RadarTuningTimeseries:
+                {
+                    return new RadarTuningTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarTuningTimeseriesRadar );
+                }
+                case Types.Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    return new VesselPersonsOnBoardTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, VesselPersonsOnBoardTimeseriesVessel );
+                }
+                case Types.Kind.Int64Timeseries:
+                {
+                    return new Int64TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.Position2DTimeseries:
+                {
+                    return new Position2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.Position3DTimeseries:
+                {
+                    return new Position3DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.ReferenceTimeseries:
+                {
+                    return new ReferenceTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.SByteTimeseries:
+                {
+                    return new SByteTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.SingleTimeseries:
+                {
+                    return new SingleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.StringTimeseries:
+                {
+                    return new StringTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.TimeSpanTimeseries:
+                {
+                    return new TimeSpanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.UInt16Timeseries:
+                {
+                    return new UInt16TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.UInt32Timeseries:
+                {
+                    return new UInt32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.RadomeStatusTimeseries:
+                {
+                    return new RadomeStatusTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomeStatusTimeseriesRadome );
+                }
+                case Types.Kind.UInt64Timeseries:
+                {
+                    return new UInt64TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexBooleanTimeseriesDataReader : DataReaderWrapper
@@ -8013,6 +9793,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( BOTS_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( BOTS_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -8134,6 +9921,76 @@ namespace Barrelman.Data.Database
                 return GetGuid( RTT_RADAR_FIELD_ID );
             }
         }
+        public BooleanTimeseriesObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BooleanTimeseries:
+                {
+                    return new BooleanTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    return new AisAidToNavigationOffPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, AisAidToNavigationOffPositionTimeseriesAidToNavigation );
+                }
+                case Types.Kind.DeviceEnabledTimeseries:
+                {
+                    return new DeviceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, DeviceEnabledTimeseriesDevice );
+                }
+                case Types.Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    return new MediaProxySessionEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, MediaProxySessionEnabledTimeseriesProxySession );
+                }
+                case Types.Kind.MediaServiceEnabledTimeseries:
+                {
+                    return new MediaServiceEnabledTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, MediaServiceEnabledTimeseriesService );
+                }
+                case Types.Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    return new RadarAutomaticSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarAutomaticSensitivityTimeControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarBlankSector1Timeseries:
+                {
+                    return new RadarBlankSector1TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarBlankSector1TimeseriesRadar );
+                }
+                case Types.Kind.RadarBlankSector2Timeseries:
+                {
+                    return new RadarBlankSector2TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarBlankSector2TimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    return new RadarEnableAutomaticFrequencyControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarEnableAutomaticFrequencyControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    return new RadarEnableFastTimeConstantTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarEnableFastTimeConstantTimeseriesRadar );
+                }
+                case Types.Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    return new RadarEnableSensitivityTimeControlTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarEnableSensitivityTimeControlTimeseriesRadar );
+                }
+                case Types.Kind.RadarPowerOnTimeseries:
+                {
+                    return new RadarPowerOnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarPowerOnTimeseriesRadar );
+                }
+                case Types.Kind.RadarSaveSettingsTimeseries:
+                {
+                    return new RadarSaveSettingsTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSaveSettingsTimeseriesRadar );
+                }
+                case Types.Kind.RadarTrackingTimeseries:
+                {
+                    return new RadarTrackingTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarTrackingTimeseriesRadar );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexDoubleTimeseriesDataReader : DataReaderWrapper
@@ -8247,6 +10104,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( DT_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( DT_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -8466,6 +10330,132 @@ namespace Barrelman.Data.Database
                 return GetGuid( WSWST_WEATHERSTATION_FIELD_ID );
             }
         }
+        public DoubleTimeseriesObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.DoubleTimeseries:
+                {
+                    return new DoubleTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.GNSSAltitudeTimeseries:
+                {
+                    return new GNSSAltitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSAltitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GNSSLatitudeTimeseries:
+                {
+                    return new GNSSLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSLatitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GNSSLongitudeTimeseries:
+                {
+                    return new GNSSLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GNSSLongitudeTimeseriesGNSSDevice );
+                }
+                case Types.Kind.GyroCourseTimeseries:
+                {
+                    return new GyroCourseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroCourseTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    return new GyroHeadingMagneticNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroHeadingMagneticNorthTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    return new GyroHeadingTrueNorthTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroHeadingTrueNorthTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroPitchTimeseries:
+                {
+                    return new GyroPitchTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroPitchTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroRateOfTurnTimeseries:
+                {
+                    return new GyroRateOfTurnTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroRateOfTurnTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroRollTimeseries:
+                {
+                    return new GyroRollTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroRollTimeseriesGyroDevice );
+                }
+                case Types.Kind.GyroSpeedTimeseries:
+                {
+                    return new GyroSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, GyroSpeedTimeseriesGyroDevice );
+                }
+                case Types.Kind.RadarLatitudeTimeseries:
+                {
+                    return new RadarLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarLatitudeTimeseriesRadar );
+                }
+                case Types.Kind.RadarLongitudeTimeseries:
+                {
+                    return new RadarLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarLongitudeTimeseriesRadar );
+                }
+                case Types.Kind.RadomeDewPointTimeseries:
+                {
+                    return new RadomeDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomeDewPointTimeseriesRadome );
+                }
+                case Types.Kind.RadomePressureTimeseries:
+                {
+                    return new RadomePressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomePressureTimeseriesRadome );
+                }
+                case Types.Kind.RadomeTemperatureTimeseries:
+                {
+                    return new RadomeTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomeTemperatureTimeseriesRadome );
+                }
+                case Types.Kind.VesselDraughtTimeseries:
+                {
+                    return new VesselDraughtTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, VesselDraughtTimeseriesVessel );
+                }
+                case Types.Kind.ViewLatitudeTimeseries:
+                {
+                    return new ViewLatitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ViewLatitudeTimeseriesView );
+                }
+                case Types.Kind.ViewLongitudeTimeseries:
+                {
+                    return new ViewLongitudeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ViewLongitudeTimeseriesView );
+                }
+                case Types.Kind.ViewZoomLevelTimeseries:
+                {
+                    return new ViewZoomLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, ViewZoomLevelTimeseriesView );
+                }
+                case Types.Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    return new WeatherStationAbsoluteHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationAbsoluteHumidityTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    return new WeatherStationAirTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationAirTemperatureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    return new WeatherStationBarometricPressureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationBarometricPressureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationDewPointTimeseries:
+                {
+                    return new WeatherStationDewPointTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationDewPointTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    return new WeatherStationRelativeHumidityTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationRelativeHumidityTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    return new WeatherStationWaterTemperatureTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationWaterTemperatureTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    return new WeatherStationWindDirectionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationWindDirectionTimeseriesWeatherStation );
+                }
+                case Types.Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    return new WeatherStationWindSpeedTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, WeatherStationWindSpeedTimeseriesWeatherStation );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexGeoPosition2DTimeseriesDataReader : DataReaderWrapper
@@ -8503,6 +10493,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( GP2D_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( GP2D_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -8538,6 +10535,28 @@ namespace Barrelman.Data.Database
                 return GetGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
+        public GeoPosition2DTimeseriesObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.GeoPosition2DTimeseries:
+                {
+                    return new GeoPosition2DTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    return new AisAidToNavigationPositionTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, AisAidToNavigationPositionTimeseriesAidToNavigation );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexInt32TimeseriesDataReader : DataReaderWrapper
@@ -8603,6 +10622,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( I32T_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( I32T_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -8710,6 +10736,68 @@ namespace Barrelman.Data.Database
                 return GetGuid( VPOBT_VESSEL_FIELD_ID );
             }
         }
+        public Int32TimeseriesObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Int32Timeseries:
+                {
+                    return new Int32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    return new RadarAzimuthOffsetTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarAzimuthOffsetTimeseriesRadar );
+                }
+                case Types.Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    return new RadarFastTimeConstantLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarFastTimeConstantLevelTimeseriesRadar );
+                }
+                case Types.Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    return new RadarFastTimeConstantModeTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarFastTimeConstantModeTimeseriesRadar );
+                }
+                case Types.Kind.RadarPulseTimeseries:
+                {
+                    return new RadarPulseTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarPulseTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector1EndTimeseries:
+                {
+                    return new RadarSector1EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector1EndTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector1StartTimeseries:
+                {
+                    return new RadarSector1StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector1StartTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector2EndTimeseries:
+                {
+                    return new RadarSector2EndTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector2EndTimeseriesRadar );
+                }
+                case Types.Kind.RadarSector2StartTimeseries:
+                {
+                    return new RadarSector2StartTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSector2StartTimeseriesRadar );
+                }
+                case Types.Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    return new RadarSensitivityTimeControlLevelTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarSensitivityTimeControlLevelTimeseriesRadar );
+                }
+                case Types.Kind.RadarTuningTimeseries:
+                {
+                    return new RadarTuningTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadarTuningTimeseriesRadar );
+                }
+                case Types.Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    return new VesselPersonsOnBoardTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, VesselPersonsOnBoardTimeseriesVessel );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexUInt32TimeseriesDataReader : DataReaderWrapper
@@ -8747,6 +10835,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( U32T_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( U32T_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -8782,6 +10877,28 @@ namespace Barrelman.Data.Database
                 return GetGuid( RST_RADOME_FIELD_ID );
             }
         }
+        public UInt32TimeseriesObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.UInt32Timeseries:
+                {
+                    return new UInt32TimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention );
+                }
+                case Types.Kind.RadomeStatusTimeseries:
+                {
+                    return new RadomeStatusTimeseriesObject( ObjectState.Stored, Id, RowVersion, Catalog, Name, MaxRetention, RadomeStatusTimeseriesRadome );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexTrackBaseDataReader : DataReaderWrapper
@@ -8818,6 +10935,13 @@ namespace Barrelman.Data.Database
                 return GetGuid( TB_ID_FIELD_ID );
             }
         }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( TB_KIND_FIELD_ID );
+            }
+        }
         public long RowVersion
         {
             get
@@ -8846,6 +10970,28 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TB_TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public TrackBaseObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Track:
+                {
+                    return new TrackObject( ObjectState.Stored, Id, RowVersion, Tracker, TrackNumber, Timestamp );
+                }
+                case Types.Kind.Track3D:
+                {
+                    return new Track3DObject( ObjectState.Stored, Id, RowVersion, Tracker, TrackNumber, Timestamp );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
     public class ComplexZoneDataReader : DataReaderWrapper
@@ -8896,6 +11042,13 @@ namespace Barrelman.Data.Database
             get
             {
                 return GetGuid( Z_ID_FIELD_ID );
+            }
+        }
+        public Types.Kind Kind
+        {
+            get
+            {
+                return (Types.Kind)GetInt32( Z_KIND_FIELD_ID );
             }
         }
         public long RowVersion
@@ -8982,6 +11135,28 @@ namespace Barrelman.Data.Database
                 return GetBytes( PZ_POLYGON_FIELD_ID );
             }
         }
+        public ZoneObject GetDataObject( )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.CircularZone:
+                {
+                    return new CircularZoneObject( ObjectState.Stored, Id, RowVersion, Name, Longitude, Latitude, AlarmType, AlarmTime, RadarTrackMinimumLifetime, Speed, StrokeColor, FillColor, CircularZoneRadius );
+                }
+                case Types.Kind.PolygonZone:
+                {
+                    return new PolygonZoneObject( ObjectState.Stored, Id, RowVersion, Name, Longitude, Latitude, AlarmType, AlarmTime, RadarTrackMinimumLifetime, Speed, StrokeColor, FillColor, PolygonZonePolygon );
+                }
+                default:
+                {
+                    var exc = new Exception( $"Cannot create an object for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
     }
 
 }
