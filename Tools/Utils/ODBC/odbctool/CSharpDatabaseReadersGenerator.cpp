@@ -291,6 +291,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( L"        public virtual void WriteTo([DisallowNull] BinaryWriter destination)" );
             WriteLine( L"        {" );
             WriteLine( L"            destination.Write( Types.Kind.{} );", classInfo.Name( ) );
+            WriteLine( L"            destination.Write( ObjectState.Stored );" );
         }
         for ( size_t i = 0; i < memberCount; i++ )
         {

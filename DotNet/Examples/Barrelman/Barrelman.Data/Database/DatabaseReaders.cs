@@ -58,6 +58,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AircraftType );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -160,6 +161,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AisDeviceCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( AisDevice );
@@ -266,6 +268,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AisDeviceCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( AisDevice );
@@ -507,6 +510,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AisDeviceConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( AisDevice );
@@ -619,6 +623,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AisDeviceRawMessage );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( AisDevice );
@@ -706,6 +711,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AisDeviceRawSentence );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( AisDevice );
@@ -819,6 +825,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AisMessage );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( AisDevice );
@@ -3704,6 +3711,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.AlarmStateChange );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Alarm );
@@ -3772,6 +3780,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.BaseStationType );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -3856,6 +3865,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.BinaryTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -3974,6 +3984,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Bookmark );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( View );
@@ -4063,6 +4074,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.BooleanTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -4149,6 +4161,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ByteTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -4262,6 +4275,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -5264,6 +5278,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -5859,6 +5874,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -5992,6 +6008,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraPanCalibration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -6077,6 +6094,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraPanCalibrationValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( PanCalibration );
@@ -6289,6 +6307,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraStatus );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -6380,6 +6399,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraTiltCalibration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -6465,6 +6485,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraTiltCalibrationValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( TiltCalibration );
@@ -6542,6 +6563,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraZoomCalibration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Camera );
@@ -6627,6 +6649,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CameraZoomCalibrationValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( ZoomCalibration );
@@ -6713,6 +6736,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CatalogElement );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Catalog );
@@ -6848,6 +6872,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CollectionInfo );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Count );
@@ -6941,6 +6966,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Country );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -7010,6 +7036,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.CursorInfo );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( TypeCode );
@@ -7099,6 +7126,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.DateTimeTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -7167,6 +7195,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.DeviceHost );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -7269,6 +7298,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.DeviceHostConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Host );
@@ -7357,6 +7387,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.DoubleTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -7425,6 +7456,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.FacilityType );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -7518,6 +7550,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GeoPosition2DTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -7623,6 +7656,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GeoPosition3DTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -7729,6 +7763,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GNSSDeviceCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( GNSSDevice );
@@ -7835,6 +7870,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GNSSDeviceCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( GNSSDevice );
@@ -7968,6 +8004,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GNSSDeviceConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( GNSSDevice );
@@ -8059,6 +8096,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GuidTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -8163,6 +8201,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GyroDeviceCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( GyroDevice );
@@ -8269,6 +8308,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GyroDeviceCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( GyroDevice );
@@ -8402,6 +8442,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.GyroDeviceConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( GyroDevice );
@@ -8475,6 +8516,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Identity );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
         }
@@ -8711,6 +8753,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Int16TimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -8797,6 +8840,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Int32TimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -8883,6 +8927,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Int64TimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -8951,6 +8996,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Item );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
         }
@@ -10428,6 +10474,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ItemIdentityLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Item );
@@ -10515,6 +10562,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ItemParentChildLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Parent );
@@ -10619,6 +10667,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LineInputDeviceCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( LineInputDevice );
@@ -10725,6 +10774,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LineInputDeviceCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( LineInputDevice );
@@ -11101,6 +11151,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LineInputDeviceConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( LineInputDevice );
@@ -11210,6 +11261,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LineInputMessageRouting );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( LineInputDevice );
@@ -11286,6 +11338,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LineInputMessageRoutingDestination );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Routing );
@@ -11371,6 +11424,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LineInputWhiteListEntry );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( LineInputDevice );
@@ -11448,6 +11502,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogApplication );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -11632,6 +11687,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogApplicationConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Application );
@@ -11720,6 +11776,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogHost );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( ComputerName );
@@ -11904,6 +11961,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogHostConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Host );
@@ -12019,6 +12077,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogLocation );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( FileName );
@@ -12148,6 +12207,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogProcess );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Application );
@@ -12292,6 +12352,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogRecord );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Thread );
@@ -12407,6 +12468,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogThread );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Process );
@@ -12527,6 +12589,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.LogTraceEntry );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Thread );
@@ -12688,6 +12751,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MapElement );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Item );
@@ -12827,6 +12891,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MapInfo );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Scale );
@@ -12954,6 +13019,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MapServiceOptions );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timestamp );
@@ -13035,6 +13101,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MaritimeIdentificationDigits );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Code );
@@ -13120,6 +13187,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MediaProxySession );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Service );
@@ -13206,6 +13274,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MediaProxySessionFile );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( ProxySession );
@@ -13382,6 +13451,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MediaProxySessionOptions );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( ProxySession );
@@ -13460,6 +13530,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MediaService );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( EnabledTimeseries );
@@ -13553,6 +13624,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.MediaServiceOptions );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( MediaService );
@@ -13649,6 +13721,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.NamespaceElement );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Namespace );
@@ -13830,6 +13903,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.OilSpill );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( OilSpillDetector );
@@ -13938,6 +14012,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.OilSpillDetectorCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( OilSpillDetector );
@@ -14044,6 +14119,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.OilSpillDetectorCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( OilSpillDetector );
@@ -14321,6 +14397,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.OilSpillDetectorConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( OilSpillDetector );
@@ -14437,6 +14514,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Position2DTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -14542,6 +14620,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Position3DTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -14621,6 +14700,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ProcessTrackValueResult );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( CreatedNewTrack );
@@ -14706,6 +14786,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Property );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Element );
@@ -16216,6 +16297,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.PropertyDefinition );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( ElementType );
@@ -18100,6 +18182,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarAlarmStatus );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -18213,6 +18296,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -18361,6 +18445,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -18749,6 +18834,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -18886,6 +18972,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarImage );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -18984,6 +19071,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarRawTrackTable );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -19116,6 +19204,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadarStatus );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radar );
@@ -19225,6 +19314,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadioCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radio );
@@ -19331,6 +19421,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadioCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radio );
@@ -19473,6 +19564,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadioConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radio );
@@ -19583,6 +19675,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadomeCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radome );
@@ -19689,6 +19782,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadomeCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radome );
@@ -19813,6 +19907,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.RadomeConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Radome );
@@ -19903,6 +19998,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ReferenceTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -19989,6 +20085,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SByteTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -20066,6 +20163,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SecurityDomain );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -20160,6 +20258,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SecurityIdentifier );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Domain );
@@ -20330,6 +20429,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SecurityIdentifierRoleLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Member );
@@ -20449,6 +20549,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SecurityLoginSession );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Login );
@@ -20574,6 +20675,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SecurityPermission );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Identifier );
@@ -20664,6 +20766,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.SingleTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -20750,6 +20853,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.StringTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -20836,6 +20940,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TimeseriesCatalogElement );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Catalog );
@@ -23871,6 +23976,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TimeseriesInfo );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( FirstTimestamp );
@@ -23962,6 +24068,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TimeSpanTimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -24062,6 +24169,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackableItemTrackLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Item );
@@ -24158,6 +24266,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackBase );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Tracker );
@@ -24294,6 +24403,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackerFilterParameters );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Tracker );
@@ -24487,6 +24597,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackerFilterParametersConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Parameters );
@@ -24631,6 +24742,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackInfo );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( FirstTimestamp );
@@ -24793,6 +24905,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackingServiceOptions );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timestamp );
@@ -24901,6 +25014,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Primary );
@@ -25042,6 +25156,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Track );
@@ -25197,6 +25312,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.TrackValue3D );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Track );
@@ -25290,6 +25406,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.UInt16TimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -25376,6 +25493,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.UInt32TimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -25462,6 +25580,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.UInt64TimeseriesValue );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Timeseries );
@@ -25530,6 +25649,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.VehicleType );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -25605,6 +25725,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.VesselType );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -25699,6 +25820,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.View );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -25800,6 +25922,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ViewCameraLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( View );
@@ -25901,6 +26024,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ViewTrackerLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( View );
@@ -26006,6 +26130,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.WeatherStationCommand );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( WeatherStation );
@@ -26112,6 +26237,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.WeatherStationCommandReply );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( WeatherStation );
@@ -26254,6 +26380,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.WeatherStationConfiguration );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( WeatherStation );
@@ -26409,6 +26536,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.Zone );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Name );
@@ -26585,6 +26713,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ZoneExceptions );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Zone );
@@ -26661,6 +26790,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ZoneExceptionsVesselLink );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( ZoneExceptions );
@@ -26836,6 +26966,7 @@ namespace Barrelman.Data.Database
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
         {
             destination.Write( Types.Kind.ZoneTrackAlarm );
+            destination.Write( ObjectState.Stored );
             destination.Write( Id );
             destination.Write( RowVersion );
             destination.Write( Track );

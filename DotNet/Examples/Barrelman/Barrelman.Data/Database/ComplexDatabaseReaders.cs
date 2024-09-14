@@ -1909,6 +1909,542 @@ namespace Barrelman.Data.Database
                 return GetInt32( AUADRM_RADIOSTATUS_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AidToNavigationReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AidToNavigationReportMessageNavigationalAidType );
+                    destination.Write( AidToNavigationReportMessageName );
+                    destination.Write( AidToNavigationReportMessagePositionAccuracy );
+                    destination.Write( AidToNavigationReportMessageLongitude );
+                    destination.Write( AidToNavigationReportMessageLatitude );
+                    destination.Write( AidToNavigationReportMessageDimensionToBow );
+                    destination.Write( AidToNavigationReportMessageDimensionToStern );
+                    destination.Write( AidToNavigationReportMessageDimensionToPort );
+                    destination.Write( AidToNavigationReportMessageDimensionToStarboard );
+                    destination.Write( AidToNavigationReportMessagePositionFixType );
+                    destination.Write( AidToNavigationReportMessageTimestamp );
+                    destination.Write( AidToNavigationReportMessageOffPosition );
+                    destination.Write( AidToNavigationReportMessageRegionalReserved );
+                    destination.Write( AidToNavigationReportMessageRaim );
+                    destination.Write( AidToNavigationReportMessageVirtualAid );
+                    destination.Write( AidToNavigationReportMessageAssigned );
+                    destination.Write( AidToNavigationReportMessageSpare );
+                    destination.Write( AidToNavigationReportMessageNameExtension );
+                }
+                break;
+                case Types.Kind.AisAddressedSafetyRelatedMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisAddressedSafetyRelatedMessageSequenceNumber );
+                    destination.Write( AisAddressedSafetyRelatedMessageDestinationMmsi );
+                    destination.Write( AisAddressedSafetyRelatedMessageRetransmitFlag );
+                    destination.Write( AisAddressedSafetyRelatedMessageSpare );
+                    destination.Write( AisAddressedSafetyRelatedMessageText );
+                }
+                break;
+                case Types.Kind.AisBaseStationReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisBaseStationReportMessageTimestamp );
+                    destination.Write( AisBaseStationReportMessagePositionAccuracy );
+                    destination.Write( AisBaseStationReportMessageLongitude );
+                    destination.Write( AisBaseStationReportMessageLatitude );
+                    destination.Write( AisBaseStationReportMessagePositionFixType );
+                    destination.Write( AisBaseStationReportMessageSpare );
+                    destination.Write( AisBaseStationReportMessageRaim );
+                    destination.Write( AisBaseStationReportMessageRadioStatus );
+                }
+                break;
+                case Types.Kind.AisBinaryAcknowledgeMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisBinaryAcknowledgeMessageSpare );
+                    destination.Write( AisBinaryAcknowledgeMessageSequenceNumber1 );
+                    destination.Write( AisBinaryAcknowledgeMessageMmsi1 );
+                    destination.Write( AisBinaryAcknowledgeMessageSequenceNumber2 );
+                    destination.Write( AisBinaryAcknowledgeMessageMmsi2 );
+                    destination.Write( AisBinaryAcknowledgeMessageSequenceNumber3 );
+                    destination.Write( AisBinaryAcknowledgeMessageMmsi3 );
+                    destination.Write( AisBinaryAcknowledgeMessageSequenceNumber4 );
+                    destination.Write( AisBinaryAcknowledgeMessageMmsi4 );
+                }
+                break;
+                case Types.Kind.AisBinaryAddressedMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisBinaryAddressedMessageSequenceNumber );
+                    destination.Write( AisBinaryAddressedMessageDestinationMmsi );
+                    destination.Write( AisBinaryAddressedMessageRetransmitFlag );
+                    destination.Write( AisBinaryAddressedMessageSpare );
+                    destination.Write( AisBinaryAddressedMessageDesignatedAreaCode );
+                    destination.Write( AisBinaryAddressedMessageFunctionalId );
+                    destination.Write( AisBinaryAddressedMessageData );
+                }
+                break;
+                case Types.Kind.AisBinaryBroadcastMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisBinaryBroadcastMessageSpare );
+                    destination.Write( AisBinaryBroadcastMessageDesignatedAreaCode );
+                    destination.Write( AisBinaryBroadcastMessageFunctionalId );
+                    destination.Write( AisBinaryBroadcastMessageData );
+                }
+                break;
+                case Types.Kind.AisDataLinkManagementMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisDataLinkManagementMessageSpare );
+                    destination.Write( AisDataLinkManagementMessageOffset1 );
+                    destination.Write( AisDataLinkManagementMessageReservedSlots1 );
+                    destination.Write( AisDataLinkManagementMessageTimeout1 );
+                    destination.Write( AisDataLinkManagementMessageIncrement1 );
+                    destination.Write( AisDataLinkManagementMessageOffset2 );
+                    destination.Write( AisDataLinkManagementMessageReservedSlots2 );
+                    destination.Write( AisDataLinkManagementMessageTimeout2 );
+                    destination.Write( AisDataLinkManagementMessageIncrement2 );
+                    destination.Write( AisDataLinkManagementMessageOffset3 );
+                    destination.Write( AisDataLinkManagementMessageReservedSlots3 );
+                    destination.Write( AisDataLinkManagementMessageTimeout3 );
+                    destination.Write( AisDataLinkManagementMessageIncrement3 );
+                    destination.Write( AisDataLinkManagementMessageOffset4 );
+                    destination.Write( AisDataLinkManagementMessageReservedSlots4 );
+                    destination.Write( AisDataLinkManagementMessageTimeout4 );
+                    destination.Write( AisDataLinkManagementMessageIncrement4 );
+                }
+                break;
+                case Types.Kind.AisExtendedClassBCsPositionReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageReserved );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageSpeedOverGround );
+                    destination.Write( AisExtendedClassBCsPositionReportMessagePositionAccuracy );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageLongitude );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageLatitude );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageCourseOverGround );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageTrueHeading );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageTimestamp );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageRegionalReserved );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageName );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageShipType );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageDimensionToBow );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageDimensionToStern );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageDimensionToPort );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageDimensionToStarboard );
+                    destination.Write( AisExtendedClassBCsPositionReportMessagePositionFixType );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageRaim );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageDataTerminalReady );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageAssigned );
+                    destination.Write( AisExtendedClassBCsPositionReportMessageSpare );
+                }
+                break;
+                case Types.Kind.AisInterrogationMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisInterrogationMessageInterrogatedMmsi );
+                    destination.Write( AisInterrogationMessageFirstMessageType );
+                    destination.Write( AisInterrogationMessageFirstSlotOffset );
+                    destination.Write( AisInterrogationMessageSecondMessageType );
+                    destination.Write( AisInterrogationMessageSecondSlotOffset );
+                    destination.Write( AisInterrogationMessageSecondStationInterrogationMmsi );
+                    destination.Write( AisInterrogationMessageSecondStationFirstMessageType );
+                    destination.Write( AisInterrogationMessageSecondStationFirstSlotOffset );
+                }
+                break;
+                case Types.Kind.AisPositionReportClassAAssignedScheduleMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisPositionReportClassAMessageBaseNavigationStatus );
+                    destination.Write( AisPositionReportClassAMessageBaseRateOfTurn );
+                    destination.Write( AisPositionReportClassAMessageBaseSpeedOverGround );
+                    destination.Write( AisPositionReportClassAMessageBasePositionAccuracy );
+                    destination.Write( AisPositionReportClassAMessageBaseLongitude );
+                    destination.Write( AisPositionReportClassAMessageBaseLatitude );
+                    destination.Write( AisPositionReportClassAMessageBaseCourseOverGround );
+                    destination.Write( AisPositionReportClassAMessageBaseTrueHeading );
+                    destination.Write( AisPositionReportClassAMessageBaseTimestamp );
+                    destination.Write( AisPositionReportClassAMessageBaseManeuverIndicator );
+                    destination.Write( AisPositionReportClassAMessageBaseSpare );
+                    destination.Write( AisPositionReportClassAMessageBaseRaim );
+                    destination.Write( AisPositionReportClassAMessageBaseRadioStatus );
+                }
+                break;
+                case Types.Kind.AisPositionReportClassAMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisPositionReportClassAMessageBaseNavigationStatus );
+                    destination.Write( AisPositionReportClassAMessageBaseRateOfTurn );
+                    destination.Write( AisPositionReportClassAMessageBaseSpeedOverGround );
+                    destination.Write( AisPositionReportClassAMessageBasePositionAccuracy );
+                    destination.Write( AisPositionReportClassAMessageBaseLongitude );
+                    destination.Write( AisPositionReportClassAMessageBaseLatitude );
+                    destination.Write( AisPositionReportClassAMessageBaseCourseOverGround );
+                    destination.Write( AisPositionReportClassAMessageBaseTrueHeading );
+                    destination.Write( AisPositionReportClassAMessageBaseTimestamp );
+                    destination.Write( AisPositionReportClassAMessageBaseManeuverIndicator );
+                    destination.Write( AisPositionReportClassAMessageBaseSpare );
+                    destination.Write( AisPositionReportClassAMessageBaseRaim );
+                    destination.Write( AisPositionReportClassAMessageBaseRadioStatus );
+                }
+                break;
+                case Types.Kind.AisPositionReportClassAResponseToInterrogationMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisPositionReportClassAMessageBaseNavigationStatus );
+                    destination.Write( AisPositionReportClassAMessageBaseRateOfTurn );
+                    destination.Write( AisPositionReportClassAMessageBaseSpeedOverGround );
+                    destination.Write( AisPositionReportClassAMessageBasePositionAccuracy );
+                    destination.Write( AisPositionReportClassAMessageBaseLongitude );
+                    destination.Write( AisPositionReportClassAMessageBaseLatitude );
+                    destination.Write( AisPositionReportClassAMessageBaseCourseOverGround );
+                    destination.Write( AisPositionReportClassAMessageBaseTrueHeading );
+                    destination.Write( AisPositionReportClassAMessageBaseTimestamp );
+                    destination.Write( AisPositionReportClassAMessageBaseManeuverIndicator );
+                    destination.Write( AisPositionReportClassAMessageBaseSpare );
+                    destination.Write( AisPositionReportClassAMessageBaseRaim );
+                    destination.Write( AisPositionReportClassAMessageBaseRadioStatus );
+                }
+                break;
+                case Types.Kind.AisPositionReportForLongRangeApplicationsMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessagePositionAccuracy );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageRaim );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageNavigationStatus );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageLongitude );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageLatitude );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageSpeedOverGround );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageCourseOverGround );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageGnssPositionStatus );
+                    destination.Write( AisPositionReportForLongRangeApplicationsMessageSpare );
+                }
+                break;
+                case Types.Kind.AisSafetyRelatedAcknowledgmentMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageSpare );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageSequenceNumber1 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageMmsi1 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageSequenceNumber2 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageMmsi2 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageSequenceNumber3 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageMmsi3 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageSequenceNumber4 );
+                    destination.Write( AisSafetyRelatedAcknowledgmentMessageMmsi4 );
+                }
+                break;
+                case Types.Kind.AisStandardClassBCsPositionReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisStandardClassBCsPositionReportMessageReserved );
+                    destination.Write( AisStandardClassBCsPositionReportMessageSpeedOverGround );
+                    destination.Write( AisStandardClassBCsPositionReportMessagePositionAccuracy );
+                    destination.Write( AisStandardClassBCsPositionReportMessageLongitude );
+                    destination.Write( AisStandardClassBCsPositionReportMessageLatitude );
+                    destination.Write( AisStandardClassBCsPositionReportMessageCourseOverGround );
+                    destination.Write( AisStandardClassBCsPositionReportMessageTrueHeading );
+                    destination.Write( AisStandardClassBCsPositionReportMessageTimestamp );
+                    destination.Write( AisStandardClassBCsPositionReportMessageRegionalReserved );
+                    destination.Write( AisStandardClassBCsPositionReportMessageIsCsUnit );
+                    destination.Write( AisStandardClassBCsPositionReportMessageHasDisplay );
+                    destination.Write( AisStandardClassBCsPositionReportMessageHasDscCapability );
+                    destination.Write( AisStandardClassBCsPositionReportMessageBand );
+                    destination.Write( AisStandardClassBCsPositionReportMessageCanAcceptMessage22 );
+                    destination.Write( AisStandardClassBCsPositionReportMessageAssigned );
+                    destination.Write( AisStandardClassBCsPositionReportMessageRaim );
+                    destination.Write( AisStandardClassBCsPositionReportMessageRadioStatus );
+                }
+                break;
+                case Types.Kind.AisStandardSarAircraftPositionReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageAltitude );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageSpeedOverGround );
+                    destination.Write( AisStandardSarAircraftPositionReportMessagePositionAccuracy );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageLongitude );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageLatitude );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageCourseOverGround );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageTimestamp );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageReserved );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageDataTerminalReady );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageSpare );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageAssigned );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageRaim );
+                    destination.Write( AisStandardSarAircraftPositionReportMessageRadioStatus );
+                }
+                break;
+                case Types.Kind.AisStaticAndVoyageRelatedDataMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageAisVersion );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageImoNumber );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageCallsign );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageShipName );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageShipType );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDimensionToBow );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDimensionToStern );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDimensionToPort );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDimensionToStarboard );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessagePositionFixType );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageEstimatedTimeOfArrival );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDraught );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDestination );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageDataTerminalReady );
+                    destination.Write( AisStaticAndVoyageRelatedDataMessageSpare );
+                }
+                break;
+                case Types.Kind.AisStaticDataReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisStaticDataReportMessagePartNumber );
+                }
+                break;
+                case Types.Kind.AisStaticDataReportPartAMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisStaticDataReportMessagePartNumber );
+                    destination.Write( AisStaticDataReportPartAMessageShipName );
+                    destination.Write( AisStaticDataReportPartAMessageSpare );
+                }
+                break;
+                case Types.Kind.AisStaticDataReportPartBMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisStaticDataReportMessagePartNumber );
+                    destination.Write( AisStaticDataReportPartBMessageShipType );
+                    destination.Write( AisStaticDataReportPartBMessageVendorId );
+                    destination.Write( AisStaticDataReportPartBMessageUnitModelCode );
+                    destination.Write( AisStaticDataReportPartBMessageSerialNumber );
+                    destination.Write( AisStaticDataReportPartBMessageCallsign );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToBow );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToStern );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToPort );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToStarboard );
+                    destination.Write( AisStaticDataReportPartBMessageMothershipMmsi );
+                    destination.Write( AisStaticDataReportPartBMessagePositionFixType );
+                    destination.Write( AisStaticDataReportPartBMessageSpare );
+                }
+                break;
+                case Types.Kind.AisUtcAndDateInquiryMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisUtcAndDateInquiryMessageSpare1 );
+                    destination.Write( AisUtcAndDateInquiryMessageDestinationMmsi );
+                    destination.Write( AisUtcAndDateInquiryMessageSpare2 );
+                }
+                break;
+                case Types.Kind.AisUtcAndDateResponseMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( AisUtcAndDateResponseMessageDatetime );
+                    destination.Write( AisUtcAndDateResponseMessagePositionAccuracy );
+                    destination.Write( AisUtcAndDateResponseMessageLongitude );
+                    destination.Write( AisUtcAndDateResponseMessageLatitude );
+                    destination.Write( AisUtcAndDateResponseMessagePositionFixType );
+                    destination.Write( AisUtcAndDateResponseMessageSpare );
+                    destination.Write( AisUtcAndDateResponseMessageRaim );
+                    destination.Write( AisUtcAndDateResponseMessageRadioStatus );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public AisMessageObject GetDataObject( )
         {
             var kind = Kind;
@@ -2218,6 +2754,108 @@ namespace Barrelman.Data.Database
                 return GetInt32( APRCAB_RADIOSTATUS_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AisPositionReportClassAAssignedScheduleMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( NavigationStatus );
+                    destination.Write( RateOfTurn );
+                    destination.Write( SpeedOverGround );
+                    destination.Write( PositionAccuracy );
+                    destination.Write( Longitude );
+                    destination.Write( Latitude );
+                    destination.Write( CourseOverGround );
+                    destination.Write( TrueHeading );
+                    destination.Write( Timestamp );
+                    destination.Write( ManeuverIndicator );
+                    destination.Write( Spare );
+                    destination.Write( Raim );
+                    destination.Write( RadioStatus );
+                }
+                break;
+                case Types.Kind.AisPositionReportClassAMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( NavigationStatus );
+                    destination.Write( RateOfTurn );
+                    destination.Write( SpeedOverGround );
+                    destination.Write( PositionAccuracy );
+                    destination.Write( Longitude );
+                    destination.Write( Latitude );
+                    destination.Write( CourseOverGround );
+                    destination.Write( TrueHeading );
+                    destination.Write( Timestamp );
+                    destination.Write( ManeuverIndicator );
+                    destination.Write( Spare );
+                    destination.Write( Raim );
+                    destination.Write( RadioStatus );
+                }
+                break;
+                case Types.Kind.AisPositionReportClassAResponseToInterrogationMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( NavigationStatus );
+                    destination.Write( RateOfTurn );
+                    destination.Write( SpeedOverGround );
+                    destination.Write( PositionAccuracy );
+                    destination.Write( Longitude );
+                    destination.Write( Latitude );
+                    destination.Write( CourseOverGround );
+                    destination.Write( TrueHeading );
+                    destination.Write( Timestamp );
+                    destination.Write( ManeuverIndicator );
+                    destination.Write( Spare );
+                    destination.Write( Raim );
+                    destination.Write( RadioStatus );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public AisPositionReportClassAMessageBaseObject GetDataObject( )
         {
             var kind = Kind;
@@ -2468,6 +3106,86 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRPB_SPARE_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AisStaticDataReportMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( PartNumber );
+                }
+                break;
+                case Types.Kind.AisStaticDataReportPartAMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( PartNumber );
+                    destination.Write( AisStaticDataReportPartAMessageShipName );
+                    destination.Write( AisStaticDataReportPartAMessageSpare );
+                }
+                break;
+                case Types.Kind.AisStaticDataReportPartBMessage:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisDevice );
+                    destination.Write( ReceivedTimestamp );
+                    destination.Write( MessageSequenceNumber );
+                    destination.Write( Repeat );
+                    destination.Write( Mmsi );
+                    destination.Write( PartNumber );
+                    destination.Write( AisStaticDataReportPartBMessageShipType );
+                    destination.Write( AisStaticDataReportPartBMessageVendorId );
+                    destination.Write( AisStaticDataReportPartBMessageUnitModelCode );
+                    destination.Write( AisStaticDataReportPartBMessageSerialNumber );
+                    destination.Write( AisStaticDataReportPartBMessageCallsign );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToBow );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToStern );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToPort );
+                    destination.Write( AisStaticDataReportPartBMessageDimensionToStarboard );
+                    destination.Write( AisStaticDataReportPartBMessageMothershipMmsi );
+                    destination.Write( AisStaticDataReportPartBMessagePositionFixType );
+                    destination.Write( AisStaticDataReportPartBMessageSpare );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public AisStaticDataReportMessageObject GetDataObject( )
         {
             var kind = Kind;
@@ -2951,6 +3669,264 @@ namespace Barrelman.Data.Database
                 return GetBoolean( CCS_ZOOM_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.CameraCommand:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                }
+                break;
+                case Types.Kind.CameraCommandAbsoluteMove:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandAbsoluteMovePositionPanTiltMode );
+                    destination.Write( CameraCommandAbsoluteMovePanAngle );
+                    destination.Write( CameraCommandAbsoluteMoveTiltAngle );
+                    destination.Write( CameraCommandAbsoluteMovePositionFocalLengthMode );
+                    destination.Write( CameraCommandAbsoluteMoveFocalLength );
+                    destination.Write( CameraCommandAbsoluteMoveSpeedPanTiltMode );
+                    destination.Write( CameraCommandAbsoluteMovePanSpeed );
+                    destination.Write( CameraCommandAbsoluteMoveTiltSpeed );
+                    destination.Write( CameraCommandAbsoluteMoveSpeedFocalLengthMode );
+                    destination.Write( CameraCommandAbsoluteMoveZoomSpeed );
+                }
+                break;
+                case Types.Kind.CameraCommandAdjustPanTiltZoom:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandAdjustPanTiltZoomX );
+                    destination.Write( CameraCommandAdjustPanTiltZoomY );
+                    destination.Write( CameraCommandAdjustPanTiltZoomZ );
+                }
+                break;
+                case Types.Kind.CameraCommandContinuousMove:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandContinuousMoveNormalized );
+                    destination.Write( CameraCommandContinuousMovePanVelocity );
+                    destination.Write( CameraCommandContinuousMoveTiltVelocity );
+                    destination.Write( CameraCommandContinuousMoveZoomVelocity );
+                    destination.Write( CameraCommandContinuousMoveDuration );
+                }
+                break;
+                case Types.Kind.CameraCommandGeoMove:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandGeoMoveLatitude );
+                    destination.Write( CameraCommandGeoMoveLongitude );
+                    destination.Write( CameraCommandGeoMoveAltitude );
+                    destination.Write( CameraCommandGeoMoveViewportWidth );
+                    destination.Write( CameraCommandGeoMoveViewportHeight );
+                }
+                break;
+                case Types.Kind.CameraCommandRelativeMove:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandRelativeMoveNormalized );
+                    destination.Write( CameraCommandRelativeMovePanAngle );
+                    destination.Write( CameraCommandRelativeMoveTiltAngle );
+                    destination.Write( CameraCommandRelativeMoveFocalLength );
+                    destination.Write( CameraCommandRelativeMovePanSpeed );
+                    destination.Write( CameraCommandRelativeMoveTiltSpeed );
+                    destination.Write( CameraCommandRelativeMoveZoomSpeed );
+                }
+                break;
+                case Types.Kind.CameraCommandReleasePTZOwnership:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                }
+                break;
+                case Types.Kind.CameraCommandRequestPTZOwnership:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                }
+                break;
+                case Types.Kind.CameraCommandSetAutoFocus:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandSetAutoFocusEnabled );
+                }
+                break;
+                case Types.Kind.CameraCommandSetBlackAndWhite:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandSetBlackAndWhiteEnabled );
+                }
+                break;
+                case Types.Kind.CameraCommandSetFollowed:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandSetFollowedTrackId );
+                    destination.Write( CameraCommandSetFollowedReason );
+                }
+                break;
+                case Types.Kind.CameraCommandSetInfraRedLamp:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandSetInfraRedLampEnabled );
+                }
+                break;
+                case Types.Kind.CameraCommandSetWasher:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandSetWasherEnabled );
+                }
+                break;
+                case Types.Kind.CameraCommandSetWiper:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandSetWiperEnabled );
+                }
+                break;
+                case Types.Kind.CameraCommandStop:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Camera );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                    destination.Write( CameraCommandStopPanTilt );
+                    destination.Write( CameraCommandStopZoom );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public CameraCommandObject GetDataObject( )
         {
             var kind = Kind;
@@ -3096,6 +4072,51 @@ namespace Barrelman.Data.Database
                 return GetGuid( E_ELEMENTTYPE_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Catalog:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                }
+                break;
+                case Types.Kind.Element:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( ElementElementType );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public CatalogElementObject GetDataObject( )
         {
             var kind = Kind;
@@ -3200,6 +4221,66 @@ namespace Barrelman.Data.Database
                 return GetString( N_TEXT_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Callsign:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( CallsignIdentifier );
+                }
+                break;
+                case Types.Kind.InternationalMaritimeOrganizationNumber:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( InternationalMaritimeOrganizationNumberIdentifier );
+                }
+                break;
+                case Types.Kind.MaritimeMobileServiceIdentity:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( MaritimeMobileServiceIdentityIdentifier );
+                }
+                break;
+                case Types.Kind.Name:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( NameText );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public IdentityObject GetDataObject( )
         {
             var kind = Kind;
@@ -4020,6 +5101,275 @@ namespace Barrelman.Data.Database
                 return GetGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BaseStation:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( BaseStationName );
+                    destination.Write( BaseStationType );
+                }
+                break;
+                case Types.Kind.CameraDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                }
+                break;
+                case Types.Kind.GNSSDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                    destination.Write( GNSSDeviceLatitudeTimeseries );
+                    destination.Write( GNSSDeviceLongitudeTimeseries );
+                    destination.Write( GNSSDeviceAltitudeTimeseries );
+                }
+                break;
+                case Types.Kind.GyroDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                    destination.Write( GyroDeviceHeadingTrueNorthTimeseries );
+                    destination.Write( GyroDeviceHeadingMagneticNorthTimeseries );
+                    destination.Write( GyroDevicePitchTimeseries );
+                    destination.Write( GyroDeviceRateOfTurnTimeseries );
+                    destination.Write( GyroDeviceRollTimeseries );
+                    destination.Write( GyroDeviceCourseTimeseries );
+                    destination.Write( GyroDeviceSpeedTimeseries );
+                    destination.Write( GyroDeviceGNSSDevice );
+                }
+                break;
+                case Types.Kind.LineInputDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                }
+                break;
+                case Types.Kind.OilSpillDetectorDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadioDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadomeDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                    destination.Write( RadomeDeviceRadar );
+                    destination.Write( RadomeDevicePressureTimeseries );
+                    destination.Write( RadomeDeviceTemperatureTimeseries );
+                    destination.Write( RadomeDeviceDewPointTimeseries );
+                    destination.Write( RadomeDeviceStatusTimeseries );
+                }
+                break;
+                case Types.Kind.AisDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadarDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                    destination.Write( RadarDeviceSaveSettingsTimeseries );
+                    destination.Write( RadarDevicePowerOnTimeseries );
+                    destination.Write( RadarDeviceTrackingOnTimeseries );
+                    destination.Write( RadarDeviceRadarPulseTimeseries );
+                    destination.Write( RadarDeviceTuningTimeseries );
+                    destination.Write( RadarDeviceBlankSector1Timeseries );
+                    destination.Write( RadarDeviceSector1StartTimeseries );
+                    destination.Write( RadarDeviceSector1EndTimeseries );
+                    destination.Write( RadarDeviceBlankSector2Timeseries );
+                    destination.Write( RadarDeviceSector2StartTimeseries );
+                    destination.Write( RadarDeviceSector2EndTimeseries );
+                    destination.Write( RadarDeviceEnableAutomaticFrequencyControlTimeseries );
+                    destination.Write( RadarDeviceAzimuthOffsetTimeseries );
+                    destination.Write( RadarDeviceEnableSensitivityTimeControlTimeseries );
+                    destination.Write( RadarDeviceAutomaticSensitivityTimeControlTimeseries );
+                    destination.Write( RadarDeviceSensitivityTimeControlLevelTimeseries );
+                    destination.Write( RadarDeviceEnableFastTimeConstantTimeseries );
+                    destination.Write( RadarDeviceFastTimeConstantLevelTimeseries );
+                    destination.Write( RadarDeviceFastTimeConstantModeTimeseries );
+                    destination.Write( RadarDeviceLatitudeTimeseries );
+                    destination.Write( RadarDeviceLongitudeTimeseries );
+                    destination.Write( RadarDeviceRadome );
+                    destination.Write( RadarDeviceGNSSDevice );
+                }
+                break;
+                case Types.Kind.WeatherStationDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( DeviceHost );
+                    destination.Write( DeviceName );
+                    destination.Write( DeviceDescription );
+                    destination.Write( DeviceEnabledTimeseries );
+                    destination.Write( WeatherStationDeviceBarometricPressureTimeseries );
+                    destination.Write( WeatherStationDeviceAirTemperatureTimeseries );
+                    destination.Write( WeatherStationDeviceWaterTemperatureTimeseries );
+                    destination.Write( WeatherStationDeviceRelativeHumidityTimeseries );
+                    destination.Write( WeatherStationDeviceAbsoluteHumidityTimeseries );
+                    destination.Write( WeatherStationDeviceDewPointTimeseries );
+                    destination.Write( WeatherStationDeviceWindDirectionTimeseries );
+                    destination.Write( WeatherStationDeviceWindSpeedTimeseries );
+                    destination.Write( WeatherStationDeviceGyro );
+                }
+                break;
+                case Types.Kind.Facility:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( FacilityName );
+                    destination.Write( FacilityType );
+                    destination.Write( FacilityLongitude );
+                    destination.Write( FacilityLatitude );
+                    destination.Write( FacilityAltitude );
+                }
+                break;
+                case Types.Kind.Aircraft:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AircraftName );
+                    destination.Write( AircraftType );
+                }
+                break;
+                case Types.Kind.AisAidToNavigation:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisAidToNavigationName );
+                    destination.Write( AisAidToNavigationMMSI );
+                    destination.Write( AisAidToNavigationNavigationalAidType );
+                    destination.Write( AisAidToNavigationPosition );
+                    destination.Write( AisAidToNavigationIsVirtual );
+                    destination.Write( AisAidToNavigationToBow );
+                    destination.Write( AisAidToNavigationToStern );
+                    destination.Write( AisAidToNavigationToPort );
+                    destination.Write( AisAidToNavigationToStarboard );
+                    destination.Write( AisAidToNavigationOffPositionTimeseries );
+                }
+                break;
+                case Types.Kind.Vehicle:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( VehicleName );
+                    destination.Write( VehicleType );
+                }
+                break;
+                case Types.Kind.Vessel:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( VesselName );
+                    destination.Write( VesselType );
+                    destination.Write( VesselToBow );
+                    destination.Write( VesselToStern );
+                    destination.Write( VesselToPort );
+                    destination.Write( VesselToStarboard );
+                    destination.Write( VesselDraughtTimeseries );
+                    destination.Write( VesselPersonsOnBoardTimeseries );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public ItemObject GetDataObject( )
         {
             var kind = Kind;
@@ -4619,6 +5969,198 @@ namespace Barrelman.Data.Database
                 return GetGuid( WSD_GYRO_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.CameraDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                }
+                break;
+                case Types.Kind.GNSSDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                    destination.Write( GNSSDeviceLatitudeTimeseries );
+                    destination.Write( GNSSDeviceLongitudeTimeseries );
+                    destination.Write( GNSSDeviceAltitudeTimeseries );
+                }
+                break;
+                case Types.Kind.GyroDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                    destination.Write( GyroDeviceHeadingTrueNorthTimeseries );
+                    destination.Write( GyroDeviceHeadingMagneticNorthTimeseries );
+                    destination.Write( GyroDevicePitchTimeseries );
+                    destination.Write( GyroDeviceRateOfTurnTimeseries );
+                    destination.Write( GyroDeviceRollTimeseries );
+                    destination.Write( GyroDeviceCourseTimeseries );
+                    destination.Write( GyroDeviceSpeedTimeseries );
+                    destination.Write( GyroDeviceGNSSDevice );
+                }
+                break;
+                case Types.Kind.LineInputDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                }
+                break;
+                case Types.Kind.OilSpillDetectorDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadioDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadomeDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                    destination.Write( RadomeDeviceRadar );
+                    destination.Write( RadomeDevicePressureTimeseries );
+                    destination.Write( RadomeDeviceTemperatureTimeseries );
+                    destination.Write( RadomeDeviceDewPointTimeseries );
+                    destination.Write( RadomeDeviceStatusTimeseries );
+                }
+                break;
+                case Types.Kind.AisDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadarDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                    destination.Write( RadarDeviceSaveSettingsTimeseries );
+                    destination.Write( RadarDevicePowerOnTimeseries );
+                    destination.Write( RadarDeviceTrackingOnTimeseries );
+                    destination.Write( RadarDeviceRadarPulseTimeseries );
+                    destination.Write( RadarDeviceTuningTimeseries );
+                    destination.Write( RadarDeviceBlankSector1Timeseries );
+                    destination.Write( RadarDeviceSector1StartTimeseries );
+                    destination.Write( RadarDeviceSector1EndTimeseries );
+                    destination.Write( RadarDeviceBlankSector2Timeseries );
+                    destination.Write( RadarDeviceSector2StartTimeseries );
+                    destination.Write( RadarDeviceSector2EndTimeseries );
+                    destination.Write( RadarDeviceEnableAutomaticFrequencyControlTimeseries );
+                    destination.Write( RadarDeviceAzimuthOffsetTimeseries );
+                    destination.Write( RadarDeviceEnableSensitivityTimeControlTimeseries );
+                    destination.Write( RadarDeviceAutomaticSensitivityTimeControlTimeseries );
+                    destination.Write( RadarDeviceSensitivityTimeControlLevelTimeseries );
+                    destination.Write( RadarDeviceEnableFastTimeConstantTimeseries );
+                    destination.Write( RadarDeviceFastTimeConstantLevelTimeseries );
+                    destination.Write( RadarDeviceFastTimeConstantModeTimeseries );
+                    destination.Write( RadarDeviceLatitudeTimeseries );
+                    destination.Write( RadarDeviceLongitudeTimeseries );
+                    destination.Write( RadarDeviceRadome );
+                    destination.Write( RadarDeviceGNSSDevice );
+                }
+                break;
+                case Types.Kind.WeatherStationDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                    destination.Write( WeatherStationDeviceBarometricPressureTimeseries );
+                    destination.Write( WeatherStationDeviceAirTemperatureTimeseries );
+                    destination.Write( WeatherStationDeviceWaterTemperatureTimeseries );
+                    destination.Write( WeatherStationDeviceRelativeHumidityTimeseries );
+                    destination.Write( WeatherStationDeviceAbsoluteHumidityTimeseries );
+                    destination.Write( WeatherStationDeviceDewPointTimeseries );
+                    destination.Write( WeatherStationDeviceWindDirectionTimeseries );
+                    destination.Write( WeatherStationDeviceWindSpeedTimeseries );
+                    destination.Write( WeatherStationDeviceGyro );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public DeviceObject GetDataObject( )
         {
             var kind = Kind;
@@ -4960,6 +6502,77 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RD_GNSSDEVICE_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.AisDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                }
+                break;
+                case Types.Kind.RadarDevice:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Host );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( EnabledTimeseries );
+                    destination.Write( RadarDeviceSaveSettingsTimeseries );
+                    destination.Write( RadarDevicePowerOnTimeseries );
+                    destination.Write( RadarDeviceTrackingOnTimeseries );
+                    destination.Write( RadarDeviceRadarPulseTimeseries );
+                    destination.Write( RadarDeviceTuningTimeseries );
+                    destination.Write( RadarDeviceBlankSector1Timeseries );
+                    destination.Write( RadarDeviceSector1StartTimeseries );
+                    destination.Write( RadarDeviceSector1EndTimeseries );
+                    destination.Write( RadarDeviceBlankSector2Timeseries );
+                    destination.Write( RadarDeviceSector2StartTimeseries );
+                    destination.Write( RadarDeviceSector2EndTimeseries );
+                    destination.Write( RadarDeviceEnableAutomaticFrequencyControlTimeseries );
+                    destination.Write( RadarDeviceAzimuthOffsetTimeseries );
+                    destination.Write( RadarDeviceEnableSensitivityTimeControlTimeseries );
+                    destination.Write( RadarDeviceAutomaticSensitivityTimeControlTimeseries );
+                    destination.Write( RadarDeviceSensitivityTimeControlLevelTimeseries );
+                    destination.Write( RadarDeviceEnableFastTimeConstantTimeseries );
+                    destination.Write( RadarDeviceFastTimeConstantLevelTimeseries );
+                    destination.Write( RadarDeviceFastTimeConstantModeTimeseries );
+                    destination.Write( RadarDeviceLatitudeTimeseries );
+                    destination.Write( RadarDeviceLongitudeTimeseries );
+                    destination.Write( RadarDeviceRadome );
+                    destination.Write( RadarDeviceGNSSDevice );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TrackerDeviceObject GetDataObject( )
         {
             var kind = Kind;
@@ -5226,6 +6839,84 @@ namespace Barrelman.Data.Database
                 return GetGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Aircraft:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AircraftName );
+                    destination.Write( AircraftType );
+                }
+                break;
+                case Types.Kind.AisAidToNavigation:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( AisAidToNavigationName );
+                    destination.Write( AisAidToNavigationMMSI );
+                    destination.Write( AisAidToNavigationNavigationalAidType );
+                    destination.Write( AisAidToNavigationPosition );
+                    destination.Write( AisAidToNavigationIsVirtual );
+                    destination.Write( AisAidToNavigationToBow );
+                    destination.Write( AisAidToNavigationToStern );
+                    destination.Write( AisAidToNavigationToPort );
+                    destination.Write( AisAidToNavigationToStarboard );
+                    destination.Write( AisAidToNavigationOffPositionTimeseries );
+                }
+                break;
+                case Types.Kind.Vehicle:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( VehicleName );
+                    destination.Write( VehicleType );
+                }
+                break;
+                case Types.Kind.Vessel:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( VesselName );
+                    destination.Write( VesselType );
+                    destination.Write( VesselToBow );
+                    destination.Write( VesselToStern );
+                    destination.Write( VesselToPort );
+                    destination.Write( VesselToStarboard );
+                    destination.Write( VesselDraughtTimeseries );
+                    destination.Write( VesselPersonsOnBoardTimeseries );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TrackableItemObject GetDataObject( )
         {
             var kind = Kind;
@@ -5327,6 +7018,52 @@ namespace Barrelman.Data.Database
                 return GetString( NE_DESCRIPTION_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.ElementType:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Namespace );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.Namespace:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Namespace );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public NamespaceElementObject GetDataObject( )
         {
             var kind = Kind;
@@ -5750,6 +7487,404 @@ namespace Barrelman.Data.Database
                 return GetInt64( U64P_VALUE_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.WriteArray( BinaryPropertyValue );
+                }
+                break;
+                case Types.Kind.BooleanProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( BooleanPropertyValue );
+                }
+                break;
+                case Types.Kind.ByteProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( BytePropertyValue );
+                }
+                break;
+                case Types.Kind.DateTimeProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( DateTimePropertyValue );
+                }
+                break;
+                case Types.Kind.DoubleProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( DoublePropertyValue );
+                }
+                break;
+                case Types.Kind.GuidProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( GuidPropertyValue );
+                }
+                break;
+                case Types.Kind.Int16Property:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int16PropertyValue );
+                }
+                break;
+                case Types.Kind.Int32Property:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int32PropertyValue );
+                }
+                break;
+                case Types.Kind.Int64Property:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int64PropertyValue );
+                }
+                break;
+                case Types.Kind.ReferenceProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( ReferencePropertyValue );
+                }
+                break;
+                case Types.Kind.SByteProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( SBytePropertyValue );
+                }
+                break;
+                case Types.Kind.SingleProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( SinglePropertyValue );
+                }
+                break;
+                case Types.Kind.StringProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( StringPropertyValue );
+                }
+                break;
+                case Types.Kind.BinaryTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( BinaryTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.BooleanTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( BooleanTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.ByteTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( ByteTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.DateTimeTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( DateTimeTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.DoubleTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( DoubleTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.GuidTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( GuidTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.Int16TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int16TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.Int32TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int32TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.Int64TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int64TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.ReferenceTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( ReferenceTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.SByteTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( SByteTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.SingleTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( SingleTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.StringTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( StringTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.TimeSpanTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( TimeSpanTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.UInt16TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt16TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.UInt32TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt32TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.UInt64TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt64TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.TimeSpanProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( TimeSpanPropertyValue );
+                }
+                break;
+                case Types.Kind.UInt16Property:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt16PropertyValue );
+                }
+                break;
+                case Types.Kind.UInt32Property:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt32PropertyValue );
+                }
+                break;
+                case Types.Kind.UInt64Property:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt64PropertyValue );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public PropertyObject GetDataObject( )
         {
             var kind = Kind;
@@ -6130,6 +8265,217 @@ namespace Barrelman.Data.Database
                 return GetGuid( U64TP_TIMESERIES_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( BinaryTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.BooleanTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( BooleanTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.ByteTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( ByteTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.DateTimeTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( DateTimeTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.DoubleTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( DoubleTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.GuidTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( GuidTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.Int16TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int16TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.Int32TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int32TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.Int64TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( Int64TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.ReferenceTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( ReferenceTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.SByteTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( SByteTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.SingleTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( SingleTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.StringTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( StringTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.TimeSpanTimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( TimeSpanTimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.UInt16TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt16TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.UInt32TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt32TimeseriesPropertyTimeseries );
+                }
+                break;
+                case Types.Kind.UInt64TimeseriesProperty:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Element );
+                    destination.Write( Definition );
+                    destination.Write( UInt64TimeseriesPropertyTimeseries );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TimeseriesPropertyObject GetDataObject( )
         {
             var kind = Kind;
@@ -6937,6 +9283,473 @@ namespace Barrelman.Data.Database
                 return GetInt64( U64PD_MAXVALUE_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.WriteArray( BinaryPropertyDefinitionDefaultValue );
+                }
+                break;
+                case Types.Kind.BooleanPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( BooleanPropertyDefinitionDefaultValue );
+                }
+                break;
+                case Types.Kind.BytePropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( BytePropertyDefinitionDefaultValue );
+                    destination.Write( BytePropertyDefinitionMinValue );
+                    destination.Write( BytePropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.DateTimePropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( DateTimePropertyDefinitionDefaultValue );
+                    destination.Write( DateTimePropertyDefinitionMinValue );
+                    destination.Write( DateTimePropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.DoublePropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( DoublePropertyDefinitionDefaultValue );
+                    destination.Write( DoublePropertyDefinitionMinValue );
+                    destination.Write( DoublePropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.GuidPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( GuidPropertyDefinitionDefaultValue );
+                }
+                break;
+                case Types.Kind.Int16PropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int16PropertyDefinitionDefaultValue );
+                    destination.Write( Int16PropertyDefinitionMinValue );
+                    destination.Write( Int16PropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.Int32PropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int32PropertyDefinitionDefaultValue );
+                    destination.Write( Int32PropertyDefinitionMinValue );
+                    destination.Write( Int32PropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.Int64PropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int64PropertyDefinitionDefaultValue );
+                    destination.Write( Int64PropertyDefinitionMinValue );
+                    destination.Write( Int64PropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.ReferencePropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( ReferencePropertyDefinitionDefaultValue );
+                    destination.Write( ReferencePropertyDefinitionReferencedElementType );
+                }
+                break;
+                case Types.Kind.SBytePropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( SBytePropertyDefinitionDefaultValue );
+                    destination.Write( SBytePropertyDefinitionMinValue );
+                    destination.Write( SBytePropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.SinglePropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( SinglePropertyDefinitionDefaultValue );
+                    destination.Write( SinglePropertyDefinitionMinValue );
+                    destination.Write( SinglePropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.StringPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( StringPropertyDefinitionDefaultValue );
+                    destination.Write( StringPropertyDefinitionPattern );
+                }
+                break;
+                case Types.Kind.BinaryTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.BooleanTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.ByteTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( ByteTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( ByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.DateTimeTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( DateTimeTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( DateTimeTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.DoubleTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( DoubleTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( DoubleTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.GuidTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.Int16TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int16TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( Int16TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.Int32TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int32TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( Int32TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.Int64TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int64TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( Int64TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.ReferenceTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( ReferenceTimeseriesPropertyDefinitionReferencedElementType );
+                }
+                break;
+                case Types.Kind.SByteTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( SByteTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( SByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.SingleTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( SingleTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( SingleTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.StringTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( StringTimeseriesPropertyDefinitionPattern );
+                }
+                break;
+                case Types.Kind.TimeSpanTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( TimeSpanTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( TimeSpanTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt16TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt16TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( UInt16TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt32TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt32TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( UInt32TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt64TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt64TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( UInt64TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.TimeSpanPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( TimeSpanPropertyDefinitionDefaultValue );
+                    destination.Write( TimeSpanPropertyDefinitionMinValue );
+                    destination.Write( TimeSpanPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt16PropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt16PropertyDefinitionDefaultValue );
+                    destination.Write( UInt16PropertyDefinitionMinValue );
+                    destination.Write( UInt16PropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt32PropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt32PropertyDefinitionDefaultValue );
+                    destination.Write( UInt32PropertyDefinitionMinValue );
+                    destination.Write( UInt32PropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt64PropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt64PropertyDefinitionDefaultValue );
+                    destination.Write( UInt64PropertyDefinitionMinValue );
+                    destination.Write( UInt64PropertyDefinitionMaxValue );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public PropertyDefinitionObject GetDataObject( )
         {
             var kind = Kind;
@@ -7407,6 +10220,243 @@ namespace Barrelman.Data.Database
                 return GetInt64( U64TPD_MAXVALUE_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.BooleanTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.ByteTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( ByteTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( ByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.DateTimeTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( DateTimeTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( DateTimeTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.DoubleTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( DoubleTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( DoubleTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.GuidTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.Int16TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int16TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( Int16TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.Int32TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int32TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( Int32TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.Int64TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( Int64TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( Int64TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.ReferenceTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( ReferenceTimeseriesPropertyDefinitionReferencedElementType );
+                }
+                break;
+                case Types.Kind.SByteTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( SByteTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( SByteTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.SingleTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( SingleTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( SingleTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.StringTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( StringTimeseriesPropertyDefinitionPattern );
+                }
+                break;
+                case Types.Kind.TimeSpanTimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( TimeSpanTimeseriesPropertyDefinitionMinValue );
+                    destination.Write( TimeSpanTimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt16TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt16TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( UInt16TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt32TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt32TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( UInt32TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                case Types.Kind.UInt64TimeseriesPropertyDefinition:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( ElementType );
+                    destination.Write( Name );
+                    destination.Write( Description );
+                    destination.Write( UInt64TimeseriesPropertyDefinitionMinValue );
+                    destination.Write( UInt64TimeseriesPropertyDefinitionMaxValue );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TimeseriesPropertyDefinitionObject GetDataObject( )
         {
             var kind = Kind;
@@ -7577,6 +10627,56 @@ namespace Barrelman.Data.Database
                 return GetGuid( RC_REPLY_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.RadarCommand:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Radar );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                }
+                break;
+                case Types.Kind.RadarCommandGetStatus:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Radar );
+                    destination.Write( Timestamp );
+                    destination.Write( DeviceCommandSourceType );
+                    destination.Write( DeviceCommandSourceId );
+                    destination.Write( Reply );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public RadarCommandObject GetDataObject( )
         {
             var kind = Kind;
@@ -7732,6 +10832,61 @@ namespace Barrelman.Data.Database
                 return GetBoolean( RCRGS_TX_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.RadarCommandReply:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Radar );
+                    destination.Write( Timestamp );
+                    destination.Write( Command );
+                    destination.Write( Status );
+                    destination.Write( Message );
+                }
+                break;
+                case Types.Kind.RadarCommandReplyGetStatus:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Radar );
+                    destination.Write( Timestamp );
+                    destination.Write( Command );
+                    destination.Write( Status );
+                    destination.Write( Message );
+                    destination.Write( RadarCommandReplyGetStatusAzimuthCount );
+                    destination.Write( RadarCommandReplyGetStatusTriggerCount );
+                    destination.Write( RadarCommandReplyGetStatusRotationCount );
+                    destination.Write( RadarCommandReplyGetStatusPulse );
+                    destination.Write( RadarCommandReplyGetStatusTx );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public RadarCommandReplyObject GetDataObject( )
         {
             var kind = Kind;
@@ -7834,6 +10989,53 @@ namespace Barrelman.Data.Database
                 return GetString( SR_NAME_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.SecurityLogin:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Domain );
+                    destination.Write( Identity );
+                    destination.Write( Description );
+                }
+                break;
+                case Types.Kind.SecurityRole:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Domain );
+                    destination.Write( Identity );
+                    destination.Write( Description );
+                    destination.Write( SecurityRoleName );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public SecurityIdentifierObject GetDataObject( )
         {
             var kind = Kind;
@@ -8478,6 +11680,907 @@ namespace Barrelman.Data.Database
                 return GetGuid( RST_RADOME_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.BooleanTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( AisAidToNavigationOffPositionTimeseriesAidToNavigation );
+                }
+                break;
+                case Types.Kind.DeviceEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( DeviceEnabledTimeseriesDevice );
+                }
+                break;
+                case Types.Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( MediaProxySessionEnabledTimeseriesProxySession );
+                }
+                break;
+                case Types.Kind.MediaServiceEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( MediaServiceEnabledTimeseriesService );
+                }
+                break;
+                case Types.Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarAutomaticSensitivityTimeControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarBlankSector1Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarBlankSector1TimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarBlankSector2Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarBlankSector2TimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarEnableAutomaticFrequencyControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarEnableFastTimeConstantTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarEnableSensitivityTimeControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarPowerOnTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarPowerOnTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSaveSettingsTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarSaveSettingsTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarTrackingTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarTrackingTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.ByteTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.DateTimeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.DoubleTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.GNSSAltitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GNSSAltitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GNSSLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GNSSLatitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GNSSLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GNSSLongitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GyroCourseTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroCourseTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroHeadingMagneticNorthTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroHeadingTrueNorthTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroPitchTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroPitchTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroRateOfTurnTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroRateOfTurnTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroRollTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroRollTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroSpeedTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( GyroSpeedTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.RadarLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarLatitudeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarLongitudeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadomeDewPointTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadomeDewPointTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.RadomePressureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadomePressureTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.RadomeTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadomeTemperatureTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.VesselDraughtTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( VesselDraughtTimeseriesVessel );
+                }
+                break;
+                case Types.Kind.ViewLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( ViewLatitudeTimeseriesView );
+                }
+                break;
+                case Types.Kind.ViewLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( ViewLongitudeTimeseriesView );
+                }
+                break;
+                case Types.Kind.ViewZoomLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( ViewZoomLevelTimeseriesView );
+                }
+                break;
+                case Types.Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationAbsoluteHumidityTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationAirTemperatureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationBarometricPressureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationDewPointTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationDewPointTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationRelativeHumidityTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationWaterTemperatureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationWindDirectionTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( WeatherStationWindSpeedTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.GeoPosition2DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( AisAidToNavigationPositionTimeseriesAidToNavigation );
+                }
+                break;
+                case Types.Kind.GeoPosition3DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.GuidTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.Int16Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.Int32Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarAzimuthOffsetTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarFastTimeConstantLevelTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarFastTimeConstantModeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarPulseTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarPulseTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector1EndTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarSector1EndTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector1StartTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarSector1StartTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector2EndTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarSector2EndTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector2StartTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarSector2StartTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarSensitivityTimeControlLevelTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarTuningTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadarTuningTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( VesselPersonsOnBoardTimeseriesVessel );
+                }
+                break;
+                case Types.Kind.Int64Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.Position2DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.Position3DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.ReferenceTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.SByteTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.SingleTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.StringTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.TimeSpanTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.UInt16Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.UInt32Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.RadomeStatusTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                    destination.Write( RadomeStatusTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.UInt64Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( TimeseriesMaxRetention );
+                }
+                break;
+                case Types.Kind.TimeseriesCatalog:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TimeseriesCatalogElementObject GetDataObject( )
         {
             var kind = Kind;
@@ -9412,6 +13515,897 @@ namespace Barrelman.Data.Database
                 return GetGuid( RST_RADOME_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BinaryTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.BooleanTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( AisAidToNavigationOffPositionTimeseriesAidToNavigation );
+                }
+                break;
+                case Types.Kind.DeviceEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( DeviceEnabledTimeseriesDevice );
+                }
+                break;
+                case Types.Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( MediaProxySessionEnabledTimeseriesProxySession );
+                }
+                break;
+                case Types.Kind.MediaServiceEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( MediaServiceEnabledTimeseriesService );
+                }
+                break;
+                case Types.Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarAutomaticSensitivityTimeControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarBlankSector1Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarBlankSector1TimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarBlankSector2Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarBlankSector2TimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarEnableAutomaticFrequencyControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarEnableFastTimeConstantTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarEnableSensitivityTimeControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarPowerOnTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarPowerOnTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSaveSettingsTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSaveSettingsTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarTrackingTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarTrackingTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.ByteTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.DateTimeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.DoubleTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.GNSSAltitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GNSSAltitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GNSSLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GNSSLatitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GNSSLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GNSSLongitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GyroCourseTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroCourseTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroHeadingMagneticNorthTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroHeadingTrueNorthTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroPitchTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroPitchTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroRateOfTurnTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroRateOfTurnTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroRollTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroRollTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroSpeedTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroSpeedTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.RadarLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarLatitudeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarLongitudeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadomeDewPointTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomeDewPointTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.RadomePressureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomePressureTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.RadomeTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomeTemperatureTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.VesselDraughtTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( VesselDraughtTimeseriesVessel );
+                }
+                break;
+                case Types.Kind.ViewLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( ViewLatitudeTimeseriesView );
+                }
+                break;
+                case Types.Kind.ViewLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( ViewLongitudeTimeseriesView );
+                }
+                break;
+                case Types.Kind.ViewZoomLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( ViewZoomLevelTimeseriesView );
+                }
+                break;
+                case Types.Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationAbsoluteHumidityTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationAirTemperatureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationBarometricPressureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationDewPointTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationDewPointTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationRelativeHumidityTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationWaterTemperatureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationWindDirectionTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationWindSpeedTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.GeoPosition2DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( AisAidToNavigationPositionTimeseriesAidToNavigation );
+                }
+                break;
+                case Types.Kind.GeoPosition3DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.GuidTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.Int16Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.Int32Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarAzimuthOffsetTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarFastTimeConstantLevelTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarFastTimeConstantModeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarPulseTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarPulseTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector1EndTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector1EndTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector1StartTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector1StartTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector2EndTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector2EndTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector2StartTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector2StartTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSensitivityTimeControlLevelTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarTuningTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarTuningTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( VesselPersonsOnBoardTimeseriesVessel );
+                }
+                break;
+                case Types.Kind.Int64Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.Position2DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.Position3DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.ReferenceTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.SByteTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.SingleTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.StringTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.TimeSpanTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.UInt16Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.UInt32Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.RadomeStatusTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomeStatusTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.UInt64Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TimeseriesObject GetDataObject( )
         {
             var kind = Kind;
@@ -9921,6 +14915,197 @@ namespace Barrelman.Data.Database
                 return GetGuid( RTT_RADAR_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.BooleanTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.AisAidToNavigationOffPositionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( AisAidToNavigationOffPositionTimeseriesAidToNavigation );
+                }
+                break;
+                case Types.Kind.DeviceEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( DeviceEnabledTimeseriesDevice );
+                }
+                break;
+                case Types.Kind.MediaProxySessionEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( MediaProxySessionEnabledTimeseriesProxySession );
+                }
+                break;
+                case Types.Kind.MediaServiceEnabledTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( MediaServiceEnabledTimeseriesService );
+                }
+                break;
+                case Types.Kind.RadarAutomaticSensitivityTimeControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarAutomaticSensitivityTimeControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarBlankSector1Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarBlankSector1TimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarBlankSector2Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarBlankSector2TimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableAutomaticFrequencyControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarEnableAutomaticFrequencyControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableFastTimeConstantTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarEnableFastTimeConstantTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarEnableSensitivityTimeControlTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarEnableSensitivityTimeControlTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarPowerOnTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarPowerOnTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSaveSettingsTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSaveSettingsTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarTrackingTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarTrackingTimeseriesRadar );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public BooleanTimeseriesObject GetDataObject( )
         {
             var kind = Kind;
@@ -10330,6 +15515,365 @@ namespace Barrelman.Data.Database
                 return GetGuid( WSWST_WEATHERSTATION_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.DoubleTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.GNSSAltitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GNSSAltitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GNSSLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GNSSLatitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GNSSLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GNSSLongitudeTimeseriesGNSSDevice );
+                }
+                break;
+                case Types.Kind.GyroCourseTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroCourseTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroHeadingMagneticNorthTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroHeadingMagneticNorthTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroHeadingTrueNorthTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroHeadingTrueNorthTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroPitchTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroPitchTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroRateOfTurnTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroRateOfTurnTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroRollTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroRollTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.GyroSpeedTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( GyroSpeedTimeseriesGyroDevice );
+                }
+                break;
+                case Types.Kind.RadarLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarLatitudeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarLongitudeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadomeDewPointTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomeDewPointTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.RadomePressureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomePressureTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.RadomeTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomeTemperatureTimeseriesRadome );
+                }
+                break;
+                case Types.Kind.VesselDraughtTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( VesselDraughtTimeseriesVessel );
+                }
+                break;
+                case Types.Kind.ViewLatitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( ViewLatitudeTimeseriesView );
+                }
+                break;
+                case Types.Kind.ViewLongitudeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( ViewLongitudeTimeseriesView );
+                }
+                break;
+                case Types.Kind.ViewZoomLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( ViewZoomLevelTimeseriesView );
+                }
+                break;
+                case Types.Kind.WeatherStationAbsoluteHumidityTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationAbsoluteHumidityTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationAirTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationAirTemperatureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationBarometricPressureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationBarometricPressureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationDewPointTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationDewPointTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationRelativeHumidityTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationRelativeHumidityTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWaterTemperatureTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationWaterTemperatureTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWindDirectionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationWindDirectionTimeseriesWeatherStation );
+                }
+                break;
+                case Types.Kind.WeatherStationWindSpeedTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( WeatherStationWindSpeedTimeseriesWeatherStation );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public DoubleTimeseriesObject GetDataObject( )
         {
             var kind = Kind;
@@ -10535,6 +16079,53 @@ namespace Barrelman.Data.Database
                 return GetGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.GeoPosition2DTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.AisAidToNavigationPositionTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( AisAidToNavigationPositionTimeseriesAidToNavigation );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public GeoPosition2DTimeseriesObject GetDataObject( )
         {
             var kind = Kind;
@@ -10736,6 +16327,173 @@ namespace Barrelman.Data.Database
                 return GetGuid( VPOBT_VESSEL_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Int32Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.RadarAzimuthOffsetTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarAzimuthOffsetTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarFastTimeConstantLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarFastTimeConstantLevelTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarFastTimeConstantModeTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarFastTimeConstantModeTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarPulseTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarPulseTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector1EndTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector1EndTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector1StartTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector1StartTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector2EndTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector2EndTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSector2StartTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSector2StartTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarSensitivityTimeControlLevelTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarSensitivityTimeControlLevelTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.RadarTuningTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadarTuningTimeseriesRadar );
+                }
+                break;
+                case Types.Kind.VesselPersonsOnBoardTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( VesselPersonsOnBoardTimeseriesVessel );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public Int32TimeseriesObject GetDataObject( )
         {
             var kind = Kind;
@@ -10877,6 +16635,53 @@ namespace Barrelman.Data.Database
                 return GetGuid( RST_RADOME_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.UInt32Timeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                }
+                break;
+                case Types.Kind.RadomeStatusTimeseries:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Catalog );
+                    destination.Write( Name );
+                    destination.Write( MaxRetention );
+                    destination.Write( RadomeStatusTimeseriesRadome );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public UInt32TimeseriesObject GetDataObject( )
         {
             var kind = Kind;
@@ -10970,6 +16775,52 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TB_TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.Track:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Tracker );
+                    destination.Write( TrackNumber );
+                    destination.Write( Timestamp );
+                }
+                break;
+                case Types.Kind.Track3D:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Tracker );
+                    destination.Write( TrackNumber );
+                    destination.Write( Timestamp );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public TrackBaseObject GetDataObject( )
         {
             var kind = Kind;
@@ -11135,6 +16986,66 @@ namespace Barrelman.Data.Database
                 return GetBytes( PZ_POLYGON_FIELD_ID );
             }
         }
+        public void WriteTo([DisallowNull] BinaryWriter destination )
+        {
+            var kind = Kind;
+            switch(kind)
+            {
+                case Types.Kind.CircularZone:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Name );
+                    destination.Write( Longitude );
+                    destination.Write( Latitude );
+                    destination.Write( AlarmType );
+                    destination.Write( AlarmTime );
+                    destination.Write( RadarTrackMinimumLifetime );
+                    destination.Write( Speed );
+                    destination.Write( StrokeColor );
+                    destination.Write( FillColor );
+                    destination.Write( CircularZoneRadius );
+                }
+                break;
+                case Types.Kind.PolygonZone:
+                {
+                    destination.Write( kind );
+                    destination.Write( ObjectState.Stored );
+                    destination.Write( Id );
+                    destination.Write( RowVersion );
+                    destination.Write( Name );
+                    destination.Write( Longitude );
+                    destination.Write( Latitude );
+                    destination.Write( AlarmType );
+                    destination.Write( AlarmTime );
+                    destination.Write( RadarTrackMinimumLifetime );
+                    destination.Write( Speed );
+                    destination.Write( StrokeColor );
+                    destination.Write( FillColor );
+                    destination.WriteArray( PolygonZonePolygon );
+                }
+                break;
+                default:
+                {
+                    var exc = new Exception( $"Cannot perform serialization for kind={kind}." );
+                    LogException( exc );
+                    throw exc;
+                }
+            }
+        }
+
+        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )
+        {
+            while ( Read( ) )
+            {
+                destination.Write( true );
+                WriteTo( destination );
+            }
+            destination.Write( false );
+        }
+
         public ZoneObject GetDataObject( )
         {
             var kind = Kind;

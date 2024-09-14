@@ -307,7 +307,81 @@ namespace Harlinn::ODBC::Tool
 
     void CSharpComplexDatabaseReadersGenerator::CreateWriteTo( const ClassInfo& classInfo )
     {
+        auto descendantClassesAndSelf = classInfo.AllDerivedClassesAndSelf( );
+        WriteLine( L"        public void WriteTo([DisallowNull] BinaryWriter destination )" );
+        WriteLine( L"        {" );
+        WriteLine( L"            var kind = Kind;" );
+        WriteLine( L"            switch(kind)" );
+        WriteLine( L"            {" );
+        for ( const auto clazz : descendantClassesAndSelf )
+        {
+            if ( clazz->Abstract( ) == false )
+            {
+                WriteLine( L"                case Types.Kind.{}:", clazz->Name( ) );
+                WriteLine( L"                {" );
+                const auto& members = clazz->PersistentMembers( );
+                auto memberCount = members.size( );
 
+                WriteLine( L"                    destination.Write( kind );" );
+                WriteLine( L"                    destination.Write( ObjectState.Stored );" );
+                WriteLine( L"                    destination.Write( Id );" );
+
+                for ( size_t i = 0; i < memberCount; i++ )
+                {
+                    const auto& member = *members[ i ];
+                    if ( member.PrimaryKey( ) == false )
+                    {
+                        auto memberType = member.Type( );
+                        if ( classInfo.IsViewMember( member ) )
+                        {
+                            auto accessorName = member.Name( ).FirstToUpper( );
+                            if ( memberType != MemberInfoType::Binary )
+                            {
+                                WriteLine( L"                    destination.Write( {} );", accessorName );
+                            }
+                            else
+                            {
+                                WriteLine( L"                    destination.WriteArray( {} );", accessorName );
+                            }
+                        }
+                        else
+                        {
+                            auto owner = member.Owner( );
+                            auto accessorName = owner->Name( ).FirstToUpper( ) + member.Name( ).FirstToUpper( );
+                            if ( memberType != MemberInfoType::Binary )
+                            {
+                                WriteLine( L"                    destination.Write( {} );", accessorName );
+                            }
+                            else
+                            {
+                                WriteLine( L"                    destination.WriteArray( {} );", accessorName );
+                            }
+                        }
+                    }
+                }
+                WriteLine( L"                }" );
+                WriteLine( L"                break;" );
+            }
+        }
+        WriteLine( L"                default:" );
+        WriteLine( L"                {" );
+        WriteLine( L"                    var exc = new Exception( $\"Cannot perform serialization for kind={kind}.\" );" );
+        WriteLine( L"                    LogException( exc );" );
+        WriteLine( L"                    throw exc;" );
+        WriteLine( L"                }" );
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public void WriteResultSetTo( [ DisallowNull ] BinaryWriter destination )" );
+        WriteLine( L"        {" );
+        WriteLine( L"            while ( Read( ) )" );
+        WriteLine( L"            {" );
+        WriteLine( L"                destination.Write( true );" );
+        WriteLine( L"                WriteTo( destination );" );
+        WriteLine( L"            }" );
+        WriteLine( L"            destination.Write( false );" );
+        WriteLine( L"        }" );
+        WriteLine( );
     }
 
     void CSharpComplexDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
