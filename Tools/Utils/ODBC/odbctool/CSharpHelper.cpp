@@ -21,6 +21,127 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    WideString CSharpHelper::GetNotNullableBaseType( const MemberInfo& member )
+    {
+        WideString result = L"<unknown>";
+        auto memberInfoType = member.Type( );
+        switch ( memberInfoType )
+        {
+            case MemberInfoType::Boolean:
+            {
+                result = L"bool";
+            }
+            break;
+            case MemberInfoType::SByte:
+            {
+                result = L"sbyte";
+            }
+            break;
+            case MemberInfoType::Byte:
+            {
+                result = L"byte";
+            }
+            break;
+            case MemberInfoType::Int16:
+            {
+                result = L"short";
+            }
+            break;
+            case MemberInfoType::UInt16:
+            {
+                result = L"ushort";
+            }
+            break;
+            case MemberInfoType::Int32:
+            {
+                result = L"int";
+            }
+            break;
+            case MemberInfoType::UInt32:
+            {
+                result = L"uint";
+            }
+            break;
+            case MemberInfoType::Int64:
+            {
+                result = L"long";
+            }
+            break;
+            case MemberInfoType::UInt64:
+            {
+                result = L"ulong";
+            }
+            break;
+            case MemberInfoType::Enum:
+            {
+                const auto& enumMemberInfo = static_cast< const EnumMemberInfo& >( member );
+                auto enumType = enumMemberInfo.EnumType( );
+                if ( enumType )
+                {
+                    result = Format( L"Types.{}", enumType->Name( ) );
+                }
+            }
+            break;
+            case MemberInfoType::Single:
+            {
+                result = L"float";
+            }
+            break;
+            case MemberInfoType::Double:
+            {
+                result = L"double";
+            }
+            break;
+            case MemberInfoType::Currency:
+            {
+                result = L"Currency";
+            }
+            break;
+            case MemberInfoType::DateTime:
+            {
+                result = L"DateTime";
+            }
+            break;
+            case MemberInfoType::TimeSpan:
+            {
+                result = L"TimeSpan";
+            }
+            break;
+            case MemberInfoType::Guid:
+            {
+                result = L"Guid";
+            }
+            break;
+            case MemberInfoType::String:
+            {
+                result = L"string";
+            }
+            break;
+            case MemberInfoType::Binary:
+            {
+                result = L"byte[]";
+            }
+            break;
+            case MemberInfoType::RowVersion:
+            {
+                result = L"long";
+            }
+            break;
+            case MemberInfoType::Reference:
+            {
+                result = L"Guid";
+            }
+            break;
+            case MemberInfoType::TimeSeries:
+            {
+                result = L"Guid";
+            }
+            break;
+        }
+
+        return result;
+    }
+
     WideString CSharpHelper::GetBaseType( const MemberInfo& member )
     {
         WideString result = L"<unknown>";
@@ -636,6 +757,18 @@ namespace Harlinn::ODBC::Tool
         return Format( L"Complex{}DataReader", classInfo.Name( ).FirstToUpper( ) );
     }
 
+    WideString CSharpHelper::GetDataReaderName( const ClassInfo& classInfo )
+    {
+        if ( RequiresComplexReader( classInfo ) )
+        {
+            return GetComplexDataReaderName( classInfo );
+        }
+        else
+        {
+            return GetSimpleDataReaderName( classInfo );
+        }
+    }
+
     WideString CSharpHelper::GetDataReaderGetFunctionName( const MemberInfo& member )
     {
         WideString result = L"<unknown>";
@@ -1161,6 +1294,285 @@ namespace Harlinn::ODBC::Tool
             break;
         }
         return result;
+    }
+
+    WideString CSharpHelper::GetByIdFunctionName( const ClassInfo& classInfo )
+    {
+        auto result = Format( L"Get{}ById", classInfo.Name() );
+        return result;
+    }
+    WideString CSharpHelper::GetAllFunctionName( const ClassInfo& classInfo )
+    {
+        auto result = Format( L"Get{}Collection", classInfo.Name( ) );
+        return result;
+    }
+    WideString CSharpHelper::GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        StringBuilder<wchar_t> sb;
+        if ( indexMemberCount > 1 )
+        {
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& indexMember = *indexMembers[ i ];
+                if ( i < ( indexMemberCount - 1) )
+                {
+                    sb.Append( indexMember.Name( ) );
+                }
+                else
+                {
+                    auto s = Format( L"And{}", indexMember.Name( ) );
+                    sb.Append( s );
+                }
+            }
+        }
+        else
+        {
+            sb.Append( indexMembers[0]->Name() );
+        }
+        if ( indexInfo.Unique( ) && indexMemberCount == indexMembers.size( ) )
+        {
+            auto result = Format( L"Get{}By{}", classInfo.Name( ), sb.ToString( ) );
+            return result;
+        }
+        else
+        {
+            auto result = Format( L"Get{}CollectionBy{}", classInfo.Name( ), sb.ToString( ) );
+            return result;
+        }
+    }
+
+    WideString CSharpHelper::GetByNullableIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        StringBuilder<wchar_t> sb;
+        if ( indexMemberCount > 1 )
+        {
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& indexMember = *indexMembers[ i ];
+                if ( i < ( indexMemberCount - 1 ) )
+                {
+                    if ( indexMember.Nullable( ) )
+                    {
+                        sb.Append( indexMember.Name( ) + L"IsNull" );
+                    }
+                    else
+                    {
+                        sb.Append( indexMember.Name( ) );
+                    }
+                }
+                else
+                {
+                    if ( indexMember.Nullable( ) )
+                    {
+                        auto s = Format( L"And{}IsNull", indexMember.Name( ) );
+                        sb.Append( s );
+                    }
+                    else
+                    {
+                        auto s = Format( L"And{}", indexMember.Name( ) );
+                        sb.Append( s );
+                    }
+                }
+            }
+        }
+        else
+        {
+            if ( indexMembers[ 0 ]->Nullable( ) )
+            {
+                sb.Append( indexMembers[ 0 ]->Name( ) + L"IsNull" );
+            }
+            else
+            {
+                sb.Append( indexMembers[ 0 ]->Name( ) );
+            }
+        }
+        auto result = Format( L"Get{}CollectionBy{}", classInfo.Name( ), sb.ToString( ) );
+        return result;
+    }
+
+
+    WideString CSharpHelper::GetByIndexFunctionParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        StringBuilder<wchar_t> sb;
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& indexMember = *indexMembers[ i ];
+            auto parameterType = GetInputArgumentType( indexMember );
+            auto parameterName = GetInputArgumentName( indexMember );
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                sb.Append( L"{} {}, ", parameterType, parameterName );
+            }
+            else
+            {
+                sb.Append( L"{} {}", parameterType, parameterName );
+            }
+        }
+        return sb.ToString( );
+    }
+    WideString CSharpHelper::GetByIndexFunctionCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        StringBuilder<wchar_t> sb;
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& indexMember = *indexMembers[ i ];
+            auto parameterName = GetInputArgumentName( indexMember );
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                sb.Append( L"{}, ", parameterName );
+            }
+            else
+            {
+                sb.Append( L"{}", parameterName );
+            }
+        }
+        return sb.ToString( );
+    }
+
+    WideString CSharpHelper::GetByNullableIndexFunctionParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto indexMembers = indexInfo.RequiredFields( indexMemberCount );
+        indexMemberCount--;
+        StringBuilder<wchar_t> sb;
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& indexMember = *indexMembers[ i ];
+            auto parameterType = GetInputArgumentType( indexMember );
+            auto parameterName = GetInputArgumentName( indexMember );
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                sb.Append( L"{} {}, ", parameterType, parameterName );
+            }
+            else
+            {
+                sb.Append( L"{} {}", parameterType, parameterName );
+            }
+        }
+        return sb.ToString( );
+    }
+    WideString CSharpHelper::GetByNullableIndexFunctionCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        auto indexMembers = indexInfo.RequiredFields( indexMemberCount );
+        indexMemberCount--;
+        StringBuilder<wchar_t> sb;
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& indexMember = *indexMembers[ i ];
+            auto parameterName = GetInputArgumentName( indexMember );
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                sb.Append( L"{}, ", parameterName );
+            }
+            else
+            {
+                sb.Append( L"{}", parameterName );
+            }
+        }
+        return sb.ToString( );
+    }
+
+    WideString CSharpHelper::GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        if ( indexMemberCount > 1 )
+        {
+            StringBuilder<wchar_t> sb;
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& indexMember = *indexMembers[ i ];
+                if ( i < ( indexMemberCount - 1 ) )
+                {
+                    sb.Append( indexMember.Name( ) );
+                }
+                else
+                {
+                    auto s = Format( L"{}{}", lastFieldPrefix, indexMember.Name( ) );
+                    sb.Append( s );
+                }
+            }
+            if ( indexInfo.Unique( ) && indexMemberCount == indexMembers.size( ) )
+            {
+                auto result = Format( L"Get{}By{}", classInfo.Name( ), sb.ToString( ) );
+                return result;
+            }
+            else
+            {
+                auto result = Format( L"Get{}CollectionBy{}", classInfo.Name( ), sb.ToString( ) );
+                return result;
+            }
+        }
+        else
+        {
+            if ( indexInfo.Unique( ) && indexMemberCount == indexMembers.size( ) )
+            {
+                auto result = Format( L"Get{}{}{}", classInfo.Name( ), lastFieldPrefix, indexMembers[ 0 ]->Name( ) );
+                return result;
+            }
+            else
+            {
+                auto result = Format( L"Get{}Collection{}{}", classInfo.Name( ), lastFieldPrefix, indexMembers[ 0 ]->Name( ) );
+                return result;
+            }
+        }
+    }
+    WideString CSharpHelper::GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        return GetByIndexFunctionName( L"At", classInfo, indexInfo, indexMemberCount );
+    }
+    WideString CSharpHelper::GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        return GetByIndexFunctionName( L"From", classInfo, indexInfo, indexMemberCount );
+    }
+    WideString CSharpHelper::GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        return GetByIndexFunctionName( L"Until", classInfo, indexInfo, indexMemberCount );
+    }
+    WideString CSharpHelper::GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        return GetByIndexFunctionName( L"Over", classInfo, indexInfo, indexMemberCount );
+    }
+
+    WideString CSharpHelper::GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        StringBuilder<wchar_t> sb;
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& indexMember = *indexMembers[ i ];
+            auto parameterType = GetNotNullableBaseType( indexMember );
+            auto parameterName = GetInputArgumentName( indexMember );
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                sb.Append( L"{} {}, ", parameterType, parameterName );
+            }
+            else
+            {
+                parameterName = parameterName.FirstToUpper( );
+                sb.Append( L"{} from{}, ", parameterType, parameterName );
+                sb.Append( L"{} until{}", parameterType, parameterName );
+            }
+        }
+        return sb.ToString( );
+    }
+
+
+    bool CSharpHelper::IsUnique( const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        if ( indexInfo.Unique( ) && indexMemberCount == indexMembers.size( ) )
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool CSharpHelper::RequiresComplexReader( const ClassInfo& classInfo )
+    {
+        return classInfo.DerivedClasses( ).size( ) > 0;
     }
 
 }

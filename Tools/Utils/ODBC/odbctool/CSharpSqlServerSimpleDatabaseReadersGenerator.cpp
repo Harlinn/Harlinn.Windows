@@ -21,7 +21,7 @@
 
 namespace Harlinn::ODBC::Tool
 {
-    void CSharpDatabaseReadersGenerator::Run( )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::Run( )
     {
         const auto& model = Model( );
         const auto& classes = model.Classes( );
@@ -59,7 +59,7 @@ namespace Harlinn::ODBC::Tool
         Flush();
     }
 
-    void CSharpDatabaseReadersGenerator::CreateReader( const ClassInfo& classInfo )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::CreateReader( const ClassInfo& classInfo )
     {
         auto className = CSharpHelper::GetSimpleDataReaderName( classInfo );
         WideString baseClassName = L"DataReaderWrapper";
@@ -91,7 +91,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    }" );
         WriteLine( );
     }
-    void CSharpDatabaseReadersGenerator::CreateQuery( const ClassInfo& classInfo )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::CreateQuery( const ClassInfo& classInfo )
     {
 
         auto topLevelClass = classInfo.TopLevelClass( );
@@ -154,7 +154,7 @@ namespace Harlinn::ODBC::Tool
         }
         WriteLine( );
     }
-    void CSharpDatabaseReadersGenerator::CreateFieldIds( const ClassInfo& classInfo )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::CreateFieldIds( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.OwnPersistentMembers();
         if ( members.empty( ) == false )
@@ -191,7 +191,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( );
         }
     }
-    void CSharpDatabaseReadersGenerator::CreateAccessors( const ClassInfo& classInfo )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::CreateAccessors( const ClassInfo& classInfo )
     {
         const auto& members = classInfo.OwnPersistentMembers( );
         for ( const auto& member : members )
@@ -275,7 +275,7 @@ namespace Harlinn::ODBC::Tool
         }
 
     }
-    void CSharpDatabaseReadersGenerator::CreateWriteColumns( const ClassInfo& classInfo )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::CreateWriteColumns( const ClassInfo& classInfo )
     {
         auto members = classInfo.OwnPersistentMembers( );
         auto memberCount = members.size( );
@@ -325,7 +325,7 @@ namespace Harlinn::ODBC::Tool
         }
 
     }
-    void CSharpDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
+    void CSharpSqlServerSimpleDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
     {
         auto className = CSharpHelper::GetDataType( classInfo );
         if ( classInfo.IsTopLevel( ) )

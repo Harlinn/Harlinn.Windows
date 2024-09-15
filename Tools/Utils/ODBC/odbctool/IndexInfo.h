@@ -58,9 +58,95 @@ namespace Harlinn::ODBC::Tool
         {
             return fields_;
         }
+        const std::vector<std::shared_ptr<MemberInfo>> RequiredFields( ) const
+        {
+            std::vector<std::shared_ptr<MemberInfo>> result;
+            for ( const auto& field : fields_ )
+            {
+                if ( field->Nullable( ) == false )
+                {
+                    result.emplace_back( field );
+                }
+            }
+            return result;
+        }
+
+        const std::vector<std::shared_ptr<MemberInfo>> RequiredFields( size_t indexMemberCount ) const
+        {
+            std::vector<std::shared_ptr<MemberInfo>> result;
+            for ( size_t i = 0; i < indexMemberCount; i++ )
+            {
+                const auto& field = fields_[ i ];
+            
+                if ( field->Nullable( ) == false )
+                {
+                    result.emplace_back( field );
+                }
+            }
+            return result;
+        }
+
+
+        bool HasNullableElements( ) const
+        {
+            for ( const auto& field : fields_ )
+            {
+                if ( field->Nullable( ) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool HasNullableElements( size_t indexMemberCount ) const
+        {
+            auto size = fields_.size( );
+            for ( size_t i = 0; i < size; i++ )
+            {
+                const auto& field = *fields_[ i ];
+                if ( field.Nullable( ) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool IsRange( size_t indexMemberCount ) const
+        {
+            auto size = fields_.size( );
+            if ( indexMemberCount && indexMemberCount <= size )
+            {
+                const auto& field = fields_[ indexMemberCount - 1];
+                auto memberType = field->Type( );
+                if ( memberType >= MemberInfoType::SByte && memberType <= MemberInfoType::TimeSpan && memberType != MemberInfoType::Enum )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool IsTimeSeries( size_t indexMemberCount ) const
+        {
+            auto size = fields_.size( );
+            if ( indexMemberCount && indexMemberCount <= size )
+            {
+                const auto& field = fields_[ indexMemberCount - 1 ];
+                auto memberType = field->Type( );
+                if ( memberType == MemberInfoType::DateTime )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
 
         void Load( const XmlElement& indexElement );
+        void Validate( ) const;
         void AfterLoad( );
 
     };

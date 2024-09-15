@@ -27,7 +27,7 @@ namespace Harlinn::ODBC::Tool
     class CppDatabaseOptions;
     class CppOptions;
     class CSharpDataOptions;
-    class CSharpDatabaseOptions;
+    class CSharpSqlServerDatabaseOptions;
     class CSharpOptions;
     class Options;
 
@@ -603,66 +603,83 @@ namespace Harlinn::ODBC::Tool
         void Load( const XmlElement& element );
     };
 
-    class CSharpDatabaseOptions;
-    class CSharpDatabaseReadersOptions : public OptionsFile<CSharpDatabaseOptions>
+    class CSharpSqlServerDatabaseOptions;
+    class CSharpSqlServerSimpleDatabaseReadersOptions : public OptionsFile<CSharpSqlServerDatabaseOptions>
     {
     public:
-        using Base = OptionsFile<CSharpDatabaseOptions>;
-        CSharpDatabaseReadersOptions( const CSharpDatabaseOptions& owner )
-            : Base( owner, L"DatabaseReaders.cs" )
+        using Base = OptionsFile<CSharpSqlServerDatabaseOptions>;
+        CSharpSqlServerSimpleDatabaseReadersOptions( const CSharpSqlServerDatabaseOptions& owner )
+            : Base( owner, L"SqlServerSimpleDatabaseReaders.cs" )
         {
         }
     };
 
 
-    class CSharpComplexDatabaseReadersOptions : public OptionsFile<CSharpDatabaseOptions>
+    class CSharpSqlServerComplexDatabaseReadersOptions : public OptionsFile<CSharpSqlServerDatabaseOptions>
     {
     public:
-        using Base = OptionsFile<CSharpDatabaseOptions>;
-        CSharpComplexDatabaseReadersOptions( const CSharpDatabaseOptions& owner )
-            : Base( owner, L"ComplexDatabaseReaders.cs" )
+        using Base = OptionsFile<CSharpSqlServerDatabaseOptions>;
+        CSharpSqlServerComplexDatabaseReadersOptions( const CSharpSqlServerDatabaseOptions& owner )
+            : Base( owner, L"SqlServerComplexDatabaseReaders.cs" )
         {
         }
     };
 
-    class CSharpStoredProceduresOptions : public OptionsFile<CSharpDatabaseOptions>
+    class CSharpSqlServerStoredProceduresOptions : public OptionsFile<CSharpSqlServerDatabaseOptions>
     {
     public:
-        using Base = OptionsFile<CSharpDatabaseOptions>;
-        CSharpStoredProceduresOptions( const CSharpDatabaseOptions& owner )
-            : Base( owner, L"StoredProcedures.cs" )
+        using Base = OptionsFile<CSharpSqlServerDatabaseOptions>;
+        CSharpSqlServerStoredProceduresOptions( const CSharpSqlServerDatabaseOptions& owner )
+            : Base( owner, L"SqlServerStoredProcedures.cs" )
+        {
+        }
+    };
+
+    class CSharpSqlServerDataContextOptions : public OptionsFile<CSharpSqlServerDatabaseOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpSqlServerDatabaseOptions>;
+        CSharpSqlServerDataContextOptions( const CSharpSqlServerDatabaseOptions& owner )
+            : Base( owner, L"SqlServerDataContext.cs" )
         {
         }
     };
 
 
 
-    class CSharpDatabaseOptions : public OptionsContainer<CSharpOptions>
+    class CSharpSqlServerDatabaseOptions : public OptionsContainer<CSharpOptions>
     {
-        CSharpDatabaseReadersOptions databaseReaders_;
-        CSharpComplexDatabaseReadersOptions complexDatabaseReaders_;
-        CSharpStoredProceduresOptions storedProcedures_;
+        CSharpSqlServerSimpleDatabaseReadersOptions simpleDatabaseReaders_;
+        CSharpSqlServerComplexDatabaseReadersOptions complexDatabaseReaders_;
+        CSharpSqlServerStoredProceduresOptions storedProcedures_;
+        CSharpSqlServerDataContextOptions dataContext_;
     public:
         using Base = OptionsContainer<CSharpOptions>;
-        CSharpDatabaseOptions( const CSharpOptions& owner )
-            : Base( owner, L"Database" ), databaseReaders_( *this ), complexDatabaseReaders_( *this ), storedProcedures_( *this )
+        CSharpSqlServerDatabaseOptions( const CSharpOptions& owner )
+            : Base( owner, L"Database" ), simpleDatabaseReaders_( *this ), complexDatabaseReaders_( *this ), storedProcedures_( *this ), dataContext_( *this )
         {
         }
 
-        const CSharpDatabaseReadersOptions& DatabaseReaders( ) const
+        const CSharpSqlServerSimpleDatabaseReadersOptions& DatabaseReaders( ) const
         {
-            return databaseReaders_;
+            return simpleDatabaseReaders_;
         }
 
-        const CSharpComplexDatabaseReadersOptions& ComplexDatabaseReaders( ) const
+        const CSharpSqlServerComplexDatabaseReadersOptions& ComplexDatabaseReaders( ) const
         {
             return complexDatabaseReaders_;
         }
 
-        const CSharpStoredProceduresOptions& StoredProcedures( ) const
+        const CSharpSqlServerStoredProceduresOptions& StoredProcedures( ) const
         {
             return storedProcedures_;
         }
+
+        const CSharpSqlServerDataContextOptions& DataContext( ) const
+        {
+            return dataContext_;
+        }
+
     };
 
 
@@ -688,6 +705,16 @@ namespace Harlinn::ODBC::Tool
         }
     };
 
+    class CSharpIDataContextOptions : public OptionsFile<CSharpDataOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpDataOptions>;
+        CSharpIDataContextOptions( const CSharpDataOptions& owner )
+            : Base( owner, L"IDataContext.cs" )
+        {
+        }
+    };
+
 
 
 
@@ -695,11 +722,12 @@ namespace Harlinn::ODBC::Tool
     {
         CSharpEnumsOptions enums_;
         CSharpDataTypesOptions dataTypes_;
+        CSharpIDataContextOptions dataContext_;
     public:
         using Base = OptionsContainer<CSharpOptions>;
 
         CSharpDataOptions(const CSharpOptions& owner )
-            : Base( owner, L"Types" ), enums_( *this ), dataTypes_( *this )
+            : Base( owner, L"Types" ), enums_( *this ), dataTypes_( *this ), dataContext_( *this )
         { }
 
         const CSharpEnumsOptions& Enums( ) const
@@ -711,6 +739,11 @@ namespace Harlinn::ODBC::Tool
             return dataTypes_;
         }
 
+        const CSharpIDataContextOptions& DataContext( ) const
+        {
+            return dataContext_;
+        }
+
     };
 
 
@@ -720,10 +753,10 @@ namespace Harlinn::ODBC::Tool
         WideString outputDirectory_ = L"%HCC_HOME%\\DotNet\\Examples\\Barrelman\\Barrelman.Data";
         WideString namespace_ = L"Barrelman";
         CSharpDataOptions data_;
-        CSharpDatabaseOptions database_;
+        CSharpSqlServerDatabaseOptions sqlServerDatabase_;
     public:
         CSharpOptions( const Options& owner )
-            : owner_( owner ), data_(*this), database_(*this )
+            : owner_( owner ), data_(*this), sqlServerDatabase_(*this )
         {
         }
 
@@ -747,9 +780,9 @@ namespace Harlinn::ODBC::Tool
             return data_;
         }
 
-        const CSharpDatabaseOptions& Database( ) const
+        const CSharpSqlServerDatabaseOptions& SqlServerDatabase( ) const
         {
-            return database_;
+            return sqlServerDatabase_;
         }
 
 

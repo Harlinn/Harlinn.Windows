@@ -25,6 +25,7 @@ namespace Harlinn::ODBC::Tool
     class CSharpHelper
     {
     public:
+        static WideString GetNotNullableBaseType( const MemberInfo& member );
         static WideString GetBaseType( const MemberInfo& member );
         static WideString GetDefaultValue( const MemberInfo& member );
         static WideString GetInputArgumentType( const MemberInfo& member );
@@ -45,6 +46,7 @@ namespace Harlinn::ODBC::Tool
 
         static WideString GetSimpleDataReaderName( const ClassInfo& classInfo );
         static WideString GetComplexDataReaderName( const ClassInfo& classInfo );
+        static WideString GetDataReaderName( const ClassInfo& classInfo );
         static WideString GetDataReaderGetFunctionName( const MemberInfo& member );
 
         static WideString GetInsertFunctionName( const ClassInfo& classInfo );
@@ -62,6 +64,26 @@ namespace Harlinn::ODBC::Tool
 
         static WideString GetSqlCommandParametersAddFunctionName( const MemberInfo& member );
 
+        static WideString GetByIdFunctionName( const ClassInfo& classInfo );
+        static WideString GetAllFunctionName( const ClassInfo& classInfo );
+        static WideString GetByIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByNullableIndexFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFunctionParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFunctionCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+
+        static WideString GetByNullableIndexFunctionParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByNullableIndexFunctionCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+
+        static WideString GetByIndexFunctionName( const WideString& lastFieldPrefix, const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexAtFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFromFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+
+        static bool IsUnique( const IndexInfo& indexInfo, size_t indexMemberCount );
+        static bool RequiresComplexReader( const ClassInfo& classInfo );
+        
 
     };
 }

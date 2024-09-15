@@ -34,6 +34,25 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
+    void IndexInfo::Validate( ) const
+    {
+        size_t nullableFieldCount = 0;
+        for ( const auto& field : fields_ )
+        {
+            if ( field->Nullable( ) )
+            {
+                nullableFieldCount++;
+            }
+        }
+        if ( nullableFieldCount > 1 )
+        {
+            auto ownerName = Owner( )->Name( );
+            auto name = Name( );
+            auto message = Format( L"Too many nullable fields in index {}.{}.", ownerName, name );
+            throw Exception( message );
+        }
+    }
+
     void IndexInfo::AfterLoad( )
     {
         std::vector<WideString> fieldNames;

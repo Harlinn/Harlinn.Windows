@@ -111,13 +111,19 @@
     <ClCompile Include="CSharpHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CSharpDatabaseReadersGenerator.cpp">
+    <ClCompile Include="CSharpSqlServerSimpleDatabaseReadersGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CSharpStoredProceduresGenerator.cpp">
+    <ClCompile Include="CSharpSqlServerStoredProceduresGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CSharpComplexDatabaseReadersGenerator.cpp">
+    <ClCompile Include="CSharpSqlServerComplexDatabaseReadersGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSharpSqlServerDataContextGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSharpIDataContextGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

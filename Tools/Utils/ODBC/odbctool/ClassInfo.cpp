@@ -324,6 +324,10 @@ namespace Harlinn::ODBC::Tool
         {
             member->Validate( );
         }
+        for ( const auto& index : indexes_ )
+        {
+            index->Validate( );
+        }
     }
 
     void ClassInfo::AfterLoad( )

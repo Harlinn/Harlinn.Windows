@@ -20,7 +20,7 @@
 
 namespace Harlinn::ODBC::Tool
 {
-    void CSharpStoredProceduresGenerator::Run( )
+    void CSharpSqlServerStoredProceduresGenerator::Run( )
     {
         const auto& model = Model( );
         const auto& classes = model.Classes( );
@@ -97,7 +97,7 @@ namespace Harlinn::ODBC::Tool
         Flush( );
     }
 
-    void CSharpStoredProceduresGenerator::CreateInsert( const ClassInfo& classInfo )
+    void CSharpSqlServerStoredProceduresGenerator::CreateInsert( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetInsertFunctionName( classInfo );
         auto functionParameters = CSharpHelper::GetInsertFunctionParameters( classInfo );
@@ -156,7 +156,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
-    void CSharpStoredProceduresGenerator::CreateInsertObject( const ClassInfo& classInfo )
+    void CSharpSqlServerStoredProceduresGenerator::CreateInsertObject( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetInsertFunctionName( classInfo );
         auto functionParameters = CSharpHelper::GetInsertFunctionCallParameters( classInfo );
@@ -200,7 +200,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
-    void CSharpStoredProceduresGenerator::CreateUpdate( const ClassInfo& classInfo )
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdate( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetUpdateFunctionName( classInfo );
         auto functionParameters = CSharpHelper::GetUpdateFunctionParameters( classInfo );
@@ -253,7 +253,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
-    void CSharpStoredProceduresGenerator::CreateUpdateObject( const ClassInfo& classInfo )
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdateObject( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetUpdateFunctionName( classInfo );
         auto functionParameters = CSharpHelper::GetUpdateFunctionCallParameters( classInfo );
@@ -293,7 +293,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
     }
 
-    void CSharpStoredProceduresGenerator::CreateDelete( const ClassInfo& classInfo )
+    void CSharpSqlServerStoredProceduresGenerator::CreateDelete( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetDeleteFunctionName( classInfo );
         auto functionParameters = CSharpHelper::GetDeleteFunctionParameters( classInfo );
@@ -337,7 +337,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
-    void CSharpStoredProceduresGenerator::CreateDeleteObject( const ClassInfo& classInfo )
+    void CSharpSqlServerStoredProceduresGenerator::CreateDeleteObject( const ClassInfo& classInfo )
     {
         auto functionName = CSharpHelper::GetDeleteFunctionName( classInfo );
         auto dataTypeName = CSharpHelper::GetDataType( classInfo );
@@ -362,7 +362,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
     }
 
-    void CSharpStoredProceduresGenerator::AddInsertParameter( const MemberInfo& memberInfo )
+    void CSharpSqlServerStoredProceduresGenerator::AddInsertParameter( const MemberInfo& memberInfo )
     {
         auto sqlCommandParametersAddFunctionName = CSharpHelper::GetSqlCommandParametersAddFunctionName( memberInfo );
         auto storedProcedureArgumentName = Format(L"@{}", memberInfo.Name().FirstToUpper() );
@@ -405,7 +405,7 @@ namespace Harlinn::ODBC::Tool
             }
         }
     }
-    void CSharpStoredProceduresGenerator::AddUpdateParameter( const MemberInfo& memberInfo )
+    void CSharpSqlServerStoredProceduresGenerator::AddUpdateParameter( const MemberInfo& memberInfo )
     {
         auto sqlCommandParametersAddFunctionName = CSharpHelper::GetSqlCommandParametersAddFunctionName( memberInfo );
         auto storedProcedureArgumentName = Format( L"@{}", memberInfo.Name( ).FirstToUpper( ) );
@@ -446,7 +446,7 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
-    void CSharpStoredProceduresGenerator::AddDeleteParameter( const MemberInfo& memberInfo )
+    void CSharpSqlServerStoredProceduresGenerator::AddDeleteParameter( const MemberInfo& memberInfo )
     {
         auto sqlCommandParametersAddFunctionName = CSharpHelper::GetSqlCommandParametersAddFunctionName( memberInfo );
         auto storedProcedureArgumentName = Format( L"@{}", memberInfo.Name( ).FirstToUpper( ) );
@@ -483,7 +483,7 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
-    void CSharpStoredProceduresGenerator::CreateInsertDataObject( )
+    void CSharpSqlServerStoredProceduresGenerator::CreateInsertDataObject( )
     {
         const auto& model = Model( );
         const auto& classes = model.Classes( );
@@ -514,7 +514,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         WriteLine( );
     }
-    void CSharpStoredProceduresGenerator::CreateUpdateDataObject( )
+    void CSharpSqlServerStoredProceduresGenerator::CreateUpdateDataObject( )
     {
         const auto& model = Model( );
         const auto& classes = model.Classes( );
@@ -545,7 +545,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         WriteLine( );
     }
-    void CSharpStoredProceduresGenerator::CreateDeleteDataObject( )
+    void CSharpSqlServerStoredProceduresGenerator::CreateDeleteDataObject( )
     {
         const auto& model = Model( );
         const auto& classes = model.Classes( );
@@ -576,9 +576,9 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        }" );
         WriteLine( );
     }
-    void CSharpStoredProceduresGenerator::CreateMergeDataObject( )
+    void CSharpSqlServerStoredProceduresGenerator::CreateMergeDataObject( )
     {
-        WriteLine( L"        bool Merge( BaseDataGuid<Kind> dataObject )");
+        WriteLine( L"        public bool Merge( BaseDataGuid<Kind> dataObject )");
         WriteLine( L"        {");
         WriteLine( L"            bool result = false;");
         WriteLine( L"            var objectState = dataObject.ObjectState;");

@@ -49014,7 +49014,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        bool Merge( BaseDataGuid<Kind> dataObject )
+        public bool Merge( BaseDataGuid<Kind> dataObject )
         {
             bool result = false;
             var objectState = dataObject.ObjectState;

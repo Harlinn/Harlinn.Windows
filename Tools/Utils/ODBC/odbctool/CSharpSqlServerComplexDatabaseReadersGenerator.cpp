@@ -21,7 +21,7 @@
 
 namespace Harlinn::ODBC::Tool
 {
-    void CSharpComplexDatabaseReadersGenerator::Run( )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::Run( )
     {
         const auto& model = Model( );
         const auto& classes = model.Classes( );
@@ -62,7 +62,7 @@ namespace Harlinn::ODBC::Tool
         Flush( );
     }
 
-    void CSharpComplexDatabaseReadersGenerator::CreateReader( const ClassInfo& classInfo )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateReader( const ClassInfo& classInfo )
     {
         auto className = CSharpHelper::GetComplexDataReaderName( classInfo );
         WideString baseClassName = L"DataReaderWrapper";
@@ -82,7 +82,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    }" );
         WriteLine( );
     }
-    void CSharpComplexDatabaseReadersGenerator::CreateQuery( const ClassInfo& classInfo )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateQuery( const ClassInfo& classInfo )
     {
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyName = SqlServerHelper::GetColumnName( *primaryKey );
@@ -159,7 +159,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        public const string ViewAliasName = \"{}\";", shortName );
         WriteLine( );
     }
-    void CSharpComplexDatabaseReadersGenerator::CreateFieldIds( const ClassInfo& classInfo )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateFieldIds( const ClassInfo& classInfo )
     {
         auto members = SqlServerHelper::GetColumnsForComplexSelect( classInfo );
 
@@ -194,7 +194,7 @@ namespace Harlinn::ODBC::Tool
 
         }
     }
-    void CSharpComplexDatabaseReadersGenerator::CreateAccessors( const ClassInfo& classInfo )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateAccessors( const ClassInfo& classInfo )
     {
         auto shortName = classInfo.ShortName( ).ToUpper( );
         const auto& viewMembers = classInfo.ViewMembers( );
@@ -238,7 +238,7 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
-    void CSharpComplexDatabaseReadersGenerator::CreateAccessor( const MemberInfo& member, const WideString& propertyName, const WideString& fieldId )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateAccessor( const MemberInfo& member, const WideString& propertyName, const WideString& fieldId )
     {
         auto getFunctionName = CSharpHelper::GetDataReaderGetFunctionName( member );
         auto propertyType = CSharpHelper::GetMemberFieldType( member );
@@ -305,7 +305,7 @@ namespace Harlinn::ODBC::Tool
     }
 
 
-    void CSharpComplexDatabaseReadersGenerator::CreateWriteTo( const ClassInfo& classInfo )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateWriteTo( const ClassInfo& classInfo )
     {
         auto descendantClassesAndSelf = classInfo.AllDerivedClassesAndSelf( );
         WriteLine( L"        public void WriteTo([DisallowNull] BinaryWriter destination )" );
@@ -384,7 +384,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
     }
 
-    void CSharpComplexDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
+    void CSharpSqlServerComplexDatabaseReadersGenerator::CreateGetDataObject( const ClassInfo& classInfo )
     {
         auto className = CSharpHelper::GetDataType( classInfo );
         auto descendantClassesAndSelf = classInfo.AllDerivedClassesAndSelf( );

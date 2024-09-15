@@ -190,6 +190,23 @@ namespace Harlinn::ODBC::Tool
         {
             return indexes_;
         }
+    private:
+        void GetAllIndexes( std::vector<std::shared_ptr<IndexInfo>>& result ) const
+        {
+            auto baseClass = BaseClass( );
+            if ( baseClass )
+            {
+                baseClass->GetAllIndexes( result );
+            }
+            result.append_range( indexes_ );
+        }
+    public:
+        std::vector<std::shared_ptr<IndexInfo>> AllIndexes( ) const
+        {
+            std::vector<std::shared_ptr<IndexInfo>> result;
+            GetAllIndexes( result );
+            return result;
+        }
 
         const std::shared_ptr<MemberInfo> PrimaryKey( ) const
         {

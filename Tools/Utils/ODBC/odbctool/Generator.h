@@ -584,17 +584,17 @@ namespace Harlinn::ODBC::Tool
     // ------------------------------------------------------------------------
     // C#
     // ------------------------------------------------------------------------
-    class CSharpDatabaseGenerator;
+    class CSharpSqlServerDatabaseGenerator;
     class CSharpDataGenerator;
     class CSharpGenerator;
 
     
-    class CSharpDatabaseReadersGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpDatabaseReadersOptions>
+    class CSharpSqlServerSimpleDatabaseReadersGenerator : public CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerSimpleDatabaseReadersOptions>
     {
     public:
-        using Base = CodeGenerator<CSharpDatabaseGenerator, CSharpDatabaseReadersOptions>;
+        using Base = CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerSimpleDatabaseReadersOptions>;
 
-        inline CSharpDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner );
+        inline CSharpSqlServerSimpleDatabaseReadersGenerator( const CSharpSqlServerDatabaseGenerator& owner );
 
         void Run( );
     private:
@@ -606,12 +606,12 @@ namespace Harlinn::ODBC::Tool
         void CreateGetDataObject( const ClassInfo& classInfo );
     };
 
-    class CSharpComplexDatabaseReadersGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpComplexDatabaseReadersOptions>
+    class CSharpSqlServerComplexDatabaseReadersGenerator : public CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerComplexDatabaseReadersOptions>
     {
     public:
-        using Base = CodeGenerator<CSharpDatabaseGenerator, CSharpComplexDatabaseReadersOptions>;
+        using Base = CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerComplexDatabaseReadersOptions>;
 
-        inline CSharpComplexDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner );
+        inline CSharpSqlServerComplexDatabaseReadersGenerator( const CSharpSqlServerDatabaseGenerator& owner );
 
         void Run( );
     private:
@@ -626,12 +626,12 @@ namespace Harlinn::ODBC::Tool
 
     };
 
-    class CSharpStoredProceduresGenerator : public CodeGenerator<CSharpDatabaseGenerator, CSharpStoredProceduresOptions>
+    class CSharpSqlServerStoredProceduresGenerator : public CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerStoredProceduresOptions>
     {
     public:
-        using Base = CodeGenerator<CSharpDatabaseGenerator, CSharpStoredProceduresOptions>;
+        using Base = CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerStoredProceduresOptions>;
 
-        inline CSharpStoredProceduresGenerator( const CSharpDatabaseGenerator& owner );
+        inline CSharpSqlServerStoredProceduresGenerator( const CSharpSqlServerDatabaseGenerator& owner );
 
         void Run( );
     private:
@@ -651,35 +651,66 @@ namespace Harlinn::ODBC::Tool
         void CreateMergeDataObject( );
     };
 
-    class CSharpDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>
-    {
-        CSharpDatabaseReadersGenerator databaseReaders_;
-        CSharpComplexDatabaseReadersGenerator complexDatabaseReaders_;
-        CSharpStoredProceduresGenerator storedProcedures_;
-    public:
-        using Base = GeneratorContainer<CSharpGenerator, CSharpDatabaseOptions>;
 
-        inline CSharpDatabaseGenerator( const CSharpGenerator& owner );
+    class CSharpSqlServerDataContextGenerator : public CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerDataContextOptions>
+    {
+        std::set<WideString> functions_;
+    public:
+        using Base = CodeGenerator<CSharpSqlServerDatabaseGenerator, CSharpSqlServerDataContextOptions>;
+
+        inline CSharpSqlServerDataContextGenerator( const CSharpSqlServerDatabaseGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateMembers( const ClassInfo& classInfo );
+        void CreateGetById( const ClassInfo& classInfo );
+        void CreateGetAll( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+    };
+
+
+    class CSharpSqlServerDatabaseGenerator : public GeneratorContainer<CSharpGenerator, CSharpSqlServerDatabaseOptions>
+    {
+        CSharpSqlServerSimpleDatabaseReadersGenerator databaseReaders_;
+        CSharpSqlServerComplexDatabaseReadersGenerator complexDatabaseReaders_;
+        CSharpSqlServerStoredProceduresGenerator storedProcedures_;
+        CSharpSqlServerDataContextGenerator dataContext_;
+    public:
+        using Base = GeneratorContainer<CSharpGenerator, CSharpSqlServerDatabaseOptions>;
+
+        inline CSharpSqlServerDatabaseGenerator( const CSharpGenerator& owner );
 
         void Run( )
         {
             databaseReaders_.Run( );
             complexDatabaseReaders_.Run( );
             storedProcedures_.Run( );
+            dataContext_.Run( );
         }
 
     };
 
-    inline CSharpDatabaseReadersGenerator::CSharpDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner )
+    inline CSharpSqlServerSimpleDatabaseReadersGenerator::CSharpSqlServerSimpleDatabaseReadersGenerator( const CSharpSqlServerDatabaseGenerator& owner )
         : Base( owner, owner.Options().DatabaseReaders() )
     { }
 
-    inline CSharpComplexDatabaseReadersGenerator::CSharpComplexDatabaseReadersGenerator( const CSharpDatabaseGenerator& owner )
+    inline CSharpSqlServerComplexDatabaseReadersGenerator::CSharpSqlServerComplexDatabaseReadersGenerator( const CSharpSqlServerDatabaseGenerator& owner )
         : Base( owner, owner.Options( ).ComplexDatabaseReaders( ) )
     {
     }
-    inline CSharpStoredProceduresGenerator::CSharpStoredProceduresGenerator( const CSharpDatabaseGenerator& owner )
+    inline CSharpSqlServerStoredProceduresGenerator::CSharpSqlServerStoredProceduresGenerator( const CSharpSqlServerDatabaseGenerator& owner )
         : Base( owner, owner.Options( ).StoredProcedures() )
+    {
+    }
+
+    inline CSharpSqlServerDataContextGenerator::CSharpSqlServerDataContextGenerator( const CSharpSqlServerDatabaseGenerator& owner )
+        : Base( owner, owner.Options( ).DataContext( ) )
     {
     }
 
@@ -714,11 +745,35 @@ namespace Harlinn::ODBC::Tool
         void CreateFactory( );
     };
 
+    class CSharpIDataContextGenerator : public CodeGenerator<CSharpDataGenerator, CSharpIDataContextOptions>
+    {
+        std::set<WideString> functions_;
+    public:
+        using Base = CodeGenerator<CSharpDataGenerator, CSharpIDataContextOptions>;
+
+        inline CSharpIDataContextGenerator( const CSharpDataGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateMembers( const ClassInfo& classInfo );
+        void CreateGetById( const ClassInfo& classInfo );
+        void CreateGetAll( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+    };
+
+
     
     class CSharpDataGenerator : public GeneratorContainer<CSharpGenerator, CSharpDataOptions>
     {
         CSharpEnumsGenerator enums_;
         CSharpDataTypesGenerator dataTypes_;
+        CSharpIDataContextGenerator dataContext_;
     public:
         using Base = GeneratorContainer<CSharpGenerator, CSharpDataOptions>;
 
@@ -728,6 +783,7 @@ namespace Harlinn::ODBC::Tool
         {
             enums_.Run( );
             dataTypes_.Run( );
+            dataContext_.Run( );
         }
     };
 
@@ -740,13 +796,18 @@ namespace Harlinn::ODBC::Tool
         : Base(owner, owner.Options().DataTypes())
     { }
 
+    inline CSharpIDataContextGenerator::CSharpIDataContextGenerator( const CSharpDataGenerator& owner )
+        : Base( owner, owner.Options( ).DataContext( ) )
+    {
+    }
+
     
 
 
     class CSharpGenerator : public GeneratorContainer<Generator, CSharpOptions>
     {
         CSharpDataGenerator data_;
-        CSharpDatabaseGenerator database_;
+        CSharpSqlServerDatabaseGenerator database_;
     public:
         using Base = GeneratorContainer<Generator, CSharpOptions>;
 
@@ -760,13 +821,13 @@ namespace Harlinn::ODBC::Tool
 
     };
 
-    inline CSharpDatabaseGenerator::CSharpDatabaseGenerator( const CSharpGenerator& owner )
-        : Base( owner, owner.Options( ).Database( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this)
+    inline CSharpSqlServerDatabaseGenerator::CSharpSqlServerDatabaseGenerator( const CSharpGenerator& owner )
+        : Base( owner, owner.Options( ).SqlServerDatabase( ) ), databaseReaders_(*this), complexDatabaseReaders_(*this), storedProcedures_(*this), dataContext_( *this )
     {
     }
 
     inline CSharpDataGenerator::CSharpDataGenerator( const CSharpGenerator& owner )
-        : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this)
+        : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this), dataContext_( *this )
     { }
 
 
