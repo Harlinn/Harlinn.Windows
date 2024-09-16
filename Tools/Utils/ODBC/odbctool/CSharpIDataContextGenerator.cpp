@@ -123,7 +123,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
+            auto returnType = className + L"?";
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
             {
                 returnType = Format( L"IList<{}>", className );
@@ -153,7 +153,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
+            auto returnType = className + L"?";
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
             {
                 returnType = Format( L"IList<{}>", className );
@@ -169,11 +169,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
-            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
-            {
-                returnType = Format( L"IList<{}>", className );
-            }
+            auto returnType = Format( L"IList<{}>", className );
             auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             WriteLine( L"        {} {}( {} );", returnType, functionName, arguments );
         }
@@ -185,11 +181,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
-            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
-            {
-                returnType = Format( L"IList<{}>", className );
-            }
+            auto returnType = Format( L"IList<{}>", className );
             auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             WriteLine( L"        {} {}( {} );", returnType, functionName, arguments );
         }
@@ -201,11 +193,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
-            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
-            {
-                returnType = Format( L"IList<{}>", className );
-            }
+            auto returnType = Format( L"IList<{}>", className );
             auto arguments = CSharpHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
             WriteLine( L"        {} {}( {} );", returnType, functionName, arguments );
         }

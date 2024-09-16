@@ -18,7 +18,7 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         AircraftTypeObject? GetAircraftTypeById( Guid id );
         IList<AircraftTypeObject> GetAircraftTypeCollection( );
-        AircraftTypeObject GetAircraftTypeByName( string name );
+        AircraftTypeObject? GetAircraftTypeByName( string name );
         // ---------------------------------------------------------------------
         // AisDeviceCommand queries
         // ---------------------------------------------------------------------
@@ -53,18 +53,18 @@ namespace Barrelman.Data.Types
         IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        AisDeviceCommandReplyObject GetAisDeviceCommandReplyByCommand( Guid command );
+        AisDeviceCommandReplyObject? GetAisDeviceCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // AisDeviceConfiguration queries
         // ---------------------------------------------------------------------
         AisDeviceConfigurationObject? GetAisDeviceConfigurationById( Guid id );
         IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationCollection( );
         IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationCollectionByAisDevice( Guid aisDevice );
-        AisDeviceConfigurationObject GetAisDeviceConfigurationByAisDeviceAndTimestamp( Guid aisDevice, DateTime timestamp );
-        AisDeviceConfigurationObject GetAisDeviceConfigurationByAisDeviceAtTimestamp( Guid aisDevice, DateTime timestamp );
-        AisDeviceConfigurationObject GetAisDeviceConfigurationByAisDeviceFromTimestamp( Guid aisDevice, DateTime timestamp );
-        AisDeviceConfigurationObject GetAisDeviceConfigurationByAisDeviceUntilTimestamp( Guid aisDevice, DateTime timestamp );
-        AisDeviceConfigurationObject GetAisDeviceConfigurationByAisDeviceOverTimestamp( Guid aisDevice, DateTime fromTimestamp, DateTime untilTimestamp );
+        AisDeviceConfigurationObject? GetAisDeviceConfigurationByAisDeviceAndTimestamp( Guid aisDevice, DateTime timestamp );
+        AisDeviceConfigurationObject? GetAisDeviceConfigurationByAisDeviceAtTimestamp( Guid aisDevice, DateTime timestamp );
+        IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationByAisDeviceFromTimestamp( Guid aisDevice, DateTime timestamp );
+        IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationByAisDeviceUntilTimestamp( Guid aisDevice, DateTime timestamp );
+        IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationByAisDeviceOverTimestamp( Guid aisDevice, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<AisDeviceConfigurationObject> GetAisDeviceConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -108,11 +108,11 @@ namespace Barrelman.Data.Types
         AisMessageObject? GetAisMessageById( Guid id );
         IList<AisMessageObject> GetAisMessageCollection( );
         IList<AisMessageObject> GetAisMessageCollectionByAisDevice( Guid aisDevice );
-        AisMessageObject GetAisMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisMessageObject GetAisMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisMessageObject GetAisMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisMessageObject GetAisMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisMessageObject GetAisMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisMessageObject? GetAisMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisMessageObject? GetAisMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisMessageObject> GetAisMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisMessageObject> GetAisMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisMessageObject> GetAisMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisMessageObject> GetAisMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisMessageObject> GetAisMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisMessageObject> GetAisMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -129,11 +129,11 @@ namespace Barrelman.Data.Types
         AidToNavigationReportMessageObject? GetAidToNavigationReportMessageById( Guid id );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollection( );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByAisDevice( Guid aisDevice );
-        AidToNavigationReportMessageObject GetAidToNavigationReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AidToNavigationReportMessageObject GetAidToNavigationReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AidToNavigationReportMessageObject GetAidToNavigationReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AidToNavigationReportMessageObject GetAidToNavigationReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AidToNavigationReportMessageObject GetAidToNavigationReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AidToNavigationReportMessageObject? GetAidToNavigationReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AidToNavigationReportMessageObject? GetAidToNavigationReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -150,11 +150,11 @@ namespace Barrelman.Data.Types
         AisAddressedSafetyRelatedMessageObject? GetAisAddressedSafetyRelatedMessageById( Guid id );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollection( );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByAisDevice( Guid aisDevice );
-        AisAddressedSafetyRelatedMessageObject GetAisAddressedSafetyRelatedMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisAddressedSafetyRelatedMessageObject GetAisAddressedSafetyRelatedMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisAddressedSafetyRelatedMessageObject GetAisAddressedSafetyRelatedMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisAddressedSafetyRelatedMessageObject GetAisAddressedSafetyRelatedMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisAddressedSafetyRelatedMessageObject GetAisAddressedSafetyRelatedMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisAddressedSafetyRelatedMessageObject? GetAisAddressedSafetyRelatedMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisAddressedSafetyRelatedMessageObject? GetAisAddressedSafetyRelatedMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -172,11 +172,11 @@ namespace Barrelman.Data.Types
         AisBaseStationReportMessageObject? GetAisBaseStationReportMessageById( Guid id );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollection( );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByAisDevice( Guid aisDevice );
-        AisBaseStationReportMessageObject GetAisBaseStationReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBaseStationReportMessageObject GetAisBaseStationReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBaseStationReportMessageObject GetAisBaseStationReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBaseStationReportMessageObject GetAisBaseStationReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBaseStationReportMessageObject GetAisBaseStationReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisBaseStationReportMessageObject? GetAisBaseStationReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisBaseStationReportMessageObject? GetAisBaseStationReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -193,11 +193,11 @@ namespace Barrelman.Data.Types
         AisBinaryAcknowledgeMessageObject? GetAisBinaryAcknowledgeMessageById( Guid id );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollection( );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByAisDevice( Guid aisDevice );
-        AisBinaryAcknowledgeMessageObject GetAisBinaryAcknowledgeMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAcknowledgeMessageObject GetAisBinaryAcknowledgeMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAcknowledgeMessageObject GetAisBinaryAcknowledgeMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAcknowledgeMessageObject GetAisBinaryAcknowledgeMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAcknowledgeMessageObject GetAisBinaryAcknowledgeMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisBinaryAcknowledgeMessageObject? GetAisBinaryAcknowledgeMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisBinaryAcknowledgeMessageObject? GetAisBinaryAcknowledgeMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -214,11 +214,11 @@ namespace Barrelman.Data.Types
         AisBinaryAddressedMessageObject? GetAisBinaryAddressedMessageById( Guid id );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollection( );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByAisDevice( Guid aisDevice );
-        AisBinaryAddressedMessageObject GetAisBinaryAddressedMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAddressedMessageObject GetAisBinaryAddressedMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAddressedMessageObject GetAisBinaryAddressedMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAddressedMessageObject GetAisBinaryAddressedMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryAddressedMessageObject GetAisBinaryAddressedMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisBinaryAddressedMessageObject? GetAisBinaryAddressedMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisBinaryAddressedMessageObject? GetAisBinaryAddressedMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -236,11 +236,11 @@ namespace Barrelman.Data.Types
         AisBinaryBroadcastMessageObject? GetAisBinaryBroadcastMessageById( Guid id );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollection( );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByAisDevice( Guid aisDevice );
-        AisBinaryBroadcastMessageObject GetAisBinaryBroadcastMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryBroadcastMessageObject GetAisBinaryBroadcastMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryBroadcastMessageObject GetAisBinaryBroadcastMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryBroadcastMessageObject GetAisBinaryBroadcastMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisBinaryBroadcastMessageObject GetAisBinaryBroadcastMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisBinaryBroadcastMessageObject? GetAisBinaryBroadcastMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisBinaryBroadcastMessageObject? GetAisBinaryBroadcastMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -257,11 +257,11 @@ namespace Barrelman.Data.Types
         AisDataLinkManagementMessageObject? GetAisDataLinkManagementMessageById( Guid id );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollection( );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByAisDevice( Guid aisDevice );
-        AisDataLinkManagementMessageObject GetAisDataLinkManagementMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisDataLinkManagementMessageObject GetAisDataLinkManagementMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisDataLinkManagementMessageObject GetAisDataLinkManagementMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisDataLinkManagementMessageObject GetAisDataLinkManagementMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisDataLinkManagementMessageObject GetAisDataLinkManagementMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisDataLinkManagementMessageObject? GetAisDataLinkManagementMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisDataLinkManagementMessageObject? GetAisDataLinkManagementMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -278,11 +278,11 @@ namespace Barrelman.Data.Types
         AisExtendedClassBCsPositionReportMessageObject? GetAisExtendedClassBCsPositionReportMessageById( Guid id );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollection( );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByAisDevice( Guid aisDevice );
-        AisExtendedClassBCsPositionReportMessageObject GetAisExtendedClassBCsPositionReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisExtendedClassBCsPositionReportMessageObject GetAisExtendedClassBCsPositionReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisExtendedClassBCsPositionReportMessageObject GetAisExtendedClassBCsPositionReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisExtendedClassBCsPositionReportMessageObject GetAisExtendedClassBCsPositionReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisExtendedClassBCsPositionReportMessageObject GetAisExtendedClassBCsPositionReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisExtendedClassBCsPositionReportMessageObject? GetAisExtendedClassBCsPositionReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisExtendedClassBCsPositionReportMessageObject? GetAisExtendedClassBCsPositionReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -300,11 +300,11 @@ namespace Barrelman.Data.Types
         AisInterrogationMessageObject? GetAisInterrogationMessageById( Guid id );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollection( );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByAisDevice( Guid aisDevice );
-        AisInterrogationMessageObject GetAisInterrogationMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisInterrogationMessageObject GetAisInterrogationMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisInterrogationMessageObject GetAisInterrogationMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisInterrogationMessageObject GetAisInterrogationMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisInterrogationMessageObject GetAisInterrogationMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisInterrogationMessageObject? GetAisInterrogationMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisInterrogationMessageObject? GetAisInterrogationMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -321,11 +321,11 @@ namespace Barrelman.Data.Types
         AisPositionReportClassAMessageBaseObject? GetAisPositionReportClassAMessageBaseById( Guid id );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollection( );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByAisDevice( Guid aisDevice );
-        AisPositionReportClassAMessageBaseObject GetAisPositionReportClassAMessageBaseByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageBaseObject GetAisPositionReportClassAMessageBaseByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageBaseObject GetAisPositionReportClassAMessageBaseByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageBaseObject GetAisPositionReportClassAMessageBaseByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageBaseObject GetAisPositionReportClassAMessageBaseByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisPositionReportClassAMessageBaseObject? GetAisPositionReportClassAMessageBaseByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisPositionReportClassAMessageBaseObject? GetAisPositionReportClassAMessageBaseByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -342,11 +342,11 @@ namespace Barrelman.Data.Types
         AisPositionReportClassAAssignedScheduleMessageObject? GetAisPositionReportClassAAssignedScheduleMessageById( Guid id );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollection( );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByAisDevice( Guid aisDevice );
-        AisPositionReportClassAAssignedScheduleMessageObject GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAAssignedScheduleMessageObject GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAAssignedScheduleMessageObject GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAAssignedScheduleMessageObject GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAAssignedScheduleMessageObject GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisPositionReportClassAAssignedScheduleMessageObject? GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisPositionReportClassAAssignedScheduleMessageObject? GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -363,11 +363,11 @@ namespace Barrelman.Data.Types
         AisPositionReportClassAMessageObject? GetAisPositionReportClassAMessageById( Guid id );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollection( );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByAisDevice( Guid aisDevice );
-        AisPositionReportClassAMessageObject GetAisPositionReportClassAMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageObject GetAisPositionReportClassAMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageObject GetAisPositionReportClassAMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageObject GetAisPositionReportClassAMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAMessageObject GetAisPositionReportClassAMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisPositionReportClassAMessageObject? GetAisPositionReportClassAMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisPositionReportClassAMessageObject? GetAisPositionReportClassAMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -384,11 +384,11 @@ namespace Barrelman.Data.Types
         AisPositionReportClassAResponseToInterrogationMessageObject? GetAisPositionReportClassAResponseToInterrogationMessageById( Guid id );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollection( );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByAisDevice( Guid aisDevice );
-        AisPositionReportClassAResponseToInterrogationMessageObject GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAResponseToInterrogationMessageObject GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAResponseToInterrogationMessageObject GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAResponseToInterrogationMessageObject GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportClassAResponseToInterrogationMessageObject GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisPositionReportClassAResponseToInterrogationMessageObject? GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisPositionReportClassAResponseToInterrogationMessageObject? GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -405,11 +405,11 @@ namespace Barrelman.Data.Types
         AisPositionReportForLongRangeApplicationsMessageObject? GetAisPositionReportForLongRangeApplicationsMessageById( Guid id );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollection( );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByAisDevice( Guid aisDevice );
-        AisPositionReportForLongRangeApplicationsMessageObject GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportForLongRangeApplicationsMessageObject GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportForLongRangeApplicationsMessageObject GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportForLongRangeApplicationsMessageObject GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisPositionReportForLongRangeApplicationsMessageObject GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisPositionReportForLongRangeApplicationsMessageObject? GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisPositionReportForLongRangeApplicationsMessageObject? GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -426,11 +426,11 @@ namespace Barrelman.Data.Types
         AisSafetyRelatedAcknowledgmentMessageObject? GetAisSafetyRelatedAcknowledgmentMessageById( Guid id );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollection( );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByAisDevice( Guid aisDevice );
-        AisSafetyRelatedAcknowledgmentMessageObject GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisSafetyRelatedAcknowledgmentMessageObject GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisSafetyRelatedAcknowledgmentMessageObject GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisSafetyRelatedAcknowledgmentMessageObject GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisSafetyRelatedAcknowledgmentMessageObject GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisSafetyRelatedAcknowledgmentMessageObject? GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisSafetyRelatedAcknowledgmentMessageObject? GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -447,11 +447,11 @@ namespace Barrelman.Data.Types
         AisStandardClassBCsPositionReportMessageObject? GetAisStandardClassBCsPositionReportMessageById( Guid id );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollection( );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByAisDevice( Guid aisDevice );
-        AisStandardClassBCsPositionReportMessageObject GetAisStandardClassBCsPositionReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardClassBCsPositionReportMessageObject GetAisStandardClassBCsPositionReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardClassBCsPositionReportMessageObject GetAisStandardClassBCsPositionReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardClassBCsPositionReportMessageObject GetAisStandardClassBCsPositionReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardClassBCsPositionReportMessageObject GetAisStandardClassBCsPositionReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisStandardClassBCsPositionReportMessageObject? GetAisStandardClassBCsPositionReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisStandardClassBCsPositionReportMessageObject? GetAisStandardClassBCsPositionReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -468,11 +468,11 @@ namespace Barrelman.Data.Types
         AisStandardSarAircraftPositionReportMessageObject? GetAisStandardSarAircraftPositionReportMessageById( Guid id );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollection( );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByAisDevice( Guid aisDevice );
-        AisStandardSarAircraftPositionReportMessageObject GetAisStandardSarAircraftPositionReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardSarAircraftPositionReportMessageObject GetAisStandardSarAircraftPositionReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardSarAircraftPositionReportMessageObject GetAisStandardSarAircraftPositionReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardSarAircraftPositionReportMessageObject GetAisStandardSarAircraftPositionReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStandardSarAircraftPositionReportMessageObject GetAisStandardSarAircraftPositionReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisStandardSarAircraftPositionReportMessageObject? GetAisStandardSarAircraftPositionReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisStandardSarAircraftPositionReportMessageObject? GetAisStandardSarAircraftPositionReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -489,11 +489,11 @@ namespace Barrelman.Data.Types
         AisStaticAndVoyageRelatedDataMessageObject? GetAisStaticAndVoyageRelatedDataMessageById( Guid id );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollection( );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByAisDevice( Guid aisDevice );
-        AisStaticAndVoyageRelatedDataMessageObject GetAisStaticAndVoyageRelatedDataMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticAndVoyageRelatedDataMessageObject GetAisStaticAndVoyageRelatedDataMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticAndVoyageRelatedDataMessageObject GetAisStaticAndVoyageRelatedDataMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticAndVoyageRelatedDataMessageObject GetAisStaticAndVoyageRelatedDataMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticAndVoyageRelatedDataMessageObject GetAisStaticAndVoyageRelatedDataMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisStaticAndVoyageRelatedDataMessageObject? GetAisStaticAndVoyageRelatedDataMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisStaticAndVoyageRelatedDataMessageObject? GetAisStaticAndVoyageRelatedDataMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -513,11 +513,11 @@ namespace Barrelman.Data.Types
         AisStaticDataReportMessageObject? GetAisStaticDataReportMessageById( Guid id );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollection( );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByAisDevice( Guid aisDevice );
-        AisStaticDataReportMessageObject GetAisStaticDataReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportMessageObject GetAisStaticDataReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportMessageObject GetAisStaticDataReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportMessageObject GetAisStaticDataReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportMessageObject GetAisStaticDataReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisStaticDataReportMessageObject? GetAisStaticDataReportMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisStaticDataReportMessageObject? GetAisStaticDataReportMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -534,11 +534,11 @@ namespace Barrelman.Data.Types
         AisStaticDataReportPartAMessageObject? GetAisStaticDataReportPartAMessageById( Guid id );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollection( );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByAisDevice( Guid aisDevice );
-        AisStaticDataReportPartAMessageObject GetAisStaticDataReportPartAMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartAMessageObject GetAisStaticDataReportPartAMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartAMessageObject GetAisStaticDataReportPartAMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartAMessageObject GetAisStaticDataReportPartAMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartAMessageObject GetAisStaticDataReportPartAMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisStaticDataReportPartAMessageObject? GetAisStaticDataReportPartAMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisStaticDataReportPartAMessageObject? GetAisStaticDataReportPartAMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -556,11 +556,11 @@ namespace Barrelman.Data.Types
         AisStaticDataReportPartBMessageObject? GetAisStaticDataReportPartBMessageById( Guid id );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollection( );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByAisDevice( Guid aisDevice );
-        AisStaticDataReportPartBMessageObject GetAisStaticDataReportPartBMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartBMessageObject GetAisStaticDataReportPartBMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartBMessageObject GetAisStaticDataReportPartBMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartBMessageObject GetAisStaticDataReportPartBMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisStaticDataReportPartBMessageObject GetAisStaticDataReportPartBMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisStaticDataReportPartBMessageObject? GetAisStaticDataReportPartBMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisStaticDataReportPartBMessageObject? GetAisStaticDataReportPartBMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -580,11 +580,11 @@ namespace Barrelman.Data.Types
         AisUtcAndDateInquiryMessageObject? GetAisUtcAndDateInquiryMessageById( Guid id );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollection( );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByAisDevice( Guid aisDevice );
-        AisUtcAndDateInquiryMessageObject GetAisUtcAndDateInquiryMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateInquiryMessageObject GetAisUtcAndDateInquiryMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateInquiryMessageObject GetAisUtcAndDateInquiryMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateInquiryMessageObject GetAisUtcAndDateInquiryMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateInquiryMessageObject GetAisUtcAndDateInquiryMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisUtcAndDateInquiryMessageObject? GetAisUtcAndDateInquiryMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisUtcAndDateInquiryMessageObject? GetAisUtcAndDateInquiryMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -601,11 +601,11 @@ namespace Barrelman.Data.Types
         AisUtcAndDateResponseMessageObject? GetAisUtcAndDateResponseMessageById( Guid id );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollection( );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByAisDevice( Guid aisDevice );
-        AisUtcAndDateResponseMessageObject GetAisUtcAndDateResponseMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateResponseMessageObject GetAisUtcAndDateResponseMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateResponseMessageObject GetAisUtcAndDateResponseMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateResponseMessageObject GetAisUtcAndDateResponseMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
-        AisUtcAndDateResponseMessageObject GetAisUtcAndDateResponseMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
+        AisUtcAndDateResponseMessageObject? GetAisUtcAndDateResponseMessageByAisDeviceAndReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        AisUtcAndDateResponseMessageObject? GetAisUtcAndDateResponseMessageByAisDeviceAtReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageByAisDeviceFromReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageByAisDeviceUntilReceivedTimestamp( Guid aisDevice, DateTime receivedTimestamp );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageByAisDeviceOverReceivedTimestamp( Guid aisDevice, DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionAtReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
@@ -622,11 +622,11 @@ namespace Barrelman.Data.Types
         AlarmStateChangeObject? GetAlarmStateChangeById( Guid id );
         IList<AlarmStateChangeObject> GetAlarmStateChangeCollection( );
         IList<AlarmStateChangeObject> GetAlarmStateChangeCollectionByAlarm( Guid alarm );
-        AlarmStateChangeObject GetAlarmStateChangeByAlarmAndTimestamp( Guid alarm, DateTime timestamp );
-        AlarmStateChangeObject GetAlarmStateChangeByAlarmAtTimestamp( Guid alarm, DateTime timestamp );
-        AlarmStateChangeObject GetAlarmStateChangeByAlarmFromTimestamp( Guid alarm, DateTime timestamp );
-        AlarmStateChangeObject GetAlarmStateChangeByAlarmUntilTimestamp( Guid alarm, DateTime timestamp );
-        AlarmStateChangeObject GetAlarmStateChangeByAlarmOverTimestamp( Guid alarm, DateTime fromTimestamp, DateTime untilTimestamp );
+        AlarmStateChangeObject? GetAlarmStateChangeByAlarmAndTimestamp( Guid alarm, DateTime timestamp );
+        AlarmStateChangeObject? GetAlarmStateChangeByAlarmAtTimestamp( Guid alarm, DateTime timestamp );
+        IList<AlarmStateChangeObject> GetAlarmStateChangeByAlarmFromTimestamp( Guid alarm, DateTime timestamp );
+        IList<AlarmStateChangeObject> GetAlarmStateChangeByAlarmUntilTimestamp( Guid alarm, DateTime timestamp );
+        IList<AlarmStateChangeObject> GetAlarmStateChangeByAlarmOverTimestamp( Guid alarm, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<AlarmStateChangeObject> GetAlarmStateChangeCollectionByTimestamp( DateTime timestamp );
         IList<AlarmStateChangeObject> GetAlarmStateChangeCollectionAtTimestamp( DateTime timestamp );
         IList<AlarmStateChangeObject> GetAlarmStateChangeCollectionFromTimestamp( DateTime timestamp );
@@ -637,18 +637,18 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         BaseStationTypeObject? GetBaseStationTypeById( Guid id );
         IList<BaseStationTypeObject> GetBaseStationTypeCollection( );
-        BaseStationTypeObject GetBaseStationTypeByName( string name );
+        BaseStationTypeObject? GetBaseStationTypeByName( string name );
         // ---------------------------------------------------------------------
         // BinaryTimeseriesValue queries
         // ---------------------------------------------------------------------
         BinaryTimeseriesValueObject? GetBinaryTimeseriesValueById( Guid id );
         IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueCollection( );
         IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        BinaryTimeseriesValueObject GetBinaryTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        BinaryTimeseriesValueObject GetBinaryTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        BinaryTimeseriesValueObject GetBinaryTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        BinaryTimeseriesValueObject GetBinaryTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        BinaryTimeseriesValueObject GetBinaryTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        BinaryTimeseriesValueObject? GetBinaryTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        BinaryTimeseriesValueObject? GetBinaryTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<BinaryTimeseriesValueObject> GetBinaryTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -666,11 +666,11 @@ namespace Barrelman.Data.Types
         BooleanTimeseriesValueObject? GetBooleanTimeseriesValueById( Guid id );
         IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueCollection( );
         IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        BooleanTimeseriesValueObject GetBooleanTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        BooleanTimeseriesValueObject GetBooleanTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        BooleanTimeseriesValueObject GetBooleanTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        BooleanTimeseriesValueObject GetBooleanTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        BooleanTimeseriesValueObject GetBooleanTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        BooleanTimeseriesValueObject? GetBooleanTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        BooleanTimeseriesValueObject? GetBooleanTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<BooleanTimeseriesValueObject> GetBooleanTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -682,11 +682,11 @@ namespace Barrelman.Data.Types
         ByteTimeseriesValueObject? GetByteTimeseriesValueById( Guid id );
         IList<ByteTimeseriesValueObject> GetByteTimeseriesValueCollection( );
         IList<ByteTimeseriesValueObject> GetByteTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        ByteTimeseriesValueObject GetByteTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        ByteTimeseriesValueObject GetByteTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        ByteTimeseriesValueObject GetByteTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        ByteTimeseriesValueObject GetByteTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        ByteTimeseriesValueObject GetByteTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        ByteTimeseriesValueObject? GetByteTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        ByteTimeseriesValueObject? GetByteTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<ByteTimeseriesValueObject> GetByteTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<ByteTimeseriesValueObject> GetByteTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<ByteTimeseriesValueObject> GetByteTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ByteTimeseriesValueObject> GetByteTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<ByteTimeseriesValueObject> GetByteTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<ByteTimeseriesValueObject> GetByteTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -963,18 +963,18 @@ namespace Barrelman.Data.Types
         IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        CameraCommandReplyObject GetCameraCommandReplyByCommand( Guid command );
+        CameraCommandReplyObject? GetCameraCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // CameraConfiguration queries
         // ---------------------------------------------------------------------
         CameraConfigurationObject? GetCameraConfigurationById( Guid id );
         IList<CameraConfigurationObject> GetCameraConfigurationCollection( );
         IList<CameraConfigurationObject> GetCameraConfigurationCollectionByCamera( Guid camera );
-        CameraConfigurationObject GetCameraConfigurationByCameraAndTimestamp( Guid camera, DateTime timestamp );
-        CameraConfigurationObject GetCameraConfigurationByCameraAtTimestamp( Guid camera, DateTime timestamp );
-        CameraConfigurationObject GetCameraConfigurationByCameraFromTimestamp( Guid camera, DateTime timestamp );
-        CameraConfigurationObject GetCameraConfigurationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
-        CameraConfigurationObject GetCameraConfigurationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
+        CameraConfigurationObject? GetCameraConfigurationByCameraAndTimestamp( Guid camera, DateTime timestamp );
+        CameraConfigurationObject? GetCameraConfigurationByCameraAtTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraConfigurationObject> GetCameraConfigurationByCameraFromTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraConfigurationObject> GetCameraConfigurationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraConfigurationObject> GetCameraConfigurationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraConfigurationObject> GetCameraConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<CameraConfigurationObject> GetCameraConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<CameraConfigurationObject> GetCameraConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -986,11 +986,11 @@ namespace Barrelman.Data.Types
         CameraPanCalibrationObject? GetCameraPanCalibrationById( Guid id );
         IList<CameraPanCalibrationObject> GetCameraPanCalibrationCollection( );
         IList<CameraPanCalibrationObject> GetCameraPanCalibrationCollectionByCamera( Guid camera );
-        CameraPanCalibrationObject GetCameraPanCalibrationByCameraAndTimestamp( Guid camera, DateTime timestamp );
-        CameraPanCalibrationObject GetCameraPanCalibrationByCameraAtTimestamp( Guid camera, DateTime timestamp );
-        CameraPanCalibrationObject GetCameraPanCalibrationByCameraFromTimestamp( Guid camera, DateTime timestamp );
-        CameraPanCalibrationObject GetCameraPanCalibrationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
-        CameraPanCalibrationObject GetCameraPanCalibrationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
+        CameraPanCalibrationObject? GetCameraPanCalibrationByCameraAndTimestamp( Guid camera, DateTime timestamp );
+        CameraPanCalibrationObject? GetCameraPanCalibrationByCameraAtTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraPanCalibrationObject> GetCameraPanCalibrationByCameraFromTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraPanCalibrationObject> GetCameraPanCalibrationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraPanCalibrationObject> GetCameraPanCalibrationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraPanCalibrationObject> GetCameraPanCalibrationCollectionByTimestamp( DateTime timestamp );
         IList<CameraPanCalibrationObject> GetCameraPanCalibrationCollectionAtTimestamp( DateTime timestamp );
         IList<CameraPanCalibrationObject> GetCameraPanCalibrationCollectionFromTimestamp( DateTime timestamp );
@@ -1002,27 +1002,27 @@ namespace Barrelman.Data.Types
         CameraPanCalibrationValueObject? GetCameraPanCalibrationValueById( Guid id );
         IList<CameraPanCalibrationValueObject> GetCameraPanCalibrationValueCollection( );
         IList<CameraPanCalibrationValueObject> GetCameraPanCalibrationValueCollectionByPanCalibration( Guid panCalibration );
-        CameraPanCalibrationValueObject GetCameraPanCalibrationValueByPanCalibrationAndPanAngle( Guid panCalibration, double panAngle );
-        CameraPanCalibrationValueObject GetCameraPanCalibrationValueByPanCalibrationFromPanAngle( Guid panCalibration, double panAngle );
-        CameraPanCalibrationValueObject GetCameraPanCalibrationValueByPanCalibrationUntilPanAngle( Guid panCalibration, double panAngle );
-        CameraPanCalibrationValueObject GetCameraPanCalibrationValueByPanCalibrationOverPanAngle( Guid panCalibration, double fromPanAngle, double untilPanAngle );
+        CameraPanCalibrationValueObject? GetCameraPanCalibrationValueByPanCalibrationAndPanAngle( Guid panCalibration, double panAngle );
+        IList<CameraPanCalibrationValueObject> GetCameraPanCalibrationValueByPanCalibrationFromPanAngle( Guid panCalibration, double panAngle );
+        IList<CameraPanCalibrationValueObject> GetCameraPanCalibrationValueByPanCalibrationUntilPanAngle( Guid panCalibration, double panAngle );
+        IList<CameraPanCalibrationValueObject> GetCameraPanCalibrationValueByPanCalibrationOverPanAngle( Guid panCalibration, double fromPanAngle, double untilPanAngle );
         // ---------------------------------------------------------------------
         // CameraStatus queries
         // ---------------------------------------------------------------------
         CameraStatusObject? GetCameraStatusById( Guid id );
         IList<CameraStatusObject> GetCameraStatusCollection( );
         IList<CameraStatusObject> GetCameraStatusCollectionByCamera( Guid camera );
-        CameraStatusObject GetCameraStatusByCameraAndTimestamp( Guid camera, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByCameraAtTimestamp( Guid camera, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByCameraFromTimestamp( Guid camera, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByCameraUntilTimestamp( Guid camera, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
+        CameraStatusObject? GetCameraStatusByCameraAndTimestamp( Guid camera, DateTime timestamp );
+        CameraStatusObject? GetCameraStatusByCameraAtTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByCameraFromTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByCameraUntilTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraStatusObject> GetCameraStatusCollectionByTrack( Guid track );
-        CameraStatusObject GetCameraStatusByTrackAndTimestamp( Guid track, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByTrackAtTimestamp( Guid track, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByTrackFromTimestamp( Guid track, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByTrackUntilTimestamp( Guid track, DateTime timestamp );
-        CameraStatusObject GetCameraStatusByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
+        CameraStatusObject? GetCameraStatusByTrackAndTimestamp( Guid track, DateTime timestamp );
+        CameraStatusObject? GetCameraStatusByTrackAtTimestamp( Guid track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByTrackFromTimestamp( Guid track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByTrackUntilTimestamp( Guid track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraStatusObject> GetCameraStatusCollectionByTimestamp( DateTime timestamp );
         IList<CameraStatusObject> GetCameraStatusCollectionAtTimestamp( DateTime timestamp );
         IList<CameraStatusObject> GetCameraStatusCollectionFromTimestamp( DateTime timestamp );
@@ -1034,11 +1034,11 @@ namespace Barrelman.Data.Types
         CameraTiltCalibrationObject? GetCameraTiltCalibrationById( Guid id );
         IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationCollection( );
         IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationCollectionByCamera( Guid camera );
-        CameraTiltCalibrationObject GetCameraTiltCalibrationByCameraAndTimestamp( Guid camera, DateTime timestamp );
-        CameraTiltCalibrationObject GetCameraTiltCalibrationByCameraAtTimestamp( Guid camera, DateTime timestamp );
-        CameraTiltCalibrationObject GetCameraTiltCalibrationByCameraFromTimestamp( Guid camera, DateTime timestamp );
-        CameraTiltCalibrationObject GetCameraTiltCalibrationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
-        CameraTiltCalibrationObject GetCameraTiltCalibrationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
+        CameraTiltCalibrationObject? GetCameraTiltCalibrationByCameraAndTimestamp( Guid camera, DateTime timestamp );
+        CameraTiltCalibrationObject? GetCameraTiltCalibrationByCameraAtTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationByCameraFromTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationCollectionByTimestamp( DateTime timestamp );
         IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationCollectionAtTimestamp( DateTime timestamp );
         IList<CameraTiltCalibrationObject> GetCameraTiltCalibrationCollectionFromTimestamp( DateTime timestamp );
@@ -1050,21 +1050,21 @@ namespace Barrelman.Data.Types
         CameraTiltCalibrationValueObject? GetCameraTiltCalibrationValueById( Guid id );
         IList<CameraTiltCalibrationValueObject> GetCameraTiltCalibrationValueCollection( );
         IList<CameraTiltCalibrationValueObject> GetCameraTiltCalibrationValueCollectionByTiltCalibration( Guid tiltCalibration );
-        CameraTiltCalibrationValueObject GetCameraTiltCalibrationValueByTiltCalibrationAndPanAngle( Guid tiltCalibration, double panAngle );
-        CameraTiltCalibrationValueObject GetCameraTiltCalibrationValueByTiltCalibrationFromPanAngle( Guid tiltCalibration, double panAngle );
-        CameraTiltCalibrationValueObject GetCameraTiltCalibrationValueByTiltCalibrationUntilPanAngle( Guid tiltCalibration, double panAngle );
-        CameraTiltCalibrationValueObject GetCameraTiltCalibrationValueByTiltCalibrationOverPanAngle( Guid tiltCalibration, double fromPanAngle, double untilPanAngle );
+        CameraTiltCalibrationValueObject? GetCameraTiltCalibrationValueByTiltCalibrationAndPanAngle( Guid tiltCalibration, double panAngle );
+        IList<CameraTiltCalibrationValueObject> GetCameraTiltCalibrationValueByTiltCalibrationFromPanAngle( Guid tiltCalibration, double panAngle );
+        IList<CameraTiltCalibrationValueObject> GetCameraTiltCalibrationValueByTiltCalibrationUntilPanAngle( Guid tiltCalibration, double panAngle );
+        IList<CameraTiltCalibrationValueObject> GetCameraTiltCalibrationValueByTiltCalibrationOverPanAngle( Guid tiltCalibration, double fromPanAngle, double untilPanAngle );
         // ---------------------------------------------------------------------
         // CameraZoomCalibration queries
         // ---------------------------------------------------------------------
         CameraZoomCalibrationObject? GetCameraZoomCalibrationById( Guid id );
         IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationCollection( );
         IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationCollectionByCamera( Guid camera );
-        CameraZoomCalibrationObject GetCameraZoomCalibrationByCameraAndTimestamp( Guid camera, DateTime timestamp );
-        CameraZoomCalibrationObject GetCameraZoomCalibrationByCameraAtTimestamp( Guid camera, DateTime timestamp );
-        CameraZoomCalibrationObject GetCameraZoomCalibrationByCameraFromTimestamp( Guid camera, DateTime timestamp );
-        CameraZoomCalibrationObject GetCameraZoomCalibrationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
-        CameraZoomCalibrationObject GetCameraZoomCalibrationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
+        CameraZoomCalibrationObject? GetCameraZoomCalibrationByCameraAndTimestamp( Guid camera, DateTime timestamp );
+        CameraZoomCalibrationObject? GetCameraZoomCalibrationByCameraAtTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationByCameraFromTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationByCameraUntilTimestamp( Guid camera, DateTime timestamp );
+        IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationCollectionByTimestamp( DateTime timestamp );
         IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationCollectionAtTimestamp( DateTime timestamp );
         IList<CameraZoomCalibrationObject> GetCameraZoomCalibrationCollectionFromTimestamp( DateTime timestamp );
@@ -1076,31 +1076,31 @@ namespace Barrelman.Data.Types
         CameraZoomCalibrationValueObject? GetCameraZoomCalibrationValueById( Guid id );
         IList<CameraZoomCalibrationValueObject> GetCameraZoomCalibrationValueCollection( );
         IList<CameraZoomCalibrationValueObject> GetCameraZoomCalibrationValueCollectionByZoomCalibration( Guid zoomCalibration );
-        CameraZoomCalibrationValueObject GetCameraZoomCalibrationValueByZoomCalibrationAndFocalLength( Guid zoomCalibration, double focalLength );
-        CameraZoomCalibrationValueObject GetCameraZoomCalibrationValueByZoomCalibrationFromFocalLength( Guid zoomCalibration, double focalLength );
-        CameraZoomCalibrationValueObject GetCameraZoomCalibrationValueByZoomCalibrationUntilFocalLength( Guid zoomCalibration, double focalLength );
-        CameraZoomCalibrationValueObject GetCameraZoomCalibrationValueByZoomCalibrationOverFocalLength( Guid zoomCalibration, double fromFocalLength, double untilFocalLength );
+        CameraZoomCalibrationValueObject? GetCameraZoomCalibrationValueByZoomCalibrationAndFocalLength( Guid zoomCalibration, double focalLength );
+        IList<CameraZoomCalibrationValueObject> GetCameraZoomCalibrationValueByZoomCalibrationFromFocalLength( Guid zoomCalibration, double focalLength );
+        IList<CameraZoomCalibrationValueObject> GetCameraZoomCalibrationValueByZoomCalibrationUntilFocalLength( Guid zoomCalibration, double focalLength );
+        IList<CameraZoomCalibrationValueObject> GetCameraZoomCalibrationValueByZoomCalibrationOverFocalLength( Guid zoomCalibration, double fromFocalLength, double untilFocalLength );
         // ---------------------------------------------------------------------
         // CatalogElement queries
         // ---------------------------------------------------------------------
         CatalogElementObject? GetCatalogElementById( Guid id );
         IList<CatalogElementObject> GetCatalogElementCollection( );
         IList<CatalogElementObject> GetCatalogElementCollectionByCatalog( Guid catalog );
-        CatalogElementObject GetCatalogElementByCatalogAndName( Guid catalog, string name );
+        CatalogElementObject? GetCatalogElementByCatalogAndName( Guid catalog, string name );
         // ---------------------------------------------------------------------
         // Catalog queries
         // ---------------------------------------------------------------------
         CatalogObject? GetCatalogById( Guid id );
         IList<CatalogObject> GetCatalogCollection( );
         IList<CatalogObject> GetCatalogCollectionByCatalog( Guid catalog );
-        CatalogObject GetCatalogByCatalogAndName( Guid catalog, string name );
+        CatalogObject? GetCatalogByCatalogAndName( Guid catalog, string name );
         // ---------------------------------------------------------------------
         // Element queries
         // ---------------------------------------------------------------------
         ElementObject? GetElementById( Guid id );
         IList<ElementObject> GetElementCollection( );
         IList<ElementObject> GetElementCollectionByCatalog( Guid catalog );
-        ElementObject GetElementByCatalogAndName( Guid catalog, string name );
+        ElementObject? GetElementByCatalogAndName( Guid catalog, string name );
         IList<ElementObject> GetElementCollectionByElementType( Guid elementType );
         // ---------------------------------------------------------------------
         // CollectionInfo queries
@@ -1112,13 +1112,13 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         CountryObject? GetCountryById( Guid id );
         IList<CountryObject> GetCountryCollection( );
-        CountryObject GetCountryByName( string name );
-        CountryObject GetCountryByCode( int code );
-        CountryObject GetCountryFromCode( int code );
-        CountryObject GetCountryUntilCode( int code );
-        CountryObject GetCountryOverCode( int fromCode, int untilCode );
-        CountryObject GetCountryByAlpha2( string alpha2 );
-        CountryObject GetCountryByAlpha3( string alpha3 );
+        CountryObject? GetCountryByName( string name );
+        CountryObject? GetCountryByCode( int code );
+        IList<CountryObject> GetCountryFromCode( int code );
+        IList<CountryObject> GetCountryUntilCode( int code );
+        IList<CountryObject> GetCountryOverCode( int fromCode, int untilCode );
+        CountryObject? GetCountryByAlpha2( string alpha2 );
+        CountryObject? GetCountryByAlpha3( string alpha3 );
         // ---------------------------------------------------------------------
         // CursorInfo queries
         // ---------------------------------------------------------------------
@@ -1130,11 +1130,11 @@ namespace Barrelman.Data.Types
         DateTimeTimeseriesValueObject? GetDateTimeTimeseriesValueById( Guid id );
         IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueCollection( );
         IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        DateTimeTimeseriesValueObject GetDateTimeTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        DateTimeTimeseriesValueObject GetDateTimeTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        DateTimeTimeseriesValueObject GetDateTimeTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        DateTimeTimeseriesValueObject GetDateTimeTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        DateTimeTimeseriesValueObject GetDateTimeTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        DateTimeTimeseriesValueObject? GetDateTimeTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        DateTimeTimeseriesValueObject? GetDateTimeTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<DateTimeTimeseriesValueObject> GetDateTimeTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1145,18 +1145,18 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         DeviceHostObject? GetDeviceHostById( Guid id );
         IList<DeviceHostObject> GetDeviceHostCollection( );
-        DeviceHostObject GetDeviceHostByName( string name );
+        DeviceHostObject? GetDeviceHostByName( string name );
         // ---------------------------------------------------------------------
         // DeviceHostConfiguration queries
         // ---------------------------------------------------------------------
         DeviceHostConfigurationObject? GetDeviceHostConfigurationById( Guid id );
         IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationCollection( );
         IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationCollectionByHost( Guid host );
-        DeviceHostConfigurationObject GetDeviceHostConfigurationByHostAndTimestamp( Guid host, DateTime timestamp );
-        DeviceHostConfigurationObject GetDeviceHostConfigurationByHostAtTimestamp( Guid host, DateTime timestamp );
-        DeviceHostConfigurationObject GetDeviceHostConfigurationByHostFromTimestamp( Guid host, DateTime timestamp );
-        DeviceHostConfigurationObject GetDeviceHostConfigurationByHostUntilTimestamp( Guid host, DateTime timestamp );
-        DeviceHostConfigurationObject GetDeviceHostConfigurationByHostOverTimestamp( Guid host, DateTime fromTimestamp, DateTime untilTimestamp );
+        DeviceHostConfigurationObject? GetDeviceHostConfigurationByHostAndTimestamp( Guid host, DateTime timestamp );
+        DeviceHostConfigurationObject? GetDeviceHostConfigurationByHostAtTimestamp( Guid host, DateTime timestamp );
+        IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationByHostFromTimestamp( Guid host, DateTime timestamp );
+        IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationByHostUntilTimestamp( Guid host, DateTime timestamp );
+        IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationByHostOverTimestamp( Guid host, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<DeviceHostConfigurationObject> GetDeviceHostConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1168,11 +1168,11 @@ namespace Barrelman.Data.Types
         DoubleTimeseriesValueObject? GetDoubleTimeseriesValueById( Guid id );
         IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueCollection( );
         IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        DoubleTimeseriesValueObject GetDoubleTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        DoubleTimeseriesValueObject GetDoubleTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        DoubleTimeseriesValueObject GetDoubleTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        DoubleTimeseriesValueObject GetDoubleTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        DoubleTimeseriesValueObject GetDoubleTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        DoubleTimeseriesValueObject? GetDoubleTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        DoubleTimeseriesValueObject? GetDoubleTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<DoubleTimeseriesValueObject> GetDoubleTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1183,18 +1183,18 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         FacilityTypeObject? GetFacilityTypeById( Guid id );
         IList<FacilityTypeObject> GetFacilityTypeCollection( );
-        FacilityTypeObject GetFacilityTypeByName( string name );
+        FacilityTypeObject? GetFacilityTypeByName( string name );
         // ---------------------------------------------------------------------
         // GeoPosition2DTimeseriesValue queries
         // ---------------------------------------------------------------------
         GeoPosition2DTimeseriesValueObject? GetGeoPosition2DTimeseriesValueById( Guid id );
         IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueCollection( );
         IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        GeoPosition2DTimeseriesValueObject GetGeoPosition2DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition2DTimeseriesValueObject GetGeoPosition2DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition2DTimeseriesValueObject GetGeoPosition2DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition2DTimeseriesValueObject GetGeoPosition2DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition2DTimeseriesValueObject GetGeoPosition2DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        GeoPosition2DTimeseriesValueObject? GetGeoPosition2DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        GeoPosition2DTimeseriesValueObject? GetGeoPosition2DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<GeoPosition2DTimeseriesValueObject> GetGeoPosition2DTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1206,11 +1206,11 @@ namespace Barrelman.Data.Types
         GeoPosition3DTimeseriesValueObject? GetGeoPosition3DTimeseriesValueById( Guid id );
         IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueCollection( );
         IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        GeoPosition3DTimeseriesValueObject GetGeoPosition3DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition3DTimeseriesValueObject GetGeoPosition3DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition3DTimeseriesValueObject GetGeoPosition3DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition3DTimeseriesValueObject GetGeoPosition3DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        GeoPosition3DTimeseriesValueObject GetGeoPosition3DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        GeoPosition3DTimeseriesValueObject? GetGeoPosition3DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        GeoPosition3DTimeseriesValueObject? GetGeoPosition3DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<GeoPosition3DTimeseriesValueObject> GetGeoPosition3DTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1249,18 +1249,18 @@ namespace Barrelman.Data.Types
         IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        GNSSDeviceCommandReplyObject GetGNSSDeviceCommandReplyByCommand( Guid command );
+        GNSSDeviceCommandReplyObject? GetGNSSDeviceCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // GNSSDeviceConfiguration queries
         // ---------------------------------------------------------------------
         GNSSDeviceConfigurationObject? GetGNSSDeviceConfigurationById( Guid id );
         IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationCollection( );
         IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationCollectionByGNSSDevice( Guid gNSSDevice );
-        GNSSDeviceConfigurationObject GetGNSSDeviceConfigurationByGNSSDeviceAndTimestamp( Guid gNSSDevice, DateTime timestamp );
-        GNSSDeviceConfigurationObject GetGNSSDeviceConfigurationByGNSSDeviceAtTimestamp( Guid gNSSDevice, DateTime timestamp );
-        GNSSDeviceConfigurationObject GetGNSSDeviceConfigurationByGNSSDeviceFromTimestamp( Guid gNSSDevice, DateTime timestamp );
-        GNSSDeviceConfigurationObject GetGNSSDeviceConfigurationByGNSSDeviceUntilTimestamp( Guid gNSSDevice, DateTime timestamp );
-        GNSSDeviceConfigurationObject GetGNSSDeviceConfigurationByGNSSDeviceOverTimestamp( Guid gNSSDevice, DateTime fromTimestamp, DateTime untilTimestamp );
+        GNSSDeviceConfigurationObject? GetGNSSDeviceConfigurationByGNSSDeviceAndTimestamp( Guid gNSSDevice, DateTime timestamp );
+        GNSSDeviceConfigurationObject? GetGNSSDeviceConfigurationByGNSSDeviceAtTimestamp( Guid gNSSDevice, DateTime timestamp );
+        IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationByGNSSDeviceFromTimestamp( Guid gNSSDevice, DateTime timestamp );
+        IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationByGNSSDeviceUntilTimestamp( Guid gNSSDevice, DateTime timestamp );
+        IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationByGNSSDeviceOverTimestamp( Guid gNSSDevice, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<GNSSDeviceConfigurationObject> GetGNSSDeviceConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1272,11 +1272,11 @@ namespace Barrelman.Data.Types
         GuidTimeseriesValueObject? GetGuidTimeseriesValueById( Guid id );
         IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueCollection( );
         IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        GuidTimeseriesValueObject GetGuidTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        GuidTimeseriesValueObject GetGuidTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        GuidTimeseriesValueObject GetGuidTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        GuidTimeseriesValueObject GetGuidTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        GuidTimeseriesValueObject GetGuidTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        GuidTimeseriesValueObject? GetGuidTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        GuidTimeseriesValueObject? GetGuidTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<GuidTimeseriesValueObject> GetGuidTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1315,18 +1315,18 @@ namespace Barrelman.Data.Types
         IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        GyroDeviceCommandReplyObject GetGyroDeviceCommandReplyByCommand( Guid command );
+        GyroDeviceCommandReplyObject? GetGyroDeviceCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // GyroDeviceConfiguration queries
         // ---------------------------------------------------------------------
         GyroDeviceConfigurationObject? GetGyroDeviceConfigurationById( Guid id );
         IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationCollection( );
         IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationCollectionByGyroDevice( Guid gyroDevice );
-        GyroDeviceConfigurationObject GetGyroDeviceConfigurationByGyroDeviceAndTimestamp( Guid gyroDevice, DateTime timestamp );
-        GyroDeviceConfigurationObject GetGyroDeviceConfigurationByGyroDeviceAtTimestamp( Guid gyroDevice, DateTime timestamp );
-        GyroDeviceConfigurationObject GetGyroDeviceConfigurationByGyroDeviceFromTimestamp( Guid gyroDevice, DateTime timestamp );
-        GyroDeviceConfigurationObject GetGyroDeviceConfigurationByGyroDeviceUntilTimestamp( Guid gyroDevice, DateTime timestamp );
-        GyroDeviceConfigurationObject GetGyroDeviceConfigurationByGyroDeviceOverTimestamp( Guid gyroDevice, DateTime fromTimestamp, DateTime untilTimestamp );
+        GyroDeviceConfigurationObject? GetGyroDeviceConfigurationByGyroDeviceAndTimestamp( Guid gyroDevice, DateTime timestamp );
+        GyroDeviceConfigurationObject? GetGyroDeviceConfigurationByGyroDeviceAtTimestamp( Guid gyroDevice, DateTime timestamp );
+        IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationByGyroDeviceFromTimestamp( Guid gyroDevice, DateTime timestamp );
+        IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationByGyroDeviceUntilTimestamp( Guid gyroDevice, DateTime timestamp );
+        IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationByGyroDeviceOverTimestamp( Guid gyroDevice, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<GyroDeviceConfigurationObject> GetGyroDeviceConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1342,42 +1342,42 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         CallsignObject? GetCallsignById( Guid id );
         IList<CallsignObject> GetCallsignCollection( );
-        CallsignObject GetCallsignByIdentifier( string identifier );
+        CallsignObject? GetCallsignByIdentifier( string identifier );
         // ---------------------------------------------------------------------
         // InternationalMaritimeOrganizationNumber queries
         // ---------------------------------------------------------------------
         InternationalMaritimeOrganizationNumberObject? GetInternationalMaritimeOrganizationNumberById( Guid id );
         IList<InternationalMaritimeOrganizationNumberObject> GetInternationalMaritimeOrganizationNumberCollection( );
-        InternationalMaritimeOrganizationNumberObject GetInternationalMaritimeOrganizationNumberByIdentifier( long identifier );
-        InternationalMaritimeOrganizationNumberObject GetInternationalMaritimeOrganizationNumberFromIdentifier( long identifier );
-        InternationalMaritimeOrganizationNumberObject GetInternationalMaritimeOrganizationNumberUntilIdentifier( long identifier );
-        InternationalMaritimeOrganizationNumberObject GetInternationalMaritimeOrganizationNumberOverIdentifier( long fromIdentifier, long untilIdentifier );
+        InternationalMaritimeOrganizationNumberObject? GetInternationalMaritimeOrganizationNumberByIdentifier( long identifier );
+        IList<InternationalMaritimeOrganizationNumberObject> GetInternationalMaritimeOrganizationNumberFromIdentifier( long identifier );
+        IList<InternationalMaritimeOrganizationNumberObject> GetInternationalMaritimeOrganizationNumberUntilIdentifier( long identifier );
+        IList<InternationalMaritimeOrganizationNumberObject> GetInternationalMaritimeOrganizationNumberOverIdentifier( long fromIdentifier, long untilIdentifier );
         // ---------------------------------------------------------------------
         // MaritimeMobileServiceIdentity queries
         // ---------------------------------------------------------------------
         MaritimeMobileServiceIdentityObject? GetMaritimeMobileServiceIdentityById( Guid id );
         IList<MaritimeMobileServiceIdentityObject> GetMaritimeMobileServiceIdentityCollection( );
-        MaritimeMobileServiceIdentityObject GetMaritimeMobileServiceIdentityByIdentifier( long identifier );
-        MaritimeMobileServiceIdentityObject GetMaritimeMobileServiceIdentityFromIdentifier( long identifier );
-        MaritimeMobileServiceIdentityObject GetMaritimeMobileServiceIdentityUntilIdentifier( long identifier );
-        MaritimeMobileServiceIdentityObject GetMaritimeMobileServiceIdentityOverIdentifier( long fromIdentifier, long untilIdentifier );
+        MaritimeMobileServiceIdentityObject? GetMaritimeMobileServiceIdentityByIdentifier( long identifier );
+        IList<MaritimeMobileServiceIdentityObject> GetMaritimeMobileServiceIdentityFromIdentifier( long identifier );
+        IList<MaritimeMobileServiceIdentityObject> GetMaritimeMobileServiceIdentityUntilIdentifier( long identifier );
+        IList<MaritimeMobileServiceIdentityObject> GetMaritimeMobileServiceIdentityOverIdentifier( long fromIdentifier, long untilIdentifier );
         // ---------------------------------------------------------------------
         // Name queries
         // ---------------------------------------------------------------------
         NameObject? GetNameById( Guid id );
         IList<NameObject> GetNameCollection( );
-        NameObject GetNameByText( string text );
+        NameObject? GetNameByText( string text );
         // ---------------------------------------------------------------------
         // Int16TimeseriesValue queries
         // ---------------------------------------------------------------------
         Int16TimeseriesValueObject? GetInt16TimeseriesValueById( Guid id );
         IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueCollection( );
         IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueCollectionByTimeseries( Guid timeseries );
-        Int16TimeseriesValueObject GetInt16TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        Int16TimeseriesValueObject GetInt16TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        Int16TimeseriesValueObject GetInt16TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        Int16TimeseriesValueObject GetInt16TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        Int16TimeseriesValueObject GetInt16TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        Int16TimeseriesValueObject? GetInt16TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        Int16TimeseriesValueObject? GetInt16TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<Int16TimeseriesValueObject> GetInt16TimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1389,11 +1389,11 @@ namespace Barrelman.Data.Types
         Int32TimeseriesValueObject? GetInt32TimeseriesValueById( Guid id );
         IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueCollection( );
         IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueCollectionByTimeseries( Guid timeseries );
-        Int32TimeseriesValueObject GetInt32TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        Int32TimeseriesValueObject GetInt32TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        Int32TimeseriesValueObject GetInt32TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        Int32TimeseriesValueObject GetInt32TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        Int32TimeseriesValueObject GetInt32TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        Int32TimeseriesValueObject? GetInt32TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        Int32TimeseriesValueObject? GetInt32TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<Int32TimeseriesValueObject> GetInt32TimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1405,11 +1405,11 @@ namespace Barrelman.Data.Types
         Int64TimeseriesValueObject? GetInt64TimeseriesValueById( Guid id );
         IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueCollection( );
         IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueCollectionByTimeseries( Guid timeseries );
-        Int64TimeseriesValueObject GetInt64TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        Int64TimeseriesValueObject GetInt64TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        Int64TimeseriesValueObject GetInt64TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        Int64TimeseriesValueObject GetInt64TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        Int64TimeseriesValueObject GetInt64TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        Int64TimeseriesValueObject? GetInt64TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        Int64TimeseriesValueObject? GetInt64TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<Int64TimeseriesValueObject> GetInt64TimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -1425,7 +1425,7 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         BaseStationObject? GetBaseStationById( Guid id );
         IList<BaseStationObject> GetBaseStationCollection( );
-        BaseStationObject GetBaseStationByName( string name );
+        BaseStationObject? GetBaseStationByName( string name );
         IList<BaseStationObject> GetBaseStationCollectionByType( Guid type );
         // ---------------------------------------------------------------------
         // Device queries
@@ -1433,28 +1433,28 @@ namespace Barrelman.Data.Types
         DeviceObject? GetDeviceById( Guid id );
         IList<DeviceObject> GetDeviceCollection( );
         IList<DeviceObject> GetDeviceCollectionByHost( Guid host );
-        DeviceObject GetDeviceByName( string name );
+        DeviceObject? GetDeviceByName( string name );
         // ---------------------------------------------------------------------
         // CameraDevice queries
         // ---------------------------------------------------------------------
         CameraDeviceObject? GetCameraDeviceById( Guid id );
         IList<CameraDeviceObject> GetCameraDeviceCollection( );
         IList<CameraDeviceObject> GetCameraDeviceCollectionByHost( Guid host );
-        CameraDeviceObject GetCameraDeviceByName( string name );
+        CameraDeviceObject? GetCameraDeviceByName( string name );
         // ---------------------------------------------------------------------
         // GNSSDevice queries
         // ---------------------------------------------------------------------
         GNSSDeviceObject? GetGNSSDeviceById( Guid id );
         IList<GNSSDeviceObject> GetGNSSDeviceCollection( );
         IList<GNSSDeviceObject> GetGNSSDeviceCollectionByHost( Guid host );
-        GNSSDeviceObject GetGNSSDeviceByName( string name );
+        GNSSDeviceObject? GetGNSSDeviceByName( string name );
         // ---------------------------------------------------------------------
         // GyroDevice queries
         // ---------------------------------------------------------------------
         GyroDeviceObject? GetGyroDeviceById( Guid id );
         IList<GyroDeviceObject> GetGyroDeviceCollection( );
         IList<GyroDeviceObject> GetGyroDeviceCollectionByHost( Guid host );
-        GyroDeviceObject GetGyroDeviceByName( string name );
+        GyroDeviceObject? GetGyroDeviceByName( string name );
         IList<GyroDeviceObject> GetGyroDeviceCollectionByGNSSDevice( Guid gNSSDevice );
         // ---------------------------------------------------------------------
         // LineInputDevice queries
@@ -1462,28 +1462,28 @@ namespace Barrelman.Data.Types
         LineInputDeviceObject? GetLineInputDeviceById( Guid id );
         IList<LineInputDeviceObject> GetLineInputDeviceCollection( );
         IList<LineInputDeviceObject> GetLineInputDeviceCollectionByHost( Guid host );
-        LineInputDeviceObject GetLineInputDeviceByName( string name );
+        LineInputDeviceObject? GetLineInputDeviceByName( string name );
         // ---------------------------------------------------------------------
         // OilSpillDetectorDevice queries
         // ---------------------------------------------------------------------
         OilSpillDetectorDeviceObject? GetOilSpillDetectorDeviceById( Guid id );
         IList<OilSpillDetectorDeviceObject> GetOilSpillDetectorDeviceCollection( );
         IList<OilSpillDetectorDeviceObject> GetOilSpillDetectorDeviceCollectionByHost( Guid host );
-        OilSpillDetectorDeviceObject GetOilSpillDetectorDeviceByName( string name );
+        OilSpillDetectorDeviceObject? GetOilSpillDetectorDeviceByName( string name );
         // ---------------------------------------------------------------------
         // RadioDevice queries
         // ---------------------------------------------------------------------
         RadioDeviceObject? GetRadioDeviceById( Guid id );
         IList<RadioDeviceObject> GetRadioDeviceCollection( );
         IList<RadioDeviceObject> GetRadioDeviceCollectionByHost( Guid host );
-        RadioDeviceObject GetRadioDeviceByName( string name );
+        RadioDeviceObject? GetRadioDeviceByName( string name );
         // ---------------------------------------------------------------------
         // RadomeDevice queries
         // ---------------------------------------------------------------------
         RadomeDeviceObject? GetRadomeDeviceById( Guid id );
         IList<RadomeDeviceObject> GetRadomeDeviceCollection( );
         IList<RadomeDeviceObject> GetRadomeDeviceCollectionByHost( Guid host );
-        RadomeDeviceObject GetRadomeDeviceByName( string name );
+        RadomeDeviceObject? GetRadomeDeviceByName( string name );
         IList<RadomeDeviceObject> GetRadomeDeviceCollectionByRadar( Guid? radar );
         IList<RadomeDeviceObject> GetRadomeDeviceCollectionByRadarIsNull(  );
         // ---------------------------------------------------------------------
@@ -1492,21 +1492,21 @@ namespace Barrelman.Data.Types
         TrackerDeviceObject? GetTrackerDeviceById( Guid id );
         IList<TrackerDeviceObject> GetTrackerDeviceCollection( );
         IList<TrackerDeviceObject> GetTrackerDeviceCollectionByHost( Guid host );
-        TrackerDeviceObject GetTrackerDeviceByName( string name );
+        TrackerDeviceObject? GetTrackerDeviceByName( string name );
         // ---------------------------------------------------------------------
         // AisDevice queries
         // ---------------------------------------------------------------------
         AisDeviceObject? GetAisDeviceById( Guid id );
         IList<AisDeviceObject> GetAisDeviceCollection( );
         IList<AisDeviceObject> GetAisDeviceCollectionByHost( Guid host );
-        AisDeviceObject GetAisDeviceByName( string name );
+        AisDeviceObject? GetAisDeviceByName( string name );
         // ---------------------------------------------------------------------
         // RadarDevice queries
         // ---------------------------------------------------------------------
         RadarDeviceObject? GetRadarDeviceById( Guid id );
         IList<RadarDeviceObject> GetRadarDeviceCollection( );
         IList<RadarDeviceObject> GetRadarDeviceCollectionByHost( Guid host );
-        RadarDeviceObject GetRadarDeviceByName( string name );
+        RadarDeviceObject? GetRadarDeviceByName( string name );
         IList<RadarDeviceObject> GetRadarDeviceCollectionByRadome( Guid? radome );
         IList<RadarDeviceObject> GetRadarDeviceCollectionByRadomeIsNull(  );
         IList<RadarDeviceObject> GetRadarDeviceCollectionByGNSSDevice( Guid? gNSSDevice );
@@ -1517,14 +1517,14 @@ namespace Barrelman.Data.Types
         WeatherStationDeviceObject? GetWeatherStationDeviceById( Guid id );
         IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollection( );
         IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollectionByHost( Guid host );
-        WeatherStationDeviceObject GetWeatherStationDeviceByName( string name );
+        WeatherStationDeviceObject? GetWeatherStationDeviceByName( string name );
         IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollectionByGyro( Guid gyro );
         // ---------------------------------------------------------------------
         // Facility queries
         // ---------------------------------------------------------------------
         FacilityObject? GetFacilityById( Guid id );
         IList<FacilityObject> GetFacilityCollection( );
-        FacilityObject GetFacilityByName( string name );
+        FacilityObject? GetFacilityByName( string name );
         IList<FacilityObject> GetFacilityCollectionByType( Guid type );
         // ---------------------------------------------------------------------
         // TrackableItem queries
@@ -1543,14 +1543,14 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         AisAidToNavigationObject? GetAisAidToNavigationById( Guid id );
         IList<AisAidToNavigationObject> GetAisAidToNavigationCollection( );
-        AisAidToNavigationObject GetAisAidToNavigationByName( string name );
+        AisAidToNavigationObject? GetAisAidToNavigationByName( string name );
         IList<AisAidToNavigationObject> GetAisAidToNavigationCollectionByMMSI( Guid mMSI );
         // ---------------------------------------------------------------------
         // Vehicle queries
         // ---------------------------------------------------------------------
         VehicleObject? GetVehicleById( Guid id );
         IList<VehicleObject> GetVehicleCollection( );
-        VehicleObject GetVehicleByName( string name );
+        VehicleObject? GetVehicleByName( string name );
         IList<VehicleObject> GetVehicleCollectionByType( Guid type );
         // ---------------------------------------------------------------------
         // Vessel queries
@@ -1605,17 +1605,17 @@ namespace Barrelman.Data.Types
         ItemParentChildLinkObject? GetItemParentChildLinkById( Guid id );
         IList<ItemParentChildLinkObject> GetItemParentChildLinkCollection( );
         IList<ItemParentChildLinkObject> GetItemParentChildLinkCollectionByParent( Guid parent );
-        ItemParentChildLinkObject GetItemParentChildLinkByParentAndTimestamp( Guid parent, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByParentAtTimestamp( Guid parent, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByParentFromTimestamp( Guid parent, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByParentUntilTimestamp( Guid parent, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByParentOverTimestamp( Guid parent, DateTime fromTimestamp, DateTime untilTimestamp );
+        ItemParentChildLinkObject? GetItemParentChildLinkByParentAndTimestamp( Guid parent, DateTime timestamp );
+        ItemParentChildLinkObject? GetItemParentChildLinkByParentAtTimestamp( Guid parent, DateTime timestamp );
+        IList<ItemParentChildLinkObject> GetItemParentChildLinkByParentFromTimestamp( Guid parent, DateTime timestamp );
+        IList<ItemParentChildLinkObject> GetItemParentChildLinkByParentUntilTimestamp( Guid parent, DateTime timestamp );
+        IList<ItemParentChildLinkObject> GetItemParentChildLinkByParentOverTimestamp( Guid parent, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ItemParentChildLinkObject> GetItemParentChildLinkCollectionByChild( Guid child );
-        ItemParentChildLinkObject GetItemParentChildLinkByChildAndTimestamp( Guid child, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByChildAtTimestamp( Guid child, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByChildFromTimestamp( Guid child, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByChildUntilTimestamp( Guid child, DateTime timestamp );
-        ItemParentChildLinkObject GetItemParentChildLinkByChildOverTimestamp( Guid child, DateTime fromTimestamp, DateTime untilTimestamp );
+        ItemParentChildLinkObject? GetItemParentChildLinkByChildAndTimestamp( Guid child, DateTime timestamp );
+        ItemParentChildLinkObject? GetItemParentChildLinkByChildAtTimestamp( Guid child, DateTime timestamp );
+        IList<ItemParentChildLinkObject> GetItemParentChildLinkByChildFromTimestamp( Guid child, DateTime timestamp );
+        IList<ItemParentChildLinkObject> GetItemParentChildLinkByChildUntilTimestamp( Guid child, DateTime timestamp );
+        IList<ItemParentChildLinkObject> GetItemParentChildLinkByChildOverTimestamp( Guid child, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ItemParentChildLinkObject> GetItemParentChildLinkCollectionByTimestamp( DateTime timestamp );
         IList<ItemParentChildLinkObject> GetItemParentChildLinkCollectionAtTimestamp( DateTime timestamp );
         IList<ItemParentChildLinkObject> GetItemParentChildLinkCollectionFromTimestamp( DateTime timestamp );
@@ -1654,18 +1654,18 @@ namespace Barrelman.Data.Types
         IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        LineInputDeviceCommandReplyObject GetLineInputDeviceCommandReplyByCommand( Guid command );
+        LineInputDeviceCommandReplyObject? GetLineInputDeviceCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // LineInputDeviceConfiguration queries
         // ---------------------------------------------------------------------
         LineInputDeviceConfigurationObject? GetLineInputDeviceConfigurationById( Guid id );
         IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationCollection( );
         IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationCollectionByLineInputDevice( Guid lineInputDevice );
-        LineInputDeviceConfigurationObject GetLineInputDeviceConfigurationByLineInputDeviceAndTimestamp( Guid lineInputDevice, DateTime timestamp );
-        LineInputDeviceConfigurationObject GetLineInputDeviceConfigurationByLineInputDeviceAtTimestamp( Guid lineInputDevice, DateTime timestamp );
-        LineInputDeviceConfigurationObject GetLineInputDeviceConfigurationByLineInputDeviceFromTimestamp( Guid lineInputDevice, DateTime timestamp );
-        LineInputDeviceConfigurationObject GetLineInputDeviceConfigurationByLineInputDeviceUntilTimestamp( Guid lineInputDevice, DateTime timestamp );
-        LineInputDeviceConfigurationObject GetLineInputDeviceConfigurationByLineInputDeviceOverTimestamp( Guid lineInputDevice, DateTime fromTimestamp, DateTime untilTimestamp );
+        LineInputDeviceConfigurationObject? GetLineInputDeviceConfigurationByLineInputDeviceAndTimestamp( Guid lineInputDevice, DateTime timestamp );
+        LineInputDeviceConfigurationObject? GetLineInputDeviceConfigurationByLineInputDeviceAtTimestamp( Guid lineInputDevice, DateTime timestamp );
+        IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationByLineInputDeviceFromTimestamp( Guid lineInputDevice, DateTime timestamp );
+        IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationByLineInputDeviceUntilTimestamp( Guid lineInputDevice, DateTime timestamp );
+        IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationByLineInputDeviceOverTimestamp( Guid lineInputDevice, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<LineInputDeviceConfigurationObject> GetLineInputDeviceConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1677,14 +1677,14 @@ namespace Barrelman.Data.Types
         LineInputMessageRoutingObject? GetLineInputMessageRoutingById( Guid id );
         IList<LineInputMessageRoutingObject> GetLineInputMessageRoutingCollection( );
         IList<LineInputMessageRoutingObject> GetLineInputMessageRoutingCollectionByLineInputDevice( Guid lineInputDevice );
-        LineInputMessageRoutingObject GetLineInputMessageRoutingByLineInputDeviceAndType( Guid lineInputDevice, string type );
+        LineInputMessageRoutingObject? GetLineInputMessageRoutingByLineInputDeviceAndType( Guid lineInputDevice, string type );
         // ---------------------------------------------------------------------
         // LineInputMessageRoutingDestination queries
         // ---------------------------------------------------------------------
         LineInputMessageRoutingDestinationObject? GetLineInputMessageRoutingDestinationById( Guid id );
         IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollection( );
         IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByRouting( Guid routing );
-        LineInputMessageRoutingDestinationObject GetLineInputMessageRoutingDestinationByRoutingAndListener( Guid routing, Guid listener );
+        LineInputMessageRoutingDestinationObject? GetLineInputMessageRoutingDestinationByRoutingAndListener( Guid routing, Guid listener );
         IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByListener( Guid listener );
         // ---------------------------------------------------------------------
         // LineInputWhiteListEntry queries
@@ -1693,27 +1693,27 @@ namespace Barrelman.Data.Types
         IList<LineInputWhiteListEntryObject> GetLineInputWhiteListEntryCollection( );
         IList<LineInputWhiteListEntryObject> GetLineInputWhiteListEntryCollectionByLineInputDevice( Guid lineInputDevice );
         IList<LineInputWhiteListEntryObject> GetLineInputWhiteListEntryCollectionByLineInputDeviceAndHostName( Guid lineInputDevice, string hostName );
-        LineInputWhiteListEntryObject GetLineInputWhiteListEntryByLineInputDeviceHostNameAndPort( Guid lineInputDevice, string hostName, int port );
-        LineInputWhiteListEntryObject GetLineInputWhiteListEntryByLineInputDeviceHostNameFromPort( Guid lineInputDevice, string hostName, int port );
-        LineInputWhiteListEntryObject GetLineInputWhiteListEntryByLineInputDeviceHostNameUntilPort( Guid lineInputDevice, string hostName, int port );
-        LineInputWhiteListEntryObject GetLineInputWhiteListEntryByLineInputDeviceHostNameOverPort( Guid lineInputDevice, string hostName, int fromPort, int untilPort );
+        LineInputWhiteListEntryObject? GetLineInputWhiteListEntryByLineInputDeviceHostNameAndPort( Guid lineInputDevice, string hostName, int port );
+        IList<LineInputWhiteListEntryObject> GetLineInputWhiteListEntryByLineInputDeviceHostNameFromPort( Guid lineInputDevice, string hostName, int port );
+        IList<LineInputWhiteListEntryObject> GetLineInputWhiteListEntryByLineInputDeviceHostNameUntilPort( Guid lineInputDevice, string hostName, int port );
+        IList<LineInputWhiteListEntryObject> GetLineInputWhiteListEntryByLineInputDeviceHostNameOverPort( Guid lineInputDevice, string hostName, int fromPort, int untilPort );
         // ---------------------------------------------------------------------
         // LogApplication queries
         // ---------------------------------------------------------------------
         LogApplicationObject? GetLogApplicationById( Guid id );
         IList<LogApplicationObject> GetLogApplicationCollection( );
-        LogApplicationObject GetLogApplicationByName( string name );
+        LogApplicationObject? GetLogApplicationByName( string name );
         // ---------------------------------------------------------------------
         // LogApplicationConfiguration queries
         // ---------------------------------------------------------------------
         LogApplicationConfigurationObject? GetLogApplicationConfigurationById( Guid id );
         IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationCollection( );
         IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationCollectionByApplication( Guid application );
-        LogApplicationConfigurationObject GetLogApplicationConfigurationByApplicationAndTimestamp( Guid application, DateTime timestamp );
-        LogApplicationConfigurationObject GetLogApplicationConfigurationByApplicationAtTimestamp( Guid application, DateTime timestamp );
-        LogApplicationConfigurationObject GetLogApplicationConfigurationByApplicationFromTimestamp( Guid application, DateTime timestamp );
-        LogApplicationConfigurationObject GetLogApplicationConfigurationByApplicationUntilTimestamp( Guid application, DateTime timestamp );
-        LogApplicationConfigurationObject GetLogApplicationConfigurationByApplicationOverTimestamp( Guid application, DateTime fromTimestamp, DateTime untilTimestamp );
+        LogApplicationConfigurationObject? GetLogApplicationConfigurationByApplicationAndTimestamp( Guid application, DateTime timestamp );
+        LogApplicationConfigurationObject? GetLogApplicationConfigurationByApplicationAtTimestamp( Guid application, DateTime timestamp );
+        IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationByApplicationFromTimestamp( Guid application, DateTime timestamp );
+        IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationByApplicationUntilTimestamp( Guid application, DateTime timestamp );
+        IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationByApplicationOverTimestamp( Guid application, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<LogApplicationConfigurationObject> GetLogApplicationConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1724,18 +1724,18 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         LogHostObject? GetLogHostById( Guid id );
         IList<LogHostObject> GetLogHostCollection( );
-        LogHostObject GetLogHostByComputerName( string computerName );
+        LogHostObject? GetLogHostByComputerName( string computerName );
         // ---------------------------------------------------------------------
         // LogHostConfiguration queries
         // ---------------------------------------------------------------------
         LogHostConfigurationObject? GetLogHostConfigurationById( Guid id );
         IList<LogHostConfigurationObject> GetLogHostConfigurationCollection( );
         IList<LogHostConfigurationObject> GetLogHostConfigurationCollectionByHost( Guid host );
-        LogHostConfigurationObject GetLogHostConfigurationByHostAndTimestamp( Guid host, DateTime timestamp );
-        LogHostConfigurationObject GetLogHostConfigurationByHostAtTimestamp( Guid host, DateTime timestamp );
-        LogHostConfigurationObject GetLogHostConfigurationByHostFromTimestamp( Guid host, DateTime timestamp );
-        LogHostConfigurationObject GetLogHostConfigurationByHostUntilTimestamp( Guid host, DateTime timestamp );
-        LogHostConfigurationObject GetLogHostConfigurationByHostOverTimestamp( Guid host, DateTime fromTimestamp, DateTime untilTimestamp );
+        LogHostConfigurationObject? GetLogHostConfigurationByHostAndTimestamp( Guid host, DateTime timestamp );
+        LogHostConfigurationObject? GetLogHostConfigurationByHostAtTimestamp( Guid host, DateTime timestamp );
+        IList<LogHostConfigurationObject> GetLogHostConfigurationByHostFromTimestamp( Guid host, DateTime timestamp );
+        IList<LogHostConfigurationObject> GetLogHostConfigurationByHostUntilTimestamp( Guid host, DateTime timestamp );
+        IList<LogHostConfigurationObject> GetLogHostConfigurationByHostOverTimestamp( Guid host, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<LogHostConfigurationObject> GetLogHostConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<LogHostConfigurationObject> GetLogHostConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<LogHostConfigurationObject> GetLogHostConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1747,10 +1747,10 @@ namespace Barrelman.Data.Types
         LogLocationObject? GetLogLocationById( Guid id );
         IList<LogLocationObject> GetLogLocationCollection( );
         IList<LogLocationObject> GetLogLocationCollectionByFileName( string fileName );
-        LogLocationObject GetLogLocationByFileNameAndLineNumber( string fileName, int lineNumber );
-        LogLocationObject GetLogLocationByFileNameFromLineNumber( string fileName, int lineNumber );
-        LogLocationObject GetLogLocationByFileNameUntilLineNumber( string fileName, int lineNumber );
-        LogLocationObject GetLogLocationByFileNameOverLineNumber( string fileName, int fromLineNumber, int untilLineNumber );
+        LogLocationObject? GetLogLocationByFileNameAndLineNumber( string fileName, int lineNumber );
+        IList<LogLocationObject> GetLogLocationByFileNameFromLineNumber( string fileName, int lineNumber );
+        IList<LogLocationObject> GetLogLocationByFileNameUntilLineNumber( string fileName, int lineNumber );
+        IList<LogLocationObject> GetLogLocationByFileNameOverLineNumber( string fileName, int fromLineNumber, int untilLineNumber );
         // ---------------------------------------------------------------------
         // LogProcess queries
         // ---------------------------------------------------------------------
@@ -1844,20 +1844,20 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         MapServiceOptionsObject? GetMapServiceOptionsById( Guid id );
         IList<MapServiceOptionsObject> GetMapServiceOptionsCollection( );
-        MapServiceOptionsObject GetMapServiceOptionsByTimestamp( DateTime timestamp );
-        MapServiceOptionsObject GetMapServiceOptionsAtTimestamp( DateTime timestamp );
-        MapServiceOptionsObject GetMapServiceOptionsFromTimestamp( DateTime timestamp );
-        MapServiceOptionsObject GetMapServiceOptionsUntilTimestamp( DateTime timestamp );
-        MapServiceOptionsObject GetMapServiceOptionsOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
+        MapServiceOptionsObject? GetMapServiceOptionsByTimestamp( DateTime timestamp );
+        MapServiceOptionsObject? GetMapServiceOptionsAtTimestamp( DateTime timestamp );
+        IList<MapServiceOptionsObject> GetMapServiceOptionsFromTimestamp( DateTime timestamp );
+        IList<MapServiceOptionsObject> GetMapServiceOptionsUntilTimestamp( DateTime timestamp );
+        IList<MapServiceOptionsObject> GetMapServiceOptionsOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
         // ---------------------------------------------------------------------
         // MaritimeIdentificationDigits queries
         // ---------------------------------------------------------------------
         MaritimeIdentificationDigitsObject? GetMaritimeIdentificationDigitsById( Guid id );
         IList<MaritimeIdentificationDigitsObject> GetMaritimeIdentificationDigitsCollection( );
-        MaritimeIdentificationDigitsObject GetMaritimeIdentificationDigitsByCode( int code );
-        MaritimeIdentificationDigitsObject GetMaritimeIdentificationDigitsFromCode( int code );
-        MaritimeIdentificationDigitsObject GetMaritimeIdentificationDigitsUntilCode( int code );
-        MaritimeIdentificationDigitsObject GetMaritimeIdentificationDigitsOverCode( int fromCode, int untilCode );
+        MaritimeIdentificationDigitsObject? GetMaritimeIdentificationDigitsByCode( int code );
+        IList<MaritimeIdentificationDigitsObject> GetMaritimeIdentificationDigitsFromCode( int code );
+        IList<MaritimeIdentificationDigitsObject> GetMaritimeIdentificationDigitsUntilCode( int code );
+        IList<MaritimeIdentificationDigitsObject> GetMaritimeIdentificationDigitsOverCode( int fromCode, int untilCode );
         IList<MaritimeIdentificationDigitsObject> GetMaritimeIdentificationDigitsCollectionByCountry( Guid country );
         // ---------------------------------------------------------------------
         // MediaProxySession queries
@@ -1865,29 +1865,29 @@ namespace Barrelman.Data.Types
         MediaProxySessionObject? GetMediaProxySessionById( Guid id );
         IList<MediaProxySessionObject> GetMediaProxySessionCollection( );
         IList<MediaProxySessionObject> GetMediaProxySessionCollectionByService( Guid service );
-        MediaProxySessionObject GetMediaProxySessionByServiceAndName( Guid service, string name );
+        MediaProxySessionObject? GetMediaProxySessionByServiceAndName( Guid service, string name );
         // ---------------------------------------------------------------------
         // MediaProxySessionFile queries
         // ---------------------------------------------------------------------
         MediaProxySessionFileObject? GetMediaProxySessionFileById( Guid id );
         IList<MediaProxySessionFileObject> GetMediaProxySessionFileCollection( );
         IList<MediaProxySessionFileObject> GetMediaProxySessionFileCollectionByProxySession( Guid proxySession );
-        MediaProxySessionFileObject GetMediaProxySessionFileByProxySessionAndTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionFileObject GetMediaProxySessionFileByProxySessionAtTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionFileObject GetMediaProxySessionFileByProxySessionFromTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionFileObject GetMediaProxySessionFileByProxySessionUntilTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionFileObject GetMediaProxySessionFileByProxySessionOverTimestamp( Guid proxySession, DateTime fromTimestamp, DateTime untilTimestamp );
+        MediaProxySessionFileObject? GetMediaProxySessionFileByProxySessionAndTimestamp( Guid proxySession, DateTime timestamp );
+        MediaProxySessionFileObject? GetMediaProxySessionFileByProxySessionAtTimestamp( Guid proxySession, DateTime timestamp );
+        IList<MediaProxySessionFileObject> GetMediaProxySessionFileByProxySessionFromTimestamp( Guid proxySession, DateTime timestamp );
+        IList<MediaProxySessionFileObject> GetMediaProxySessionFileByProxySessionUntilTimestamp( Guid proxySession, DateTime timestamp );
+        IList<MediaProxySessionFileObject> GetMediaProxySessionFileByProxySessionOverTimestamp( Guid proxySession, DateTime fromTimestamp, DateTime untilTimestamp );
         // ---------------------------------------------------------------------
         // MediaProxySessionOptions queries
         // ---------------------------------------------------------------------
         MediaProxySessionOptionsObject? GetMediaProxySessionOptionsById( Guid id );
         IList<MediaProxySessionOptionsObject> GetMediaProxySessionOptionsCollection( );
         IList<MediaProxySessionOptionsObject> GetMediaProxySessionOptionsCollectionByProxySession( Guid proxySession );
-        MediaProxySessionOptionsObject GetMediaProxySessionOptionsByProxySessionAndTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionOptionsObject GetMediaProxySessionOptionsByProxySessionAtTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionOptionsObject GetMediaProxySessionOptionsByProxySessionFromTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionOptionsObject GetMediaProxySessionOptionsByProxySessionUntilTimestamp( Guid proxySession, DateTime timestamp );
-        MediaProxySessionOptionsObject GetMediaProxySessionOptionsByProxySessionOverTimestamp( Guid proxySession, DateTime fromTimestamp, DateTime untilTimestamp );
+        MediaProxySessionOptionsObject? GetMediaProxySessionOptionsByProxySessionAndTimestamp( Guid proxySession, DateTime timestamp );
+        MediaProxySessionOptionsObject? GetMediaProxySessionOptionsByProxySessionAtTimestamp( Guid proxySession, DateTime timestamp );
+        IList<MediaProxySessionOptionsObject> GetMediaProxySessionOptionsByProxySessionFromTimestamp( Guid proxySession, DateTime timestamp );
+        IList<MediaProxySessionOptionsObject> GetMediaProxySessionOptionsByProxySessionUntilTimestamp( Guid proxySession, DateTime timestamp );
+        IList<MediaProxySessionOptionsObject> GetMediaProxySessionOptionsByProxySessionOverTimestamp( Guid proxySession, DateTime fromTimestamp, DateTime untilTimestamp );
         // ---------------------------------------------------------------------
         // MediaService queries
         // ---------------------------------------------------------------------
@@ -1899,32 +1899,32 @@ namespace Barrelman.Data.Types
         MediaServiceOptionsObject? GetMediaServiceOptionsById( Guid id );
         IList<MediaServiceOptionsObject> GetMediaServiceOptionsCollection( );
         IList<MediaServiceOptionsObject> GetMediaServiceOptionsCollectionByMediaService( Guid mediaService );
-        MediaServiceOptionsObject GetMediaServiceOptionsByMediaServiceAndTimestamp( Guid mediaService, DateTime timestamp );
-        MediaServiceOptionsObject GetMediaServiceOptionsByMediaServiceAtTimestamp( Guid mediaService, DateTime timestamp );
-        MediaServiceOptionsObject GetMediaServiceOptionsByMediaServiceFromTimestamp( Guid mediaService, DateTime timestamp );
-        MediaServiceOptionsObject GetMediaServiceOptionsByMediaServiceUntilTimestamp( Guid mediaService, DateTime timestamp );
-        MediaServiceOptionsObject GetMediaServiceOptionsByMediaServiceOverTimestamp( Guid mediaService, DateTime fromTimestamp, DateTime untilTimestamp );
+        MediaServiceOptionsObject? GetMediaServiceOptionsByMediaServiceAndTimestamp( Guid mediaService, DateTime timestamp );
+        MediaServiceOptionsObject? GetMediaServiceOptionsByMediaServiceAtTimestamp( Guid mediaService, DateTime timestamp );
+        IList<MediaServiceOptionsObject> GetMediaServiceOptionsByMediaServiceFromTimestamp( Guid mediaService, DateTime timestamp );
+        IList<MediaServiceOptionsObject> GetMediaServiceOptionsByMediaServiceUntilTimestamp( Guid mediaService, DateTime timestamp );
+        IList<MediaServiceOptionsObject> GetMediaServiceOptionsByMediaServiceOverTimestamp( Guid mediaService, DateTime fromTimestamp, DateTime untilTimestamp );
         // ---------------------------------------------------------------------
         // NamespaceElement queries
         // ---------------------------------------------------------------------
         NamespaceElementObject? GetNamespaceElementById( Guid id );
         IList<NamespaceElementObject> GetNamespaceElementCollection( );
         IList<NamespaceElementObject> GetNamespaceElementCollectionByNamespace( Guid namespace__ );
-        NamespaceElementObject GetNamespaceElementByNamespaceAndName( Guid namespace__, string name );
+        NamespaceElementObject? GetNamespaceElementByNamespaceAndName( Guid namespace__, string name );
         // ---------------------------------------------------------------------
         // ElementType queries
         // ---------------------------------------------------------------------
         ElementTypeObject? GetElementTypeById( Guid id );
         IList<ElementTypeObject> GetElementTypeCollection( );
         IList<ElementTypeObject> GetElementTypeCollectionByNamespace( Guid namespace__ );
-        ElementTypeObject GetElementTypeByNamespaceAndName( Guid namespace__, string name );
+        ElementTypeObject? GetElementTypeByNamespaceAndName( Guid namespace__, string name );
         // ---------------------------------------------------------------------
         // Namespace queries
         // ---------------------------------------------------------------------
         NamespaceObject? GetNamespaceById( Guid id );
         IList<NamespaceObject> GetNamespaceCollection( );
         IList<NamespaceObject> GetNamespaceCollectionByNamespace( Guid namespace__ );
-        NamespaceObject GetNamespaceByNamespaceAndName( Guid namespace__, string name );
+        NamespaceObject? GetNamespaceByNamespaceAndName( Guid namespace__, string name );
         // ---------------------------------------------------------------------
         // OilSpill queries
         // ---------------------------------------------------------------------
@@ -1974,18 +1974,18 @@ namespace Barrelman.Data.Types
         IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        OilSpillDetectorCommandReplyObject GetOilSpillDetectorCommandReplyByCommand( Guid command );
+        OilSpillDetectorCommandReplyObject? GetOilSpillDetectorCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // OilSpillDetectorConfiguration queries
         // ---------------------------------------------------------------------
         OilSpillDetectorConfigurationObject? GetOilSpillDetectorConfigurationById( Guid id );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollection( );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionByOilSpillDetector( Guid oilSpillDetector );
-        OilSpillDetectorConfigurationObject GetOilSpillDetectorConfigurationByOilSpillDetectorAndTimestamp( Guid oilSpillDetector, DateTime timestamp );
-        OilSpillDetectorConfigurationObject GetOilSpillDetectorConfigurationByOilSpillDetectorAtTimestamp( Guid oilSpillDetector, DateTime timestamp );
-        OilSpillDetectorConfigurationObject GetOilSpillDetectorConfigurationByOilSpillDetectorFromTimestamp( Guid oilSpillDetector, DateTime timestamp );
-        OilSpillDetectorConfigurationObject GetOilSpillDetectorConfigurationByOilSpillDetectorUntilTimestamp( Guid oilSpillDetector, DateTime timestamp );
-        OilSpillDetectorConfigurationObject GetOilSpillDetectorConfigurationByOilSpillDetectorOverTimestamp( Guid oilSpillDetector, DateTime fromTimestamp, DateTime untilTimestamp );
+        OilSpillDetectorConfigurationObject? GetOilSpillDetectorConfigurationByOilSpillDetectorAndTimestamp( Guid oilSpillDetector, DateTime timestamp );
+        OilSpillDetectorConfigurationObject? GetOilSpillDetectorConfigurationByOilSpillDetectorAtTimestamp( Guid oilSpillDetector, DateTime timestamp );
+        IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationByOilSpillDetectorFromTimestamp( Guid oilSpillDetector, DateTime timestamp );
+        IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationByOilSpillDetectorUntilTimestamp( Guid oilSpillDetector, DateTime timestamp );
+        IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationByOilSpillDetectorOverTimestamp( Guid oilSpillDetector, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -1998,11 +1998,11 @@ namespace Barrelman.Data.Types
         Position2DTimeseriesValueObject? GetPosition2DTimeseriesValueById( Guid id );
         IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueCollection( );
         IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        Position2DTimeseriesValueObject GetPosition2DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        Position2DTimeseriesValueObject GetPosition2DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        Position2DTimeseriesValueObject GetPosition2DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        Position2DTimeseriesValueObject GetPosition2DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        Position2DTimeseriesValueObject GetPosition2DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        Position2DTimeseriesValueObject? GetPosition2DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        Position2DTimeseriesValueObject? GetPosition2DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<Position2DTimeseriesValueObject> GetPosition2DTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -2014,11 +2014,11 @@ namespace Barrelman.Data.Types
         Position3DTimeseriesValueObject? GetPosition3DTimeseriesValueById( Guid id );
         IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueCollection( );
         IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        Position3DTimeseriesValueObject GetPosition3DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        Position3DTimeseriesValueObject GetPosition3DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        Position3DTimeseriesValueObject GetPosition3DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        Position3DTimeseriesValueObject GetPosition3DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        Position3DTimeseriesValueObject GetPosition3DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        Position3DTimeseriesValueObject? GetPosition3DTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        Position3DTimeseriesValueObject? GetPosition3DTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<Position3DTimeseriesValueObject> GetPosition3DTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -2035,7 +2035,7 @@ namespace Barrelman.Data.Types
         PropertyObject? GetPropertyById( Guid id );
         IList<PropertyObject> GetPropertyCollection( );
         IList<PropertyObject> GetPropertyCollectionByElement( Guid element );
-        PropertyObject GetPropertyByElementAndDefinition( Guid element, Guid definition );
+        PropertyObject? GetPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<PropertyObject> GetPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // BinaryProperty queries
@@ -2043,7 +2043,7 @@ namespace Barrelman.Data.Types
         BinaryPropertyObject? GetBinaryPropertyById( Guid id );
         IList<BinaryPropertyObject> GetBinaryPropertyCollection( );
         IList<BinaryPropertyObject> GetBinaryPropertyCollectionByElement( Guid element );
-        BinaryPropertyObject GetBinaryPropertyByElementAndDefinition( Guid element, Guid definition );
+        BinaryPropertyObject? GetBinaryPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BinaryPropertyObject> GetBinaryPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // BooleanProperty queries
@@ -2051,7 +2051,7 @@ namespace Barrelman.Data.Types
         BooleanPropertyObject? GetBooleanPropertyById( Guid id );
         IList<BooleanPropertyObject> GetBooleanPropertyCollection( );
         IList<BooleanPropertyObject> GetBooleanPropertyCollectionByElement( Guid element );
-        BooleanPropertyObject GetBooleanPropertyByElementAndDefinition( Guid element, Guid definition );
+        BooleanPropertyObject? GetBooleanPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BooleanPropertyObject> GetBooleanPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // ByteProperty queries
@@ -2059,7 +2059,7 @@ namespace Barrelman.Data.Types
         BytePropertyObject? GetBytePropertyById( Guid id );
         IList<BytePropertyObject> GetBytePropertyCollection( );
         IList<BytePropertyObject> GetBytePropertyCollectionByElement( Guid element );
-        BytePropertyObject GetBytePropertyByElementAndDefinition( Guid element, Guid definition );
+        BytePropertyObject? GetBytePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BytePropertyObject> GetBytePropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // DateTimeProperty queries
@@ -2067,7 +2067,7 @@ namespace Barrelman.Data.Types
         DateTimePropertyObject? GetDateTimePropertyById( Guid id );
         IList<DateTimePropertyObject> GetDateTimePropertyCollection( );
         IList<DateTimePropertyObject> GetDateTimePropertyCollectionByElement( Guid element );
-        DateTimePropertyObject GetDateTimePropertyByElementAndDefinition( Guid element, Guid definition );
+        DateTimePropertyObject? GetDateTimePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<DateTimePropertyObject> GetDateTimePropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // DoubleProperty queries
@@ -2075,7 +2075,7 @@ namespace Barrelman.Data.Types
         DoublePropertyObject? GetDoublePropertyById( Guid id );
         IList<DoublePropertyObject> GetDoublePropertyCollection( );
         IList<DoublePropertyObject> GetDoublePropertyCollectionByElement( Guid element );
-        DoublePropertyObject GetDoublePropertyByElementAndDefinition( Guid element, Guid definition );
+        DoublePropertyObject? GetDoublePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<DoublePropertyObject> GetDoublePropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // GuidProperty queries
@@ -2083,7 +2083,7 @@ namespace Barrelman.Data.Types
         GuidPropertyObject? GetGuidPropertyById( Guid id );
         IList<GuidPropertyObject> GetGuidPropertyCollection( );
         IList<GuidPropertyObject> GetGuidPropertyCollectionByElement( Guid element );
-        GuidPropertyObject GetGuidPropertyByElementAndDefinition( Guid element, Guid definition );
+        GuidPropertyObject? GetGuidPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<GuidPropertyObject> GetGuidPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // Int16Property queries
@@ -2091,7 +2091,7 @@ namespace Barrelman.Data.Types
         Int16PropertyObject? GetInt16PropertyById( Guid id );
         IList<Int16PropertyObject> GetInt16PropertyCollection( );
         IList<Int16PropertyObject> GetInt16PropertyCollectionByElement( Guid element );
-        Int16PropertyObject GetInt16PropertyByElementAndDefinition( Guid element, Guid definition );
+        Int16PropertyObject? GetInt16PropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int16PropertyObject> GetInt16PropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // Int32Property queries
@@ -2099,7 +2099,7 @@ namespace Barrelman.Data.Types
         Int32PropertyObject? GetInt32PropertyById( Guid id );
         IList<Int32PropertyObject> GetInt32PropertyCollection( );
         IList<Int32PropertyObject> GetInt32PropertyCollectionByElement( Guid element );
-        Int32PropertyObject GetInt32PropertyByElementAndDefinition( Guid element, Guid definition );
+        Int32PropertyObject? GetInt32PropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int32PropertyObject> GetInt32PropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // Int64Property queries
@@ -2107,7 +2107,7 @@ namespace Barrelman.Data.Types
         Int64PropertyObject? GetInt64PropertyById( Guid id );
         IList<Int64PropertyObject> GetInt64PropertyCollection( );
         IList<Int64PropertyObject> GetInt64PropertyCollectionByElement( Guid element );
-        Int64PropertyObject GetInt64PropertyByElementAndDefinition( Guid element, Guid definition );
+        Int64PropertyObject? GetInt64PropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int64PropertyObject> GetInt64PropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // ReferenceProperty queries
@@ -2115,7 +2115,7 @@ namespace Barrelman.Data.Types
         ReferencePropertyObject? GetReferencePropertyById( Guid id );
         IList<ReferencePropertyObject> GetReferencePropertyCollection( );
         IList<ReferencePropertyObject> GetReferencePropertyCollectionByElement( Guid element );
-        ReferencePropertyObject GetReferencePropertyByElementAndDefinition( Guid element, Guid definition );
+        ReferencePropertyObject? GetReferencePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<ReferencePropertyObject> GetReferencePropertyCollectionByDefinition( Guid definition );
         IList<ReferencePropertyObject> GetReferencePropertyCollectionByValue( Guid value__ );
         // ---------------------------------------------------------------------
@@ -2124,7 +2124,7 @@ namespace Barrelman.Data.Types
         SBytePropertyObject? GetSBytePropertyById( Guid id );
         IList<SBytePropertyObject> GetSBytePropertyCollection( );
         IList<SBytePropertyObject> GetSBytePropertyCollectionByElement( Guid element );
-        SBytePropertyObject GetSBytePropertyByElementAndDefinition( Guid element, Guid definition );
+        SBytePropertyObject? GetSBytePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<SBytePropertyObject> GetSBytePropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // SingleProperty queries
@@ -2132,7 +2132,7 @@ namespace Barrelman.Data.Types
         SinglePropertyObject? GetSinglePropertyById( Guid id );
         IList<SinglePropertyObject> GetSinglePropertyCollection( );
         IList<SinglePropertyObject> GetSinglePropertyCollectionByElement( Guid element );
-        SinglePropertyObject GetSinglePropertyByElementAndDefinition( Guid element, Guid definition );
+        SinglePropertyObject? GetSinglePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<SinglePropertyObject> GetSinglePropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // StringProperty queries
@@ -2140,7 +2140,7 @@ namespace Barrelman.Data.Types
         StringPropertyObject? GetStringPropertyById( Guid id );
         IList<StringPropertyObject> GetStringPropertyCollection( );
         IList<StringPropertyObject> GetStringPropertyCollectionByElement( Guid element );
-        StringPropertyObject GetStringPropertyByElementAndDefinition( Guid element, Guid definition );
+        StringPropertyObject? GetStringPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<StringPropertyObject> GetStringPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // TimeseriesProperty queries
@@ -2148,7 +2148,7 @@ namespace Barrelman.Data.Types
         TimeseriesPropertyObject? GetTimeseriesPropertyById( Guid id );
         IList<TimeseriesPropertyObject> GetTimeseriesPropertyCollection( );
         IList<TimeseriesPropertyObject> GetTimeseriesPropertyCollectionByElement( Guid element );
-        TimeseriesPropertyObject GetTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        TimeseriesPropertyObject? GetTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<TimeseriesPropertyObject> GetTimeseriesPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // BinaryTimeseriesProperty queries
@@ -2156,7 +2156,7 @@ namespace Barrelman.Data.Types
         BinaryTimeseriesPropertyObject? GetBinaryTimeseriesPropertyById( Guid id );
         IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollection( );
         IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByElement( Guid element );
-        BinaryTimeseriesPropertyObject GetBinaryTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        BinaryTimeseriesPropertyObject? GetBinaryTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2165,7 +2165,7 @@ namespace Barrelman.Data.Types
         BooleanTimeseriesPropertyObject? GetBooleanTimeseriesPropertyById( Guid id );
         IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollection( );
         IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByElement( Guid element );
-        BooleanTimeseriesPropertyObject GetBooleanTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        BooleanTimeseriesPropertyObject? GetBooleanTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2174,7 +2174,7 @@ namespace Barrelman.Data.Types
         ByteTimeseriesPropertyObject? GetByteTimeseriesPropertyById( Guid id );
         IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollection( );
         IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByElement( Guid element );
-        ByteTimeseriesPropertyObject GetByteTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        ByteTimeseriesPropertyObject? GetByteTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2183,7 +2183,7 @@ namespace Barrelman.Data.Types
         DateTimeTimeseriesPropertyObject? GetDateTimeTimeseriesPropertyById( Guid id );
         IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollection( );
         IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByElement( Guid element );
-        DateTimeTimeseriesPropertyObject GetDateTimeTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        DateTimeTimeseriesPropertyObject? GetDateTimeTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2192,7 +2192,7 @@ namespace Barrelman.Data.Types
         DoubleTimeseriesPropertyObject? GetDoubleTimeseriesPropertyById( Guid id );
         IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollection( );
         IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByElement( Guid element );
-        DoubleTimeseriesPropertyObject GetDoubleTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        DoubleTimeseriesPropertyObject? GetDoubleTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2201,7 +2201,7 @@ namespace Barrelman.Data.Types
         GuidTimeseriesPropertyObject? GetGuidTimeseriesPropertyById( Guid id );
         IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollection( );
         IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByElement( Guid element );
-        GuidTimeseriesPropertyObject GetGuidTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        GuidTimeseriesPropertyObject? GetGuidTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2210,7 +2210,7 @@ namespace Barrelman.Data.Types
         Int16TimeseriesPropertyObject? GetInt16TimeseriesPropertyById( Guid id );
         IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollection( );
         IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByElement( Guid element );
-        Int16TimeseriesPropertyObject GetInt16TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        Int16TimeseriesPropertyObject? GetInt16TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2219,7 +2219,7 @@ namespace Barrelman.Data.Types
         Int32TimeseriesPropertyObject? GetInt32TimeseriesPropertyById( Guid id );
         IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollection( );
         IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByElement( Guid element );
-        Int32TimeseriesPropertyObject GetInt32TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        Int32TimeseriesPropertyObject? GetInt32TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2228,7 +2228,7 @@ namespace Barrelman.Data.Types
         Int64TimeseriesPropertyObject? GetInt64TimeseriesPropertyById( Guid id );
         IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollection( );
         IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByElement( Guid element );
-        Int64TimeseriesPropertyObject GetInt64TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        Int64TimeseriesPropertyObject? GetInt64TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2237,7 +2237,7 @@ namespace Barrelman.Data.Types
         ReferenceTimeseriesPropertyObject? GetReferenceTimeseriesPropertyById( Guid id );
         IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollection( );
         IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByElement( Guid element );
-        ReferenceTimeseriesPropertyObject GetReferenceTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        ReferenceTimeseriesPropertyObject? GetReferenceTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2246,7 +2246,7 @@ namespace Barrelman.Data.Types
         SByteTimeseriesPropertyObject? GetSByteTimeseriesPropertyById( Guid id );
         IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollection( );
         IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByElement( Guid element );
-        SByteTimeseriesPropertyObject GetSByteTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        SByteTimeseriesPropertyObject? GetSByteTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2255,7 +2255,7 @@ namespace Barrelman.Data.Types
         SingleTimeseriesPropertyObject? GetSingleTimeseriesPropertyById( Guid id );
         IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollection( );
         IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByElement( Guid element );
-        SingleTimeseriesPropertyObject GetSingleTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        SingleTimeseriesPropertyObject? GetSingleTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2264,7 +2264,7 @@ namespace Barrelman.Data.Types
         StringTimeseriesPropertyObject? GetStringTimeseriesPropertyById( Guid id );
         IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollection( );
         IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByElement( Guid element );
-        StringTimeseriesPropertyObject GetStringTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        StringTimeseriesPropertyObject? GetStringTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2273,7 +2273,7 @@ namespace Barrelman.Data.Types
         TimeSpanTimeseriesPropertyObject? GetTimeSpanTimeseriesPropertyById( Guid id );
         IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollection( );
         IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByElement( Guid element );
-        TimeSpanTimeseriesPropertyObject GetTimeSpanTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        TimeSpanTimeseriesPropertyObject? GetTimeSpanTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2282,7 +2282,7 @@ namespace Barrelman.Data.Types
         UInt16TimeseriesPropertyObject? GetUInt16TimeseriesPropertyById( Guid id );
         IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollection( );
         IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByElement( Guid element );
-        UInt16TimeseriesPropertyObject GetUInt16TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        UInt16TimeseriesPropertyObject? GetUInt16TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2291,7 +2291,7 @@ namespace Barrelman.Data.Types
         UInt32TimeseriesPropertyObject? GetUInt32TimeseriesPropertyById( Guid id );
         IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollection( );
         IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByElement( Guid element );
-        UInt32TimeseriesPropertyObject GetUInt32TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        UInt32TimeseriesPropertyObject? GetUInt32TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2300,7 +2300,7 @@ namespace Barrelman.Data.Types
         UInt64TimeseriesPropertyObject? GetUInt64TimeseriesPropertyById( Guid id );
         IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollection( );
         IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByElement( Guid element );
-        UInt64TimeseriesPropertyObject GetUInt64TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
+        UInt64TimeseriesPropertyObject? GetUInt64TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByDefinition( Guid definition );
         IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
         // ---------------------------------------------------------------------
@@ -2309,7 +2309,7 @@ namespace Barrelman.Data.Types
         TimeSpanPropertyObject? GetTimeSpanPropertyById( Guid id );
         IList<TimeSpanPropertyObject> GetTimeSpanPropertyCollection( );
         IList<TimeSpanPropertyObject> GetTimeSpanPropertyCollectionByElement( Guid element );
-        TimeSpanPropertyObject GetTimeSpanPropertyByElementAndDefinition( Guid element, Guid definition );
+        TimeSpanPropertyObject? GetTimeSpanPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<TimeSpanPropertyObject> GetTimeSpanPropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // UInt16Property queries
@@ -2317,7 +2317,7 @@ namespace Barrelman.Data.Types
         UInt16PropertyObject? GetUInt16PropertyById( Guid id );
         IList<UInt16PropertyObject> GetUInt16PropertyCollection( );
         IList<UInt16PropertyObject> GetUInt16PropertyCollectionByElement( Guid element );
-        UInt16PropertyObject GetUInt16PropertyByElementAndDefinition( Guid element, Guid definition );
+        UInt16PropertyObject? GetUInt16PropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt16PropertyObject> GetUInt16PropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // UInt32Property queries
@@ -2325,7 +2325,7 @@ namespace Barrelman.Data.Types
         UInt32PropertyObject? GetUInt32PropertyById( Guid id );
         IList<UInt32PropertyObject> GetUInt32PropertyCollection( );
         IList<UInt32PropertyObject> GetUInt32PropertyCollectionByElement( Guid element );
-        UInt32PropertyObject GetUInt32PropertyByElementAndDefinition( Guid element, Guid definition );
+        UInt32PropertyObject? GetUInt32PropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt32PropertyObject> GetUInt32PropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // UInt64Property queries
@@ -2333,7 +2333,7 @@ namespace Barrelman.Data.Types
         UInt64PropertyObject? GetUInt64PropertyById( Guid id );
         IList<UInt64PropertyObject> GetUInt64PropertyCollection( );
         IList<UInt64PropertyObject> GetUInt64PropertyCollectionByElement( Guid element );
-        UInt64PropertyObject GetUInt64PropertyByElementAndDefinition( Guid element, Guid definition );
+        UInt64PropertyObject? GetUInt64PropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt64PropertyObject> GetUInt64PropertyCollectionByDefinition( Guid definition );
         // ---------------------------------------------------------------------
         // PropertyDefinition queries
@@ -2341,77 +2341,77 @@ namespace Barrelman.Data.Types
         PropertyDefinitionObject? GetPropertyDefinitionById( Guid id );
         IList<PropertyDefinitionObject> GetPropertyDefinitionCollection( );
         IList<PropertyDefinitionObject> GetPropertyDefinitionCollectionByElementType( Guid elementType );
-        PropertyDefinitionObject GetPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        PropertyDefinitionObject? GetPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // BinaryPropertyDefinition queries
         // ---------------------------------------------------------------------
         BinaryPropertyDefinitionObject? GetBinaryPropertyDefinitionById( Guid id );
         IList<BinaryPropertyDefinitionObject> GetBinaryPropertyDefinitionCollection( );
         IList<BinaryPropertyDefinitionObject> GetBinaryPropertyDefinitionCollectionByElementType( Guid elementType );
-        BinaryPropertyDefinitionObject GetBinaryPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        BinaryPropertyDefinitionObject? GetBinaryPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // BooleanPropertyDefinition queries
         // ---------------------------------------------------------------------
         BooleanPropertyDefinitionObject? GetBooleanPropertyDefinitionById( Guid id );
         IList<BooleanPropertyDefinitionObject> GetBooleanPropertyDefinitionCollection( );
         IList<BooleanPropertyDefinitionObject> GetBooleanPropertyDefinitionCollectionByElementType( Guid elementType );
-        BooleanPropertyDefinitionObject GetBooleanPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        BooleanPropertyDefinitionObject? GetBooleanPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // BytePropertyDefinition queries
         // ---------------------------------------------------------------------
         BytePropertyDefinitionObject? GetBytePropertyDefinitionById( Guid id );
         IList<BytePropertyDefinitionObject> GetBytePropertyDefinitionCollection( );
         IList<BytePropertyDefinitionObject> GetBytePropertyDefinitionCollectionByElementType( Guid elementType );
-        BytePropertyDefinitionObject GetBytePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        BytePropertyDefinitionObject? GetBytePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // DateTimePropertyDefinition queries
         // ---------------------------------------------------------------------
         DateTimePropertyDefinitionObject? GetDateTimePropertyDefinitionById( Guid id );
         IList<DateTimePropertyDefinitionObject> GetDateTimePropertyDefinitionCollection( );
         IList<DateTimePropertyDefinitionObject> GetDateTimePropertyDefinitionCollectionByElementType( Guid elementType );
-        DateTimePropertyDefinitionObject GetDateTimePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        DateTimePropertyDefinitionObject? GetDateTimePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // DoublePropertyDefinition queries
         // ---------------------------------------------------------------------
         DoublePropertyDefinitionObject? GetDoublePropertyDefinitionById( Guid id );
         IList<DoublePropertyDefinitionObject> GetDoublePropertyDefinitionCollection( );
         IList<DoublePropertyDefinitionObject> GetDoublePropertyDefinitionCollectionByElementType( Guid elementType );
-        DoublePropertyDefinitionObject GetDoublePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        DoublePropertyDefinitionObject? GetDoublePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // GuidPropertyDefinition queries
         // ---------------------------------------------------------------------
         GuidPropertyDefinitionObject? GetGuidPropertyDefinitionById( Guid id );
         IList<GuidPropertyDefinitionObject> GetGuidPropertyDefinitionCollection( );
         IList<GuidPropertyDefinitionObject> GetGuidPropertyDefinitionCollectionByElementType( Guid elementType );
-        GuidPropertyDefinitionObject GetGuidPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        GuidPropertyDefinitionObject? GetGuidPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // Int16PropertyDefinition queries
         // ---------------------------------------------------------------------
         Int16PropertyDefinitionObject? GetInt16PropertyDefinitionById( Guid id );
         IList<Int16PropertyDefinitionObject> GetInt16PropertyDefinitionCollection( );
         IList<Int16PropertyDefinitionObject> GetInt16PropertyDefinitionCollectionByElementType( Guid elementType );
-        Int16PropertyDefinitionObject GetInt16PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        Int16PropertyDefinitionObject? GetInt16PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // Int32PropertyDefinition queries
         // ---------------------------------------------------------------------
         Int32PropertyDefinitionObject? GetInt32PropertyDefinitionById( Guid id );
         IList<Int32PropertyDefinitionObject> GetInt32PropertyDefinitionCollection( );
         IList<Int32PropertyDefinitionObject> GetInt32PropertyDefinitionCollectionByElementType( Guid elementType );
-        Int32PropertyDefinitionObject GetInt32PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        Int32PropertyDefinitionObject? GetInt32PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // Int64PropertyDefinition queries
         // ---------------------------------------------------------------------
         Int64PropertyDefinitionObject? GetInt64PropertyDefinitionById( Guid id );
         IList<Int64PropertyDefinitionObject> GetInt64PropertyDefinitionCollection( );
         IList<Int64PropertyDefinitionObject> GetInt64PropertyDefinitionCollectionByElementType( Guid elementType );
-        Int64PropertyDefinitionObject GetInt64PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        Int64PropertyDefinitionObject? GetInt64PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // ReferencePropertyDefinition queries
         // ---------------------------------------------------------------------
         ReferencePropertyDefinitionObject? GetReferencePropertyDefinitionById( Guid id );
         IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollection( );
         IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByElementType( Guid elementType );
-        ReferencePropertyDefinitionObject GetReferencePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        ReferencePropertyDefinitionObject? GetReferencePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByDefaultValue( Guid defaultValue );
         IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByReferencedElementType( Guid referencedElementType );
         // ---------------------------------------------------------------------
@@ -2420,98 +2420,98 @@ namespace Barrelman.Data.Types
         SBytePropertyDefinitionObject? GetSBytePropertyDefinitionById( Guid id );
         IList<SBytePropertyDefinitionObject> GetSBytePropertyDefinitionCollection( );
         IList<SBytePropertyDefinitionObject> GetSBytePropertyDefinitionCollectionByElementType( Guid elementType );
-        SBytePropertyDefinitionObject GetSBytePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        SBytePropertyDefinitionObject? GetSBytePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // SinglePropertyDefinition queries
         // ---------------------------------------------------------------------
         SinglePropertyDefinitionObject? GetSinglePropertyDefinitionById( Guid id );
         IList<SinglePropertyDefinitionObject> GetSinglePropertyDefinitionCollection( );
         IList<SinglePropertyDefinitionObject> GetSinglePropertyDefinitionCollectionByElementType( Guid elementType );
-        SinglePropertyDefinitionObject GetSinglePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        SinglePropertyDefinitionObject? GetSinglePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // StringPropertyDefinition queries
         // ---------------------------------------------------------------------
         StringPropertyDefinitionObject? GetStringPropertyDefinitionById( Guid id );
         IList<StringPropertyDefinitionObject> GetStringPropertyDefinitionCollection( );
         IList<StringPropertyDefinitionObject> GetStringPropertyDefinitionCollectionByElementType( Guid elementType );
-        StringPropertyDefinitionObject GetStringPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        StringPropertyDefinitionObject? GetStringPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         TimeseriesPropertyDefinitionObject? GetTimeseriesPropertyDefinitionById( Guid id );
         IList<TimeseriesPropertyDefinitionObject> GetTimeseriesPropertyDefinitionCollection( );
         IList<TimeseriesPropertyDefinitionObject> GetTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        TimeseriesPropertyDefinitionObject GetTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        TimeseriesPropertyDefinitionObject? GetTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // BinaryTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         BinaryTimeseriesPropertyDefinitionObject? GetBinaryTimeseriesPropertyDefinitionById( Guid id );
         IList<BinaryTimeseriesPropertyDefinitionObject> GetBinaryTimeseriesPropertyDefinitionCollection( );
         IList<BinaryTimeseriesPropertyDefinitionObject> GetBinaryTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        BinaryTimeseriesPropertyDefinitionObject GetBinaryTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        BinaryTimeseriesPropertyDefinitionObject? GetBinaryTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // BooleanTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         BooleanTimeseriesPropertyDefinitionObject? GetBooleanTimeseriesPropertyDefinitionById( Guid id );
         IList<BooleanTimeseriesPropertyDefinitionObject> GetBooleanTimeseriesPropertyDefinitionCollection( );
         IList<BooleanTimeseriesPropertyDefinitionObject> GetBooleanTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        BooleanTimeseriesPropertyDefinitionObject GetBooleanTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        BooleanTimeseriesPropertyDefinitionObject? GetBooleanTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // ByteTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         ByteTimeseriesPropertyDefinitionObject? GetByteTimeseriesPropertyDefinitionById( Guid id );
         IList<ByteTimeseriesPropertyDefinitionObject> GetByteTimeseriesPropertyDefinitionCollection( );
         IList<ByteTimeseriesPropertyDefinitionObject> GetByteTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        ByteTimeseriesPropertyDefinitionObject GetByteTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        ByteTimeseriesPropertyDefinitionObject? GetByteTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // DateTimeTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         DateTimeTimeseriesPropertyDefinitionObject? GetDateTimeTimeseriesPropertyDefinitionById( Guid id );
         IList<DateTimeTimeseriesPropertyDefinitionObject> GetDateTimeTimeseriesPropertyDefinitionCollection( );
         IList<DateTimeTimeseriesPropertyDefinitionObject> GetDateTimeTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        DateTimeTimeseriesPropertyDefinitionObject GetDateTimeTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        DateTimeTimeseriesPropertyDefinitionObject? GetDateTimeTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // DoubleTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         DoubleTimeseriesPropertyDefinitionObject? GetDoubleTimeseriesPropertyDefinitionById( Guid id );
         IList<DoubleTimeseriesPropertyDefinitionObject> GetDoubleTimeseriesPropertyDefinitionCollection( );
         IList<DoubleTimeseriesPropertyDefinitionObject> GetDoubleTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        DoubleTimeseriesPropertyDefinitionObject GetDoubleTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        DoubleTimeseriesPropertyDefinitionObject? GetDoubleTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // GuidTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         GuidTimeseriesPropertyDefinitionObject? GetGuidTimeseriesPropertyDefinitionById( Guid id );
         IList<GuidTimeseriesPropertyDefinitionObject> GetGuidTimeseriesPropertyDefinitionCollection( );
         IList<GuidTimeseriesPropertyDefinitionObject> GetGuidTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        GuidTimeseriesPropertyDefinitionObject GetGuidTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        GuidTimeseriesPropertyDefinitionObject? GetGuidTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // Int16TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         Int16TimeseriesPropertyDefinitionObject? GetInt16TimeseriesPropertyDefinitionById( Guid id );
         IList<Int16TimeseriesPropertyDefinitionObject> GetInt16TimeseriesPropertyDefinitionCollection( );
         IList<Int16TimeseriesPropertyDefinitionObject> GetInt16TimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        Int16TimeseriesPropertyDefinitionObject GetInt16TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        Int16TimeseriesPropertyDefinitionObject? GetInt16TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // Int32TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         Int32TimeseriesPropertyDefinitionObject? GetInt32TimeseriesPropertyDefinitionById( Guid id );
         IList<Int32TimeseriesPropertyDefinitionObject> GetInt32TimeseriesPropertyDefinitionCollection( );
         IList<Int32TimeseriesPropertyDefinitionObject> GetInt32TimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        Int32TimeseriesPropertyDefinitionObject GetInt32TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        Int32TimeseriesPropertyDefinitionObject? GetInt32TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // Int64TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         Int64TimeseriesPropertyDefinitionObject? GetInt64TimeseriesPropertyDefinitionById( Guid id );
         IList<Int64TimeseriesPropertyDefinitionObject> GetInt64TimeseriesPropertyDefinitionCollection( );
         IList<Int64TimeseriesPropertyDefinitionObject> GetInt64TimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        Int64TimeseriesPropertyDefinitionObject GetInt64TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        Int64TimeseriesPropertyDefinitionObject? GetInt64TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // ReferenceTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         ReferenceTimeseriesPropertyDefinitionObject? GetReferenceTimeseriesPropertyDefinitionById( Guid id );
         IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollection( );
         IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        ReferenceTimeseriesPropertyDefinitionObject GetReferenceTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        ReferenceTimeseriesPropertyDefinitionObject? GetReferenceTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementType( Guid referencedElementType );
         // ---------------------------------------------------------------------
         // SByteTimeseriesPropertyDefinition queries
@@ -2519,88 +2519,88 @@ namespace Barrelman.Data.Types
         SByteTimeseriesPropertyDefinitionObject? GetSByteTimeseriesPropertyDefinitionById( Guid id );
         IList<SByteTimeseriesPropertyDefinitionObject> GetSByteTimeseriesPropertyDefinitionCollection( );
         IList<SByteTimeseriesPropertyDefinitionObject> GetSByteTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        SByteTimeseriesPropertyDefinitionObject GetSByteTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        SByteTimeseriesPropertyDefinitionObject? GetSByteTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // SingleTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         SingleTimeseriesPropertyDefinitionObject? GetSingleTimeseriesPropertyDefinitionById( Guid id );
         IList<SingleTimeseriesPropertyDefinitionObject> GetSingleTimeseriesPropertyDefinitionCollection( );
         IList<SingleTimeseriesPropertyDefinitionObject> GetSingleTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        SingleTimeseriesPropertyDefinitionObject GetSingleTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        SingleTimeseriesPropertyDefinitionObject? GetSingleTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // StringTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         StringTimeseriesPropertyDefinitionObject? GetStringTimeseriesPropertyDefinitionById( Guid id );
         IList<StringTimeseriesPropertyDefinitionObject> GetStringTimeseriesPropertyDefinitionCollection( );
         IList<StringTimeseriesPropertyDefinitionObject> GetStringTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        StringTimeseriesPropertyDefinitionObject GetStringTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        StringTimeseriesPropertyDefinitionObject? GetStringTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // TimeSpanTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         TimeSpanTimeseriesPropertyDefinitionObject? GetTimeSpanTimeseriesPropertyDefinitionById( Guid id );
         IList<TimeSpanTimeseriesPropertyDefinitionObject> GetTimeSpanTimeseriesPropertyDefinitionCollection( );
         IList<TimeSpanTimeseriesPropertyDefinitionObject> GetTimeSpanTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        TimeSpanTimeseriesPropertyDefinitionObject GetTimeSpanTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        TimeSpanTimeseriesPropertyDefinitionObject? GetTimeSpanTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // UInt16TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         UInt16TimeseriesPropertyDefinitionObject? GetUInt16TimeseriesPropertyDefinitionById( Guid id );
         IList<UInt16TimeseriesPropertyDefinitionObject> GetUInt16TimeseriesPropertyDefinitionCollection( );
         IList<UInt16TimeseriesPropertyDefinitionObject> GetUInt16TimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        UInt16TimeseriesPropertyDefinitionObject GetUInt16TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        UInt16TimeseriesPropertyDefinitionObject? GetUInt16TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // UInt32TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         UInt32TimeseriesPropertyDefinitionObject? GetUInt32TimeseriesPropertyDefinitionById( Guid id );
         IList<UInt32TimeseriesPropertyDefinitionObject> GetUInt32TimeseriesPropertyDefinitionCollection( );
         IList<UInt32TimeseriesPropertyDefinitionObject> GetUInt32TimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        UInt32TimeseriesPropertyDefinitionObject GetUInt32TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        UInt32TimeseriesPropertyDefinitionObject? GetUInt32TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // UInt64TimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
         UInt64TimeseriesPropertyDefinitionObject? GetUInt64TimeseriesPropertyDefinitionById( Guid id );
         IList<UInt64TimeseriesPropertyDefinitionObject> GetUInt64TimeseriesPropertyDefinitionCollection( );
         IList<UInt64TimeseriesPropertyDefinitionObject> GetUInt64TimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
-        UInt64TimeseriesPropertyDefinitionObject GetUInt64TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        UInt64TimeseriesPropertyDefinitionObject? GetUInt64TimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // TimeSpanPropertyDefinition queries
         // ---------------------------------------------------------------------
         TimeSpanPropertyDefinitionObject? GetTimeSpanPropertyDefinitionById( Guid id );
         IList<TimeSpanPropertyDefinitionObject> GetTimeSpanPropertyDefinitionCollection( );
         IList<TimeSpanPropertyDefinitionObject> GetTimeSpanPropertyDefinitionCollectionByElementType( Guid elementType );
-        TimeSpanPropertyDefinitionObject GetTimeSpanPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        TimeSpanPropertyDefinitionObject? GetTimeSpanPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // UInt16PropertyDefinition queries
         // ---------------------------------------------------------------------
         UInt16PropertyDefinitionObject? GetUInt16PropertyDefinitionById( Guid id );
         IList<UInt16PropertyDefinitionObject> GetUInt16PropertyDefinitionCollection( );
         IList<UInt16PropertyDefinitionObject> GetUInt16PropertyDefinitionCollectionByElementType( Guid elementType );
-        UInt16PropertyDefinitionObject GetUInt16PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        UInt16PropertyDefinitionObject? GetUInt16PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // UInt32PropertyDefinition queries
         // ---------------------------------------------------------------------
         UInt32PropertyDefinitionObject? GetUInt32PropertyDefinitionById( Guid id );
         IList<UInt32PropertyDefinitionObject> GetUInt32PropertyDefinitionCollection( );
         IList<UInt32PropertyDefinitionObject> GetUInt32PropertyDefinitionCollectionByElementType( Guid elementType );
-        UInt32PropertyDefinitionObject GetUInt32PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        UInt32PropertyDefinitionObject? GetUInt32PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // UInt64PropertyDefinition queries
         // ---------------------------------------------------------------------
         UInt64PropertyDefinitionObject? GetUInt64PropertyDefinitionById( Guid id );
         IList<UInt64PropertyDefinitionObject> GetUInt64PropertyDefinitionCollection( );
         IList<UInt64PropertyDefinitionObject> GetUInt64PropertyDefinitionCollectionByElementType( Guid elementType );
-        UInt64PropertyDefinitionObject GetUInt64PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
+        UInt64PropertyDefinitionObject? GetUInt64PropertyDefinitionByElementTypeAndName( Guid elementType, string name );
         // ---------------------------------------------------------------------
         // RadarAlarmStatus queries
         // ---------------------------------------------------------------------
         RadarAlarmStatusObject? GetRadarAlarmStatusById( Guid id );
         IList<RadarAlarmStatusObject> GetRadarAlarmStatusCollection( );
         IList<RadarAlarmStatusObject> GetRadarAlarmStatusCollectionByRadar( Guid radar );
-        RadarAlarmStatusObject GetRadarAlarmStatusByRadarAndTimestamp( Guid radar, DateTime timestamp );
-        RadarAlarmStatusObject GetRadarAlarmStatusByRadarAtTimestamp( Guid radar, DateTime timestamp );
-        RadarAlarmStatusObject GetRadarAlarmStatusByRadarFromTimestamp( Guid radar, DateTime timestamp );
-        RadarAlarmStatusObject GetRadarAlarmStatusByRadarUntilTimestamp( Guid radar, DateTime timestamp );
-        RadarAlarmStatusObject GetRadarAlarmStatusByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadarAlarmStatusObject? GetRadarAlarmStatusByRadarAndTimestamp( Guid radar, DateTime timestamp );
+        RadarAlarmStatusObject? GetRadarAlarmStatusByRadarAtTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarAlarmStatusObject> GetRadarAlarmStatusByRadarFromTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarAlarmStatusObject> GetRadarAlarmStatusByRadarUntilTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarAlarmStatusObject> GetRadarAlarmStatusByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadarAlarmStatusObject> GetRadarAlarmStatusCollectionByTimestamp( DateTime timestamp );
         IList<RadarAlarmStatusObject> GetRadarAlarmStatusCollectionAtTimestamp( DateTime timestamp );
         IList<RadarAlarmStatusObject> GetRadarAlarmStatusCollectionFromTimestamp( DateTime timestamp );
@@ -2656,7 +2656,7 @@ namespace Barrelman.Data.Types
         IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadarCommandReplyObject GetRadarCommandReplyByCommand( Guid command );
+        RadarCommandReplyObject? GetRadarCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // RadarCommandReplyGetStatus queries
         // ---------------------------------------------------------------------
@@ -2673,18 +2673,18 @@ namespace Barrelman.Data.Types
         IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionFromTimestamp( DateTime timestamp );
         IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionUntilTimestamp( DateTime timestamp );
         IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadarCommandReplyGetStatusObject GetRadarCommandReplyGetStatusByCommand( Guid command );
+        RadarCommandReplyGetStatusObject? GetRadarCommandReplyGetStatusByCommand( Guid command );
         // ---------------------------------------------------------------------
         // RadarConfiguration queries
         // ---------------------------------------------------------------------
         RadarConfigurationObject? GetRadarConfigurationById( Guid id );
         IList<RadarConfigurationObject> GetRadarConfigurationCollection( );
         IList<RadarConfigurationObject> GetRadarConfigurationCollectionByRadar( Guid radar );
-        RadarConfigurationObject GetRadarConfigurationByRadarAndTimestamp( Guid radar, DateTime timestamp );
-        RadarConfigurationObject GetRadarConfigurationByRadarAtTimestamp( Guid radar, DateTime timestamp );
-        RadarConfigurationObject GetRadarConfigurationByRadarFromTimestamp( Guid radar, DateTime timestamp );
-        RadarConfigurationObject GetRadarConfigurationByRadarUntilTimestamp( Guid radar, DateTime timestamp );
-        RadarConfigurationObject GetRadarConfigurationByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadarConfigurationObject? GetRadarConfigurationByRadarAndTimestamp( Guid radar, DateTime timestamp );
+        RadarConfigurationObject? GetRadarConfigurationByRadarAtTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarConfigurationObject> GetRadarConfigurationByRadarFromTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarConfigurationObject> GetRadarConfigurationByRadarUntilTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarConfigurationObject> GetRadarConfigurationByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadarConfigurationObject> GetRadarConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<RadarConfigurationObject> GetRadarConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<RadarConfigurationObject> GetRadarConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -2696,11 +2696,11 @@ namespace Barrelman.Data.Types
         RadarImageObject? GetRadarImageById( Guid id );
         IList<RadarImageObject> GetRadarImageCollection( );
         IList<RadarImageObject> GetRadarImageCollectionByRadar( Guid radar );
-        RadarImageObject GetRadarImageByRadarAndTimestamp( Guid radar, DateTime timestamp );
-        RadarImageObject GetRadarImageByRadarAtTimestamp( Guid radar, DateTime timestamp );
-        RadarImageObject GetRadarImageByRadarFromTimestamp( Guid radar, DateTime timestamp );
-        RadarImageObject GetRadarImageByRadarUntilTimestamp( Guid radar, DateTime timestamp );
-        RadarImageObject GetRadarImageByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadarImageObject? GetRadarImageByRadarAndTimestamp( Guid radar, DateTime timestamp );
+        RadarImageObject? GetRadarImageByRadarAtTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarImageObject> GetRadarImageByRadarFromTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarImageObject> GetRadarImageByRadarUntilTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarImageObject> GetRadarImageByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadarImageObject> GetRadarImageCollectionByTimestamp( DateTime timestamp );
         IList<RadarImageObject> GetRadarImageCollectionAtTimestamp( DateTime timestamp );
         IList<RadarImageObject> GetRadarImageCollectionFromTimestamp( DateTime timestamp );
@@ -2712,11 +2712,11 @@ namespace Barrelman.Data.Types
         RadarRawTrackTableObject? GetRadarRawTrackTableById( Guid id );
         IList<RadarRawTrackTableObject> GetRadarRawTrackTableCollection( );
         IList<RadarRawTrackTableObject> GetRadarRawTrackTableCollectionByRadar( Guid radar );
-        RadarRawTrackTableObject GetRadarRawTrackTableByRadarAndTimestamp( Guid radar, DateTime timestamp );
-        RadarRawTrackTableObject GetRadarRawTrackTableByRadarAtTimestamp( Guid radar, DateTime timestamp );
-        RadarRawTrackTableObject GetRadarRawTrackTableByRadarFromTimestamp( Guid radar, DateTime timestamp );
-        RadarRawTrackTableObject GetRadarRawTrackTableByRadarUntilTimestamp( Guid radar, DateTime timestamp );
-        RadarRawTrackTableObject GetRadarRawTrackTableByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadarRawTrackTableObject? GetRadarRawTrackTableByRadarAndTimestamp( Guid radar, DateTime timestamp );
+        RadarRawTrackTableObject? GetRadarRawTrackTableByRadarAtTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarRawTrackTableObject> GetRadarRawTrackTableByRadarFromTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarRawTrackTableObject> GetRadarRawTrackTableByRadarUntilTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarRawTrackTableObject> GetRadarRawTrackTableByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadarRawTrackTableObject> GetRadarRawTrackTableCollectionByTimestamp( DateTime timestamp );
         IList<RadarRawTrackTableObject> GetRadarRawTrackTableCollectionAtTimestamp( DateTime timestamp );
         IList<RadarRawTrackTableObject> GetRadarRawTrackTableCollectionFromTimestamp( DateTime timestamp );
@@ -2728,11 +2728,11 @@ namespace Barrelman.Data.Types
         RadarStatusObject? GetRadarStatusById( Guid id );
         IList<RadarStatusObject> GetRadarStatusCollection( );
         IList<RadarStatusObject> GetRadarStatusCollectionByRadar( Guid radar );
-        RadarStatusObject GetRadarStatusByRadarAndTimestamp( Guid radar, DateTime timestamp );
-        RadarStatusObject GetRadarStatusByRadarAtTimestamp( Guid radar, DateTime timestamp );
-        RadarStatusObject GetRadarStatusByRadarFromTimestamp( Guid radar, DateTime timestamp );
-        RadarStatusObject GetRadarStatusByRadarUntilTimestamp( Guid radar, DateTime timestamp );
-        RadarStatusObject GetRadarStatusByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadarStatusObject? GetRadarStatusByRadarAndTimestamp( Guid radar, DateTime timestamp );
+        RadarStatusObject? GetRadarStatusByRadarAtTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarStatusObject> GetRadarStatusByRadarFromTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarStatusObject> GetRadarStatusByRadarUntilTimestamp( Guid radar, DateTime timestamp );
+        IList<RadarStatusObject> GetRadarStatusByRadarOverTimestamp( Guid radar, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadarStatusObject> GetRadarStatusCollectionByTimestamp( DateTime timestamp );
         IList<RadarStatusObject> GetRadarStatusCollectionAtTimestamp( DateTime timestamp );
         IList<RadarStatusObject> GetRadarStatusCollectionFromTimestamp( DateTime timestamp );
@@ -2771,18 +2771,18 @@ namespace Barrelman.Data.Types
         IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadioCommandReplyObject GetRadioCommandReplyByCommand( Guid command );
+        RadioCommandReplyObject? GetRadioCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // RadioConfiguration queries
         // ---------------------------------------------------------------------
         RadioConfigurationObject? GetRadioConfigurationById( Guid id );
         IList<RadioConfigurationObject> GetRadioConfigurationCollection( );
         IList<RadioConfigurationObject> GetRadioConfigurationCollectionByRadio( Guid radio );
-        RadioConfigurationObject GetRadioConfigurationByRadioAndTimestamp( Guid radio, DateTime timestamp );
-        RadioConfigurationObject GetRadioConfigurationByRadioAtTimestamp( Guid radio, DateTime timestamp );
-        RadioConfigurationObject GetRadioConfigurationByRadioFromTimestamp( Guid radio, DateTime timestamp );
-        RadioConfigurationObject GetRadioConfigurationByRadioUntilTimestamp( Guid radio, DateTime timestamp );
-        RadioConfigurationObject GetRadioConfigurationByRadioOverTimestamp( Guid radio, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadioConfigurationObject? GetRadioConfigurationByRadioAndTimestamp( Guid radio, DateTime timestamp );
+        RadioConfigurationObject? GetRadioConfigurationByRadioAtTimestamp( Guid radio, DateTime timestamp );
+        IList<RadioConfigurationObject> GetRadioConfigurationByRadioFromTimestamp( Guid radio, DateTime timestamp );
+        IList<RadioConfigurationObject> GetRadioConfigurationByRadioUntilTimestamp( Guid radio, DateTime timestamp );
+        IList<RadioConfigurationObject> GetRadioConfigurationByRadioOverTimestamp( Guid radio, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadioConfigurationObject> GetRadioConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<RadioConfigurationObject> GetRadioConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<RadioConfigurationObject> GetRadioConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -2821,18 +2821,18 @@ namespace Barrelman.Data.Types
         IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadomeCommandReplyObject GetRadomeCommandReplyByCommand( Guid command );
+        RadomeCommandReplyObject? GetRadomeCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // RadomeConfiguration queries
         // ---------------------------------------------------------------------
         RadomeConfigurationObject? GetRadomeConfigurationById( Guid id );
         IList<RadomeConfigurationObject> GetRadomeConfigurationCollection( );
         IList<RadomeConfigurationObject> GetRadomeConfigurationCollectionByRadome( Guid radome );
-        RadomeConfigurationObject GetRadomeConfigurationByRadomeAndTimestamp( Guid radome, DateTime timestamp );
-        RadomeConfigurationObject GetRadomeConfigurationByRadomeAtTimestamp( Guid radome, DateTime timestamp );
-        RadomeConfigurationObject GetRadomeConfigurationByRadomeFromTimestamp( Guid radome, DateTime timestamp );
-        RadomeConfigurationObject GetRadomeConfigurationByRadomeUntilTimestamp( Guid radome, DateTime timestamp );
-        RadomeConfigurationObject GetRadomeConfigurationByRadomeOverTimestamp( Guid radome, DateTime fromTimestamp, DateTime untilTimestamp );
+        RadomeConfigurationObject? GetRadomeConfigurationByRadomeAndTimestamp( Guid radome, DateTime timestamp );
+        RadomeConfigurationObject? GetRadomeConfigurationByRadomeAtTimestamp( Guid radome, DateTime timestamp );
+        IList<RadomeConfigurationObject> GetRadomeConfigurationByRadomeFromTimestamp( Guid radome, DateTime timestamp );
+        IList<RadomeConfigurationObject> GetRadomeConfigurationByRadomeUntilTimestamp( Guid radome, DateTime timestamp );
+        IList<RadomeConfigurationObject> GetRadomeConfigurationByRadomeOverTimestamp( Guid radome, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<RadomeConfigurationObject> GetRadomeConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<RadomeConfigurationObject> GetRadomeConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<RadomeConfigurationObject> GetRadomeConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -2844,11 +2844,11 @@ namespace Barrelman.Data.Types
         ReferenceTimeseriesValueObject? GetReferenceTimeseriesValueById( Guid id );
         IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueCollection( );
         IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        ReferenceTimeseriesValueObject GetReferenceTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        ReferenceTimeseriesValueObject GetReferenceTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        ReferenceTimeseriesValueObject GetReferenceTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        ReferenceTimeseriesValueObject GetReferenceTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        ReferenceTimeseriesValueObject GetReferenceTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        ReferenceTimeseriesValueObject? GetReferenceTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        ReferenceTimeseriesValueObject? GetReferenceTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<ReferenceTimeseriesValueObject> GetReferenceTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -2861,11 +2861,11 @@ namespace Barrelman.Data.Types
         SByteTimeseriesValueObject? GetSByteTimeseriesValueById( Guid id );
         IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueCollection( );
         IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        SByteTimeseriesValueObject GetSByteTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        SByteTimeseriesValueObject GetSByteTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        SByteTimeseriesValueObject GetSByteTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        SByteTimeseriesValueObject GetSByteTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        SByteTimeseriesValueObject GetSByteTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        SByteTimeseriesValueObject? GetSByteTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        SByteTimeseriesValueObject? GetSByteTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<SByteTimeseriesValueObject> GetSByteTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -2876,29 +2876,29 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         SecurityDomainObject? GetSecurityDomainById( Guid id );
         IList<SecurityDomainObject> GetSecurityDomainCollection( );
-        SecurityDomainObject GetSecurityDomainByName( string name );
+        SecurityDomainObject? GetSecurityDomainByName( string name );
         // ---------------------------------------------------------------------
         // SecurityIdentifier queries
         // ---------------------------------------------------------------------
         SecurityIdentifierObject? GetSecurityIdentifierById( Guid id );
         IList<SecurityIdentifierObject> GetSecurityIdentifierCollection( );
         IList<SecurityIdentifierObject> GetSecurityIdentifierCollectionByDomain( Guid domain );
-        SecurityIdentifierObject GetSecurityIdentifierByDomainAndIdentity( Guid domain, string identity );
+        SecurityIdentifierObject? GetSecurityIdentifierByDomainAndIdentity( Guid domain, string identity );
         // ---------------------------------------------------------------------
         // SecurityLogin queries
         // ---------------------------------------------------------------------
         SecurityLoginObject? GetSecurityLoginById( Guid id );
         IList<SecurityLoginObject> GetSecurityLoginCollection( );
         IList<SecurityLoginObject> GetSecurityLoginCollectionByDomain( Guid domain );
-        SecurityLoginObject GetSecurityLoginByDomainAndIdentity( Guid domain, string identity );
+        SecurityLoginObject? GetSecurityLoginByDomainAndIdentity( Guid domain, string identity );
         // ---------------------------------------------------------------------
         // SecurityRole queries
         // ---------------------------------------------------------------------
         SecurityRoleObject? GetSecurityRoleById( Guid id );
         IList<SecurityRoleObject> GetSecurityRoleCollection( );
         IList<SecurityRoleObject> GetSecurityRoleCollectionByDomain( Guid domain );
-        SecurityRoleObject GetSecurityRoleByDomainAndIdentity( Guid domain, string identity );
-        SecurityRoleObject GetSecurityRoleByName( string name );
+        SecurityRoleObject? GetSecurityRoleByDomainAndIdentity( Guid domain, string identity );
+        SecurityRoleObject? GetSecurityRoleByName( string name );
         // ---------------------------------------------------------------------
         // SecurityIdentifierRoleLink queries
         // ---------------------------------------------------------------------
@@ -2947,11 +2947,11 @@ namespace Barrelman.Data.Types
         IList<SecurityPermissionObject> GetSecurityPermissionCollectionByIdentifierFromTypeCode( Guid identifier, int typeCode );
         IList<SecurityPermissionObject> GetSecurityPermissionCollectionByIdentifierUntilTypeCode( Guid identifier, int typeCode );
         IList<SecurityPermissionObject> GetSecurityPermissionCollectionByIdentifierOverTypeCode( Guid identifier, int fromTypeCode, int untilTypeCode );
-        SecurityPermissionObject GetSecurityPermissionByIdentifierTypeCodeAndTimestamp( Guid identifier, int typeCode, DateTime timestamp );
-        SecurityPermissionObject GetSecurityPermissionByIdentifierTypeCodeAtTimestamp( Guid identifier, int typeCode, DateTime timestamp );
-        SecurityPermissionObject GetSecurityPermissionByIdentifierTypeCodeFromTimestamp( Guid identifier, int typeCode, DateTime timestamp );
-        SecurityPermissionObject GetSecurityPermissionByIdentifierTypeCodeUntilTimestamp( Guid identifier, int typeCode, DateTime timestamp );
-        SecurityPermissionObject GetSecurityPermissionByIdentifierTypeCodeOverTimestamp( Guid identifier, int typeCode, DateTime fromTimestamp, DateTime untilTimestamp );
+        SecurityPermissionObject? GetSecurityPermissionByIdentifierTypeCodeAndTimestamp( Guid identifier, int typeCode, DateTime timestamp );
+        SecurityPermissionObject? GetSecurityPermissionByIdentifierTypeCodeAtTimestamp( Guid identifier, int typeCode, DateTime timestamp );
+        IList<SecurityPermissionObject> GetSecurityPermissionByIdentifierTypeCodeFromTimestamp( Guid identifier, int typeCode, DateTime timestamp );
+        IList<SecurityPermissionObject> GetSecurityPermissionByIdentifierTypeCodeUntilTimestamp( Guid identifier, int typeCode, DateTime timestamp );
+        IList<SecurityPermissionObject> GetSecurityPermissionByIdentifierTypeCodeOverTimestamp( Guid identifier, int typeCode, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<SecurityPermissionObject> GetSecurityPermissionCollectionByTimestamp( DateTime timestamp );
         IList<SecurityPermissionObject> GetSecurityPermissionCollectionAtTimestamp( DateTime timestamp );
         IList<SecurityPermissionObject> GetSecurityPermissionCollectionFromTimestamp( DateTime timestamp );
@@ -2963,11 +2963,11 @@ namespace Barrelman.Data.Types
         SingleTimeseriesValueObject? GetSingleTimeseriesValueById( Guid id );
         IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueCollection( );
         IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        SingleTimeseriesValueObject GetSingleTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        SingleTimeseriesValueObject GetSingleTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        SingleTimeseriesValueObject GetSingleTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        SingleTimeseriesValueObject GetSingleTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        SingleTimeseriesValueObject GetSingleTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        SingleTimeseriesValueObject? GetSingleTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        SingleTimeseriesValueObject? GetSingleTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<SingleTimeseriesValueObject> GetSingleTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -2979,11 +2979,11 @@ namespace Barrelman.Data.Types
         StringTimeseriesValueObject? GetStringTimeseriesValueById( Guid id );
         IList<StringTimeseriesValueObject> GetStringTimeseriesValueCollection( );
         IList<StringTimeseriesValueObject> GetStringTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        StringTimeseriesValueObject GetStringTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        StringTimeseriesValueObject GetStringTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        StringTimeseriesValueObject GetStringTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        StringTimeseriesValueObject GetStringTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        StringTimeseriesValueObject GetStringTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        StringTimeseriesValueObject? GetStringTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        StringTimeseriesValueObject? GetStringTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<StringTimeseriesValueObject> GetStringTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<StringTimeseriesValueObject> GetStringTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<StringTimeseriesValueObject> GetStringTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<StringTimeseriesValueObject> GetStringTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<StringTimeseriesValueObject> GetStringTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<StringTimeseriesValueObject> GetStringTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -2996,7 +2996,7 @@ namespace Barrelman.Data.Types
         IList<TimeseriesCatalogElementObject> GetTimeseriesCatalogElementCollection( );
         IList<TimeseriesCatalogElementObject> GetTimeseriesCatalogElementCollectionByCatalog( Guid? catalog );
         IList<TimeseriesCatalogElementObject> GetTimeseriesCatalogElementCollectionByCatalogIsNull(  );
-        TimeseriesCatalogElementObject GetTimeseriesCatalogElementByCatalogAndName( Guid? catalog, string name );
+        TimeseriesCatalogElementObject? GetTimeseriesCatalogElementByCatalogAndName( Guid? catalog, string name );
         IList<TimeseriesCatalogElementObject> GetTimeseriesCatalogElementCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Timeseries queries
@@ -3005,7 +3005,7 @@ namespace Barrelman.Data.Types
         IList<TimeseriesObject> GetTimeseriesCollection( );
         IList<TimeseriesObject> GetTimeseriesCollectionByCatalog( Guid? catalog );
         IList<TimeseriesObject> GetTimeseriesCollectionByCatalogIsNull(  );
-        TimeseriesObject GetTimeseriesByCatalogAndName( Guid? catalog, string name );
+        TimeseriesObject? GetTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<TimeseriesObject> GetTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // BinaryTimeseries queries
@@ -3014,7 +3014,7 @@ namespace Barrelman.Data.Types
         IList<BinaryTimeseriesObject> GetBinaryTimeseriesCollection( );
         IList<BinaryTimeseriesObject> GetBinaryTimeseriesCollectionByCatalog( Guid? catalog );
         IList<BinaryTimeseriesObject> GetBinaryTimeseriesCollectionByCatalogIsNull(  );
-        BinaryTimeseriesObject GetBinaryTimeseriesByCatalogAndName( Guid? catalog, string name );
+        BinaryTimeseriesObject? GetBinaryTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<BinaryTimeseriesObject> GetBinaryTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // BooleanTimeseries queries
@@ -3023,7 +3023,7 @@ namespace Barrelman.Data.Types
         IList<BooleanTimeseriesObject> GetBooleanTimeseriesCollection( );
         IList<BooleanTimeseriesObject> GetBooleanTimeseriesCollectionByCatalog( Guid? catalog );
         IList<BooleanTimeseriesObject> GetBooleanTimeseriesCollectionByCatalogIsNull(  );
-        BooleanTimeseriesObject GetBooleanTimeseriesByCatalogAndName( Guid? catalog, string name );
+        BooleanTimeseriesObject? GetBooleanTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<BooleanTimeseriesObject> GetBooleanTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // AisAidToNavigationOffPositionTimeseries queries
@@ -3032,7 +3032,7 @@ namespace Barrelman.Data.Types
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollection( );
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByCatalog( Guid? catalog );
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByCatalogIsNull(  );
-        AisAidToNavigationOffPositionTimeseriesObject GetAisAidToNavigationOffPositionTimeseriesByCatalogAndName( Guid? catalog, string name );
+        AisAidToNavigationOffPositionTimeseriesObject? GetAisAidToNavigationOffPositionTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByCatalogIsNullAndName( string name );
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByAidToNavigation( Guid aidToNavigation );
         // ---------------------------------------------------------------------
@@ -3042,7 +3042,7 @@ namespace Barrelman.Data.Types
         IList<DeviceEnabledTimeseriesObject> GetDeviceEnabledTimeseriesCollection( );
         IList<DeviceEnabledTimeseriesObject> GetDeviceEnabledTimeseriesCollectionByCatalog( Guid? catalog );
         IList<DeviceEnabledTimeseriesObject> GetDeviceEnabledTimeseriesCollectionByCatalogIsNull(  );
-        DeviceEnabledTimeseriesObject GetDeviceEnabledTimeseriesByCatalogAndName( Guid? catalog, string name );
+        DeviceEnabledTimeseriesObject? GetDeviceEnabledTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<DeviceEnabledTimeseriesObject> GetDeviceEnabledTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarAutomaticSensitivityTimeControlTimeseries queries
@@ -3051,7 +3051,7 @@ namespace Barrelman.Data.Types
         IList<RadarAutomaticSensitivityTimeControlTimeseriesObject> GetRadarAutomaticSensitivityTimeControlTimeseriesCollection( );
         IList<RadarAutomaticSensitivityTimeControlTimeseriesObject> GetRadarAutomaticSensitivityTimeControlTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarAutomaticSensitivityTimeControlTimeseriesObject> GetRadarAutomaticSensitivityTimeControlTimeseriesCollectionByCatalogIsNull(  );
-        RadarAutomaticSensitivityTimeControlTimeseriesObject GetRadarAutomaticSensitivityTimeControlTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarAutomaticSensitivityTimeControlTimeseriesObject? GetRadarAutomaticSensitivityTimeControlTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarAutomaticSensitivityTimeControlTimeseriesObject> GetRadarAutomaticSensitivityTimeControlTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarBlankSector1Timeseries queries
@@ -3060,7 +3060,7 @@ namespace Barrelman.Data.Types
         IList<RadarBlankSector1TimeseriesObject> GetRadarBlankSector1TimeseriesCollection( );
         IList<RadarBlankSector1TimeseriesObject> GetRadarBlankSector1TimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarBlankSector1TimeseriesObject> GetRadarBlankSector1TimeseriesCollectionByCatalogIsNull(  );
-        RadarBlankSector1TimeseriesObject GetRadarBlankSector1TimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarBlankSector1TimeseriesObject? GetRadarBlankSector1TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarBlankSector1TimeseriesObject> GetRadarBlankSector1TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarBlankSector2Timeseries queries
@@ -3069,7 +3069,7 @@ namespace Barrelman.Data.Types
         IList<RadarBlankSector2TimeseriesObject> GetRadarBlankSector2TimeseriesCollection( );
         IList<RadarBlankSector2TimeseriesObject> GetRadarBlankSector2TimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarBlankSector2TimeseriesObject> GetRadarBlankSector2TimeseriesCollectionByCatalogIsNull(  );
-        RadarBlankSector2TimeseriesObject GetRadarBlankSector2TimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarBlankSector2TimeseriesObject? GetRadarBlankSector2TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarBlankSector2TimeseriesObject> GetRadarBlankSector2TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarEnableAutomaticFrequencyControlTimeseries queries
@@ -3078,7 +3078,7 @@ namespace Barrelman.Data.Types
         IList<RadarEnableAutomaticFrequencyControlTimeseriesObject> GetRadarEnableAutomaticFrequencyControlTimeseriesCollection( );
         IList<RadarEnableAutomaticFrequencyControlTimeseriesObject> GetRadarEnableAutomaticFrequencyControlTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarEnableAutomaticFrequencyControlTimeseriesObject> GetRadarEnableAutomaticFrequencyControlTimeseriesCollectionByCatalogIsNull(  );
-        RadarEnableAutomaticFrequencyControlTimeseriesObject GetRadarEnableAutomaticFrequencyControlTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarEnableAutomaticFrequencyControlTimeseriesObject? GetRadarEnableAutomaticFrequencyControlTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarEnableAutomaticFrequencyControlTimeseriesObject> GetRadarEnableAutomaticFrequencyControlTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarEnableFastTimeConstantTimeseries queries
@@ -3087,7 +3087,7 @@ namespace Barrelman.Data.Types
         IList<RadarEnableFastTimeConstantTimeseriesObject> GetRadarEnableFastTimeConstantTimeseriesCollection( );
         IList<RadarEnableFastTimeConstantTimeseriesObject> GetRadarEnableFastTimeConstantTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarEnableFastTimeConstantTimeseriesObject> GetRadarEnableFastTimeConstantTimeseriesCollectionByCatalogIsNull(  );
-        RadarEnableFastTimeConstantTimeseriesObject GetRadarEnableFastTimeConstantTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarEnableFastTimeConstantTimeseriesObject? GetRadarEnableFastTimeConstantTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarEnableFastTimeConstantTimeseriesObject> GetRadarEnableFastTimeConstantTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarEnableSensitivityTimeControlTimeseries queries
@@ -3096,7 +3096,7 @@ namespace Barrelman.Data.Types
         IList<RadarEnableSensitivityTimeControlTimeseriesObject> GetRadarEnableSensitivityTimeControlTimeseriesCollection( );
         IList<RadarEnableSensitivityTimeControlTimeseriesObject> GetRadarEnableSensitivityTimeControlTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarEnableSensitivityTimeControlTimeseriesObject> GetRadarEnableSensitivityTimeControlTimeseriesCollectionByCatalogIsNull(  );
-        RadarEnableSensitivityTimeControlTimeseriesObject GetRadarEnableSensitivityTimeControlTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarEnableSensitivityTimeControlTimeseriesObject? GetRadarEnableSensitivityTimeControlTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarEnableSensitivityTimeControlTimeseriesObject> GetRadarEnableSensitivityTimeControlTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarPowerOnTimeseries queries
@@ -3105,7 +3105,7 @@ namespace Barrelman.Data.Types
         IList<RadarPowerOnTimeseriesObject> GetRadarPowerOnTimeseriesCollection( );
         IList<RadarPowerOnTimeseriesObject> GetRadarPowerOnTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarPowerOnTimeseriesObject> GetRadarPowerOnTimeseriesCollectionByCatalogIsNull(  );
-        RadarPowerOnTimeseriesObject GetRadarPowerOnTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarPowerOnTimeseriesObject? GetRadarPowerOnTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarPowerOnTimeseriesObject> GetRadarPowerOnTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarSaveSettingsTimeseries queries
@@ -3114,7 +3114,7 @@ namespace Barrelman.Data.Types
         IList<RadarSaveSettingsTimeseriesObject> GetRadarSaveSettingsTimeseriesCollection( );
         IList<RadarSaveSettingsTimeseriesObject> GetRadarSaveSettingsTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarSaveSettingsTimeseriesObject> GetRadarSaveSettingsTimeseriesCollectionByCatalogIsNull(  );
-        RadarSaveSettingsTimeseriesObject GetRadarSaveSettingsTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarSaveSettingsTimeseriesObject? GetRadarSaveSettingsTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarSaveSettingsTimeseriesObject> GetRadarSaveSettingsTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarTrackingTimeseries queries
@@ -3123,7 +3123,7 @@ namespace Barrelman.Data.Types
         IList<RadarTrackingTimeseriesObject> GetRadarTrackingTimeseriesCollection( );
         IList<RadarTrackingTimeseriesObject> GetRadarTrackingTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarTrackingTimeseriesObject> GetRadarTrackingTimeseriesCollectionByCatalogIsNull(  );
-        RadarTrackingTimeseriesObject GetRadarTrackingTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarTrackingTimeseriesObject? GetRadarTrackingTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarTrackingTimeseriesObject> GetRadarTrackingTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // MediaProxySessionEnabledTimeseries queries
@@ -3132,7 +3132,7 @@ namespace Barrelman.Data.Types
         IList<MediaProxySessionEnabledTimeseriesObject> GetMediaProxySessionEnabledTimeseriesCollection( );
         IList<MediaProxySessionEnabledTimeseriesObject> GetMediaProxySessionEnabledTimeseriesCollectionByCatalog( Guid? catalog );
         IList<MediaProxySessionEnabledTimeseriesObject> GetMediaProxySessionEnabledTimeseriesCollectionByCatalogIsNull(  );
-        MediaProxySessionEnabledTimeseriesObject GetMediaProxySessionEnabledTimeseriesByCatalogAndName( Guid? catalog, string name );
+        MediaProxySessionEnabledTimeseriesObject? GetMediaProxySessionEnabledTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<MediaProxySessionEnabledTimeseriesObject> GetMediaProxySessionEnabledTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // MediaServiceEnabledTimeseries queries
@@ -3141,7 +3141,7 @@ namespace Barrelman.Data.Types
         IList<MediaServiceEnabledTimeseriesObject> GetMediaServiceEnabledTimeseriesCollection( );
         IList<MediaServiceEnabledTimeseriesObject> GetMediaServiceEnabledTimeseriesCollectionByCatalog( Guid? catalog );
         IList<MediaServiceEnabledTimeseriesObject> GetMediaServiceEnabledTimeseriesCollectionByCatalogIsNull(  );
-        MediaServiceEnabledTimeseriesObject GetMediaServiceEnabledTimeseriesByCatalogAndName( Guid? catalog, string name );
+        MediaServiceEnabledTimeseriesObject? GetMediaServiceEnabledTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<MediaServiceEnabledTimeseriesObject> GetMediaServiceEnabledTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // ByteTimeseries queries
@@ -3150,7 +3150,7 @@ namespace Barrelman.Data.Types
         IList<ByteTimeseriesObject> GetByteTimeseriesCollection( );
         IList<ByteTimeseriesObject> GetByteTimeseriesCollectionByCatalog( Guid? catalog );
         IList<ByteTimeseriesObject> GetByteTimeseriesCollectionByCatalogIsNull(  );
-        ByteTimeseriesObject GetByteTimeseriesByCatalogAndName( Guid? catalog, string name );
+        ByteTimeseriesObject? GetByteTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<ByteTimeseriesObject> GetByteTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // DateTimeTimeseries queries
@@ -3159,7 +3159,7 @@ namespace Barrelman.Data.Types
         IList<DateTimeTimeseriesObject> GetDateTimeTimeseriesCollection( );
         IList<DateTimeTimeseriesObject> GetDateTimeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<DateTimeTimeseriesObject> GetDateTimeTimeseriesCollectionByCatalogIsNull(  );
-        DateTimeTimeseriesObject GetDateTimeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        DateTimeTimeseriesObject? GetDateTimeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<DateTimeTimeseriesObject> GetDateTimeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // DoubleTimeseries queries
@@ -3168,7 +3168,7 @@ namespace Barrelman.Data.Types
         IList<DoubleTimeseriesObject> GetDoubleTimeseriesCollection( );
         IList<DoubleTimeseriesObject> GetDoubleTimeseriesCollectionByCatalog( Guid? catalog );
         IList<DoubleTimeseriesObject> GetDoubleTimeseriesCollectionByCatalogIsNull(  );
-        DoubleTimeseriesObject GetDoubleTimeseriesByCatalogAndName( Guid? catalog, string name );
+        DoubleTimeseriesObject? GetDoubleTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<DoubleTimeseriesObject> GetDoubleTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // GNSSAltitudeTimeseries queries
@@ -3177,7 +3177,7 @@ namespace Barrelman.Data.Types
         IList<GNSSAltitudeTimeseriesObject> GetGNSSAltitudeTimeseriesCollection( );
         IList<GNSSAltitudeTimeseriesObject> GetGNSSAltitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GNSSAltitudeTimeseriesObject> GetGNSSAltitudeTimeseriesCollectionByCatalogIsNull(  );
-        GNSSAltitudeTimeseriesObject GetGNSSAltitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GNSSAltitudeTimeseriesObject? GetGNSSAltitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GNSSAltitudeTimeseriesObject> GetGNSSAltitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // GNSSLatitudeTimeseries queries
@@ -3186,7 +3186,7 @@ namespace Barrelman.Data.Types
         IList<GNSSLatitudeTimeseriesObject> GetGNSSLatitudeTimeseriesCollection( );
         IList<GNSSLatitudeTimeseriesObject> GetGNSSLatitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GNSSLatitudeTimeseriesObject> GetGNSSLatitudeTimeseriesCollectionByCatalogIsNull(  );
-        GNSSLatitudeTimeseriesObject GetGNSSLatitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GNSSLatitudeTimeseriesObject? GetGNSSLatitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GNSSLatitudeTimeseriesObject> GetGNSSLatitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // GNSSLongitudeTimeseries queries
@@ -3195,7 +3195,7 @@ namespace Barrelman.Data.Types
         IList<GNSSLongitudeTimeseriesObject> GetGNSSLongitudeTimeseriesCollection( );
         IList<GNSSLongitudeTimeseriesObject> GetGNSSLongitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GNSSLongitudeTimeseriesObject> GetGNSSLongitudeTimeseriesCollectionByCatalogIsNull(  );
-        GNSSLongitudeTimeseriesObject GetGNSSLongitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GNSSLongitudeTimeseriesObject? GetGNSSLongitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GNSSLongitudeTimeseriesObject> GetGNSSLongitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // GyroCourseTimeseries queries
@@ -3204,9 +3204,9 @@ namespace Barrelman.Data.Types
         IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollection( );
         IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollectionByCatalogIsNull(  );
-        GyroCourseTimeseriesObject GetGyroCourseTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroCourseTimeseriesObject? GetGyroCourseTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroCourseTimeseriesObject GetGyroCourseTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroCourseTimeseriesObject? GetGyroCourseTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // GyroHeadingMagneticNorthTimeseries queries
         // ---------------------------------------------------------------------
@@ -3214,9 +3214,9 @@ namespace Barrelman.Data.Types
         IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollection( );
         IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollectionByCatalogIsNull(  );
-        GyroHeadingMagneticNorthTimeseriesObject GetGyroHeadingMagneticNorthTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroHeadingMagneticNorthTimeseriesObject? GetGyroHeadingMagneticNorthTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroHeadingMagneticNorthTimeseriesObject GetGyroHeadingMagneticNorthTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroHeadingMagneticNorthTimeseriesObject? GetGyroHeadingMagneticNorthTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // GyroHeadingTrueNorthTimeseries queries
         // ---------------------------------------------------------------------
@@ -3224,9 +3224,9 @@ namespace Barrelman.Data.Types
         IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollection( );
         IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollectionByCatalogIsNull(  );
-        GyroHeadingTrueNorthTimeseriesObject GetGyroHeadingTrueNorthTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroHeadingTrueNorthTimeseriesObject? GetGyroHeadingTrueNorthTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroHeadingTrueNorthTimeseriesObject GetGyroHeadingTrueNorthTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroHeadingTrueNorthTimeseriesObject? GetGyroHeadingTrueNorthTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // GyroPitchTimeseries queries
         // ---------------------------------------------------------------------
@@ -3234,9 +3234,9 @@ namespace Barrelman.Data.Types
         IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollection( );
         IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollectionByCatalogIsNull(  );
-        GyroPitchTimeseriesObject GetGyroPitchTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroPitchTimeseriesObject? GetGyroPitchTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroPitchTimeseriesObject GetGyroPitchTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroPitchTimeseriesObject? GetGyroPitchTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // GyroRateOfTurnTimeseries queries
         // ---------------------------------------------------------------------
@@ -3244,9 +3244,9 @@ namespace Barrelman.Data.Types
         IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollection( );
         IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollectionByCatalogIsNull(  );
-        GyroRateOfTurnTimeseriesObject GetGyroRateOfTurnTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroRateOfTurnTimeseriesObject? GetGyroRateOfTurnTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroRateOfTurnTimeseriesObject GetGyroRateOfTurnTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroRateOfTurnTimeseriesObject? GetGyroRateOfTurnTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // GyroRollTimeseries queries
         // ---------------------------------------------------------------------
@@ -3254,9 +3254,9 @@ namespace Barrelman.Data.Types
         IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollection( );
         IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollectionByCatalogIsNull(  );
-        GyroRollTimeseriesObject GetGyroRollTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroRollTimeseriesObject? GetGyroRollTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroRollTimeseriesObject GetGyroRollTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroRollTimeseriesObject? GetGyroRollTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // GyroSpeedTimeseries queries
         // ---------------------------------------------------------------------
@@ -3264,9 +3264,9 @@ namespace Barrelman.Data.Types
         IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollection( );
         IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollectionByCatalogIsNull(  );
-        GyroSpeedTimeseriesObject GetGyroSpeedTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GyroSpeedTimeseriesObject? GetGyroSpeedTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroSpeedTimeseriesObject GetGyroSpeedTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroSpeedTimeseriesObject? GetGyroSpeedTimeseriesByGyroDevice( Guid gyroDevice );
         // ---------------------------------------------------------------------
         // RadarLatitudeTimeseries queries
         // ---------------------------------------------------------------------
@@ -3274,7 +3274,7 @@ namespace Barrelman.Data.Types
         IList<RadarLatitudeTimeseriesObject> GetRadarLatitudeTimeseriesCollection( );
         IList<RadarLatitudeTimeseriesObject> GetRadarLatitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarLatitudeTimeseriesObject> GetRadarLatitudeTimeseriesCollectionByCatalogIsNull(  );
-        RadarLatitudeTimeseriesObject GetRadarLatitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarLatitudeTimeseriesObject? GetRadarLatitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarLatitudeTimeseriesObject> GetRadarLatitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarLongitudeTimeseries queries
@@ -3283,7 +3283,7 @@ namespace Barrelman.Data.Types
         IList<RadarLongitudeTimeseriesObject> GetRadarLongitudeTimeseriesCollection( );
         IList<RadarLongitudeTimeseriesObject> GetRadarLongitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarLongitudeTimeseriesObject> GetRadarLongitudeTimeseriesCollectionByCatalogIsNull(  );
-        RadarLongitudeTimeseriesObject GetRadarLongitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarLongitudeTimeseriesObject? GetRadarLongitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarLongitudeTimeseriesObject> GetRadarLongitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadomeDewPointTimeseries queries
@@ -3292,7 +3292,7 @@ namespace Barrelman.Data.Types
         IList<RadomeDewPointTimeseriesObject> GetRadomeDewPointTimeseriesCollection( );
         IList<RadomeDewPointTimeseriesObject> GetRadomeDewPointTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadomeDewPointTimeseriesObject> GetRadomeDewPointTimeseriesCollectionByCatalogIsNull(  );
-        RadomeDewPointTimeseriesObject GetRadomeDewPointTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadomeDewPointTimeseriesObject? GetRadomeDewPointTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadomeDewPointTimeseriesObject> GetRadomeDewPointTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadomePressureTimeseries queries
@@ -3301,7 +3301,7 @@ namespace Barrelman.Data.Types
         IList<RadomePressureTimeseriesObject> GetRadomePressureTimeseriesCollection( );
         IList<RadomePressureTimeseriesObject> GetRadomePressureTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadomePressureTimeseriesObject> GetRadomePressureTimeseriesCollectionByCatalogIsNull(  );
-        RadomePressureTimeseriesObject GetRadomePressureTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadomePressureTimeseriesObject? GetRadomePressureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadomePressureTimeseriesObject> GetRadomePressureTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadomeTemperatureTimeseries queries
@@ -3310,7 +3310,7 @@ namespace Barrelman.Data.Types
         IList<RadomeTemperatureTimeseriesObject> GetRadomeTemperatureTimeseriesCollection( );
         IList<RadomeTemperatureTimeseriesObject> GetRadomeTemperatureTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadomeTemperatureTimeseriesObject> GetRadomeTemperatureTimeseriesCollectionByCatalogIsNull(  );
-        RadomeTemperatureTimeseriesObject GetRadomeTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadomeTemperatureTimeseriesObject? GetRadomeTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadomeTemperatureTimeseriesObject> GetRadomeTemperatureTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // VesselDraughtTimeseries queries
@@ -3319,7 +3319,7 @@ namespace Barrelman.Data.Types
         IList<VesselDraughtTimeseriesObject> GetVesselDraughtTimeseriesCollection( );
         IList<VesselDraughtTimeseriesObject> GetVesselDraughtTimeseriesCollectionByCatalog( Guid? catalog );
         IList<VesselDraughtTimeseriesObject> GetVesselDraughtTimeseriesCollectionByCatalogIsNull(  );
-        VesselDraughtTimeseriesObject GetVesselDraughtTimeseriesByCatalogAndName( Guid? catalog, string name );
+        VesselDraughtTimeseriesObject? GetVesselDraughtTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<VesselDraughtTimeseriesObject> GetVesselDraughtTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // ViewLatitudeTimeseries queries
@@ -3328,7 +3328,7 @@ namespace Barrelman.Data.Types
         IList<ViewLatitudeTimeseriesObject> GetViewLatitudeTimeseriesCollection( );
         IList<ViewLatitudeTimeseriesObject> GetViewLatitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<ViewLatitudeTimeseriesObject> GetViewLatitudeTimeseriesCollectionByCatalogIsNull(  );
-        ViewLatitudeTimeseriesObject GetViewLatitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        ViewLatitudeTimeseriesObject? GetViewLatitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<ViewLatitudeTimeseriesObject> GetViewLatitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // ViewLongitudeTimeseries queries
@@ -3337,7 +3337,7 @@ namespace Barrelman.Data.Types
         IList<ViewLongitudeTimeseriesObject> GetViewLongitudeTimeseriesCollection( );
         IList<ViewLongitudeTimeseriesObject> GetViewLongitudeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<ViewLongitudeTimeseriesObject> GetViewLongitudeTimeseriesCollectionByCatalogIsNull(  );
-        ViewLongitudeTimeseriesObject GetViewLongitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        ViewLongitudeTimeseriesObject? GetViewLongitudeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<ViewLongitudeTimeseriesObject> GetViewLongitudeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // ViewZoomLevelTimeseries queries
@@ -3346,7 +3346,7 @@ namespace Barrelman.Data.Types
         IList<ViewZoomLevelTimeseriesObject> GetViewZoomLevelTimeseriesCollection( );
         IList<ViewZoomLevelTimeseriesObject> GetViewZoomLevelTimeseriesCollectionByCatalog( Guid? catalog );
         IList<ViewZoomLevelTimeseriesObject> GetViewZoomLevelTimeseriesCollectionByCatalogIsNull(  );
-        ViewZoomLevelTimeseriesObject GetViewZoomLevelTimeseriesByCatalogAndName( Guid? catalog, string name );
+        ViewZoomLevelTimeseriesObject? GetViewZoomLevelTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<ViewZoomLevelTimeseriesObject> GetViewZoomLevelTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // WeatherStationAbsoluteHumidityTimeseries queries
@@ -3355,9 +3355,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollection( );
         IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationAbsoluteHumidityTimeseriesObject GetWeatherStationAbsoluteHumidityTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationAbsoluteHumidityTimeseriesObject? GetWeatherStationAbsoluteHumidityTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationAbsoluteHumidityTimeseriesObject GetWeatherStationAbsoluteHumidityTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationAbsoluteHumidityTimeseriesObject? GetWeatherStationAbsoluteHumidityTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationAirTemperatureTimeseries queries
         // ---------------------------------------------------------------------
@@ -3365,9 +3365,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollection( );
         IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationAirTemperatureTimeseriesObject GetWeatherStationAirTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationAirTemperatureTimeseriesObject? GetWeatherStationAirTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationAirTemperatureTimeseriesObject GetWeatherStationAirTemperatureTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationAirTemperatureTimeseriesObject? GetWeatherStationAirTemperatureTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationBarometricPressureTimeseries queries
         // ---------------------------------------------------------------------
@@ -3375,9 +3375,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollection( );
         IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationBarometricPressureTimeseriesObject GetWeatherStationBarometricPressureTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationBarometricPressureTimeseriesObject? GetWeatherStationBarometricPressureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationBarometricPressureTimeseriesObject GetWeatherStationBarometricPressureTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationBarometricPressureTimeseriesObject? GetWeatherStationBarometricPressureTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationDewPointTimeseries queries
         // ---------------------------------------------------------------------
@@ -3385,9 +3385,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollection( );
         IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationDewPointTimeseriesObject GetWeatherStationDewPointTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationDewPointTimeseriesObject? GetWeatherStationDewPointTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationDewPointTimeseriesObject GetWeatherStationDewPointTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationDewPointTimeseriesObject? GetWeatherStationDewPointTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationRelativeHumidityTimeseries queries
         // ---------------------------------------------------------------------
@@ -3395,9 +3395,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollection( );
         IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationRelativeHumidityTimeseriesObject GetWeatherStationRelativeHumidityTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationRelativeHumidityTimeseriesObject? GetWeatherStationRelativeHumidityTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationRelativeHumidityTimeseriesObject GetWeatherStationRelativeHumidityTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationRelativeHumidityTimeseriesObject? GetWeatherStationRelativeHumidityTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationWaterTemperatureTimeseries queries
         // ---------------------------------------------------------------------
@@ -3405,9 +3405,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollection( );
         IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationWaterTemperatureTimeseriesObject GetWeatherStationWaterTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationWaterTemperatureTimeseriesObject? GetWeatherStationWaterTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationWaterTemperatureTimeseriesObject GetWeatherStationWaterTemperatureTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationWaterTemperatureTimeseriesObject? GetWeatherStationWaterTemperatureTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationWindDirectionTimeseries queries
         // ---------------------------------------------------------------------
@@ -3415,9 +3415,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollection( );
         IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationWindDirectionTimeseriesObject GetWeatherStationWindDirectionTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationWindDirectionTimeseriesObject? GetWeatherStationWindDirectionTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationWindDirectionTimeseriesObject GetWeatherStationWindDirectionTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationWindDirectionTimeseriesObject? GetWeatherStationWindDirectionTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // WeatherStationWindSpeedTimeseries queries
         // ---------------------------------------------------------------------
@@ -3425,9 +3425,9 @@ namespace Barrelman.Data.Types
         IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollection( );
         IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollectionByCatalog( Guid? catalog );
         IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollectionByCatalogIsNull(  );
-        WeatherStationWindSpeedTimeseriesObject GetWeatherStationWindSpeedTimeseriesByCatalogAndName( Guid? catalog, string name );
+        WeatherStationWindSpeedTimeseriesObject? GetWeatherStationWindSpeedTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationWindSpeedTimeseriesObject GetWeatherStationWindSpeedTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationWindSpeedTimeseriesObject? GetWeatherStationWindSpeedTimeseriesByWeatherStation( Guid weatherStation );
         // ---------------------------------------------------------------------
         // GeoPosition2DTimeseries queries
         // ---------------------------------------------------------------------
@@ -3435,7 +3435,7 @@ namespace Barrelman.Data.Types
         IList<GeoPosition2DTimeseriesObject> GetGeoPosition2DTimeseriesCollection( );
         IList<GeoPosition2DTimeseriesObject> GetGeoPosition2DTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GeoPosition2DTimeseriesObject> GetGeoPosition2DTimeseriesCollectionByCatalogIsNull(  );
-        GeoPosition2DTimeseriesObject GetGeoPosition2DTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GeoPosition2DTimeseriesObject? GetGeoPosition2DTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GeoPosition2DTimeseriesObject> GetGeoPosition2DTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // AisAidToNavigationPositionTimeseries queries
@@ -3444,7 +3444,7 @@ namespace Barrelman.Data.Types
         IList<AisAidToNavigationPositionTimeseriesObject> GetAisAidToNavigationPositionTimeseriesCollection( );
         IList<AisAidToNavigationPositionTimeseriesObject> GetAisAidToNavigationPositionTimeseriesCollectionByCatalog( Guid? catalog );
         IList<AisAidToNavigationPositionTimeseriesObject> GetAisAidToNavigationPositionTimeseriesCollectionByCatalogIsNull(  );
-        AisAidToNavigationPositionTimeseriesObject GetAisAidToNavigationPositionTimeseriesByCatalogAndName( Guid? catalog, string name );
+        AisAidToNavigationPositionTimeseriesObject? GetAisAidToNavigationPositionTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<AisAidToNavigationPositionTimeseriesObject> GetAisAidToNavigationPositionTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // GeoPosition3DTimeseries queries
@@ -3453,7 +3453,7 @@ namespace Barrelman.Data.Types
         IList<GeoPosition3DTimeseriesObject> GetGeoPosition3DTimeseriesCollection( );
         IList<GeoPosition3DTimeseriesObject> GetGeoPosition3DTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GeoPosition3DTimeseriesObject> GetGeoPosition3DTimeseriesCollectionByCatalogIsNull(  );
-        GeoPosition3DTimeseriesObject GetGeoPosition3DTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GeoPosition3DTimeseriesObject? GetGeoPosition3DTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GeoPosition3DTimeseriesObject> GetGeoPosition3DTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // GuidTimeseries queries
@@ -3462,7 +3462,7 @@ namespace Barrelman.Data.Types
         IList<GuidTimeseriesObject> GetGuidTimeseriesCollection( );
         IList<GuidTimeseriesObject> GetGuidTimeseriesCollectionByCatalog( Guid? catalog );
         IList<GuidTimeseriesObject> GetGuidTimeseriesCollectionByCatalogIsNull(  );
-        GuidTimeseriesObject GetGuidTimeseriesByCatalogAndName( Guid? catalog, string name );
+        GuidTimeseriesObject? GetGuidTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GuidTimeseriesObject> GetGuidTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Int16Timeseries queries
@@ -3471,7 +3471,7 @@ namespace Barrelman.Data.Types
         IList<Int16TimeseriesObject> GetInt16TimeseriesCollection( );
         IList<Int16TimeseriesObject> GetInt16TimeseriesCollectionByCatalog( Guid? catalog );
         IList<Int16TimeseriesObject> GetInt16TimeseriesCollectionByCatalogIsNull(  );
-        Int16TimeseriesObject GetInt16TimeseriesByCatalogAndName( Guid? catalog, string name );
+        Int16TimeseriesObject? GetInt16TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<Int16TimeseriesObject> GetInt16TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Int32Timeseries queries
@@ -3480,7 +3480,7 @@ namespace Barrelman.Data.Types
         IList<Int32TimeseriesObject> GetInt32TimeseriesCollection( );
         IList<Int32TimeseriesObject> GetInt32TimeseriesCollectionByCatalog( Guid? catalog );
         IList<Int32TimeseriesObject> GetInt32TimeseriesCollectionByCatalogIsNull(  );
-        Int32TimeseriesObject GetInt32TimeseriesByCatalogAndName( Guid? catalog, string name );
+        Int32TimeseriesObject? GetInt32TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<Int32TimeseriesObject> GetInt32TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarAzimuthOffsetTimeseries queries
@@ -3489,7 +3489,7 @@ namespace Barrelman.Data.Types
         IList<RadarAzimuthOffsetTimeseriesObject> GetRadarAzimuthOffsetTimeseriesCollection( );
         IList<RadarAzimuthOffsetTimeseriesObject> GetRadarAzimuthOffsetTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarAzimuthOffsetTimeseriesObject> GetRadarAzimuthOffsetTimeseriesCollectionByCatalogIsNull(  );
-        RadarAzimuthOffsetTimeseriesObject GetRadarAzimuthOffsetTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarAzimuthOffsetTimeseriesObject? GetRadarAzimuthOffsetTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarAzimuthOffsetTimeseriesObject> GetRadarAzimuthOffsetTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarFastTimeConstantLevelTimeseries queries
@@ -3498,7 +3498,7 @@ namespace Barrelman.Data.Types
         IList<RadarFastTimeConstantLevelTimeseriesObject> GetRadarFastTimeConstantLevelTimeseriesCollection( );
         IList<RadarFastTimeConstantLevelTimeseriesObject> GetRadarFastTimeConstantLevelTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarFastTimeConstantLevelTimeseriesObject> GetRadarFastTimeConstantLevelTimeseriesCollectionByCatalogIsNull(  );
-        RadarFastTimeConstantLevelTimeseriesObject GetRadarFastTimeConstantLevelTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarFastTimeConstantLevelTimeseriesObject? GetRadarFastTimeConstantLevelTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarFastTimeConstantLevelTimeseriesObject> GetRadarFastTimeConstantLevelTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarFastTimeConstantModeTimeseries queries
@@ -3507,7 +3507,7 @@ namespace Barrelman.Data.Types
         IList<RadarFastTimeConstantModeTimeseriesObject> GetRadarFastTimeConstantModeTimeseriesCollection( );
         IList<RadarFastTimeConstantModeTimeseriesObject> GetRadarFastTimeConstantModeTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarFastTimeConstantModeTimeseriesObject> GetRadarFastTimeConstantModeTimeseriesCollectionByCatalogIsNull(  );
-        RadarFastTimeConstantModeTimeseriesObject GetRadarFastTimeConstantModeTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarFastTimeConstantModeTimeseriesObject? GetRadarFastTimeConstantModeTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarFastTimeConstantModeTimeseriesObject> GetRadarFastTimeConstantModeTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarPulseTimeseries queries
@@ -3516,7 +3516,7 @@ namespace Barrelman.Data.Types
         IList<RadarPulseTimeseriesObject> GetRadarPulseTimeseriesCollection( );
         IList<RadarPulseTimeseriesObject> GetRadarPulseTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarPulseTimeseriesObject> GetRadarPulseTimeseriesCollectionByCatalogIsNull(  );
-        RadarPulseTimeseriesObject GetRadarPulseTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarPulseTimeseriesObject? GetRadarPulseTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarPulseTimeseriesObject> GetRadarPulseTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarSector1EndTimeseries queries
@@ -3525,7 +3525,7 @@ namespace Barrelman.Data.Types
         IList<RadarSector1EndTimeseriesObject> GetRadarSector1EndTimeseriesCollection( );
         IList<RadarSector1EndTimeseriesObject> GetRadarSector1EndTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarSector1EndTimeseriesObject> GetRadarSector1EndTimeseriesCollectionByCatalogIsNull(  );
-        RadarSector1EndTimeseriesObject GetRadarSector1EndTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarSector1EndTimeseriesObject? GetRadarSector1EndTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarSector1EndTimeseriesObject> GetRadarSector1EndTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarSector1StartTimeseries queries
@@ -3534,7 +3534,7 @@ namespace Barrelman.Data.Types
         IList<RadarSector1StartTimeseriesObject> GetRadarSector1StartTimeseriesCollection( );
         IList<RadarSector1StartTimeseriesObject> GetRadarSector1StartTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarSector1StartTimeseriesObject> GetRadarSector1StartTimeseriesCollectionByCatalogIsNull(  );
-        RadarSector1StartTimeseriesObject GetRadarSector1StartTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarSector1StartTimeseriesObject? GetRadarSector1StartTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarSector1StartTimeseriesObject> GetRadarSector1StartTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarSector2EndTimeseries queries
@@ -3543,7 +3543,7 @@ namespace Barrelman.Data.Types
         IList<RadarSector2EndTimeseriesObject> GetRadarSector2EndTimeseriesCollection( );
         IList<RadarSector2EndTimeseriesObject> GetRadarSector2EndTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarSector2EndTimeseriesObject> GetRadarSector2EndTimeseriesCollectionByCatalogIsNull(  );
-        RadarSector2EndTimeseriesObject GetRadarSector2EndTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarSector2EndTimeseriesObject? GetRadarSector2EndTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarSector2EndTimeseriesObject> GetRadarSector2EndTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarSector2StartTimeseries queries
@@ -3552,7 +3552,7 @@ namespace Barrelman.Data.Types
         IList<RadarSector2StartTimeseriesObject> GetRadarSector2StartTimeseriesCollection( );
         IList<RadarSector2StartTimeseriesObject> GetRadarSector2StartTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarSector2StartTimeseriesObject> GetRadarSector2StartTimeseriesCollectionByCatalogIsNull(  );
-        RadarSector2StartTimeseriesObject GetRadarSector2StartTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarSector2StartTimeseriesObject? GetRadarSector2StartTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarSector2StartTimeseriesObject> GetRadarSector2StartTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarSensitivityTimeControlLevelTimeseries queries
@@ -3561,7 +3561,7 @@ namespace Barrelman.Data.Types
         IList<RadarSensitivityTimeControlLevelTimeseriesObject> GetRadarSensitivityTimeControlLevelTimeseriesCollection( );
         IList<RadarSensitivityTimeControlLevelTimeseriesObject> GetRadarSensitivityTimeControlLevelTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarSensitivityTimeControlLevelTimeseriesObject> GetRadarSensitivityTimeControlLevelTimeseriesCollectionByCatalogIsNull(  );
-        RadarSensitivityTimeControlLevelTimeseriesObject GetRadarSensitivityTimeControlLevelTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarSensitivityTimeControlLevelTimeseriesObject? GetRadarSensitivityTimeControlLevelTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarSensitivityTimeControlLevelTimeseriesObject> GetRadarSensitivityTimeControlLevelTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadarTuningTimeseries queries
@@ -3570,7 +3570,7 @@ namespace Barrelman.Data.Types
         IList<RadarTuningTimeseriesObject> GetRadarTuningTimeseriesCollection( );
         IList<RadarTuningTimeseriesObject> GetRadarTuningTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadarTuningTimeseriesObject> GetRadarTuningTimeseriesCollectionByCatalogIsNull(  );
-        RadarTuningTimeseriesObject GetRadarTuningTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadarTuningTimeseriesObject? GetRadarTuningTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadarTuningTimeseriesObject> GetRadarTuningTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // VesselPersonsOnBoardTimeseries queries
@@ -3579,7 +3579,7 @@ namespace Barrelman.Data.Types
         IList<VesselPersonsOnBoardTimeseriesObject> GetVesselPersonsOnBoardTimeseriesCollection( );
         IList<VesselPersonsOnBoardTimeseriesObject> GetVesselPersonsOnBoardTimeseriesCollectionByCatalog( Guid? catalog );
         IList<VesselPersonsOnBoardTimeseriesObject> GetVesselPersonsOnBoardTimeseriesCollectionByCatalogIsNull(  );
-        VesselPersonsOnBoardTimeseriesObject GetVesselPersonsOnBoardTimeseriesByCatalogAndName( Guid? catalog, string name );
+        VesselPersonsOnBoardTimeseriesObject? GetVesselPersonsOnBoardTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<VesselPersonsOnBoardTimeseriesObject> GetVesselPersonsOnBoardTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Int64Timeseries queries
@@ -3588,7 +3588,7 @@ namespace Barrelman.Data.Types
         IList<Int64TimeseriesObject> GetInt64TimeseriesCollection( );
         IList<Int64TimeseriesObject> GetInt64TimeseriesCollectionByCatalog( Guid? catalog );
         IList<Int64TimeseriesObject> GetInt64TimeseriesCollectionByCatalogIsNull(  );
-        Int64TimeseriesObject GetInt64TimeseriesByCatalogAndName( Guid? catalog, string name );
+        Int64TimeseriesObject? GetInt64TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<Int64TimeseriesObject> GetInt64TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Position2DTimeseries queries
@@ -3597,7 +3597,7 @@ namespace Barrelman.Data.Types
         IList<Position2DTimeseriesObject> GetPosition2DTimeseriesCollection( );
         IList<Position2DTimeseriesObject> GetPosition2DTimeseriesCollectionByCatalog( Guid? catalog );
         IList<Position2DTimeseriesObject> GetPosition2DTimeseriesCollectionByCatalogIsNull(  );
-        Position2DTimeseriesObject GetPosition2DTimeseriesByCatalogAndName( Guid? catalog, string name );
+        Position2DTimeseriesObject? GetPosition2DTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<Position2DTimeseriesObject> GetPosition2DTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Position3DTimeseries queries
@@ -3606,7 +3606,7 @@ namespace Barrelman.Data.Types
         IList<Position3DTimeseriesObject> GetPosition3DTimeseriesCollection( );
         IList<Position3DTimeseriesObject> GetPosition3DTimeseriesCollectionByCatalog( Guid? catalog );
         IList<Position3DTimeseriesObject> GetPosition3DTimeseriesCollectionByCatalogIsNull(  );
-        Position3DTimeseriesObject GetPosition3DTimeseriesByCatalogAndName( Guid? catalog, string name );
+        Position3DTimeseriesObject? GetPosition3DTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<Position3DTimeseriesObject> GetPosition3DTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // ReferenceTimeseries queries
@@ -3615,7 +3615,7 @@ namespace Barrelman.Data.Types
         IList<ReferenceTimeseriesObject> GetReferenceTimeseriesCollection( );
         IList<ReferenceTimeseriesObject> GetReferenceTimeseriesCollectionByCatalog( Guid? catalog );
         IList<ReferenceTimeseriesObject> GetReferenceTimeseriesCollectionByCatalogIsNull(  );
-        ReferenceTimeseriesObject GetReferenceTimeseriesByCatalogAndName( Guid? catalog, string name );
+        ReferenceTimeseriesObject? GetReferenceTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<ReferenceTimeseriesObject> GetReferenceTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // SByteTimeseries queries
@@ -3624,7 +3624,7 @@ namespace Barrelman.Data.Types
         IList<SByteTimeseriesObject> GetSByteTimeseriesCollection( );
         IList<SByteTimeseriesObject> GetSByteTimeseriesCollectionByCatalog( Guid? catalog );
         IList<SByteTimeseriesObject> GetSByteTimeseriesCollectionByCatalogIsNull(  );
-        SByteTimeseriesObject GetSByteTimeseriesByCatalogAndName( Guid? catalog, string name );
+        SByteTimeseriesObject? GetSByteTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<SByteTimeseriesObject> GetSByteTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // SingleTimeseries queries
@@ -3633,7 +3633,7 @@ namespace Barrelman.Data.Types
         IList<SingleTimeseriesObject> GetSingleTimeseriesCollection( );
         IList<SingleTimeseriesObject> GetSingleTimeseriesCollectionByCatalog( Guid? catalog );
         IList<SingleTimeseriesObject> GetSingleTimeseriesCollectionByCatalogIsNull(  );
-        SingleTimeseriesObject GetSingleTimeseriesByCatalogAndName( Guid? catalog, string name );
+        SingleTimeseriesObject? GetSingleTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<SingleTimeseriesObject> GetSingleTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // StringTimeseries queries
@@ -3642,7 +3642,7 @@ namespace Barrelman.Data.Types
         IList<StringTimeseriesObject> GetStringTimeseriesCollection( );
         IList<StringTimeseriesObject> GetStringTimeseriesCollectionByCatalog( Guid? catalog );
         IList<StringTimeseriesObject> GetStringTimeseriesCollectionByCatalogIsNull(  );
-        StringTimeseriesObject GetStringTimeseriesByCatalogAndName( Guid? catalog, string name );
+        StringTimeseriesObject? GetStringTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<StringTimeseriesObject> GetStringTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // TimeSpanTimeseries queries
@@ -3651,7 +3651,7 @@ namespace Barrelman.Data.Types
         IList<TimeSpanTimeseriesObject> GetTimeSpanTimeseriesCollection( );
         IList<TimeSpanTimeseriesObject> GetTimeSpanTimeseriesCollectionByCatalog( Guid? catalog );
         IList<TimeSpanTimeseriesObject> GetTimeSpanTimeseriesCollectionByCatalogIsNull(  );
-        TimeSpanTimeseriesObject GetTimeSpanTimeseriesByCatalogAndName( Guid? catalog, string name );
+        TimeSpanTimeseriesObject? GetTimeSpanTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<TimeSpanTimeseriesObject> GetTimeSpanTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // UInt16Timeseries queries
@@ -3660,7 +3660,7 @@ namespace Barrelman.Data.Types
         IList<UInt16TimeseriesObject> GetUInt16TimeseriesCollection( );
         IList<UInt16TimeseriesObject> GetUInt16TimeseriesCollectionByCatalog( Guid? catalog );
         IList<UInt16TimeseriesObject> GetUInt16TimeseriesCollectionByCatalogIsNull(  );
-        UInt16TimeseriesObject GetUInt16TimeseriesByCatalogAndName( Guid? catalog, string name );
+        UInt16TimeseriesObject? GetUInt16TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<UInt16TimeseriesObject> GetUInt16TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // UInt32Timeseries queries
@@ -3669,7 +3669,7 @@ namespace Barrelman.Data.Types
         IList<UInt32TimeseriesObject> GetUInt32TimeseriesCollection( );
         IList<UInt32TimeseriesObject> GetUInt32TimeseriesCollectionByCatalog( Guid? catalog );
         IList<UInt32TimeseriesObject> GetUInt32TimeseriesCollectionByCatalogIsNull(  );
-        UInt32TimeseriesObject GetUInt32TimeseriesByCatalogAndName( Guid? catalog, string name );
+        UInt32TimeseriesObject? GetUInt32TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<UInt32TimeseriesObject> GetUInt32TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // RadomeStatusTimeseries queries
@@ -3678,7 +3678,7 @@ namespace Barrelman.Data.Types
         IList<RadomeStatusTimeseriesObject> GetRadomeStatusTimeseriesCollection( );
         IList<RadomeStatusTimeseriesObject> GetRadomeStatusTimeseriesCollectionByCatalog( Guid? catalog );
         IList<RadomeStatusTimeseriesObject> GetRadomeStatusTimeseriesCollectionByCatalogIsNull(  );
-        RadomeStatusTimeseriesObject GetRadomeStatusTimeseriesByCatalogAndName( Guid? catalog, string name );
+        RadomeStatusTimeseriesObject? GetRadomeStatusTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<RadomeStatusTimeseriesObject> GetRadomeStatusTimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // UInt64Timeseries queries
@@ -3687,7 +3687,7 @@ namespace Barrelman.Data.Types
         IList<UInt64TimeseriesObject> GetUInt64TimeseriesCollection( );
         IList<UInt64TimeseriesObject> GetUInt64TimeseriesCollectionByCatalog( Guid? catalog );
         IList<UInt64TimeseriesObject> GetUInt64TimeseriesCollectionByCatalogIsNull(  );
-        UInt64TimeseriesObject GetUInt64TimeseriesByCatalogAndName( Guid? catalog, string name );
+        UInt64TimeseriesObject? GetUInt64TimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<UInt64TimeseriesObject> GetUInt64TimeseriesCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // TimeseriesCatalog queries
@@ -3696,7 +3696,7 @@ namespace Barrelman.Data.Types
         IList<TimeseriesCatalogObject> GetTimeseriesCatalogCollection( );
         IList<TimeseriesCatalogObject> GetTimeseriesCatalogCollectionByCatalog( Guid? catalog );
         IList<TimeseriesCatalogObject> GetTimeseriesCatalogCollectionByCatalogIsNull(  );
-        TimeseriesCatalogObject GetTimeseriesCatalogByCatalogAndName( Guid? catalog, string name );
+        TimeseriesCatalogObject? GetTimeseriesCatalogByCatalogAndName( Guid? catalog, string name );
         IList<TimeseriesCatalogObject> GetTimeseriesCatalogCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // TimeseriesInfo queries
@@ -3709,11 +3709,11 @@ namespace Barrelman.Data.Types
         TimeSpanTimeseriesValueObject? GetTimeSpanTimeseriesValueById( Guid id );
         IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueCollection( );
         IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueCollectionByTimeseries( Guid timeseries );
-        TimeSpanTimeseriesValueObject GetTimeSpanTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        TimeSpanTimeseriesValueObject GetTimeSpanTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        TimeSpanTimeseriesValueObject GetTimeSpanTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        TimeSpanTimeseriesValueObject GetTimeSpanTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        TimeSpanTimeseriesValueObject GetTimeSpanTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        TimeSpanTimeseriesValueObject? GetTimeSpanTimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        TimeSpanTimeseriesValueObject? GetTimeSpanTimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<TimeSpanTimeseriesValueObject> GetTimeSpanTimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -3725,11 +3725,11 @@ namespace Barrelman.Data.Types
         TrackableItemTrackLinkObject? GetTrackableItemTrackLinkById( Guid id );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollection( );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByItem( Guid item );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByItemAndStart( Guid item, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByItemAtStart( Guid item, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByItemFromStart( Guid item, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByItemUntilStart( Guid item, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByItemOverStart( Guid item, DateTime fromStart, DateTime untilStart );
+        TrackableItemTrackLinkObject? GetTrackableItemTrackLinkByItemAndStart( Guid item, DateTime start );
+        TrackableItemTrackLinkObject? GetTrackableItemTrackLinkByItemAtStart( Guid item, DateTime start );
+        IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkByItemFromStart( Guid item, DateTime start );
+        IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkByItemUntilStart( Guid item, DateTime start );
+        IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkByItemOverStart( Guid item, DateTime fromStart, DateTime untilStart );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByItemAndEnd( Guid item, DateTime? end );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByItemAndEndIsNull( Guid item );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByItemAtEnd( Guid item, DateTime? end );
@@ -3737,11 +3737,11 @@ namespace Barrelman.Data.Types
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByItemUntilEnd( Guid item, DateTime? end );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByItemOverEnd( Guid item, DateTime fromEnd, DateTime untilEnd );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByTrack( Guid track );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByTrackAndStart( Guid track, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByTrackAtStart( Guid track, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByTrackFromStart( Guid track, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByTrackUntilStart( Guid track, DateTime start );
-        TrackableItemTrackLinkObject GetTrackableItemTrackLinkByTrackOverStart( Guid track, DateTime fromStart, DateTime untilStart );
+        TrackableItemTrackLinkObject? GetTrackableItemTrackLinkByTrackAndStart( Guid track, DateTime start );
+        TrackableItemTrackLinkObject? GetTrackableItemTrackLinkByTrackAtStart( Guid track, DateTime start );
+        IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkByTrackFromStart( Guid track, DateTime start );
+        IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkByTrackUntilStart( Guid track, DateTime start );
+        IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkByTrackOverStart( Guid track, DateTime fromStart, DateTime untilStart );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByTrackAndEnd( Guid track, DateTime? end );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByTrackAndEndIsNull( Guid track );
         IList<TrackableItemTrackLinkObject> GetTrackableItemTrackLinkCollectionByTrackAtEnd( Guid track, DateTime? end );
@@ -3763,11 +3763,11 @@ namespace Barrelman.Data.Types
         IList<TrackBaseObject> GetTrackBaseCollectionByTrackerFromTrackNumber( Guid tracker, long trackNumber );
         IList<TrackBaseObject> GetTrackBaseCollectionByTrackerUntilTrackNumber( Guid tracker, long trackNumber );
         IList<TrackBaseObject> GetTrackBaseCollectionByTrackerOverTrackNumber( Guid tracker, long fromTrackNumber, long untilTrackNumber );
-        TrackBaseObject GetTrackBaseByTrackerTrackNumberAndTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackBaseObject GetTrackBaseByTrackerTrackNumberAtTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackBaseObject GetTrackBaseByTrackerTrackNumberFromTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackBaseObject GetTrackBaseByTrackerTrackNumberUntilTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackBaseObject GetTrackBaseByTrackerTrackNumberOverTimestamp( Guid tracker, long trackNumber, DateTime fromTimestamp, DateTime untilTimestamp );
+        TrackBaseObject? GetTrackBaseByTrackerTrackNumberAndTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        TrackBaseObject? GetTrackBaseByTrackerTrackNumberAtTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<TrackBaseObject> GetTrackBaseByTrackerTrackNumberFromTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<TrackBaseObject> GetTrackBaseByTrackerTrackNumberUntilTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<TrackBaseObject> GetTrackBaseByTrackerTrackNumberOverTimestamp( Guid tracker, long trackNumber, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<TrackBaseObject> GetTrackBaseCollectionByTrackerAndTimestamp( Guid tracker, DateTime timestamp );
         IList<TrackBaseObject> GetTrackBaseCollectionByTrackerAtTimestamp( Guid tracker, DateTime timestamp );
         IList<TrackBaseObject> GetTrackBaseCollectionByTrackerFromTimestamp( Guid tracker, DateTime timestamp );
@@ -3792,11 +3792,11 @@ namespace Barrelman.Data.Types
         IList<TrackObject> GetTrackCollectionByTrackerFromTrackNumber( Guid tracker, long trackNumber );
         IList<TrackObject> GetTrackCollectionByTrackerUntilTrackNumber( Guid tracker, long trackNumber );
         IList<TrackObject> GetTrackCollectionByTrackerOverTrackNumber( Guid tracker, long fromTrackNumber, long untilTrackNumber );
-        TrackObject GetTrackByTrackerTrackNumberAndTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackObject GetTrackByTrackerTrackNumberAtTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackObject GetTrackByTrackerTrackNumberFromTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackObject GetTrackByTrackerTrackNumberUntilTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        TrackObject GetTrackByTrackerTrackNumberOverTimestamp( Guid tracker, long trackNumber, DateTime fromTimestamp, DateTime untilTimestamp );
+        TrackObject? GetTrackByTrackerTrackNumberAndTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        TrackObject? GetTrackByTrackerTrackNumberAtTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<TrackObject> GetTrackByTrackerTrackNumberFromTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<TrackObject> GetTrackByTrackerTrackNumberUntilTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<TrackObject> GetTrackByTrackerTrackNumberOverTimestamp( Guid tracker, long trackNumber, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<TrackObject> GetTrackCollectionByTrackerAndTimestamp( Guid tracker, DateTime timestamp );
         IList<TrackObject> GetTrackCollectionByTrackerAtTimestamp( Guid tracker, DateTime timestamp );
         IList<TrackObject> GetTrackCollectionByTrackerFromTimestamp( Guid tracker, DateTime timestamp );
@@ -3821,11 +3821,11 @@ namespace Barrelman.Data.Types
         IList<Track3DObject> GetTrack3DCollectionByTrackerFromTrackNumber( Guid tracker, long trackNumber );
         IList<Track3DObject> GetTrack3DCollectionByTrackerUntilTrackNumber( Guid tracker, long trackNumber );
         IList<Track3DObject> GetTrack3DCollectionByTrackerOverTrackNumber( Guid tracker, long fromTrackNumber, long untilTrackNumber );
-        Track3DObject GetTrack3DByTrackerTrackNumberAndTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        Track3DObject GetTrack3DByTrackerTrackNumberAtTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        Track3DObject GetTrack3DByTrackerTrackNumberFromTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        Track3DObject GetTrack3DByTrackerTrackNumberUntilTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
-        Track3DObject GetTrack3DByTrackerTrackNumberOverTimestamp( Guid tracker, long trackNumber, DateTime fromTimestamp, DateTime untilTimestamp );
+        Track3DObject? GetTrack3DByTrackerTrackNumberAndTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        Track3DObject? GetTrack3DByTrackerTrackNumberAtTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<Track3DObject> GetTrack3DByTrackerTrackNumberFromTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<Track3DObject> GetTrack3DByTrackerTrackNumberUntilTimestamp( Guid tracker, long trackNumber, DateTime timestamp );
+        IList<Track3DObject> GetTrack3DByTrackerTrackNumberOverTimestamp( Guid tracker, long trackNumber, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<Track3DObject> GetTrack3DCollectionByTrackerAndTimestamp( Guid tracker, DateTime timestamp );
         IList<Track3DObject> GetTrack3DCollectionByTrackerAtTimestamp( Guid tracker, DateTime timestamp );
         IList<Track3DObject> GetTrack3DCollectionByTrackerFromTimestamp( Guid tracker, DateTime timestamp );
@@ -3846,18 +3846,18 @@ namespace Barrelman.Data.Types
         TrackerFilterParametersObject? GetTrackerFilterParametersById( Guid id );
         IList<TrackerFilterParametersObject> GetTrackerFilterParametersCollection( );
         IList<TrackerFilterParametersObject> GetTrackerFilterParametersCollectionByTracker( Guid tracker );
-        TrackerFilterParametersObject GetTrackerFilterParametersByTrackerAndName( Guid tracker, string name );
+        TrackerFilterParametersObject? GetTrackerFilterParametersByTrackerAndName( Guid tracker, string name );
         // ---------------------------------------------------------------------
         // TrackerFilterParametersConfiguration queries
         // ---------------------------------------------------------------------
         TrackerFilterParametersConfigurationObject? GetTrackerFilterParametersConfigurationById( Guid id );
         IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationCollection( );
         IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationCollectionByParameters( Guid parameters );
-        TrackerFilterParametersConfigurationObject GetTrackerFilterParametersConfigurationByParametersAndTimestamp( Guid parameters, DateTime timestamp );
-        TrackerFilterParametersConfigurationObject GetTrackerFilterParametersConfigurationByParametersAtTimestamp( Guid parameters, DateTime timestamp );
-        TrackerFilterParametersConfigurationObject GetTrackerFilterParametersConfigurationByParametersFromTimestamp( Guid parameters, DateTime timestamp );
-        TrackerFilterParametersConfigurationObject GetTrackerFilterParametersConfigurationByParametersUntilTimestamp( Guid parameters, DateTime timestamp );
-        TrackerFilterParametersConfigurationObject GetTrackerFilterParametersConfigurationByParametersOverTimestamp( Guid parameters, DateTime fromTimestamp, DateTime untilTimestamp );
+        TrackerFilterParametersConfigurationObject? GetTrackerFilterParametersConfigurationByParametersAndTimestamp( Guid parameters, DateTime timestamp );
+        TrackerFilterParametersConfigurationObject? GetTrackerFilterParametersConfigurationByParametersAtTimestamp( Guid parameters, DateTime timestamp );
+        IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationByParametersFromTimestamp( Guid parameters, DateTime timestamp );
+        IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationByParametersUntilTimestamp( Guid parameters, DateTime timestamp );
+        IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationByParametersOverTimestamp( Guid parameters, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<TrackerFilterParametersConfigurationObject> GetTrackerFilterParametersConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -3873,11 +3873,11 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         TrackingServiceOptionsObject? GetTrackingServiceOptionsById( Guid id );
         IList<TrackingServiceOptionsObject> GetTrackingServiceOptionsCollection( );
-        TrackingServiceOptionsObject GetTrackingServiceOptionsByTimestamp( DateTime timestamp );
-        TrackingServiceOptionsObject GetTrackingServiceOptionsAtTimestamp( DateTime timestamp );
-        TrackingServiceOptionsObject GetTrackingServiceOptionsFromTimestamp( DateTime timestamp );
-        TrackingServiceOptionsObject GetTrackingServiceOptionsUntilTimestamp( DateTime timestamp );
-        TrackingServiceOptionsObject GetTrackingServiceOptionsOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
+        TrackingServiceOptionsObject? GetTrackingServiceOptionsByTimestamp( DateTime timestamp );
+        TrackingServiceOptionsObject? GetTrackingServiceOptionsAtTimestamp( DateTime timestamp );
+        IList<TrackingServiceOptionsObject> GetTrackingServiceOptionsFromTimestamp( DateTime timestamp );
+        IList<TrackingServiceOptionsObject> GetTrackingServiceOptionsUntilTimestamp( DateTime timestamp );
+        IList<TrackingServiceOptionsObject> GetTrackingServiceOptionsOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
         // ---------------------------------------------------------------------
         // TrackLink queries
         // ---------------------------------------------------------------------
@@ -3906,11 +3906,11 @@ namespace Barrelman.Data.Types
         TrackValueObject? GetTrackValueById( Guid id );
         IList<TrackValueObject> GetTrackValueCollection( );
         IList<TrackValueObject> GetTrackValueCollectionByTrack( Guid track );
-        TrackValueObject GetTrackValueByTrackAndTimestamp( Guid track, DateTime timestamp );
-        TrackValueObject GetTrackValueByTrackAtTimestamp( Guid track, DateTime timestamp );
-        TrackValueObject GetTrackValueByTrackFromTimestamp( Guid track, DateTime timestamp );
-        TrackValueObject GetTrackValueByTrackUntilTimestamp( Guid track, DateTime timestamp );
-        TrackValueObject GetTrackValueByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
+        TrackValueObject? GetTrackValueByTrackAndTimestamp( Guid track, DateTime timestamp );
+        TrackValueObject? GetTrackValueByTrackAtTimestamp( Guid track, DateTime timestamp );
+        IList<TrackValueObject> GetTrackValueByTrackFromTimestamp( Guid track, DateTime timestamp );
+        IList<TrackValueObject> GetTrackValueByTrackUntilTimestamp( Guid track, DateTime timestamp );
+        IList<TrackValueObject> GetTrackValueByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<TrackValueObject> GetTrackValueCollectionByTimestamp( DateTime timestamp );
         IList<TrackValueObject> GetTrackValueCollectionAtTimestamp( DateTime timestamp );
         IList<TrackValueObject> GetTrackValueCollectionFromTimestamp( DateTime timestamp );
@@ -3922,11 +3922,11 @@ namespace Barrelman.Data.Types
         TrackValue3DObject? GetTrackValue3DById( Guid id );
         IList<TrackValue3DObject> GetTrackValue3DCollection( );
         IList<TrackValue3DObject> GetTrackValue3DCollectionByTrack( Guid track );
-        TrackValue3DObject GetTrackValue3DByTrackAndTimestamp( Guid track, DateTime timestamp );
-        TrackValue3DObject GetTrackValue3DByTrackAtTimestamp( Guid track, DateTime timestamp );
-        TrackValue3DObject GetTrackValue3DByTrackFromTimestamp( Guid track, DateTime timestamp );
-        TrackValue3DObject GetTrackValue3DByTrackUntilTimestamp( Guid track, DateTime timestamp );
-        TrackValue3DObject GetTrackValue3DByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
+        TrackValue3DObject? GetTrackValue3DByTrackAndTimestamp( Guid track, DateTime timestamp );
+        TrackValue3DObject? GetTrackValue3DByTrackAtTimestamp( Guid track, DateTime timestamp );
+        IList<TrackValue3DObject> GetTrackValue3DByTrackFromTimestamp( Guid track, DateTime timestamp );
+        IList<TrackValue3DObject> GetTrackValue3DByTrackUntilTimestamp( Guid track, DateTime timestamp );
+        IList<TrackValue3DObject> GetTrackValue3DByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<TrackValue3DObject> GetTrackValue3DCollectionByTimestamp( DateTime timestamp );
         IList<TrackValue3DObject> GetTrackValue3DCollectionAtTimestamp( DateTime timestamp );
         IList<TrackValue3DObject> GetTrackValue3DCollectionFromTimestamp( DateTime timestamp );
@@ -3938,11 +3938,11 @@ namespace Barrelman.Data.Types
         UInt16TimeseriesValueObject? GetUInt16TimeseriesValueById( Guid id );
         IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueCollection( );
         IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueCollectionByTimeseries( Guid timeseries );
-        UInt16TimeseriesValueObject GetUInt16TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        UInt16TimeseriesValueObject GetUInt16TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        UInt16TimeseriesValueObject GetUInt16TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        UInt16TimeseriesValueObject GetUInt16TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        UInt16TimeseriesValueObject GetUInt16TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        UInt16TimeseriesValueObject? GetUInt16TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        UInt16TimeseriesValueObject? GetUInt16TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<UInt16TimeseriesValueObject> GetUInt16TimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -3954,11 +3954,11 @@ namespace Barrelman.Data.Types
         UInt32TimeseriesValueObject? GetUInt32TimeseriesValueById( Guid id );
         IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueCollection( );
         IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueCollectionByTimeseries( Guid timeseries );
-        UInt32TimeseriesValueObject GetUInt32TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        UInt32TimeseriesValueObject GetUInt32TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        UInt32TimeseriesValueObject GetUInt32TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        UInt32TimeseriesValueObject GetUInt32TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        UInt32TimeseriesValueObject GetUInt32TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        UInt32TimeseriesValueObject? GetUInt32TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        UInt32TimeseriesValueObject? GetUInt32TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<UInt32TimeseriesValueObject> GetUInt32TimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -3970,11 +3970,11 @@ namespace Barrelman.Data.Types
         UInt64TimeseriesValueObject? GetUInt64TimeseriesValueById( Guid id );
         IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueCollection( );
         IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueCollectionByTimeseries( Guid timeseries );
-        UInt64TimeseriesValueObject GetUInt64TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
-        UInt64TimeseriesValueObject GetUInt64TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
-        UInt64TimeseriesValueObject GetUInt64TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
-        UInt64TimeseriesValueObject GetUInt64TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
-        UInt64TimeseriesValueObject GetUInt64TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
+        UInt64TimeseriesValueObject? GetUInt64TimeseriesValueByTimeseriesAndTimestamp( Guid timeseries, DateTime timestamp );
+        UInt64TimeseriesValueObject? GetUInt64TimeseriesValueByTimeseriesAtTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueByTimeseriesFromTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueByTimeseriesUntilTimestamp( Guid timeseries, DateTime timestamp );
+        IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueByTimeseriesOverTimestamp( Guid timeseries, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueCollectionByTimestamp( DateTime timestamp );
         IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueCollectionAtTimestamp( DateTime timestamp );
         IList<UInt64TimeseriesValueObject> GetUInt64TimeseriesValueCollectionFromTimestamp( DateTime timestamp );
@@ -3985,40 +3985,40 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         VehicleTypeObject? GetVehicleTypeById( Guid id );
         IList<VehicleTypeObject> GetVehicleTypeCollection( );
-        VehicleTypeObject GetVehicleTypeByName( string name );
+        VehicleTypeObject? GetVehicleTypeByName( string name );
         // ---------------------------------------------------------------------
         // VesselType queries
         // ---------------------------------------------------------------------
         VesselTypeObject? GetVesselTypeById( Guid id );
         IList<VesselTypeObject> GetVesselTypeCollection( );
-        VesselTypeObject GetVesselTypeByName( string name );
-        VesselTypeObject GetVesselTypeByCode( int code );
-        VesselTypeObject GetVesselTypeFromCode( int code );
-        VesselTypeObject GetVesselTypeUntilCode( int code );
-        VesselTypeObject GetVesselTypeOverCode( int fromCode, int untilCode );
+        VesselTypeObject? GetVesselTypeByName( string name );
+        VesselTypeObject? GetVesselTypeByCode( int code );
+        IList<VesselTypeObject> GetVesselTypeFromCode( int code );
+        IList<VesselTypeObject> GetVesselTypeUntilCode( int code );
+        IList<VesselTypeObject> GetVesselTypeOverCode( int fromCode, int untilCode );
         // ---------------------------------------------------------------------
         // View queries
         // ---------------------------------------------------------------------
         ViewObject? GetViewById( Guid id );
         IList<ViewObject> GetViewCollection( );
-        ViewObject GetViewByName( string name );
+        ViewObject? GetViewByName( string name );
         // ---------------------------------------------------------------------
         // ViewCameraLink queries
         // ---------------------------------------------------------------------
         ViewCameraLinkObject? GetViewCameraLinkById( Guid id );
         IList<ViewCameraLinkObject> GetViewCameraLinkCollection( );
         IList<ViewCameraLinkObject> GetViewCameraLinkCollectionByView( Guid view );
-        ViewCameraLinkObject GetViewCameraLinkByViewAndStart( Guid view, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByViewAtStart( Guid view, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByViewFromStart( Guid view, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByViewUntilStart( Guid view, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByViewOverStart( Guid view, DateTime fromStart, DateTime untilStart );
+        ViewCameraLinkObject? GetViewCameraLinkByViewAndStart( Guid view, DateTime start );
+        ViewCameraLinkObject? GetViewCameraLinkByViewAtStart( Guid view, DateTime start );
+        IList<ViewCameraLinkObject> GetViewCameraLinkByViewFromStart( Guid view, DateTime start );
+        IList<ViewCameraLinkObject> GetViewCameraLinkByViewUntilStart( Guid view, DateTime start );
+        IList<ViewCameraLinkObject> GetViewCameraLinkByViewOverStart( Guid view, DateTime fromStart, DateTime untilStart );
         IList<ViewCameraLinkObject> GetViewCameraLinkCollectionByCamera( Guid camera );
-        ViewCameraLinkObject GetViewCameraLinkByCameraAndStart( Guid camera, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByCameraAtStart( Guid camera, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByCameraFromStart( Guid camera, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByCameraUntilStart( Guid camera, DateTime start );
-        ViewCameraLinkObject GetViewCameraLinkByCameraOverStart( Guid camera, DateTime fromStart, DateTime untilStart );
+        ViewCameraLinkObject? GetViewCameraLinkByCameraAndStart( Guid camera, DateTime start );
+        ViewCameraLinkObject? GetViewCameraLinkByCameraAtStart( Guid camera, DateTime start );
+        IList<ViewCameraLinkObject> GetViewCameraLinkByCameraFromStart( Guid camera, DateTime start );
+        IList<ViewCameraLinkObject> GetViewCameraLinkByCameraUntilStart( Guid camera, DateTime start );
+        IList<ViewCameraLinkObject> GetViewCameraLinkByCameraOverStart( Guid camera, DateTime fromStart, DateTime untilStart );
         IList<ViewCameraLinkObject> GetViewCameraLinkCollectionByStart( DateTime start );
         IList<ViewCameraLinkObject> GetViewCameraLinkCollectionAtStart( DateTime start );
         IList<ViewCameraLinkObject> GetViewCameraLinkCollectionFromStart( DateTime start );
@@ -4030,17 +4030,17 @@ namespace Barrelman.Data.Types
         ViewTrackerLinkObject? GetViewTrackerLinkById( Guid id );
         IList<ViewTrackerLinkObject> GetViewTrackerLinkCollection( );
         IList<ViewTrackerLinkObject> GetViewTrackerLinkCollectionByView( Guid view );
-        ViewTrackerLinkObject GetViewTrackerLinkByViewAndStart( Guid view, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByViewAtStart( Guid view, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByViewFromStart( Guid view, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByViewUntilStart( Guid view, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByViewOverStart( Guid view, DateTime fromStart, DateTime untilStart );
+        ViewTrackerLinkObject? GetViewTrackerLinkByViewAndStart( Guid view, DateTime start );
+        ViewTrackerLinkObject? GetViewTrackerLinkByViewAtStart( Guid view, DateTime start );
+        IList<ViewTrackerLinkObject> GetViewTrackerLinkByViewFromStart( Guid view, DateTime start );
+        IList<ViewTrackerLinkObject> GetViewTrackerLinkByViewUntilStart( Guid view, DateTime start );
+        IList<ViewTrackerLinkObject> GetViewTrackerLinkByViewOverStart( Guid view, DateTime fromStart, DateTime untilStart );
         IList<ViewTrackerLinkObject> GetViewTrackerLinkCollectionByTracker( Guid tracker );
-        ViewTrackerLinkObject GetViewTrackerLinkByTrackerAndStart( Guid tracker, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByTrackerAtStart( Guid tracker, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByTrackerFromStart( Guid tracker, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByTrackerUntilStart( Guid tracker, DateTime start );
-        ViewTrackerLinkObject GetViewTrackerLinkByTrackerOverStart( Guid tracker, DateTime fromStart, DateTime untilStart );
+        ViewTrackerLinkObject? GetViewTrackerLinkByTrackerAndStart( Guid tracker, DateTime start );
+        ViewTrackerLinkObject? GetViewTrackerLinkByTrackerAtStart( Guid tracker, DateTime start );
+        IList<ViewTrackerLinkObject> GetViewTrackerLinkByTrackerFromStart( Guid tracker, DateTime start );
+        IList<ViewTrackerLinkObject> GetViewTrackerLinkByTrackerUntilStart( Guid tracker, DateTime start );
+        IList<ViewTrackerLinkObject> GetViewTrackerLinkByTrackerOverStart( Guid tracker, DateTime fromStart, DateTime untilStart );
         IList<ViewTrackerLinkObject> GetViewTrackerLinkCollectionByStart( DateTime start );
         IList<ViewTrackerLinkObject> GetViewTrackerLinkCollectionAtStart( DateTime start );
         IList<ViewTrackerLinkObject> GetViewTrackerLinkCollectionFromStart( DateTime start );
@@ -4079,18 +4079,18 @@ namespace Barrelman.Data.Types
         IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        WeatherStationCommandReplyObject GetWeatherStationCommandReplyByCommand( Guid command );
+        WeatherStationCommandReplyObject? GetWeatherStationCommandReplyByCommand( Guid command );
         // ---------------------------------------------------------------------
         // WeatherStationConfiguration queries
         // ---------------------------------------------------------------------
         WeatherStationConfigurationObject? GetWeatherStationConfigurationById( Guid id );
         IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationCollection( );
         IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationCollectionByWeatherStation( Guid weatherStation );
-        WeatherStationConfigurationObject GetWeatherStationConfigurationByWeatherStationAndTimestamp( Guid weatherStation, DateTime timestamp );
-        WeatherStationConfigurationObject GetWeatherStationConfigurationByWeatherStationAtTimestamp( Guid weatherStation, DateTime timestamp );
-        WeatherStationConfigurationObject GetWeatherStationConfigurationByWeatherStationFromTimestamp( Guid weatherStation, DateTime timestamp );
-        WeatherStationConfigurationObject GetWeatherStationConfigurationByWeatherStationUntilTimestamp( Guid weatherStation, DateTime timestamp );
-        WeatherStationConfigurationObject GetWeatherStationConfigurationByWeatherStationOverTimestamp( Guid weatherStation, DateTime fromTimestamp, DateTime untilTimestamp );
+        WeatherStationConfigurationObject? GetWeatherStationConfigurationByWeatherStationAndTimestamp( Guid weatherStation, DateTime timestamp );
+        WeatherStationConfigurationObject? GetWeatherStationConfigurationByWeatherStationAtTimestamp( Guid weatherStation, DateTime timestamp );
+        IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationByWeatherStationFromTimestamp( Guid weatherStation, DateTime timestamp );
+        IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationByWeatherStationUntilTimestamp( Guid weatherStation, DateTime timestamp );
+        IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationByWeatherStationOverTimestamp( Guid weatherStation, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationCollectionByTimestamp( DateTime timestamp );
         IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationCollectionAtTimestamp( DateTime timestamp );
         IList<WeatherStationConfigurationObject> GetWeatherStationConfigurationCollectionFromTimestamp( DateTime timestamp );
@@ -4101,30 +4101,30 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         ZoneObject? GetZoneById( Guid id );
         IList<ZoneObject> GetZoneCollection( );
-        ZoneObject GetZoneByName( string name );
+        ZoneObject? GetZoneByName( string name );
         // ---------------------------------------------------------------------
         // CircularZone queries
         // ---------------------------------------------------------------------
         CircularZoneObject? GetCircularZoneById( Guid id );
         IList<CircularZoneObject> GetCircularZoneCollection( );
-        CircularZoneObject GetCircularZoneByName( string name );
+        CircularZoneObject? GetCircularZoneByName( string name );
         // ---------------------------------------------------------------------
         // PolygonZone queries
         // ---------------------------------------------------------------------
         PolygonZoneObject? GetPolygonZoneById( Guid id );
         IList<PolygonZoneObject> GetPolygonZoneCollection( );
-        PolygonZoneObject GetPolygonZoneByName( string name );
+        PolygonZoneObject? GetPolygonZoneByName( string name );
         // ---------------------------------------------------------------------
         // ZoneExceptions queries
         // ---------------------------------------------------------------------
         ZoneExceptionsObject? GetZoneExceptionsById( Guid id );
         IList<ZoneExceptionsObject> GetZoneExceptionsCollection( );
         IList<ZoneExceptionsObject> GetZoneExceptionsCollectionByZone( Guid zone );
-        ZoneExceptionsObject GetZoneExceptionsByZoneAndTimestamp( Guid zone, DateTime timestamp );
-        ZoneExceptionsObject GetZoneExceptionsByZoneAtTimestamp( Guid zone, DateTime timestamp );
-        ZoneExceptionsObject GetZoneExceptionsByZoneFromTimestamp( Guid zone, DateTime timestamp );
-        ZoneExceptionsObject GetZoneExceptionsByZoneUntilTimestamp( Guid zone, DateTime timestamp );
-        ZoneExceptionsObject GetZoneExceptionsByZoneOverTimestamp( Guid zone, DateTime fromTimestamp, DateTime untilTimestamp );
+        ZoneExceptionsObject? GetZoneExceptionsByZoneAndTimestamp( Guid zone, DateTime timestamp );
+        ZoneExceptionsObject? GetZoneExceptionsByZoneAtTimestamp( Guid zone, DateTime timestamp );
+        IList<ZoneExceptionsObject> GetZoneExceptionsByZoneFromTimestamp( Guid zone, DateTime timestamp );
+        IList<ZoneExceptionsObject> GetZoneExceptionsByZoneUntilTimestamp( Guid zone, DateTime timestamp );
+        IList<ZoneExceptionsObject> GetZoneExceptionsByZoneOverTimestamp( Guid zone, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ZoneExceptionsObject> GetZoneExceptionsCollectionByTimestamp( DateTime timestamp );
         IList<ZoneExceptionsObject> GetZoneExceptionsCollectionAtTimestamp( DateTime timestamp );
         IList<ZoneExceptionsObject> GetZoneExceptionsCollectionFromTimestamp( DateTime timestamp );
@@ -4136,7 +4136,7 @@ namespace Barrelman.Data.Types
         ZoneExceptionsVesselLinkObject? GetZoneExceptionsVesselLinkById( Guid id );
         IList<ZoneExceptionsVesselLinkObject> GetZoneExceptionsVesselLinkCollection( );
         IList<ZoneExceptionsVesselLinkObject> GetZoneExceptionsVesselLinkCollectionByZoneExceptions( Guid zoneExceptions );
-        ZoneExceptionsVesselLinkObject GetZoneExceptionsVesselLinkByZoneExceptionsAndVessel( Guid zoneExceptions, Guid vessel );
+        ZoneExceptionsVesselLinkObject? GetZoneExceptionsVesselLinkByZoneExceptionsAndVessel( Guid zoneExceptions, Guid vessel );
         IList<ZoneExceptionsVesselLinkObject> GetZoneExceptionsVesselLinkCollectionByVessel( Guid vessel );
         // ---------------------------------------------------------------------
         // ZoneTrackAlarm queries
@@ -4144,18 +4144,18 @@ namespace Barrelman.Data.Types
         ZoneTrackAlarmObject? GetZoneTrackAlarmById( Guid id );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollection( );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollectionByTrack( Guid track );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByTrackAndTimestamp( Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByTrackAtTimestamp( Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByTrackFromTimestamp( Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByTrackUntilTimestamp( Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
+        ZoneTrackAlarmObject? GetZoneTrackAlarmByTrackAndTimestamp( Guid track, DateTime timestamp );
+        ZoneTrackAlarmObject? GetZoneTrackAlarmByTrackAtTimestamp( Guid track, DateTime timestamp );
+        IList<ZoneTrackAlarmObject> GetZoneTrackAlarmByTrackFromTimestamp( Guid track, DateTime timestamp );
+        IList<ZoneTrackAlarmObject> GetZoneTrackAlarmByTrackUntilTimestamp( Guid track, DateTime timestamp );
+        IList<ZoneTrackAlarmObject> GetZoneTrackAlarmByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollectionByZone( Guid zone );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollectionByZoneAndTrack( Guid zone, Guid track );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByZoneTrackAndTimestamp( Guid zone, Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByZoneTrackAtTimestamp( Guid zone, Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByZoneTrackFromTimestamp( Guid zone, Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByZoneTrackUntilTimestamp( Guid zone, Guid track, DateTime timestamp );
-        ZoneTrackAlarmObject GetZoneTrackAlarmByZoneTrackOverTimestamp( Guid zone, Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
+        ZoneTrackAlarmObject? GetZoneTrackAlarmByZoneTrackAndTimestamp( Guid zone, Guid track, DateTime timestamp );
+        ZoneTrackAlarmObject? GetZoneTrackAlarmByZoneTrackAtTimestamp( Guid zone, Guid track, DateTime timestamp );
+        IList<ZoneTrackAlarmObject> GetZoneTrackAlarmByZoneTrackFromTimestamp( Guid zone, Guid track, DateTime timestamp );
+        IList<ZoneTrackAlarmObject> GetZoneTrackAlarmByZoneTrackUntilTimestamp( Guid zone, Guid track, DateTime timestamp );
+        IList<ZoneTrackAlarmObject> GetZoneTrackAlarmByZoneTrackOverTimestamp( Guid zone, Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollectionByTimestamp( DateTime timestamp );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollectionAtTimestamp( DateTime timestamp );
         IList<ZoneTrackAlarmObject> GetZoneTrackAlarmCollectionFromTimestamp( DateTime timestamp );

@@ -666,12 +666,26 @@ namespace Harlinn::ODBC::Tool
         void CreateGetById( const ClassInfo& classInfo );
         void CreateGetAll( const ClassInfo& classInfo );
         void CreateGetByIndex( const ClassInfo& classInfo );
+        void CreateGetByIndexDataReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndexReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndexSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAtDataReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAtSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFromDataReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFromSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntilDataReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntilSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOverDataReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOverSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void AddParameter( const MemberInfo& memberInfo );
+        void AddParameter( const MemberInfo& memberInfo, const WideString& argumentName, const WideString& sqlArgumentName );
     };
 
 

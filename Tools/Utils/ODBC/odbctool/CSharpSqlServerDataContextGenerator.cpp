@@ -17,6 +17,7 @@
 #include "Generator.h"
 #include "SqlServerHelper.h"
 #include "CSharpHelper.h"
+#include <HCCStringBuilder.h>
 
 namespace Harlinn::ODBC::Tool
 {
@@ -340,14 +341,102 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
+    void CSharpSqlServerDataContextGenerator::CreateGetByIndexDataReader( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto functionName = CSharpHelper::GetByIndexFunctionName( classInfo, indexInfo, indexMemberCount ) + L"DataReader";
+        auto dataReaderName = CSharpHelper::GetDataReaderName( classInfo );
+        auto dataReaderVariableName = dataReaderName.FirstToLower( );
+        auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"        public {} {}( {} )", dataReaderName, functionName, arguments );
+        WriteLine( L"        {" );
+        CreateGetByIndexSql( classInfo, indexInfo, indexMemberCount );
+        WriteLine( L"            try" );
+        WriteLine( L"            {" );
+        WriteLine( L"                var sqlConnection = GetSqlConnection( );" );
+        WriteLine( L"                var sqlCommand = sqlConnection.CreateCommand( );");
+        WriteLine( L"                sqlCommand.CommandText = sql;");
+        WriteLine( L"                var sqlCommandParameters = sqlCommand.Parameters;" );
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& field = *fields[ i ];
+            AddParameter( field );
+        }
+        if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
+        {
+            WriteLine( L"                var sqlDataReader = sqlCommand.ExecuteReader( System.Data.CommandBehavior.SingleRow );" );
+        }
+        else
+        {
+            WriteLine( L"                var sqlDataReader = sqlCommand.ExecuteReader( System.Data.CommandBehavior.SingleResult );" );
+        }
+        WriteLine( L"                var {} = new {}( _loggerFactory, sqlDataReader );", dataReaderVariableName, dataReaderName );
+        WriteLine( L"                return {};", dataReaderVariableName );
+        WriteLine( L"            }" );
+        WriteLine( L"            catch ( Exception exc )");
+        WriteLine( L"            {");
+        WriteLine( L"                LogException( exc );");
+        WriteLine( L"                throw;");
+        WriteLine( L"            }" );
+        WriteLine( L"        }" );
+    }
+    void CSharpSqlServerDataContextGenerator::CreateGetByIndexSql( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& fields = indexInfo.Fields( );
+        auto dataReaderName = CSharpHelper::GetDataReaderName( classInfo );
+        WriteLine( L"            const string sql = {}.BaseQuery + \" WHERE \" +", dataReaderName );
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& field = *fields[ i ];
+            auto columnName = field.Name( ).FirstToUpper( );
+            auto sqlVariableName = Format( L"@{}", CSharpHelper::GetInputArgumentName( field ));
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                WriteLine( L"                    {}.ViewAliasName + \".[{}] = {} AND \" +", dataReaderName, columnName, sqlVariableName );
+            }
+            else
+            {
+                WriteLine( L"                    {}.ViewAliasName + \".[{}] = {} \" +", dataReaderName, columnName, sqlVariableName );
+            }
+        }
+        StringBuilder<wchar_t> sb;
+        auto fieldCount = fields.size( );
+        for ( size_t i = 0; i < fieldCount; i++ )
+        {
+            const auto& field = *fields[ i ];
+            auto columnName = field.Name( ).FirstToUpper( );
+            if ( i < ( fieldCount - 1 ) )
+            {
+                sb.Append( L"{}.ViewAliasName + \".[{}],\" +", dataReaderName, columnName );
+            }
+            else
+            {
+                if ( indexInfo.Unique( ) )
+                {
+                    sb.Append( L"{}.ViewAliasName + \".[{}]\"", dataReaderName, columnName );
+                }
+                else
+                {
+                    sb.Append( L"{}.ViewAliasName + \".[{}],\" +", dataReaderName, columnName );
+                    auto primaryKey = classInfo.PrimaryKey( );
+                    columnName = primaryKey->Name( ).FirstToUpper( );
+                    sb.Append( L"{}.ViewAliasName + \".[{}]\"", dataReaderName, columnName );
+                }
+            }
+        }
+        WriteLine( L"                    \" ORDER BY \" + {};", sb.ToString( ) );
+
+    }
+
     void CSharpSqlServerDataContextGenerator::CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
     {
         auto className = CSharpHelper::GetDataType( classInfo );
         auto functionName = CSharpHelper::GetByIndexFunctionName( classInfo, indexInfo, indexMemberCount );
         if ( functions_.contains( functionName ) == false )
         {
+            CreateGetByIndexDataReader( classInfo, indexInfo, indexMemberCount );
             functions_.insert( functionName );
-            auto returnType = className;
+            auto returnType = className + L"?";
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
             {
                 returnType = Format( L"IList<{}>", className );
@@ -383,7 +472,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
+            auto returnType = className + L"?";
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
             {
                 returnType = Format( L"IList<{}>", className );
@@ -402,11 +491,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
-            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
-            {
-                returnType = Format( L"IList<{}>", className );
-            }
+            auto returnType = Format( L"IList<{}>", className );
             auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
             WriteLine( L"        {" );
@@ -421,11 +506,7 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
-            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
-            {
-                returnType = Format( L"IList<{}>", className );
-            }
+            auto returnType = Format( L"IList<{}>", className );
             auto arguments = CSharpHelper::GetByIndexFunctionParameters( classInfo, indexInfo, indexMemberCount );
             WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
             WriteLine( L"        {" );
@@ -440,16 +521,56 @@ namespace Harlinn::ODBC::Tool
         if ( functions_.contains( functionName ) == false )
         {
             functions_.insert( functionName );
-            auto returnType = className;
-            if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) == false )
-            {
-                returnType = Format( L"IList<{}>", className );
-            }
+            auto returnType = Format( L"IList<{}>", className );
             auto arguments = CSharpHelper::GetByIndexFunctionOverParameters( classInfo, indexInfo, indexMemberCount );
             WriteLine( L"        public {} {}( {} )", returnType, functionName, arguments );
             WriteLine( L"        {" );
             WriteLine( L"            throw new NotImplementedException( );" );
             WriteLine( L"        }" );
+        }
+    }
+
+    void CSharpSqlServerDataContextGenerator::AddParameter( const MemberInfo& memberInfo )
+    {
+        auto argumentName = CSharpHelper::GetInputArgumentName( memberInfo );
+        auto sqlArgumentName = Format( L"@{}", memberInfo.Name( ).FirstToLower( ) );
+        AddParameter( memberInfo, argumentName, sqlArgumentName );
+    }
+
+    void CSharpSqlServerDataContextGenerator::AddParameter( const MemberInfo& memberInfo, const WideString& argumentName, const WideString& sqlArgumentName )
+    {
+        auto sqlCommandParametersAddFunctionName = CSharpHelper::GetSqlCommandParametersAddFunctionName( memberInfo );
+        
+        auto parameterVariableName = argumentName + L"Parameter";
+        
+        auto memberType = memberInfo.Type( );
+        if ( memberType == MemberInfoType::String )
+        {
+            const auto& stringMemberInfo = static_cast< const StringMemberInfo& >( memberInfo );
+            if ( stringMemberInfo.Size( ) <= 4000 )
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {}, {} );", parameterVariableName, sqlCommandParametersAddFunctionName, sqlArgumentName, argumentName, stringMemberInfo.Size( ) );
+            }
+            else
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, sqlArgumentName, argumentName );
+            }
+        }
+        else if ( memberType == MemberInfoType::Binary )
+        {
+            const auto& binaryMemberInfo = static_cast< const BinaryMemberInfo& >( memberInfo );
+            if ( binaryMemberInfo.Size( ) <= 8000 )
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {}, {} );", parameterVariableName, sqlCommandParametersAddFunctionName, sqlArgumentName, argumentName, binaryMemberInfo.Size( ) );
+            }
+            else
+            {
+                WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, sqlArgumentName, argumentName );
+            }
+        }
+        else
+        {
+            WriteLine( L"                var {} = sqlCommandParameters.{}( \"{}\", {} );", parameterVariableName, sqlCommandParametersAddFunctionName, sqlArgumentName, argumentName );
         }
     }
 
