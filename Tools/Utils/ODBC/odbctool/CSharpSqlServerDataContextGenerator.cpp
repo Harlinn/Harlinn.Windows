@@ -230,7 +230,7 @@ namespace Harlinn::ODBC::Tool
 
         WriteLine( L"        public void {}( {} id, Stream destinationStream )", functionName, primaryKeyType );
         WriteLine( L"        {" );
-        WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+        WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
         WriteLine( L"            using( destinationWriter )" );
         WriteLine( L"            {" );
         WriteLine( L"                var {} = {}DataReader( id );", dataReaderVariableName, functionName );
@@ -298,7 +298,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( L"        public void {}( Stream destinationStream )", functionName );
         WriteLine( L"        {" );
-        WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+        WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
         WriteLine( L"            using( destinationWriter )" );
         WriteLine( L"            {" );
         WriteLine( L"                var {} = {}DataReader( );", dataReaderVariableName, functionName );
@@ -477,7 +477,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( );
             WriteLine( L"        public void {}( {}, Stream destinationStream )", functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
             WriteLine( L"            using( destinationWriter )" );
             WriteLine( L"            {" );
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
@@ -681,7 +681,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( );
             WriteLine( L"        public void {}( {}, Stream destinationStream )", functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
             WriteLine( L"            using( destinationWriter )" );
             WriteLine( L"            {" );
             if ( CSharpHelper::IsUnique( indexInfo, indexMemberCount ) )
@@ -823,7 +823,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( );
             WriteLine( L"        public void {}( {}, Stream destinationStream )", functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
             WriteLine( L"            using( destinationWriter )" );
             WriteLine( L"            {" );
             WriteLine( L"                var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
@@ -947,7 +947,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( );
             WriteLine( L"        public void {}( {}, Stream destinationStream )", functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
             WriteLine( L"            using( destinationWriter )" );
             WriteLine( L"            {" );
             WriteLine( L"                var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );
@@ -1081,7 +1081,7 @@ namespace Harlinn::ODBC::Tool
             WriteLine( );
             WriteLine( L"        public void {}( {}, Stream destinationStream )", functionName, arguments );
             WriteLine( L"        {" );
-            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode );" );
+            WriteLine( L"            var destinationWriter = new BinaryWriter( destinationStream, Encoding.Unicode, true );" );
             WriteLine( L"            using( destinationWriter )" );
             WriteLine( L"            {" );
             WriteLine( L"                var {} = {}DataReader( {} );", dataReaderVariableName, functionName, callArguments );

@@ -92,5 +92,75 @@ namespace Barrelman.Data.Tests
             retrievedTimeseriesCatalogElement = dataContext.GetTimeseriesCatalogElementById(id);
             Assert.IsNull(retrievedTimeseriesCatalogElement);
         }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            var loggerFactory = LoggerFactoryHelper.LoggerFactory;
+            var connection = ConnectionHelper.Connection;
+            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection);
+
+            Guid id = new Guid("{C76C4997-9B8C-4D22-A24F-44057A174A73}");
+            string name1 = "Catalog1";
+            string name2 = "Catalog2";
+
+            // Cleanup if previous run was aborted
+
+            var deleteCommand1 = connection.CreateCommand();
+            deleteCommand1.CommandText = "DELETE FROM [TimeseriesCatalog] WHERE Id = @id";
+            var deleteCommandParameters1 = deleteCommand1.Parameters;
+            deleteCommandParameters1.AddGuid("@id", id);
+            deleteCommand1.CommandType = System.Data.CommandType.Text;
+            deleteCommand1.ExecuteNonQuery();
+
+            var deleteCommand2 = connection.CreateCommand();
+            deleteCommand2.CommandText = "DELETE FROM [TimeseriesCatalogElement] WHERE Id = @id";
+            var deleteCommandParameters2 = deleteCommand2.Parameters;
+            deleteCommandParameters2.AddGuid("@id", id);
+            deleteCommand2.CommandType = System.Data.CommandType.Text;
+            deleteCommand2.ExecuteNonQuery();
+
+            // Start of test
+
+            // 1: Create a TimeseriesCatalogObject object
+            var timeseriesCatalog = new Types.TimeseriesCatalogObject();
+
+            // 2: Assign initial values
+            timeseriesCatalog.ObjectState = Harlinn.Common.Core.Net.Data.ObjectState.New;
+            timeseriesCatalog.Id = id;
+            timeseriesCatalog.Name = name1;
+
+            // 3: Insert the object
+            var inserted = dataContext.Insert(timeseriesCatalog);
+            Assert.IsTrue(inserted);
+
+            var memoryStream = new MemoryStream();
+
+            // 4: Retrieve a copy of the object from the database.
+            //  a: GetTimeseriesCatalogElementById serializes any TimeseriesCatalogElementObject derived object
+            dataContext.GetTimeseriesCatalogElementById(id, memoryStream);
+            memoryStream.Position = 0;
+            var binaryReader = new BinaryReader(memoryStream,System.Text.Encoding.Unicode);
+            //  b: Check that the object was found
+            var foundRequestedObject = binaryReader.ReadBoolean();
+            Assert.IsTrue(foundRequestedObject);
+            //  c: deserialize the object
+            var factory = new Types.DataObjectFactory();
+            var kind = (Types.Kind)binaryReader.ReadInt32();
+            var retrievedTimeseriesCatalog = (Types.TimeseriesCatalogObject)factory.Create(kind);
+            retrievedTimeseriesCatalog.ReadFrom(binaryReader);
+
+            //  d: Check that the retrieved object is equal to the original object
+            Assert.IsTrue(retrievedTimeseriesCatalog.Equals(timeseriesCatalog));
+
+            // 5: Mark the object as deleted and delete it from the database.
+            timeseriesCatalog.ObjectState = Harlinn.Common.Core.Net.Data.ObjectState.Deleted;
+            var deleted = dataContext.Delete(timeseriesCatalog);
+            Assert.IsTrue(deleted);
+
+            // 6: Verify that the object cannot be retrieved from the database.
+            var retrievedTimeseriesCatalogElement = dataContext.GetTimeseriesCatalogElementById(id);
+            Assert.IsNull(retrievedTimeseriesCatalogElement);
+        }
     }
 }
