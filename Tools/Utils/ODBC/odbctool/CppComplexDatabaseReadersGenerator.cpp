@@ -187,8 +187,8 @@ namespace Harlinn::ODBC::Tool
                     WriteLine( L"        static constexpr SQLUSMALLINT {}_{}_FIELD_ID = {};", shortName, member.Name( ).ToUpper( ), id );
                     if ( member.PrimaryKey( ) )
                     {
-                        WriteLine( L"        static constexpr SQLUSMALLINT {}_KIND_FIELD_ID = {};", shortName, id );
                         id++;
+                        WriteLine( L"        static constexpr SQLUSMALLINT {}_KIND_FIELD_ID = {};", shortName, id );
                     }
                 }
                 else

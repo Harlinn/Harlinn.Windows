@@ -4,13 +4,711 @@
  */
 CREATE TABLE [dbo].[EntityTypes]
 (
-  [Id][int] IDENTITY(1, 1) NOT NULL,
+  [Id][int] NOT NULL,
   [EntityName][nvarchar](254) NOT NULL,
   CONSTRAINT [PK_EntityTypes] PRIMARY KEY( [Id] ),
   CONSTRAINT[ Unq_EntityName ] UNIQUE( [EntityName] )
 )
 go
 
+INSERT INTO [dbo].[EntityTypes] VALUES( 10000,'AircraftType' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10100,'AisDeviceCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10200,'AisDeviceCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10300,'AisDeviceConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10400,'AisDeviceRawMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10500,'AisDeviceRawSentence' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10600,'AisMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10700,'AidToNavigationReportMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10800,'AisAddressedSafetyRelatedMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 10900,'AisBaseStationReportMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11000,'AisBinaryAcknowledgeMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11100,'AisBinaryAddressedMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11200,'AisBinaryBroadcastMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11300,'AisDataLinkManagementMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11400,'AisExtendedClassBCsPositionReportMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11500,'AisInterrogationMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11600,'AisPositionReportClassAMessageBase' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11700,'AisPositionReportClassAAssignedScheduleMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11800,'AisPositionReportClassAMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 11900,'AisPositionReportClassAResponseToInterrogationMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12000,'AisPositionReportForLongRangeApplicationsMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12100,'AisSafetyRelatedAcknowledgmentMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12200,'AisStandardClassBCsPositionReportMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12300,'AisStandardSarAircraftPositionReportMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12400,'AisStaticAndVoyageRelatedDataMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12500,'AisStaticDataReportMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12600,'AisStaticDataReportPartAMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12700,'AisStaticDataReportPartBMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12800,'AisUtcAndDateInquiryMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 12900,'AisUtcAndDateResponseMessage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13000,'AlarmStateChange' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13100,'BaseStationType' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13200,'BinaryTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13300,'Bookmark' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13400,'BooleanTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13500,'ByteTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13600,'CameraCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13700,'CameraCommandAbsoluteMove' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13800,'CameraCommandAdjustPanTiltZoom' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 13900,'CameraCommandContinuousMove' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14000,'CameraCommandGeoMove' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14100,'CameraCommandRelativeMove' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14200,'CameraCommandReleasePTZOwnership' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14300,'CameraCommandRequestPTZOwnership' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14400,'CameraCommandSetAutoFocus' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14500,'CameraCommandSetBlackAndWhite' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14600,'CameraCommandSetFollowed' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14700,'CameraCommandSetInfraRedLamp' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14800,'CameraCommandSetWasher' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 14900,'CameraCommandSetWiper' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15000,'CameraCommandStop' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15100,'CameraCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15200,'CameraConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15300,'CameraPanCalibration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15400,'CameraPanCalibrationValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15500,'CameraStatus' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15600,'CameraTiltCalibration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15700,'CameraTiltCalibrationValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15800,'CameraZoomCalibration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 15900,'CameraZoomCalibrationValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16000,'CatalogElement' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16100,'Catalog' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16200,'Element' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16300,'CollectionInfo' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16400,'Country' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16500,'CursorInfo' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16600,'DateTimeTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16700,'DeviceHost' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16800,'DeviceHostConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 16900,'DoubleTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17000,'FacilityType' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17100,'GeoPosition2DTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17200,'GeoPosition3DTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17300,'GNSSDeviceCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17400,'GNSSDeviceCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17500,'GNSSDeviceConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17600,'GuidTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17700,'GyroDeviceCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17800,'GyroDeviceCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 17900,'GyroDeviceConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18000,'Identity' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18100,'Callsign' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18200,'InternationalMaritimeOrganizationNumber' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18300,'MaritimeMobileServiceIdentity' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18400,'Name' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18500,'Int16TimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18600,'Int32TimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18700,'Int64TimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18800,'Item' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 18900,'BaseStation' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19000,'Device' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19100,'CameraDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19200,'GNSSDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19300,'GyroDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19400,'LineInputDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19500,'OilSpillDetectorDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19600,'RadioDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19700,'RadomeDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19800,'TrackerDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 19900,'AisDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20000,'RadarDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20100,'WeatherStationDevice' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20200,'Facility' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20300,'TrackableItem' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20400,'Aircraft' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20500,'AisAidToNavigation' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20600,'Vehicle' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20700,'Vessel' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20800,'ItemIdentityLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 20900,'ItemParentChildLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21000,'LineInputDeviceCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21100,'LineInputDeviceCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21200,'LineInputDeviceConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21300,'LineInputMessageRouting' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21400,'LineInputMessageRoutingDestination' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21500,'LineInputWhiteListEntry' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21600,'LogApplication' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21700,'LogApplicationConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21800,'LogHost' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 21900,'LogHostConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22000,'LogLocation' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22100,'LogProcess' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22200,'LogRecord' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22300,'LogThread' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22400,'LogTraceEntry' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22500,'MapElement' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22600,'MapInfo' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22700,'MapServiceOptions' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22800,'MaritimeIdentificationDigits' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 22900,'MediaProxySession' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23000,'MediaProxySessionFile' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23100,'MediaProxySessionOptions' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23200,'MediaService' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23300,'MediaServiceOptions' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23400,'NamespaceElement' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23500,'ElementType' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23600,'Namespace' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23700,'OilSpill' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23800,'OilSpillDetectorCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 23900,'OilSpillDetectorCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24000,'OilSpillDetectorConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24100,'Position2DTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24200,'Position3DTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24300,'ProcessTrackValueResult' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24400,'Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24500,'BinaryProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24600,'BooleanProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24700,'ByteProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24800,'DateTimeProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 24900,'DoubleProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25000,'GuidProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25100,'Int16Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25200,'Int32Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25300,'Int64Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25400,'ReferenceProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25500,'SByteProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25600,'SingleProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25700,'StringProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25800,'TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 25900,'BinaryTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26000,'BooleanTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26100,'ByteTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26200,'DateTimeTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26300,'DoubleTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26400,'GuidTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26500,'Int16TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26600,'Int32TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26700,'Int64TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26800,'ReferenceTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 26900,'SByteTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27000,'SingleTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27100,'StringTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27200,'TimeSpanTimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27300,'UInt16TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27400,'UInt32TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27500,'UInt64TimeseriesProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27600,'TimeSpanProperty' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27700,'UInt16Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27800,'UInt32Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 27900,'UInt64Property' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28000,'PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28100,'BinaryPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28200,'BooleanPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28300,'BytePropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28400,'DateTimePropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28500,'DoublePropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28600,'GuidPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28700,'Int16PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28800,'Int32PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 28900,'Int64PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29000,'ReferencePropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29100,'SBytePropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29200,'SinglePropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29300,'StringPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29400,'TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29500,'BinaryTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29600,'BooleanTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29700,'ByteTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29800,'DateTimeTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 29900,'DoubleTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30000,'GuidTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30100,'Int16TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30200,'Int32TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30300,'Int64TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30400,'ReferenceTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30500,'SByteTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30600,'SingleTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30700,'StringTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30800,'TimeSpanTimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 30900,'UInt16TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31000,'UInt32TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31100,'UInt64TimeseriesPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31200,'TimeSpanPropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31300,'UInt16PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31400,'UInt32PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31500,'UInt64PropertyDefinition' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31600,'RadarAlarmStatus' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31700,'RadarCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31800,'RadarCommandGetStatus' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 31900,'RadarCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32000,'RadarCommandReplyGetStatus' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32100,'RadarConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32200,'RadarImage' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32300,'RadarRawTrackTable' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32400,'RadarStatus' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32500,'RadioCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32600,'RadioCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32700,'RadioConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32800,'RadomeCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 32900,'RadomeCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33000,'RadomeConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33100,'ReferenceTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33200,'SByteTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33300,'SecurityDomain' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33400,'SecurityIdentifier' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33500,'SecurityLogin' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33600,'SecurityRole' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33700,'SecurityIdentifierRoleLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33800,'SecurityLoginSession' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 33900,'SecurityPermission' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34000,'SingleTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34100,'StringTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34200,'TimeseriesCatalogElement' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34300,'Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34400,'BinaryTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34500,'BooleanTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34600,'AisAidToNavigationOffPositionTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34700,'DeviceEnabledTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34800,'RadarAutomaticSensitivityTimeControlTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 34900,'RadarBlankSector1Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35000,'RadarBlankSector2Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35100,'RadarEnableAutomaticFrequencyControlTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35200,'RadarEnableFastTimeConstantTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35300,'RadarEnableSensitivityTimeControlTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35400,'RadarPowerOnTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35500,'RadarSaveSettingsTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35600,'RadarTrackingTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35700,'MediaProxySessionEnabledTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35800,'MediaServiceEnabledTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 35900,'ByteTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36000,'DateTimeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36100,'DoubleTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36200,'GNSSAltitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36300,'GNSSLatitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36400,'GNSSLongitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36500,'GyroCourseTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36600,'GyroHeadingMagneticNorthTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36700,'GyroHeadingTrueNorthTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36800,'GyroPitchTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 36900,'GyroRateOfTurnTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37000,'GyroRollTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37100,'GyroSpeedTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37200,'RadarLatitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37300,'RadarLongitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37400,'RadomeDewPointTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37500,'RadomePressureTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37600,'RadomeTemperatureTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37700,'VesselDraughtTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37800,'ViewLatitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 37900,'ViewLongitudeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38000,'ViewZoomLevelTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38100,'WeatherStationAbsoluteHumidityTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38200,'WeatherStationAirTemperatureTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38300,'WeatherStationBarometricPressureTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38400,'WeatherStationDewPointTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38500,'WeatherStationRelativeHumidityTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38600,'WeatherStationWaterTemperatureTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38700,'WeatherStationWindDirectionTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38800,'WeatherStationWindSpeedTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 38900,'GeoPosition2DTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39000,'AisAidToNavigationPositionTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39100,'GeoPosition3DTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39200,'GuidTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39300,'Int16Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39400,'Int32Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39500,'RadarAzimuthOffsetTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39600,'RadarFastTimeConstantLevelTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39700,'RadarFastTimeConstantModeTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39800,'RadarPulseTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 39900,'RadarSector1EndTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40000,'RadarSector1StartTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40100,'RadarSector2EndTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40200,'RadarSector2StartTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40300,'RadarSensitivityTimeControlLevelTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40400,'RadarTuningTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40500,'VesselPersonsOnBoardTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40600,'Int64Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40700,'Position2DTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40800,'Position3DTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 40900,'ReferenceTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41000,'SByteTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41100,'SingleTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41200,'StringTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41300,'TimeSpanTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41400,'UInt16Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41500,'UInt32Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41600,'RadomeStatusTimeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41700,'UInt64Timeseries' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41800,'TimeseriesCatalog' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 41900,'TimeseriesInfo' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42000,'TimeSpanTimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42100,'TrackableItemTrackLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42200,'TrackBase' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42300,'Track' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42400,'Track3D' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42500,'TrackerFilterParameters' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42600,'TrackerFilterParametersConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42700,'TrackInfo' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42800,'TrackingServiceOptions' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 42900,'TrackLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43000,'TrackValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43100,'TrackValue3D' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43200,'UInt16TimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43300,'UInt32TimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43400,'UInt64TimeseriesValue' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43500,'VehicleType' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43600,'VesselType' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43700,'View' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43800,'ViewCameraLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 43900,'ViewTrackerLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44000,'WeatherStationCommand' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44100,'WeatherStationCommandReply' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44200,'WeatherStationConfiguration' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44300,'Zone' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44400,'CircularZone' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44500,'PolygonZone' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44600,'ZoneExceptions' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44700,'ZoneExceptionsVesselLink' )
+go
+INSERT INTO [dbo].[EntityTypes] VALUES( 44800,'ZoneTrackAlarm' )
+go
 /*
  * AircraftType
  *

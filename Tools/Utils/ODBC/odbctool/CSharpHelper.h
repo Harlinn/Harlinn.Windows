@@ -80,6 +80,7 @@ namespace Harlinn::ODBC::Tool
         static WideString GetByIndexUntilFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         static WideString GetByIndexOverFunctionName( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
         static WideString GetByIndexFunctionOverParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        static WideString GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
 
         static bool IsUnique( const IndexInfo& indexInfo, size_t indexMemberCount );
         static bool RequiresComplexReader( const ClassInfo& classInfo );

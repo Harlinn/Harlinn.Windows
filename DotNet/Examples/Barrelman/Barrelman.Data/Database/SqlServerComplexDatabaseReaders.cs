@@ -252,7 +252,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "am";
 
         public const int AM_ID_FIELD_ID = 0;
-        public const int AM_KIND_FIELD_ID = 0;
+        public const int AM_KIND_FIELD_ID = 1;
         public const int AM_ROWVERSION_FIELD_ID = 2;
         public const int AM_AISDEVICE_FIELD_ID = 3;
         public const int AM_RECEIVEDTIMESTAMP_FIELD_ID = 4;
@@ -2582,7 +2582,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "aprcab";
 
         public const int APRCAB_ID_FIELD_ID = 0;
-        public const int APRCAB_KIND_FIELD_ID = 0;
+        public const int APRCAB_KIND_FIELD_ID = 1;
         public const int APRCAB_ROWVERSION_FIELD_ID = 2;
         public const int APRCAB_AISDEVICE_FIELD_ID = 3;
         public const int APRCAB_RECEIVEDTIMESTAMP_FIELD_ID = 4;
@@ -2918,7 +2918,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "asdrm";
 
         public const int ASDRM_ID_FIELD_ID = 0;
-        public const int ASDRM_KIND_FIELD_ID = 0;
+        public const int ASDRM_KIND_FIELD_ID = 1;
         public const int ASDRM_ROWVERSION_FIELD_ID = 2;
         public const int ASDRM_AISDEVICE_FIELD_ID = 3;
         public const int ASDRM_RECEIVEDTIMESTAMP_FIELD_ID = 4;
@@ -3284,7 +3284,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "cc";
 
         public const int CC_ID_FIELD_ID = 0;
-        public const int CC_KIND_FIELD_ID = 0;
+        public const int CC_KIND_FIELD_ID = 1;
         public const int CC_ROWVERSION_FIELD_ID = 2;
         public const int CC_CAMERA_FIELD_ID = 3;
         public const int CC_TIMESTAMP_FIELD_ID = 4;
@@ -4020,7 +4020,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "ce";
 
         public const int CE_ID_FIELD_ID = 0;
-        public const int CE_KIND_FIELD_ID = 0;
+        public const int CE_KIND_FIELD_ID = 1;
         public const int CE_ROWVERSION_FIELD_ID = 2;
         public const int CE_CATALOG_FIELD_ID = 3;
         public const int CE_NAME_FIELD_ID = 4;
@@ -4161,7 +4161,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "i";
 
         public const int I_ID_FIELD_ID = 0;
-        public const int I_KIND_FIELD_ID = 0;
+        public const int I_KIND_FIELD_ID = 1;
         public const int I_ROWVERSION_FIELD_ID = 2;
         public const int C_IDENTIFIER_FIELD_ID = 3;
         public const int IMON_IDENTIFIER_FIELD_ID = 4;
@@ -4425,7 +4425,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "i";
 
         public const int I_ID_FIELD_ID = 0;
-        public const int I_KIND_FIELD_ID = 0;
+        public const int I_KIND_FIELD_ID = 1;
         public const int I_ROWVERSION_FIELD_ID = 2;
         public const int BS_NAME_FIELD_ID = 3;
         public const int BS_TYPE_FIELD_ID = 4;
@@ -5525,7 +5525,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "d";
 
         public const int D_ID_FIELD_ID = 0;
-        public const int D_KIND_FIELD_ID = 0;
+        public const int D_KIND_FIELD_ID = 1;
         public const int D_ROWVERSION_FIELD_ID = 2;
         public const int D_HOST_FIELD_ID = 3;
         public const int D_NAME_FIELD_ID = 4;
@@ -6258,7 +6258,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "td";
 
         public const int TD_ID_FIELD_ID = 0;
-        public const int TD_KIND_FIELD_ID = 0;
+        public const int TD_KIND_FIELD_ID = 1;
         public const int TD_ROWVERSION_FIELD_ID = 2;
         public const int TD_HOST_FIELD_ID = 3;
         public const int TD_NAME_FIELD_ID = 4;
@@ -6635,7 +6635,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "ti";
 
         public const int TI_ID_FIELD_ID = 0;
-        public const int TI_KIND_FIELD_ID = 0;
+        public const int TI_KIND_FIELD_ID = 1;
         public const int TI_ROWVERSION_FIELD_ID = 2;
         public const int A_NAME_FIELD_ID = 3;
         public const int A_TYPE_FIELD_ID = 4;
@@ -6966,7 +6966,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "ne";
 
         public const int NE_ID_FIELD_ID = 0;
-        public const int NE_KIND_FIELD_ID = 0;
+        public const int NE_KIND_FIELD_ID = 1;
         public const int NE_ROWVERSION_FIELD_ID = 2;
         public const int NE_NAMESPACE_FIELD_ID = 3;
         public const int NE_NAME_FIELD_ID = 4;
@@ -7171,7 +7171,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "p";
 
         public const int P_ID_FIELD_ID = 0;
-        public const int P_KIND_FIELD_ID = 0;
+        public const int P_KIND_FIELD_ID = 1;
         public const int P_ROWVERSION_FIELD_ID = 2;
         public const int P_ELEMENT_FIELD_ID = 3;
         public const int P_DEFINITION_FIELD_ID = 4;
@@ -8085,7 +8085,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "tp";
 
         public const int TP_ID_FIELD_ID = 0;
-        public const int TP_KIND_FIELD_ID = 0;
+        public const int TP_KIND_FIELD_ID = 1;
         public const int TP_ROWVERSION_FIELD_ID = 2;
         public const int TP_ELEMENT_FIELD_ID = 3;
         public const int TP_DEFINITION_FIELD_ID = 4;
@@ -8679,7 +8679,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "pd";
 
         public const int PD_ID_FIELD_ID = 0;
-        public const int PD_KIND_FIELD_ID = 0;
+        public const int PD_KIND_FIELD_ID = 1;
         public const int PD_ROWVERSION_FIELD_ID = 2;
         public const int PD_ELEMENTTYPE_FIELD_ID = 3;
         public const int PD_NAME_FIELD_ID = 4;
@@ -9960,7 +9960,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "tpd";
 
         public const int TPD_ID_FIELD_ID = 0;
-        public const int TPD_KIND_FIELD_ID = 0;
+        public const int TPD_KIND_FIELD_ID = 1;
         public const int TPD_ROWVERSION_FIELD_ID = 2;
         public const int TPD_ELEMENTTYPE_FIELD_ID = 3;
         public const int TPD_NAME_FIELD_ID = 4;
@@ -10559,7 +10559,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "rc";
 
         public const int RC_ID_FIELD_ID = 0;
-        public const int RC_KIND_FIELD_ID = 0;
+        public const int RC_KIND_FIELD_ID = 1;
         public const int RC_ROWVERSION_FIELD_ID = 2;
         public const int RC_RADAR_FIELD_ID = 3;
         public const int RC_TIMESTAMP_FIELD_ID = 4;
@@ -10724,7 +10724,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "rcr";
 
         public const int RCR_ID_FIELD_ID = 0;
-        public const int RCR_KIND_FIELD_ID = 0;
+        public const int RCR_KIND_FIELD_ID = 1;
         public const int RCR_ROWVERSION_FIELD_ID = 2;
         public const int RCR_RADAR_FIELD_ID = 3;
         public const int RCR_TIMESTAMP_FIELD_ID = 4;
@@ -10929,7 +10929,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "si";
 
         public const int SI_ID_FIELD_ID = 0;
-        public const int SI_KIND_FIELD_ID = 0;
+        public const int SI_KIND_FIELD_ID = 1;
         public const int SI_ROWVERSION_FIELD_ID = 2;
         public const int SI_DOMAIN_FIELD_ID = 3;
         public const int SI_IDENTITY_FIELD_ID = 4;
@@ -11204,7 +11204,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "tce";
 
         public const int TCE_ID_FIELD_ID = 0;
-        public const int TCE_KIND_FIELD_ID = 0;
+        public const int TCE_KIND_FIELD_ID = 1;
         public const int TCE_ROWVERSION_FIELD_ID = 2;
         public const int TCE_CATALOG_FIELD_ID = 3;
         public const int TCE_NAME_FIELD_ID = 4;
@@ -13039,7 +13039,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "t";
 
         public const int T_ID_FIELD_ID = 0;
-        public const int T_KIND_FIELD_ID = 0;
+        public const int T_KIND_FIELD_ID = 1;
         public const int T_ROWVERSION_FIELD_ID = 2;
         public const int T_CATALOG_FIELD_ID = 3;
         public const int T_NAME_FIELD_ID = 4;
@@ -14759,7 +14759,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "bots";
 
         public const int BOTS_ID_FIELD_ID = 0;
-        public const int BOTS_KIND_FIELD_ID = 0;
+        public const int BOTS_KIND_FIELD_ID = 1;
         public const int BOTS_ROWVERSION_FIELD_ID = 2;
         public const int BOTS_CATALOG_FIELD_ID = 3;
         public const int BOTS_NAME_FIELD_ID = 4;
@@ -15247,7 +15247,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "dt";
 
         public const int DT_ID_FIELD_ID = 0;
-        public const int DT_KIND_FIELD_ID = 0;
+        public const int DT_KIND_FIELD_ID = 1;
         public const int DT_ROWVERSION_FIELD_ID = 2;
         public const int DT_CATALOG_FIELD_ID = 3;
         public const int DT_NAME_FIELD_ID = 4;
@@ -16019,7 +16019,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "gp2d";
 
         public const int GP2D_ID_FIELD_ID = 0;
-        public const int GP2D_KIND_FIELD_ID = 0;
+        public const int GP2D_KIND_FIELD_ID = 1;
         public const int GP2D_ROWVERSION_FIELD_ID = 2;
         public const int GP2D_CATALOG_FIELD_ID = 3;
         public const int GP2D_NAME_FIELD_ID = 4;
@@ -16187,7 +16187,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "i32t";
 
         public const int I32T_ID_FIELD_ID = 0;
-        public const int I32T_KIND_FIELD_ID = 0;
+        public const int I32T_KIND_FIELD_ID = 1;
         public const int I32T_ROWVERSION_FIELD_ID = 2;
         public const int I32T_CATALOG_FIELD_ID = 3;
         public const int I32T_NAME_FIELD_ID = 4;
@@ -16575,7 +16575,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "u32t";
 
         public const int U32T_ID_FIELD_ID = 0;
-        public const int U32T_KIND_FIELD_ID = 0;
+        public const int U32T_KIND_FIELD_ID = 1;
         public const int U32T_ROWVERSION_FIELD_ID = 2;
         public const int U32T_CATALOG_FIELD_ID = 3;
         public const int U32T_NAME_FIELD_ID = 4;
@@ -16723,7 +16723,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "tb";
 
         public const int TB_ID_FIELD_ID = 0;
-        public const int TB_KIND_FIELD_ID = 0;
+        public const int TB_KIND_FIELD_ID = 1;
         public const int TB_ROWVERSION_FIELD_ID = 2;
         public const int TB_TRACKER_FIELD_ID = 3;
         public const int TB_TRACKNUMBER_FIELD_ID = 4;
@@ -16870,7 +16870,7 @@ namespace Barrelman.Data.Database
         public const string ViewAliasName = "z";
 
         public const int Z_ID_FIELD_ID = 0;
-        public const int Z_KIND_FIELD_ID = 0;
+        public const int Z_KIND_FIELD_ID = 1;
         public const int Z_ROWVERSION_FIELD_ID = 2;
         public const int Z_NAME_FIELD_ID = 3;
         public const int Z_LONGITUDE_FIELD_ID = 4;

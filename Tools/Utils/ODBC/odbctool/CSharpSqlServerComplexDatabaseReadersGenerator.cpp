@@ -179,8 +179,8 @@ namespace Harlinn::ODBC::Tool
                     WriteLine( L"        public const int {}_{}_FIELD_ID = {};", shortName, member.Name( ).ToUpper( ), id );
                     if ( member.PrimaryKey( ) )
                     {
-                        WriteLine( L"        public const int {}_KIND_FIELD_ID = {};", shortName, id );
                         id++;
+                        WriteLine( L"        public const int {}_KIND_FIELD_ID = {};", shortName, id );
                     }
                 }
                 else

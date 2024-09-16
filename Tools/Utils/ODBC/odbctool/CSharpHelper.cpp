@@ -1559,6 +1559,28 @@ namespace Harlinn::ODBC::Tool
         return sb.ToString( );
     }
 
+    WideString CSharpHelper::GetByIndexFunctionOverCallParameters( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount )
+    {
+        const auto& indexMembers = indexInfo.Fields( );
+        StringBuilder<wchar_t> sb;
+        for ( size_t i = 0; i < indexMemberCount; i++ )
+        {
+            const auto& indexMember = *indexMembers[ i ];
+            auto parameterName = GetInputArgumentName( indexMember );
+            if ( i < ( indexMemberCount - 1 ) )
+            {
+                sb.Append( L"{}, ", parameterName );
+            }
+            else
+            {
+                parameterName = parameterName.FirstToUpper( );
+                sb.Append( L"from{}, ", parameterName );
+                sb.Append( L"until{}", parameterName );
+            }
+        }
+        return sb.ToString( );
+    }
+
 
     bool CSharpHelper::IsUnique( const IndexInfo& indexInfo, size_t indexMemberCount )
     {

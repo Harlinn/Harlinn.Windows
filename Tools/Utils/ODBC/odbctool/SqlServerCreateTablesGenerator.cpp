@@ -227,13 +227,21 @@ namespace Harlinn::ODBC::Tool
         WriteLine( " */" );
         WriteLine( "CREATE TABLE [dbo].[EntityTypes]" );
         WriteLine( "(" );
-        WriteLine( "  [Id][int] IDENTITY(1, 1) NOT NULL," );
+        WriteLine( "  [Id][int] NOT NULL," );
         WriteLine( "  [EntityName][nvarchar](254) NOT NULL," );
         WriteLine( "  CONSTRAINT [PK_EntityTypes] PRIMARY KEY( [Id] )," );
         WriteLine( "  CONSTRAINT[ Unq_EntityName ] UNIQUE( [EntityName] )" );
         WriteLine( ")" );
         WriteLine( "go" );
         WriteLine( );
+        const auto& model = Model( );
+        const auto& classes = model.Classes( );
+        for ( const auto& classInfo : classes )
+        {
+            WriteLine( L"INSERT INTO [dbo].[EntityTypes] VALUES( {},'{}' )", classInfo->Id(), classInfo->Name() );
+            WriteLine( L"go" );
+        }
+
     }
 
 

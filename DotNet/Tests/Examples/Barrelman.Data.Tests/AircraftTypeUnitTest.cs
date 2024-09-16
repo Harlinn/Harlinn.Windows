@@ -84,5 +84,54 @@ namespace Barrelman.Data.Tests
             Assert.IsTrue(deleted);
 
         }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            var loggerFactory = LoggerFactoryHelper.LoggerFactory;
+            var connection = ConnectionHelper.Connection;
+            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection);
+
+            Guid id = new Guid("{E9D19608-ADEE-41B5-ADDF-E519AE336B0C}");
+            string name1 = "Lockheed Martin F-35 Lightning II";
+            string name2 = "NASA M2-F1";
+            
+
+            var deleteCommand = connection.CreateCommand();
+            deleteCommand.CommandText = "DELETE FROM AircraftType WHERE Id = @id";
+            var deleteCommandParameters = deleteCommand.Parameters;
+            deleteCommandParameters.AddGuid("@id", id);
+            deleteCommand.CommandType = System.Data.CommandType.Text;
+            deleteCommand.ExecuteNonQuery();
+
+            var aircraftType1 = new Types.AircraftTypeObject();
+            aircraftType1.Id = id;
+            aircraftType1.Name = name1;
+            aircraftType1.ObjectState = Harlinn.Common.Core.Net.Data.ObjectState.New;
+
+            var inserted = dataContext.Insert(aircraftType1);
+            Assert.IsTrue(inserted);
+
+            var retrievedAircraftType1 = dataContext.GetAircraftTypeById(id);
+            Assert.IsNotNull(retrievedAircraftType1);
+
+            Assert.IsTrue(retrievedAircraftType1.Equals(aircraftType1));
+
+            aircraftType1.Name = name2;
+            var updated = dataContext.Update(aircraftType1);
+            Assert.IsTrue(updated);
+
+            var retrievedAircraftType2 = dataContext.GetAircraftTypeById(id);
+            Assert.IsNotNull(retrievedAircraftType2);
+
+            Assert.IsTrue(retrievedAircraftType2.Equals(aircraftType1));
+
+            aircraftType1.ObjectState = Harlinn.Common.Core.Net.Data.ObjectState.Deleted;
+            var deleted = dataContext.Delete(aircraftType1);
+            Assert.IsTrue(deleted);
+
+            var retrievedAircraftType3 = dataContext.GetAircraftTypeById(id);
+            Assert.IsNull(retrievedAircraftType3);
+        }
     }
 }

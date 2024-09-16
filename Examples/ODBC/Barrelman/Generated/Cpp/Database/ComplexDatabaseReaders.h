@@ -227,7 +227,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT AM_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT AM_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT AM_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT AM_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT AM_AISDEVICE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT AM_RECEIVEDTIMESTAMP_FIELD_ID = 5;
@@ -1627,7 +1627,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT APRCAB_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT APRCAB_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT APRCAB_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT APRCAB_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT APRCAB_AISDEVICE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT APRCAB_RECEIVEDTIMESTAMP_FIELD_ID = 5;
@@ -1799,7 +1799,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT ASDRM_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT ASDRM_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT ASDRM_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT ASDRM_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT ASDRM_AISDEVICE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT ASDRM_RECEIVEDTIMESTAMP_FIELD_ID = 5;
@@ -2018,7 +2018,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT CC_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT CC_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT CC_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT CC_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT CC_CAMERA_FIELD_ID = 4;
         static constexpr SQLUSMALLINT CC_TIMESTAMP_FIELD_ID = 5;
@@ -2380,7 +2380,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT CE_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT CE_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT CE_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT CE_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT CE_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT CE_NAME_FIELD_ID = 5;
@@ -2453,7 +2453,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT I_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT I_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT I_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT I_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT C_IDENTIFIER_FIELD_ID = 4;
         static constexpr SQLUSMALLINT IMON_IDENTIFIER_FIELD_ID = 5;
@@ -2621,7 +2621,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT I_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT I_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT I_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT I_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT BS_NAME_FIELD_ID = 4;
         static constexpr SQLUSMALLINT BS_TYPE_FIELD_ID = 5;
@@ -3308,7 +3308,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT D_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT D_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT D_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT D_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT D_HOST_FIELD_ID = 4;
         static constexpr SQLUSMALLINT D_NAME_FIELD_ID = 5;
@@ -3716,7 +3716,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TD_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT TD_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TD_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT TD_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TD_HOST_FIELD_ID = 4;
         static constexpr SQLUSMALLINT TD_NAME_FIELD_ID = 5;
@@ -3952,7 +3952,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TI_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT TI_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TI_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT TI_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT A_NAME_FIELD_ID = 4;
         static constexpr SQLUSMALLINT A_TYPE_FIELD_ID = 5;
@@ -4151,7 +4151,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT NE_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT NE_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT NE_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT NE_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT NE_NAMESPACE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT NE_NAME_FIELD_ID = 5;
@@ -4250,7 +4250,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT P_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT P_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT P_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT P_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT P_ELEMENT_FIELD_ID = 4;
         static constexpr SQLUSMALLINT P_DEFINITION_FIELD_ID = 5;
@@ -4669,7 +4669,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TP_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT TP_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TP_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT TP_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TP_ELEMENT_FIELD_ID = 4;
         static constexpr SQLUSMALLINT TP_DEFINITION_FIELD_ID = 5;
@@ -4971,7 +4971,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT PD_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT PD_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT PD_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT PD_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT PD_ELEMENTTYPE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT PD_NAME_FIELD_ID = 5;
@@ -5605,7 +5605,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TPD_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT TPD_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TPD_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT TPD_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TPD_ELEMENTTYPE_FIELD_ID = 4;
         static constexpr SQLUSMALLINT TPD_NAME_FIELD_ID = 5;
@@ -5888,7 +5888,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RC_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT RC_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT RC_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT RC_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT RC_RADAR_FIELD_ID = 4;
         static constexpr SQLUSMALLINT RC_TIMESTAMP_FIELD_ID = 5;
@@ -5973,7 +5973,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT RCR_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT RCR_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT RCR_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT RCR_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT RCR_RADAR_FIELD_ID = 4;
         static constexpr SQLUSMALLINT RCR_TIMESTAMP_FIELD_ID = 5;
@@ -6090,7 +6090,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT SI_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT SI_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT SI_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT SI_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT SI_DOMAIN_FIELD_ID = 4;
         static constexpr SQLUSMALLINT SI_IDENTITY_FIELD_ID = 5;
@@ -6222,7 +6222,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TCE_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT TCE_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TCE_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT TCE_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TCE_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT TCE_NAME_FIELD_ID = 5;
@@ -7030,7 +7030,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT T_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT T_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT T_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT T_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT T_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT T_NAME_FIELD_ID = 5;
@@ -7641,7 +7641,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT BOTS_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT BOTS_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT BOTS_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT BOTS_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT BOTS_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT BOTS_NAME_FIELD_ID = 5;
@@ -7866,7 +7866,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT DT_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT DT_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT DT_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT DT_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT DT_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT DT_NAME_FIELD_ID = 5;
@@ -8205,7 +8205,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT GP2D_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT GP2D_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT GP2D_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT GP2D_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT GP2D_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT GP2D_NAME_FIELD_ID = 5;
@@ -8294,7 +8294,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT I32T_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT I32T_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT I32T_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT I32T_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT I32T_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT I32T_NAME_FIELD_ID = 5;
@@ -8473,7 +8473,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT U32T_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT U32T_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT U32T_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT U32T_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT U32T_CATALOG_FIELD_ID = 4;
         static constexpr SQLUSMALLINT U32T_NAME_FIELD_ID = 5;
@@ -8551,7 +8551,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT TB_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT TB_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT TB_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT TB_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT TB_TRACKER_FIELD_ID = 4;
         static constexpr SQLUSMALLINT TB_TRACKNUMBER_FIELD_ID = 5;
@@ -8624,7 +8624,7 @@ namespace Barrelman::Database
         static BARRELMAN_EXPORT WideString ViewAliasName;
 
         static constexpr SQLUSMALLINT Z_ID_FIELD_ID = 1;
-        static constexpr SQLUSMALLINT Z_KIND_FIELD_ID = 1;
+        static constexpr SQLUSMALLINT Z_KIND_FIELD_ID = 2;
         static constexpr SQLUSMALLINT Z_ROWVERSION_FIELD_ID = 3;
         static constexpr SQLUSMALLINT Z_NAME_FIELD_ID = 4;
         static constexpr SQLUSMALLINT Z_LONGITUDE_FIELD_ID = 5;
