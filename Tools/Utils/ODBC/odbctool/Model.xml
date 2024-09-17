@@ -1103,7 +1103,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
-      <collection name="Values" type="CameraPanCalibrationValue" member="PanCalibration" browsable="false"/>
+      <collection name="Values" type="CameraPanCalibrationValue" member="PanCalibration" browsable="false" aggregated="true"/>
     </members>
     <index name="Camera_Timestamp" fields="Camera;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1150,7 +1150,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
-      <collection name="Values" type="CameraTiltCalibrationValue" member="TiltCalibration" browsable="false"/>
+      <collection name="Values" type="CameraTiltCalibrationValue" member="TiltCalibration" browsable="false" aggregated="true"/>
     </members>
     <index name="Camera_Timestamp" fields="Camera;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1171,7 +1171,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Camera" type="CameraDevice" browsable="false"/>
       <datetime name="Timestamp"/>
-      <collection name="Values" type="CameraZoomCalibrationValue" member="ZoomCalibration" browsable="false"/>
+      <collection name="Values" type="CameraZoomCalibrationValue" member="ZoomCalibration" browsable="false" aggregated="true"/>
     </members>
     <index name="Camera_Timestamp" fields="Camera;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1197,13 +1197,13 @@
   </class>
   <class name="Catalog" base="CatalogElement">
     <members>
-      <collection name="Elements" type="CatalogElement" member="Catalog"/>
+      <collection name="Elements" type="CatalogElement" member="Catalog" aggregated="true"/>
     </members>
   </class>
   <class name="Element" base="CatalogElement">
     <members>
       <reference name="ElementType" type="ElementType"/>
-      <collection name="Properties" type="Property" member="Element"/>
+      <collection name="Properties" type="Property" member="Element" aggregated="true"/>
       <collection name="References" type="ReferenceProperty" member="Value"/>
       <collection name="ReferencePropertyDefinitions" type="ReferencePropertyDefinition" member="DefaultValue"/>
       <collection name="TimeseriesReferences" type="ReferenceTimeseriesValue" member="Value"/>
@@ -1255,8 +1255,8 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <string name="Name" size="127" category="Parameters" description="The unique name of this `DeviceHost` element. This value must be specified in the &lt;application&gt;.exe.options file for the `HostName` attribute of the `configuration` element before running the server."/>
-      <collection name="Devices" type="Device" member="Host" browsable="false"/>
-      <collection name="Configuration" type="DeviceHostConfiguration" member="Host" browsable="false"/>
+      <collection name="Devices" type="Device" member="Host" browsable="false" aggregated="true"/>
+      <collection name="Configuration" type="DeviceHostConfiguration" member="Host" browsable="false" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
@@ -1496,7 +1496,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <collection name="MapElements" type="MapElement" member="Item"/>
+      <collection name="MapElements" type="MapElement" member="Item" aggregated="true"/>
     </members>
   </class>
   <class name="BaseStation" base="Item">
@@ -1513,20 +1513,20 @@
       <string name="Name" size="127" description="The unique name of this device."/>
       <string name="Description" size="unlimited" description="Additional, free form, information about this device."/>
       <timeseries name="EnabledTimeseries" type="DeviceEnabledTimeseries" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `DeviceEnabledTimeseries` that will be used to track the Enabled state of this `Device`."/>
-      <collection name="RoutingDestinations" type="LineInputMessageRoutingDestination" member="Listener" description="Link objects between this Device and `LineInputDevice`s that will route messages to this Device."/>
+      <collection name="RoutingDestinations" type="LineInputMessageRoutingDestination" member="Listener" description="Link objects between this Device and `LineInputDevice`s that will route messages to this Device." aggregated="true"/>
     </members>
     <index name="Host" fields="Host"/>
     <index name="Name" fields="Name" unique="true"/>
   </class>
   <class name="CameraDevice" base="Device">
     <members>
-      <collection name="Commands" type="CameraCommand" member="Camera" browsable="false"/>
-      <collection name="CommandReplies" type="CameraCommandReply" member="Camera" browsable="false"/>
-      <collection name="Configuration" type="CameraConfiguration" member="Camera" browsable="false"/>
-      <collection name="Status" type="CameraStatus" member="Camera" browsable="false"/>
-      <collection name="PanCalibration" type="CameraPanCalibration" member="Camera" browsable="false"/>
-      <collection name="TiltCalibration" type="CameraTiltCalibration" member="Camera" browsable="false"/>
-      <collection name="ZoomCalibration" type="CameraZoomCalibration" member="Camera" browsable="false"/>
+      <collection name="Commands" type="CameraCommand" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="CommandReplies" type="CameraCommandReply" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="Configuration" type="CameraConfiguration" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="Status" type="CameraStatus" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="PanCalibration" type="CameraPanCalibration" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="TiltCalibration" type="CameraTiltCalibration" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="ZoomCalibration" type="CameraZoomCalibration" member="Camera" browsable="false" aggregated="true"/>
     </members>
   </class>
   <class name="GNSSDevice" base="Device">
@@ -1534,9 +1534,9 @@
       <timeseries name="LatitudeTimeseries" type="GNSSLatitudeTimeseries" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="LongitudeTimeseries" type="GNSSLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="AltitudeTimeseries" type="GNSSAltitudeTimeseries" propertyname="Altitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <collection name="Commands" type="GNSSDeviceCommand" member="GNSSDevice"/>
-      <collection name="CommandReplies" type="GNSSDeviceCommandReply" member="GNSSDevice"/>
-      <collection name="Configuration" type="GNSSDeviceConfiguration" member="GNSSDevice"/>
+      <collection name="Commands" type="GNSSDeviceCommand" member="GNSSDevice" aggregated="true"/>
+      <collection name="CommandReplies" type="GNSSDeviceCommandReply" member="GNSSDevice" aggregated="true"/>
+      <collection name="Configuration" type="GNSSDeviceConfiguration" member="GNSSDevice" aggregated="true"/>
       <collection name="Radars" type="RadarDevice" member="GNSSDevice"/>
       <collection name="Gyros" type="GyroDevice" member="GNSSDevice"/>
     </members>
@@ -1551,43 +1551,43 @@
       <timeseries name="CourseTimeseries" type="GyroCourseTimeseries" propertyname="Course" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="SpeedTimeseries" type="GyroSpeedTimeseries" propertyname="Speed" propertytype="Double" propertynullable="true" browsable="false"/>
       <reference name="GNSSDevice" type="GNSSDevice" browsable="false"/>
-      <collection name="Commands" type="GyroDeviceCommand" member="GyroDevice"/>
-      <collection name="CommandReplies" type="GyroDeviceCommandReply" member="GyroDevice"/>
-      <collection name="Configuration" type="GyroDeviceConfiguration" member="GyroDevice"/>
+      <collection name="Commands" type="GyroDeviceCommand" member="GyroDevice" aggregated="true"/>
+      <collection name="CommandReplies" type="GyroDeviceCommandReply" member="GyroDevice" aggregated="true"/>
+      <collection name="Configuration" type="GyroDeviceConfiguration" member="GyroDevice" aggregated="true"/>
       <collection name="WeatherStations" type="WeatherStationDevice" member="Gyro"/>
     </members>
     <index name="GNSSDevice" fields="GNSSDevice"/>
   </class>
   <class name="LineInputDevice" base="Device" description="A `LineInputDevice` device is a device that performs line oriented I/O on behalf of the server.">
     <members>
-      <collection name="Commands" type="LineInputDeviceCommand" member="LineInputDevice"/>
-      <collection name="CommandReplies" type="LineInputDeviceCommandReply" member="LineInputDevice"/>
-      <collection name="Configuration" type="LineInputDeviceConfiguration" member="LineInputDevice"/>
-      <collection name="Routing" type="LineInputMessageRouting" member="LineInputDevice"/>
-      <collection name="WhiteList" type="LineInputWhiteListEntry" member="LineInputDevice"/>
+      <collection name="Commands" type="LineInputDeviceCommand" member="LineInputDevice" aggregated="true"/>
+      <collection name="CommandReplies" type="LineInputDeviceCommandReply" member="LineInputDevice" aggregated="true"/>
+      <collection name="Configuration" type="LineInputDeviceConfiguration" member="LineInputDevice" aggregated="true"/>
+      <collection name="Routing" type="LineInputMessageRouting" member="LineInputDevice" aggregated="true"/>
+      <collection name="WhiteList" type="LineInputWhiteListEntry" member="LineInputDevice" aggregated="true"/>
     </members>
   </class>
   <class name="OilSpillDetectorDevice" base="Device" displayname="Oil Spill Detector">
     <members>
-      <collection name="OilSpills" type="OilSpill" member="OilSpillDetector"/>
-      <collection name="Commands" type="OilSpillDetectorCommand" member="OilSpillDetector"/>
-      <collection name="CommandReplies" type="OilSpillDetectorCommandReply" member="OilSpillDetector"/>
-      <collection name="Configuration" type="OilSpillDetectorConfiguration" member="OilSpillDetector"/>
+      <collection name="OilSpills" type="OilSpill" member="OilSpillDetector" aggregated="true"/>
+      <collection name="Commands" type="OilSpillDetectorCommand" member="OilSpillDetector" aggregated="true"/>
+      <collection name="CommandReplies" type="OilSpillDetectorCommandReply" member="OilSpillDetector" aggregated="true"/>
+      <collection name="Configuration" type="OilSpillDetectorConfiguration" member="OilSpillDetector" aggregated="true"/>
     </members>
   </class>
   <class name="RadioDevice" base="Device" shortname="RDI">
     <members>
-      <collection name="Commands" type="RadioCommand" member="Radio"/>
-      <collection name="CommandReplies" type="RadioCommandReply" member="Radio"/>
-      <collection name="Configuration" type="RadioConfiguration" member="Radio"/>
+      <collection name="Commands" type="RadioCommand" member="Radio" aggregated="true"/>
+      <collection name="CommandReplies" type="RadioCommandReply" member="Radio" aggregated="true"/>
+      <collection name="Configuration" type="RadioConfiguration" member="Radio" aggregated="true"/>
     </members>
   </class>
   <class name="RadomeDevice" base="Device" description="A Radome device." shortname="RDO">
     <members>
       <reference name="Radar" type="RadarDevice" nullable="true"/>
-      <collection name="Commands" type="RadomeCommand" member="Radome"/>
-      <collection name="CommandReplies" type="RadomeCommandReply" member="Radome"/>
-      <collection name="Configuration" type="RadomeConfiguration" member="Radome"/>
+      <collection name="Commands" type="RadomeCommand" member="Radome" aggregated="true"/>
+      <collection name="CommandReplies" type="RadomeCommandReply" member="Radome" aggregated="true"/>
+      <collection name="Configuration" type="RadomeConfiguration" member="Radome" aggregated="true"/>
       <timeseries name="PressureTimeseries" type="RadomePressureTimeseries" propertyname="Pressure" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="TemperatureTimeseries" type="RadomeTemperatureTimeseries" propertyname="Temperature" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="DewPointTimeseries" type="RadomeDewPointTimeseries" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
@@ -1598,17 +1598,17 @@
   <class name="TrackerDevice" base="Device" abstract="true">
     <members>
       <collection name="Tracks" type="TrackBase" member="Tracker" browsable="false"/>
-      <collection name="FilterParameters" type="TrackerFilterParameters" member="Tracker" browsable="false"/>
+      <collection name="FilterParameters" type="TrackerFilterParameters" member="Tracker" browsable="false" aggregated="true"/>
     </members>
   </class>
   <class name="AisDevice" base="TrackerDevice" displayname="AIS Device">
     <members>
-      <collection name="Messages" type="AisMessage" member="AisDevice" browsable="false"/>
-      <collection name="Commands" type="AisDeviceCommand" member="AisDevice" browsable="false"/>
-      <collection name="CommandReplies" type="AisDeviceCommandReply" member="AisDevice" browsable="false"/>
-      <collection name="Configuration" type="AisDeviceConfiguration" member="AisDevice" browsable="false"/>
-      <collection name="ReceivedSentences" type="AisDeviceRawSentence" member="AisDevice" browsable="false"/>
-      <collection name="RawMessages" type="AisDeviceRawMessage" member="AisDevice" browsable="false"/>
+      <collection name="Messages" type="AisMessage" member="AisDevice" browsable="false" aggregated="true"/>
+      <collection name="Commands" type="AisDeviceCommand" member="AisDevice" browsable="false" aggregated="true"/>
+      <collection name="CommandReplies" type="AisDeviceCommandReply" member="AisDevice" browsable="false" aggregated="true"/>
+      <collection name="Configuration" type="AisDeviceConfiguration" member="AisDevice" browsable="false" aggregated="true"/>
+      <collection name="ReceivedSentences" type="AisDeviceRawSentence" member="AisDevice" browsable="false" aggregated="true"/>
+      <collection name="RawMessages" type="AisDeviceRawMessage" member="AisDevice" browsable="false" aggregated="true"/>
     </members>
   </class>
   <class name="RadarDevice" base="TrackerDevice">
@@ -1636,12 +1636,12 @@
       <timeseries name="LongitudeTimeseries" type="RadarLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <reference name="Radome" type="RadomeDevice" browsable="false" nullable="true"/>
       <reference name="GNSSDevice" type="GNSSDevice" browsable="false" nullable="true"/>
-      <collection name="Images" type="RadarImage" member="Radar" browsable="false"/>
-      <collection name="TrackTables" type="RadarRawTrackTable" member="Radar" browsable="false"/>
-      <collection name="Commands" type="RadarCommand" member="Radar" browsable="false"/>
-      <collection name="CommandReplies" type="RadarCommandReply" member="Radar" browsable="false"/>
-      <collection name="Configuration" type="RadarConfiguration" member="Radar" browsable="false"/>
-      <collection name="Statuses" type="RadarStatus" member="Radar" browsable="false"/>
+      <collection name="Images" type="RadarImage" member="Radar" browsable="false" aggregated="true"/>
+      <collection name="TrackTables" type="RadarRawTrackTable" member="Radar" browsable="false" aggregated="true"/>
+      <collection name="Commands" type="RadarCommand" member="Radar" browsable="false" aggregated="true"/>
+      <collection name="CommandReplies" type="RadarCommandReply" member="Radar" browsable="false" aggregated="true"/>
+      <collection name="Configuration" type="RadarConfiguration" member="Radar" browsable="false" aggregated="true"/>
+      <collection name="Statuses" type="RadarStatus" member="Radar" browsable="false" aggregated="true"/>
       <collection name="AlarmStatuses" type="RadarAlarmStatus" member="Radar" browsable="false"/>
     </members>
     <index name="Radome" fields="Radome"/>
@@ -1649,9 +1649,9 @@
   </class>
   <class name="WeatherStationDevice" base="Device">
     <members>
-      <collection name="Commands" type="WeatherStationCommand" member="WeatherStation"/>
-      <collection name="CommandReplies" type="WeatherStationCommandReply" member="WeatherStation"/>
-      <collection name="Configuration" type="WeatherStationConfiguration" member="WeatherStation"/>
+      <collection name="Commands" type="WeatherStationCommand" member="WeatherStation" aggregated="true"/>
+      <collection name="CommandReplies" type="WeatherStationCommandReply" member="WeatherStation" aggregated="true"/>
+      <collection name="Configuration" type="WeatherStationConfiguration" member="WeatherStation" aggregated="true"/>
       <timeseries name="BarometricPressureTimeseries" type="WeatherStationBarometricPressureTimeseries" propertyname="BarometricPressure" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="AirTemperatureTimeseries" type="WeatherStationAirTemperatureTimeseries" propertyname="AirTemperature" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="WaterTemperatureTimeseries" type="WeatherStationWaterTemperatureTimeseries" propertyname="WaterTemperature" propertytype="Double" propertynullable="true" browsable="false"/>
@@ -1830,7 +1830,7 @@
       <rowversion name="RowVersion"/>
       <reference name="LineInputDevice" type="LineInputDevice"/>
       <string name="Type" size="127"/>
-      <collection name="Destinations" type="LineInputMessageRoutingDestination" member="Routing"/>
+      <collection name="Destinations" type="LineInputMessageRoutingDestination" member="Routing" aggregated="true"/>
     </members>
     <index name="LineInputDevice_Type" fields="LineInputDevice;Type" unique="true"/>
   </class>
@@ -1860,8 +1860,8 @@
       <rowversion name="RowVersion"/>
       <string name="Name" size="127"/>
       <string name="Description" size="unlimited"/>
-      <collection name="Configuration" type="LogApplicationConfiguration" member="Application"/>
-      <collection name="Processes" type="LogProcess" member="Application"/>
+      <collection name="Configuration" type="LogApplicationConfiguration" member="Application" aggregated="true"/>
+      <collection name="Processes" type="LogProcess" member="Application" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
@@ -1893,7 +1893,7 @@
       <rowversion name="RowVersion"/>
       <string name="ComputerName" size="127"/>
       <string name="Description" size="unlimited"/>
-      <collection name="Configuration" type="LogHostConfiguration" member="Host"/>
+      <collection name="Configuration" type="LogHostConfiguration" member="Host" aggregated="true"/>
       <collection name="Processes" type="LogProcess" member="Host"/>
     </members>
     <index name="ComputerName" fields="ComputerName" unique="true"/>
@@ -1945,7 +1945,7 @@
       <int64 name="ProcessId" description="The system process id."/>
       <string name="Path" size="unlimited" description="The path of the application running in the process."/>
       <string name="Identity" size="127" description="The user identity that the process runs under."/>
-      <collection name="Threads" type="LogThread" member="Process" description="The threads of the process."/>
+      <collection name="Threads" type="LogThread" member="Process" description="The threads of the process." aggregated="true"/>
     </members>
     <index name="Application_Started" fields="Application;Started" range="true"/>
     <index name="Host_Started" fields="Host;Started" range="true"/>
@@ -1978,8 +1978,8 @@
       <datetime name="Stopped" nullable="true" description="The stop time of the thread."/>
       <int64 name="ThreadId" description="The system thread id."/>
       <string name="Name" size="127" description="The name of the thread."/>
-      <collection name="Records" type="LogRecord" member="Thread" description="The log records generated by the thread."/>
-      <collection name="TraceEntries" type="LogTraceEntry" member="Thread" description="The trace entries generated by the thread."/>
+      <collection name="Records" type="LogRecord" member="Thread" description="The log records generated by the thread." aggregated="true"/>
+      <collection name="TraceEntries" type="LogTraceEntry" member="Thread" description="The trace entries generated by the thread." aggregated="true"/>
     </members>
     <index name="Process_Started" fields="Process;Started" range="true"/>
     <index name="Started" fields="Started" range="true"/>
@@ -2062,8 +2062,8 @@
       <reference name="Service" type="MediaService"/>
       <string name="Name" size="128"/>
       <timeseries name="EnabledTimeseries" type="MediaProxySessionEnabledTimeseries" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `MediaProxySessionEnabledTimeseries` used to track the Enabled state of this `MediaProxySession`."/>
-      <collection name="Options" type="MediaProxySessionOptions" member="ProxySession"/>
-      <collection name="Files" type="MediaProxySessionFile" member="ProxySession"/>
+      <collection name="Options" type="MediaProxySessionOptions" member="ProxySession" aggregated="true"/>
+      <collection name="Files" type="MediaProxySessionFile" member="ProxySession" aggregated="true"/>
     </members>
     <index name="Service_Name" fields="Service;Name" unique="true"/>
   </class>
@@ -2102,8 +2102,8 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <timeseries name="EnabledTimeseries" type="MediaServiceEnabledTimeseries" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `MediaServiceEnabledTimeseries` used to track the Enabled state of this `MediaService`."/>
-      <collection name="Options" type="MediaServiceOptions" member="MediaService"/>
-      <collection name="ProxySessions" type="MediaProxySession" member="Service"/>
+      <collection name="Options" type="MediaServiceOptions" member="MediaService" aggregated="true"/>
+      <collection name="ProxySessions" type="MediaProxySession" member="Service" aggregated="true"/>
     </members>
   </class>
   <class name="MediaServiceOptions">
@@ -2129,7 +2129,7 @@
   </class>
   <class name="ElementType" base="NamespaceElement">
     <members>
-      <collection name="Definitions" type="PropertyDefinition" member="ElementType"/>
+      <collection name="Definitions" type="PropertyDefinition" member="ElementType" aggregated="true"/>
       <collection name="Elements" type="Element" member="ElementType"/>
       <collection name="ReferencePropertyDefinitions" type="ReferencePropertyDefinition" member="ReferencedElementType"/>
       <collection name="ReferenceTimeseriesPropertyDefinitions" type="ReferenceTimeseriesPropertyDefinition" member="ReferencedElementType"/>
@@ -2137,7 +2137,7 @@
   </class>
   <class name="Namespace" base="NamespaceElement">
     <members>
-      <collection name="Elements" type="NamespaceElement" member="Namespace"/>
+      <collection name="Elements" type="NamespaceElement" member="Namespace" aggregated="true"/>
     </members>
   </class>
   <class name="OilSpill" displayname="Oil Spill">
@@ -2920,7 +2920,7 @@
       <rowversion name="RowVersion"/>
       <string name="Name" size="127"/>
       <string name="Description" size="unlimited"/>
-      <collection name="Identifiers" type="SecurityIdentifier" member="Domain"/>
+      <collection name="Identifiers" type="SecurityIdentifier" member="Domain" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
@@ -2931,13 +2931,13 @@
       <reference name="Domain" type="SecurityDomain"/>
       <string name="Identity" size="255" description="Name of user or role"/>
       <string name="Description" size="unlimited"/>
-      <collection name="Permissions" type="SecurityPermission" member="Identifier"/>
+      <collection name="Permissions" type="SecurityPermission" member="Identifier" aggregated="true"/>
     </members>
     <index name="Domain_Identity" fields="Domain;Identity" unique="true"/>
   </class>
   <class name="SecurityLogin" base="SecurityIdentifier" displayname="Security Identifier" description="Base class for SecurityLogin and SecurityRole. Tracks the granted permissions in the system.">
     <members>
-      <collection name="Sessions" type="SecurityLoginSession" member="Login"/>
+      <collection name="Sessions" type="SecurityLoginSession" member="Login" aggregated="true"/>
     </members>
   </class>
   <class name="SecurityRole" base="SecurityIdentifier" displayname="Security Identifier" description="Base class for SecurityLogin and SecurityRole. Tracks the granted permissions in the system.">
@@ -3026,13 +3026,13 @@
   </class>
   <class name="BinaryTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="BinaryTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="BinaryTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="BinaryTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="BooleanTimeseries" base="Timeseries" shortname="BOTS">
     <members>
-      <collection name="Values" type="BooleanTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="BooleanTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="BooleanTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
@@ -3104,19 +3104,19 @@
   </class>
   <class name="ByteTimeseries" base="Timeseries" shortname="BYTS">
     <members>
-      <collection name="Values" type="ByteTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="ByteTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="ByteTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="DateTimeTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="DateTimeTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="DateTimeTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="DateTimeTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="DoubleTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="DoubleTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="DoubleTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="DoubleTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
@@ -3272,7 +3272,7 @@
   </class>
   <class name="GeoPosition2DTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="GeoPosition2DTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="GeoPosition2DTimeseriesValue" member="Timeseries" aggregated="true"/>
     </members>
   </class>
   <class name="AisAidToNavigationPositionTimeseries" base="GeoPosition2DTimeseries" displayname="AIS Aid To Navigation Position">
@@ -3282,24 +3282,24 @@
   </class>
   <class name="GeoPosition3DTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="GeoPosition3DTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="GeoPosition3DTimeseriesValue" member="Timeseries" aggregated="true"/>
     </members>
   </class>
   <class name="GuidTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="GuidTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="GuidTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="GuidTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="Int16Timeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="Int16TimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="Int16TimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="Int16TimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="Int32Timeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="Int32TimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="Int32TimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="Int32TimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
@@ -3360,59 +3360,59 @@
   </class>
   <class name="Int64Timeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="Int64TimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="Int64TimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="Int64TimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="Position2DTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="Position2DTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="Position2DTimeseriesValue" member="Timeseries" aggregated="true"/>
     </members>
   </class>
   <class name="Position3DTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="Position3DTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="Position3DTimeseriesValue" member="Timeseries" aggregated="true"/>
     </members>
   </class>
   <class name="ReferenceTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="ReferenceTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="ReferenceTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="ReferenceTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="SByteTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="SByteTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="SByteTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="SByteTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="SingleTimeseries" base="Timeseries" shortname="SITS">
     <members>
-      <collection name="Values" type="SingleTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="SingleTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="SingleTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="StringTimeseries" base="Timeseries" shortname="STTS">
     <members>
-      <collection name="Values" type="StringTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="StringTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="StringTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="TimeSpanTimeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="TimeSpanTimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="TimeSpanTimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="TimeSpanTimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="UInt16Timeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="UInt16TimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="UInt16TimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="UInt16TimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="UInt32Timeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="UInt32TimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="UInt32TimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="UInt32TimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
@@ -3423,13 +3423,13 @@
   </class>
   <class name="UInt64Timeseries" base="Timeseries">
     <members>
-      <collection name="Values" type="UInt64TimeseriesValue" member="Timeseries"/>
+      <collection name="Values" type="UInt64TimeseriesValue" member="Timeseries" aggregated="true"/>
       <collection name="Properties" type="UInt64TimeseriesProperty" member="Timeseries"/>
     </members>
   </class>
   <class name="TimeseriesCatalog" base="TimeseriesCatalogElement" description="A timeseries catalog contains timeseries and sub catalogs. This allows timeseries to be organized in a hierarchical structure.">
     <members>
-      <collection name="Elements" type="TimeseriesCatalogElement" member="Catalog"/>
+      <collection name="Elements" type="TimeseriesCatalogElement" member="Catalog" aggregated="true"/>
     </members>
   </class>
   <class name="TimeseriesInfo">
@@ -3483,13 +3483,13 @@
   </class>
   <class name="Track" base="TrackBase">
     <members>
-      <collection name="Values" type="TrackValue" member="Track"/>
+      <collection name="Values" type="TrackValue" member="Track" aggregated="true"/>
       <collection name="Alarms" type="ZoneTrackAlarm" member="Track"/>
     </members>
   </class>
   <class name="Track3D" base="TrackBase">
     <members>
-      <collection name="Values" type="TrackValue3D" member="Track"/>
+      <collection name="Values" type="TrackValue3D" member="Track" aggregated="true"/>
     </members>
   </class>
   <class name="TrackerFilterParameters">
@@ -3498,7 +3498,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Tracker" type="TrackerDevice"/>
       <string name="Name" size="127"/>
-      <collection name="Configuration" type="TrackerFilterParametersConfiguration" member="Parameters"/>
+      <collection name="Configuration" type="TrackerFilterParametersConfiguration" member="Parameters" aggregated="true"/>
     </members>
     <index name="Tracker_Name" fields="Tracker;Name" unique="true"/>
   </class>
@@ -3753,8 +3753,8 @@
       <double name="Speed" category="Parameters" description="For speed alarms. Minimum speed, in knots, that will raise an alarm. Speed alarms are disabled if this value is less than 1."/>
       <uint32 name="StrokeColor"/>
       <uint32 name="FillColor"/>
-      <collection name="Alarms" type="ZoneTrackAlarm" member="Zone" browsable="false"/>
-      <collection name="ZoneExceptions" type="ZoneExceptions" member="Zone" browsable="false"/>
+      <collection name="Alarms" type="ZoneTrackAlarm" member="Zone" browsable="false" aggregated="true"/>
+      <collection name="ZoneExceptions" type="ZoneExceptions" member="Zone" browsable="false" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
@@ -3805,7 +3805,7 @@
       <double name="EnterLongitude"/>
       <double name="LeaveLatitude" nullable="true"/>
       <double name="LeaveLongitude" nullable="true"/>
-      <collection name="StateChanges" type="AlarmStateChange" member="Alarm" browsable="false"/>
+      <collection name="StateChanges" type="AlarmStateChange" member="Alarm" browsable="false" aggregated="true"/>
     </members>
     <index name="Track_Timestamp" fields="Track;Timestamp" range="true" unique="true"/>
     <index name="Zone_Track_Timestamp" fields="Zone;Track;Timestamp" range="true" unique="true"/>

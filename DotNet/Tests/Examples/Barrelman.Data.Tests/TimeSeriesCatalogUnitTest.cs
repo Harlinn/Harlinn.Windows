@@ -22,7 +22,7 @@ namespace Barrelman.Data.Tests
     public class TimeseriesCatalogUnitTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void BasicCreateRetrieveUpdateDeleteTestMethod()
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
@@ -94,7 +94,7 @@ namespace Barrelman.Data.Tests
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void SerializationDeserializationTestMethod()
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
@@ -102,7 +102,6 @@ namespace Barrelman.Data.Tests
 
             Guid id = new Guid("{C76C4997-9B8C-4D22-A24F-44057A174A73}");
             string name1 = "Catalog1";
-            string name2 = "Catalog2";
 
             // Cleanup if previous run was aborted
 

@@ -40,4 +40,24 @@ namespace Harlinn::ODBC::Tool
             throw Exception( message );
         }
     }
+
+    std::shared_ptr<CollectionMemberInfo> ReferenceMemberInfo::CollectionMember( ) const
+    {
+        auto referencedType = ReferencedType( );
+        const auto& referencedTypeMembers = referencedType->OwnMembers( );
+        for ( const auto& referencedTypeMember : referencedTypeMembers )
+        {
+            if ( referencedTypeMember->Type( ) == MemberInfoType::Collection )
+            {
+                auto collectionMember = std::static_pointer_cast<const CollectionMemberInfo>( referencedTypeMember );
+                const auto referencingMember = collectionMember->ReferencingMember( );
+                if ( referencingMember.get( ) == this )
+                {
+                    return std::const_pointer_cast< CollectionMemberInfo >( collectionMember );
+                }
+            }
+        }
+        return {};
+    }
+
 }

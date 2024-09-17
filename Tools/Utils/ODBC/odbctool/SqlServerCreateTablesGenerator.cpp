@@ -174,7 +174,7 @@ namespace Harlinn::ODBC::Tool
             const auto& baseClassName = baseClass->Name( );
             auto baseClassTableName = GetTableName( *baseClass );
             
-            WriteLine( L"  CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}]),", tableName, primaryKeyFieldName, primaryKeyFieldName, baseClassTableName, primaryKeyFieldName );
+            WriteLine( L"  CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}]) ON DELETE CASCADE,", tableName, primaryKeyFieldName, primaryKeyFieldName, baseClassTableName, primaryKeyFieldName );
         }
 
 
@@ -209,13 +209,22 @@ namespace Harlinn::ODBC::Tool
     {
         auto tableName = GetTableName( classInfo );
         
+        auto collectionMember = reference.CollectionMember( );
+
         auto referencedClassInfo = reference.ReferencedType( );
         auto referencedPrimaryKey = referencedClassInfo->PrimaryKey( );
         auto referencedPrimaryKeyName = referencedPrimaryKey->Name( );
         auto referencedTableName = GetTableName( *referencedClassInfo );
 
         WriteLine( L"ALTER TABLE [dbo].[{}]", tableName );
-        WriteLine( L"  ADD CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}])", tableName, reference.Name(), reference.Name( ), referencedTableName, referencedPrimaryKeyName );
+        if ( collectionMember && collectionMember->Aggregated( ) )
+        {
+            WriteLine( L"  ADD CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}]) ON DELETE CASCADE", tableName, reference.Name( ), reference.Name( ), referencedTableName, referencedPrimaryKeyName );
+        }
+        else
+        {
+            WriteLine( L"  ADD CONSTRAINT [FK_{}_{}] FOREIGN KEY([{}]) REFERENCES [dbo].[{}]([{}])", tableName, reference.Name( ), reference.Name( ), referencedTableName, referencedPrimaryKeyName );
+        }
         WriteLine( L"go" );
         WriteLine( );
     }

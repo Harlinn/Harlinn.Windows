@@ -75,6 +75,10 @@ namespace Harlinn::ODBC::Tool
         {
             referenceName_ = memberElement.Read<WideString>( L"reference" );
         }
+        if ( memberElement.HasAttribute( L"aggregated" ) )
+        {
+            aggregated_ = memberElement.Read<bool>( L"aggregated" );
+        }
     }
 
     void CollectionMemberInfo::Validate( ) const

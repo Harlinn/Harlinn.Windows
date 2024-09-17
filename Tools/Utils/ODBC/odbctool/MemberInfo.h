@@ -368,6 +368,8 @@ namespace Harlinn::ODBC::Tool
         }
     };
 
+
+    class CollectionMemberInfo;
     class ReferenceMemberInfo : public GuidMemberInfo
     {
         std::weak_ptr<ClassInfo> type_;
@@ -382,6 +384,9 @@ namespace Harlinn::ODBC::Tool
         {
             return type_.lock( );
         }
+
+        std::shared_ptr<CollectionMemberInfo> CollectionMember( ) const;
+
 
         virtual void Load( const XmlElement& memberElement ) override;
 
@@ -414,6 +419,7 @@ namespace Harlinn::ODBC::Tool
         std::weak_ptr<ClassInfo> type_;
         WideString referenceName_;
         mutable std::weak_ptr<ReferenceMemberInfo> referencingMember_;
+        bool aggregated_ = false;
     public:
         using Base = MemberInfo;
         CollectionMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
@@ -423,6 +429,11 @@ namespace Harlinn::ODBC::Tool
         virtual bool Persistent( ) const override
         {
             return false;
+        }
+
+        bool Aggregated( ) const
+        {
+            return aggregated_;
         }
 
         std::shared_ptr<ReferenceMemberInfo> ReferencingMember( ) const;
