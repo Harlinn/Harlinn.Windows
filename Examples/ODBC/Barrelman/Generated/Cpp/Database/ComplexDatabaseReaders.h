@@ -1970,7 +1970,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
         DBEnum<Types::CameraPanTiltMode> ccamPositionPanTiltMode_;
         DBDouble ccamPanAngle_;
         DBDouble ccamTiltAngle_;
@@ -2098,7 +2098,7 @@ namespace Barrelman::Database
         {
             return deviceCommandSourceId_;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
@@ -3251,7 +3251,7 @@ namespace Barrelman::Database
         FixedDBWideString<127> name_;
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
-        Guid enabledTimeseries_;
+        DBGuid enabledTimeseries_;
         DBGuid gLatitudeTimeseries_;
         DBGuid gLongitudeTimeseries_;
         DBGuid gAltitudeTimeseries_;
@@ -3393,7 +3393,7 @@ namespace Barrelman::Database
         {
             return description_;
         }
-        const Guid& EnabledTimeseries( ) const
+        const DBGuid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
@@ -3684,7 +3684,7 @@ namespace Barrelman::Database
         FixedDBWideString<127> name_;
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
-        Guid enabledTimeseries_;
+        DBGuid enabledTimeseries_;
         DBGuid rdSaveSettingsTimeseries_;
         DBGuid rdPowerOnTimeseries_;
         DBGuid rdTrackingOnTimeseries_;
@@ -3776,7 +3776,7 @@ namespace Barrelman::Database
         {
             return description_;
         }
-        const Guid& EnabledTimeseries( ) const
+        const DBGuid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
@@ -5879,7 +5879,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -5929,7 +5929,7 @@ namespace Barrelman::Database
         {
             return deviceCommandSourceId_;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }

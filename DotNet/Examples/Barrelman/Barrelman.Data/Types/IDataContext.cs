@@ -708,7 +708,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandObject> GetCameraCommandCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandObject> GetCameraCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandObject> GetCameraCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandObject> GetCameraCommandCollectionByReply( Guid reply );
+        IList<CameraCommandObject> GetCameraCommandCollectionByReply( Guid? reply );
+        IList<CameraCommandObject> GetCameraCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandAbsoluteMove queries
         // ---------------------------------------------------------------------
@@ -725,7 +726,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandAbsoluteMoveObject> GetCameraCommandAbsoluteMoveCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandAbsoluteMoveObject> GetCameraCommandAbsoluteMoveCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandAbsoluteMoveObject> GetCameraCommandAbsoluteMoveCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandAbsoluteMoveObject> GetCameraCommandAbsoluteMoveCollectionByReply( Guid reply );
+        IList<CameraCommandAbsoluteMoveObject> GetCameraCommandAbsoluteMoveCollectionByReply( Guid? reply );
+        IList<CameraCommandAbsoluteMoveObject> GetCameraCommandAbsoluteMoveCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandAdjustPanTiltZoom queries
         // ---------------------------------------------------------------------
@@ -742,7 +744,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandAdjustPanTiltZoomObject> GetCameraCommandAdjustPanTiltZoomCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandAdjustPanTiltZoomObject> GetCameraCommandAdjustPanTiltZoomCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandAdjustPanTiltZoomObject> GetCameraCommandAdjustPanTiltZoomCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandAdjustPanTiltZoomObject> GetCameraCommandAdjustPanTiltZoomCollectionByReply( Guid reply );
+        IList<CameraCommandAdjustPanTiltZoomObject> GetCameraCommandAdjustPanTiltZoomCollectionByReply( Guid? reply );
+        IList<CameraCommandAdjustPanTiltZoomObject> GetCameraCommandAdjustPanTiltZoomCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandContinuousMove queries
         // ---------------------------------------------------------------------
@@ -759,7 +762,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandContinuousMoveObject> GetCameraCommandContinuousMoveCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandContinuousMoveObject> GetCameraCommandContinuousMoveCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandContinuousMoveObject> GetCameraCommandContinuousMoveCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandContinuousMoveObject> GetCameraCommandContinuousMoveCollectionByReply( Guid reply );
+        IList<CameraCommandContinuousMoveObject> GetCameraCommandContinuousMoveCollectionByReply( Guid? reply );
+        IList<CameraCommandContinuousMoveObject> GetCameraCommandContinuousMoveCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandGeoMove queries
         // ---------------------------------------------------------------------
@@ -776,7 +780,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandGeoMoveObject> GetCameraCommandGeoMoveCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandGeoMoveObject> GetCameraCommandGeoMoveCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandGeoMoveObject> GetCameraCommandGeoMoveCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandGeoMoveObject> GetCameraCommandGeoMoveCollectionByReply( Guid reply );
+        IList<CameraCommandGeoMoveObject> GetCameraCommandGeoMoveCollectionByReply( Guid? reply );
+        IList<CameraCommandGeoMoveObject> GetCameraCommandGeoMoveCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandRelativeMove queries
         // ---------------------------------------------------------------------
@@ -793,7 +798,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandRelativeMoveObject> GetCameraCommandRelativeMoveCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandRelativeMoveObject> GetCameraCommandRelativeMoveCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandRelativeMoveObject> GetCameraCommandRelativeMoveCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandRelativeMoveObject> GetCameraCommandRelativeMoveCollectionByReply( Guid reply );
+        IList<CameraCommandRelativeMoveObject> GetCameraCommandRelativeMoveCollectionByReply( Guid? reply );
+        IList<CameraCommandRelativeMoveObject> GetCameraCommandRelativeMoveCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandReleasePTZOwnership queries
         // ---------------------------------------------------------------------
@@ -810,7 +816,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandReleasePTZOwnershipObject> GetCameraCommandReleasePTZOwnershipCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandReleasePTZOwnershipObject> GetCameraCommandReleasePTZOwnershipCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandReleasePTZOwnershipObject> GetCameraCommandReleasePTZOwnershipCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandReleasePTZOwnershipObject> GetCameraCommandReleasePTZOwnershipCollectionByReply( Guid reply );
+        IList<CameraCommandReleasePTZOwnershipObject> GetCameraCommandReleasePTZOwnershipCollectionByReply( Guid? reply );
+        IList<CameraCommandReleasePTZOwnershipObject> GetCameraCommandReleasePTZOwnershipCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandRequestPTZOwnership queries
         // ---------------------------------------------------------------------
@@ -827,7 +834,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandRequestPTZOwnershipObject> GetCameraCommandRequestPTZOwnershipCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandRequestPTZOwnershipObject> GetCameraCommandRequestPTZOwnershipCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandRequestPTZOwnershipObject> GetCameraCommandRequestPTZOwnershipCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandRequestPTZOwnershipObject> GetCameraCommandRequestPTZOwnershipCollectionByReply( Guid reply );
+        IList<CameraCommandRequestPTZOwnershipObject> GetCameraCommandRequestPTZOwnershipCollectionByReply( Guid? reply );
+        IList<CameraCommandRequestPTZOwnershipObject> GetCameraCommandRequestPTZOwnershipCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandSetAutoFocus queries
         // ---------------------------------------------------------------------
@@ -844,7 +852,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandSetAutoFocusObject> GetCameraCommandSetAutoFocusCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandSetAutoFocusObject> GetCameraCommandSetAutoFocusCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandSetAutoFocusObject> GetCameraCommandSetAutoFocusCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandSetAutoFocusObject> GetCameraCommandSetAutoFocusCollectionByReply( Guid reply );
+        IList<CameraCommandSetAutoFocusObject> GetCameraCommandSetAutoFocusCollectionByReply( Guid? reply );
+        IList<CameraCommandSetAutoFocusObject> GetCameraCommandSetAutoFocusCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandSetBlackAndWhite queries
         // ---------------------------------------------------------------------
@@ -861,7 +870,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandSetBlackAndWhiteObject> GetCameraCommandSetBlackAndWhiteCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandSetBlackAndWhiteObject> GetCameraCommandSetBlackAndWhiteCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandSetBlackAndWhiteObject> GetCameraCommandSetBlackAndWhiteCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandSetBlackAndWhiteObject> GetCameraCommandSetBlackAndWhiteCollectionByReply( Guid reply );
+        IList<CameraCommandSetBlackAndWhiteObject> GetCameraCommandSetBlackAndWhiteCollectionByReply( Guid? reply );
+        IList<CameraCommandSetBlackAndWhiteObject> GetCameraCommandSetBlackAndWhiteCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandSetFollowed queries
         // ---------------------------------------------------------------------
@@ -878,7 +888,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandSetFollowedObject> GetCameraCommandSetFollowedCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandSetFollowedObject> GetCameraCommandSetFollowedCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandSetFollowedObject> GetCameraCommandSetFollowedCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandSetFollowedObject> GetCameraCommandSetFollowedCollectionByReply( Guid reply );
+        IList<CameraCommandSetFollowedObject> GetCameraCommandSetFollowedCollectionByReply( Guid? reply );
+        IList<CameraCommandSetFollowedObject> GetCameraCommandSetFollowedCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandSetInfraRedLamp queries
         // ---------------------------------------------------------------------
@@ -895,7 +906,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandSetInfraRedLampObject> GetCameraCommandSetInfraRedLampCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandSetInfraRedLampObject> GetCameraCommandSetInfraRedLampCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandSetInfraRedLampObject> GetCameraCommandSetInfraRedLampCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandSetInfraRedLampObject> GetCameraCommandSetInfraRedLampCollectionByReply( Guid reply );
+        IList<CameraCommandSetInfraRedLampObject> GetCameraCommandSetInfraRedLampCollectionByReply( Guid? reply );
+        IList<CameraCommandSetInfraRedLampObject> GetCameraCommandSetInfraRedLampCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandSetWasher queries
         // ---------------------------------------------------------------------
@@ -912,7 +924,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandSetWasherObject> GetCameraCommandSetWasherCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandSetWasherObject> GetCameraCommandSetWasherCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandSetWasherObject> GetCameraCommandSetWasherCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandSetWasherObject> GetCameraCommandSetWasherCollectionByReply( Guid reply );
+        IList<CameraCommandSetWasherObject> GetCameraCommandSetWasherCollectionByReply( Guid? reply );
+        IList<CameraCommandSetWasherObject> GetCameraCommandSetWasherCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandSetWiper queries
         // ---------------------------------------------------------------------
@@ -929,7 +942,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandSetWiperObject> GetCameraCommandSetWiperCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandSetWiperObject> GetCameraCommandSetWiperCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandSetWiperObject> GetCameraCommandSetWiperCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandSetWiperObject> GetCameraCommandSetWiperCollectionByReply( Guid reply );
+        IList<CameraCommandSetWiperObject> GetCameraCommandSetWiperCollectionByReply( Guid? reply );
+        IList<CameraCommandSetWiperObject> GetCameraCommandSetWiperCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandStop queries
         // ---------------------------------------------------------------------
@@ -946,7 +960,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandStopObject> GetCameraCommandStopCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandStopObject> GetCameraCommandStopCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandStopObject> GetCameraCommandStopCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraCommandStopObject> GetCameraCommandStopCollectionByReply( Guid reply );
+        IList<CameraCommandStopObject> GetCameraCommandStopCollectionByReply( Guid? reply );
+        IList<CameraCommandStopObject> GetCameraCommandStopCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // CameraCommandReply queries
         // ---------------------------------------------------------------------
@@ -1232,7 +1247,8 @@ namespace Barrelman.Data.Types
         IList<GNSSDeviceCommandObject> GetGNSSDeviceCommandCollectionFromTimestamp( DateTime timestamp );
         IList<GNSSDeviceCommandObject> GetGNSSDeviceCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<GNSSDeviceCommandObject> GetGNSSDeviceCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<GNSSDeviceCommandObject> GetGNSSDeviceCommandCollectionByReply( Guid reply );
+        IList<GNSSDeviceCommandObject> GetGNSSDeviceCommandCollectionByReply( Guid? reply );
+        IList<GNSSDeviceCommandObject> GetGNSSDeviceCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // GNSSDeviceCommandReply queries
         // ---------------------------------------------------------------------
@@ -1298,7 +1314,8 @@ namespace Barrelman.Data.Types
         IList<GyroDeviceCommandObject> GetGyroDeviceCommandCollectionFromTimestamp( DateTime timestamp );
         IList<GyroDeviceCommandObject> GetGyroDeviceCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<GyroDeviceCommandObject> GetGyroDeviceCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<GyroDeviceCommandObject> GetGyroDeviceCommandCollectionByReply( Guid reply );
+        IList<GyroDeviceCommandObject> GetGyroDeviceCommandCollectionByReply( Guid? reply );
+        IList<GyroDeviceCommandObject> GetGyroDeviceCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // GyroDeviceCommandReply queries
         // ---------------------------------------------------------------------
@@ -1637,7 +1654,8 @@ namespace Barrelman.Data.Types
         IList<LineInputDeviceCommandObject> GetLineInputDeviceCommandCollectionFromTimestamp( DateTime timestamp );
         IList<LineInputDeviceCommandObject> GetLineInputDeviceCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<LineInputDeviceCommandObject> GetLineInputDeviceCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<LineInputDeviceCommandObject> GetLineInputDeviceCommandCollectionByReply( Guid reply );
+        IList<LineInputDeviceCommandObject> GetLineInputDeviceCommandCollectionByReply( Guid? reply );
+        IList<LineInputDeviceCommandObject> GetLineInputDeviceCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // LineInputDeviceCommandReply queries
         // ---------------------------------------------------------------------
@@ -1957,7 +1975,8 @@ namespace Barrelman.Data.Types
         IList<OilSpillDetectorCommandObject> GetOilSpillDetectorCommandCollectionFromTimestamp( DateTime timestamp );
         IList<OilSpillDetectorCommandObject> GetOilSpillDetectorCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<OilSpillDetectorCommandObject> GetOilSpillDetectorCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<OilSpillDetectorCommandObject> GetOilSpillDetectorCommandCollectionByReply( Guid reply );
+        IList<OilSpillDetectorCommandObject> GetOilSpillDetectorCommandCollectionByReply( Guid? reply );
+        IList<OilSpillDetectorCommandObject> GetOilSpillDetectorCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // OilSpillDetectorCommandReply queries
         // ---------------------------------------------------------------------
@@ -2622,7 +2641,8 @@ namespace Barrelman.Data.Types
         IList<RadarCommandObject> GetRadarCommandCollectionFromTimestamp( DateTime timestamp );
         IList<RadarCommandObject> GetRadarCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<RadarCommandObject> GetRadarCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<RadarCommandObject> GetRadarCommandCollectionByReply( Guid reply );
+        IList<RadarCommandObject> GetRadarCommandCollectionByReply( Guid? reply );
+        IList<RadarCommandObject> GetRadarCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // RadarCommandGetStatus queries
         // ---------------------------------------------------------------------
@@ -2639,7 +2659,8 @@ namespace Barrelman.Data.Types
         IList<RadarCommandGetStatusObject> GetRadarCommandGetStatusCollectionFromTimestamp( DateTime timestamp );
         IList<RadarCommandGetStatusObject> GetRadarCommandGetStatusCollectionUntilTimestamp( DateTime timestamp );
         IList<RadarCommandGetStatusObject> GetRadarCommandGetStatusCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<RadarCommandGetStatusObject> GetRadarCommandGetStatusCollectionByReply( Guid reply );
+        IList<RadarCommandGetStatusObject> GetRadarCommandGetStatusCollectionByReply( Guid? reply );
+        IList<RadarCommandGetStatusObject> GetRadarCommandGetStatusCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // RadarCommandReply queries
         // ---------------------------------------------------------------------
@@ -2754,7 +2775,8 @@ namespace Barrelman.Data.Types
         IList<RadioCommandObject> GetRadioCommandCollectionFromTimestamp( DateTime timestamp );
         IList<RadioCommandObject> GetRadioCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<RadioCommandObject> GetRadioCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<RadioCommandObject> GetRadioCommandCollectionByReply( Guid reply );
+        IList<RadioCommandObject> GetRadioCommandCollectionByReply( Guid? reply );
+        IList<RadioCommandObject> GetRadioCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // RadioCommandReply queries
         // ---------------------------------------------------------------------
@@ -2804,7 +2826,8 @@ namespace Barrelman.Data.Types
         IList<RadomeCommandObject> GetRadomeCommandCollectionFromTimestamp( DateTime timestamp );
         IList<RadomeCommandObject> GetRadomeCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<RadomeCommandObject> GetRadomeCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<RadomeCommandObject> GetRadomeCommandCollectionByReply( Guid reply );
+        IList<RadomeCommandObject> GetRadomeCommandCollectionByReply( Guid? reply );
+        IList<RadomeCommandObject> GetRadomeCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // RadomeCommandReply queries
         // ---------------------------------------------------------------------
@@ -3034,7 +3057,8 @@ namespace Barrelman.Data.Types
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByCatalogIsNull(  );
         AisAidToNavigationOffPositionTimeseriesObject? GetAisAidToNavigationOffPositionTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByCatalogIsNullAndName( string name );
-        IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByAidToNavigation( Guid aidToNavigation );
+        IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByAidToNavigation( Guid? aidToNavigation );
+        IList<AisAidToNavigationOffPositionTimeseriesObject> GetAisAidToNavigationOffPositionTimeseriesCollectionByAidToNavigationIsNull(  );
         // ---------------------------------------------------------------------
         // DeviceEnabledTimeseries queries
         // ---------------------------------------------------------------------
@@ -3206,7 +3230,8 @@ namespace Barrelman.Data.Types
         IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollectionByCatalogIsNull(  );
         GyroCourseTimeseriesObject? GetGyroCourseTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroCourseTimeseriesObject? GetGyroCourseTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroCourseTimeseriesObject? GetGyroCourseTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroCourseTimeseriesObject> GetGyroCourseTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // GyroHeadingMagneticNorthTimeseries queries
         // ---------------------------------------------------------------------
@@ -3216,7 +3241,8 @@ namespace Barrelman.Data.Types
         IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollectionByCatalogIsNull(  );
         GyroHeadingMagneticNorthTimeseriesObject? GetGyroHeadingMagneticNorthTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroHeadingMagneticNorthTimeseriesObject? GetGyroHeadingMagneticNorthTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroHeadingMagneticNorthTimeseriesObject? GetGyroHeadingMagneticNorthTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroHeadingMagneticNorthTimeseriesObject> GetGyroHeadingMagneticNorthTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // GyroHeadingTrueNorthTimeseries queries
         // ---------------------------------------------------------------------
@@ -3226,7 +3252,8 @@ namespace Barrelman.Data.Types
         IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollectionByCatalogIsNull(  );
         GyroHeadingTrueNorthTimeseriesObject? GetGyroHeadingTrueNorthTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroHeadingTrueNorthTimeseriesObject? GetGyroHeadingTrueNorthTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroHeadingTrueNorthTimeseriesObject? GetGyroHeadingTrueNorthTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroHeadingTrueNorthTimeseriesObject> GetGyroHeadingTrueNorthTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // GyroPitchTimeseries queries
         // ---------------------------------------------------------------------
@@ -3236,7 +3263,8 @@ namespace Barrelman.Data.Types
         IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollectionByCatalogIsNull(  );
         GyroPitchTimeseriesObject? GetGyroPitchTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroPitchTimeseriesObject? GetGyroPitchTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroPitchTimeseriesObject? GetGyroPitchTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroPitchTimeseriesObject> GetGyroPitchTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // GyroRateOfTurnTimeseries queries
         // ---------------------------------------------------------------------
@@ -3246,7 +3274,8 @@ namespace Barrelman.Data.Types
         IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollectionByCatalogIsNull(  );
         GyroRateOfTurnTimeseriesObject? GetGyroRateOfTurnTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroRateOfTurnTimeseriesObject? GetGyroRateOfTurnTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroRateOfTurnTimeseriesObject? GetGyroRateOfTurnTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroRateOfTurnTimeseriesObject> GetGyroRateOfTurnTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // GyroRollTimeseries queries
         // ---------------------------------------------------------------------
@@ -3256,7 +3285,8 @@ namespace Barrelman.Data.Types
         IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollectionByCatalogIsNull(  );
         GyroRollTimeseriesObject? GetGyroRollTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroRollTimeseriesObject? GetGyroRollTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroRollTimeseriesObject? GetGyroRollTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroRollTimeseriesObject> GetGyroRollTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // GyroSpeedTimeseries queries
         // ---------------------------------------------------------------------
@@ -3266,7 +3296,8 @@ namespace Barrelman.Data.Types
         IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollectionByCatalogIsNull(  );
         GyroSpeedTimeseriesObject? GetGyroSpeedTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollectionByCatalogIsNullAndName( string name );
-        GyroSpeedTimeseriesObject? GetGyroSpeedTimeseriesByGyroDevice( Guid gyroDevice );
+        GyroSpeedTimeseriesObject? GetGyroSpeedTimeseriesByGyroDevice( Guid? gyroDevice );
+        IList<GyroSpeedTimeseriesObject> GetGyroSpeedTimeseriesCollectionByGyroDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // RadarLatitudeTimeseries queries
         // ---------------------------------------------------------------------
@@ -3357,7 +3388,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationAbsoluteHumidityTimeseriesObject? GetWeatherStationAbsoluteHumidityTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationAbsoluteHumidityTimeseriesObject? GetWeatherStationAbsoluteHumidityTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationAbsoluteHumidityTimeseriesObject? GetWeatherStationAbsoluteHumidityTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationAbsoluteHumidityTimeseriesObject> GetWeatherStationAbsoluteHumidityTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationAirTemperatureTimeseries queries
         // ---------------------------------------------------------------------
@@ -3367,7 +3399,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationAirTemperatureTimeseriesObject? GetWeatherStationAirTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationAirTemperatureTimeseriesObject? GetWeatherStationAirTemperatureTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationAirTemperatureTimeseriesObject? GetWeatherStationAirTemperatureTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationAirTemperatureTimeseriesObject> GetWeatherStationAirTemperatureTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationBarometricPressureTimeseries queries
         // ---------------------------------------------------------------------
@@ -3377,7 +3410,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationBarometricPressureTimeseriesObject? GetWeatherStationBarometricPressureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationBarometricPressureTimeseriesObject? GetWeatherStationBarometricPressureTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationBarometricPressureTimeseriesObject? GetWeatherStationBarometricPressureTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationBarometricPressureTimeseriesObject> GetWeatherStationBarometricPressureTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationDewPointTimeseries queries
         // ---------------------------------------------------------------------
@@ -3387,7 +3421,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationDewPointTimeseriesObject? GetWeatherStationDewPointTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationDewPointTimeseriesObject? GetWeatherStationDewPointTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationDewPointTimeseriesObject? GetWeatherStationDewPointTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationDewPointTimeseriesObject> GetWeatherStationDewPointTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationRelativeHumidityTimeseries queries
         // ---------------------------------------------------------------------
@@ -3397,7 +3432,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationRelativeHumidityTimeseriesObject? GetWeatherStationRelativeHumidityTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationRelativeHumidityTimeseriesObject? GetWeatherStationRelativeHumidityTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationRelativeHumidityTimeseriesObject? GetWeatherStationRelativeHumidityTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationRelativeHumidityTimeseriesObject> GetWeatherStationRelativeHumidityTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationWaterTemperatureTimeseries queries
         // ---------------------------------------------------------------------
@@ -3407,7 +3443,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationWaterTemperatureTimeseriesObject? GetWeatherStationWaterTemperatureTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationWaterTemperatureTimeseriesObject? GetWeatherStationWaterTemperatureTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationWaterTemperatureTimeseriesObject? GetWeatherStationWaterTemperatureTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationWaterTemperatureTimeseriesObject> GetWeatherStationWaterTemperatureTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationWindDirectionTimeseries queries
         // ---------------------------------------------------------------------
@@ -3417,7 +3454,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationWindDirectionTimeseriesObject? GetWeatherStationWindDirectionTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationWindDirectionTimeseriesObject? GetWeatherStationWindDirectionTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationWindDirectionTimeseriesObject? GetWeatherStationWindDirectionTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationWindDirectionTimeseriesObject> GetWeatherStationWindDirectionTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationWindSpeedTimeseries queries
         // ---------------------------------------------------------------------
@@ -3427,7 +3465,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollectionByCatalogIsNull(  );
         WeatherStationWindSpeedTimeseriesObject? GetWeatherStationWindSpeedTimeseriesByCatalogAndName( Guid? catalog, string name );
         IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollectionByCatalogIsNullAndName( string name );
-        WeatherStationWindSpeedTimeseriesObject? GetWeatherStationWindSpeedTimeseriesByWeatherStation( Guid weatherStation );
+        WeatherStationWindSpeedTimeseriesObject? GetWeatherStationWindSpeedTimeseriesByWeatherStation( Guid? weatherStation );
+        IList<WeatherStationWindSpeedTimeseriesObject> GetWeatherStationWindSpeedTimeseriesCollectionByWeatherStationIsNull(  );
         // ---------------------------------------------------------------------
         // GeoPosition2DTimeseries queries
         // ---------------------------------------------------------------------
@@ -4062,7 +4101,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationCommandObject> GetWeatherStationCommandCollectionFromTimestamp( DateTime timestamp );
         IList<WeatherStationCommandObject> GetWeatherStationCommandCollectionUntilTimestamp( DateTime timestamp );
         IList<WeatherStationCommandObject> GetWeatherStationCommandCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<WeatherStationCommandObject> GetWeatherStationCommandCollectionByReply( Guid reply );
+        IList<WeatherStationCommandObject> GetWeatherStationCommandCollectionByReply( Guid? reply );
+        IList<WeatherStationCommandObject> GetWeatherStationCommandCollectionByReplyIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationCommandReply queries
         // ---------------------------------------------------------------------

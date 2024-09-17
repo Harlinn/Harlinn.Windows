@@ -3384,11 +3384,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( CC_DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( CC_REPLY_FIELD_ID );
+                return GetNullableGuid( CC_REPLY_FIELD_ID );
             }
         }
         public Types.CameraPanTiltMode CameraCommandAbsoluteMovePositionPanTiltMode
@@ -4569,81 +4569,81 @@ namespace Barrelman.Data.Database
                 return GetString( D_DESCRIPTION_FIELD_ID );
             }
         }
-        public Guid DeviceEnabledTimeseries
+        public Guid? DeviceEnabledTimeseries
         {
             get
             {
-                return GetGuid( D_ENABLEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( D_ENABLEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDeviceLatitudeTimeseries
+        public Guid? GNSSDeviceLatitudeTimeseries
         {
             get
             {
-                return GetGuid( G_LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( G_LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDeviceLongitudeTimeseries
+        public Guid? GNSSDeviceLongitudeTimeseries
         {
             get
             {
-                return GetGuid( G_LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( G_LONGITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDeviceAltitudeTimeseries
+        public Guid? GNSSDeviceAltitudeTimeseries
         {
             get
             {
-                return GetGuid( G_ALTITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( G_ALTITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceHeadingTrueNorthTimeseries
+        public Guid? GyroDeviceHeadingTrueNorthTimeseries
         {
             get
             {
-                return GetGuid( GD_HEADINGTRUENORTHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_HEADINGTRUENORTHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceHeadingMagneticNorthTimeseries
+        public Guid? GyroDeviceHeadingMagneticNorthTimeseries
         {
             get
             {
-                return GetGuid( GD_HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDevicePitchTimeseries
+        public Guid? GyroDevicePitchTimeseries
         {
             get
             {
-                return GetGuid( GD_PITCHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_PITCHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceRateOfTurnTimeseries
+        public Guid? GyroDeviceRateOfTurnTimeseries
         {
             get
             {
-                return GetGuid( GD_RATEOFTURNTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_RATEOFTURNTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceRollTimeseries
+        public Guid? GyroDeviceRollTimeseries
         {
             get
             {
-                return GetGuid( GD_ROLLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_ROLLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceCourseTimeseries
+        public Guid? GyroDeviceCourseTimeseries
         {
             get
             {
-                return GetGuid( GD_COURSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_COURSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceSpeedTimeseries
+        public Guid? GyroDeviceSpeedTimeseries
         {
             get
             {
-                return GetGuid( GD_SPEEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_SPEEDTIMESERIES_FIELD_ID );
             }
         }
         public Guid GyroDeviceGNSSDevice
@@ -4660,179 +4660,179 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RDO_RADAR_FIELD_ID );
             }
         }
-        public Guid RadomeDevicePressureTimeseries
+        public Guid? RadomeDevicePressureTimeseries
         {
             get
             {
-                return GetGuid( RDO_PRESSURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_PRESSURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadomeDeviceTemperatureTimeseries
+        public Guid? RadomeDeviceTemperatureTimeseries
         {
             get
             {
-                return GetGuid( RDO_TEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_TEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadomeDeviceDewPointTimeseries
+        public Guid? RadomeDeviceDewPointTimeseries
         {
             get
             {
-                return GetGuid( RDO_DEWPOINTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_DEWPOINTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadomeDeviceStatusTimeseries
+        public Guid? RadomeDeviceStatusTimeseries
         {
             get
             {
-                return GetGuid( RDO_STATUSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_STATUSTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSaveSettingsTimeseries
+        public Guid? RadarDeviceSaveSettingsTimeseries
         {
             get
             {
-                return GetGuid( RD_SAVESETTINGSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SAVESETTINGSTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDevicePowerOnTimeseries
+        public Guid? RadarDevicePowerOnTimeseries
         {
             get
             {
-                return GetGuid( RD_POWERONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_POWERONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceTrackingOnTimeseries
+        public Guid? RadarDeviceTrackingOnTimeseries
         {
             get
             {
-                return GetGuid( RD_TRACKINGONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_TRACKINGONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceRadarPulseTimeseries
+        public Guid? RadarDeviceRadarPulseTimeseries
         {
             get
             {
-                return GetGuid( RD_RADARPULSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_RADARPULSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceTuningTimeseries
+        public Guid? RadarDeviceTuningTimeseries
         {
             get
             {
-                return GetGuid( RD_TUNINGTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_TUNINGTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceBlankSector1Timeseries
+        public Guid? RadarDeviceBlankSector1Timeseries
         {
             get
             {
-                return GetGuid( RD_BLANKSECTOR1TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_BLANKSECTOR1TIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector1StartTimeseries
+        public Guid? RadarDeviceSector1StartTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR1STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR1STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector1EndTimeseries
+        public Guid? RadarDeviceSector1EndTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR1ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR1ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceBlankSector2Timeseries
+        public Guid? RadarDeviceBlankSector2Timeseries
         {
             get
             {
-                return GetGuid( RD_BLANKSECTOR2TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_BLANKSECTOR2TIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector2StartTimeseries
+        public Guid? RadarDeviceSector2StartTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR2STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR2STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector2EndTimeseries
+        public Guid? RadarDeviceSector2EndTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR2ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR2ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableAutomaticFrequencyControlTimeseries
+        public Guid? RadarDeviceEnableAutomaticFrequencyControlTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceAzimuthOffsetTimeseries
+        public Guid? RadarDeviceAzimuthOffsetTimeseries
         {
             get
             {
-                return GetGuid( RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableSensitivityTimeControlTimeseries
+        public Guid? RadarDeviceEnableSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceAutomaticSensitivityTimeControlTimeseries
+        public Guid? RadarDeviceAutomaticSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSensitivityTimeControlLevelTimeseries
+        public Guid? RadarDeviceSensitivityTimeControlLevelTimeseries
         {
             get
             {
-                return GetGuid( RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableFastTimeConstantTimeseries
+        public Guid? RadarDeviceEnableFastTimeConstantTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceFastTimeConstantLevelTimeseries
+        public Guid? RadarDeviceFastTimeConstantLevelTimeseries
         {
             get
             {
-                return GetGuid( RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceFastTimeConstantModeTimeseries
+        public Guid? RadarDeviceFastTimeConstantModeTimeseries
         {
             get
             {
-                return GetGuid( RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceLatitudeTimeseries
+        public Guid? RadarDeviceLatitudeTimeseries
         {
             get
             {
-                return GetGuid( RD_LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceLongitudeTimeseries
+        public Guid? RadarDeviceLongitudeTimeseries
         {
             get
             {
-                return GetGuid( RD_LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_LONGITUDETIMESERIES_FIELD_ID );
             }
         }
         public Guid? RadarDeviceRadome
@@ -4849,60 +4849,60 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RD_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceBarometricPressureTimeseries
+        public Guid? WeatherStationDeviceBarometricPressureTimeseries
         {
             get
             {
-                return GetGuid( WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceAirTemperatureTimeseries
+        public Guid? WeatherStationDeviceAirTemperatureTimeseries
         {
             get
             {
-                return GetGuid( WSD_AIRTEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_AIRTEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceWaterTemperatureTimeseries
+        public Guid? WeatherStationDeviceWaterTemperatureTimeseries
         {
             get
             {
-                return GetGuid( WSD_WATERTEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_WATERTEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceRelativeHumidityTimeseries
+        public Guid? WeatherStationDeviceRelativeHumidityTimeseries
         {
             get
             {
-                return GetGuid( WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceAbsoluteHumidityTimeseries
+        public Guid? WeatherStationDeviceAbsoluteHumidityTimeseries
         {
             get
             {
-                return GetGuid( WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceDewPointTimeseries
+        public Guid? WeatherStationDeviceDewPointTimeseries
         {
             get
             {
-                return GetGuid( WSD_DEWPOINTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_DEWPOINTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceWindDirectionTimeseries
+        public Guid? WeatherStationDeviceWindDirectionTimeseries
         {
             get
             {
-                return GetGuid( WSD_WINDDIRECTIONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_WINDDIRECTIONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceWindSpeedTimeseries
+        public Guid? WeatherStationDeviceWindSpeedTimeseries
         {
             get
             {
-                return GetGuid( WSD_WINDSPEEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_WINDSPEEDTIMESERIES_FIELD_ID );
             }
         }
         public Guid WeatherStationDeviceGyro
@@ -4982,11 +4982,11 @@ namespace Barrelman.Data.Database
                 return GetEnum<Types.NavigationalAidType>( AATN_NAVIGATIONALAIDTYPE_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationPosition
+        public Guid? AisAidToNavigationPosition
         {
             get
             {
-                return GetGuid( AATN_POSITION_FIELD_ID );
+                return GetNullableGuid( AATN_POSITION_FIELD_ID );
             }
         }
         public bool AisAidToNavigationIsVirtual
@@ -5024,11 +5024,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AATN_TOSTARBOARD_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationOffPositionTimeseries
+        public Guid? AisAidToNavigationOffPositionTimeseries
         {
             get
             {
-                return GetGuid( AATN_OFFPOSITIONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( AATN_OFFPOSITIONTIMESERIES_FIELD_ID );
             }
         }
         public string VehicleName
@@ -5087,18 +5087,18 @@ namespace Barrelman.Data.Database
                 return GetInt32( VSL_TOSTARBOARD_FIELD_ID );
             }
         }
-        public Guid VesselDraughtTimeseries
+        public Guid? VesselDraughtTimeseries
         {
             get
             {
-                return GetGuid( VSL_DRAUGHTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( VSL_DRAUGHTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid VesselPersonsOnBoardTimeseries
+        public Guid? VesselPersonsOnBoardTimeseries
         {
             get
             {
-                return GetGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -5626,81 +5626,81 @@ namespace Barrelman.Data.Database
                 return GetString( D_DESCRIPTION_FIELD_ID );
             }
         }
-        public Guid EnabledTimeseries
+        public Guid? EnabledTimeseries
         {
             get
             {
-                return GetGuid( D_ENABLEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( D_ENABLEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDeviceLatitudeTimeseries
+        public Guid? GNSSDeviceLatitudeTimeseries
         {
             get
             {
-                return GetGuid( G_LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( G_LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDeviceLongitudeTimeseries
+        public Guid? GNSSDeviceLongitudeTimeseries
         {
             get
             {
-                return GetGuid( G_LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( G_LONGITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDeviceAltitudeTimeseries
+        public Guid? GNSSDeviceAltitudeTimeseries
         {
             get
             {
-                return GetGuid( G_ALTITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( G_ALTITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceHeadingTrueNorthTimeseries
+        public Guid? GyroDeviceHeadingTrueNorthTimeseries
         {
             get
             {
-                return GetGuid( GD_HEADINGTRUENORTHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_HEADINGTRUENORTHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceHeadingMagneticNorthTimeseries
+        public Guid? GyroDeviceHeadingMagneticNorthTimeseries
         {
             get
             {
-                return GetGuid( GD_HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDevicePitchTimeseries
+        public Guid? GyroDevicePitchTimeseries
         {
             get
             {
-                return GetGuid( GD_PITCHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_PITCHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceRateOfTurnTimeseries
+        public Guid? GyroDeviceRateOfTurnTimeseries
         {
             get
             {
-                return GetGuid( GD_RATEOFTURNTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_RATEOFTURNTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceRollTimeseries
+        public Guid? GyroDeviceRollTimeseries
         {
             get
             {
-                return GetGuid( GD_ROLLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_ROLLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceCourseTimeseries
+        public Guid? GyroDeviceCourseTimeseries
         {
             get
             {
-                return GetGuid( GD_COURSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_COURSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceSpeedTimeseries
+        public Guid? GyroDeviceSpeedTimeseries
         {
             get
             {
-                return GetGuid( GD_SPEEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( GD_SPEEDTIMESERIES_FIELD_ID );
             }
         }
         public Guid GyroDeviceGNSSDevice
@@ -5717,179 +5717,179 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RDO_RADAR_FIELD_ID );
             }
         }
-        public Guid RadomeDevicePressureTimeseries
+        public Guid? RadomeDevicePressureTimeseries
         {
             get
             {
-                return GetGuid( RDO_PRESSURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_PRESSURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadomeDeviceTemperatureTimeseries
+        public Guid? RadomeDeviceTemperatureTimeseries
         {
             get
             {
-                return GetGuid( RDO_TEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_TEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadomeDeviceDewPointTimeseries
+        public Guid? RadomeDeviceDewPointTimeseries
         {
             get
             {
-                return GetGuid( RDO_DEWPOINTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_DEWPOINTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadomeDeviceStatusTimeseries
+        public Guid? RadomeDeviceStatusTimeseries
         {
             get
             {
-                return GetGuid( RDO_STATUSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RDO_STATUSTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSaveSettingsTimeseries
+        public Guid? RadarDeviceSaveSettingsTimeseries
         {
             get
             {
-                return GetGuid( RD_SAVESETTINGSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SAVESETTINGSTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDevicePowerOnTimeseries
+        public Guid? RadarDevicePowerOnTimeseries
         {
             get
             {
-                return GetGuid( RD_POWERONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_POWERONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceTrackingOnTimeseries
+        public Guid? RadarDeviceTrackingOnTimeseries
         {
             get
             {
-                return GetGuid( RD_TRACKINGONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_TRACKINGONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceRadarPulseTimeseries
+        public Guid? RadarDeviceRadarPulseTimeseries
         {
             get
             {
-                return GetGuid( RD_RADARPULSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_RADARPULSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceTuningTimeseries
+        public Guid? RadarDeviceTuningTimeseries
         {
             get
             {
-                return GetGuid( RD_TUNINGTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_TUNINGTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceBlankSector1Timeseries
+        public Guid? RadarDeviceBlankSector1Timeseries
         {
             get
             {
-                return GetGuid( RD_BLANKSECTOR1TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_BLANKSECTOR1TIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector1StartTimeseries
+        public Guid? RadarDeviceSector1StartTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR1STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR1STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector1EndTimeseries
+        public Guid? RadarDeviceSector1EndTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR1ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR1ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceBlankSector2Timeseries
+        public Guid? RadarDeviceBlankSector2Timeseries
         {
             get
             {
-                return GetGuid( RD_BLANKSECTOR2TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_BLANKSECTOR2TIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector2StartTimeseries
+        public Guid? RadarDeviceSector2StartTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR2STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR2STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector2EndTimeseries
+        public Guid? RadarDeviceSector2EndTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR2ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR2ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableAutomaticFrequencyControlTimeseries
+        public Guid? RadarDeviceEnableAutomaticFrequencyControlTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceAzimuthOffsetTimeseries
+        public Guid? RadarDeviceAzimuthOffsetTimeseries
         {
             get
             {
-                return GetGuid( RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableSensitivityTimeControlTimeseries
+        public Guid? RadarDeviceEnableSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceAutomaticSensitivityTimeControlTimeseries
+        public Guid? RadarDeviceAutomaticSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSensitivityTimeControlLevelTimeseries
+        public Guid? RadarDeviceSensitivityTimeControlLevelTimeseries
         {
             get
             {
-                return GetGuid( RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableFastTimeConstantTimeseries
+        public Guid? RadarDeviceEnableFastTimeConstantTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceFastTimeConstantLevelTimeseries
+        public Guid? RadarDeviceFastTimeConstantLevelTimeseries
         {
             get
             {
-                return GetGuid( RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceFastTimeConstantModeTimeseries
+        public Guid? RadarDeviceFastTimeConstantModeTimeseries
         {
             get
             {
-                return GetGuid( RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceLatitudeTimeseries
+        public Guid? RadarDeviceLatitudeTimeseries
         {
             get
             {
-                return GetGuid( RD_LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceLongitudeTimeseries
+        public Guid? RadarDeviceLongitudeTimeseries
         {
             get
             {
-                return GetGuid( RD_LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_LONGITUDETIMESERIES_FIELD_ID );
             }
         }
         public Guid? RadarDeviceRadome
@@ -5906,60 +5906,60 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RD_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceBarometricPressureTimeseries
+        public Guid? WeatherStationDeviceBarometricPressureTimeseries
         {
             get
             {
-                return GetGuid( WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_BAROMETRICPRESSURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceAirTemperatureTimeseries
+        public Guid? WeatherStationDeviceAirTemperatureTimeseries
         {
             get
             {
-                return GetGuid( WSD_AIRTEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_AIRTEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceWaterTemperatureTimeseries
+        public Guid? WeatherStationDeviceWaterTemperatureTimeseries
         {
             get
             {
-                return GetGuid( WSD_WATERTEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_WATERTEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceRelativeHumidityTimeseries
+        public Guid? WeatherStationDeviceRelativeHumidityTimeseries
         {
             get
             {
-                return GetGuid( WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_RELATIVEHUMIDITYTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceAbsoluteHumidityTimeseries
+        public Guid? WeatherStationDeviceAbsoluteHumidityTimeseries
         {
             get
             {
-                return GetGuid( WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceDewPointTimeseries
+        public Guid? WeatherStationDeviceDewPointTimeseries
         {
             get
             {
-                return GetGuid( WSD_DEWPOINTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_DEWPOINTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceWindDirectionTimeseries
+        public Guid? WeatherStationDeviceWindDirectionTimeseries
         {
             get
             {
-                return GetGuid( WSD_WINDDIRECTIONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_WINDDIRECTIONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceWindSpeedTimeseries
+        public Guid? WeatherStationDeviceWindSpeedTimeseries
         {
             get
             {
-                return GetGuid( WSD_WINDSPEEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WSD_WINDSPEEDTIMESERIES_FIELD_ID );
             }
         }
         public Guid WeatherStationDeviceGyro
@@ -6334,158 +6334,158 @@ namespace Barrelman.Data.Database
                 return GetString( TD_DESCRIPTION_FIELD_ID );
             }
         }
-        public Guid EnabledTimeseries
+        public Guid? EnabledTimeseries
         {
             get
             {
-                return GetGuid( TD_ENABLEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( TD_ENABLEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSaveSettingsTimeseries
+        public Guid? RadarDeviceSaveSettingsTimeseries
         {
             get
             {
-                return GetGuid( RD_SAVESETTINGSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SAVESETTINGSTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDevicePowerOnTimeseries
+        public Guid? RadarDevicePowerOnTimeseries
         {
             get
             {
-                return GetGuid( RD_POWERONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_POWERONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceTrackingOnTimeseries
+        public Guid? RadarDeviceTrackingOnTimeseries
         {
             get
             {
-                return GetGuid( RD_TRACKINGONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_TRACKINGONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceRadarPulseTimeseries
+        public Guid? RadarDeviceRadarPulseTimeseries
         {
             get
             {
-                return GetGuid( RD_RADARPULSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_RADARPULSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceTuningTimeseries
+        public Guid? RadarDeviceTuningTimeseries
         {
             get
             {
-                return GetGuid( RD_TUNINGTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_TUNINGTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceBlankSector1Timeseries
+        public Guid? RadarDeviceBlankSector1Timeseries
         {
             get
             {
-                return GetGuid( RD_BLANKSECTOR1TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_BLANKSECTOR1TIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector1StartTimeseries
+        public Guid? RadarDeviceSector1StartTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR1STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR1STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector1EndTimeseries
+        public Guid? RadarDeviceSector1EndTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR1ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR1ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceBlankSector2Timeseries
+        public Guid? RadarDeviceBlankSector2Timeseries
         {
             get
             {
-                return GetGuid( RD_BLANKSECTOR2TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_BLANKSECTOR2TIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector2StartTimeseries
+        public Guid? RadarDeviceSector2StartTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR2STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR2STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSector2EndTimeseries
+        public Guid? RadarDeviceSector2EndTimeseries
         {
             get
             {
-                return GetGuid( RD_SECTOR2ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SECTOR2ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableAutomaticFrequencyControlTimeseries
+        public Guid? RadarDeviceEnableAutomaticFrequencyControlTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceAzimuthOffsetTimeseries
+        public Guid? RadarDeviceAzimuthOffsetTimeseries
         {
             get
             {
-                return GetGuid( RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_AZIMUTHOFFSETTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableSensitivityTimeControlTimeseries
+        public Guid? RadarDeviceEnableSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceAutomaticSensitivityTimeControlTimeseries
+        public Guid? RadarDeviceAutomaticSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceSensitivityTimeControlLevelTimeseries
+        public Guid? RadarDeviceSensitivityTimeControlLevelTimeseries
         {
             get
             {
-                return GetGuid( RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceEnableFastTimeConstantTimeseries
+        public Guid? RadarDeviceEnableFastTimeConstantTimeseries
         {
             get
             {
-                return GetGuid( RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceFastTimeConstantLevelTimeseries
+        public Guid? RadarDeviceFastTimeConstantLevelTimeseries
         {
             get
             {
-                return GetGuid( RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceFastTimeConstantModeTimeseries
+        public Guid? RadarDeviceFastTimeConstantModeTimeseries
         {
             get
             {
-                return GetGuid( RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceLatitudeTimeseries
+        public Guid? RadarDeviceLatitudeTimeseries
         {
             get
             {
-                return GetGuid( RD_LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarDeviceLongitudeTimeseries
+        public Guid? RadarDeviceLongitudeTimeseries
         {
             get
             {
-                return GetGuid( RD_LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RD_LONGITUDETIMESERIES_FIELD_ID );
             }
         }
         public Guid? RadarDeviceRadome
@@ -6720,11 +6720,11 @@ namespace Barrelman.Data.Database
                 return GetEnum<Types.NavigationalAidType>( AATN_NAVIGATIONALAIDTYPE_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationPosition
+        public Guid? AisAidToNavigationPosition
         {
             get
             {
-                return GetGuid( AATN_POSITION_FIELD_ID );
+                return GetNullableGuid( AATN_POSITION_FIELD_ID );
             }
         }
         public bool AisAidToNavigationIsVirtual
@@ -6762,11 +6762,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AATN_TOSTARBOARD_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationOffPositionTimeseries
+        public Guid? AisAidToNavigationOffPositionTimeseries
         {
             get
             {
-                return GetGuid( AATN_OFFPOSITIONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( AATN_OFFPOSITIONTIMESERIES_FIELD_ID );
             }
         }
         public string VehicleName
@@ -6825,18 +6825,18 @@ namespace Barrelman.Data.Database
                 return GetInt32( VSL_TOSTARBOARD_FIELD_ID );
             }
         }
-        public Guid VesselDraughtTimeseries
+        public Guid? VesselDraughtTimeseries
         {
             get
             {
-                return GetGuid( VSL_DRAUGHTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( VSL_DRAUGHTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid VesselPersonsOnBoardTimeseries
+        public Guid? VesselPersonsOnBoardTimeseries
         {
             get
             {
-                return GetGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( VSL_PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -10620,11 +10620,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( RC_DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( RC_REPLY_FIELD_ID );
+                return GetNullableGuid( RC_REPLY_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -11309,11 +11309,11 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( T_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid AisAidToNavigationOffPositionTimeseriesAidToNavigation
+        public Guid? AisAidToNavigationOffPositionTimeseriesAidToNavigation
         {
             get
             {
-                return GetGuid( AATNOPT_AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AATNOPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
         public Guid? DeviceEnabledTimeseriesDevice
@@ -11323,361 +11323,361 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( DET_DEVICE_FIELD_ID );
             }
         }
-        public Guid MediaProxySessionEnabledTimeseriesProxySession
+        public Guid? MediaProxySessionEnabledTimeseriesProxySession
         {
             get
             {
-                return GetGuid( MPSET_PROXYSESSION_FIELD_ID );
+                return GetNullableGuid( MPSET_PROXYSESSION_FIELD_ID );
             }
         }
-        public Guid MediaServiceEnabledTimeseriesService
+        public Guid? MediaServiceEnabledTimeseriesService
         {
             get
             {
-                return GetGuid( MSET_SERVICE_FIELD_ID );
+                return GetNullableGuid( MSET_SERVICE_FIELD_ID );
             }
         }
-        public Guid RadarAutomaticSensitivityTimeControlTimeseriesRadar
+        public Guid? RadarAutomaticSensitivityTimeControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( RASTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( RASTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarBlankSector1TimeseriesRadar
+        public Guid? RadarBlankSector1TimeseriesRadar
         {
             get
             {
-                return GetGuid( RBS1T_RADAR_FIELD_ID );
+                return GetNullableGuid( RBS1T_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarBlankSector2TimeseriesRadar
+        public Guid? RadarBlankSector2TimeseriesRadar
         {
             get
             {
-                return GetGuid( RBS2T_RADAR_FIELD_ID );
+                return GetNullableGuid( RBS2T_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableAutomaticFrequencyControlTimeseriesRadar
+        public Guid? RadarEnableAutomaticFrequencyControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( REAFCT_RADAR_FIELD_ID );
+                return GetNullableGuid( REAFCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableFastTimeConstantTimeseriesRadar
+        public Guid? RadarEnableFastTimeConstantTimeseriesRadar
         {
             get
             {
-                return GetGuid( REFTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( REFTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableSensitivityTimeControlTimeseriesRadar
+        public Guid? RadarEnableSensitivityTimeControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( RESTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( RESTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarPowerOnTimeseriesRadar
+        public Guid? RadarPowerOnTimeseriesRadar
         {
             get
             {
-                return GetGuid( RPOT_RADAR_FIELD_ID );
+                return GetNullableGuid( RPOT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSaveSettingsTimeseriesRadar
+        public Guid? RadarSaveSettingsTimeseriesRadar
         {
             get
             {
-                return GetGuid( RSST_RADAR_FIELD_ID );
+                return GetNullableGuid( RSST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarTrackingTimeseriesRadar
+        public Guid? RadarTrackingTimeseriesRadar
         {
             get
             {
-                return GetGuid( RTT_RADAR_FIELD_ID );
+                return GetNullableGuid( RTT_RADAR_FIELD_ID );
             }
         }
-        public Guid GNSSAltitudeTimeseriesGNSSDevice
+        public Guid? GNSSAltitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GATS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GATS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GNSSLatitudeTimeseriesGNSSDevice
+        public Guid? GNSSLatitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GLATS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GLATS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GNSSLongitudeTimeseriesGNSSDevice
+        public Guid? GNSSLongitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GLOTS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GLOTS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GyroCourseTimeseriesGyroDevice
+        public Guid? GyroCourseTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GCT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GCT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroHeadingMagneticNorthTimeseriesGyroDevice
+        public Guid? GyroHeadingMagneticNorthTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GHMNT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GHMNT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroHeadingTrueNorthTimeseriesGyroDevice
+        public Guid? GyroHeadingTrueNorthTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GHTNT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GHTNT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroPitchTimeseriesGyroDevice
+        public Guid? GyroPitchTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GPT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GPT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroRateOfTurnTimeseriesGyroDevice
+        public Guid? GyroRateOfTurnTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GROTT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GROTT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroRollTimeseriesGyroDevice
+        public Guid? GyroRollTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GRT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GRT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroSpeedTimeseriesGyroDevice
+        public Guid? GyroSpeedTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GST_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GST_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid RadarLatitudeTimeseriesRadar
+        public Guid? RadarLatitudeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RLATS_RADAR_FIELD_ID );
+                return GetNullableGuid( RLATS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarLongitudeTimeseriesRadar
+        public Guid? RadarLongitudeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RLOTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RLOTS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadomeDewPointTimeseriesRadome
+        public Guid? RadomeDewPointTimeseriesRadome
         {
             get
             {
-                return GetGuid( RDPT_RADOME_FIELD_ID );
+                return GetNullableGuid( RDPT_RADOME_FIELD_ID );
             }
         }
-        public Guid RadomePressureTimeseriesRadome
+        public Guid? RadomePressureTimeseriesRadome
         {
             get
             {
-                return GetGuid( RPT_RADOME_FIELD_ID );
+                return GetNullableGuid( RPT_RADOME_FIELD_ID );
             }
         }
-        public Guid RadomeTemperatureTimeseriesRadome
+        public Guid? RadomeTemperatureTimeseriesRadome
         {
             get
             {
-                return GetGuid( RTETS_RADOME_FIELD_ID );
+                return GetNullableGuid( RTETS_RADOME_FIELD_ID );
             }
         }
-        public Guid VesselDraughtTimeseriesVessel
+        public Guid? VesselDraughtTimeseriesVessel
         {
             get
             {
-                return GetGuid( VDT_VESSEL_FIELD_ID );
+                return GetNullableGuid( VDT_VESSEL_FIELD_ID );
             }
         }
-        public Guid ViewLatitudeTimeseriesView
+        public Guid? ViewLatitudeTimeseriesView
         {
             get
             {
-                return GetGuid( VLATS_VIEW_FIELD_ID );
+                return GetNullableGuid( VLATS_VIEW_FIELD_ID );
             }
         }
-        public Guid ViewLongitudeTimeseriesView
+        public Guid? ViewLongitudeTimeseriesView
         {
             get
             {
-                return GetGuid( VLOTS_VIEW_FIELD_ID );
+                return GetNullableGuid( VLOTS_VIEW_FIELD_ID );
             }
         }
-        public Guid ViewZoomLevelTimeseriesView
+        public Guid? ViewZoomLevelTimeseriesView
         {
             get
             {
-                return GetGuid( VZLT_VIEW_FIELD_ID );
+                return GetNullableGuid( VZLT_VIEW_FIELD_ID );
             }
         }
-        public Guid WeatherStationAbsoluteHumidityTimeseriesWeatherStation
+        public Guid? WeatherStationAbsoluteHumidityTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSAHT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSAHT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationAirTemperatureTimeseriesWeatherStation
+        public Guid? WeatherStationAirTemperatureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSATT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSATT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationBarometricPressureTimeseriesWeatherStation
+        public Guid? WeatherStationBarometricPressureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSBPT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSBPT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationDewPointTimeseriesWeatherStation
+        public Guid? WeatherStationDewPointTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSDPT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSDPT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationRelativeHumidityTimeseriesWeatherStation
+        public Guid? WeatherStationRelativeHumidityTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSRHT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSRHT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWaterTemperatureTimeseriesWeatherStation
+        public Guid? WeatherStationWaterTemperatureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWTT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWTT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWindDirectionTimeseriesWeatherStation
+        public Guid? WeatherStationWindDirectionTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWDT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWDT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWindSpeedTimeseriesWeatherStation
+        public Guid? WeatherStationWindSpeedTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWST_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWST_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationPositionTimeseriesAidToNavigation
+        public Guid? AisAidToNavigationPositionTimeseriesAidToNavigation
         {
             get
             {
-                return GetGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
-        public Guid RadarAzimuthOffsetTimeseriesRadar
+        public Guid? RadarAzimuthOffsetTimeseriesRadar
         {
             get
             {
-                return GetGuid( RAOT_RADAR_FIELD_ID );
+                return GetNullableGuid( RAOT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarFastTimeConstantLevelTimeseriesRadar
+        public Guid? RadarFastTimeConstantLevelTimeseriesRadar
         {
             get
             {
-                return GetGuid( RFTCLT_RADAR_FIELD_ID );
+                return GetNullableGuid( RFTCLT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarFastTimeConstantModeTimeseriesRadar
+        public Guid? RadarFastTimeConstantModeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RFTCMT_RADAR_FIELD_ID );
+                return GetNullableGuid( RFTCMT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarPulseTimeseriesRadar
+        public Guid? RadarPulseTimeseriesRadar
         {
             get
             {
-                return GetGuid( RAPTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RAPTS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector1EndTimeseriesRadar
+        public Guid? RadarSector1EndTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS1ET_RADAR_FIELD_ID );
+                return GetNullableGuid( RS1ET_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector1StartTimeseriesRadar
+        public Guid? RadarSector1StartTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS1ST_RADAR_FIELD_ID );
+                return GetNullableGuid( RS1ST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector2EndTimeseriesRadar
+        public Guid? RadarSector2EndTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS2ET_RADAR_FIELD_ID );
+                return GetNullableGuid( RS2ET_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector2StartTimeseriesRadar
+        public Guid? RadarSector2StartTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS2ST_RADAR_FIELD_ID );
+                return GetNullableGuid( RS2ST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSensitivityTimeControlLevelTimeseriesRadar
+        public Guid? RadarSensitivityTimeControlLevelTimeseriesRadar
         {
             get
             {
-                return GetGuid( RSTCLT_RADAR_FIELD_ID );
+                return GetNullableGuid( RSTCLT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarTuningTimeseriesRadar
+        public Guid? RadarTuningTimeseriesRadar
         {
             get
             {
-                return GetGuid( RATUTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RATUTS_RADAR_FIELD_ID );
             }
         }
-        public Guid VesselPersonsOnBoardTimeseriesVessel
+        public Guid? VesselPersonsOnBoardTimeseriesVessel
         {
             get
             {
-                return GetGuid( VPOBT_VESSEL_FIELD_ID );
+                return GetNullableGuid( VPOBT_VESSEL_FIELD_ID );
             }
         }
-        public Guid RadomeStatusTimeseriesRadome
+        public Guid? RadomeStatusTimeseriesRadome
         {
             get
             {
-                return GetGuid( RST_RADOME_FIELD_ID );
+                return GetNullableGuid( RST_RADOME_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -13144,11 +13144,11 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( T_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid AisAidToNavigationOffPositionTimeseriesAidToNavigation
+        public Guid? AisAidToNavigationOffPositionTimeseriesAidToNavigation
         {
             get
             {
-                return GetGuid( AATNOPT_AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AATNOPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
         public Guid? DeviceEnabledTimeseriesDevice
@@ -13158,361 +13158,361 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( DET_DEVICE_FIELD_ID );
             }
         }
-        public Guid MediaProxySessionEnabledTimeseriesProxySession
+        public Guid? MediaProxySessionEnabledTimeseriesProxySession
         {
             get
             {
-                return GetGuid( MPSET_PROXYSESSION_FIELD_ID );
+                return GetNullableGuid( MPSET_PROXYSESSION_FIELD_ID );
             }
         }
-        public Guid MediaServiceEnabledTimeseriesService
+        public Guid? MediaServiceEnabledTimeseriesService
         {
             get
             {
-                return GetGuid( MSET_SERVICE_FIELD_ID );
+                return GetNullableGuid( MSET_SERVICE_FIELD_ID );
             }
         }
-        public Guid RadarAutomaticSensitivityTimeControlTimeseriesRadar
+        public Guid? RadarAutomaticSensitivityTimeControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( RASTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( RASTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarBlankSector1TimeseriesRadar
+        public Guid? RadarBlankSector1TimeseriesRadar
         {
             get
             {
-                return GetGuid( RBS1T_RADAR_FIELD_ID );
+                return GetNullableGuid( RBS1T_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarBlankSector2TimeseriesRadar
+        public Guid? RadarBlankSector2TimeseriesRadar
         {
             get
             {
-                return GetGuid( RBS2T_RADAR_FIELD_ID );
+                return GetNullableGuid( RBS2T_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableAutomaticFrequencyControlTimeseriesRadar
+        public Guid? RadarEnableAutomaticFrequencyControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( REAFCT_RADAR_FIELD_ID );
+                return GetNullableGuid( REAFCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableFastTimeConstantTimeseriesRadar
+        public Guid? RadarEnableFastTimeConstantTimeseriesRadar
         {
             get
             {
-                return GetGuid( REFTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( REFTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableSensitivityTimeControlTimeseriesRadar
+        public Guid? RadarEnableSensitivityTimeControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( RESTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( RESTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarPowerOnTimeseriesRadar
+        public Guid? RadarPowerOnTimeseriesRadar
         {
             get
             {
-                return GetGuid( RPOT_RADAR_FIELD_ID );
+                return GetNullableGuid( RPOT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSaveSettingsTimeseriesRadar
+        public Guid? RadarSaveSettingsTimeseriesRadar
         {
             get
             {
-                return GetGuid( RSST_RADAR_FIELD_ID );
+                return GetNullableGuid( RSST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarTrackingTimeseriesRadar
+        public Guid? RadarTrackingTimeseriesRadar
         {
             get
             {
-                return GetGuid( RTT_RADAR_FIELD_ID );
+                return GetNullableGuid( RTT_RADAR_FIELD_ID );
             }
         }
-        public Guid GNSSAltitudeTimeseriesGNSSDevice
+        public Guid? GNSSAltitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GATS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GATS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GNSSLatitudeTimeseriesGNSSDevice
+        public Guid? GNSSLatitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GLATS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GLATS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GNSSLongitudeTimeseriesGNSSDevice
+        public Guid? GNSSLongitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GLOTS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GLOTS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GyroCourseTimeseriesGyroDevice
+        public Guid? GyroCourseTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GCT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GCT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroHeadingMagneticNorthTimeseriesGyroDevice
+        public Guid? GyroHeadingMagneticNorthTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GHMNT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GHMNT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroHeadingTrueNorthTimeseriesGyroDevice
+        public Guid? GyroHeadingTrueNorthTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GHTNT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GHTNT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroPitchTimeseriesGyroDevice
+        public Guid? GyroPitchTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GPT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GPT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroRateOfTurnTimeseriesGyroDevice
+        public Guid? GyroRateOfTurnTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GROTT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GROTT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroRollTimeseriesGyroDevice
+        public Guid? GyroRollTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GRT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GRT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroSpeedTimeseriesGyroDevice
+        public Guid? GyroSpeedTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GST_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GST_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid RadarLatitudeTimeseriesRadar
+        public Guid? RadarLatitudeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RLATS_RADAR_FIELD_ID );
+                return GetNullableGuid( RLATS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarLongitudeTimeseriesRadar
+        public Guid? RadarLongitudeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RLOTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RLOTS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadomeDewPointTimeseriesRadome
+        public Guid? RadomeDewPointTimeseriesRadome
         {
             get
             {
-                return GetGuid( RDPT_RADOME_FIELD_ID );
+                return GetNullableGuid( RDPT_RADOME_FIELD_ID );
             }
         }
-        public Guid RadomePressureTimeseriesRadome
+        public Guid? RadomePressureTimeseriesRadome
         {
             get
             {
-                return GetGuid( RPT_RADOME_FIELD_ID );
+                return GetNullableGuid( RPT_RADOME_FIELD_ID );
             }
         }
-        public Guid RadomeTemperatureTimeseriesRadome
+        public Guid? RadomeTemperatureTimeseriesRadome
         {
             get
             {
-                return GetGuid( RTETS_RADOME_FIELD_ID );
+                return GetNullableGuid( RTETS_RADOME_FIELD_ID );
             }
         }
-        public Guid VesselDraughtTimeseriesVessel
+        public Guid? VesselDraughtTimeseriesVessel
         {
             get
             {
-                return GetGuid( VDT_VESSEL_FIELD_ID );
+                return GetNullableGuid( VDT_VESSEL_FIELD_ID );
             }
         }
-        public Guid ViewLatitudeTimeseriesView
+        public Guid? ViewLatitudeTimeseriesView
         {
             get
             {
-                return GetGuid( VLATS_VIEW_FIELD_ID );
+                return GetNullableGuid( VLATS_VIEW_FIELD_ID );
             }
         }
-        public Guid ViewLongitudeTimeseriesView
+        public Guid? ViewLongitudeTimeseriesView
         {
             get
             {
-                return GetGuid( VLOTS_VIEW_FIELD_ID );
+                return GetNullableGuid( VLOTS_VIEW_FIELD_ID );
             }
         }
-        public Guid ViewZoomLevelTimeseriesView
+        public Guid? ViewZoomLevelTimeseriesView
         {
             get
             {
-                return GetGuid( VZLT_VIEW_FIELD_ID );
+                return GetNullableGuid( VZLT_VIEW_FIELD_ID );
             }
         }
-        public Guid WeatherStationAbsoluteHumidityTimeseriesWeatherStation
+        public Guid? WeatherStationAbsoluteHumidityTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSAHT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSAHT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationAirTemperatureTimeseriesWeatherStation
+        public Guid? WeatherStationAirTemperatureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSATT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSATT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationBarometricPressureTimeseriesWeatherStation
+        public Guid? WeatherStationBarometricPressureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSBPT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSBPT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationDewPointTimeseriesWeatherStation
+        public Guid? WeatherStationDewPointTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSDPT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSDPT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationRelativeHumidityTimeseriesWeatherStation
+        public Guid? WeatherStationRelativeHumidityTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSRHT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSRHT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWaterTemperatureTimeseriesWeatherStation
+        public Guid? WeatherStationWaterTemperatureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWTT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWTT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWindDirectionTimeseriesWeatherStation
+        public Guid? WeatherStationWindDirectionTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWDT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWDT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWindSpeedTimeseriesWeatherStation
+        public Guid? WeatherStationWindSpeedTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWST_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWST_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationPositionTimeseriesAidToNavigation
+        public Guid? AisAidToNavigationPositionTimeseriesAidToNavigation
         {
             get
             {
-                return GetGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
-        public Guid RadarAzimuthOffsetTimeseriesRadar
+        public Guid? RadarAzimuthOffsetTimeseriesRadar
         {
             get
             {
-                return GetGuid( RAOT_RADAR_FIELD_ID );
+                return GetNullableGuid( RAOT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarFastTimeConstantLevelTimeseriesRadar
+        public Guid? RadarFastTimeConstantLevelTimeseriesRadar
         {
             get
             {
-                return GetGuid( RFTCLT_RADAR_FIELD_ID );
+                return GetNullableGuid( RFTCLT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarFastTimeConstantModeTimeseriesRadar
+        public Guid? RadarFastTimeConstantModeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RFTCMT_RADAR_FIELD_ID );
+                return GetNullableGuid( RFTCMT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarPulseTimeseriesRadar
+        public Guid? RadarPulseTimeseriesRadar
         {
             get
             {
-                return GetGuid( RAPTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RAPTS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector1EndTimeseriesRadar
+        public Guid? RadarSector1EndTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS1ET_RADAR_FIELD_ID );
+                return GetNullableGuid( RS1ET_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector1StartTimeseriesRadar
+        public Guid? RadarSector1StartTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS1ST_RADAR_FIELD_ID );
+                return GetNullableGuid( RS1ST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector2EndTimeseriesRadar
+        public Guid? RadarSector2EndTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS2ET_RADAR_FIELD_ID );
+                return GetNullableGuid( RS2ET_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector2StartTimeseriesRadar
+        public Guid? RadarSector2StartTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS2ST_RADAR_FIELD_ID );
+                return GetNullableGuid( RS2ST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSensitivityTimeControlLevelTimeseriesRadar
+        public Guid? RadarSensitivityTimeControlLevelTimeseriesRadar
         {
             get
             {
-                return GetGuid( RSTCLT_RADAR_FIELD_ID );
+                return GetNullableGuid( RSTCLT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarTuningTimeseriesRadar
+        public Guid? RadarTuningTimeseriesRadar
         {
             get
             {
-                return GetGuid( RATUTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RATUTS_RADAR_FIELD_ID );
             }
         }
-        public Guid VesselPersonsOnBoardTimeseriesVessel
+        public Guid? VesselPersonsOnBoardTimeseriesVessel
         {
             get
             {
-                return GetGuid( VPOBT_VESSEL_FIELD_ID );
+                return GetNullableGuid( VPOBT_VESSEL_FIELD_ID );
             }
         }
-        public Guid RadomeStatusTimeseriesRadome
+        public Guid? RadomeStatusTimeseriesRadome
         {
             get
             {
-                return GetGuid( RST_RADOME_FIELD_ID );
+                return GetNullableGuid( RST_RADOME_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -14824,11 +14824,11 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( BOTS_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid AisAidToNavigationOffPositionTimeseriesAidToNavigation
+        public Guid? AisAidToNavigationOffPositionTimeseriesAidToNavigation
         {
             get
             {
-                return GetGuid( AATNOPT_AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AATNOPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
         public Guid? DeviceEnabledTimeseriesDevice
@@ -14838,81 +14838,81 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( DET_DEVICE_FIELD_ID );
             }
         }
-        public Guid MediaProxySessionEnabledTimeseriesProxySession
+        public Guid? MediaProxySessionEnabledTimeseriesProxySession
         {
             get
             {
-                return GetGuid( MPSET_PROXYSESSION_FIELD_ID );
+                return GetNullableGuid( MPSET_PROXYSESSION_FIELD_ID );
             }
         }
-        public Guid MediaServiceEnabledTimeseriesService
+        public Guid? MediaServiceEnabledTimeseriesService
         {
             get
             {
-                return GetGuid( MSET_SERVICE_FIELD_ID );
+                return GetNullableGuid( MSET_SERVICE_FIELD_ID );
             }
         }
-        public Guid RadarAutomaticSensitivityTimeControlTimeseriesRadar
+        public Guid? RadarAutomaticSensitivityTimeControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( RASTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( RASTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarBlankSector1TimeseriesRadar
+        public Guid? RadarBlankSector1TimeseriesRadar
         {
             get
             {
-                return GetGuid( RBS1T_RADAR_FIELD_ID );
+                return GetNullableGuid( RBS1T_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarBlankSector2TimeseriesRadar
+        public Guid? RadarBlankSector2TimeseriesRadar
         {
             get
             {
-                return GetGuid( RBS2T_RADAR_FIELD_ID );
+                return GetNullableGuid( RBS2T_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableAutomaticFrequencyControlTimeseriesRadar
+        public Guid? RadarEnableAutomaticFrequencyControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( REAFCT_RADAR_FIELD_ID );
+                return GetNullableGuid( REAFCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableFastTimeConstantTimeseriesRadar
+        public Guid? RadarEnableFastTimeConstantTimeseriesRadar
         {
             get
             {
-                return GetGuid( REFTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( REFTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarEnableSensitivityTimeControlTimeseriesRadar
+        public Guid? RadarEnableSensitivityTimeControlTimeseriesRadar
         {
             get
             {
-                return GetGuid( RESTCT_RADAR_FIELD_ID );
+                return GetNullableGuid( RESTCT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarPowerOnTimeseriesRadar
+        public Guid? RadarPowerOnTimeseriesRadar
         {
             get
             {
-                return GetGuid( RPOT_RADAR_FIELD_ID );
+                return GetNullableGuid( RPOT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSaveSettingsTimeseriesRadar
+        public Guid? RadarSaveSettingsTimeseriesRadar
         {
             get
             {
-                return GetGuid( RSST_RADAR_FIELD_ID );
+                return GetNullableGuid( RSST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarTrackingTimeseriesRadar
+        public Guid? RadarTrackingTimeseriesRadar
         {
             get
             {
-                return GetGuid( RTT_RADAR_FIELD_ID );
+                return GetNullableGuid( RTT_RADAR_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -15326,193 +15326,193 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( DT_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid GNSSAltitudeTimeseriesGNSSDevice
+        public Guid? GNSSAltitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GATS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GATS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GNSSLatitudeTimeseriesGNSSDevice
+        public Guid? GNSSLatitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GLATS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GLATS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GNSSLongitudeTimeseriesGNSSDevice
+        public Guid? GNSSLongitudeTimeseriesGNSSDevice
         {
             get
             {
-                return GetGuid( GLOTS_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GLOTS_GNSSDEVICE_FIELD_ID );
             }
         }
-        public Guid GyroCourseTimeseriesGyroDevice
+        public Guid? GyroCourseTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GCT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GCT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroHeadingMagneticNorthTimeseriesGyroDevice
+        public Guid? GyroHeadingMagneticNorthTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GHMNT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GHMNT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroHeadingTrueNorthTimeseriesGyroDevice
+        public Guid? GyroHeadingTrueNorthTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GHTNT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GHTNT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroPitchTimeseriesGyroDevice
+        public Guid? GyroPitchTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GPT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GPT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroRateOfTurnTimeseriesGyroDevice
+        public Guid? GyroRateOfTurnTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GROTT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GROTT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroRollTimeseriesGyroDevice
+        public Guid? GyroRollTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GRT_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GRT_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid GyroSpeedTimeseriesGyroDevice
+        public Guid? GyroSpeedTimeseriesGyroDevice
         {
             get
             {
-                return GetGuid( GST_GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GST_GYRODEVICE_FIELD_ID );
             }
         }
-        public Guid RadarLatitudeTimeseriesRadar
+        public Guid? RadarLatitudeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RLATS_RADAR_FIELD_ID );
+                return GetNullableGuid( RLATS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarLongitudeTimeseriesRadar
+        public Guid? RadarLongitudeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RLOTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RLOTS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadomeDewPointTimeseriesRadome
+        public Guid? RadomeDewPointTimeseriesRadome
         {
             get
             {
-                return GetGuid( RDPT_RADOME_FIELD_ID );
+                return GetNullableGuid( RDPT_RADOME_FIELD_ID );
             }
         }
-        public Guid RadomePressureTimeseriesRadome
+        public Guid? RadomePressureTimeseriesRadome
         {
             get
             {
-                return GetGuid( RPT_RADOME_FIELD_ID );
+                return GetNullableGuid( RPT_RADOME_FIELD_ID );
             }
         }
-        public Guid RadomeTemperatureTimeseriesRadome
+        public Guid? RadomeTemperatureTimeseriesRadome
         {
             get
             {
-                return GetGuid( RTETS_RADOME_FIELD_ID );
+                return GetNullableGuid( RTETS_RADOME_FIELD_ID );
             }
         }
-        public Guid VesselDraughtTimeseriesVessel
+        public Guid? VesselDraughtTimeseriesVessel
         {
             get
             {
-                return GetGuid( VDT_VESSEL_FIELD_ID );
+                return GetNullableGuid( VDT_VESSEL_FIELD_ID );
             }
         }
-        public Guid ViewLatitudeTimeseriesView
+        public Guid? ViewLatitudeTimeseriesView
         {
             get
             {
-                return GetGuid( VLATS_VIEW_FIELD_ID );
+                return GetNullableGuid( VLATS_VIEW_FIELD_ID );
             }
         }
-        public Guid ViewLongitudeTimeseriesView
+        public Guid? ViewLongitudeTimeseriesView
         {
             get
             {
-                return GetGuid( VLOTS_VIEW_FIELD_ID );
+                return GetNullableGuid( VLOTS_VIEW_FIELD_ID );
             }
         }
-        public Guid ViewZoomLevelTimeseriesView
+        public Guid? ViewZoomLevelTimeseriesView
         {
             get
             {
-                return GetGuid( VZLT_VIEW_FIELD_ID );
+                return GetNullableGuid( VZLT_VIEW_FIELD_ID );
             }
         }
-        public Guid WeatherStationAbsoluteHumidityTimeseriesWeatherStation
+        public Guid? WeatherStationAbsoluteHumidityTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSAHT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSAHT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationAirTemperatureTimeseriesWeatherStation
+        public Guid? WeatherStationAirTemperatureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSATT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSATT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationBarometricPressureTimeseriesWeatherStation
+        public Guid? WeatherStationBarometricPressureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSBPT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSBPT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationDewPointTimeseriesWeatherStation
+        public Guid? WeatherStationDewPointTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSDPT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSDPT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationRelativeHumidityTimeseriesWeatherStation
+        public Guid? WeatherStationRelativeHumidityTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSRHT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSRHT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWaterTemperatureTimeseriesWeatherStation
+        public Guid? WeatherStationWaterTemperatureTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWTT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWTT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWindDirectionTimeseriesWeatherStation
+        public Guid? WeatherStationWindDirectionTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWDT_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWDT_WEATHERSTATION_FIELD_ID );
             }
         }
-        public Guid WeatherStationWindSpeedTimeseriesWeatherStation
+        public Guid? WeatherStationWindSpeedTimeseriesWeatherStation
         {
             get
             {
-                return GetGuid( WSWST_WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WSWST_WEATHERSTATION_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -16072,11 +16072,11 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( GP2D_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid AisAidToNavigationPositionTimeseriesAidToNavigation
+        public Guid? AisAidToNavigationPositionTimeseriesAidToNavigation
         {
             get
             {
-                return GetGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AATNPT_AIDTONAVIGATION_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -16250,81 +16250,81 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( I32T_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid RadarAzimuthOffsetTimeseriesRadar
+        public Guid? RadarAzimuthOffsetTimeseriesRadar
         {
             get
             {
-                return GetGuid( RAOT_RADAR_FIELD_ID );
+                return GetNullableGuid( RAOT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarFastTimeConstantLevelTimeseriesRadar
+        public Guid? RadarFastTimeConstantLevelTimeseriesRadar
         {
             get
             {
-                return GetGuid( RFTCLT_RADAR_FIELD_ID );
+                return GetNullableGuid( RFTCLT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarFastTimeConstantModeTimeseriesRadar
+        public Guid? RadarFastTimeConstantModeTimeseriesRadar
         {
             get
             {
-                return GetGuid( RFTCMT_RADAR_FIELD_ID );
+                return GetNullableGuid( RFTCMT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarPulseTimeseriesRadar
+        public Guid? RadarPulseTimeseriesRadar
         {
             get
             {
-                return GetGuid( RAPTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RAPTS_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector1EndTimeseriesRadar
+        public Guid? RadarSector1EndTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS1ET_RADAR_FIELD_ID );
+                return GetNullableGuid( RS1ET_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector1StartTimeseriesRadar
+        public Guid? RadarSector1StartTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS1ST_RADAR_FIELD_ID );
+                return GetNullableGuid( RS1ST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector2EndTimeseriesRadar
+        public Guid? RadarSector2EndTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS2ET_RADAR_FIELD_ID );
+                return GetNullableGuid( RS2ET_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSector2StartTimeseriesRadar
+        public Guid? RadarSector2StartTimeseriesRadar
         {
             get
             {
-                return GetGuid( RS2ST_RADAR_FIELD_ID );
+                return GetNullableGuid( RS2ST_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarSensitivityTimeControlLevelTimeseriesRadar
+        public Guid? RadarSensitivityTimeControlLevelTimeseriesRadar
         {
             get
             {
-                return GetGuid( RSTCLT_RADAR_FIELD_ID );
+                return GetNullableGuid( RSTCLT_RADAR_FIELD_ID );
             }
         }
-        public Guid RadarTuningTimeseriesRadar
+        public Guid? RadarTuningTimeseriesRadar
         {
             get
             {
-                return GetGuid( RATUTS_RADAR_FIELD_ID );
+                return GetNullableGuid( RATUTS_RADAR_FIELD_ID );
             }
         }
-        public Guid VesselPersonsOnBoardTimeseriesVessel
+        public Guid? VesselPersonsOnBoardTimeseriesVessel
         {
             get
             {
-                return GetGuid( VPOBT_VESSEL_FIELD_ID );
+                return GetNullableGuid( VPOBT_VESSEL_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -16628,11 +16628,11 @@ namespace Barrelman.Data.Database
                 return new TimeSpan( GetInt64( U32T_MAXRETENTION_FIELD_ID ) );
             }
         }
-        public Guid RadomeStatusTimeseriesRadome
+        public Guid? RadomeStatusTimeseriesRadome
         {
             get
             {
-                return GetGuid( RST_RADOME_FIELD_ID );
+                return GetNullableGuid( RST_RADOME_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )

@@ -63,7 +63,7 @@ namespace Barrelman.Data.Tests
             Assert.IsTrue(inserted);
 
             // 4: Retrieve a copy of the object from the database.
-            //  a: GetTimeseriesCatalogElementById returns any TimeseriesCatalogElementObject derived object
+            //  a: GetTimeseriesCatalogElementById uses ComplexTimeseriesCatalogElementDataReader and returns any TimeseriesCatalogElementObject derived object
             var retrievedTimeseriesCatalogElement = dataContext.GetTimeseriesCatalogElementById(id);
             Assert.IsNotNull(retrievedTimeseriesCatalogElement);
             //  b: Check that the retrieved object is of the expected type
@@ -77,7 +77,7 @@ namespace Barrelman.Data.Tests
             Assert.IsTrue(updated);
 
             // 6: Retrieve a copy of the object from the database.
-            //  a: GetTimeseriesCatalogById only returns TimeseriesCatalogObject objects
+            //  a: GetTimeseriesCatalogById uses SimpleTimeseriesCatalogDataReader, which is more efficient than ComplexTimeseriesCatalogElementDataReader, and only returns TimeseriesCatalogObject objects
             var retrievedTimeseriesCatalog = dataContext.GetTimeseriesCatalogById(id);
             Assert.IsNotNull(retrievedTimeseriesCatalog);
             //  b: Check that the retrieved object is equal to the original object
@@ -136,7 +136,7 @@ namespace Barrelman.Data.Tests
             var memoryStream = new MemoryStream();
 
             // 4: Retrieve a copy of the object from the database.
-            //  a: GetTimeseriesCatalogElementById serializes any TimeseriesCatalogElementObject derived object
+            //  a: GetTimeseriesCatalogElementById uses ComplexTimeseriesCatalogElementDataReader and serializes any TimeseriesCatalogElementObject derived object
             dataContext.GetTimeseriesCatalogElementById(id, memoryStream);
             memoryStream.Position = 0;
             var binaryReader = new BinaryReader(memoryStream,System.Text.Encoding.Unicode);

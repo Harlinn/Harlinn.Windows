@@ -5271,7 +5271,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -5347,11 +5347,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -9352,7 +9352,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -9423,11 +9423,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -9867,7 +9867,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -9938,11 +9938,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -10966,7 +10966,7 @@ namespace Barrelman::Database
         FixedDBWideString<127> name_;
         WideString description_;
         SQLLEN descriptionLength_ = SQL_NULL_DATA;
-        Guid enabledTimeseries_;
+        DBGuid enabledTimeseries_;
     public:
         using Base = ItemColumnData;
 
@@ -11010,11 +11010,11 @@ namespace Barrelman::Database
         {
             description_ = description;
         }
-        const Guid& EnabledTimeseries( ) const
+        const DBGuid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
-        void SetEnabledTimeseries( const Guid& enabledTimeseries )
+        void SetEnabledTimeseries( const DBGuid& enabledTimeseries )
         {
             enabledTimeseries_ = enabledTimeseries;
         }
@@ -11085,9 +11085,9 @@ namespace Barrelman::Database
 
     class GNSSDeviceColumnData : public DeviceColumnData
     {
-        Guid latitudeTimeseries_;
-        Guid longitudeTimeseries_;
-        Guid altitudeTimeseries_;
+        DBGuid latitudeTimeseries_;
+        DBGuid longitudeTimeseries_;
+        DBGuid altitudeTimeseries_;
     public:
         using Base = DeviceColumnData;
 
@@ -11106,27 +11106,27 @@ namespace Barrelman::Database
             return Kind::GNSSDevice;
         }
 
-        const Guid& LatitudeTimeseries( ) const
+        const DBGuid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
         }
-        void SetLatitudeTimeseries( const Guid& latitudeTimeseries )
+        void SetLatitudeTimeseries( const DBGuid& latitudeTimeseries )
         {
             latitudeTimeseries_ = latitudeTimeseries;
         }
-        const Guid& LongitudeTimeseries( ) const
+        const DBGuid& LongitudeTimeseries( ) const
         {
             return longitudeTimeseries_;
         }
-        void SetLongitudeTimeseries( const Guid& longitudeTimeseries )
+        void SetLongitudeTimeseries( const DBGuid& longitudeTimeseries )
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        const Guid& AltitudeTimeseries( ) const
+        const DBGuid& AltitudeTimeseries( ) const
         {
             return altitudeTimeseries_;
         }
-        void SetAltitudeTimeseries( const Guid& altitudeTimeseries )
+        void SetAltitudeTimeseries( const DBGuid& altitudeTimeseries )
         {
             altitudeTimeseries_ = altitudeTimeseries;
         }
@@ -11160,13 +11160,13 @@ namespace Barrelman::Database
 
     class GyroDeviceColumnData : public DeviceColumnData
     {
-        Guid headingTrueNorthTimeseries_;
-        Guid headingMagneticNorthTimeseries_;
-        Guid pitchTimeseries_;
-        Guid rateOfTurnTimeseries_;
-        Guid rollTimeseries_;
-        Guid courseTimeseries_;
-        Guid speedTimeseries_;
+        DBGuid headingTrueNorthTimeseries_;
+        DBGuid headingMagneticNorthTimeseries_;
+        DBGuid pitchTimeseries_;
+        DBGuid rateOfTurnTimeseries_;
+        DBGuid rollTimeseries_;
+        DBGuid courseTimeseries_;
+        DBGuid speedTimeseries_;
         Guid gNSSDevice_;
     public:
         using Base = DeviceColumnData;
@@ -11191,59 +11191,59 @@ namespace Barrelman::Database
             return Kind::GyroDevice;
         }
 
-        const Guid& HeadingTrueNorthTimeseries( ) const
+        const DBGuid& HeadingTrueNorthTimeseries( ) const
         {
             return headingTrueNorthTimeseries_;
         }
-        void SetHeadingTrueNorthTimeseries( const Guid& headingTrueNorthTimeseries )
+        void SetHeadingTrueNorthTimeseries( const DBGuid& headingTrueNorthTimeseries )
         {
             headingTrueNorthTimeseries_ = headingTrueNorthTimeseries;
         }
-        const Guid& HeadingMagneticNorthTimeseries( ) const
+        const DBGuid& HeadingMagneticNorthTimeseries( ) const
         {
             return headingMagneticNorthTimeseries_;
         }
-        void SetHeadingMagneticNorthTimeseries( const Guid& headingMagneticNorthTimeseries )
+        void SetHeadingMagneticNorthTimeseries( const DBGuid& headingMagneticNorthTimeseries )
         {
             headingMagneticNorthTimeseries_ = headingMagneticNorthTimeseries;
         }
-        const Guid& PitchTimeseries( ) const
+        const DBGuid& PitchTimeseries( ) const
         {
             return pitchTimeseries_;
         }
-        void SetPitchTimeseries( const Guid& pitchTimeseries )
+        void SetPitchTimeseries( const DBGuid& pitchTimeseries )
         {
             pitchTimeseries_ = pitchTimeseries;
         }
-        const Guid& RateOfTurnTimeseries( ) const
+        const DBGuid& RateOfTurnTimeseries( ) const
         {
             return rateOfTurnTimeseries_;
         }
-        void SetRateOfTurnTimeseries( const Guid& rateOfTurnTimeseries )
+        void SetRateOfTurnTimeseries( const DBGuid& rateOfTurnTimeseries )
         {
             rateOfTurnTimeseries_ = rateOfTurnTimeseries;
         }
-        const Guid& RollTimeseries( ) const
+        const DBGuid& RollTimeseries( ) const
         {
             return rollTimeseries_;
         }
-        void SetRollTimeseries( const Guid& rollTimeseries )
+        void SetRollTimeseries( const DBGuid& rollTimeseries )
         {
             rollTimeseries_ = rollTimeseries;
         }
-        const Guid& CourseTimeseries( ) const
+        const DBGuid& CourseTimeseries( ) const
         {
             return courseTimeseries_;
         }
-        void SetCourseTimeseries( const Guid& courseTimeseries )
+        void SetCourseTimeseries( const DBGuid& courseTimeseries )
         {
             courseTimeseries_ = courseTimeseries;
         }
-        const Guid& SpeedTimeseries( ) const
+        const DBGuid& SpeedTimeseries( ) const
         {
             return speedTimeseries_;
         }
-        void SetSpeedTimeseries( const Guid& speedTimeseries )
+        void SetSpeedTimeseries( const DBGuid& speedTimeseries )
         {
             speedTimeseries_ = speedTimeseries;
         }
@@ -11388,10 +11388,10 @@ namespace Barrelman::Database
     class RadomeDeviceColumnData : public DeviceColumnData
     {
         DBGuid radar_;
-        Guid pressureTimeseries_;
-        Guid temperatureTimeseries_;
-        Guid dewPointTimeseries_;
-        Guid statusTimeseries_;
+        DBGuid pressureTimeseries_;
+        DBGuid temperatureTimeseries_;
+        DBGuid dewPointTimeseries_;
+        DBGuid statusTimeseries_;
     public:
         using Base = DeviceColumnData;
 
@@ -11420,35 +11420,35 @@ namespace Barrelman::Database
         {
             radar_ = radar;
         }
-        const Guid& PressureTimeseries( ) const
+        const DBGuid& PressureTimeseries( ) const
         {
             return pressureTimeseries_;
         }
-        void SetPressureTimeseries( const Guid& pressureTimeseries )
+        void SetPressureTimeseries( const DBGuid& pressureTimeseries )
         {
             pressureTimeseries_ = pressureTimeseries;
         }
-        const Guid& TemperatureTimeseries( ) const
+        const DBGuid& TemperatureTimeseries( ) const
         {
             return temperatureTimeseries_;
         }
-        void SetTemperatureTimeseries( const Guid& temperatureTimeseries )
+        void SetTemperatureTimeseries( const DBGuid& temperatureTimeseries )
         {
             temperatureTimeseries_ = temperatureTimeseries;
         }
-        const Guid& DewPointTimeseries( ) const
+        const DBGuid& DewPointTimeseries( ) const
         {
             return dewPointTimeseries_;
         }
-        void SetDewPointTimeseries( const Guid& dewPointTimeseries )
+        void SetDewPointTimeseries( const DBGuid& dewPointTimeseries )
         {
             dewPointTimeseries_ = dewPointTimeseries;
         }
-        const Guid& StatusTimeseries( ) const
+        const DBGuid& StatusTimeseries( ) const
         {
             return statusTimeseries_;
         }
-        void SetStatusTimeseries( const Guid& statusTimeseries )
+        void SetStatusTimeseries( const DBGuid& statusTimeseries )
         {
             statusTimeseries_ = statusTimeseries;
         }
@@ -11546,27 +11546,27 @@ namespace Barrelman::Database
 
     class RadarDeviceColumnData : public TrackerDeviceColumnData
     {
-        Guid saveSettingsTimeseries_;
-        Guid powerOnTimeseries_;
-        Guid trackingOnTimeseries_;
-        Guid radarPulseTimeseries_;
-        Guid tuningTimeseries_;
-        Guid blankSector1Timeseries_;
-        Guid sector1StartTimeseries_;
-        Guid sector1EndTimeseries_;
-        Guid blankSector2Timeseries_;
-        Guid sector2StartTimeseries_;
-        Guid sector2EndTimeseries_;
-        Guid enableAutomaticFrequencyControlTimeseries_;
-        Guid azimuthOffsetTimeseries_;
-        Guid enableSensitivityTimeControlTimeseries_;
-        Guid automaticSensitivityTimeControlTimeseries_;
-        Guid sensitivityTimeControlLevelTimeseries_;
-        Guid enableFastTimeConstantTimeseries_;
-        Guid fastTimeConstantLevelTimeseries_;
-        Guid fastTimeConstantModeTimeseries_;
-        Guid latitudeTimeseries_;
-        Guid longitudeTimeseries_;
+        DBGuid saveSettingsTimeseries_;
+        DBGuid powerOnTimeseries_;
+        DBGuid trackingOnTimeseries_;
+        DBGuid radarPulseTimeseries_;
+        DBGuid tuningTimeseries_;
+        DBGuid blankSector1Timeseries_;
+        DBGuid sector1StartTimeseries_;
+        DBGuid sector1EndTimeseries_;
+        DBGuid blankSector2Timeseries_;
+        DBGuid sector2StartTimeseries_;
+        DBGuid sector2EndTimeseries_;
+        DBGuid enableAutomaticFrequencyControlTimeseries_;
+        DBGuid azimuthOffsetTimeseries_;
+        DBGuid enableSensitivityTimeControlTimeseries_;
+        DBGuid automaticSensitivityTimeControlTimeseries_;
+        DBGuid sensitivityTimeControlLevelTimeseries_;
+        DBGuid enableFastTimeConstantTimeseries_;
+        DBGuid fastTimeConstantLevelTimeseries_;
+        DBGuid fastTimeConstantModeTimeseries_;
+        DBGuid latitudeTimeseries_;
+        DBGuid longitudeTimeseries_;
         DBGuid radome_;
         DBGuid gNSSDevice_;
     public:
@@ -11607,171 +11607,171 @@ namespace Barrelman::Database
             return Kind::RadarDevice;
         }
 
-        const Guid& SaveSettingsTimeseries( ) const
+        const DBGuid& SaveSettingsTimeseries( ) const
         {
             return saveSettingsTimeseries_;
         }
-        void SetSaveSettingsTimeseries( const Guid& saveSettingsTimeseries )
+        void SetSaveSettingsTimeseries( const DBGuid& saveSettingsTimeseries )
         {
             saveSettingsTimeseries_ = saveSettingsTimeseries;
         }
-        const Guid& PowerOnTimeseries( ) const
+        const DBGuid& PowerOnTimeseries( ) const
         {
             return powerOnTimeseries_;
         }
-        void SetPowerOnTimeseries( const Guid& powerOnTimeseries )
+        void SetPowerOnTimeseries( const DBGuid& powerOnTimeseries )
         {
             powerOnTimeseries_ = powerOnTimeseries;
         }
-        const Guid& TrackingOnTimeseries( ) const
+        const DBGuid& TrackingOnTimeseries( ) const
         {
             return trackingOnTimeseries_;
         }
-        void SetTrackingOnTimeseries( const Guid& trackingOnTimeseries )
+        void SetTrackingOnTimeseries( const DBGuid& trackingOnTimeseries )
         {
             trackingOnTimeseries_ = trackingOnTimeseries;
         }
-        const Guid& RadarPulseTimeseries( ) const
+        const DBGuid& RadarPulseTimeseries( ) const
         {
             return radarPulseTimeseries_;
         }
-        void SetRadarPulseTimeseries( const Guid& radarPulseTimeseries )
+        void SetRadarPulseTimeseries( const DBGuid& radarPulseTimeseries )
         {
             radarPulseTimeseries_ = radarPulseTimeseries;
         }
-        const Guid& TuningTimeseries( ) const
+        const DBGuid& TuningTimeseries( ) const
         {
             return tuningTimeseries_;
         }
-        void SetTuningTimeseries( const Guid& tuningTimeseries )
+        void SetTuningTimeseries( const DBGuid& tuningTimeseries )
         {
             tuningTimeseries_ = tuningTimeseries;
         }
-        const Guid& BlankSector1Timeseries( ) const
+        const DBGuid& BlankSector1Timeseries( ) const
         {
             return blankSector1Timeseries_;
         }
-        void SetBlankSector1Timeseries( const Guid& blankSector1Timeseries )
+        void SetBlankSector1Timeseries( const DBGuid& blankSector1Timeseries )
         {
             blankSector1Timeseries_ = blankSector1Timeseries;
         }
-        const Guid& Sector1StartTimeseries( ) const
+        const DBGuid& Sector1StartTimeseries( ) const
         {
             return sector1StartTimeseries_;
         }
-        void SetSector1StartTimeseries( const Guid& sector1StartTimeseries )
+        void SetSector1StartTimeseries( const DBGuid& sector1StartTimeseries )
         {
             sector1StartTimeseries_ = sector1StartTimeseries;
         }
-        const Guid& Sector1EndTimeseries( ) const
+        const DBGuid& Sector1EndTimeseries( ) const
         {
             return sector1EndTimeseries_;
         }
-        void SetSector1EndTimeseries( const Guid& sector1EndTimeseries )
+        void SetSector1EndTimeseries( const DBGuid& sector1EndTimeseries )
         {
             sector1EndTimeseries_ = sector1EndTimeseries;
         }
-        const Guid& BlankSector2Timeseries( ) const
+        const DBGuid& BlankSector2Timeseries( ) const
         {
             return blankSector2Timeseries_;
         }
-        void SetBlankSector2Timeseries( const Guid& blankSector2Timeseries )
+        void SetBlankSector2Timeseries( const DBGuid& blankSector2Timeseries )
         {
             blankSector2Timeseries_ = blankSector2Timeseries;
         }
-        const Guid& Sector2StartTimeseries( ) const
+        const DBGuid& Sector2StartTimeseries( ) const
         {
             return sector2StartTimeseries_;
         }
-        void SetSector2StartTimeseries( const Guid& sector2StartTimeseries )
+        void SetSector2StartTimeseries( const DBGuid& sector2StartTimeseries )
         {
             sector2StartTimeseries_ = sector2StartTimeseries;
         }
-        const Guid& Sector2EndTimeseries( ) const
+        const DBGuid& Sector2EndTimeseries( ) const
         {
             return sector2EndTimeseries_;
         }
-        void SetSector2EndTimeseries( const Guid& sector2EndTimeseries )
+        void SetSector2EndTimeseries( const DBGuid& sector2EndTimeseries )
         {
             sector2EndTimeseries_ = sector2EndTimeseries;
         }
-        const Guid& EnableAutomaticFrequencyControlTimeseries( ) const
+        const DBGuid& EnableAutomaticFrequencyControlTimeseries( ) const
         {
             return enableAutomaticFrequencyControlTimeseries_;
         }
-        void SetEnableAutomaticFrequencyControlTimeseries( const Guid& enableAutomaticFrequencyControlTimeseries )
+        void SetEnableAutomaticFrequencyControlTimeseries( const DBGuid& enableAutomaticFrequencyControlTimeseries )
         {
             enableAutomaticFrequencyControlTimeseries_ = enableAutomaticFrequencyControlTimeseries;
         }
-        const Guid& AzimuthOffsetTimeseries( ) const
+        const DBGuid& AzimuthOffsetTimeseries( ) const
         {
             return azimuthOffsetTimeseries_;
         }
-        void SetAzimuthOffsetTimeseries( const Guid& azimuthOffsetTimeseries )
+        void SetAzimuthOffsetTimeseries( const DBGuid& azimuthOffsetTimeseries )
         {
             azimuthOffsetTimeseries_ = azimuthOffsetTimeseries;
         }
-        const Guid& EnableSensitivityTimeControlTimeseries( ) const
+        const DBGuid& EnableSensitivityTimeControlTimeseries( ) const
         {
             return enableSensitivityTimeControlTimeseries_;
         }
-        void SetEnableSensitivityTimeControlTimeseries( const Guid& enableSensitivityTimeControlTimeseries )
+        void SetEnableSensitivityTimeControlTimeseries( const DBGuid& enableSensitivityTimeControlTimeseries )
         {
             enableSensitivityTimeControlTimeseries_ = enableSensitivityTimeControlTimeseries;
         }
-        const Guid& AutomaticSensitivityTimeControlTimeseries( ) const
+        const DBGuid& AutomaticSensitivityTimeControlTimeseries( ) const
         {
             return automaticSensitivityTimeControlTimeseries_;
         }
-        void SetAutomaticSensitivityTimeControlTimeseries( const Guid& automaticSensitivityTimeControlTimeseries )
+        void SetAutomaticSensitivityTimeControlTimeseries( const DBGuid& automaticSensitivityTimeControlTimeseries )
         {
             automaticSensitivityTimeControlTimeseries_ = automaticSensitivityTimeControlTimeseries;
         }
-        const Guid& SensitivityTimeControlLevelTimeseries( ) const
+        const DBGuid& SensitivityTimeControlLevelTimeseries( ) const
         {
             return sensitivityTimeControlLevelTimeseries_;
         }
-        void SetSensitivityTimeControlLevelTimeseries( const Guid& sensitivityTimeControlLevelTimeseries )
+        void SetSensitivityTimeControlLevelTimeseries( const DBGuid& sensitivityTimeControlLevelTimeseries )
         {
             sensitivityTimeControlLevelTimeseries_ = sensitivityTimeControlLevelTimeseries;
         }
-        const Guid& EnableFastTimeConstantTimeseries( ) const
+        const DBGuid& EnableFastTimeConstantTimeseries( ) const
         {
             return enableFastTimeConstantTimeseries_;
         }
-        void SetEnableFastTimeConstantTimeseries( const Guid& enableFastTimeConstantTimeseries )
+        void SetEnableFastTimeConstantTimeseries( const DBGuid& enableFastTimeConstantTimeseries )
         {
             enableFastTimeConstantTimeseries_ = enableFastTimeConstantTimeseries;
         }
-        const Guid& FastTimeConstantLevelTimeseries( ) const
+        const DBGuid& FastTimeConstantLevelTimeseries( ) const
         {
             return fastTimeConstantLevelTimeseries_;
         }
-        void SetFastTimeConstantLevelTimeseries( const Guid& fastTimeConstantLevelTimeseries )
+        void SetFastTimeConstantLevelTimeseries( const DBGuid& fastTimeConstantLevelTimeseries )
         {
             fastTimeConstantLevelTimeseries_ = fastTimeConstantLevelTimeseries;
         }
-        const Guid& FastTimeConstantModeTimeseries( ) const
+        const DBGuid& FastTimeConstantModeTimeseries( ) const
         {
             return fastTimeConstantModeTimeseries_;
         }
-        void SetFastTimeConstantModeTimeseries( const Guid& fastTimeConstantModeTimeseries )
+        void SetFastTimeConstantModeTimeseries( const DBGuid& fastTimeConstantModeTimeseries )
         {
             fastTimeConstantModeTimeseries_ = fastTimeConstantModeTimeseries;
         }
-        const Guid& LatitudeTimeseries( ) const
+        const DBGuid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
         }
-        void SetLatitudeTimeseries( const Guid& latitudeTimeseries )
+        void SetLatitudeTimeseries( const DBGuid& latitudeTimeseries )
         {
             latitudeTimeseries_ = latitudeTimeseries;
         }
-        const Guid& LongitudeTimeseries( ) const
+        const DBGuid& LongitudeTimeseries( ) const
         {
             return longitudeTimeseries_;
         }
-        void SetLongitudeTimeseries( const Guid& longitudeTimeseries )
+        void SetLongitudeTimeseries( const DBGuid& longitudeTimeseries )
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
@@ -11881,14 +11881,14 @@ namespace Barrelman::Database
 
     class WeatherStationDeviceColumnData : public DeviceColumnData
     {
-        Guid barometricPressureTimeseries_;
-        Guid airTemperatureTimeseries_;
-        Guid waterTemperatureTimeseries_;
-        Guid relativeHumidityTimeseries_;
-        Guid absoluteHumidityTimeseries_;
-        Guid dewPointTimeseries_;
-        Guid windDirectionTimeseries_;
-        Guid windSpeedTimeseries_;
+        DBGuid barometricPressureTimeseries_;
+        DBGuid airTemperatureTimeseries_;
+        DBGuid waterTemperatureTimeseries_;
+        DBGuid relativeHumidityTimeseries_;
+        DBGuid absoluteHumidityTimeseries_;
+        DBGuid dewPointTimeseries_;
+        DBGuid windDirectionTimeseries_;
+        DBGuid windSpeedTimeseries_;
         Guid gyro_;
     public:
         using Base = DeviceColumnData;
@@ -11914,67 +11914,67 @@ namespace Barrelman::Database
             return Kind::WeatherStationDevice;
         }
 
-        const Guid& BarometricPressureTimeseries( ) const
+        const DBGuid& BarometricPressureTimeseries( ) const
         {
             return barometricPressureTimeseries_;
         }
-        void SetBarometricPressureTimeseries( const Guid& barometricPressureTimeseries )
+        void SetBarometricPressureTimeseries( const DBGuid& barometricPressureTimeseries )
         {
             barometricPressureTimeseries_ = barometricPressureTimeseries;
         }
-        const Guid& AirTemperatureTimeseries( ) const
+        const DBGuid& AirTemperatureTimeseries( ) const
         {
             return airTemperatureTimeseries_;
         }
-        void SetAirTemperatureTimeseries( const Guid& airTemperatureTimeseries )
+        void SetAirTemperatureTimeseries( const DBGuid& airTemperatureTimeseries )
         {
             airTemperatureTimeseries_ = airTemperatureTimeseries;
         }
-        const Guid& WaterTemperatureTimeseries( ) const
+        const DBGuid& WaterTemperatureTimeseries( ) const
         {
             return waterTemperatureTimeseries_;
         }
-        void SetWaterTemperatureTimeseries( const Guid& waterTemperatureTimeseries )
+        void SetWaterTemperatureTimeseries( const DBGuid& waterTemperatureTimeseries )
         {
             waterTemperatureTimeseries_ = waterTemperatureTimeseries;
         }
-        const Guid& RelativeHumidityTimeseries( ) const
+        const DBGuid& RelativeHumidityTimeseries( ) const
         {
             return relativeHumidityTimeseries_;
         }
-        void SetRelativeHumidityTimeseries( const Guid& relativeHumidityTimeseries )
+        void SetRelativeHumidityTimeseries( const DBGuid& relativeHumidityTimeseries )
         {
             relativeHumidityTimeseries_ = relativeHumidityTimeseries;
         }
-        const Guid& AbsoluteHumidityTimeseries( ) const
+        const DBGuid& AbsoluteHumidityTimeseries( ) const
         {
             return absoluteHumidityTimeseries_;
         }
-        void SetAbsoluteHumidityTimeseries( const Guid& absoluteHumidityTimeseries )
+        void SetAbsoluteHumidityTimeseries( const DBGuid& absoluteHumidityTimeseries )
         {
             absoluteHumidityTimeseries_ = absoluteHumidityTimeseries;
         }
-        const Guid& DewPointTimeseries( ) const
+        const DBGuid& DewPointTimeseries( ) const
         {
             return dewPointTimeseries_;
         }
-        void SetDewPointTimeseries( const Guid& dewPointTimeseries )
+        void SetDewPointTimeseries( const DBGuid& dewPointTimeseries )
         {
             dewPointTimeseries_ = dewPointTimeseries;
         }
-        const Guid& WindDirectionTimeseries( ) const
+        const DBGuid& WindDirectionTimeseries( ) const
         {
             return windDirectionTimeseries_;
         }
-        void SetWindDirectionTimeseries( const Guid& windDirectionTimeseries )
+        void SetWindDirectionTimeseries( const DBGuid& windDirectionTimeseries )
         {
             windDirectionTimeseries_ = windDirectionTimeseries;
         }
-        const Guid& WindSpeedTimeseries( ) const
+        const DBGuid& WindSpeedTimeseries( ) const
         {
             return windSpeedTimeseries_;
         }
-        void SetWindSpeedTimeseries( const Guid& windSpeedTimeseries )
+        void SetWindSpeedTimeseries( const DBGuid& windSpeedTimeseries )
         {
             windSpeedTimeseries_ = windSpeedTimeseries;
         }
@@ -12229,13 +12229,13 @@ namespace Barrelman::Database
         FixedDBWideString<127> name_;
         Guid mMSI_;
         Types::NavigationalAidType navigationalAidType_ = Types::NavigationalAidType::NotSpecified;
-        Guid position_;
+        DBGuid position_;
         bool isVirtual_ = false;
         Int32 toBow_ = 0;
         Int32 toStern_ = 0;
         Int32 toPort_ = 0;
         Int32 toStarboard_ = 0;
-        Guid offPositionTimeseries_;
+        DBGuid offPositionTimeseries_;
     public:
         using Base = TrackableItemColumnData;
 
@@ -12285,11 +12285,11 @@ namespace Barrelman::Database
         {
             navigationalAidType_ = navigationalAidType;
         }
-        const Guid& Position( ) const
+        const DBGuid& Position( ) const
         {
             return position_;
         }
-        void SetPosition( const Guid& position )
+        void SetPosition( const DBGuid& position )
         {
             position_ = position;
         }
@@ -12333,11 +12333,11 @@ namespace Barrelman::Database
         {
             toStarboard_ = toStarboard;
         }
-        const Guid& OffPositionTimeseries( ) const
+        const DBGuid& OffPositionTimeseries( ) const
         {
             return offPositionTimeseries_;
         }
-        void SetOffPositionTimeseries( const Guid& offPositionTimeseries )
+        void SetOffPositionTimeseries( const DBGuid& offPositionTimeseries )
         {
             offPositionTimeseries_ = offPositionTimeseries;
         }
@@ -12460,8 +12460,8 @@ namespace Barrelman::Database
         Int32 toStern_ = 0;
         Int32 toPort_ = 0;
         Int32 toStarboard_ = 0;
-        Guid draughtTimeseries_;
-        Guid personsOnBoardTimeseries_;
+        DBGuid draughtTimeseries_;
+        DBGuid personsOnBoardTimeseries_;
     public:
         using Base = TrackableItemColumnData;
 
@@ -12533,19 +12533,19 @@ namespace Barrelman::Database
         {
             toStarboard_ = toStarboard;
         }
-        const Guid& DraughtTimeseries( ) const
+        const DBGuid& DraughtTimeseries( ) const
         {
             return draughtTimeseries_;
         }
-        void SetDraughtTimeseries( const Guid& draughtTimeseries )
+        void SetDraughtTimeseries( const DBGuid& draughtTimeseries )
         {
             draughtTimeseries_ = draughtTimeseries;
         }
-        const Guid& PersonsOnBoardTimeseries( ) const
+        const DBGuid& PersonsOnBoardTimeseries( ) const
         {
             return personsOnBoardTimeseries_;
         }
-        void SetPersonsOnBoardTimeseries( const Guid& personsOnBoardTimeseries )
+        void SetPersonsOnBoardTimeseries( const DBGuid& personsOnBoardTimeseries )
         {
             personsOnBoardTimeseries_ = personsOnBoardTimeseries;
         }
@@ -12809,7 +12809,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -12880,11 +12880,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -15851,7 +15851,7 @@ namespace Barrelman::Database
         Int64 rowVersion_ = 0;
         Guid service_;
         FixedDBWideString<128> name_;
-        Guid enabledTimeseries_;
+        DBGuid enabledTimeseries_;
     public:
         using Base = BaseColumnData;
 
@@ -15904,11 +15904,11 @@ namespace Barrelman::Database
         {
             name_ = name;
         }
-        const Guid& EnabledTimeseries( ) const
+        const DBGuid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
-        void SetEnabledTimeseries( const Guid& enabledTimeseries )
+        void SetEnabledTimeseries( const DBGuid& enabledTimeseries )
         {
             enabledTimeseries_ = enabledTimeseries;
         }
@@ -16273,7 +16273,7 @@ namespace Barrelman::Database
     {
         Guid id_;
         Int64 rowVersion_ = 0;
-        Guid enabledTimeseries_;
+        DBGuid enabledTimeseries_;
     public:
         using Base = BaseColumnData;
 
@@ -16308,11 +16308,11 @@ namespace Barrelman::Database
         {
             rowVersion_ = rowVersion;
         }
-        const Guid& EnabledTimeseries( ) const
+        const DBGuid& EnabledTimeseries( ) const
         {
             return enabledTimeseries_;
         }
-        void SetEnabledTimeseries( const Guid& enabledTimeseries )
+        void SetEnabledTimeseries( const DBGuid& enabledTimeseries )
         {
             enabledTimeseries_ = enabledTimeseries;
         }
@@ -16788,7 +16788,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -16859,11 +16859,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -21877,7 +21877,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -21953,11 +21953,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -23107,7 +23107,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -23178,11 +23178,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -23537,7 +23537,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -23608,11 +23608,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }
@@ -25210,7 +25210,7 @@ namespace Barrelman::Database
 
     class AisAidToNavigationOffPositionTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid aidToNavigation_;
+        DBGuid aidToNavigation_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25227,11 +25227,11 @@ namespace Barrelman::Database
             return Kind::AisAidToNavigationOffPositionTimeseries;
         }
 
-        const Guid& AidToNavigation( ) const
+        const DBGuid& AidToNavigation( ) const
         {
             return aidToNavigation_;
         }
-        void SetAidToNavigation( const Guid& aidToNavigation )
+        void SetAidToNavigation( const DBGuid& aidToNavigation )
         {
             aidToNavigation_ = aidToNavigation;
         }
@@ -25308,7 +25308,7 @@ namespace Barrelman::Database
 
     class RadarAutomaticSensitivityTimeControlTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25325,11 +25325,11 @@ namespace Barrelman::Database
             return Kind::RadarAutomaticSensitivityTimeControlTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25357,7 +25357,7 @@ namespace Barrelman::Database
 
     class RadarBlankSector1TimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25374,11 +25374,11 @@ namespace Barrelman::Database
             return Kind::RadarBlankSector1Timeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25406,7 +25406,7 @@ namespace Barrelman::Database
 
     class RadarBlankSector2TimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25423,11 +25423,11 @@ namespace Barrelman::Database
             return Kind::RadarBlankSector2Timeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25455,7 +25455,7 @@ namespace Barrelman::Database
 
     class RadarEnableAutomaticFrequencyControlTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25472,11 +25472,11 @@ namespace Barrelman::Database
             return Kind::RadarEnableAutomaticFrequencyControlTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25504,7 +25504,7 @@ namespace Barrelman::Database
 
     class RadarEnableFastTimeConstantTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25521,11 +25521,11 @@ namespace Barrelman::Database
             return Kind::RadarEnableFastTimeConstantTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25553,7 +25553,7 @@ namespace Barrelman::Database
 
     class RadarEnableSensitivityTimeControlTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25570,11 +25570,11 @@ namespace Barrelman::Database
             return Kind::RadarEnableSensitivityTimeControlTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25602,7 +25602,7 @@ namespace Barrelman::Database
 
     class RadarPowerOnTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25619,11 +25619,11 @@ namespace Barrelman::Database
             return Kind::RadarPowerOnTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25651,7 +25651,7 @@ namespace Barrelman::Database
 
     class RadarSaveSettingsTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25668,11 +25668,11 @@ namespace Barrelman::Database
             return Kind::RadarSaveSettingsTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25700,7 +25700,7 @@ namespace Barrelman::Database
 
     class RadarTrackingTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25717,11 +25717,11 @@ namespace Barrelman::Database
             return Kind::RadarTrackingTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -25749,7 +25749,7 @@ namespace Barrelman::Database
 
     class MediaProxySessionEnabledTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid proxySession_;
+        DBGuid proxySession_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25766,11 +25766,11 @@ namespace Barrelman::Database
             return Kind::MediaProxySessionEnabledTimeseries;
         }
 
-        const Guid& ProxySession( ) const
+        const DBGuid& ProxySession( ) const
         {
             return proxySession_;
         }
-        void SetProxySession( const Guid& proxySession )
+        void SetProxySession( const DBGuid& proxySession )
         {
             proxySession_ = proxySession;
         }
@@ -25798,7 +25798,7 @@ namespace Barrelman::Database
 
     class MediaServiceEnabledTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
-        Guid service_;
+        DBGuid service_;
     public:
         using Base = BooleanTimeseriesColumnData;
 
@@ -25815,11 +25815,11 @@ namespace Barrelman::Database
             return Kind::MediaServiceEnabledTimeseries;
         }
 
-        const Guid& Service( ) const
+        const DBGuid& Service( ) const
         {
             return service_;
         }
-        void SetService( const Guid& service )
+        void SetService( const DBGuid& service )
         {
             service_ = service;
         }
@@ -25934,7 +25934,7 @@ namespace Barrelman::Database
 
     class GNSSAltitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gNSSDevice_;
+        DBGuid gNSSDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -25951,11 +25951,11 @@ namespace Barrelman::Database
             return Kind::GNSSAltitudeTimeseries;
         }
 
-        const Guid& GNSSDevice( ) const
+        const DBGuid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
-        void SetGNSSDevice( const Guid& gNSSDevice )
+        void SetGNSSDevice( const DBGuid& gNSSDevice )
         {
             gNSSDevice_ = gNSSDevice;
         }
@@ -25983,7 +25983,7 @@ namespace Barrelman::Database
 
     class GNSSLatitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gNSSDevice_;
+        DBGuid gNSSDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26000,11 +26000,11 @@ namespace Barrelman::Database
             return Kind::GNSSLatitudeTimeseries;
         }
 
-        const Guid& GNSSDevice( ) const
+        const DBGuid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
-        void SetGNSSDevice( const Guid& gNSSDevice )
+        void SetGNSSDevice( const DBGuid& gNSSDevice )
         {
             gNSSDevice_ = gNSSDevice;
         }
@@ -26032,7 +26032,7 @@ namespace Barrelman::Database
 
     class GNSSLongitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gNSSDevice_;
+        DBGuid gNSSDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26049,11 +26049,11 @@ namespace Barrelman::Database
             return Kind::GNSSLongitudeTimeseries;
         }
 
-        const Guid& GNSSDevice( ) const
+        const DBGuid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
-        void SetGNSSDevice( const Guid& gNSSDevice )
+        void SetGNSSDevice( const DBGuid& gNSSDevice )
         {
             gNSSDevice_ = gNSSDevice;
         }
@@ -26081,7 +26081,7 @@ namespace Barrelman::Database
 
     class GyroCourseTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26098,11 +26098,11 @@ namespace Barrelman::Database
             return Kind::GyroCourseTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26130,7 +26130,7 @@ namespace Barrelman::Database
 
     class GyroHeadingMagneticNorthTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26147,11 +26147,11 @@ namespace Barrelman::Database
             return Kind::GyroHeadingMagneticNorthTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26179,7 +26179,7 @@ namespace Barrelman::Database
 
     class GyroHeadingTrueNorthTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26196,11 +26196,11 @@ namespace Barrelman::Database
             return Kind::GyroHeadingTrueNorthTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26228,7 +26228,7 @@ namespace Barrelman::Database
 
     class GyroPitchTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26245,11 +26245,11 @@ namespace Barrelman::Database
             return Kind::GyroPitchTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26277,7 +26277,7 @@ namespace Barrelman::Database
 
     class GyroRateOfTurnTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26294,11 +26294,11 @@ namespace Barrelman::Database
             return Kind::GyroRateOfTurnTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26326,7 +26326,7 @@ namespace Barrelman::Database
 
     class GyroRollTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26343,11 +26343,11 @@ namespace Barrelman::Database
             return Kind::GyroRollTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26375,7 +26375,7 @@ namespace Barrelman::Database
 
     class GyroSpeedTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid gyroDevice_;
+        DBGuid gyroDevice_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26392,11 +26392,11 @@ namespace Barrelman::Database
             return Kind::GyroSpeedTimeseries;
         }
 
-        const Guid& GyroDevice( ) const
+        const DBGuid& GyroDevice( ) const
         {
             return gyroDevice_;
         }
-        void SetGyroDevice( const Guid& gyroDevice )
+        void SetGyroDevice( const DBGuid& gyroDevice )
         {
             gyroDevice_ = gyroDevice;
         }
@@ -26424,7 +26424,7 @@ namespace Barrelman::Database
 
     class RadarLatitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26441,11 +26441,11 @@ namespace Barrelman::Database
             return Kind::RadarLatitudeTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -26473,7 +26473,7 @@ namespace Barrelman::Database
 
     class RadarLongitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26490,11 +26490,11 @@ namespace Barrelman::Database
             return Kind::RadarLongitudeTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -26522,7 +26522,7 @@ namespace Barrelman::Database
 
     class RadomeDewPointTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid radome_;
+        DBGuid radome_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26539,11 +26539,11 @@ namespace Barrelman::Database
             return Kind::RadomeDewPointTimeseries;
         }
 
-        const Guid& Radome( ) const
+        const DBGuid& Radome( ) const
         {
             return radome_;
         }
-        void SetRadome( const Guid& radome )
+        void SetRadome( const DBGuid& radome )
         {
             radome_ = radome;
         }
@@ -26571,7 +26571,7 @@ namespace Barrelman::Database
 
     class RadomePressureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid radome_;
+        DBGuid radome_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26588,11 +26588,11 @@ namespace Barrelman::Database
             return Kind::RadomePressureTimeseries;
         }
 
-        const Guid& Radome( ) const
+        const DBGuid& Radome( ) const
         {
             return radome_;
         }
-        void SetRadome( const Guid& radome )
+        void SetRadome( const DBGuid& radome )
         {
             radome_ = radome;
         }
@@ -26620,7 +26620,7 @@ namespace Barrelman::Database
 
     class RadomeTemperatureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid radome_;
+        DBGuid radome_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26637,11 +26637,11 @@ namespace Barrelman::Database
             return Kind::RadomeTemperatureTimeseries;
         }
 
-        const Guid& Radome( ) const
+        const DBGuid& Radome( ) const
         {
             return radome_;
         }
-        void SetRadome( const Guid& radome )
+        void SetRadome( const DBGuid& radome )
         {
             radome_ = radome;
         }
@@ -26669,7 +26669,7 @@ namespace Barrelman::Database
 
     class VesselDraughtTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid vessel_;
+        DBGuid vessel_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26686,11 +26686,11 @@ namespace Barrelman::Database
             return Kind::VesselDraughtTimeseries;
         }
 
-        const Guid& Vessel( ) const
+        const DBGuid& Vessel( ) const
         {
             return vessel_;
         }
-        void SetVessel( const Guid& vessel )
+        void SetVessel( const DBGuid& vessel )
         {
             vessel_ = vessel;
         }
@@ -26718,7 +26718,7 @@ namespace Barrelman::Database
 
     class ViewLatitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid view_;
+        DBGuid view_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26735,11 +26735,11 @@ namespace Barrelman::Database
             return Kind::ViewLatitudeTimeseries;
         }
 
-        const Guid& View( ) const
+        const DBGuid& View( ) const
         {
             return view_;
         }
-        void SetView( const Guid& view )
+        void SetView( const DBGuid& view )
         {
             view_ = view;
         }
@@ -26767,7 +26767,7 @@ namespace Barrelman::Database
 
     class ViewLongitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid view_;
+        DBGuid view_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26784,11 +26784,11 @@ namespace Barrelman::Database
             return Kind::ViewLongitudeTimeseries;
         }
 
-        const Guid& View( ) const
+        const DBGuid& View( ) const
         {
             return view_;
         }
-        void SetView( const Guid& view )
+        void SetView( const DBGuid& view )
         {
             view_ = view;
         }
@@ -26816,7 +26816,7 @@ namespace Barrelman::Database
 
     class ViewZoomLevelTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid view_;
+        DBGuid view_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26833,11 +26833,11 @@ namespace Barrelman::Database
             return Kind::ViewZoomLevelTimeseries;
         }
 
-        const Guid& View( ) const
+        const DBGuid& View( ) const
         {
             return view_;
         }
-        void SetView( const Guid& view )
+        void SetView( const DBGuid& view )
         {
             view_ = view;
         }
@@ -26865,7 +26865,7 @@ namespace Barrelman::Database
 
     class WeatherStationAbsoluteHumidityTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26882,11 +26882,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationAbsoluteHumidityTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -26914,7 +26914,7 @@ namespace Barrelman::Database
 
     class WeatherStationAirTemperatureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26931,11 +26931,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationAirTemperatureTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -26963,7 +26963,7 @@ namespace Barrelman::Database
 
     class WeatherStationBarometricPressureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -26980,11 +26980,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationBarometricPressureTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -27012,7 +27012,7 @@ namespace Barrelman::Database
 
     class WeatherStationDewPointTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -27029,11 +27029,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationDewPointTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -27061,7 +27061,7 @@ namespace Barrelman::Database
 
     class WeatherStationRelativeHumidityTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -27078,11 +27078,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationRelativeHumidityTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -27110,7 +27110,7 @@ namespace Barrelman::Database
 
     class WeatherStationWaterTemperatureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -27127,11 +27127,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationWaterTemperatureTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -27159,7 +27159,7 @@ namespace Barrelman::Database
 
     class WeatherStationWindDirectionTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -27176,11 +27176,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationWindDirectionTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -27208,7 +27208,7 @@ namespace Barrelman::Database
 
     class WeatherStationWindSpeedTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
-        Guid weatherStation_;
+        DBGuid weatherStation_;
     public:
         using Base = DoubleTimeseriesColumnData;
 
@@ -27225,11 +27225,11 @@ namespace Barrelman::Database
             return Kind::WeatherStationWindSpeedTimeseries;
         }
 
-        const Guid& WeatherStation( ) const
+        const DBGuid& WeatherStation( ) const
         {
             return weatherStation_;
         }
-        void SetWeatherStation( const Guid& weatherStation )
+        void SetWeatherStation( const DBGuid& weatherStation )
         {
             weatherStation_ = weatherStation;
         }
@@ -27286,7 +27286,7 @@ namespace Barrelman::Database
 
     class AisAidToNavigationPositionTimeseriesColumnData : public GeoPosition2DTimeseriesColumnData
     {
-        Guid aidToNavigation_;
+        DBGuid aidToNavigation_;
     public:
         using Base = GeoPosition2DTimeseriesColumnData;
 
@@ -27303,11 +27303,11 @@ namespace Barrelman::Database
             return Kind::AisAidToNavigationPositionTimeseries;
         }
 
-        const Guid& AidToNavigation( ) const
+        const DBGuid& AidToNavigation( ) const
         {
             return aidToNavigation_;
         }
-        void SetAidToNavigation( const Guid& aidToNavigation )
+        void SetAidToNavigation( const DBGuid& aidToNavigation )
         {
             aidToNavigation_ = aidToNavigation;
         }
@@ -27451,7 +27451,7 @@ namespace Barrelman::Database
 
     class RadarAzimuthOffsetTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27468,11 +27468,11 @@ namespace Barrelman::Database
             return Kind::RadarAzimuthOffsetTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27500,7 +27500,7 @@ namespace Barrelman::Database
 
     class RadarFastTimeConstantLevelTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27517,11 +27517,11 @@ namespace Barrelman::Database
             return Kind::RadarFastTimeConstantLevelTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27549,7 +27549,7 @@ namespace Barrelman::Database
 
     class RadarFastTimeConstantModeTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27566,11 +27566,11 @@ namespace Barrelman::Database
             return Kind::RadarFastTimeConstantModeTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27598,7 +27598,7 @@ namespace Barrelman::Database
 
     class RadarPulseTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27615,11 +27615,11 @@ namespace Barrelman::Database
             return Kind::RadarPulseTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27647,7 +27647,7 @@ namespace Barrelman::Database
 
     class RadarSector1EndTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27664,11 +27664,11 @@ namespace Barrelman::Database
             return Kind::RadarSector1EndTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27696,7 +27696,7 @@ namespace Barrelman::Database
 
     class RadarSector1StartTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27713,11 +27713,11 @@ namespace Barrelman::Database
             return Kind::RadarSector1StartTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27745,7 +27745,7 @@ namespace Barrelman::Database
 
     class RadarSector2EndTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27762,11 +27762,11 @@ namespace Barrelman::Database
             return Kind::RadarSector2EndTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27794,7 +27794,7 @@ namespace Barrelman::Database
 
     class RadarSector2StartTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27811,11 +27811,11 @@ namespace Barrelman::Database
             return Kind::RadarSector2StartTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27843,7 +27843,7 @@ namespace Barrelman::Database
 
     class RadarSensitivityTimeControlLevelTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27860,11 +27860,11 @@ namespace Barrelman::Database
             return Kind::RadarSensitivityTimeControlLevelTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27892,7 +27892,7 @@ namespace Barrelman::Database
 
     class RadarTuningTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid radar_;
+        DBGuid radar_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27909,11 +27909,11 @@ namespace Barrelman::Database
             return Kind::RadarTuningTimeseries;
         }
 
-        const Guid& Radar( ) const
+        const DBGuid& Radar( ) const
         {
             return radar_;
         }
-        void SetRadar( const Guid& radar )
+        void SetRadar( const DBGuid& radar )
         {
             radar_ = radar;
         }
@@ -27941,7 +27941,7 @@ namespace Barrelman::Database
 
     class VesselPersonsOnBoardTimeseriesColumnData : public Int32TimeseriesColumnData
     {
-        Guid vessel_;
+        DBGuid vessel_;
     public:
         using Base = Int32TimeseriesColumnData;
 
@@ -27958,11 +27958,11 @@ namespace Barrelman::Database
             return Kind::VesselPersonsOnBoardTimeseries;
         }
 
-        const Guid& Vessel( ) const
+        const DBGuid& Vessel( ) const
         {
             return vessel_;
         }
-        void SetVessel( const Guid& vessel )
+        void SetVessel( const DBGuid& vessel )
         {
             vessel_ = vessel;
         }
@@ -28280,7 +28280,7 @@ namespace Barrelman::Database
 
     class RadomeStatusTimeseriesColumnData : public UInt32TimeseriesColumnData
     {
-        Guid radome_;
+        DBGuid radome_;
     public:
         using Base = UInt32TimeseriesColumnData;
 
@@ -28297,11 +28297,11 @@ namespace Barrelman::Database
             return Kind::RadomeStatusTimeseries;
         }
 
-        const Guid& Radome( ) const
+        const DBGuid& Radome( ) const
         {
             return radome_;
         }
-        void SetRadome( const Guid& radome )
+        void SetRadome( const DBGuid& radome )
         {
             radome_ = radome;
         }
@@ -30478,9 +30478,9 @@ namespace Barrelman::Database
         Guid id_;
         Int64 rowVersion_ = 0;
         FixedDBWideString<127> name_;
-        Guid latitudeTimeseries_;
-        Guid longitudeTimeseries_;
-        Guid zoomLevelTimeseries_;
+        DBGuid latitudeTimeseries_;
+        DBGuid longitudeTimeseries_;
+        DBGuid zoomLevelTimeseries_;
     public:
         using Base = BaseColumnData;
 
@@ -30526,27 +30526,27 @@ namespace Barrelman::Database
         {
             name_ = name;
         }
-        const Guid& LatitudeTimeseries( ) const
+        const DBGuid& LatitudeTimeseries( ) const
         {
             return latitudeTimeseries_;
         }
-        void SetLatitudeTimeseries( const Guid& latitudeTimeseries )
+        void SetLatitudeTimeseries( const DBGuid& latitudeTimeseries )
         {
             latitudeTimeseries_ = latitudeTimeseries;
         }
-        const Guid& LongitudeTimeseries( ) const
+        const DBGuid& LongitudeTimeseries( ) const
         {
             return longitudeTimeseries_;
         }
-        void SetLongitudeTimeseries( const Guid& longitudeTimeseries )
+        void SetLongitudeTimeseries( const DBGuid& longitudeTimeseries )
         {
             longitudeTimeseries_ = longitudeTimeseries;
         }
-        const Guid& ZoomLevelTimeseries( ) const
+        const DBGuid& ZoomLevelTimeseries( ) const
         {
             return zoomLevelTimeseries_;
         }
-        void SetZoomLevelTimeseries( const Guid& zoomLevelTimeseries )
+        void SetZoomLevelTimeseries( const DBGuid& zoomLevelTimeseries )
         {
             zoomLevelTimeseries_ = zoomLevelTimeseries;
         }
@@ -30814,7 +30814,7 @@ namespace Barrelman::Database
         DateTime timestamp_;
         Types::DeviceCommandSourceType deviceCommandSourceType_ = Types::DeviceCommandSourceType::Unknown;
         Guid deviceCommandSourceId_;
-        Guid reply_;
+        DBGuid reply_;
     public:
         using Base = BaseColumnData;
 
@@ -30885,11 +30885,11 @@ namespace Barrelman::Database
         {
             deviceCommandSourceId_ = deviceCommandSourceId;
         }
-        const Guid& Reply( ) const
+        const DBGuid& Reply( ) const
         {
             return reply_;
         }
-        void SetReply( const Guid& reply )
+        void SetReply( const DBGuid& reply )
         {
             reply_ = reply;
         }

@@ -149,64 +149,64 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateByteTimeseriesValue( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& timeseries, const DateTime& timestamp, const DBByte& value );
     BARRELMAN_EXPORT bool DeleteByteTimeseriesValue( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommand( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateCameraCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertCameraCommand( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateCameraCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteCameraCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandAbsoluteMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, Types::CameraPanTiltMode positionPanTiltMode, const DBDouble& panAngle, const DBDouble& tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, const DBDouble& focalLength, Types::CameraPanTiltMode speedPanTiltMode, const DBDouble& panSpeed, const DBDouble& tiltSpeed, Types::CameraFocalLengthMode speedFocalLengthMode, const DBDouble& zoomSpeed );
-    BARRELMAN_EXPORT bool UpdateCameraCommandAbsoluteMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, Types::CameraPanTiltMode positionPanTiltMode, const DBDouble& panAngle, const DBDouble& tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, const DBDouble& focalLength, Types::CameraPanTiltMode speedPanTiltMode, const DBDouble& panSpeed, const DBDouble& tiltSpeed, Types::CameraFocalLengthMode speedFocalLengthMode, const DBDouble& zoomSpeed );
+    BARRELMAN_EXPORT bool InsertCameraCommandAbsoluteMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, Types::CameraPanTiltMode positionPanTiltMode, const DBDouble& panAngle, const DBDouble& tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, const DBDouble& focalLength, Types::CameraPanTiltMode speedPanTiltMode, const DBDouble& panSpeed, const DBDouble& tiltSpeed, Types::CameraFocalLengthMode speedFocalLengthMode, const DBDouble& zoomSpeed );
+    BARRELMAN_EXPORT bool UpdateCameraCommandAbsoluteMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, Types::CameraPanTiltMode positionPanTiltMode, const DBDouble& panAngle, const DBDouble& tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, const DBDouble& focalLength, Types::CameraPanTiltMode speedPanTiltMode, const DBDouble& panSpeed, const DBDouble& tiltSpeed, Types::CameraFocalLengthMode speedFocalLengthMode, const DBDouble& zoomSpeed );
     BARRELMAN_EXPORT bool DeleteCameraCommandAbsoluteMove( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandAdjustPanTiltZoom( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, const DBDouble& x, const DBDouble& y, const DBDouble& z );
-    BARRELMAN_EXPORT bool UpdateCameraCommandAdjustPanTiltZoom( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, const DBDouble& x, const DBDouble& y, const DBDouble& z );
+    BARRELMAN_EXPORT bool InsertCameraCommandAdjustPanTiltZoom( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, const DBDouble& x, const DBDouble& y, const DBDouble& z );
+    BARRELMAN_EXPORT bool UpdateCameraCommandAdjustPanTiltZoom( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, const DBDouble& x, const DBDouble& y, const DBDouble& z );
     BARRELMAN_EXPORT bool DeleteCameraCommandAdjustPanTiltZoom( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandContinuousMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool normalized, const DBDouble& panVelocity, const DBDouble& tiltVelocity, const DBDouble& zoomVelocity, const DBTimeSpan& duration );
-    BARRELMAN_EXPORT bool UpdateCameraCommandContinuousMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool normalized, const DBDouble& panVelocity, const DBDouble& tiltVelocity, const DBDouble& zoomVelocity, const DBTimeSpan& duration );
+    BARRELMAN_EXPORT bool InsertCameraCommandContinuousMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool normalized, const DBDouble& panVelocity, const DBDouble& tiltVelocity, const DBDouble& zoomVelocity, const DBTimeSpan& duration );
+    BARRELMAN_EXPORT bool UpdateCameraCommandContinuousMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool normalized, const DBDouble& panVelocity, const DBDouble& tiltVelocity, const DBDouble& zoomVelocity, const DBTimeSpan& duration );
     BARRELMAN_EXPORT bool DeleteCameraCommandContinuousMove( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandGeoMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, double latitude, double longitude, const DBDouble& altitude, const DBDouble& viewportWidth, const DBDouble& viewportHeight );
-    BARRELMAN_EXPORT bool UpdateCameraCommandGeoMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, double latitude, double longitude, const DBDouble& altitude, const DBDouble& viewportWidth, const DBDouble& viewportHeight );
+    BARRELMAN_EXPORT bool InsertCameraCommandGeoMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, double latitude, double longitude, const DBDouble& altitude, const DBDouble& viewportWidth, const DBDouble& viewportHeight );
+    BARRELMAN_EXPORT bool UpdateCameraCommandGeoMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, double latitude, double longitude, const DBDouble& altitude, const DBDouble& viewportWidth, const DBDouble& viewportHeight );
     BARRELMAN_EXPORT bool DeleteCameraCommandGeoMove( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandRelativeMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool normalized, const DBDouble& panAngle, const DBDouble& tiltAngle, const DBDouble& focalLength, const DBDouble& panSpeed, const DBDouble& tiltSpeed, const DBDouble& zoomSpeed );
-    BARRELMAN_EXPORT bool UpdateCameraCommandRelativeMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool normalized, const DBDouble& panAngle, const DBDouble& tiltAngle, const DBDouble& focalLength, const DBDouble& panSpeed, const DBDouble& tiltSpeed, const DBDouble& zoomSpeed );
+    BARRELMAN_EXPORT bool InsertCameraCommandRelativeMove( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool normalized, const DBDouble& panAngle, const DBDouble& tiltAngle, const DBDouble& focalLength, const DBDouble& panSpeed, const DBDouble& tiltSpeed, const DBDouble& zoomSpeed );
+    BARRELMAN_EXPORT bool UpdateCameraCommandRelativeMove( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool normalized, const DBDouble& panAngle, const DBDouble& tiltAngle, const DBDouble& focalLength, const DBDouble& panSpeed, const DBDouble& tiltSpeed, const DBDouble& zoomSpeed );
     BARRELMAN_EXPORT bool DeleteCameraCommandRelativeMove( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandReleasePTZOwnership( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateCameraCommandReleasePTZOwnership( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertCameraCommandReleasePTZOwnership( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateCameraCommandReleasePTZOwnership( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteCameraCommandReleasePTZOwnership( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandRequestPTZOwnership( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateCameraCommandRequestPTZOwnership( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertCameraCommandRequestPTZOwnership( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateCameraCommandRequestPTZOwnership( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteCameraCommandRequestPTZOwnership( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandSetAutoFocus( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
-    BARRELMAN_EXPORT bool UpdateCameraCommandSetAutoFocus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
+    BARRELMAN_EXPORT bool InsertCameraCommandSetAutoFocus( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
+    BARRELMAN_EXPORT bool UpdateCameraCommandSetAutoFocus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
     BARRELMAN_EXPORT bool DeleteCameraCommandSetAutoFocus( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandSetBlackAndWhite( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
-    BARRELMAN_EXPORT bool UpdateCameraCommandSetBlackAndWhite( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
+    BARRELMAN_EXPORT bool InsertCameraCommandSetBlackAndWhite( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
+    BARRELMAN_EXPORT bool UpdateCameraCommandSetBlackAndWhite( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
     BARRELMAN_EXPORT bool DeleteCameraCommandSetBlackAndWhite( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandSetFollowed( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, const Guid& trackId, Types::CameraFollowReason reason );
-    BARRELMAN_EXPORT bool UpdateCameraCommandSetFollowed( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, const Guid& trackId, Types::CameraFollowReason reason );
+    BARRELMAN_EXPORT bool InsertCameraCommandSetFollowed( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, const Guid& trackId, Types::CameraFollowReason reason );
+    BARRELMAN_EXPORT bool UpdateCameraCommandSetFollowed( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, const Guid& trackId, Types::CameraFollowReason reason );
     BARRELMAN_EXPORT bool DeleteCameraCommandSetFollowed( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandSetInfraRedLamp( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
-    BARRELMAN_EXPORT bool UpdateCameraCommandSetInfraRedLamp( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
+    BARRELMAN_EXPORT bool InsertCameraCommandSetInfraRedLamp( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
+    BARRELMAN_EXPORT bool UpdateCameraCommandSetInfraRedLamp( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
     BARRELMAN_EXPORT bool DeleteCameraCommandSetInfraRedLamp( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandSetWasher( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
-    BARRELMAN_EXPORT bool UpdateCameraCommandSetWasher( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
+    BARRELMAN_EXPORT bool InsertCameraCommandSetWasher( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
+    BARRELMAN_EXPORT bool UpdateCameraCommandSetWasher( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
     BARRELMAN_EXPORT bool DeleteCameraCommandSetWasher( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandSetWiper( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
-    BARRELMAN_EXPORT bool UpdateCameraCommandSetWiper( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool enabled );
+    BARRELMAN_EXPORT bool InsertCameraCommandSetWiper( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
+    BARRELMAN_EXPORT bool UpdateCameraCommandSetWiper( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool enabled );
     BARRELMAN_EXPORT bool DeleteCameraCommandSetWiper( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraCommandStop( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool panTilt, bool zoom );
-    BARRELMAN_EXPORT bool UpdateCameraCommandStop( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply, bool panTilt, bool zoom );
+    BARRELMAN_EXPORT bool InsertCameraCommandStop( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool panTilt, bool zoom );
+    BARRELMAN_EXPORT bool UpdateCameraCommandStop( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply, bool panTilt, bool zoom );
     BARRELMAN_EXPORT bool DeleteCameraCommandStop( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertCameraCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message, double panAngle, double tiltAngle, double focalLength );
@@ -293,8 +293,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateGeoPosition3DTimeseriesValue( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& timeseries, const DateTime& timestamp, const DBDouble& latitude, const DBDouble& longitude, const DBDouble& altitude );
     BARRELMAN_EXPORT bool DeleteGeoPosition3DTimeseriesValue( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGNSSDeviceCommand( const ODBC::Connection& connection, Guid& id, const Guid& gNSSDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateGNSSDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gNSSDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertGNSSDeviceCommand( const ODBC::Connection& connection, Guid& id, const Guid& gNSSDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateGNSSDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gNSSDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteGNSSDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertGNSSDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& gNSSDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -309,8 +309,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateGuidTimeseriesValue( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& timeseries, const DateTime& timestamp, const DBGuid& value );
     BARRELMAN_EXPORT bool DeleteGuidTimeseriesValue( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroDeviceCommand( const ODBC::Connection& connection, Guid& id, const Guid& gyroDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateGyroDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gyroDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertGyroDeviceCommand( const ODBC::Connection& connection, Guid& id, const Guid& gyroDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateGyroDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gyroDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteGyroDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertGyroDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& gyroDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -353,44 +353,44 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateBaseStation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type );
     BARRELMAN_EXPORT bool DeleteBaseStation( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertCameraDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateCameraDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertCameraDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateCameraDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteCameraDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGNSSDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& latitudeTimeseries, const Guid& longitudeTimeseries, const Guid& altitudeTimeseries );
-    BARRELMAN_EXPORT bool UpdateGNSSDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& latitudeTimeseries, const Guid& longitudeTimeseries, const Guid& altitudeTimeseries );
+    BARRELMAN_EXPORT bool InsertGNSSDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& latitudeTimeseries, const DBGuid& longitudeTimeseries, const DBGuid& altitudeTimeseries );
+    BARRELMAN_EXPORT bool UpdateGNSSDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& latitudeTimeseries, const DBGuid& longitudeTimeseries, const DBGuid& altitudeTimeseries );
     BARRELMAN_EXPORT bool DeleteGNSSDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& headingTrueNorthTimeseries, const Guid& headingMagneticNorthTimeseries, const Guid& pitchTimeseries, const Guid& rateOfTurnTimeseries, const Guid& rollTimeseries, const Guid& courseTimeseries, const Guid& speedTimeseries, const Guid& gNSSDevice );
-    BARRELMAN_EXPORT bool UpdateGyroDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& headingTrueNorthTimeseries, const Guid& headingMagneticNorthTimeseries, const Guid& pitchTimeseries, const Guid& rateOfTurnTimeseries, const Guid& rollTimeseries, const Guid& courseTimeseries, const Guid& speedTimeseries, const Guid& gNSSDevice );
+    BARRELMAN_EXPORT bool InsertGyroDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& headingTrueNorthTimeseries, const DBGuid& headingMagneticNorthTimeseries, const DBGuid& pitchTimeseries, const DBGuid& rateOfTurnTimeseries, const DBGuid& rollTimeseries, const DBGuid& courseTimeseries, const DBGuid& speedTimeseries, const Guid& gNSSDevice );
+    BARRELMAN_EXPORT bool UpdateGyroDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& headingTrueNorthTimeseries, const DBGuid& headingMagneticNorthTimeseries, const DBGuid& pitchTimeseries, const DBGuid& rateOfTurnTimeseries, const DBGuid& rollTimeseries, const DBGuid& courseTimeseries, const DBGuid& speedTimeseries, const Guid& gNSSDevice );
     BARRELMAN_EXPORT bool DeleteGyroDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertLineInputDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateLineInputDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertLineInputDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateLineInputDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteLineInputDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertOilSpillDetectorDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateOilSpillDetectorDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertOilSpillDetectorDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateOilSpillDetectorDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteOilSpillDetectorDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadioDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateRadioDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertRadioDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateRadioDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteRadioDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadomeDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const DBGuid& radar, const Guid& pressureTimeseries, const Guid& temperatureTimeseries, const Guid& dewPointTimeseries, const Guid& statusTimeseries );
-    BARRELMAN_EXPORT bool UpdateRadomeDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const DBGuid& radar, const Guid& pressureTimeseries, const Guid& temperatureTimeseries, const Guid& dewPointTimeseries, const Guid& statusTimeseries );
+    BARRELMAN_EXPORT bool InsertRadomeDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& radar, const DBGuid& pressureTimeseries, const DBGuid& temperatureTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& statusTimeseries );
+    BARRELMAN_EXPORT bool UpdateRadomeDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& radar, const DBGuid& pressureTimeseries, const DBGuid& temperatureTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& statusTimeseries );
     BARRELMAN_EXPORT bool DeleteRadomeDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertAisDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateAisDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertAisDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateAisDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteAisDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& saveSettingsTimeseries, const Guid& powerOnTimeseries, const Guid& trackingOnTimeseries, const Guid& radarPulseTimeseries, const Guid& tuningTimeseries, const Guid& blankSector1Timeseries, const Guid& sector1StartTimeseries, const Guid& sector1EndTimeseries, const Guid& blankSector2Timeseries, const Guid& sector2StartTimeseries, const Guid& sector2EndTimeseries, const Guid& enableAutomaticFrequencyControlTimeseries, const Guid& azimuthOffsetTimeseries, const Guid& enableSensitivityTimeControlTimeseries, const Guid& automaticSensitivityTimeControlTimeseries, const Guid& sensitivityTimeControlLevelTimeseries, const Guid& enableFastTimeConstantTimeseries, const Guid& fastTimeConstantLevelTimeseries, const Guid& fastTimeConstantModeTimeseries, const Guid& latitudeTimeseries, const Guid& longitudeTimeseries, const DBGuid& radome, const DBGuid& gNSSDevice );
-    BARRELMAN_EXPORT bool UpdateRadarDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& saveSettingsTimeseries, const Guid& powerOnTimeseries, const Guid& trackingOnTimeseries, const Guid& radarPulseTimeseries, const Guid& tuningTimeseries, const Guid& blankSector1Timeseries, const Guid& sector1StartTimeseries, const Guid& sector1EndTimeseries, const Guid& blankSector2Timeseries, const Guid& sector2StartTimeseries, const Guid& sector2EndTimeseries, const Guid& enableAutomaticFrequencyControlTimeseries, const Guid& azimuthOffsetTimeseries, const Guid& enableSensitivityTimeControlTimeseries, const Guid& automaticSensitivityTimeControlTimeseries, const Guid& sensitivityTimeControlLevelTimeseries, const Guid& enableFastTimeConstantTimeseries, const Guid& fastTimeConstantLevelTimeseries, const Guid& fastTimeConstantModeTimeseries, const Guid& latitudeTimeseries, const Guid& longitudeTimeseries, const DBGuid& radome, const DBGuid& gNSSDevice );
+    BARRELMAN_EXPORT bool InsertRadarDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& saveSettingsTimeseries, const DBGuid& powerOnTimeseries, const DBGuid& trackingOnTimeseries, const DBGuid& radarPulseTimeseries, const DBGuid& tuningTimeseries, const DBGuid& blankSector1Timeseries, const DBGuid& sector1StartTimeseries, const DBGuid& sector1EndTimeseries, const DBGuid& blankSector2Timeseries, const DBGuid& sector2StartTimeseries, const DBGuid& sector2EndTimeseries, const DBGuid& enableAutomaticFrequencyControlTimeseries, const DBGuid& azimuthOffsetTimeseries, const DBGuid& enableSensitivityTimeControlTimeseries, const DBGuid& automaticSensitivityTimeControlTimeseries, const DBGuid& sensitivityTimeControlLevelTimeseries, const DBGuid& enableFastTimeConstantTimeseries, const DBGuid& fastTimeConstantLevelTimeseries, const DBGuid& fastTimeConstantModeTimeseries, const DBGuid& latitudeTimeseries, const DBGuid& longitudeTimeseries, const DBGuid& radome, const DBGuid& gNSSDevice );
+    BARRELMAN_EXPORT bool UpdateRadarDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& saveSettingsTimeseries, const DBGuid& powerOnTimeseries, const DBGuid& trackingOnTimeseries, const DBGuid& radarPulseTimeseries, const DBGuid& tuningTimeseries, const DBGuid& blankSector1Timeseries, const DBGuid& sector1StartTimeseries, const DBGuid& sector1EndTimeseries, const DBGuid& blankSector2Timeseries, const DBGuid& sector2StartTimeseries, const DBGuid& sector2EndTimeseries, const DBGuid& enableAutomaticFrequencyControlTimeseries, const DBGuid& azimuthOffsetTimeseries, const DBGuid& enableSensitivityTimeControlTimeseries, const DBGuid& automaticSensitivityTimeControlTimeseries, const DBGuid& sensitivityTimeControlLevelTimeseries, const DBGuid& enableFastTimeConstantTimeseries, const DBGuid& fastTimeConstantLevelTimeseries, const DBGuid& fastTimeConstantModeTimeseries, const DBGuid& latitudeTimeseries, const DBGuid& longitudeTimeseries, const DBGuid& radome, const DBGuid& gNSSDevice );
     BARRELMAN_EXPORT bool DeleteRadarDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& barometricPressureTimeseries, const Guid& airTemperatureTimeseries, const Guid& waterTemperatureTimeseries, const Guid& relativeHumidityTimeseries, const Guid& absoluteHumidityTimeseries, const Guid& dewPointTimeseries, const Guid& windDirectionTimeseries, const Guid& windSpeedTimeseries, const Guid& gyro );
-    BARRELMAN_EXPORT bool UpdateWeatherStationDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const Guid& enabledTimeseries, const Guid& barometricPressureTimeseries, const Guid& airTemperatureTimeseries, const Guid& waterTemperatureTimeseries, const Guid& relativeHumidityTimeseries, const Guid& absoluteHumidityTimeseries, const Guid& dewPointTimeseries, const Guid& windDirectionTimeseries, const Guid& windSpeedTimeseries, const Guid& gyro );
+    BARRELMAN_EXPORT bool InsertWeatherStationDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& barometricPressureTimeseries, const DBGuid& airTemperatureTimeseries, const DBGuid& waterTemperatureTimeseries, const DBGuid& relativeHumidityTimeseries, const DBGuid& absoluteHumidityTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& windDirectionTimeseries, const DBGuid& windSpeedTimeseries, const Guid& gyro );
+    BARRELMAN_EXPORT bool UpdateWeatherStationDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& barometricPressureTimeseries, const DBGuid& airTemperatureTimeseries, const DBGuid& waterTemperatureTimeseries, const DBGuid& relativeHumidityTimeseries, const DBGuid& absoluteHumidityTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& windDirectionTimeseries, const DBGuid& windSpeedTimeseries, const Guid& gyro );
     BARRELMAN_EXPORT bool DeleteWeatherStationDevice( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertFacility( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type, double longitude, double latitude, double altitude );
@@ -401,16 +401,16 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateAircraft( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type );
     BARRELMAN_EXPORT bool DeleteAircraft( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertAisAidToNavigation( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& mMSI, Types::NavigationalAidType navigationalAidType, const Guid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const Guid& offPositionTimeseries );
-    BARRELMAN_EXPORT bool UpdateAisAidToNavigation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& mMSI, Types::NavigationalAidType navigationalAidType, const Guid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const Guid& offPositionTimeseries );
+    BARRELMAN_EXPORT bool InsertAisAidToNavigation( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& mMSI, Types::NavigationalAidType navigationalAidType, const DBGuid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& offPositionTimeseries );
+    BARRELMAN_EXPORT bool UpdateAisAidToNavigation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& mMSI, Types::NavigationalAidType navigationalAidType, const DBGuid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& offPositionTimeseries );
     BARRELMAN_EXPORT bool DeleteAisAidToNavigation( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertVehicle( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type );
     BARRELMAN_EXPORT bool UpdateVehicle( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type );
     BARRELMAN_EXPORT bool DeleteVehicle( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertVessel( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const Guid& draughtTimeseries, const Guid& personsOnBoardTimeseries );
-    BARRELMAN_EXPORT bool UpdateVessel( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const Guid& draughtTimeseries, const Guid& personsOnBoardTimeseries );
+    BARRELMAN_EXPORT bool InsertVessel( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& draughtTimeseries, const DBGuid& personsOnBoardTimeseries );
+    BARRELMAN_EXPORT bool UpdateVessel( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& draughtTimeseries, const DBGuid& personsOnBoardTimeseries );
     BARRELMAN_EXPORT bool DeleteVessel( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertItemIdentityLink( const ODBC::Connection& connection, Guid& id, const Guid& item, const Guid& identity, const DateTime& start, const DBDateTime& end );
@@ -421,8 +421,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateItemParentChildLink( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& parent, const Guid& child, const DateTime& timestamp );
     BARRELMAN_EXPORT bool DeleteItemParentChildLink( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertLineInputDeviceCommand( const ODBC::Connection& connection, Guid& id, const Guid& lineInputDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateLineInputDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& lineInputDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertLineInputDeviceCommand( const ODBC::Connection& connection, Guid& id, const Guid& lineInputDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateLineInputDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& lineInputDevice, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteLineInputDeviceCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertLineInputDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& lineInputDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -497,8 +497,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateMaritimeIdentificationDigits( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, Int32 code, const Guid& country );
     BARRELMAN_EXPORT bool DeleteMaritimeIdentificationDigits( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertMediaProxySession( const ODBC::Connection& connection, Guid& id, const Guid& service, const FixedDBWideString<128>& name, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateMediaProxySession( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& service, const FixedDBWideString<128>& name, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertMediaProxySession( const ODBC::Connection& connection, Guid& id, const Guid& service, const FixedDBWideString<128>& name, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateMediaProxySession( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& service, const FixedDBWideString<128>& name, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteMediaProxySession( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertMediaProxySessionFile( const ODBC::Connection& connection, Guid& id, const Guid& proxySession, const DateTime& timestamp, const FixedDBWideString<127>& streamName );
@@ -509,8 +509,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateMediaProxySessionOptions( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& proxySession, const DateTime& timestamp, const FixedDBWideString<255>& sourceStreamUrl, const FixedDBWideString<255>& streamName, Types::MediaProxySessionMode mode, Int32 tunnelOverHTTPPortNumber, const FixedDBWideString<128>& username, const FixedDBWideString<128>& password, Int32 recorderPortNumber, Types::MediaProxySessionType sessionType, const TimeSpan& maxFileTime, const TimeSpan& maxFileRetention, const FixedDBWideString<260>& videoDirectory );
     BARRELMAN_EXPORT bool DeleteMediaProxySessionOptions( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertMediaService( const ODBC::Connection& connection, Guid& id, const Guid& enabledTimeseries );
-    BARRELMAN_EXPORT bool UpdateMediaService( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& enabledTimeseries );
+    BARRELMAN_EXPORT bool InsertMediaService( const ODBC::Connection& connection, Guid& id, const DBGuid& enabledTimeseries );
+    BARRELMAN_EXPORT bool UpdateMediaService( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& enabledTimeseries );
     BARRELMAN_EXPORT bool DeleteMediaService( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertMediaServiceOptions( const ODBC::Connection& connection, Guid& id, const Guid& mediaService, const DateTime& timestamp, Int32 rtspPortNumber, Int32 httpPortNumber );
@@ -529,8 +529,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateOilSpill( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, double oilArea, const Binary& shape, const Binary& bSI, const Binary& oil, const Binary& trace );
     BARRELMAN_EXPORT bool DeleteOilSpill( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertOilSpillDetectorCommand( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateOilSpillDetectorCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertOilSpillDetectorCommand( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateOilSpillDetectorCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteOilSpillDetectorCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertOilSpillDetectorCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -829,12 +829,12 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateRadarAlarmStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, Types::AlarmState type );
     BARRELMAN_EXPORT bool DeleteRadarAlarmStatus( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarCommand( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateRadarCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertRadarCommand( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateRadarCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteRadarCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarCommandGetStatus( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateRadarCommandGetStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertRadarCommandGetStatus( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateRadarCommandGetStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteRadarCommandGetStatus( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertRadarCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -861,8 +861,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateRadarStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, Int32 azimuthCount, Int32 triggerCount, const TimeSpan& rotationTime, Types::RadarPulse pulse, bool tx, bool tracking );
     BARRELMAN_EXPORT bool DeleteRadarStatus( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadioCommand( const ODBC::Connection& connection, Guid& id, const Guid& radio, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateRadioCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radio, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertRadioCommand( const ODBC::Connection& connection, Guid& id, const Guid& radio, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateRadioCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radio, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteRadioCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertRadioCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radio, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -873,8 +873,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateRadioConfiguration( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radio, const DateTime& timestamp, double longitude, double latitude, const FixedDBWideString<127>& playbackUrl, const FixedDBWideString<127>& radioIPAddress, Int32 radioPort, const FixedDBWideString<127>& ed137IPAddress, Int32 ed137Port );
     BARRELMAN_EXPORT bool DeleteRadioConfiguration( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadomeCommand( const ODBC::Connection& connection, Guid& id, const Guid& radome, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateRadomeCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radome, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertRadomeCommand( const ODBC::Connection& connection, Guid& id, const Guid& radome, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateRadomeCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radome, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteRadomeCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertRadomeCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radome, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );
@@ -933,56 +933,56 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateBooleanTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
     BARRELMAN_EXPORT bool DeleteBooleanTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertAisAidToNavigationOffPositionTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& aidToNavigation );
-    BARRELMAN_EXPORT bool UpdateAisAidToNavigationOffPositionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& aidToNavigation );
+    BARRELMAN_EXPORT bool InsertAisAidToNavigationOffPositionTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& aidToNavigation );
+    BARRELMAN_EXPORT bool UpdateAisAidToNavigationOffPositionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& aidToNavigation );
     BARRELMAN_EXPORT bool DeleteAisAidToNavigationOffPositionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertDeviceEnabledTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& device );
     BARRELMAN_EXPORT bool UpdateDeviceEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& device );
     BARRELMAN_EXPORT bool DeleteDeviceEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarAutomaticSensitivityTimeControlTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarAutomaticSensitivityTimeControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarAutomaticSensitivityTimeControlTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarAutomaticSensitivityTimeControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarAutomaticSensitivityTimeControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarBlankSector1Timeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarBlankSector1Timeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarBlankSector1Timeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarBlankSector1Timeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarBlankSector1Timeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarBlankSector2Timeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarBlankSector2Timeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarBlankSector2Timeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarBlankSector2Timeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarBlankSector2Timeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarEnableAutomaticFrequencyControlTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarEnableAutomaticFrequencyControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarEnableAutomaticFrequencyControlTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarEnableAutomaticFrequencyControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarEnableAutomaticFrequencyControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarEnableFastTimeConstantTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarEnableFastTimeConstantTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarEnableFastTimeConstantTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarEnableFastTimeConstantTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarEnableFastTimeConstantTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarEnableSensitivityTimeControlTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarEnableSensitivityTimeControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarEnableSensitivityTimeControlTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarEnableSensitivityTimeControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarEnableSensitivityTimeControlTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarPowerOnTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarPowerOnTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarPowerOnTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarPowerOnTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarPowerOnTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarSaveSettingsTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarSaveSettingsTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarSaveSettingsTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarSaveSettingsTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarSaveSettingsTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarTrackingTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarTrackingTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarTrackingTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarTrackingTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarTrackingTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertMediaProxySessionEnabledTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& proxySession );
-    BARRELMAN_EXPORT bool UpdateMediaProxySessionEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& proxySession );
+    BARRELMAN_EXPORT bool InsertMediaProxySessionEnabledTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& proxySession );
+    BARRELMAN_EXPORT bool UpdateMediaProxySessionEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& proxySession );
     BARRELMAN_EXPORT bool DeleteMediaProxySessionEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertMediaServiceEnabledTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& service );
-    BARRELMAN_EXPORT bool UpdateMediaServiceEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& service );
+    BARRELMAN_EXPORT bool InsertMediaServiceEnabledTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& service );
+    BARRELMAN_EXPORT bool UpdateMediaServiceEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& service );
     BARRELMAN_EXPORT bool DeleteMediaServiceEnabledTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertByteTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
@@ -997,120 +997,120 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateDoubleTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
     BARRELMAN_EXPORT bool DeleteDoubleTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGNSSAltitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gNSSDevice );
-    BARRELMAN_EXPORT bool UpdateGNSSAltitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gNSSDevice );
+    BARRELMAN_EXPORT bool InsertGNSSAltitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gNSSDevice );
+    BARRELMAN_EXPORT bool UpdateGNSSAltitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gNSSDevice );
     BARRELMAN_EXPORT bool DeleteGNSSAltitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGNSSLatitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gNSSDevice );
-    BARRELMAN_EXPORT bool UpdateGNSSLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gNSSDevice );
+    BARRELMAN_EXPORT bool InsertGNSSLatitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gNSSDevice );
+    BARRELMAN_EXPORT bool UpdateGNSSLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gNSSDevice );
     BARRELMAN_EXPORT bool DeleteGNSSLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGNSSLongitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gNSSDevice );
-    BARRELMAN_EXPORT bool UpdateGNSSLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gNSSDevice );
+    BARRELMAN_EXPORT bool InsertGNSSLongitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gNSSDevice );
+    BARRELMAN_EXPORT bool UpdateGNSSLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gNSSDevice );
     BARRELMAN_EXPORT bool DeleteGNSSLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroCourseTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroCourseTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroCourseTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroCourseTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroCourseTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroHeadingMagneticNorthTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroHeadingMagneticNorthTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroHeadingMagneticNorthTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroHeadingMagneticNorthTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroHeadingMagneticNorthTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroHeadingTrueNorthTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroHeadingTrueNorthTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroHeadingTrueNorthTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroHeadingTrueNorthTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroHeadingTrueNorthTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroPitchTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroPitchTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroPitchTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroPitchTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroPitchTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroRateOfTurnTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroRateOfTurnTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroRateOfTurnTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroRateOfTurnTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroRateOfTurnTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroRollTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroRollTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroRollTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroRollTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroRollTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertGyroSpeedTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
-    BARRELMAN_EXPORT bool UpdateGyroSpeedTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& gyroDevice );
+    BARRELMAN_EXPORT bool InsertGyroSpeedTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
+    BARRELMAN_EXPORT bool UpdateGyroSpeedTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& gyroDevice );
     BARRELMAN_EXPORT bool DeleteGyroSpeedTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarLatitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarLatitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarLongitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarLongitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadomeDewPointTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
-    BARRELMAN_EXPORT bool UpdateRadomeDewPointTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
+    BARRELMAN_EXPORT bool InsertRadomeDewPointTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
+    BARRELMAN_EXPORT bool UpdateRadomeDewPointTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
     BARRELMAN_EXPORT bool DeleteRadomeDewPointTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadomePressureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
-    BARRELMAN_EXPORT bool UpdateRadomePressureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
+    BARRELMAN_EXPORT bool InsertRadomePressureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
+    BARRELMAN_EXPORT bool UpdateRadomePressureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
     BARRELMAN_EXPORT bool DeleteRadomePressureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadomeTemperatureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
-    BARRELMAN_EXPORT bool UpdateRadomeTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
+    BARRELMAN_EXPORT bool InsertRadomeTemperatureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
+    BARRELMAN_EXPORT bool UpdateRadomeTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
     BARRELMAN_EXPORT bool DeleteRadomeTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertVesselDraughtTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& vessel );
-    BARRELMAN_EXPORT bool UpdateVesselDraughtTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& vessel );
+    BARRELMAN_EXPORT bool InsertVesselDraughtTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& vessel );
+    BARRELMAN_EXPORT bool UpdateVesselDraughtTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& vessel );
     BARRELMAN_EXPORT bool DeleteVesselDraughtTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertViewLatitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& view );
-    BARRELMAN_EXPORT bool UpdateViewLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& view );
+    BARRELMAN_EXPORT bool InsertViewLatitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& view );
+    BARRELMAN_EXPORT bool UpdateViewLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& view );
     BARRELMAN_EXPORT bool DeleteViewLatitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertViewLongitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& view );
-    BARRELMAN_EXPORT bool UpdateViewLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& view );
+    BARRELMAN_EXPORT bool InsertViewLongitudeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& view );
+    BARRELMAN_EXPORT bool UpdateViewLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& view );
     BARRELMAN_EXPORT bool DeleteViewLongitudeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertViewZoomLevelTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& view );
-    BARRELMAN_EXPORT bool UpdateViewZoomLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& view );
+    BARRELMAN_EXPORT bool InsertViewZoomLevelTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& view );
+    BARRELMAN_EXPORT bool UpdateViewZoomLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& view );
     BARRELMAN_EXPORT bool DeleteViewZoomLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationAbsoluteHumidityTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationAbsoluteHumidityTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationAbsoluteHumidityTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationAbsoluteHumidityTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationAbsoluteHumidityTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationAirTemperatureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationAirTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationAirTemperatureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationAirTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationAirTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationBarometricPressureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationBarometricPressureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationBarometricPressureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationBarometricPressureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationBarometricPressureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationDewPointTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationDewPointTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationDewPointTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationDewPointTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationDewPointTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationRelativeHumidityTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationRelativeHumidityTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationRelativeHumidityTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationRelativeHumidityTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationRelativeHumidityTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationWaterTemperatureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationWaterTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationWaterTemperatureTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationWaterTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationWaterTemperatureTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationWindDirectionTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationWindDirectionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationWindDirectionTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationWindDirectionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationWindDirectionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationWindSpeedTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
-    BARRELMAN_EXPORT bool UpdateWeatherStationWindSpeedTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& weatherStation );
+    BARRELMAN_EXPORT bool InsertWeatherStationWindSpeedTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
+    BARRELMAN_EXPORT bool UpdateWeatherStationWindSpeedTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& weatherStation );
     BARRELMAN_EXPORT bool DeleteWeatherStationWindSpeedTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertGeoPosition2DTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
     BARRELMAN_EXPORT bool UpdateGeoPosition2DTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
     BARRELMAN_EXPORT bool DeleteGeoPosition2DTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertAisAidToNavigationPositionTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& aidToNavigation );
-    BARRELMAN_EXPORT bool UpdateAisAidToNavigationPositionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& aidToNavigation );
+    BARRELMAN_EXPORT bool InsertAisAidToNavigationPositionTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& aidToNavigation );
+    BARRELMAN_EXPORT bool UpdateAisAidToNavigationPositionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& aidToNavigation );
     BARRELMAN_EXPORT bool DeleteAisAidToNavigationPositionTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertGeoPosition3DTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
@@ -1129,48 +1129,48 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateInt32Timeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
     BARRELMAN_EXPORT bool DeleteInt32Timeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarAzimuthOffsetTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarAzimuthOffsetTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarAzimuthOffsetTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarAzimuthOffsetTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarAzimuthOffsetTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarFastTimeConstantLevelTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarFastTimeConstantLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarFastTimeConstantLevelTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarFastTimeConstantLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarFastTimeConstantLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarFastTimeConstantModeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarFastTimeConstantModeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarFastTimeConstantModeTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarFastTimeConstantModeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarFastTimeConstantModeTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarPulseTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarPulseTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarPulseTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarPulseTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarPulseTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarSector1EndTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarSector1EndTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarSector1EndTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarSector1EndTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarSector1EndTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarSector1StartTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarSector1StartTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarSector1StartTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarSector1StartTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarSector1StartTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarSector2EndTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarSector2EndTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarSector2EndTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarSector2EndTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarSector2EndTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarSector2StartTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarSector2StartTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarSector2StartTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarSector2StartTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarSector2StartTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarSensitivityTimeControlLevelTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarSensitivityTimeControlLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarSensitivityTimeControlLevelTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarSensitivityTimeControlLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarSensitivityTimeControlLevelTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadarTuningTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
-    BARRELMAN_EXPORT bool UpdateRadarTuningTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radar );
+    BARRELMAN_EXPORT bool InsertRadarTuningTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
+    BARRELMAN_EXPORT bool UpdateRadarTuningTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radar );
     BARRELMAN_EXPORT bool DeleteRadarTuningTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertVesselPersonsOnBoardTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& vessel );
-    BARRELMAN_EXPORT bool UpdateVesselPersonsOnBoardTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& vessel );
+    BARRELMAN_EXPORT bool InsertVesselPersonsOnBoardTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& vessel );
+    BARRELMAN_EXPORT bool UpdateVesselPersonsOnBoardTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& vessel );
     BARRELMAN_EXPORT bool DeleteVesselPersonsOnBoardTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertInt64Timeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
@@ -1213,8 +1213,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateUInt32Timeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
     BARRELMAN_EXPORT bool DeleteUInt32Timeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertRadomeStatusTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
-    BARRELMAN_EXPORT bool UpdateRadomeStatusTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const Guid& radome );
+    BARRELMAN_EXPORT bool InsertRadomeStatusTimeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
+    BARRELMAN_EXPORT bool UpdateRadomeStatusTimeseries( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention, const DBGuid& radome );
     BARRELMAN_EXPORT bool DeleteRadomeStatusTimeseries( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertUInt64Timeseries( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const TimeSpan& maxRetention );
@@ -1293,8 +1293,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateVesselType( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, Int32 code );
     BARRELMAN_EXPORT bool DeleteVesselType( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertView( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& latitudeTimeseries, const Guid& longitudeTimeseries, const Guid& zoomLevelTimeseries );
-    BARRELMAN_EXPORT bool UpdateView( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& latitudeTimeseries, const Guid& longitudeTimeseries, const Guid& zoomLevelTimeseries );
+    BARRELMAN_EXPORT bool InsertView( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& latitudeTimeseries, const DBGuid& longitudeTimeseries, const DBGuid& zoomLevelTimeseries );
+    BARRELMAN_EXPORT bool UpdateView( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& latitudeTimeseries, const DBGuid& longitudeTimeseries, const DBGuid& zoomLevelTimeseries );
     BARRELMAN_EXPORT bool DeleteView( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertViewCameraLink( const ODBC::Connection& connection, Guid& id, const Guid& view, const Guid& camera, const DateTime& start, const DBDateTime& end );
@@ -1305,8 +1305,8 @@ namespace Barrelman::Database
     BARRELMAN_EXPORT bool UpdateViewTrackerLink( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& view, const Guid& tracker, const DateTime& start, const DBDateTime& end );
     BARRELMAN_EXPORT bool DeleteViewTrackerLink( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
-    BARRELMAN_EXPORT bool InsertWeatherStationCommand( const ODBC::Connection& connection, Guid& id, const Guid& weatherStation, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
-    BARRELMAN_EXPORT bool UpdateWeatherStationCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& weatherStation, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const Guid& reply );
+    BARRELMAN_EXPORT bool InsertWeatherStationCommand( const ODBC::Connection& connection, Guid& id, const Guid& weatherStation, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
+    BARRELMAN_EXPORT bool UpdateWeatherStationCommand( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& weatherStation, const DateTime& timestamp, Types::DeviceCommandSourceType deviceCommandSourceType, const Guid& deviceCommandSourceId, const DBGuid& reply );
     BARRELMAN_EXPORT bool DeleteWeatherStationCommand( const ODBC::Connection& connection, const Guid& id, Int64 rowVersion );
 
     BARRELMAN_EXPORT bool InsertWeatherStationCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& weatherStation, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message );

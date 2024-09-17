@@ -767,7 +767,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="AisDeviceCommandReply" nullable="true"/>
+      <reference name="Reply" type="AisDeviceCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="AisDevice_Timestamp" fields="AisDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -779,7 +779,7 @@
       <rowversion name="RowVersion"/>
       <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="AisDeviceCommand"/>
+      <reference name="Command" type="AisDeviceCommand" member="Reply"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -912,7 +912,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="CameraCommandReply"/>
+      <reference name="Reply" type="CameraCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="Camera_Timestamp" fields="Camera;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1019,7 +1019,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Camera" type="CameraDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="CameraCommand"/>
+      <reference name="Command" type="CameraCommand" member="Reply" />
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
       <double name="PanAngle" category="Aim"/>
@@ -1326,7 +1326,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="GNSSDeviceCommandReply"/>
+      <reference name="Reply" type="GNSSDeviceCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="GNSSDevice_Timestamp" fields="GNSSDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1338,7 +1338,7 @@
       <rowversion name="RowVersion"/>
       <reference name="GNSSDevice" type="GNSSDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="GNSSDeviceCommand"/>
+      <reference name="Command" type="GNSSDeviceCommand" member="Reply" />
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -1381,7 +1381,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="GyroDeviceCommandReply"/>
+      <reference name="Reply" type="GyroDeviceCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="GyroDevice_Timestamp" fields="GyroDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1393,7 +1393,7 @@
       <rowversion name="RowVersion"/>
       <reference name="GyroDevice" type="GyroDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="GyroDeviceCommand"/>
+      <reference name="Command" type="GyroDeviceCommand" member="Reply" />
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -1512,7 +1512,7 @@
       <reference name="Host" type="DeviceHost" browsable="false"/>
       <string name="Name" size="127" description="The unique name of this device."/>
       <string name="Description" size="unlimited" description="Additional, free form, information about this device."/>
-      <timeseries name="EnabledTimeseries" type="DeviceEnabledTimeseries" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `DeviceEnabledTimeseries` that will be used to track the Enabled state of this `Device`."/>
+      <timeseries name="EnabledTimeseries" type="DeviceEnabledTimeseries" member="Device" nullable="true" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `DeviceEnabledTimeseries` that will be used to track the Enabled state of this `Device`."/>
       <collection name="RoutingDestinations" type="LineInputMessageRoutingDestination" member="Listener" description="Link objects between this Device and `LineInputDevice`s that will route messages to this Device." aggregated="true"/>
     </members>
     <index name="Host" fields="Host"/>
@@ -1531,9 +1531,9 @@
   </class>
   <class name="GNSSDevice" base="Device">
     <members>
-      <timeseries name="LatitudeTimeseries" type="GNSSLatitudeTimeseries" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="LongitudeTimeseries" type="GNSSLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="AltitudeTimeseries" type="GNSSAltitudeTimeseries" propertyname="Altitude" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="LatitudeTimeseries" type="GNSSLatitudeTimeseries" member="GNSSDevice" nullable="true" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="LongitudeTimeseries" type="GNSSLongitudeTimeseries" member="GNSSDevice" nullable="true" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="AltitudeTimeseries" type="GNSSAltitudeTimeseries" member="GNSSDevice" nullable="true" propertyname="Altitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <collection name="Commands" type="GNSSDeviceCommand" member="GNSSDevice" aggregated="true"/>
       <collection name="CommandReplies" type="GNSSDeviceCommandReply" member="GNSSDevice" aggregated="true"/>
       <collection name="Configuration" type="GNSSDeviceConfiguration" member="GNSSDevice" aggregated="true"/>
@@ -1543,13 +1543,13 @@
   </class>
   <class name="GyroDevice" base="Device">
     <members>
-      <timeseries name="HeadingTrueNorthTimeseries" type="GyroHeadingTrueNorthTimeseries" propertyname="HeadingTrueNorth" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="HeadingMagneticNorthTimeseries" type="GyroHeadingMagneticNorthTimeseries" propertyname="HeadingMagneticNorth" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="PitchTimeseries" type="GyroPitchTimeseries" propertyname="Pitch" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="RateOfTurnTimeseries" type="GyroRateOfTurnTimeseries" propertyname="RateOfTurn" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="RollTimeseries" type="GyroRollTimeseries" propertyname="Roll" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="CourseTimeseries" type="GyroCourseTimeseries" propertyname="Course" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="SpeedTimeseries" type="GyroSpeedTimeseries" propertyname="Speed" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="HeadingTrueNorthTimeseries" type="GyroHeadingTrueNorthTimeseries" member="GyroDevice" nullable="true" propertyname="HeadingTrueNorth" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="HeadingMagneticNorthTimeseries" type="GyroHeadingMagneticNorthTimeseries" member="GyroDevice" nullable="true" propertyname="HeadingMagneticNorth" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="PitchTimeseries" type="GyroPitchTimeseries" member="GyroDevice" nullable="true" propertyname="Pitch" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="RateOfTurnTimeseries" type="GyroRateOfTurnTimeseries" member="GyroDevice" nullable="true" propertyname="RateOfTurn" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="RollTimeseries" type="GyroRollTimeseries" member="GyroDevice" nullable="true" propertyname="Roll" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="CourseTimeseries" type="GyroCourseTimeseries" member="GyroDevice" nullable="true" propertyname="Course" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="SpeedTimeseries" type="GyroSpeedTimeseries" member="GyroDevice" nullable="true" propertyname="Speed" propertytype="Double" propertynullable="true" browsable="false"/>
       <reference name="GNSSDevice" type="GNSSDevice" browsable="false"/>
       <collection name="Commands" type="GyroDeviceCommand" member="GyroDevice" aggregated="true"/>
       <collection name="CommandReplies" type="GyroDeviceCommandReply" member="GyroDevice" aggregated="true"/>
@@ -1584,14 +1584,14 @@
   </class>
   <class name="RadomeDevice" base="Device" description="A Radome device." shortname="RDO">
     <members>
-      <reference name="Radar" type="RadarDevice" nullable="true"/>
+      <reference name="Radar" type="RadarDevice" member="Radome" nullable="true"/>
       <collection name="Commands" type="RadomeCommand" member="Radome" aggregated="true"/>
       <collection name="CommandReplies" type="RadomeCommandReply" member="Radome" aggregated="true"/>
       <collection name="Configuration" type="RadomeConfiguration" member="Radome" aggregated="true"/>
-      <timeseries name="PressureTimeseries" type="RadomePressureTimeseries" propertyname="Pressure" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="TemperatureTimeseries" type="RadomeTemperatureTimeseries" propertyname="Temperature" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="DewPointTimeseries" type="RadomeDewPointTimeseries" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="StatusTimeseries" type="RadomeStatusTimeseries" propertyname="Status" propertytype="UInt32" propertynullable="true" browsable="false"/>
+      <timeseries name="PressureTimeseries" type="RadomePressureTimeseries" member="Radome" nullable="true" propertyname="Pressure" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="TemperatureTimeseries" type="RadomeTemperatureTimeseries" member="Radome" nullable="true" propertyname="Temperature" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="DewPointTimeseries" type="RadomeDewPointTimeseries" member="Radome" nullable="true" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="StatusTimeseries" type="RadomeStatusTimeseries" member="Radome" nullable="true" propertyname="Status" propertytype="UInt32" propertynullable="true" browsable="false"/>
     </members>
     <index name="Radar" fields="Radar"/>
   </class>
@@ -1613,28 +1613,28 @@
   </class>
   <class name="RadarDevice" base="TrackerDevice">
     <members>
-      <timeseries name="SaveSettingsTimeseries" type="RadarSaveSettingsTimeseries" propertyname="SaveSettings" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="PowerOnTimeseries" type="RadarPowerOnTimeseries" propertyname="PowerOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="TrackingOnTimeseries" type="RadarTrackingTimeseries" propertyname="TrackingOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="RadarPulseTimeseries" type="RadarPulseTimeseries" propertyname="Pulse" propertytype="RadarPulse" browsable="false"/>
-      <timeseries name="TuningTimeseries" type="RadarTuningTimeseries" propertyname="Tuning" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="BlankSector1Timeseries" type="RadarBlankSector1Timeseries" propertyname="BlankSector1" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="Sector1StartTimeseries" type="RadarSector1StartTimeseries" propertyname="Sector1Start" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="Sector1EndTimeseries" type="RadarSector1EndTimeseries" propertyname="Sector1End" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="BlankSector2Timeseries" type="RadarBlankSector2Timeseries" propertyname="BlankSector2" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="Sector2StartTimeseries" type="RadarSector2StartTimeseries" propertyname="Sector2Start" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="Sector2EndTimeseries" type="RadarSector2EndTimeseries" propertyname="Sector2End" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="EnableAutomaticFrequencyControlTimeseries" type="RadarEnableAutomaticFrequencyControlTimeseries" propertyname="EnableAutomaticFrequencyControl" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="AzimuthOffsetTimeseries" type="RadarAzimuthOffsetTimeseries" propertyname="AzimuthOffset" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="EnableSensitivityTimeControlTimeseries" type="RadarEnableSensitivityTimeControlTimeseries" propertyname="EnableSensitivityTimeControl" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="AutomaticSensitivityTimeControlTimeseries" type="RadarAutomaticSensitivityTimeControlTimeseries" propertyname="AutomaticSensitivityTimeControl" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="SensitivityTimeControlLevelTimeseries" type="RadarSensitivityTimeControlLevelTimeseries" propertyname="SensitivityTimeControlLevel" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="EnableFastTimeConstantTimeseries" type="RadarEnableFastTimeConstantTimeseries" propertyname="EnableFastTimeConstant" propertytype="Boolean" propertynullable="true" browsable="false"/>
-      <timeseries name="FastTimeConstantLevelTimeseries" type="RadarFastTimeConstantLevelTimeseries" propertyname="FastTimeConstantLevel" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="FastTimeConstantModeTimeseries" type="RadarFastTimeConstantModeTimeseries" propertyname="FastTimeConstantMode" propertytype="Int32" propertynullable="true" browsable="false"/>
-      <timeseries name="LatitudeTimeseries" type="RadarLatitudeTimeseries" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="LongitudeTimeseries" type="RadarLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <reference name="Radome" type="RadomeDevice" browsable="false" nullable="true"/>
+      <timeseries name="SaveSettingsTimeseries" type="RadarSaveSettingsTimeseries" member="Radar" nullable="true" propertyname="SaveSettings" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="PowerOnTimeseries" type="RadarPowerOnTimeseries" member="Radar" nullable="true" propertyname="PowerOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="TrackingOnTimeseries" type="RadarTrackingTimeseries" member="Radar" nullable="true" propertyname="TrackingOn" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="RadarPulseTimeseries" type="RadarPulseTimeseries" member="Radar" nullable="true" propertyname="Pulse" propertytype="RadarPulse" browsable="false"/>
+      <timeseries name="TuningTimeseries" type="RadarTuningTimeseries" member="Radar" nullable="true" propertyname="Tuning" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="BlankSector1Timeseries" type="RadarBlankSector1Timeseries" member="Radar" nullable="true" propertyname="BlankSector1" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="Sector1StartTimeseries" type="RadarSector1StartTimeseries" member="Radar" nullable="true" propertyname="Sector1Start" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="Sector1EndTimeseries" type="RadarSector1EndTimeseries" member="Radar" nullable="true" propertyname="Sector1End" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="BlankSector2Timeseries" type="RadarBlankSector2Timeseries" member="Radar" nullable="true" propertyname="BlankSector2" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="Sector2StartTimeseries" type="RadarSector2StartTimeseries" member="Radar" nullable="true" propertyname="Sector2Start" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="Sector2EndTimeseries" type="RadarSector2EndTimeseries" member="Radar" nullable="true" propertyname="Sector2End" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="EnableAutomaticFrequencyControlTimeseries" type="RadarEnableAutomaticFrequencyControlTimeseries" member="Radar" nullable="true" propertyname="EnableAutomaticFrequencyControl" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="AzimuthOffsetTimeseries" type="RadarAzimuthOffsetTimeseries" propertyname="AzimuthOffset" member="Radar" nullable="true" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="EnableSensitivityTimeControlTimeseries" type="RadarEnableSensitivityTimeControlTimeseries" member="Radar" nullable="true" propertyname="EnableSensitivityTimeControl" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="AutomaticSensitivityTimeControlTimeseries" type="RadarAutomaticSensitivityTimeControlTimeseries" member="Radar" nullable="true" propertyname="AutomaticSensitivityTimeControl" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="SensitivityTimeControlLevelTimeseries" type="RadarSensitivityTimeControlLevelTimeseries" member="Radar" nullable="true" propertyname="SensitivityTimeControlLevel" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="EnableFastTimeConstantTimeseries" type="RadarEnableFastTimeConstantTimeseries" member="Radar" nullable="true" propertyname="EnableFastTimeConstant" propertytype="Boolean" propertynullable="true" browsable="false"/>
+      <timeseries name="FastTimeConstantLevelTimeseries" type="RadarFastTimeConstantLevelTimeseries" member="Radar" nullable="true" propertyname="FastTimeConstantLevel" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="FastTimeConstantModeTimeseries" type="RadarFastTimeConstantModeTimeseries" member="Radar" nullable="true" propertyname="FastTimeConstantMode" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="LatitudeTimeseries" type="RadarLatitudeTimeseries" propertyname="Latitude" member="Radar" nullable="true" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="LongitudeTimeseries" type="RadarLongitudeTimeseries" propertyname="Longitude" member="Radar" nullable="true" propertytype="Double" propertynullable="true" browsable="false"/>
+      <reference name="Radome" type="RadomeDevice" member="Radar" browsable="false" nullable="true"/>
       <reference name="GNSSDevice" type="GNSSDevice" browsable="false" nullable="true"/>
       <collection name="Images" type="RadarImage" member="Radar" browsable="false" aggregated="true"/>
       <collection name="TrackTables" type="RadarRawTrackTable" member="Radar" browsable="false" aggregated="true"/>
@@ -1652,14 +1652,14 @@
       <collection name="Commands" type="WeatherStationCommand" member="WeatherStation" aggregated="true"/>
       <collection name="CommandReplies" type="WeatherStationCommandReply" member="WeatherStation" aggregated="true"/>
       <collection name="Configuration" type="WeatherStationConfiguration" member="WeatherStation" aggregated="true"/>
-      <timeseries name="BarometricPressureTimeseries" type="WeatherStationBarometricPressureTimeseries" propertyname="BarometricPressure" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="AirTemperatureTimeseries" type="WeatherStationAirTemperatureTimeseries" propertyname="AirTemperature" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="WaterTemperatureTimeseries" type="WeatherStationWaterTemperatureTimeseries" propertyname="WaterTemperature" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="RelativeHumidityTimeseries" type="WeatherStationRelativeHumidityTimeseries" propertyname="RelativeHumidity" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="AbsoluteHumidityTimeseries" type="WeatherStationAbsoluteHumidityTimeseries" propertyname="AbsoluteHumidity" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="DewPointTimeseries" type="WeatherStationDewPointTimeseries" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="WindDirectionTimeseries" type="WeatherStationWindDirectionTimeseries" propertyname="WindDirection" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="WindSpeedTimeseries" type="WeatherStationWindSpeedTimeseries" propertyname="WindSpeed" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="BarometricPressureTimeseries" type="WeatherStationBarometricPressureTimeseries" member="WeatherStation" nullable="true" propertyname="BarometricPressure" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="AirTemperatureTimeseries" type="WeatherStationAirTemperatureTimeseries" member="WeatherStation" nullable="true" propertyname="AirTemperature" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="WaterTemperatureTimeseries" type="WeatherStationWaterTemperatureTimeseries" member="WeatherStation" nullable="true" propertyname="WaterTemperature" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="RelativeHumidityTimeseries" type="WeatherStationRelativeHumidityTimeseries" member="WeatherStation" nullable="true" propertyname="RelativeHumidity" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="AbsoluteHumidityTimeseries" type="WeatherStationAbsoluteHumidityTimeseries" member="WeatherStation" nullable="true" propertyname="AbsoluteHumidity" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="DewPointTimeseries" type="WeatherStationDewPointTimeseries" member="WeatherStation" nullable="true" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="WindDirectionTimeseries" type="WeatherStationWindDirectionTimeseries" member="WeatherStation" nullable="true" propertyname="WindDirection" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="WindSpeedTimeseries" type="WeatherStationWindSpeedTimeseries" member="WeatherStation" nullable="true" propertyname="WindSpeed" propertytype="Double" propertynullable="true" browsable="false"/>
       <reference name="Gyro" type="GyroDevice" browsable="false"/>
     </members>
     <index name="Gyro" fields="Gyro"/>
@@ -1692,13 +1692,13 @@
       <string name="Name" size="127"/>
       <reference name="MMSI" type="MaritimeMobileServiceIdentity"/>
       <enum name="NavigationalAidType" type="NavigationalAidType"/>
-      <timeseries name="Position" type="AisAidToNavigationPositionTimeseries" propertyname="PositionValue" propertytype="GeoPoint"/>
+      <timeseries name="Position" type="AisAidToNavigationPositionTimeseries" member="AidToNavigation" nullable="true" propertyname="PositionValue" propertytype="GeoPoint"/>
       <boolean name="IsVirtual"/>
       <int32 name="ToBow" description="Dimension to Bow in meters"/>
       <int32 name="ToStern" description="Dimension to Stern in meters"/>
       <int32 name="ToPort" description="Dimension to Port in meters"/>
       <int32 name="ToStarboard" description="Dimension to Starboard in meters"/>
-      <timeseries name="OffPositionTimeseries" type="AisAidToNavigationOffPositionTimeseries" propertyname="OffPosition" propertytype="Boolean" propertynullable="true"/>
+      <timeseries name="OffPositionTimeseries" type="AisAidToNavigationOffPositionTimeseries" member="AidToNavigation" nullable="true" propertyname="OffPosition" propertytype="Boolean" propertynullable="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
     <index name="MMSI" fields="MMSI"/>
@@ -1719,8 +1719,8 @@
       <int32 name="ToStern" description="Dimension to Stern in meters"/>
       <int32 name="ToPort" description="Dimension to Port in meters"/>
       <int32 name="ToStarboard" description="Dimension to Starboard in meters"/>
-      <timeseries name="DraughtTimeseries" type="VesselDraughtTimeseries" propertyname="Draught" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="PersonsOnBoardTimeseries" type="VesselPersonsOnBoardTimeseries" propertyname="PersonsOnBoard" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <timeseries name="DraughtTimeseries" type="VesselDraughtTimeseries" member="Vessel" nullable="true" propertyname="Draught" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="PersonsOnBoardTimeseries" type="VesselPersonsOnBoardTimeseries" member="Vessel" nullable="true" propertyname="PersonsOnBoard" propertytype="Int32" propertynullable="true" browsable="false"/>
     </members>
     <index name="Name" fields="Name"/>
     <index name="Type" fields="Type"/>
@@ -1761,7 +1761,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="LineInputDeviceCommandReply"/>
+      <reference name="Reply" type="LineInputDeviceCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="LineInputDevice_Timestamp" fields="LineInputDevice;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -1773,7 +1773,7 @@
       <rowversion name="RowVersion"/>
       <reference name="LineInputDevice" type="LineInputDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="LineInputDeviceCommand"/>
+      <reference name="Command" type="LineInputDeviceCommand" member="Reply" />
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2061,7 +2061,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Service" type="MediaService"/>
       <string name="Name" size="128"/>
-      <timeseries name="EnabledTimeseries" type="MediaProxySessionEnabledTimeseries" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `MediaProxySessionEnabledTimeseries` used to track the Enabled state of this `MediaProxySession`."/>
+      <timeseries name="EnabledTimeseries" type="MediaProxySessionEnabledTimeseries" member="ProxySession" nullable="true" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `MediaProxySessionEnabledTimeseries` used to track the Enabled state of this `MediaProxySession`."/>
       <collection name="Options" type="MediaProxySessionOptions" member="ProxySession" aggregated="true"/>
       <collection name="Files" type="MediaProxySessionFile" member="ProxySession" aggregated="true"/>
     </members>
@@ -2101,7 +2101,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <timeseries name="EnabledTimeseries" type="MediaServiceEnabledTimeseries" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `MediaServiceEnabledTimeseries` used to track the Enabled state of this `MediaService`."/>
+      <timeseries name="EnabledTimeseries" type="MediaServiceEnabledTimeseries" member="Service" nullable="true" propertyname="Enabled" propertytype="Boolean" propertynullable="true" browsable="false" description="A `MediaServiceEnabledTimeseries` used to track the Enabled state of this `MediaService`."/>
       <collection name="Options" type="MediaServiceOptions" member="MediaService" aggregated="true"/>
       <collection name="ProxySessions" type="MediaProxySession" member="Service" aggregated="true"/>
     </members>
@@ -2163,7 +2163,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="OilSpillDetectorCommandReply"/>
+      <reference name="Reply" type="OilSpillDetectorCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="OilSpillDetector_Timestamp" fields="OilSpillDetector;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -2175,7 +2175,7 @@
       <rowversion name="RowVersion"/>
       <reference name="OilSpillDetector" type="OilSpillDetectorDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="OilSpillDetectorCommand"/>
+      <reference name="Command" type="OilSpillDetectorCommand" member="Reply" />
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2693,7 +2693,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="RadarCommandReply"/>
+      <reference name="Reply" type="RadarCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="Radar_Timestamp" fields="Radar;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -2709,7 +2709,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="RadarCommand"/>
+      <reference name="Command" type="RadarCommand" member="Reply"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2811,7 +2811,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="RadioCommandReply"/>
+      <reference name="Reply" type="RadioCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="Radio_Timestamp" fields="Radio;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -2823,7 +2823,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Radio" type="RadioDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="RadioCommand"/>
+      <reference name="Command" type="RadioCommand" member="Reply"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2856,7 +2856,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="RadomeCommandReply"/>
+      <reference name="Reply" type="RadomeCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="Radome_Timestamp" fields="Radome;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -2868,7 +2868,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Radome" type="RadomeDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="RadomeCommand"/>
+      <reference name="Command" type="RadomeCommand" member="Reply"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -3038,68 +3038,68 @@
   </class>
   <class name="AisAidToNavigationOffPositionTimeseries" base="BooleanTimeseries" displayname="AIS Aid To Navigation Off Position">
     <members>
-      <reference name="AidToNavigation" type="AisAidToNavigation"/>
+      <reference name="AidToNavigation" type="AisAidToNavigation" member="OffPositionTimeseries" nullable="true"/>
     </members>
     <index name="AidToNavigation" fields="AidToNavigation"/>
   </class>
   <class name="DeviceEnabledTimeseries" base="BooleanTimeseries" displayname="Device Enabled" description="Tracks the Enabled state of a Device.">
     <members>
-      <reference name="Device" type="Device" nullable="true"/>
+      <reference name="Device" type="Device" member="EnabledTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarAutomaticSensitivityTimeControlTimeseries" base="BooleanTimeseries" displayname="Automatic Sensitivity Time Control (STC)">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="AutomaticSensitivityTimeControlTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarBlankSector1Timeseries" base="BooleanTimeseries" displayname="Blank Sector 1">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="BlankSector1Timeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarBlankSector2Timeseries" base="BooleanTimeseries" displayname="Blank Sector 2">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="BlankSector2Timeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarEnableAutomaticFrequencyControlTimeseries" base="BooleanTimeseries" displayname="Enable Automatic Frequency Control">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="EnableAutomaticFrequencyControlTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarEnableFastTimeConstantTimeseries" base="BooleanTimeseries" displayname="Enable Fast Time Constant (FTC)">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="EnableFastTimeConstantTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarEnableSensitivityTimeControlTimeseries" base="BooleanTimeseries" displayname="Enable Sensitivity Time Control (STC)">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="EnableSensitivityTimeControlTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarPowerOnTimeseries" base="BooleanTimeseries" displayname="Radar Power On">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="PowerOnTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarSaveSettingsTimeseries" base="BooleanTimeseries" displayname="Save Settings">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="SaveSettingsTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarTrackingTimeseries" base="BooleanTimeseries" displayname="Radar Power On">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="TrackingOnTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="MediaProxySessionEnabledTimeseries" base="BooleanTimeseries" displayname="Media Proxy Session Enabled" description="Tracks the Enabled state of a Media Proxy Session.">
     <members>
-      <reference name="ProxySession" type="MediaProxySession"/>
+      <reference name="ProxySession" type="MediaProxySession" member="EnabledTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="MediaServiceEnabledTimeseries" base="BooleanTimeseries" displayname="Media Service Enabled" description="Tracks the Enabled state of the Media Service.">
     <members>
-      <reference name="Service" type="MediaService"/>
+      <reference name="Service" type="MediaService" member="EnabledTimeseries" nullable="true" />
     </members>
   </class>
   <class name="ByteTimeseries" base="Timeseries" shortname="BYTS">
@@ -3122,151 +3122,151 @@
   </class>
   <class name="GNSSAltitudeTimeseries" base="DoubleTimeseries" displayname="Altitude" shortname="GATS">
     <members>
-      <reference name="GNSSDevice" type="GNSSDevice"/>
+      <reference name="GNSSDevice" type="GNSSDevice" member="AltitudeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="GNSSLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude" shortname="GLATS">
     <members>
-      <reference name="GNSSDevice" type="GNSSDevice"/>
+      <reference name="GNSSDevice" type="GNSSDevice" member="LatitudeTimeseries" nullable="true" />
     </members>
   </class>
   <class name="GNSSLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude" shortname="GLOTS">
     <members>
-      <reference name="GNSSDevice" type="GNSSDevice"/>
+      <reference name="GNSSDevice" type="GNSSDevice" member="LongitudeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="GyroCourseTimeseries" base="DoubleTimeseries" displayname="Gyro Course">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="CourseTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="GyroHeadingMagneticNorthTimeseries" base="DoubleTimeseries" displayname="Gyro Heading Magnetic North">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="HeadingMagneticNorthTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="GyroHeadingTrueNorthTimeseries" base="DoubleTimeseries" displayname="Gyro Heading True North">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="HeadingTrueNorthTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="GyroPitchTimeseries" base="DoubleTimeseries" displayname="Gyro Pitch">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="PitchTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="GyroRateOfTurnTimeseries" base="DoubleTimeseries" displayname="Gyro Rate Of Turn">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="RateOfTurnTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="GyroRollTimeseries" base="DoubleTimeseries" displayname="Gyro Roll">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="RollTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="GyroSpeedTimeseries" base="DoubleTimeseries" displayname="Gyro Speed">
     <members>
-      <reference name="GyroDevice" type="GyroDevice"/>
+      <reference name="GyroDevice" type="GyroDevice" member="SpeedTimeseries" nullable="true"/>
     </members>
     <index name="GyroDevice" fields="GyroDevice" unique="true"/>
   </class>
   <class name="RadarLatitudeTimeseries" base="DoubleTimeseries" displayname="Latitude" shortname="RLATS">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="LatitudeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarLongitudeTimeseries" base="DoubleTimeseries" displayname="Longitude" shortname="RLOTS">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="LongitudeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadomeDewPointTimeseries" base="DoubleTimeseries" displayname="Radome Dew Point" description="Tracks the Dew Point of a Radome.">
     <members>
-      <reference name="Radome" type="RadomeDevice"/>
+      <reference name="Radome" type="RadomeDevice" member="DewPointTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadomePressureTimeseries" base="DoubleTimeseries" displayname="Radome Pressure" description="Tracks the Pressure of a Radome.">
     <members>
-      <reference name="Radome" type="RadomeDevice"/>
+      <reference name="Radome" type="RadomeDevice" member="PressureTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadomeTemperatureTimeseries" base="DoubleTimeseries" displayname="Radome Temperature" description="Tracks the Temperature of a Radome." shortname="RTETS">
     <members>
-      <reference name="Radome" type="RadomeDevice"/>
+      <reference name="Radome" type="RadomeDevice" member="TemperatureTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="VesselDraughtTimeseries" base="DoubleTimeseries">
     <members>
-      <reference name="Vessel" type="Vessel"/>
+      <reference name="Vessel" type="Vessel" member="DraughtTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="ViewLatitudeTimeseries" base="DoubleTimeseries" shortname="VLATS">
     <members>
-      <reference name="View" type="View"/>
+      <reference name="View" type="View" member="LatitudeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="ViewLongitudeTimeseries" base="DoubleTimeseries" shortname="VLOTS">
     <members>
-      <reference name="View" type="View"/>
+      <reference name="View" type="View" member="LongitudeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="ViewZoomLevelTimeseries" base="DoubleTimeseries">
     <members>
-      <reference name="View" type="View"/>
+      <reference name="View" type="View" member="ZoomLevelTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="WeatherStationAbsoluteHumidityTimeseries" base="DoubleTimeseries" displayname="Absolute Humidity Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="AbsoluteHumidityTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationAirTemperatureTimeseries" base="DoubleTimeseries" displayname="Air Temperature Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="AirTemperatureTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationBarometricPressureTimeseries" base="DoubleTimeseries" displayname="Barometric Pressure Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="BarometricPressureTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationDewPointTimeseries" base="DoubleTimeseries" displayname="Dew Point Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="DewPointTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationRelativeHumidityTimeseries" base="DoubleTimeseries" displayname="Relative Humidity Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="RelativeHumidityTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationWaterTemperatureTimeseries" base="DoubleTimeseries" displayname="Water Temperature Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="WaterTemperatureTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationWindDirectionTimeseries" base="DoubleTimeseries" displayname="Wind Direction Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="WindDirectionTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
   <class name="WeatherStationWindSpeedTimeseries" base="DoubleTimeseries" displayname="Wind Speed Timeseries">
     <members>
-      <reference name="WeatherStation" type="WeatherStationDevice"/>
+      <reference name="WeatherStation" type="WeatherStationDevice" member="WindSpeedTimeseries" nullable="true"/>
     </members>
     <index name="WeatherStation" fields="WeatherStation" unique="true"/>
   </class>
@@ -3277,7 +3277,7 @@
   </class>
   <class name="AisAidToNavigationPositionTimeseries" base="GeoPosition2DTimeseries" displayname="AIS Aid To Navigation Position">
     <members>
-      <reference name="AidToNavigation" type="AisAidToNavigation"/>
+      <reference name="AidToNavigation" type="AisAidToNavigation" member="Position" nullable="true"/>
     </members>
   </class>
   <class name="GeoPosition3DTimeseries" base="Timeseries">
@@ -3305,57 +3305,57 @@
   </class>
   <class name="RadarAzimuthOffsetTimeseries" base="Int32Timeseries" displayname="Azimuth Offset">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="AzimuthOffsetTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarFastTimeConstantLevelTimeseries" base="Int32Timeseries" displayname="Fast Time Constant (FTC) Level">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="FastTimeConstantLevelTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarFastTimeConstantModeTimeseries" base="Int32Timeseries" displayname="Fast Time Constant (FTC) Mode">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="FastTimeConstantModeTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarPulseTimeseries" base="Int32Timeseries" displayname="Radar Pulse" shortname="RAPTS">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="RadarPulseTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarSector1EndTimeseries" base="Int32Timeseries" displayname="End Sector 1">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="Sector1EndTimeseries" nullable="true" />
     </members>
   </class>
   <class name="RadarSector1StartTimeseries" base="Int32Timeseries" displayname="Start Sector 1">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="Sector1StartTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarSector2EndTimeseries" base="Int32Timeseries" displayname="End Sector 2">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="Sector2EndTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarSector2StartTimeseries" base="Int32Timeseries" displayname="Start Sector 2">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="Sector2StartTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarSensitivityTimeControlLevelTimeseries" base="Int32Timeseries" displayname="Sensitivity Time Control (STC) Level">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="SensitivityTimeControlLevelTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="RadarTuningTimeseries" base="Int32Timeseries" displayname="Blank Tuning" shortname="RATUTS">
     <members>
-      <reference name="Radar" type="RadarDevice"/>
+      <reference name="Radar" type="RadarDevice" member="TuningTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="VesselPersonsOnBoardTimeseries" base="Int32Timeseries">
     <members>
-      <reference name="Vessel" type="Vessel"/>
+      <reference name="Vessel" type="Vessel" member="PersonsOnBoardTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="Int64Timeseries" base="Timeseries">
@@ -3418,7 +3418,7 @@
   </class>
   <class name="RadomeStatusTimeseries" base="UInt32Timeseries" displayname="Radome Status" description="Tracks the Status of a Radome.">
     <members>
-      <reference name="Radome" type="RadomeDevice"/>
+      <reference name="Radome" type="RadomeDevice" member="StatusTimeseries" nullable="true"/>
     </members>
   </class>
   <class name="UInt64Timeseries" base="Timeseries">
@@ -3662,9 +3662,9 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <string name="Name" size="127"/>
-      <timeseries name="LatitudeTimeseries" type="ViewLatitudeTimeseries" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="LongitudeTimeseries" type="ViewLongitudeTimeseries" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
-      <timeseries name="ZoomLevelTimeseries" type="ViewZoomLevelTimeseries" propertyname="ZoomLevel" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="LatitudeTimeseries" type="ViewLatitudeTimeseries" member="View" nullable="true" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="LongitudeTimeseries" type="ViewLongitudeTimeseries" member="View" nullable="true" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
+      <timeseries name="ZoomLevelTimeseries" type="ViewZoomLevelTimeseries" member="View" nullable="true" propertyname="ZoomLevel" propertytype="Double" propertynullable="true" browsable="false"/>
       <collection name="Bookmarks" type="Bookmark" member="View"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
@@ -3703,7 +3703,7 @@
       <datetime name="Timestamp"/>
       <enum name="DeviceCommandSourceType" type="DeviceCommandSourceType"/>
       <guid name="DeviceCommandSourceId"/>
-      <reference name="Reply" type="WeatherStationCommandReply"/>
+      <reference name="Reply" type="WeatherStationCommandReply" member="Command" nullable="true"/>
     </members>
     <index name="WeatherStation_Timestamp" fields="WeatherStation;Timestamp" range="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>

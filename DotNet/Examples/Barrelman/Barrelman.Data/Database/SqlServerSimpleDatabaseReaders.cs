@@ -4265,11 +4265,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -7753,11 +7753,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -8191,11 +8191,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9110,11 +9110,11 @@ namespace Barrelman.Data.Database
                 return GetString( DESCRIPTION_FIELD_ID );
             }
         }
-        public Guid EnabledTimeseries
+        public Guid? EnabledTimeseries
         {
             get
             {
-                return GetGuid( ENABLEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ENABLEDTIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9187,25 +9187,25 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid LatitudeTimeseries
+        public Guid? LatitudeTimeseries
         {
             get
             {
-                return GetGuid( LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid LongitudeTimeseries
+        public Guid? LongitudeTimeseries
         {
             get
             {
-                return GetGuid( LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( LONGITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid AltitudeTimeseries
+        public Guid? AltitudeTimeseries
         {
             get
             {
-                return GetGuid( ALTITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( ALTITUDETIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9260,53 +9260,53 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid HeadingTrueNorthTimeseries
+        public Guid? HeadingTrueNorthTimeseries
         {
             get
             {
-                return GetGuid( HEADINGTRUENORTHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( HEADINGTRUENORTHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid HeadingMagneticNorthTimeseries
+        public Guid? HeadingMagneticNorthTimeseries
         {
             get
             {
-                return GetGuid( HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( HEADINGMAGNETICNORTHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid PitchTimeseries
+        public Guid? PitchTimeseries
         {
             get
             {
-                return GetGuid( PITCHTIMESERIES_FIELD_ID );
+                return GetNullableGuid( PITCHTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RateOfTurnTimeseries
+        public Guid? RateOfTurnTimeseries
         {
             get
             {
-                return GetGuid( RATEOFTURNTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RATEOFTURNTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RollTimeseries
+        public Guid? RollTimeseries
         {
             get
             {
-                return GetGuid( ROLLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ROLLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid CourseTimeseries
+        public Guid? CourseTimeseries
         {
             get
             {
-                return GetGuid( COURSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( COURSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid SpeedTimeseries
+        public Guid? SpeedTimeseries
         {
             get
             {
-                return GetGuid( SPEEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SPEEDTIMESERIES_FIELD_ID );
             }
         }
         public Guid GNSSDevice
@@ -9470,32 +9470,32 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
-        public Guid PressureTimeseries
+        public Guid? PressureTimeseries
         {
             get
             {
-                return GetGuid( PRESSURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( PRESSURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid TemperatureTimeseries
+        public Guid? TemperatureTimeseries
         {
             get
             {
-                return GetGuid( TEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( TEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid DewPointTimeseries
+        public Guid? DewPointTimeseries
         {
             get
             {
-                return GetGuid( DEWPOINTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( DEWPOINTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid StatusTimeseries
+        public Guid? StatusTimeseries
         {
             get
             {
-                return GetGuid( STATUSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( STATUSTIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9641,151 +9641,151 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid SaveSettingsTimeseries
+        public Guid? SaveSettingsTimeseries
         {
             get
             {
-                return GetGuid( SAVESETTINGSTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SAVESETTINGSTIMESERIES_FIELD_ID );
             }
         }
-        public Guid PowerOnTimeseries
+        public Guid? PowerOnTimeseries
         {
             get
             {
-                return GetGuid( POWERONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( POWERONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid TrackingOnTimeseries
+        public Guid? TrackingOnTimeseries
         {
             get
             {
-                return GetGuid( TRACKINGONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( TRACKINGONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid RadarPulseTimeseries
+        public Guid? RadarPulseTimeseries
         {
             get
             {
-                return GetGuid( RADARPULSETIMESERIES_FIELD_ID );
+                return GetNullableGuid( RADARPULSETIMESERIES_FIELD_ID );
             }
         }
-        public Guid TuningTimeseries
+        public Guid? TuningTimeseries
         {
             get
             {
-                return GetGuid( TUNINGTIMESERIES_FIELD_ID );
+                return GetNullableGuid( TUNINGTIMESERIES_FIELD_ID );
             }
         }
-        public Guid BlankSector1Timeseries
+        public Guid? BlankSector1Timeseries
         {
             get
             {
-                return GetGuid( BLANKSECTOR1TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BLANKSECTOR1TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Sector1StartTimeseries
+        public Guid? Sector1StartTimeseries
         {
             get
             {
-                return GetGuid( SECTOR1STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SECTOR1STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid Sector1EndTimeseries
+        public Guid? Sector1EndTimeseries
         {
             get
             {
-                return GetGuid( SECTOR1ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SECTOR1ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid BlankSector2Timeseries
+        public Guid? BlankSector2Timeseries
         {
             get
             {
-                return GetGuid( BLANKSECTOR2TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BLANKSECTOR2TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Sector2StartTimeseries
+        public Guid? Sector2StartTimeseries
         {
             get
             {
-                return GetGuid( SECTOR2STARTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SECTOR2STARTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid Sector2EndTimeseries
+        public Guid? Sector2EndTimeseries
         {
             get
             {
-                return GetGuid( SECTOR2ENDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SECTOR2ENDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid EnableAutomaticFrequencyControlTimeseries
+        public Guid? EnableAutomaticFrequencyControlTimeseries
         {
             get
             {
-                return GetGuid( ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ENABLEAUTOMATICFREQUENCYCONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid AzimuthOffsetTimeseries
+        public Guid? AzimuthOffsetTimeseries
         {
             get
             {
-                return GetGuid( AZIMUTHOFFSETTIMESERIES_FIELD_ID );
+                return GetNullableGuid( AZIMUTHOFFSETTIMESERIES_FIELD_ID );
             }
         }
-        public Guid EnableSensitivityTimeControlTimeseries
+        public Guid? EnableSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ENABLESENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid AutomaticSensitivityTimeControlTimeseries
+        public Guid? AutomaticSensitivityTimeControlTimeseries
         {
             get
             {
-                return GetGuid( AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
+                return GetNullableGuid( AUTOMATICSENSITIVITYTIMECONTROLTIMESERIES_FIELD_ID );
             }
         }
-        public Guid SensitivityTimeControlLevelTimeseries
+        public Guid? SensitivityTimeControlLevelTimeseries
         {
             get
             {
-                return GetGuid( SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( SENSITIVITYTIMECONTROLLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid EnableFastTimeConstantTimeseries
+        public Guid? EnableFastTimeConstantTimeseries
         {
             get
             {
-                return GetGuid( ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ENABLEFASTTIMECONSTANTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid FastTimeConstantLevelTimeseries
+        public Guid? FastTimeConstantLevelTimeseries
         {
             get
             {
-                return GetGuid( FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( FASTTIMECONSTANTLEVELTIMESERIES_FIELD_ID );
             }
         }
-        public Guid FastTimeConstantModeTimeseries
+        public Guid? FastTimeConstantModeTimeseries
         {
             get
             {
-                return GetGuid( FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
+                return GetNullableGuid( FASTTIMECONSTANTMODETIMESERIES_FIELD_ID );
             }
         }
-        public Guid LatitudeTimeseries
+        public Guid? LatitudeTimeseries
         {
             get
             {
-                return GetGuid( LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid LongitudeTimeseries
+        public Guid? LongitudeTimeseries
         {
             get
             {
-                return GetGuid( LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( LONGITUDETIMESERIES_FIELD_ID );
             }
         }
         public Guid? Radome
@@ -9876,60 +9876,60 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid BarometricPressureTimeseries
+        public Guid? BarometricPressureTimeseries
         {
             get
             {
-                return GetGuid( BAROMETRICPRESSURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( BAROMETRICPRESSURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid AirTemperatureTimeseries
+        public Guid? AirTemperatureTimeseries
         {
             get
             {
-                return GetGuid( AIRTEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( AIRTEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid WaterTemperatureTimeseries
+        public Guid? WaterTemperatureTimeseries
         {
             get
             {
-                return GetGuid( WATERTEMPERATURETIMESERIES_FIELD_ID );
+                return GetNullableGuid( WATERTEMPERATURETIMESERIES_FIELD_ID );
             }
         }
-        public Guid RelativeHumidityTimeseries
+        public Guid? RelativeHumidityTimeseries
         {
             get
             {
-                return GetGuid( RELATIVEHUMIDITYTIMESERIES_FIELD_ID );
+                return GetNullableGuid( RELATIVEHUMIDITYTIMESERIES_FIELD_ID );
             }
         }
-        public Guid AbsoluteHumidityTimeseries
+        public Guid? AbsoluteHumidityTimeseries
         {
             get
             {
-                return GetGuid( ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ABSOLUTEHUMIDITYTIMESERIES_FIELD_ID );
             }
         }
-        public Guid DewPointTimeseries
+        public Guid? DewPointTimeseries
         {
             get
             {
-                return GetGuid( DEWPOINTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( DEWPOINTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WindDirectionTimeseries
+        public Guid? WindDirectionTimeseries
         {
             get
             {
-                return GetGuid( WINDDIRECTIONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WINDDIRECTIONTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WindSpeedTimeseries
+        public Guid? WindSpeedTimeseries
         {
             get
             {
-                return GetGuid( WINDSPEEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( WINDSPEEDTIMESERIES_FIELD_ID );
             }
         }
         public Guid Gyro
@@ -10169,11 +10169,11 @@ namespace Barrelman.Data.Database
                 return GetEnum<Types.NavigationalAidType>( NAVIGATIONALAIDTYPE_FIELD_ID );
             }
         }
-        public Guid Position
+        public Guid? Position
         {
             get
             {
-                return GetGuid( POSITION_FIELD_ID );
+                return GetNullableGuid( POSITION_FIELD_ID );
             }
         }
         public bool IsVirtual
@@ -10211,11 +10211,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( TOSTARBOARD_FIELD_ID );
             }
         }
-        public Guid OffPositionTimeseries
+        public Guid? OffPositionTimeseries
         {
             get
             {
-                return GetGuid( OFFPOSITIONTIMESERIES_FIELD_ID );
+                return GetNullableGuid( OFFPOSITIONTIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -10364,18 +10364,18 @@ namespace Barrelman.Data.Database
                 return GetInt32( TOSTARBOARD_FIELD_ID );
             }
         }
-        public Guid DraughtTimeseries
+        public Guid? DraughtTimeseries
         {
             get
             {
-                return GetGuid( DRAUGHTTIMESERIES_FIELD_ID );
+                return GetNullableGuid( DRAUGHTTIMESERIES_FIELD_ID );
             }
         }
-        public Guid PersonsOnBoardTimeseries
+        public Guid? PersonsOnBoardTimeseries
         {
             get
             {
-                return GetGuid( PERSONSONBOARDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( PERSONSONBOARDTIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -10657,11 +10657,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -13177,11 +13177,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid EnabledTimeseries
+        public Guid? EnabledTimeseries
         {
             get
             {
-                return GetGuid( ENABLEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ENABLEDTIMESERIES_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -13520,11 +13520,11 @@ namespace Barrelman.Data.Database
                 return GetInt64( ROWVERSION_FIELD_ID );
             }
         }
-        public Guid EnabledTimeseries
+        public Guid? EnabledTimeseries
         {
             get
             {
-                return GetGuid( ENABLEDTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ENABLEDTIMESERIES_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -14002,11 +14002,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -18286,11 +18286,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -19304,11 +19304,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -19665,11 +19665,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21081,11 +21081,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid AidToNavigation
+        public Guid? AidToNavigation
         {
             get
             {
-                return GetGuid( AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AIDTONAVIGATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21165,11 +21165,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21207,11 +21207,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21249,11 +21249,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21291,11 +21291,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21333,11 +21333,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21375,11 +21375,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21417,11 +21417,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21459,11 +21459,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21501,11 +21501,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21543,11 +21543,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid ProxySession
+        public Guid? ProxySession
         {
             get
             {
-                return GetGuid( PROXYSESSION_FIELD_ID );
+                return GetNullableGuid( PROXYSESSION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21585,11 +21585,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Service
+        public Guid? Service
         {
             get
             {
-                return GetGuid( SERVICE_FIELD_ID );
+                return GetNullableGuid( SERVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21720,11 +21720,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GNSSDevice
+        public Guid? GNSSDevice
         {
             get
             {
-                return GetGuid( GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GNSSDEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21762,11 +21762,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GNSSDevice
+        public Guid? GNSSDevice
         {
             get
             {
-                return GetGuid( GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GNSSDEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21804,11 +21804,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GNSSDevice
+        public Guid? GNSSDevice
         {
             get
             {
-                return GetGuid( GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GNSSDEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21846,11 +21846,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21888,11 +21888,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21930,11 +21930,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -21972,11 +21972,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22014,11 +22014,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22056,11 +22056,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22098,11 +22098,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid GyroDevice
+        public Guid? GyroDevice
         {
             get
             {
-                return GetGuid( GYRODEVICE_FIELD_ID );
+                return GetNullableGuid( GYRODEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22140,11 +22140,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22182,11 +22182,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22224,11 +22224,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radome
+        public Guid? Radome
         {
             get
             {
-                return GetGuid( RADOME_FIELD_ID );
+                return GetNullableGuid( RADOME_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22266,11 +22266,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radome
+        public Guid? Radome
         {
             get
             {
-                return GetGuid( RADOME_FIELD_ID );
+                return GetNullableGuid( RADOME_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22308,11 +22308,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radome
+        public Guid? Radome
         {
             get
             {
-                return GetGuid( RADOME_FIELD_ID );
+                return GetNullableGuid( RADOME_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22350,11 +22350,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Vessel
+        public Guid? Vessel
         {
             get
             {
-                return GetGuid( VESSEL_FIELD_ID );
+                return GetNullableGuid( VESSEL_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22392,11 +22392,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid View
+        public Guid? View
         {
             get
             {
-                return GetGuid( VIEW_FIELD_ID );
+                return GetNullableGuid( VIEW_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22434,11 +22434,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid View
+        public Guid? View
         {
             get
             {
-                return GetGuid( VIEW_FIELD_ID );
+                return GetNullableGuid( VIEW_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22476,11 +22476,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid View
+        public Guid? View
         {
             get
             {
-                return GetGuid( VIEW_FIELD_ID );
+                return GetNullableGuid( VIEW_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22518,11 +22518,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22560,11 +22560,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22602,11 +22602,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22644,11 +22644,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22686,11 +22686,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22728,11 +22728,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22770,11 +22770,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22812,11 +22812,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid WeatherStation
+        public Guid? WeatherStation
         {
             get
             {
-                return GetGuid( WEATHERSTATION_FIELD_ID );
+                return GetNullableGuid( WEATHERSTATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -22885,11 +22885,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid AidToNavigation
+        public Guid? AidToNavigation
         {
             get
             {
-                return GetGuid( AIDTONAVIGATION_FIELD_ID );
+                return GetNullableGuid( AIDTONAVIGATION_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23051,11 +23051,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23093,11 +23093,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23135,11 +23135,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23177,11 +23177,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23219,11 +23219,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23261,11 +23261,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23303,11 +23303,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23345,11 +23345,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23387,11 +23387,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23429,11 +23429,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radar
+        public Guid? Radar
         {
             get
             {
-                return GetGuid( RADAR_FIELD_ID );
+                return GetNullableGuid( RADAR_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23471,11 +23471,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Vessel
+        public Guid? Vessel
         {
             get
             {
-                return GetGuid( VESSEL_FIELD_ID );
+                return GetNullableGuid( VESSEL_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -23823,11 +23823,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Radome
+        public Guid? Radome
         {
             get
             {
-                return GetGuid( RADOME_FIELD_ID );
+                return GetNullableGuid( RADOME_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -25796,25 +25796,25 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid LatitudeTimeseries
+        public Guid? LatitudeTimeseries
         {
             get
             {
-                return GetGuid( LATITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( LATITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid LongitudeTimeseries
+        public Guid? LongitudeTimeseries
         {
             get
             {
-                return GetGuid( LONGITUDETIMESERIES_FIELD_ID );
+                return GetNullableGuid( LONGITUDETIMESERIES_FIELD_ID );
             }
         }
-        public Guid ZoomLevelTimeseries
+        public Guid? ZoomLevelTimeseries
         {
             get
             {
-                return GetGuid( ZOOMLEVELTIMESERIES_FIELD_ID );
+                return GetNullableGuid( ZOOMLEVELTIMESERIES_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -26120,11 +26120,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( DEVICECOMMANDSOURCEID_FIELD_ID );
             }
         }
-        public Guid Reply
+        public Guid? Reply
         {
             get
             {
-                return GetGuid( REPLY_FIELD_ID );
+                return GetNullableGuid( REPLY_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)

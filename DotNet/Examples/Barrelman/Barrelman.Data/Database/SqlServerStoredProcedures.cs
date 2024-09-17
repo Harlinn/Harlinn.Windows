@@ -5353,7 +5353,7 @@ namespace Barrelman.Data.Database
             var result = DeleteByteTimeseriesValue( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommand( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertCameraCommand( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -5390,7 +5390,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandObject.Reply;
+            Guid? reply = cameraCommandObject.Reply;
             var result = InsertCameraCommand( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -5401,7 +5401,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommand( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateCameraCommand( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -5440,7 +5440,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandObject.Reply;
+            Guid? reply = cameraCommandObject.Reply;
             var result = UpdateCameraCommand( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -5483,7 +5483,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommand( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandAbsoluteMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Types.CameraPanTiltMode positionPanTiltMode, double? panAngle, double? tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double? focalLength, Types.CameraPanTiltMode speedPanTiltMode, double? panSpeed, double? tiltSpeed, Types.CameraFocalLengthMode speedFocalLengthMode, double? zoomSpeed )
+        public bool InsertCameraCommandAbsoluteMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, Types.CameraPanTiltMode positionPanTiltMode, double? panAngle, double? tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double? focalLength, Types.CameraPanTiltMode speedPanTiltMode, double? panSpeed, double? tiltSpeed, Types.CameraFocalLengthMode speedFocalLengthMode, double? zoomSpeed )
         {
             bool result = false;
             try
@@ -5530,7 +5530,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandAbsoluteMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandAbsoluteMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandAbsoluteMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandAbsoluteMoveObject.Reply;
+            Guid? reply = cameraCommandAbsoluteMoveObject.Reply;
             Types.CameraPanTiltMode positionPanTiltMode = cameraCommandAbsoluteMoveObject.PositionPanTiltMode;
             double? panAngle = cameraCommandAbsoluteMoveObject.PanAngle;
             double? tiltAngle = cameraCommandAbsoluteMoveObject.TiltAngle;
@@ -5551,7 +5551,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandAbsoluteMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Types.CameraPanTiltMode positionPanTiltMode, double? panAngle, double? tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double? focalLength, Types.CameraPanTiltMode speedPanTiltMode, double? panSpeed, double? tiltSpeed, Types.CameraFocalLengthMode speedFocalLengthMode, double? zoomSpeed )
+        public bool UpdateCameraCommandAbsoluteMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, Types.CameraPanTiltMode positionPanTiltMode, double? panAngle, double? tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double? focalLength, Types.CameraPanTiltMode speedPanTiltMode, double? panSpeed, double? tiltSpeed, Types.CameraFocalLengthMode speedFocalLengthMode, double? zoomSpeed )
         {
             bool result = false;
             try
@@ -5600,7 +5600,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandAbsoluteMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandAbsoluteMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandAbsoluteMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandAbsoluteMoveObject.Reply;
+            Guid? reply = cameraCommandAbsoluteMoveObject.Reply;
             Types.CameraPanTiltMode positionPanTiltMode = cameraCommandAbsoluteMoveObject.PositionPanTiltMode;
             double? panAngle = cameraCommandAbsoluteMoveObject.PanAngle;
             double? tiltAngle = cameraCommandAbsoluteMoveObject.TiltAngle;
@@ -5653,7 +5653,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandAbsoluteMove( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandAdjustPanTiltZoom( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double? x, double? y, double? z )
+        public bool InsertCameraCommandAdjustPanTiltZoom( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, double? x, double? y, double? z )
         {
             bool result = false;
             try
@@ -5693,7 +5693,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandAdjustPanTiltZoomObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandAdjustPanTiltZoomObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandAdjustPanTiltZoomObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandAdjustPanTiltZoomObject.Reply;
+            Guid? reply = cameraCommandAdjustPanTiltZoomObject.Reply;
             double? x = cameraCommandAdjustPanTiltZoomObject.X;
             double? y = cameraCommandAdjustPanTiltZoomObject.Y;
             double? z = cameraCommandAdjustPanTiltZoomObject.Z;
@@ -5707,7 +5707,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandAdjustPanTiltZoom( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double? x, double? y, double? z )
+        public bool UpdateCameraCommandAdjustPanTiltZoom( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, double? x, double? y, double? z )
         {
             bool result = false;
             try
@@ -5749,7 +5749,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandAdjustPanTiltZoomObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandAdjustPanTiltZoomObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandAdjustPanTiltZoomObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandAdjustPanTiltZoomObject.Reply;
+            Guid? reply = cameraCommandAdjustPanTiltZoomObject.Reply;
             double? x = cameraCommandAdjustPanTiltZoomObject.X;
             double? y = cameraCommandAdjustPanTiltZoomObject.Y;
             double? z = cameraCommandAdjustPanTiltZoomObject.Z;
@@ -5795,7 +5795,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandAdjustPanTiltZoom( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandContinuousMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool normalized, double? panVelocity, double? tiltVelocity, double? zoomVelocity, TimeSpan? duration )
+        public bool InsertCameraCommandContinuousMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool normalized, double? panVelocity, double? tiltVelocity, double? zoomVelocity, TimeSpan? duration )
         {
             bool result = false;
             try
@@ -5837,7 +5837,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandContinuousMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandContinuousMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandContinuousMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandContinuousMoveObject.Reply;
+            Guid? reply = cameraCommandContinuousMoveObject.Reply;
             bool normalized = cameraCommandContinuousMoveObject.Normalized;
             double? panVelocity = cameraCommandContinuousMoveObject.PanVelocity;
             double? tiltVelocity = cameraCommandContinuousMoveObject.TiltVelocity;
@@ -5853,7 +5853,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandContinuousMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool normalized, double? panVelocity, double? tiltVelocity, double? zoomVelocity, TimeSpan? duration )
+        public bool UpdateCameraCommandContinuousMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool normalized, double? panVelocity, double? tiltVelocity, double? zoomVelocity, TimeSpan? duration )
         {
             bool result = false;
             try
@@ -5897,7 +5897,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandContinuousMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandContinuousMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandContinuousMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandContinuousMoveObject.Reply;
+            Guid? reply = cameraCommandContinuousMoveObject.Reply;
             bool normalized = cameraCommandContinuousMoveObject.Normalized;
             double? panVelocity = cameraCommandContinuousMoveObject.PanVelocity;
             double? tiltVelocity = cameraCommandContinuousMoveObject.TiltVelocity;
@@ -5945,7 +5945,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandContinuousMove( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandGeoMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double latitude, double longitude, double? altitude, double? viewportWidth, double? viewportHeight )
+        public bool InsertCameraCommandGeoMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, double latitude, double longitude, double? altitude, double? viewportWidth, double? viewportHeight )
         {
             bool result = false;
             try
@@ -5987,7 +5987,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandGeoMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandGeoMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandGeoMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandGeoMoveObject.Reply;
+            Guid? reply = cameraCommandGeoMoveObject.Reply;
             double latitude = cameraCommandGeoMoveObject.Latitude;
             double longitude = cameraCommandGeoMoveObject.Longitude;
             double? altitude = cameraCommandGeoMoveObject.Altitude;
@@ -6003,7 +6003,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandGeoMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, double latitude, double longitude, double? altitude, double? viewportWidth, double? viewportHeight )
+        public bool UpdateCameraCommandGeoMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, double latitude, double longitude, double? altitude, double? viewportWidth, double? viewportHeight )
         {
             bool result = false;
             try
@@ -6047,7 +6047,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandGeoMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandGeoMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandGeoMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandGeoMoveObject.Reply;
+            Guid? reply = cameraCommandGeoMoveObject.Reply;
             double latitude = cameraCommandGeoMoveObject.Latitude;
             double longitude = cameraCommandGeoMoveObject.Longitude;
             double? altitude = cameraCommandGeoMoveObject.Altitude;
@@ -6095,7 +6095,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandGeoMove( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandRelativeMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool normalized, double? panAngle, double? tiltAngle, double? focalLength, double? panSpeed, double? tiltSpeed, double? zoomSpeed )
+        public bool InsertCameraCommandRelativeMove( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool normalized, double? panAngle, double? tiltAngle, double? focalLength, double? panSpeed, double? tiltSpeed, double? zoomSpeed )
         {
             bool result = false;
             try
@@ -6139,7 +6139,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandRelativeMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandRelativeMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandRelativeMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandRelativeMoveObject.Reply;
+            Guid? reply = cameraCommandRelativeMoveObject.Reply;
             bool normalized = cameraCommandRelativeMoveObject.Normalized;
             double? panAngle = cameraCommandRelativeMoveObject.PanAngle;
             double? tiltAngle = cameraCommandRelativeMoveObject.TiltAngle;
@@ -6157,7 +6157,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandRelativeMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool normalized, double? panAngle, double? tiltAngle, double? focalLength, double? panSpeed, double? tiltSpeed, double? zoomSpeed )
+        public bool UpdateCameraCommandRelativeMove( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool normalized, double? panAngle, double? tiltAngle, double? focalLength, double? panSpeed, double? tiltSpeed, double? zoomSpeed )
         {
             bool result = false;
             try
@@ -6203,7 +6203,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandRelativeMoveObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandRelativeMoveObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandRelativeMoveObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandRelativeMoveObject.Reply;
+            Guid? reply = cameraCommandRelativeMoveObject.Reply;
             bool normalized = cameraCommandRelativeMoveObject.Normalized;
             double? panAngle = cameraCommandRelativeMoveObject.PanAngle;
             double? tiltAngle = cameraCommandRelativeMoveObject.TiltAngle;
@@ -6253,7 +6253,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandRelativeMove( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandReleasePTZOwnership( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertCameraCommandReleasePTZOwnership( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -6290,7 +6290,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandReleasePTZOwnershipObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandReleasePTZOwnershipObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandReleasePTZOwnershipObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandReleasePTZOwnershipObject.Reply;
+            Guid? reply = cameraCommandReleasePTZOwnershipObject.Reply;
             var result = InsertCameraCommandReleasePTZOwnership( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -6301,7 +6301,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandReleasePTZOwnership( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateCameraCommandReleasePTZOwnership( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -6340,7 +6340,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandReleasePTZOwnershipObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandReleasePTZOwnershipObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandReleasePTZOwnershipObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandReleasePTZOwnershipObject.Reply;
+            Guid? reply = cameraCommandReleasePTZOwnershipObject.Reply;
             var result = UpdateCameraCommandReleasePTZOwnership( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -6383,7 +6383,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandReleasePTZOwnership( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandRequestPTZOwnership( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertCameraCommandRequestPTZOwnership( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -6420,7 +6420,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandRequestPTZOwnershipObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandRequestPTZOwnershipObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandRequestPTZOwnershipObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandRequestPTZOwnershipObject.Reply;
+            Guid? reply = cameraCommandRequestPTZOwnershipObject.Reply;
             var result = InsertCameraCommandRequestPTZOwnership( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -6431,7 +6431,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandRequestPTZOwnership( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateCameraCommandRequestPTZOwnership( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -6470,7 +6470,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandRequestPTZOwnershipObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandRequestPTZOwnershipObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandRequestPTZOwnershipObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandRequestPTZOwnershipObject.Reply;
+            Guid? reply = cameraCommandRequestPTZOwnershipObject.Reply;
             var result = UpdateCameraCommandRequestPTZOwnership( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -6513,7 +6513,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandRequestPTZOwnership( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandSetAutoFocus( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool InsertCameraCommandSetAutoFocus( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -6551,7 +6551,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetAutoFocusObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetAutoFocusObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetAutoFocusObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetAutoFocusObject.Reply;
+            Guid? reply = cameraCommandSetAutoFocusObject.Reply;
             bool enabled = cameraCommandSetAutoFocusObject.Enabled;
             var result = InsertCameraCommandSetAutoFocus( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -6563,7 +6563,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandSetAutoFocus( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool UpdateCameraCommandSetAutoFocus( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -6603,7 +6603,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetAutoFocusObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetAutoFocusObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetAutoFocusObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetAutoFocusObject.Reply;
+            Guid? reply = cameraCommandSetAutoFocusObject.Reply;
             bool enabled = cameraCommandSetAutoFocusObject.Enabled;
             var result = UpdateCameraCommandSetAutoFocus( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -6647,7 +6647,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandSetAutoFocus( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandSetBlackAndWhite( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool InsertCameraCommandSetBlackAndWhite( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -6685,7 +6685,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetBlackAndWhiteObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetBlackAndWhiteObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetBlackAndWhiteObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetBlackAndWhiteObject.Reply;
+            Guid? reply = cameraCommandSetBlackAndWhiteObject.Reply;
             bool enabled = cameraCommandSetBlackAndWhiteObject.Enabled;
             var result = InsertCameraCommandSetBlackAndWhite( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -6697,7 +6697,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandSetBlackAndWhite( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool UpdateCameraCommandSetBlackAndWhite( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -6737,7 +6737,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetBlackAndWhiteObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetBlackAndWhiteObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetBlackAndWhiteObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetBlackAndWhiteObject.Reply;
+            Guid? reply = cameraCommandSetBlackAndWhiteObject.Reply;
             bool enabled = cameraCommandSetBlackAndWhiteObject.Enabled;
             var result = UpdateCameraCommandSetBlackAndWhite( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -6781,7 +6781,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandSetBlackAndWhite( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandSetFollowed( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Guid trackId, Types.CameraFollowReason reason )
+        public bool InsertCameraCommandSetFollowed( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, Guid trackId, Types.CameraFollowReason reason )
         {
             bool result = false;
             try
@@ -6820,7 +6820,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetFollowedObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetFollowedObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetFollowedObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetFollowedObject.Reply;
+            Guid? reply = cameraCommandSetFollowedObject.Reply;
             Guid trackId = cameraCommandSetFollowedObject.TrackId;
             Types.CameraFollowReason reason = cameraCommandSetFollowedObject.Reason;
             var result = InsertCameraCommandSetFollowed( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, trackId, reason );
@@ -6833,7 +6833,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandSetFollowed( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, Guid trackId, Types.CameraFollowReason reason )
+        public bool UpdateCameraCommandSetFollowed( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, Guid trackId, Types.CameraFollowReason reason )
         {
             bool result = false;
             try
@@ -6874,7 +6874,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetFollowedObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetFollowedObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetFollowedObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetFollowedObject.Reply;
+            Guid? reply = cameraCommandSetFollowedObject.Reply;
             Guid trackId = cameraCommandSetFollowedObject.TrackId;
             Types.CameraFollowReason reason = cameraCommandSetFollowedObject.Reason;
             var result = UpdateCameraCommandSetFollowed( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, trackId, reason );
@@ -6919,7 +6919,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandSetFollowed( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandSetInfraRedLamp( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool InsertCameraCommandSetInfraRedLamp( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -6957,7 +6957,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetInfraRedLampObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetInfraRedLampObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetInfraRedLampObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetInfraRedLampObject.Reply;
+            Guid? reply = cameraCommandSetInfraRedLampObject.Reply;
             bool enabled = cameraCommandSetInfraRedLampObject.Enabled;
             var result = InsertCameraCommandSetInfraRedLamp( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -6969,7 +6969,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandSetInfraRedLamp( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool UpdateCameraCommandSetInfraRedLamp( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -7009,7 +7009,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetInfraRedLampObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetInfraRedLampObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetInfraRedLampObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetInfraRedLampObject.Reply;
+            Guid? reply = cameraCommandSetInfraRedLampObject.Reply;
             bool enabled = cameraCommandSetInfraRedLampObject.Enabled;
             var result = UpdateCameraCommandSetInfraRedLamp( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -7053,7 +7053,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandSetInfraRedLamp( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandSetWasher( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool InsertCameraCommandSetWasher( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -7091,7 +7091,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetWasherObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetWasherObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetWasherObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetWasherObject.Reply;
+            Guid? reply = cameraCommandSetWasherObject.Reply;
             bool enabled = cameraCommandSetWasherObject.Enabled;
             var result = InsertCameraCommandSetWasher( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -7103,7 +7103,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandSetWasher( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool UpdateCameraCommandSetWasher( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -7143,7 +7143,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetWasherObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetWasherObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetWasherObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetWasherObject.Reply;
+            Guid? reply = cameraCommandSetWasherObject.Reply;
             bool enabled = cameraCommandSetWasherObject.Enabled;
             var result = UpdateCameraCommandSetWasher( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -7187,7 +7187,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandSetWasher( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandSetWiper( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool InsertCameraCommandSetWiper( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -7225,7 +7225,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetWiperObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetWiperObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetWiperObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetWiperObject.Reply;
+            Guid? reply = cameraCommandSetWiperObject.Reply;
             bool enabled = cameraCommandSetWiperObject.Enabled;
             var result = InsertCameraCommandSetWiper( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -7237,7 +7237,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandSetWiper( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool enabled )
+        public bool UpdateCameraCommandSetWiper( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool enabled )
         {
             bool result = false;
             try
@@ -7277,7 +7277,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandSetWiperObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandSetWiperObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandSetWiperObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandSetWiperObject.Reply;
+            Guid? reply = cameraCommandSetWiperObject.Reply;
             bool enabled = cameraCommandSetWiperObject.Enabled;
             var result = UpdateCameraCommandSetWiper( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, enabled );
             if( result )
@@ -7321,7 +7321,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandSetWiper( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandStop( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool panTilt, bool zoom )
+        public bool InsertCameraCommandStop( ref Guid id, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool panTilt, bool zoom )
         {
             bool result = false;
             try
@@ -7360,7 +7360,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandStopObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandStopObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandStopObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandStopObject.Reply;
+            Guid? reply = cameraCommandStopObject.Reply;
             bool panTilt = cameraCommandStopObject.PanTilt;
             bool zoom = cameraCommandStopObject.Zoom;
             var result = InsertCameraCommandStop( ref id, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, panTilt, zoom );
@@ -7373,7 +7373,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandStop( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply, bool panTilt, bool zoom )
+        public bool UpdateCameraCommandStop( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply, bool panTilt, bool zoom )
         {
             bool result = false;
             try
@@ -7414,7 +7414,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = cameraCommandStopObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = cameraCommandStopObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = cameraCommandStopObject.DeviceCommandSourceId;
-            Guid reply = cameraCommandStopObject.Reply;
+            Guid? reply = cameraCommandStopObject.Reply;
             bool panTilt = cameraCommandStopObject.PanTilt;
             bool zoom = cameraCommandStopObject.Zoom;
             var result = UpdateCameraCommandStop( id, ref rowVersion, camera, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply, panTilt, zoom );
@@ -10297,7 +10297,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGeoPosition3DTimeseriesValue( id, rowVersion );
             return result;
         }
-        public bool InsertGNSSDeviceCommand( ref Guid id, Guid gNSSDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertGNSSDeviceCommand( ref Guid id, Guid gNSSDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -10334,7 +10334,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = gNSSDeviceCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = gNSSDeviceCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = gNSSDeviceCommandObject.DeviceCommandSourceId;
-            Guid reply = gNSSDeviceCommandObject.Reply;
+            Guid? reply = gNSSDeviceCommandObject.Reply;
             var result = InsertGNSSDeviceCommand( ref id, gNSSDevice, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -10345,7 +10345,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGNSSDeviceCommand( Guid id, ref long rowVersion, Guid gNSSDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateGNSSDeviceCommand( Guid id, ref long rowVersion, Guid gNSSDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -10384,7 +10384,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = gNSSDeviceCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = gNSSDeviceCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = gNSSDeviceCommandObject.DeviceCommandSourceId;
-            Guid reply = gNSSDeviceCommandObject.Reply;
+            Guid? reply = gNSSDeviceCommandObject.Reply;
             var result = UpdateGNSSDeviceCommand( id, ref rowVersion, gNSSDevice, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -10821,7 +10821,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGuidTimeseriesValue( id, rowVersion );
             return result;
         }
-        public bool InsertGyroDeviceCommand( ref Guid id, Guid gyroDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertGyroDeviceCommand( ref Guid id, Guid gyroDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -10858,7 +10858,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = gyroDeviceCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = gyroDeviceCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = gyroDeviceCommandObject.DeviceCommandSourceId;
-            Guid reply = gyroDeviceCommandObject.Reply;
+            Guid? reply = gyroDeviceCommandObject.Reply;
             var result = InsertGyroDeviceCommand( ref id, gyroDevice, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -10869,7 +10869,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroDeviceCommand( Guid id, ref long rowVersion, Guid gyroDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateGyroDeviceCommand( Guid id, ref long rowVersion, Guid gyroDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -10908,7 +10908,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = gyroDeviceCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = gyroDeviceCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = gyroDeviceCommandObject.DeviceCommandSourceId;
-            Guid reply = gyroDeviceCommandObject.Reply;
+            Guid? reply = gyroDeviceCommandObject.Reply;
             var result = UpdateGyroDeviceCommand( id, ref rowVersion, gyroDevice, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -12163,7 +12163,7 @@ namespace Barrelman.Data.Database
             var result = DeleteBaseStation( id, rowVersion );
             return result;
         }
-        public bool InsertCameraDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool InsertCameraDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12198,7 +12198,7 @@ namespace Barrelman.Data.Database
             Guid host = cameraDeviceObject.Host;
             string name = cameraDeviceObject.Name;
             string description = cameraDeviceObject.Description;
-            Guid enabledTimeseries = cameraDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = cameraDeviceObject.EnabledTimeseries;
             var result = InsertCameraDevice( ref id, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12209,7 +12209,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool UpdateCameraDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12246,7 +12246,7 @@ namespace Barrelman.Data.Database
             Guid host = cameraDeviceObject.Host;
             string name = cameraDeviceObject.Name;
             string description = cameraDeviceObject.Description;
-            Guid enabledTimeseries = cameraDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = cameraDeviceObject.EnabledTimeseries;
             var result = UpdateCameraDevice( id, ref rowVersion, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12289,7 +12289,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraDevice( id, rowVersion );
             return result;
         }
-        public bool InsertGNSSDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid altitudeTimeseries )
+        public bool InsertGNSSDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? latitudeTimeseries, Guid? longitudeTimeseries, Guid? altitudeTimeseries )
         {
             bool result = false;
             try
@@ -12327,10 +12327,10 @@ namespace Barrelman.Data.Database
             Guid host = gNSSDeviceObject.Host;
             string name = gNSSDeviceObject.Name;
             string description = gNSSDeviceObject.Description;
-            Guid enabledTimeseries = gNSSDeviceObject.EnabledTimeseries;
-            Guid latitudeTimeseries = gNSSDeviceObject.LatitudeTimeseries;
-            Guid longitudeTimeseries = gNSSDeviceObject.LongitudeTimeseries;
-            Guid altitudeTimeseries = gNSSDeviceObject.AltitudeTimeseries;
+            Guid? enabledTimeseries = gNSSDeviceObject.EnabledTimeseries;
+            Guid? latitudeTimeseries = gNSSDeviceObject.LatitudeTimeseries;
+            Guid? longitudeTimeseries = gNSSDeviceObject.LongitudeTimeseries;
+            Guid? altitudeTimeseries = gNSSDeviceObject.AltitudeTimeseries;
             var result = InsertGNSSDevice( ref id, host, name, description, enabledTimeseries, latitudeTimeseries, longitudeTimeseries, altitudeTimeseries );
             if( result )
             {
@@ -12341,7 +12341,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGNSSDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid altitudeTimeseries )
+        public bool UpdateGNSSDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? latitudeTimeseries, Guid? longitudeTimeseries, Guid? altitudeTimeseries )
         {
             bool result = false;
             try
@@ -12381,10 +12381,10 @@ namespace Barrelman.Data.Database
             Guid host = gNSSDeviceObject.Host;
             string name = gNSSDeviceObject.Name;
             string description = gNSSDeviceObject.Description;
-            Guid enabledTimeseries = gNSSDeviceObject.EnabledTimeseries;
-            Guid latitudeTimeseries = gNSSDeviceObject.LatitudeTimeseries;
-            Guid longitudeTimeseries = gNSSDeviceObject.LongitudeTimeseries;
-            Guid altitudeTimeseries = gNSSDeviceObject.AltitudeTimeseries;
+            Guid? enabledTimeseries = gNSSDeviceObject.EnabledTimeseries;
+            Guid? latitudeTimeseries = gNSSDeviceObject.LatitudeTimeseries;
+            Guid? longitudeTimeseries = gNSSDeviceObject.LongitudeTimeseries;
+            Guid? altitudeTimeseries = gNSSDeviceObject.AltitudeTimeseries;
             var result = UpdateGNSSDevice( id, ref rowVersion, host, name, description, enabledTimeseries, latitudeTimeseries, longitudeTimeseries, altitudeTimeseries );
             if( result )
             {
@@ -12427,7 +12427,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGNSSDevice( id, rowVersion );
             return result;
         }
-        public bool InsertGyroDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid headingTrueNorthTimeseries, Guid headingMagneticNorthTimeseries, Guid pitchTimeseries, Guid rateOfTurnTimeseries, Guid rollTimeseries, Guid courseTimeseries, Guid speedTimeseries, Guid gNSSDevice )
+        public bool InsertGyroDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid gNSSDevice )
         {
             bool result = false;
             try
@@ -12470,14 +12470,14 @@ namespace Barrelman.Data.Database
             Guid host = gyroDeviceObject.Host;
             string name = gyroDeviceObject.Name;
             string description = gyroDeviceObject.Description;
-            Guid enabledTimeseries = gyroDeviceObject.EnabledTimeseries;
-            Guid headingTrueNorthTimeseries = gyroDeviceObject.HeadingTrueNorthTimeseries;
-            Guid headingMagneticNorthTimeseries = gyroDeviceObject.HeadingMagneticNorthTimeseries;
-            Guid pitchTimeseries = gyroDeviceObject.PitchTimeseries;
-            Guid rateOfTurnTimeseries = gyroDeviceObject.RateOfTurnTimeseries;
-            Guid rollTimeseries = gyroDeviceObject.RollTimeseries;
-            Guid courseTimeseries = gyroDeviceObject.CourseTimeseries;
-            Guid speedTimeseries = gyroDeviceObject.SpeedTimeseries;
+            Guid? enabledTimeseries = gyroDeviceObject.EnabledTimeseries;
+            Guid? headingTrueNorthTimeseries = gyroDeviceObject.HeadingTrueNorthTimeseries;
+            Guid? headingMagneticNorthTimeseries = gyroDeviceObject.HeadingMagneticNorthTimeseries;
+            Guid? pitchTimeseries = gyroDeviceObject.PitchTimeseries;
+            Guid? rateOfTurnTimeseries = gyroDeviceObject.RateOfTurnTimeseries;
+            Guid? rollTimeseries = gyroDeviceObject.RollTimeseries;
+            Guid? courseTimeseries = gyroDeviceObject.CourseTimeseries;
+            Guid? speedTimeseries = gyroDeviceObject.SpeedTimeseries;
             Guid gNSSDevice = gyroDeviceObject.GNSSDevice;
             var result = InsertGyroDevice( ref id, host, name, description, enabledTimeseries, headingTrueNorthTimeseries, headingMagneticNorthTimeseries, pitchTimeseries, rateOfTurnTimeseries, rollTimeseries, courseTimeseries, speedTimeseries, gNSSDevice );
             if( result )
@@ -12489,7 +12489,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries, Guid headingTrueNorthTimeseries, Guid headingMagneticNorthTimeseries, Guid pitchTimeseries, Guid rateOfTurnTimeseries, Guid rollTimeseries, Guid courseTimeseries, Guid speedTimeseries, Guid gNSSDevice )
+        public bool UpdateGyroDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid gNSSDevice )
         {
             bool result = false;
             try
@@ -12534,14 +12534,14 @@ namespace Barrelman.Data.Database
             Guid host = gyroDeviceObject.Host;
             string name = gyroDeviceObject.Name;
             string description = gyroDeviceObject.Description;
-            Guid enabledTimeseries = gyroDeviceObject.EnabledTimeseries;
-            Guid headingTrueNorthTimeseries = gyroDeviceObject.HeadingTrueNorthTimeseries;
-            Guid headingMagneticNorthTimeseries = gyroDeviceObject.HeadingMagneticNorthTimeseries;
-            Guid pitchTimeseries = gyroDeviceObject.PitchTimeseries;
-            Guid rateOfTurnTimeseries = gyroDeviceObject.RateOfTurnTimeseries;
-            Guid rollTimeseries = gyroDeviceObject.RollTimeseries;
-            Guid courseTimeseries = gyroDeviceObject.CourseTimeseries;
-            Guid speedTimeseries = gyroDeviceObject.SpeedTimeseries;
+            Guid? enabledTimeseries = gyroDeviceObject.EnabledTimeseries;
+            Guid? headingTrueNorthTimeseries = gyroDeviceObject.HeadingTrueNorthTimeseries;
+            Guid? headingMagneticNorthTimeseries = gyroDeviceObject.HeadingMagneticNorthTimeseries;
+            Guid? pitchTimeseries = gyroDeviceObject.PitchTimeseries;
+            Guid? rateOfTurnTimeseries = gyroDeviceObject.RateOfTurnTimeseries;
+            Guid? rollTimeseries = gyroDeviceObject.RollTimeseries;
+            Guid? courseTimeseries = gyroDeviceObject.CourseTimeseries;
+            Guid? speedTimeseries = gyroDeviceObject.SpeedTimeseries;
             Guid gNSSDevice = gyroDeviceObject.GNSSDevice;
             var result = UpdateGyroDevice( id, ref rowVersion, host, name, description, enabledTimeseries, headingTrueNorthTimeseries, headingMagneticNorthTimeseries, pitchTimeseries, rateOfTurnTimeseries, rollTimeseries, courseTimeseries, speedTimeseries, gNSSDevice );
             if( result )
@@ -12585,7 +12585,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroDevice( id, rowVersion );
             return result;
         }
-        public bool InsertLineInputDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool InsertLineInputDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12620,7 +12620,7 @@ namespace Barrelman.Data.Database
             Guid host = lineInputDeviceObject.Host;
             string name = lineInputDeviceObject.Name;
             string description = lineInputDeviceObject.Description;
-            Guid enabledTimeseries = lineInputDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = lineInputDeviceObject.EnabledTimeseries;
             var result = InsertLineInputDevice( ref id, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12631,7 +12631,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateLineInputDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool UpdateLineInputDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12668,7 +12668,7 @@ namespace Barrelman.Data.Database
             Guid host = lineInputDeviceObject.Host;
             string name = lineInputDeviceObject.Name;
             string description = lineInputDeviceObject.Description;
-            Guid enabledTimeseries = lineInputDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = lineInputDeviceObject.EnabledTimeseries;
             var result = UpdateLineInputDevice( id, ref rowVersion, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12711,7 +12711,7 @@ namespace Barrelman.Data.Database
             var result = DeleteLineInputDevice( id, rowVersion );
             return result;
         }
-        public bool InsertOilSpillDetectorDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool InsertOilSpillDetectorDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12746,7 +12746,7 @@ namespace Barrelman.Data.Database
             Guid host = oilSpillDetectorDeviceObject.Host;
             string name = oilSpillDetectorDeviceObject.Name;
             string description = oilSpillDetectorDeviceObject.Description;
-            Guid enabledTimeseries = oilSpillDetectorDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = oilSpillDetectorDeviceObject.EnabledTimeseries;
             var result = InsertOilSpillDetectorDevice( ref id, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12757,7 +12757,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateOilSpillDetectorDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool UpdateOilSpillDetectorDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12794,7 +12794,7 @@ namespace Barrelman.Data.Database
             Guid host = oilSpillDetectorDeviceObject.Host;
             string name = oilSpillDetectorDeviceObject.Name;
             string description = oilSpillDetectorDeviceObject.Description;
-            Guid enabledTimeseries = oilSpillDetectorDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = oilSpillDetectorDeviceObject.EnabledTimeseries;
             var result = UpdateOilSpillDetectorDevice( id, ref rowVersion, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12837,7 +12837,7 @@ namespace Barrelman.Data.Database
             var result = DeleteOilSpillDetectorDevice( id, rowVersion );
             return result;
         }
-        public bool InsertRadioDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool InsertRadioDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12872,7 +12872,7 @@ namespace Barrelman.Data.Database
             Guid host = radioDeviceObject.Host;
             string name = radioDeviceObject.Name;
             string description = radioDeviceObject.Description;
-            Guid enabledTimeseries = radioDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = radioDeviceObject.EnabledTimeseries;
             var result = InsertRadioDevice( ref id, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12883,7 +12883,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadioDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool UpdateRadioDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -12920,7 +12920,7 @@ namespace Barrelman.Data.Database
             Guid host = radioDeviceObject.Host;
             string name = radioDeviceObject.Name;
             string description = radioDeviceObject.Description;
-            Guid enabledTimeseries = radioDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = radioDeviceObject.EnabledTimeseries;
             var result = UpdateRadioDevice( id, ref rowVersion, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -12963,7 +12963,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadioDevice( id, rowVersion );
             return result;
         }
-        public bool InsertRadomeDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid? radar, Guid pressureTimeseries, Guid temperatureTimeseries, Guid dewPointTimeseries, Guid statusTimeseries )
+        public bool InsertRadomeDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? radar, Guid? pressureTimeseries, Guid? temperatureTimeseries, Guid? dewPointTimeseries, Guid? statusTimeseries )
         {
             bool result = false;
             try
@@ -13003,12 +13003,12 @@ namespace Barrelman.Data.Database
             Guid host = radomeDeviceObject.Host;
             string name = radomeDeviceObject.Name;
             string description = radomeDeviceObject.Description;
-            Guid enabledTimeseries = radomeDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = radomeDeviceObject.EnabledTimeseries;
             Guid? radar = radomeDeviceObject.Radar;
-            Guid pressureTimeseries = radomeDeviceObject.PressureTimeseries;
-            Guid temperatureTimeseries = radomeDeviceObject.TemperatureTimeseries;
-            Guid dewPointTimeseries = radomeDeviceObject.DewPointTimeseries;
-            Guid statusTimeseries = radomeDeviceObject.StatusTimeseries;
+            Guid? pressureTimeseries = radomeDeviceObject.PressureTimeseries;
+            Guid? temperatureTimeseries = radomeDeviceObject.TemperatureTimeseries;
+            Guid? dewPointTimeseries = radomeDeviceObject.DewPointTimeseries;
+            Guid? statusTimeseries = radomeDeviceObject.StatusTimeseries;
             var result = InsertRadomeDevice( ref id, host, name, description, enabledTimeseries, radar, pressureTimeseries, temperatureTimeseries, dewPointTimeseries, statusTimeseries );
             if( result )
             {
@@ -13019,7 +13019,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomeDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries, Guid? radar, Guid pressureTimeseries, Guid temperatureTimeseries, Guid dewPointTimeseries, Guid statusTimeseries )
+        public bool UpdateRadomeDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? radar, Guid? pressureTimeseries, Guid? temperatureTimeseries, Guid? dewPointTimeseries, Guid? statusTimeseries )
         {
             bool result = false;
             try
@@ -13061,12 +13061,12 @@ namespace Barrelman.Data.Database
             Guid host = radomeDeviceObject.Host;
             string name = radomeDeviceObject.Name;
             string description = radomeDeviceObject.Description;
-            Guid enabledTimeseries = radomeDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = radomeDeviceObject.EnabledTimeseries;
             Guid? radar = radomeDeviceObject.Radar;
-            Guid pressureTimeseries = radomeDeviceObject.PressureTimeseries;
-            Guid temperatureTimeseries = radomeDeviceObject.TemperatureTimeseries;
-            Guid dewPointTimeseries = radomeDeviceObject.DewPointTimeseries;
-            Guid statusTimeseries = radomeDeviceObject.StatusTimeseries;
+            Guid? pressureTimeseries = radomeDeviceObject.PressureTimeseries;
+            Guid? temperatureTimeseries = radomeDeviceObject.TemperatureTimeseries;
+            Guid? dewPointTimeseries = radomeDeviceObject.DewPointTimeseries;
+            Guid? statusTimeseries = radomeDeviceObject.StatusTimeseries;
             var result = UpdateRadomeDevice( id, ref rowVersion, host, name, description, enabledTimeseries, radar, pressureTimeseries, temperatureTimeseries, dewPointTimeseries, statusTimeseries );
             if( result )
             {
@@ -13109,7 +13109,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadomeDevice( id, rowVersion );
             return result;
         }
-        public bool InsertAisDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool InsertAisDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -13144,7 +13144,7 @@ namespace Barrelman.Data.Database
             Guid host = aisDeviceObject.Host;
             string name = aisDeviceObject.Name;
             string description = aisDeviceObject.Description;
-            Guid enabledTimeseries = aisDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = aisDeviceObject.EnabledTimeseries;
             var result = InsertAisDevice( ref id, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -13155,7 +13155,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries )
+        public bool UpdateAisDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -13192,7 +13192,7 @@ namespace Barrelman.Data.Database
             Guid host = aisDeviceObject.Host;
             string name = aisDeviceObject.Name;
             string description = aisDeviceObject.Description;
-            Guid enabledTimeseries = aisDeviceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = aisDeviceObject.EnabledTimeseries;
             var result = UpdateAisDevice( id, ref rowVersion, host, name, description, enabledTimeseries );
             if( result )
             {
@@ -13235,7 +13235,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisDevice( id, rowVersion );
             return result;
         }
-        public bool InsertRadarDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid saveSettingsTimeseries, Guid powerOnTimeseries, Guid trackingOnTimeseries, Guid radarPulseTimeseries, Guid tuningTimeseries, Guid blankSector1Timeseries, Guid sector1StartTimeseries, Guid sector1EndTimeseries, Guid blankSector2Timeseries, Guid sector2StartTimeseries, Guid sector2EndTimeseries, Guid enableAutomaticFrequencyControlTimeseries, Guid azimuthOffsetTimeseries, Guid enableSensitivityTimeControlTimeseries, Guid automaticSensitivityTimeControlTimeseries, Guid sensitivityTimeControlLevelTimeseries, Guid enableFastTimeConstantTimeseries, Guid fastTimeConstantLevelTimeseries, Guid fastTimeConstantModeTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid? radome, Guid? gNSSDevice )
+        public bool InsertRadarDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? saveSettingsTimeseries, Guid? powerOnTimeseries, Guid? trackingOnTimeseries, Guid? radarPulseTimeseries, Guid? tuningTimeseries, Guid? blankSector1Timeseries, Guid? sector1StartTimeseries, Guid? sector1EndTimeseries, Guid? blankSector2Timeseries, Guid? sector2StartTimeseries, Guid? sector2EndTimeseries, Guid? enableAutomaticFrequencyControlTimeseries, Guid? azimuthOffsetTimeseries, Guid? enableSensitivityTimeControlTimeseries, Guid? automaticSensitivityTimeControlTimeseries, Guid? sensitivityTimeControlLevelTimeseries, Guid? enableFastTimeConstantTimeseries, Guid? fastTimeConstantLevelTimeseries, Guid? fastTimeConstantModeTimeseries, Guid? latitudeTimeseries, Guid? longitudeTimeseries, Guid? radome, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -13293,28 +13293,28 @@ namespace Barrelman.Data.Database
             Guid host = radarDeviceObject.Host;
             string name = radarDeviceObject.Name;
             string description = radarDeviceObject.Description;
-            Guid enabledTimeseries = radarDeviceObject.EnabledTimeseries;
-            Guid saveSettingsTimeseries = radarDeviceObject.SaveSettingsTimeseries;
-            Guid powerOnTimeseries = radarDeviceObject.PowerOnTimeseries;
-            Guid trackingOnTimeseries = radarDeviceObject.TrackingOnTimeseries;
-            Guid radarPulseTimeseries = radarDeviceObject.RadarPulseTimeseries;
-            Guid tuningTimeseries = radarDeviceObject.TuningTimeseries;
-            Guid blankSector1Timeseries = radarDeviceObject.BlankSector1Timeseries;
-            Guid sector1StartTimeseries = radarDeviceObject.Sector1StartTimeseries;
-            Guid sector1EndTimeseries = radarDeviceObject.Sector1EndTimeseries;
-            Guid blankSector2Timeseries = radarDeviceObject.BlankSector2Timeseries;
-            Guid sector2StartTimeseries = radarDeviceObject.Sector2StartTimeseries;
-            Guid sector2EndTimeseries = radarDeviceObject.Sector2EndTimeseries;
-            Guid enableAutomaticFrequencyControlTimeseries = radarDeviceObject.EnableAutomaticFrequencyControlTimeseries;
-            Guid azimuthOffsetTimeseries = radarDeviceObject.AzimuthOffsetTimeseries;
-            Guid enableSensitivityTimeControlTimeseries = radarDeviceObject.EnableSensitivityTimeControlTimeseries;
-            Guid automaticSensitivityTimeControlTimeseries = radarDeviceObject.AutomaticSensitivityTimeControlTimeseries;
-            Guid sensitivityTimeControlLevelTimeseries = radarDeviceObject.SensitivityTimeControlLevelTimeseries;
-            Guid enableFastTimeConstantTimeseries = radarDeviceObject.EnableFastTimeConstantTimeseries;
-            Guid fastTimeConstantLevelTimeseries = radarDeviceObject.FastTimeConstantLevelTimeseries;
-            Guid fastTimeConstantModeTimeseries = radarDeviceObject.FastTimeConstantModeTimeseries;
-            Guid latitudeTimeseries = radarDeviceObject.LatitudeTimeseries;
-            Guid longitudeTimeseries = radarDeviceObject.LongitudeTimeseries;
+            Guid? enabledTimeseries = radarDeviceObject.EnabledTimeseries;
+            Guid? saveSettingsTimeseries = radarDeviceObject.SaveSettingsTimeseries;
+            Guid? powerOnTimeseries = radarDeviceObject.PowerOnTimeseries;
+            Guid? trackingOnTimeseries = radarDeviceObject.TrackingOnTimeseries;
+            Guid? radarPulseTimeseries = radarDeviceObject.RadarPulseTimeseries;
+            Guid? tuningTimeseries = radarDeviceObject.TuningTimeseries;
+            Guid? blankSector1Timeseries = radarDeviceObject.BlankSector1Timeseries;
+            Guid? sector1StartTimeseries = radarDeviceObject.Sector1StartTimeseries;
+            Guid? sector1EndTimeseries = radarDeviceObject.Sector1EndTimeseries;
+            Guid? blankSector2Timeseries = radarDeviceObject.BlankSector2Timeseries;
+            Guid? sector2StartTimeseries = radarDeviceObject.Sector2StartTimeseries;
+            Guid? sector2EndTimeseries = radarDeviceObject.Sector2EndTimeseries;
+            Guid? enableAutomaticFrequencyControlTimeseries = radarDeviceObject.EnableAutomaticFrequencyControlTimeseries;
+            Guid? azimuthOffsetTimeseries = radarDeviceObject.AzimuthOffsetTimeseries;
+            Guid? enableSensitivityTimeControlTimeseries = radarDeviceObject.EnableSensitivityTimeControlTimeseries;
+            Guid? automaticSensitivityTimeControlTimeseries = radarDeviceObject.AutomaticSensitivityTimeControlTimeseries;
+            Guid? sensitivityTimeControlLevelTimeseries = radarDeviceObject.SensitivityTimeControlLevelTimeseries;
+            Guid? enableFastTimeConstantTimeseries = radarDeviceObject.EnableFastTimeConstantTimeseries;
+            Guid? fastTimeConstantLevelTimeseries = radarDeviceObject.FastTimeConstantLevelTimeseries;
+            Guid? fastTimeConstantModeTimeseries = radarDeviceObject.FastTimeConstantModeTimeseries;
+            Guid? latitudeTimeseries = radarDeviceObject.LatitudeTimeseries;
+            Guid? longitudeTimeseries = radarDeviceObject.LongitudeTimeseries;
             Guid? radome = radarDeviceObject.Radome;
             Guid? gNSSDevice = radarDeviceObject.GNSSDevice;
             var result = InsertRadarDevice( ref id, host, name, description, enabledTimeseries, saveSettingsTimeseries, powerOnTimeseries, trackingOnTimeseries, radarPulseTimeseries, tuningTimeseries, blankSector1Timeseries, sector1StartTimeseries, sector1EndTimeseries, blankSector2Timeseries, sector2StartTimeseries, sector2EndTimeseries, enableAutomaticFrequencyControlTimeseries, azimuthOffsetTimeseries, enableSensitivityTimeControlTimeseries, automaticSensitivityTimeControlTimeseries, sensitivityTimeControlLevelTimeseries, enableFastTimeConstantTimeseries, fastTimeConstantLevelTimeseries, fastTimeConstantModeTimeseries, latitudeTimeseries, longitudeTimeseries, radome, gNSSDevice );
@@ -13327,7 +13327,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries, Guid saveSettingsTimeseries, Guid powerOnTimeseries, Guid trackingOnTimeseries, Guid radarPulseTimeseries, Guid tuningTimeseries, Guid blankSector1Timeseries, Guid sector1StartTimeseries, Guid sector1EndTimeseries, Guid blankSector2Timeseries, Guid sector2StartTimeseries, Guid sector2EndTimeseries, Guid enableAutomaticFrequencyControlTimeseries, Guid azimuthOffsetTimeseries, Guid enableSensitivityTimeControlTimeseries, Guid automaticSensitivityTimeControlTimeseries, Guid sensitivityTimeControlLevelTimeseries, Guid enableFastTimeConstantTimeseries, Guid fastTimeConstantLevelTimeseries, Guid fastTimeConstantModeTimeseries, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid? radome, Guid? gNSSDevice )
+        public bool UpdateRadarDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? saveSettingsTimeseries, Guid? powerOnTimeseries, Guid? trackingOnTimeseries, Guid? radarPulseTimeseries, Guid? tuningTimeseries, Guid? blankSector1Timeseries, Guid? sector1StartTimeseries, Guid? sector1EndTimeseries, Guid? blankSector2Timeseries, Guid? sector2StartTimeseries, Guid? sector2EndTimeseries, Guid? enableAutomaticFrequencyControlTimeseries, Guid? azimuthOffsetTimeseries, Guid? enableSensitivityTimeControlTimeseries, Guid? automaticSensitivityTimeControlTimeseries, Guid? sensitivityTimeControlLevelTimeseries, Guid? enableFastTimeConstantTimeseries, Guid? fastTimeConstantLevelTimeseries, Guid? fastTimeConstantModeTimeseries, Guid? latitudeTimeseries, Guid? longitudeTimeseries, Guid? radome, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -13387,28 +13387,28 @@ namespace Barrelman.Data.Database
             Guid host = radarDeviceObject.Host;
             string name = radarDeviceObject.Name;
             string description = radarDeviceObject.Description;
-            Guid enabledTimeseries = radarDeviceObject.EnabledTimeseries;
-            Guid saveSettingsTimeseries = radarDeviceObject.SaveSettingsTimeseries;
-            Guid powerOnTimeseries = radarDeviceObject.PowerOnTimeseries;
-            Guid trackingOnTimeseries = radarDeviceObject.TrackingOnTimeseries;
-            Guid radarPulseTimeseries = radarDeviceObject.RadarPulseTimeseries;
-            Guid tuningTimeseries = radarDeviceObject.TuningTimeseries;
-            Guid blankSector1Timeseries = radarDeviceObject.BlankSector1Timeseries;
-            Guid sector1StartTimeseries = radarDeviceObject.Sector1StartTimeseries;
-            Guid sector1EndTimeseries = radarDeviceObject.Sector1EndTimeseries;
-            Guid blankSector2Timeseries = radarDeviceObject.BlankSector2Timeseries;
-            Guid sector2StartTimeseries = radarDeviceObject.Sector2StartTimeseries;
-            Guid sector2EndTimeseries = radarDeviceObject.Sector2EndTimeseries;
-            Guid enableAutomaticFrequencyControlTimeseries = radarDeviceObject.EnableAutomaticFrequencyControlTimeseries;
-            Guid azimuthOffsetTimeseries = radarDeviceObject.AzimuthOffsetTimeseries;
-            Guid enableSensitivityTimeControlTimeseries = radarDeviceObject.EnableSensitivityTimeControlTimeseries;
-            Guid automaticSensitivityTimeControlTimeseries = radarDeviceObject.AutomaticSensitivityTimeControlTimeseries;
-            Guid sensitivityTimeControlLevelTimeseries = radarDeviceObject.SensitivityTimeControlLevelTimeseries;
-            Guid enableFastTimeConstantTimeseries = radarDeviceObject.EnableFastTimeConstantTimeseries;
-            Guid fastTimeConstantLevelTimeseries = radarDeviceObject.FastTimeConstantLevelTimeseries;
-            Guid fastTimeConstantModeTimeseries = radarDeviceObject.FastTimeConstantModeTimeseries;
-            Guid latitudeTimeseries = radarDeviceObject.LatitudeTimeseries;
-            Guid longitudeTimeseries = radarDeviceObject.LongitudeTimeseries;
+            Guid? enabledTimeseries = radarDeviceObject.EnabledTimeseries;
+            Guid? saveSettingsTimeseries = radarDeviceObject.SaveSettingsTimeseries;
+            Guid? powerOnTimeseries = radarDeviceObject.PowerOnTimeseries;
+            Guid? trackingOnTimeseries = radarDeviceObject.TrackingOnTimeseries;
+            Guid? radarPulseTimeseries = radarDeviceObject.RadarPulseTimeseries;
+            Guid? tuningTimeseries = radarDeviceObject.TuningTimeseries;
+            Guid? blankSector1Timeseries = radarDeviceObject.BlankSector1Timeseries;
+            Guid? sector1StartTimeseries = radarDeviceObject.Sector1StartTimeseries;
+            Guid? sector1EndTimeseries = radarDeviceObject.Sector1EndTimeseries;
+            Guid? blankSector2Timeseries = radarDeviceObject.BlankSector2Timeseries;
+            Guid? sector2StartTimeseries = radarDeviceObject.Sector2StartTimeseries;
+            Guid? sector2EndTimeseries = radarDeviceObject.Sector2EndTimeseries;
+            Guid? enableAutomaticFrequencyControlTimeseries = radarDeviceObject.EnableAutomaticFrequencyControlTimeseries;
+            Guid? azimuthOffsetTimeseries = radarDeviceObject.AzimuthOffsetTimeseries;
+            Guid? enableSensitivityTimeControlTimeseries = radarDeviceObject.EnableSensitivityTimeControlTimeseries;
+            Guid? automaticSensitivityTimeControlTimeseries = radarDeviceObject.AutomaticSensitivityTimeControlTimeseries;
+            Guid? sensitivityTimeControlLevelTimeseries = radarDeviceObject.SensitivityTimeControlLevelTimeseries;
+            Guid? enableFastTimeConstantTimeseries = radarDeviceObject.EnableFastTimeConstantTimeseries;
+            Guid? fastTimeConstantLevelTimeseries = radarDeviceObject.FastTimeConstantLevelTimeseries;
+            Guid? fastTimeConstantModeTimeseries = radarDeviceObject.FastTimeConstantModeTimeseries;
+            Guid? latitudeTimeseries = radarDeviceObject.LatitudeTimeseries;
+            Guid? longitudeTimeseries = radarDeviceObject.LongitudeTimeseries;
             Guid? radome = radarDeviceObject.Radome;
             Guid? gNSSDevice = radarDeviceObject.GNSSDevice;
             var result = UpdateRadarDevice( id, ref rowVersion, host, name, description, enabledTimeseries, saveSettingsTimeseries, powerOnTimeseries, trackingOnTimeseries, radarPulseTimeseries, tuningTimeseries, blankSector1Timeseries, sector1StartTimeseries, sector1EndTimeseries, blankSector2Timeseries, sector2StartTimeseries, sector2EndTimeseries, enableAutomaticFrequencyControlTimeseries, azimuthOffsetTimeseries, enableSensitivityTimeControlTimeseries, automaticSensitivityTimeControlTimeseries, sensitivityTimeControlLevelTimeseries, enableFastTimeConstantTimeseries, fastTimeConstantLevelTimeseries, fastTimeConstantModeTimeseries, latitudeTimeseries, longitudeTimeseries, radome, gNSSDevice );
@@ -13453,7 +13453,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarDevice( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationDevice( ref Guid id, Guid host, string name, string description, Guid enabledTimeseries, Guid barometricPressureTimeseries, Guid airTemperatureTimeseries, Guid waterTemperatureTimeseries, Guid relativeHumidityTimeseries, Guid absoluteHumidityTimeseries, Guid dewPointTimeseries, Guid windDirectionTimeseries, Guid windSpeedTimeseries, Guid gyro )
+        public bool InsertWeatherStationDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid gyro )
         {
             bool result = false;
             try
@@ -13497,15 +13497,15 @@ namespace Barrelman.Data.Database
             Guid host = weatherStationDeviceObject.Host;
             string name = weatherStationDeviceObject.Name;
             string description = weatherStationDeviceObject.Description;
-            Guid enabledTimeseries = weatherStationDeviceObject.EnabledTimeseries;
-            Guid barometricPressureTimeseries = weatherStationDeviceObject.BarometricPressureTimeseries;
-            Guid airTemperatureTimeseries = weatherStationDeviceObject.AirTemperatureTimeseries;
-            Guid waterTemperatureTimeseries = weatherStationDeviceObject.WaterTemperatureTimeseries;
-            Guid relativeHumidityTimeseries = weatherStationDeviceObject.RelativeHumidityTimeseries;
-            Guid absoluteHumidityTimeseries = weatherStationDeviceObject.AbsoluteHumidityTimeseries;
-            Guid dewPointTimeseries = weatherStationDeviceObject.DewPointTimeseries;
-            Guid windDirectionTimeseries = weatherStationDeviceObject.WindDirectionTimeseries;
-            Guid windSpeedTimeseries = weatherStationDeviceObject.WindSpeedTimeseries;
+            Guid? enabledTimeseries = weatherStationDeviceObject.EnabledTimeseries;
+            Guid? barometricPressureTimeseries = weatherStationDeviceObject.BarometricPressureTimeseries;
+            Guid? airTemperatureTimeseries = weatherStationDeviceObject.AirTemperatureTimeseries;
+            Guid? waterTemperatureTimeseries = weatherStationDeviceObject.WaterTemperatureTimeseries;
+            Guid? relativeHumidityTimeseries = weatherStationDeviceObject.RelativeHumidityTimeseries;
+            Guid? absoluteHumidityTimeseries = weatherStationDeviceObject.AbsoluteHumidityTimeseries;
+            Guid? dewPointTimeseries = weatherStationDeviceObject.DewPointTimeseries;
+            Guid? windDirectionTimeseries = weatherStationDeviceObject.WindDirectionTimeseries;
+            Guid? windSpeedTimeseries = weatherStationDeviceObject.WindSpeedTimeseries;
             Guid gyro = weatherStationDeviceObject.Gyro;
             var result = InsertWeatherStationDevice( ref id, host, name, description, enabledTimeseries, barometricPressureTimeseries, airTemperatureTimeseries, waterTemperatureTimeseries, relativeHumidityTimeseries, absoluteHumidityTimeseries, dewPointTimeseries, windDirectionTimeseries, windSpeedTimeseries, gyro );
             if( result )
@@ -13517,7 +13517,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid enabledTimeseries, Guid barometricPressureTimeseries, Guid airTemperatureTimeseries, Guid waterTemperatureTimeseries, Guid relativeHumidityTimeseries, Guid absoluteHumidityTimeseries, Guid dewPointTimeseries, Guid windDirectionTimeseries, Guid windSpeedTimeseries, Guid gyro )
+        public bool UpdateWeatherStationDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid gyro )
         {
             bool result = false;
             try
@@ -13563,15 +13563,15 @@ namespace Barrelman.Data.Database
             Guid host = weatherStationDeviceObject.Host;
             string name = weatherStationDeviceObject.Name;
             string description = weatherStationDeviceObject.Description;
-            Guid enabledTimeseries = weatherStationDeviceObject.EnabledTimeseries;
-            Guid barometricPressureTimeseries = weatherStationDeviceObject.BarometricPressureTimeseries;
-            Guid airTemperatureTimeseries = weatherStationDeviceObject.AirTemperatureTimeseries;
-            Guid waterTemperatureTimeseries = weatherStationDeviceObject.WaterTemperatureTimeseries;
-            Guid relativeHumidityTimeseries = weatherStationDeviceObject.RelativeHumidityTimeseries;
-            Guid absoluteHumidityTimeseries = weatherStationDeviceObject.AbsoluteHumidityTimeseries;
-            Guid dewPointTimeseries = weatherStationDeviceObject.DewPointTimeseries;
-            Guid windDirectionTimeseries = weatherStationDeviceObject.WindDirectionTimeseries;
-            Guid windSpeedTimeseries = weatherStationDeviceObject.WindSpeedTimeseries;
+            Guid? enabledTimeseries = weatherStationDeviceObject.EnabledTimeseries;
+            Guid? barometricPressureTimeseries = weatherStationDeviceObject.BarometricPressureTimeseries;
+            Guid? airTemperatureTimeseries = weatherStationDeviceObject.AirTemperatureTimeseries;
+            Guid? waterTemperatureTimeseries = weatherStationDeviceObject.WaterTemperatureTimeseries;
+            Guid? relativeHumidityTimeseries = weatherStationDeviceObject.RelativeHumidityTimeseries;
+            Guid? absoluteHumidityTimeseries = weatherStationDeviceObject.AbsoluteHumidityTimeseries;
+            Guid? dewPointTimeseries = weatherStationDeviceObject.DewPointTimeseries;
+            Guid? windDirectionTimeseries = weatherStationDeviceObject.WindDirectionTimeseries;
+            Guid? windSpeedTimeseries = weatherStationDeviceObject.WindSpeedTimeseries;
             Guid gyro = weatherStationDeviceObject.Gyro;
             var result = UpdateWeatherStationDevice( id, ref rowVersion, host, name, description, enabledTimeseries, barometricPressureTimeseries, airTemperatureTimeseries, waterTemperatureTimeseries, relativeHumidityTimeseries, absoluteHumidityTimeseries, dewPointTimeseries, windDirectionTimeseries, windSpeedTimeseries, gyro );
             if( result )
@@ -13863,7 +13863,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAircraft( id, rowVersion );
             return result;
         }
-        public bool InsertAisAidToNavigation( ref Guid id, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid offPositionTimeseries )
+        public bool InsertAisAidToNavigation( ref Guid id, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
         {
             bool result = false;
             try
@@ -13904,13 +13904,13 @@ namespace Barrelman.Data.Database
             string name = aisAidToNavigationObject.Name;
             Guid mMSI = aisAidToNavigationObject.MMSI;
             Types.NavigationalAidType navigationalAidType = aisAidToNavigationObject.NavigationalAidType;
-            Guid position = aisAidToNavigationObject.Position;
+            Guid? position = aisAidToNavigationObject.Position;
             bool isVirtual = aisAidToNavigationObject.IsVirtual;
             int toBow = aisAidToNavigationObject.ToBow;
             int toStern = aisAidToNavigationObject.ToStern;
             int toPort = aisAidToNavigationObject.ToPort;
             int toStarboard = aisAidToNavigationObject.ToStarboard;
-            Guid offPositionTimeseries = aisAidToNavigationObject.OffPositionTimeseries;
+            Guid? offPositionTimeseries = aisAidToNavigationObject.OffPositionTimeseries;
             var result = InsertAisAidToNavigation( ref id, name, mMSI, navigationalAidType, position, isVirtual, toBow, toStern, toPort, toStarboard, offPositionTimeseries );
             if( result )
             {
@@ -13921,7 +13921,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisAidToNavigation( Guid id, ref long rowVersion, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid offPositionTimeseries )
+        public bool UpdateAisAidToNavigation( Guid id, ref long rowVersion, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
         {
             bool result = false;
             try
@@ -13964,13 +13964,13 @@ namespace Barrelman.Data.Database
             string name = aisAidToNavigationObject.Name;
             Guid mMSI = aisAidToNavigationObject.MMSI;
             Types.NavigationalAidType navigationalAidType = aisAidToNavigationObject.NavigationalAidType;
-            Guid position = aisAidToNavigationObject.Position;
+            Guid? position = aisAidToNavigationObject.Position;
             bool isVirtual = aisAidToNavigationObject.IsVirtual;
             int toBow = aisAidToNavigationObject.ToBow;
             int toStern = aisAidToNavigationObject.ToStern;
             int toPort = aisAidToNavigationObject.ToPort;
             int toStarboard = aisAidToNavigationObject.ToStarboard;
-            Guid offPositionTimeseries = aisAidToNavigationObject.OffPositionTimeseries;
+            Guid? offPositionTimeseries = aisAidToNavigationObject.OffPositionTimeseries;
             var result = UpdateAisAidToNavigation( id, ref rowVersion, name, mMSI, navigationalAidType, position, isVirtual, toBow, toStern, toPort, toStarboard, offPositionTimeseries );
             if( result )
             {
@@ -14131,7 +14131,7 @@ namespace Barrelman.Data.Database
             var result = DeleteVehicle( id, rowVersion );
             return result;
         }
-        public bool InsertVessel( ref Guid id, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid draughtTimeseries, Guid personsOnBoardTimeseries )
+        public bool InsertVessel( ref Guid id, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
         {
             bool result = false;
             try
@@ -14173,8 +14173,8 @@ namespace Barrelman.Data.Database
             int toStern = vesselObject.ToStern;
             int toPort = vesselObject.ToPort;
             int toStarboard = vesselObject.ToStarboard;
-            Guid draughtTimeseries = vesselObject.DraughtTimeseries;
-            Guid personsOnBoardTimeseries = vesselObject.PersonsOnBoardTimeseries;
+            Guid? draughtTimeseries = vesselObject.DraughtTimeseries;
+            Guid? personsOnBoardTimeseries = vesselObject.PersonsOnBoardTimeseries;
             var result = InsertVessel( ref id, name, type, toBow, toStern, toPort, toStarboard, draughtTimeseries, personsOnBoardTimeseries );
             if( result )
             {
@@ -14185,7 +14185,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateVessel( Guid id, ref long rowVersion, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid draughtTimeseries, Guid personsOnBoardTimeseries )
+        public bool UpdateVessel( Guid id, ref long rowVersion, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
         {
             bool result = false;
             try
@@ -14229,8 +14229,8 @@ namespace Barrelman.Data.Database
             int toStern = vesselObject.ToStern;
             int toPort = vesselObject.ToPort;
             int toStarboard = vesselObject.ToStarboard;
-            Guid draughtTimeseries = vesselObject.DraughtTimeseries;
-            Guid personsOnBoardTimeseries = vesselObject.PersonsOnBoardTimeseries;
+            Guid? draughtTimeseries = vesselObject.DraughtTimeseries;
+            Guid? personsOnBoardTimeseries = vesselObject.PersonsOnBoardTimeseries;
             var result = UpdateVessel( id, ref rowVersion, name, type, toBow, toStern, toPort, toStarboard, draughtTimeseries, personsOnBoardTimeseries );
             if( result )
             {
@@ -14521,7 +14521,7 @@ namespace Barrelman.Data.Database
             var result = DeleteItemParentChildLink( id, rowVersion );
             return result;
         }
-        public bool InsertLineInputDeviceCommand( ref Guid id, Guid lineInputDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertLineInputDeviceCommand( ref Guid id, Guid lineInputDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -14558,7 +14558,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = lineInputDeviceCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = lineInputDeviceCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = lineInputDeviceCommandObject.DeviceCommandSourceId;
-            Guid reply = lineInputDeviceCommandObject.Reply;
+            Guid? reply = lineInputDeviceCommandObject.Reply;
             var result = InsertLineInputDeviceCommand( ref id, lineInputDevice, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -14569,7 +14569,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateLineInputDeviceCommand( Guid id, ref long rowVersion, Guid lineInputDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateLineInputDeviceCommand( Guid id, ref long rowVersion, Guid lineInputDevice, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -14608,7 +14608,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = lineInputDeviceCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = lineInputDeviceCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = lineInputDeviceCommandObject.DeviceCommandSourceId;
-            Guid reply = lineInputDeviceCommandObject.Reply;
+            Guid? reply = lineInputDeviceCommandObject.Reply;
             var result = UpdateLineInputDeviceCommand( id, ref rowVersion, lineInputDevice, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -17187,7 +17187,7 @@ namespace Barrelman.Data.Database
             var result = DeleteMaritimeIdentificationDigits( id, rowVersion );
             return result;
         }
-        public bool InsertMediaProxySession( ref Guid id, Guid service, string name, Guid enabledTimeseries )
+        public bool InsertMediaProxySession( ref Guid id, Guid service, string name, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -17220,7 +17220,7 @@ namespace Barrelman.Data.Database
             Guid id = mediaProxySessionObject.Id;
             Guid service = mediaProxySessionObject.Service;
             string name = mediaProxySessionObject.Name;
-            Guid enabledTimeseries = mediaProxySessionObject.EnabledTimeseries;
+            Guid? enabledTimeseries = mediaProxySessionObject.EnabledTimeseries;
             var result = InsertMediaProxySession( ref id, service, name, enabledTimeseries );
             if( result )
             {
@@ -17231,7 +17231,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateMediaProxySession( Guid id, ref long rowVersion, Guid service, string name, Guid enabledTimeseries )
+        public bool UpdateMediaProxySession( Guid id, ref long rowVersion, Guid service, string name, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -17266,7 +17266,7 @@ namespace Barrelman.Data.Database
             long rowVersion = mediaProxySessionObject.RowVersion;
             Guid service = mediaProxySessionObject.Service;
             string name = mediaProxySessionObject.Name;
-            Guid enabledTimeseries = mediaProxySessionObject.EnabledTimeseries;
+            Guid? enabledTimeseries = mediaProxySessionObject.EnabledTimeseries;
             var result = UpdateMediaProxySession( id, ref rowVersion, service, name, enabledTimeseries );
             if( result )
             {
@@ -17593,7 +17593,7 @@ namespace Barrelman.Data.Database
             var result = DeleteMediaProxySessionOptions( id, rowVersion );
             return result;
         }
-        public bool InsertMediaService( ref Guid id, Guid enabledTimeseries )
+        public bool InsertMediaService( ref Guid id, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -17622,7 +17622,7 @@ namespace Barrelman.Data.Database
         public bool InsertMediaService( MediaServiceObject mediaServiceObject )
         {
             Guid id = mediaServiceObject.Id;
-            Guid enabledTimeseries = mediaServiceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = mediaServiceObject.EnabledTimeseries;
             var result = InsertMediaService( ref id, enabledTimeseries );
             if( result )
             {
@@ -17633,7 +17633,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateMediaService( Guid id, ref long rowVersion, Guid enabledTimeseries )
+        public bool UpdateMediaService( Guid id, ref long rowVersion, Guid? enabledTimeseries )
         {
             bool result = false;
             try
@@ -17664,7 +17664,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = mediaServiceObject.Id;
             long rowVersion = mediaServiceObject.RowVersion;
-            Guid enabledTimeseries = mediaServiceObject.EnabledTimeseries;
+            Guid? enabledTimeseries = mediaServiceObject.EnabledTimeseries;
             var result = UpdateMediaService( id, ref rowVersion, enabledTimeseries );
             if( result )
             {
@@ -18215,7 +18215,7 @@ namespace Barrelman.Data.Database
             var result = DeleteOilSpill( id, rowVersion );
             return result;
         }
-        public bool InsertOilSpillDetectorCommand( ref Guid id, Guid oilSpillDetector, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertOilSpillDetectorCommand( ref Guid id, Guid oilSpillDetector, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -18252,7 +18252,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = oilSpillDetectorCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = oilSpillDetectorCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = oilSpillDetectorCommandObject.DeviceCommandSourceId;
-            Guid reply = oilSpillDetectorCommandObject.Reply;
+            Guid? reply = oilSpillDetectorCommandObject.Reply;
             var result = InsertOilSpillDetectorCommand( ref id, oilSpillDetector, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -18263,7 +18263,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateOilSpillDetectorCommand( Guid id, ref long rowVersion, Guid oilSpillDetector, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateOilSpillDetectorCommand( Guid id, ref long rowVersion, Guid oilSpillDetector, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -18302,7 +18302,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = oilSpillDetectorCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = oilSpillDetectorCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = oilSpillDetectorCommandObject.DeviceCommandSourceId;
-            Guid reply = oilSpillDetectorCommandObject.Reply;
+            Guid? reply = oilSpillDetectorCommandObject.Reply;
             var result = UpdateOilSpillDetectorCommand( id, ref rowVersion, oilSpillDetector, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -27749,7 +27749,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarAlarmStatus( id, rowVersion );
             return result;
         }
-        public bool InsertRadarCommand( ref Guid id, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertRadarCommand( ref Guid id, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -27786,7 +27786,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radarCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radarCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radarCommandObject.DeviceCommandSourceId;
-            Guid reply = radarCommandObject.Reply;
+            Guid? reply = radarCommandObject.Reply;
             var result = InsertRadarCommand( ref id, radar, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -27797,7 +27797,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarCommand( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateRadarCommand( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -27836,7 +27836,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radarCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radarCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radarCommandObject.DeviceCommandSourceId;
-            Guid reply = radarCommandObject.Reply;
+            Guid? reply = radarCommandObject.Reply;
             var result = UpdateRadarCommand( id, ref rowVersion, radar, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -27879,7 +27879,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarCommand( id, rowVersion );
             return result;
         }
-        public bool InsertRadarCommandGetStatus( ref Guid id, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertRadarCommandGetStatus( ref Guid id, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -27916,7 +27916,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radarCommandGetStatusObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radarCommandGetStatusObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radarCommandGetStatusObject.DeviceCommandSourceId;
-            Guid reply = radarCommandGetStatusObject.Reply;
+            Guid? reply = radarCommandGetStatusObject.Reply;
             var result = InsertRadarCommandGetStatus( ref id, radar, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -27927,7 +27927,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarCommandGetStatus( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateRadarCommandGetStatus( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -27966,7 +27966,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radarCommandGetStatusObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radarCommandGetStatusObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radarCommandGetStatusObject.DeviceCommandSourceId;
-            Guid reply = radarCommandGetStatusObject.Reply;
+            Guid? reply = radarCommandGetStatusObject.Reply;
             var result = UpdateRadarCommandGetStatus( id, ref rowVersion, radar, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -28909,7 +28909,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarStatus( id, rowVersion );
             return result;
         }
-        public bool InsertRadioCommand( ref Guid id, Guid radio, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertRadioCommand( ref Guid id, Guid radio, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -28946,7 +28946,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radioCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radioCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radioCommandObject.DeviceCommandSourceId;
-            Guid reply = radioCommandObject.Reply;
+            Guid? reply = radioCommandObject.Reply;
             var result = InsertRadioCommand( ref id, radio, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -28957,7 +28957,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadioCommand( Guid id, ref long rowVersion, Guid radio, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateRadioCommand( Guid id, ref long rowVersion, Guid radio, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -28996,7 +28996,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radioCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radioCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radioCommandObject.DeviceCommandSourceId;
-            Guid reply = radioCommandObject.Reply;
+            Guid? reply = radioCommandObject.Reply;
             var result = UpdateRadioCommand( id, ref rowVersion, radio, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -29315,7 +29315,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadioConfiguration( id, rowVersion );
             return result;
         }
-        public bool InsertRadomeCommand( ref Guid id, Guid radome, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertRadomeCommand( ref Guid id, Guid radome, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -29352,7 +29352,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radomeCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radomeCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radomeCommandObject.DeviceCommandSourceId;
-            Guid reply = radomeCommandObject.Reply;
+            Guid? reply = radomeCommandObject.Reply;
             var result = InsertRadomeCommand( ref id, radome, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -29363,7 +29363,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomeCommand( Guid id, ref long rowVersion, Guid radome, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateRadomeCommand( Guid id, ref long rowVersion, Guid radome, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -29402,7 +29402,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = radomeCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = radomeCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = radomeCommandObject.DeviceCommandSourceId;
-            Guid reply = radomeCommandObject.Reply;
+            Guid? reply = radomeCommandObject.Reply;
             var result = UpdateRadomeCommand( id, ref rowVersion, radome, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -31209,7 +31209,7 @@ namespace Barrelman.Data.Database
             var result = DeleteBooleanTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertAisAidToNavigationOffPositionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid aidToNavigation )
+        public bool InsertAisAidToNavigationOffPositionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? aidToNavigation )
         {
             bool result = false;
             try
@@ -31244,7 +31244,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = aisAidToNavigationOffPositionTimeseriesObject.Catalog;
             string name = aisAidToNavigationOffPositionTimeseriesObject.Name;
             TimeSpan maxRetention = aisAidToNavigationOffPositionTimeseriesObject.MaxRetention;
-            Guid aidToNavigation = aisAidToNavigationOffPositionTimeseriesObject.AidToNavigation;
+            Guid? aidToNavigation = aisAidToNavigationOffPositionTimeseriesObject.AidToNavigation;
             var result = InsertAisAidToNavigationOffPositionTimeseries( ref id, catalog, name, maxRetention, aidToNavigation );
             if( result )
             {
@@ -31255,7 +31255,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisAidToNavigationOffPositionTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid aidToNavigation )
+        public bool UpdateAisAidToNavigationOffPositionTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? aidToNavigation )
         {
             bool result = false;
             try
@@ -31292,7 +31292,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = aisAidToNavigationOffPositionTimeseriesObject.Catalog;
             string name = aisAidToNavigationOffPositionTimeseriesObject.Name;
             TimeSpan maxRetention = aisAidToNavigationOffPositionTimeseriesObject.MaxRetention;
-            Guid aidToNavigation = aisAidToNavigationOffPositionTimeseriesObject.AidToNavigation;
+            Guid? aidToNavigation = aisAidToNavigationOffPositionTimeseriesObject.AidToNavigation;
             var result = UpdateAisAidToNavigationOffPositionTimeseries( id, ref rowVersion, catalog, name, maxRetention, aidToNavigation );
             if( result )
             {
@@ -31461,7 +31461,7 @@ namespace Barrelman.Data.Database
             var result = DeleteDeviceEnabledTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarAutomaticSensitivityTimeControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarAutomaticSensitivityTimeControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31496,7 +31496,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarAutomaticSensitivityTimeControlTimeseriesObject.Catalog;
             string name = radarAutomaticSensitivityTimeControlTimeseriesObject.Name;
             TimeSpan maxRetention = radarAutomaticSensitivityTimeControlTimeseriesObject.MaxRetention;
-            Guid radar = radarAutomaticSensitivityTimeControlTimeseriesObject.Radar;
+            Guid? radar = radarAutomaticSensitivityTimeControlTimeseriesObject.Radar;
             var result = InsertRadarAutomaticSensitivityTimeControlTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31507,7 +31507,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarAutomaticSensitivityTimeControlTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarAutomaticSensitivityTimeControlTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31544,7 +31544,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarAutomaticSensitivityTimeControlTimeseriesObject.Catalog;
             string name = radarAutomaticSensitivityTimeControlTimeseriesObject.Name;
             TimeSpan maxRetention = radarAutomaticSensitivityTimeControlTimeseriesObject.MaxRetention;
-            Guid radar = radarAutomaticSensitivityTimeControlTimeseriesObject.Radar;
+            Guid? radar = radarAutomaticSensitivityTimeControlTimeseriesObject.Radar;
             var result = UpdateRadarAutomaticSensitivityTimeControlTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31587,7 +31587,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarAutomaticSensitivityTimeControlTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarBlankSector1Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarBlankSector1Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31622,7 +31622,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarBlankSector1TimeseriesObject.Catalog;
             string name = radarBlankSector1TimeseriesObject.Name;
             TimeSpan maxRetention = radarBlankSector1TimeseriesObject.MaxRetention;
-            Guid radar = radarBlankSector1TimeseriesObject.Radar;
+            Guid? radar = radarBlankSector1TimeseriesObject.Radar;
             var result = InsertRadarBlankSector1Timeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31633,7 +31633,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarBlankSector1Timeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarBlankSector1Timeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31670,7 +31670,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarBlankSector1TimeseriesObject.Catalog;
             string name = radarBlankSector1TimeseriesObject.Name;
             TimeSpan maxRetention = radarBlankSector1TimeseriesObject.MaxRetention;
-            Guid radar = radarBlankSector1TimeseriesObject.Radar;
+            Guid? radar = radarBlankSector1TimeseriesObject.Radar;
             var result = UpdateRadarBlankSector1Timeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31713,7 +31713,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarBlankSector1Timeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarBlankSector2Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarBlankSector2Timeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31748,7 +31748,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarBlankSector2TimeseriesObject.Catalog;
             string name = radarBlankSector2TimeseriesObject.Name;
             TimeSpan maxRetention = radarBlankSector2TimeseriesObject.MaxRetention;
-            Guid radar = radarBlankSector2TimeseriesObject.Radar;
+            Guid? radar = radarBlankSector2TimeseriesObject.Radar;
             var result = InsertRadarBlankSector2Timeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31759,7 +31759,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarBlankSector2Timeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarBlankSector2Timeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31796,7 +31796,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarBlankSector2TimeseriesObject.Catalog;
             string name = radarBlankSector2TimeseriesObject.Name;
             TimeSpan maxRetention = radarBlankSector2TimeseriesObject.MaxRetention;
-            Guid radar = radarBlankSector2TimeseriesObject.Radar;
+            Guid? radar = radarBlankSector2TimeseriesObject.Radar;
             var result = UpdateRadarBlankSector2Timeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31839,7 +31839,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarBlankSector2Timeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarEnableAutomaticFrequencyControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarEnableAutomaticFrequencyControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31874,7 +31874,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarEnableAutomaticFrequencyControlTimeseriesObject.Catalog;
             string name = radarEnableAutomaticFrequencyControlTimeseriesObject.Name;
             TimeSpan maxRetention = radarEnableAutomaticFrequencyControlTimeseriesObject.MaxRetention;
-            Guid radar = radarEnableAutomaticFrequencyControlTimeseriesObject.Radar;
+            Guid? radar = radarEnableAutomaticFrequencyControlTimeseriesObject.Radar;
             var result = InsertRadarEnableAutomaticFrequencyControlTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31885,7 +31885,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarEnableAutomaticFrequencyControlTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarEnableAutomaticFrequencyControlTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -31922,7 +31922,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarEnableAutomaticFrequencyControlTimeseriesObject.Catalog;
             string name = radarEnableAutomaticFrequencyControlTimeseriesObject.Name;
             TimeSpan maxRetention = radarEnableAutomaticFrequencyControlTimeseriesObject.MaxRetention;
-            Guid radar = radarEnableAutomaticFrequencyControlTimeseriesObject.Radar;
+            Guid? radar = radarEnableAutomaticFrequencyControlTimeseriesObject.Radar;
             var result = UpdateRadarEnableAutomaticFrequencyControlTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -31965,7 +31965,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarEnableAutomaticFrequencyControlTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarEnableFastTimeConstantTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarEnableFastTimeConstantTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32000,7 +32000,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarEnableFastTimeConstantTimeseriesObject.Catalog;
             string name = radarEnableFastTimeConstantTimeseriesObject.Name;
             TimeSpan maxRetention = radarEnableFastTimeConstantTimeseriesObject.MaxRetention;
-            Guid radar = radarEnableFastTimeConstantTimeseriesObject.Radar;
+            Guid? radar = radarEnableFastTimeConstantTimeseriesObject.Radar;
             var result = InsertRadarEnableFastTimeConstantTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32011,7 +32011,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarEnableFastTimeConstantTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarEnableFastTimeConstantTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32048,7 +32048,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarEnableFastTimeConstantTimeseriesObject.Catalog;
             string name = radarEnableFastTimeConstantTimeseriesObject.Name;
             TimeSpan maxRetention = radarEnableFastTimeConstantTimeseriesObject.MaxRetention;
-            Guid radar = radarEnableFastTimeConstantTimeseriesObject.Radar;
+            Guid? radar = radarEnableFastTimeConstantTimeseriesObject.Radar;
             var result = UpdateRadarEnableFastTimeConstantTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32091,7 +32091,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarEnableFastTimeConstantTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarEnableSensitivityTimeControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarEnableSensitivityTimeControlTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32126,7 +32126,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarEnableSensitivityTimeControlTimeseriesObject.Catalog;
             string name = radarEnableSensitivityTimeControlTimeseriesObject.Name;
             TimeSpan maxRetention = radarEnableSensitivityTimeControlTimeseriesObject.MaxRetention;
-            Guid radar = radarEnableSensitivityTimeControlTimeseriesObject.Radar;
+            Guid? radar = radarEnableSensitivityTimeControlTimeseriesObject.Radar;
             var result = InsertRadarEnableSensitivityTimeControlTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32137,7 +32137,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarEnableSensitivityTimeControlTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarEnableSensitivityTimeControlTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32174,7 +32174,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarEnableSensitivityTimeControlTimeseriesObject.Catalog;
             string name = radarEnableSensitivityTimeControlTimeseriesObject.Name;
             TimeSpan maxRetention = radarEnableSensitivityTimeControlTimeseriesObject.MaxRetention;
-            Guid radar = radarEnableSensitivityTimeControlTimeseriesObject.Radar;
+            Guid? radar = radarEnableSensitivityTimeControlTimeseriesObject.Radar;
             var result = UpdateRadarEnableSensitivityTimeControlTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32217,7 +32217,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarEnableSensitivityTimeControlTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarPowerOnTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarPowerOnTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32252,7 +32252,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarPowerOnTimeseriesObject.Catalog;
             string name = radarPowerOnTimeseriesObject.Name;
             TimeSpan maxRetention = radarPowerOnTimeseriesObject.MaxRetention;
-            Guid radar = radarPowerOnTimeseriesObject.Radar;
+            Guid? radar = radarPowerOnTimeseriesObject.Radar;
             var result = InsertRadarPowerOnTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32263,7 +32263,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarPowerOnTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarPowerOnTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32300,7 +32300,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarPowerOnTimeseriesObject.Catalog;
             string name = radarPowerOnTimeseriesObject.Name;
             TimeSpan maxRetention = radarPowerOnTimeseriesObject.MaxRetention;
-            Guid radar = radarPowerOnTimeseriesObject.Radar;
+            Guid? radar = radarPowerOnTimeseriesObject.Radar;
             var result = UpdateRadarPowerOnTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32343,7 +32343,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarPowerOnTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarSaveSettingsTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarSaveSettingsTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32378,7 +32378,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSaveSettingsTimeseriesObject.Catalog;
             string name = radarSaveSettingsTimeseriesObject.Name;
             TimeSpan maxRetention = radarSaveSettingsTimeseriesObject.MaxRetention;
-            Guid radar = radarSaveSettingsTimeseriesObject.Radar;
+            Guid? radar = radarSaveSettingsTimeseriesObject.Radar;
             var result = InsertRadarSaveSettingsTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32389,7 +32389,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarSaveSettingsTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarSaveSettingsTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32426,7 +32426,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSaveSettingsTimeseriesObject.Catalog;
             string name = radarSaveSettingsTimeseriesObject.Name;
             TimeSpan maxRetention = radarSaveSettingsTimeseriesObject.MaxRetention;
-            Guid radar = radarSaveSettingsTimeseriesObject.Radar;
+            Guid? radar = radarSaveSettingsTimeseriesObject.Radar;
             var result = UpdateRadarSaveSettingsTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32469,7 +32469,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarSaveSettingsTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarTrackingTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarTrackingTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32504,7 +32504,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarTrackingTimeseriesObject.Catalog;
             string name = radarTrackingTimeseriesObject.Name;
             TimeSpan maxRetention = radarTrackingTimeseriesObject.MaxRetention;
-            Guid radar = radarTrackingTimeseriesObject.Radar;
+            Guid? radar = radarTrackingTimeseriesObject.Radar;
             var result = InsertRadarTrackingTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32515,7 +32515,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarTrackingTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarTrackingTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -32552,7 +32552,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarTrackingTimeseriesObject.Catalog;
             string name = radarTrackingTimeseriesObject.Name;
             TimeSpan maxRetention = radarTrackingTimeseriesObject.MaxRetention;
-            Guid radar = radarTrackingTimeseriesObject.Radar;
+            Guid? radar = radarTrackingTimeseriesObject.Radar;
             var result = UpdateRadarTrackingTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -32595,7 +32595,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarTrackingTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertMediaProxySessionEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid proxySession )
+        public bool InsertMediaProxySessionEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? proxySession )
         {
             bool result = false;
             try
@@ -32630,7 +32630,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = mediaProxySessionEnabledTimeseriesObject.Catalog;
             string name = mediaProxySessionEnabledTimeseriesObject.Name;
             TimeSpan maxRetention = mediaProxySessionEnabledTimeseriesObject.MaxRetention;
-            Guid proxySession = mediaProxySessionEnabledTimeseriesObject.ProxySession;
+            Guid? proxySession = mediaProxySessionEnabledTimeseriesObject.ProxySession;
             var result = InsertMediaProxySessionEnabledTimeseries( ref id, catalog, name, maxRetention, proxySession );
             if( result )
             {
@@ -32641,7 +32641,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateMediaProxySessionEnabledTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid proxySession )
+        public bool UpdateMediaProxySessionEnabledTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? proxySession )
         {
             bool result = false;
             try
@@ -32678,7 +32678,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = mediaProxySessionEnabledTimeseriesObject.Catalog;
             string name = mediaProxySessionEnabledTimeseriesObject.Name;
             TimeSpan maxRetention = mediaProxySessionEnabledTimeseriesObject.MaxRetention;
-            Guid proxySession = mediaProxySessionEnabledTimeseriesObject.ProxySession;
+            Guid? proxySession = mediaProxySessionEnabledTimeseriesObject.ProxySession;
             var result = UpdateMediaProxySessionEnabledTimeseries( id, ref rowVersion, catalog, name, maxRetention, proxySession );
             if( result )
             {
@@ -32721,7 +32721,7 @@ namespace Barrelman.Data.Database
             var result = DeleteMediaProxySessionEnabledTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertMediaServiceEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid service )
+        public bool InsertMediaServiceEnabledTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? service )
         {
             bool result = false;
             try
@@ -32756,7 +32756,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = mediaServiceEnabledTimeseriesObject.Catalog;
             string name = mediaServiceEnabledTimeseriesObject.Name;
             TimeSpan maxRetention = mediaServiceEnabledTimeseriesObject.MaxRetention;
-            Guid service = mediaServiceEnabledTimeseriesObject.Service;
+            Guid? service = mediaServiceEnabledTimeseriesObject.Service;
             var result = InsertMediaServiceEnabledTimeseries( ref id, catalog, name, maxRetention, service );
             if( result )
             {
@@ -32767,7 +32767,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateMediaServiceEnabledTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid service )
+        public bool UpdateMediaServiceEnabledTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? service )
         {
             bool result = false;
             try
@@ -32804,7 +32804,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = mediaServiceEnabledTimeseriesObject.Catalog;
             string name = mediaServiceEnabledTimeseriesObject.Name;
             TimeSpan maxRetention = mediaServiceEnabledTimeseriesObject.MaxRetention;
-            Guid service = mediaServiceEnabledTimeseriesObject.Service;
+            Guid? service = mediaServiceEnabledTimeseriesObject.Service;
             var result = UpdateMediaServiceEnabledTimeseries( id, ref rowVersion, catalog, name, maxRetention, service );
             if( result )
             {
@@ -33213,7 +33213,7 @@ namespace Barrelman.Data.Database
             var result = DeleteDoubleTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGNSSAltitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
+        public bool InsertGNSSAltitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -33248,7 +33248,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gNSSAltitudeTimeseriesObject.Catalog;
             string name = gNSSAltitudeTimeseriesObject.Name;
             TimeSpan maxRetention = gNSSAltitudeTimeseriesObject.MaxRetention;
-            Guid gNSSDevice = gNSSAltitudeTimeseriesObject.GNSSDevice;
+            Guid? gNSSDevice = gNSSAltitudeTimeseriesObject.GNSSDevice;
             var result = InsertGNSSAltitudeTimeseries( ref id, catalog, name, maxRetention, gNSSDevice );
             if( result )
             {
@@ -33259,7 +33259,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGNSSAltitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
+        public bool UpdateGNSSAltitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -33296,7 +33296,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gNSSAltitudeTimeseriesObject.Catalog;
             string name = gNSSAltitudeTimeseriesObject.Name;
             TimeSpan maxRetention = gNSSAltitudeTimeseriesObject.MaxRetention;
-            Guid gNSSDevice = gNSSAltitudeTimeseriesObject.GNSSDevice;
+            Guid? gNSSDevice = gNSSAltitudeTimeseriesObject.GNSSDevice;
             var result = UpdateGNSSAltitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, gNSSDevice );
             if( result )
             {
@@ -33339,7 +33339,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGNSSAltitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGNSSLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
+        public bool InsertGNSSLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -33374,7 +33374,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gNSSLatitudeTimeseriesObject.Catalog;
             string name = gNSSLatitudeTimeseriesObject.Name;
             TimeSpan maxRetention = gNSSLatitudeTimeseriesObject.MaxRetention;
-            Guid gNSSDevice = gNSSLatitudeTimeseriesObject.GNSSDevice;
+            Guid? gNSSDevice = gNSSLatitudeTimeseriesObject.GNSSDevice;
             var result = InsertGNSSLatitudeTimeseries( ref id, catalog, name, maxRetention, gNSSDevice );
             if( result )
             {
@@ -33385,7 +33385,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGNSSLatitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
+        public bool UpdateGNSSLatitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -33422,7 +33422,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gNSSLatitudeTimeseriesObject.Catalog;
             string name = gNSSLatitudeTimeseriesObject.Name;
             TimeSpan maxRetention = gNSSLatitudeTimeseriesObject.MaxRetention;
-            Guid gNSSDevice = gNSSLatitudeTimeseriesObject.GNSSDevice;
+            Guid? gNSSDevice = gNSSLatitudeTimeseriesObject.GNSSDevice;
             var result = UpdateGNSSLatitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, gNSSDevice );
             if( result )
             {
@@ -33465,7 +33465,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGNSSLatitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGNSSLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
+        public bool InsertGNSSLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -33500,7 +33500,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gNSSLongitudeTimeseriesObject.Catalog;
             string name = gNSSLongitudeTimeseriesObject.Name;
             TimeSpan maxRetention = gNSSLongitudeTimeseriesObject.MaxRetention;
-            Guid gNSSDevice = gNSSLongitudeTimeseriesObject.GNSSDevice;
+            Guid? gNSSDevice = gNSSLongitudeTimeseriesObject.GNSSDevice;
             var result = InsertGNSSLongitudeTimeseries( ref id, catalog, name, maxRetention, gNSSDevice );
             if( result )
             {
@@ -33511,7 +33511,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGNSSLongitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gNSSDevice )
+        public bool UpdateGNSSLongitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -33548,7 +33548,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gNSSLongitudeTimeseriesObject.Catalog;
             string name = gNSSLongitudeTimeseriesObject.Name;
             TimeSpan maxRetention = gNSSLongitudeTimeseriesObject.MaxRetention;
-            Guid gNSSDevice = gNSSLongitudeTimeseriesObject.GNSSDevice;
+            Guid? gNSSDevice = gNSSLongitudeTimeseriesObject.GNSSDevice;
             var result = UpdateGNSSLongitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, gNSSDevice );
             if( result )
             {
@@ -33591,7 +33591,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGNSSLongitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroCourseTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroCourseTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -33626,7 +33626,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroCourseTimeseriesObject.Catalog;
             string name = gyroCourseTimeseriesObject.Name;
             TimeSpan maxRetention = gyroCourseTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroCourseTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroCourseTimeseriesObject.GyroDevice;
             var result = InsertGyroCourseTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -33637,7 +33637,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroCourseTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroCourseTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -33674,7 +33674,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroCourseTimeseriesObject.Catalog;
             string name = gyroCourseTimeseriesObject.Name;
             TimeSpan maxRetention = gyroCourseTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroCourseTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroCourseTimeseriesObject.GyroDevice;
             var result = UpdateGyroCourseTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -33717,7 +33717,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroCourseTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroHeadingMagneticNorthTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroHeadingMagneticNorthTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -33752,7 +33752,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroHeadingMagneticNorthTimeseriesObject.Catalog;
             string name = gyroHeadingMagneticNorthTimeseriesObject.Name;
             TimeSpan maxRetention = gyroHeadingMagneticNorthTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroHeadingMagneticNorthTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroHeadingMagneticNorthTimeseriesObject.GyroDevice;
             var result = InsertGyroHeadingMagneticNorthTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -33763,7 +33763,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroHeadingMagneticNorthTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroHeadingMagneticNorthTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -33800,7 +33800,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroHeadingMagneticNorthTimeseriesObject.Catalog;
             string name = gyroHeadingMagneticNorthTimeseriesObject.Name;
             TimeSpan maxRetention = gyroHeadingMagneticNorthTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroHeadingMagneticNorthTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroHeadingMagneticNorthTimeseriesObject.GyroDevice;
             var result = UpdateGyroHeadingMagneticNorthTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -33843,7 +33843,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroHeadingMagneticNorthTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroHeadingTrueNorthTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroHeadingTrueNorthTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -33878,7 +33878,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroHeadingTrueNorthTimeseriesObject.Catalog;
             string name = gyroHeadingTrueNorthTimeseriesObject.Name;
             TimeSpan maxRetention = gyroHeadingTrueNorthTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroHeadingTrueNorthTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroHeadingTrueNorthTimeseriesObject.GyroDevice;
             var result = InsertGyroHeadingTrueNorthTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -33889,7 +33889,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroHeadingTrueNorthTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroHeadingTrueNorthTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -33926,7 +33926,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroHeadingTrueNorthTimeseriesObject.Catalog;
             string name = gyroHeadingTrueNorthTimeseriesObject.Name;
             TimeSpan maxRetention = gyroHeadingTrueNorthTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroHeadingTrueNorthTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroHeadingTrueNorthTimeseriesObject.GyroDevice;
             var result = UpdateGyroHeadingTrueNorthTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -33969,7 +33969,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroHeadingTrueNorthTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroPitchTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroPitchTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34004,7 +34004,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroPitchTimeseriesObject.Catalog;
             string name = gyroPitchTimeseriesObject.Name;
             TimeSpan maxRetention = gyroPitchTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroPitchTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroPitchTimeseriesObject.GyroDevice;
             var result = InsertGyroPitchTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34015,7 +34015,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroPitchTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroPitchTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34052,7 +34052,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroPitchTimeseriesObject.Catalog;
             string name = gyroPitchTimeseriesObject.Name;
             TimeSpan maxRetention = gyroPitchTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroPitchTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroPitchTimeseriesObject.GyroDevice;
             var result = UpdateGyroPitchTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34095,7 +34095,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroPitchTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroRateOfTurnTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroRateOfTurnTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34130,7 +34130,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroRateOfTurnTimeseriesObject.Catalog;
             string name = gyroRateOfTurnTimeseriesObject.Name;
             TimeSpan maxRetention = gyroRateOfTurnTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroRateOfTurnTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroRateOfTurnTimeseriesObject.GyroDevice;
             var result = InsertGyroRateOfTurnTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34141,7 +34141,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroRateOfTurnTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroRateOfTurnTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34178,7 +34178,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroRateOfTurnTimeseriesObject.Catalog;
             string name = gyroRateOfTurnTimeseriesObject.Name;
             TimeSpan maxRetention = gyroRateOfTurnTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroRateOfTurnTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroRateOfTurnTimeseriesObject.GyroDevice;
             var result = UpdateGyroRateOfTurnTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34221,7 +34221,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroRateOfTurnTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroRollTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroRollTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34256,7 +34256,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroRollTimeseriesObject.Catalog;
             string name = gyroRollTimeseriesObject.Name;
             TimeSpan maxRetention = gyroRollTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroRollTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroRollTimeseriesObject.GyroDevice;
             var result = InsertGyroRollTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34267,7 +34267,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroRollTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroRollTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34304,7 +34304,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroRollTimeseriesObject.Catalog;
             string name = gyroRollTimeseriesObject.Name;
             TimeSpan maxRetention = gyroRollTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroRollTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroRollTimeseriesObject.GyroDevice;
             var result = UpdateGyroRollTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34347,7 +34347,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroRollTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertGyroSpeedTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool InsertGyroSpeedTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34382,7 +34382,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroSpeedTimeseriesObject.Catalog;
             string name = gyroSpeedTimeseriesObject.Name;
             TimeSpan maxRetention = gyroSpeedTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroSpeedTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroSpeedTimeseriesObject.GyroDevice;
             var result = InsertGyroSpeedTimeseries( ref id, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34393,7 +34393,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroSpeedTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid gyroDevice )
+        public bool UpdateGyroSpeedTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? gyroDevice )
         {
             bool result = false;
             try
@@ -34430,7 +34430,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = gyroSpeedTimeseriesObject.Catalog;
             string name = gyroSpeedTimeseriesObject.Name;
             TimeSpan maxRetention = gyroSpeedTimeseriesObject.MaxRetention;
-            Guid gyroDevice = gyroSpeedTimeseriesObject.GyroDevice;
+            Guid? gyroDevice = gyroSpeedTimeseriesObject.GyroDevice;
             var result = UpdateGyroSpeedTimeseries( id, ref rowVersion, catalog, name, maxRetention, gyroDevice );
             if( result )
             {
@@ -34473,7 +34473,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroSpeedTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -34508,7 +34508,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarLatitudeTimeseriesObject.Catalog;
             string name = radarLatitudeTimeseriesObject.Name;
             TimeSpan maxRetention = radarLatitudeTimeseriesObject.MaxRetention;
-            Guid radar = radarLatitudeTimeseriesObject.Radar;
+            Guid? radar = radarLatitudeTimeseriesObject.Radar;
             var result = InsertRadarLatitudeTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -34519,7 +34519,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarLatitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarLatitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -34556,7 +34556,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarLatitudeTimeseriesObject.Catalog;
             string name = radarLatitudeTimeseriesObject.Name;
             TimeSpan maxRetention = radarLatitudeTimeseriesObject.MaxRetention;
-            Guid radar = radarLatitudeTimeseriesObject.Radar;
+            Guid? radar = radarLatitudeTimeseriesObject.Radar;
             var result = UpdateRadarLatitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -34599,7 +34599,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarLatitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -34634,7 +34634,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarLongitudeTimeseriesObject.Catalog;
             string name = radarLongitudeTimeseriesObject.Name;
             TimeSpan maxRetention = radarLongitudeTimeseriesObject.MaxRetention;
-            Guid radar = radarLongitudeTimeseriesObject.Radar;
+            Guid? radar = radarLongitudeTimeseriesObject.Radar;
             var result = InsertRadarLongitudeTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -34645,7 +34645,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarLongitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarLongitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -34682,7 +34682,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarLongitudeTimeseriesObject.Catalog;
             string name = radarLongitudeTimeseriesObject.Name;
             TimeSpan maxRetention = radarLongitudeTimeseriesObject.MaxRetention;
-            Guid radar = radarLongitudeTimeseriesObject.Radar;
+            Guid? radar = radarLongitudeTimeseriesObject.Radar;
             var result = UpdateRadarLongitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -34725,7 +34725,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarLongitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadomeDewPointTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool InsertRadomeDewPointTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -34760,7 +34760,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomeDewPointTimeseriesObject.Catalog;
             string name = radomeDewPointTimeseriesObject.Name;
             TimeSpan maxRetention = radomeDewPointTimeseriesObject.MaxRetention;
-            Guid radome = radomeDewPointTimeseriesObject.Radome;
+            Guid? radome = radomeDewPointTimeseriesObject.Radome;
             var result = InsertRadomeDewPointTimeseries( ref id, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -34771,7 +34771,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomeDewPointTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool UpdateRadomeDewPointTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -34808,7 +34808,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomeDewPointTimeseriesObject.Catalog;
             string name = radomeDewPointTimeseriesObject.Name;
             TimeSpan maxRetention = radomeDewPointTimeseriesObject.MaxRetention;
-            Guid radome = radomeDewPointTimeseriesObject.Radome;
+            Guid? radome = radomeDewPointTimeseriesObject.Radome;
             var result = UpdateRadomeDewPointTimeseries( id, ref rowVersion, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -34851,7 +34851,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadomeDewPointTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadomePressureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool InsertRadomePressureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -34886,7 +34886,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomePressureTimeseriesObject.Catalog;
             string name = radomePressureTimeseriesObject.Name;
             TimeSpan maxRetention = radomePressureTimeseriesObject.MaxRetention;
-            Guid radome = radomePressureTimeseriesObject.Radome;
+            Guid? radome = radomePressureTimeseriesObject.Radome;
             var result = InsertRadomePressureTimeseries( ref id, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -34897,7 +34897,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomePressureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool UpdateRadomePressureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -34934,7 +34934,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomePressureTimeseriesObject.Catalog;
             string name = radomePressureTimeseriesObject.Name;
             TimeSpan maxRetention = radomePressureTimeseriesObject.MaxRetention;
-            Guid radome = radomePressureTimeseriesObject.Radome;
+            Guid? radome = radomePressureTimeseriesObject.Radome;
             var result = UpdateRadomePressureTimeseries( id, ref rowVersion, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -34977,7 +34977,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadomePressureTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadomeTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool InsertRadomeTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -35012,7 +35012,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomeTemperatureTimeseriesObject.Catalog;
             string name = radomeTemperatureTimeseriesObject.Name;
             TimeSpan maxRetention = radomeTemperatureTimeseriesObject.MaxRetention;
-            Guid radome = radomeTemperatureTimeseriesObject.Radome;
+            Guid? radome = radomeTemperatureTimeseriesObject.Radome;
             var result = InsertRadomeTemperatureTimeseries( ref id, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -35023,7 +35023,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomeTemperatureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool UpdateRadomeTemperatureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -35060,7 +35060,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomeTemperatureTimeseriesObject.Catalog;
             string name = radomeTemperatureTimeseriesObject.Name;
             TimeSpan maxRetention = radomeTemperatureTimeseriesObject.MaxRetention;
-            Guid radome = radomeTemperatureTimeseriesObject.Radome;
+            Guid? radome = radomeTemperatureTimeseriesObject.Radome;
             var result = UpdateRadomeTemperatureTimeseries( id, ref rowVersion, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -35103,7 +35103,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadomeTemperatureTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertVesselDraughtTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid vessel )
+        public bool InsertVesselDraughtTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? vessel )
         {
             bool result = false;
             try
@@ -35138,7 +35138,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = vesselDraughtTimeseriesObject.Catalog;
             string name = vesselDraughtTimeseriesObject.Name;
             TimeSpan maxRetention = vesselDraughtTimeseriesObject.MaxRetention;
-            Guid vessel = vesselDraughtTimeseriesObject.Vessel;
+            Guid? vessel = vesselDraughtTimeseriesObject.Vessel;
             var result = InsertVesselDraughtTimeseries( ref id, catalog, name, maxRetention, vessel );
             if( result )
             {
@@ -35149,7 +35149,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateVesselDraughtTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid vessel )
+        public bool UpdateVesselDraughtTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? vessel )
         {
             bool result = false;
             try
@@ -35186,7 +35186,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = vesselDraughtTimeseriesObject.Catalog;
             string name = vesselDraughtTimeseriesObject.Name;
             TimeSpan maxRetention = vesselDraughtTimeseriesObject.MaxRetention;
-            Guid vessel = vesselDraughtTimeseriesObject.Vessel;
+            Guid? vessel = vesselDraughtTimeseriesObject.Vessel;
             var result = UpdateVesselDraughtTimeseries( id, ref rowVersion, catalog, name, maxRetention, vessel );
             if( result )
             {
@@ -35229,7 +35229,7 @@ namespace Barrelman.Data.Database
             var result = DeleteVesselDraughtTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertViewLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
+        public bool InsertViewLatitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? view )
         {
             bool result = false;
             try
@@ -35264,7 +35264,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = viewLatitudeTimeseriesObject.Catalog;
             string name = viewLatitudeTimeseriesObject.Name;
             TimeSpan maxRetention = viewLatitudeTimeseriesObject.MaxRetention;
-            Guid view = viewLatitudeTimeseriesObject.View;
+            Guid? view = viewLatitudeTimeseriesObject.View;
             var result = InsertViewLatitudeTimeseries( ref id, catalog, name, maxRetention, view );
             if( result )
             {
@@ -35275,7 +35275,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateViewLatitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
+        public bool UpdateViewLatitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? view )
         {
             bool result = false;
             try
@@ -35312,7 +35312,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = viewLatitudeTimeseriesObject.Catalog;
             string name = viewLatitudeTimeseriesObject.Name;
             TimeSpan maxRetention = viewLatitudeTimeseriesObject.MaxRetention;
-            Guid view = viewLatitudeTimeseriesObject.View;
+            Guid? view = viewLatitudeTimeseriesObject.View;
             var result = UpdateViewLatitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, view );
             if( result )
             {
@@ -35355,7 +35355,7 @@ namespace Barrelman.Data.Database
             var result = DeleteViewLatitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertViewLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
+        public bool InsertViewLongitudeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? view )
         {
             bool result = false;
             try
@@ -35390,7 +35390,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = viewLongitudeTimeseriesObject.Catalog;
             string name = viewLongitudeTimeseriesObject.Name;
             TimeSpan maxRetention = viewLongitudeTimeseriesObject.MaxRetention;
-            Guid view = viewLongitudeTimeseriesObject.View;
+            Guid? view = viewLongitudeTimeseriesObject.View;
             var result = InsertViewLongitudeTimeseries( ref id, catalog, name, maxRetention, view );
             if( result )
             {
@@ -35401,7 +35401,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateViewLongitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
+        public bool UpdateViewLongitudeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? view )
         {
             bool result = false;
             try
@@ -35438,7 +35438,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = viewLongitudeTimeseriesObject.Catalog;
             string name = viewLongitudeTimeseriesObject.Name;
             TimeSpan maxRetention = viewLongitudeTimeseriesObject.MaxRetention;
-            Guid view = viewLongitudeTimeseriesObject.View;
+            Guid? view = viewLongitudeTimeseriesObject.View;
             var result = UpdateViewLongitudeTimeseries( id, ref rowVersion, catalog, name, maxRetention, view );
             if( result )
             {
@@ -35481,7 +35481,7 @@ namespace Barrelman.Data.Database
             var result = DeleteViewLongitudeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertViewZoomLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
+        public bool InsertViewZoomLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? view )
         {
             bool result = false;
             try
@@ -35516,7 +35516,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = viewZoomLevelTimeseriesObject.Catalog;
             string name = viewZoomLevelTimeseriesObject.Name;
             TimeSpan maxRetention = viewZoomLevelTimeseriesObject.MaxRetention;
-            Guid view = viewZoomLevelTimeseriesObject.View;
+            Guid? view = viewZoomLevelTimeseriesObject.View;
             var result = InsertViewZoomLevelTimeseries( ref id, catalog, name, maxRetention, view );
             if( result )
             {
@@ -35527,7 +35527,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateViewZoomLevelTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid view )
+        public bool UpdateViewZoomLevelTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? view )
         {
             bool result = false;
             try
@@ -35564,7 +35564,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = viewZoomLevelTimeseriesObject.Catalog;
             string name = viewZoomLevelTimeseriesObject.Name;
             TimeSpan maxRetention = viewZoomLevelTimeseriesObject.MaxRetention;
-            Guid view = viewZoomLevelTimeseriesObject.View;
+            Guid? view = viewZoomLevelTimeseriesObject.View;
             var result = UpdateViewZoomLevelTimeseries( id, ref rowVersion, catalog, name, maxRetention, view );
             if( result )
             {
@@ -35607,7 +35607,7 @@ namespace Barrelman.Data.Database
             var result = DeleteViewZoomLevelTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationAbsoluteHumidityTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationAbsoluteHumidityTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -35642,7 +35642,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationAbsoluteHumidityTimeseriesObject.Catalog;
             string name = weatherStationAbsoluteHumidityTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationAbsoluteHumidityTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationAbsoluteHumidityTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationAbsoluteHumidityTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationAbsoluteHumidityTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -35653,7 +35653,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationAbsoluteHumidityTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationAbsoluteHumidityTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -35690,7 +35690,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationAbsoluteHumidityTimeseriesObject.Catalog;
             string name = weatherStationAbsoluteHumidityTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationAbsoluteHumidityTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationAbsoluteHumidityTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationAbsoluteHumidityTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationAbsoluteHumidityTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -35733,7 +35733,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationAbsoluteHumidityTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationAirTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationAirTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -35768,7 +35768,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationAirTemperatureTimeseriesObject.Catalog;
             string name = weatherStationAirTemperatureTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationAirTemperatureTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationAirTemperatureTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationAirTemperatureTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationAirTemperatureTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -35779,7 +35779,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationAirTemperatureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationAirTemperatureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -35816,7 +35816,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationAirTemperatureTimeseriesObject.Catalog;
             string name = weatherStationAirTemperatureTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationAirTemperatureTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationAirTemperatureTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationAirTemperatureTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationAirTemperatureTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -35859,7 +35859,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationAirTemperatureTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationBarometricPressureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationBarometricPressureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -35894,7 +35894,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationBarometricPressureTimeseriesObject.Catalog;
             string name = weatherStationBarometricPressureTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationBarometricPressureTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationBarometricPressureTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationBarometricPressureTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationBarometricPressureTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -35905,7 +35905,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationBarometricPressureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationBarometricPressureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -35942,7 +35942,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationBarometricPressureTimeseriesObject.Catalog;
             string name = weatherStationBarometricPressureTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationBarometricPressureTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationBarometricPressureTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationBarometricPressureTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationBarometricPressureTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -35985,7 +35985,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationBarometricPressureTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationDewPointTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationDewPointTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36020,7 +36020,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationDewPointTimeseriesObject.Catalog;
             string name = weatherStationDewPointTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationDewPointTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationDewPointTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationDewPointTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationDewPointTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36031,7 +36031,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationDewPointTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationDewPointTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36068,7 +36068,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationDewPointTimeseriesObject.Catalog;
             string name = weatherStationDewPointTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationDewPointTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationDewPointTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationDewPointTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationDewPointTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36111,7 +36111,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationDewPointTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationRelativeHumidityTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationRelativeHumidityTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36146,7 +36146,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationRelativeHumidityTimeseriesObject.Catalog;
             string name = weatherStationRelativeHumidityTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationRelativeHumidityTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationRelativeHumidityTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationRelativeHumidityTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationRelativeHumidityTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36157,7 +36157,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationRelativeHumidityTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationRelativeHumidityTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36194,7 +36194,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationRelativeHumidityTimeseriesObject.Catalog;
             string name = weatherStationRelativeHumidityTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationRelativeHumidityTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationRelativeHumidityTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationRelativeHumidityTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationRelativeHumidityTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36237,7 +36237,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationRelativeHumidityTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationWaterTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationWaterTemperatureTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36272,7 +36272,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationWaterTemperatureTimeseriesObject.Catalog;
             string name = weatherStationWaterTemperatureTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationWaterTemperatureTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationWaterTemperatureTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationWaterTemperatureTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationWaterTemperatureTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36283,7 +36283,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationWaterTemperatureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationWaterTemperatureTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36320,7 +36320,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationWaterTemperatureTimeseriesObject.Catalog;
             string name = weatherStationWaterTemperatureTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationWaterTemperatureTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationWaterTemperatureTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationWaterTemperatureTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationWaterTemperatureTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36363,7 +36363,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationWaterTemperatureTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationWindDirectionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationWindDirectionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36398,7 +36398,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationWindDirectionTimeseriesObject.Catalog;
             string name = weatherStationWindDirectionTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationWindDirectionTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationWindDirectionTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationWindDirectionTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationWindDirectionTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36409,7 +36409,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationWindDirectionTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationWindDirectionTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36446,7 +36446,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationWindDirectionTimeseriesObject.Catalog;
             string name = weatherStationWindDirectionTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationWindDirectionTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationWindDirectionTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationWindDirectionTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationWindDirectionTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36489,7 +36489,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationWindDirectionTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationWindSpeedTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool InsertWeatherStationWindSpeedTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36524,7 +36524,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationWindSpeedTimeseriesObject.Catalog;
             string name = weatherStationWindSpeedTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationWindSpeedTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationWindSpeedTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationWindSpeedTimeseriesObject.WeatherStation;
             var result = InsertWeatherStationWindSpeedTimeseries( ref id, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36535,7 +36535,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationWindSpeedTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid weatherStation )
+        public bool UpdateWeatherStationWindSpeedTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? weatherStation )
         {
             bool result = false;
             try
@@ -36572,7 +36572,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = weatherStationWindSpeedTimeseriesObject.Catalog;
             string name = weatherStationWindSpeedTimeseriesObject.Name;
             TimeSpan maxRetention = weatherStationWindSpeedTimeseriesObject.MaxRetention;
-            Guid weatherStation = weatherStationWindSpeedTimeseriesObject.WeatherStation;
+            Guid? weatherStation = weatherStationWindSpeedTimeseriesObject.WeatherStation;
             var result = UpdateWeatherStationWindSpeedTimeseries( id, ref rowVersion, catalog, name, maxRetention, weatherStation );
             if( result )
             {
@@ -36737,7 +36737,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGeoPosition2DTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertAisAidToNavigationPositionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid aidToNavigation )
+        public bool InsertAisAidToNavigationPositionTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? aidToNavigation )
         {
             bool result = false;
             try
@@ -36772,7 +36772,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = aisAidToNavigationPositionTimeseriesObject.Catalog;
             string name = aisAidToNavigationPositionTimeseriesObject.Name;
             TimeSpan maxRetention = aisAidToNavigationPositionTimeseriesObject.MaxRetention;
-            Guid aidToNavigation = aisAidToNavigationPositionTimeseriesObject.AidToNavigation;
+            Guid? aidToNavigation = aisAidToNavigationPositionTimeseriesObject.AidToNavigation;
             var result = InsertAisAidToNavigationPositionTimeseries( ref id, catalog, name, maxRetention, aidToNavigation );
             if( result )
             {
@@ -36783,7 +36783,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisAidToNavigationPositionTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid aidToNavigation )
+        public bool UpdateAisAidToNavigationPositionTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? aidToNavigation )
         {
             bool result = false;
             try
@@ -36820,7 +36820,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = aisAidToNavigationPositionTimeseriesObject.Catalog;
             string name = aisAidToNavigationPositionTimeseriesObject.Name;
             TimeSpan maxRetention = aisAidToNavigationPositionTimeseriesObject.MaxRetention;
-            Guid aidToNavigation = aisAidToNavigationPositionTimeseriesObject.AidToNavigation;
+            Guid? aidToNavigation = aisAidToNavigationPositionTimeseriesObject.AidToNavigation;
             var result = UpdateAisAidToNavigationPositionTimeseries( id, ref rowVersion, catalog, name, maxRetention, aidToNavigation );
             if( result )
             {
@@ -37351,7 +37351,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt32Timeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarAzimuthOffsetTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarAzimuthOffsetTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37386,7 +37386,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarAzimuthOffsetTimeseriesObject.Catalog;
             string name = radarAzimuthOffsetTimeseriesObject.Name;
             TimeSpan maxRetention = radarAzimuthOffsetTimeseriesObject.MaxRetention;
-            Guid radar = radarAzimuthOffsetTimeseriesObject.Radar;
+            Guid? radar = radarAzimuthOffsetTimeseriesObject.Radar;
             var result = InsertRadarAzimuthOffsetTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37397,7 +37397,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarAzimuthOffsetTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarAzimuthOffsetTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37434,7 +37434,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarAzimuthOffsetTimeseriesObject.Catalog;
             string name = radarAzimuthOffsetTimeseriesObject.Name;
             TimeSpan maxRetention = radarAzimuthOffsetTimeseriesObject.MaxRetention;
-            Guid radar = radarAzimuthOffsetTimeseriesObject.Radar;
+            Guid? radar = radarAzimuthOffsetTimeseriesObject.Radar;
             var result = UpdateRadarAzimuthOffsetTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37477,7 +37477,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarAzimuthOffsetTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarFastTimeConstantLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarFastTimeConstantLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37512,7 +37512,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarFastTimeConstantLevelTimeseriesObject.Catalog;
             string name = radarFastTimeConstantLevelTimeseriesObject.Name;
             TimeSpan maxRetention = radarFastTimeConstantLevelTimeseriesObject.MaxRetention;
-            Guid radar = radarFastTimeConstantLevelTimeseriesObject.Radar;
+            Guid? radar = radarFastTimeConstantLevelTimeseriesObject.Radar;
             var result = InsertRadarFastTimeConstantLevelTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37523,7 +37523,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarFastTimeConstantLevelTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarFastTimeConstantLevelTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37560,7 +37560,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarFastTimeConstantLevelTimeseriesObject.Catalog;
             string name = radarFastTimeConstantLevelTimeseriesObject.Name;
             TimeSpan maxRetention = radarFastTimeConstantLevelTimeseriesObject.MaxRetention;
-            Guid radar = radarFastTimeConstantLevelTimeseriesObject.Radar;
+            Guid? radar = radarFastTimeConstantLevelTimeseriesObject.Radar;
             var result = UpdateRadarFastTimeConstantLevelTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37603,7 +37603,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarFastTimeConstantLevelTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarFastTimeConstantModeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarFastTimeConstantModeTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37638,7 +37638,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarFastTimeConstantModeTimeseriesObject.Catalog;
             string name = radarFastTimeConstantModeTimeseriesObject.Name;
             TimeSpan maxRetention = radarFastTimeConstantModeTimeseriesObject.MaxRetention;
-            Guid radar = radarFastTimeConstantModeTimeseriesObject.Radar;
+            Guid? radar = radarFastTimeConstantModeTimeseriesObject.Radar;
             var result = InsertRadarFastTimeConstantModeTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37649,7 +37649,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarFastTimeConstantModeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarFastTimeConstantModeTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37686,7 +37686,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarFastTimeConstantModeTimeseriesObject.Catalog;
             string name = radarFastTimeConstantModeTimeseriesObject.Name;
             TimeSpan maxRetention = radarFastTimeConstantModeTimeseriesObject.MaxRetention;
-            Guid radar = radarFastTimeConstantModeTimeseriesObject.Radar;
+            Guid? radar = radarFastTimeConstantModeTimeseriesObject.Radar;
             var result = UpdateRadarFastTimeConstantModeTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37729,7 +37729,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarFastTimeConstantModeTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarPulseTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarPulseTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37764,7 +37764,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarPulseTimeseriesObject.Catalog;
             string name = radarPulseTimeseriesObject.Name;
             TimeSpan maxRetention = radarPulseTimeseriesObject.MaxRetention;
-            Guid radar = radarPulseTimeseriesObject.Radar;
+            Guid? radar = radarPulseTimeseriesObject.Radar;
             var result = InsertRadarPulseTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37775,7 +37775,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarPulseTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarPulseTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37812,7 +37812,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarPulseTimeseriesObject.Catalog;
             string name = radarPulseTimeseriesObject.Name;
             TimeSpan maxRetention = radarPulseTimeseriesObject.MaxRetention;
-            Guid radar = radarPulseTimeseriesObject.Radar;
+            Guid? radar = radarPulseTimeseriesObject.Radar;
             var result = UpdateRadarPulseTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37855,7 +37855,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarPulseTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarSector1EndTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarSector1EndTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37890,7 +37890,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector1EndTimeseriesObject.Catalog;
             string name = radarSector1EndTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector1EndTimeseriesObject.MaxRetention;
-            Guid radar = radarSector1EndTimeseriesObject.Radar;
+            Guid? radar = radarSector1EndTimeseriesObject.Radar;
             var result = InsertRadarSector1EndTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37901,7 +37901,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarSector1EndTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarSector1EndTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -37938,7 +37938,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector1EndTimeseriesObject.Catalog;
             string name = radarSector1EndTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector1EndTimeseriesObject.MaxRetention;
-            Guid radar = radarSector1EndTimeseriesObject.Radar;
+            Guid? radar = radarSector1EndTimeseriesObject.Radar;
             var result = UpdateRadarSector1EndTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -37981,7 +37981,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarSector1EndTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarSector1StartTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarSector1StartTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38016,7 +38016,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector1StartTimeseriesObject.Catalog;
             string name = radarSector1StartTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector1StartTimeseriesObject.MaxRetention;
-            Guid radar = radarSector1StartTimeseriesObject.Radar;
+            Guid? radar = radarSector1StartTimeseriesObject.Radar;
             var result = InsertRadarSector1StartTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38027,7 +38027,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarSector1StartTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarSector1StartTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38064,7 +38064,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector1StartTimeseriesObject.Catalog;
             string name = radarSector1StartTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector1StartTimeseriesObject.MaxRetention;
-            Guid radar = radarSector1StartTimeseriesObject.Radar;
+            Guid? radar = radarSector1StartTimeseriesObject.Radar;
             var result = UpdateRadarSector1StartTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38107,7 +38107,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarSector1StartTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarSector2EndTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarSector2EndTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38142,7 +38142,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector2EndTimeseriesObject.Catalog;
             string name = radarSector2EndTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector2EndTimeseriesObject.MaxRetention;
-            Guid radar = radarSector2EndTimeseriesObject.Radar;
+            Guid? radar = radarSector2EndTimeseriesObject.Radar;
             var result = InsertRadarSector2EndTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38153,7 +38153,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarSector2EndTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarSector2EndTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38190,7 +38190,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector2EndTimeseriesObject.Catalog;
             string name = radarSector2EndTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector2EndTimeseriesObject.MaxRetention;
-            Guid radar = radarSector2EndTimeseriesObject.Radar;
+            Guid? radar = radarSector2EndTimeseriesObject.Radar;
             var result = UpdateRadarSector2EndTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38233,7 +38233,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarSector2EndTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarSector2StartTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarSector2StartTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38268,7 +38268,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector2StartTimeseriesObject.Catalog;
             string name = radarSector2StartTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector2StartTimeseriesObject.MaxRetention;
-            Guid radar = radarSector2StartTimeseriesObject.Radar;
+            Guid? radar = radarSector2StartTimeseriesObject.Radar;
             var result = InsertRadarSector2StartTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38279,7 +38279,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarSector2StartTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarSector2StartTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38316,7 +38316,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSector2StartTimeseriesObject.Catalog;
             string name = radarSector2StartTimeseriesObject.Name;
             TimeSpan maxRetention = radarSector2StartTimeseriesObject.MaxRetention;
-            Guid radar = radarSector2StartTimeseriesObject.Radar;
+            Guid? radar = radarSector2StartTimeseriesObject.Radar;
             var result = UpdateRadarSector2StartTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38359,7 +38359,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarSector2StartTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarSensitivityTimeControlLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarSensitivityTimeControlLevelTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38394,7 +38394,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSensitivityTimeControlLevelTimeseriesObject.Catalog;
             string name = radarSensitivityTimeControlLevelTimeseriesObject.Name;
             TimeSpan maxRetention = radarSensitivityTimeControlLevelTimeseriesObject.MaxRetention;
-            Guid radar = radarSensitivityTimeControlLevelTimeseriesObject.Radar;
+            Guid? radar = radarSensitivityTimeControlLevelTimeseriesObject.Radar;
             var result = InsertRadarSensitivityTimeControlLevelTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38405,7 +38405,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarSensitivityTimeControlLevelTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarSensitivityTimeControlLevelTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38442,7 +38442,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarSensitivityTimeControlLevelTimeseriesObject.Catalog;
             string name = radarSensitivityTimeControlLevelTimeseriesObject.Name;
             TimeSpan maxRetention = radarSensitivityTimeControlLevelTimeseriesObject.MaxRetention;
-            Guid radar = radarSensitivityTimeControlLevelTimeseriesObject.Radar;
+            Guid? radar = radarSensitivityTimeControlLevelTimeseriesObject.Radar;
             var result = UpdateRadarSensitivityTimeControlLevelTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38485,7 +38485,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarSensitivityTimeControlLevelTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadarTuningTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool InsertRadarTuningTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38520,7 +38520,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarTuningTimeseriesObject.Catalog;
             string name = radarTuningTimeseriesObject.Name;
             TimeSpan maxRetention = radarTuningTimeseriesObject.MaxRetention;
-            Guid radar = radarTuningTimeseriesObject.Radar;
+            Guid? radar = radarTuningTimeseriesObject.Radar;
             var result = InsertRadarTuningTimeseries( ref id, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38531,7 +38531,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarTuningTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radar )
+        public bool UpdateRadarTuningTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radar )
         {
             bool result = false;
             try
@@ -38568,7 +38568,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radarTuningTimeseriesObject.Catalog;
             string name = radarTuningTimeseriesObject.Name;
             TimeSpan maxRetention = radarTuningTimeseriesObject.MaxRetention;
-            Guid radar = radarTuningTimeseriesObject.Radar;
+            Guid? radar = radarTuningTimeseriesObject.Radar;
             var result = UpdateRadarTuningTimeseries( id, ref rowVersion, catalog, name, maxRetention, radar );
             if( result )
             {
@@ -38611,7 +38611,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarTuningTimeseries( id, rowVersion );
             return result;
         }
-        public bool InsertVesselPersonsOnBoardTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid vessel )
+        public bool InsertVesselPersonsOnBoardTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? vessel )
         {
             bool result = false;
             try
@@ -38646,7 +38646,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = vesselPersonsOnBoardTimeseriesObject.Catalog;
             string name = vesselPersonsOnBoardTimeseriesObject.Name;
             TimeSpan maxRetention = vesselPersonsOnBoardTimeseriesObject.MaxRetention;
-            Guid vessel = vesselPersonsOnBoardTimeseriesObject.Vessel;
+            Guid? vessel = vesselPersonsOnBoardTimeseriesObject.Vessel;
             var result = InsertVesselPersonsOnBoardTimeseries( ref id, catalog, name, maxRetention, vessel );
             if( result )
             {
@@ -38657,7 +38657,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateVesselPersonsOnBoardTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid vessel )
+        public bool UpdateVesselPersonsOnBoardTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? vessel )
         {
             bool result = false;
             try
@@ -38694,7 +38694,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = vesselPersonsOnBoardTimeseriesObject.Catalog;
             string name = vesselPersonsOnBoardTimeseriesObject.Name;
             TimeSpan maxRetention = vesselPersonsOnBoardTimeseriesObject.MaxRetention;
-            Guid vessel = vesselPersonsOnBoardTimeseriesObject.Vessel;
+            Guid? vessel = vesselPersonsOnBoardTimeseriesObject.Vessel;
             var result = UpdateVesselPersonsOnBoardTimeseries( id, ref rowVersion, catalog, name, maxRetention, vessel );
             if( result )
             {
@@ -39957,7 +39957,7 @@ namespace Barrelman.Data.Database
             var result = DeleteUInt32Timeseries( id, rowVersion );
             return result;
         }
-        public bool InsertRadomeStatusTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool InsertRadomeStatusTimeseries( ref Guid id, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -39992,7 +39992,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomeStatusTimeseriesObject.Catalog;
             string name = radomeStatusTimeseriesObject.Name;
             TimeSpan maxRetention = radomeStatusTimeseriesObject.MaxRetention;
-            Guid radome = radomeStatusTimeseriesObject.Radome;
+            Guid? radome = radomeStatusTimeseriesObject.Radome;
             var result = InsertRadomeStatusTimeseries( ref id, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -40003,7 +40003,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomeStatusTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid radome )
+        public bool UpdateRadomeStatusTimeseries( Guid id, ref long rowVersion, Guid? catalog, string name, TimeSpan maxRetention, Guid? radome )
         {
             bool result = false;
             try
@@ -40040,7 +40040,7 @@ namespace Barrelman.Data.Database
             Guid? catalog = radomeStatusTimeseriesObject.Catalog;
             string name = radomeStatusTimeseriesObject.Name;
             TimeSpan maxRetention = radomeStatusTimeseriesObject.MaxRetention;
-            Guid radome = radomeStatusTimeseriesObject.Radome;
+            Guid? radome = radomeStatusTimeseriesObject.Radome;
             var result = UpdateRadomeStatusTimeseries( id, ref rowVersion, catalog, name, maxRetention, radome );
             if( result )
             {
@@ -42537,7 +42537,7 @@ namespace Barrelman.Data.Database
             var result = DeleteVesselType( id, rowVersion );
             return result;
         }
-        public bool InsertView( ref Guid id, string name, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid zoomLevelTimeseries )
+        public bool InsertView( ref Guid id, string name, Guid? latitudeTimeseries, Guid? longitudeTimeseries, Guid? zoomLevelTimeseries )
         {
             bool result = false;
             try
@@ -42570,9 +42570,9 @@ namespace Barrelman.Data.Database
         {
             Guid id = viewObject.Id;
             string name = viewObject.Name;
-            Guid latitudeTimeseries = viewObject.LatitudeTimeseries;
-            Guid longitudeTimeseries = viewObject.LongitudeTimeseries;
-            Guid zoomLevelTimeseries = viewObject.ZoomLevelTimeseries;
+            Guid? latitudeTimeseries = viewObject.LatitudeTimeseries;
+            Guid? longitudeTimeseries = viewObject.LongitudeTimeseries;
+            Guid? zoomLevelTimeseries = viewObject.ZoomLevelTimeseries;
             var result = InsertView( ref id, name, latitudeTimeseries, longitudeTimeseries, zoomLevelTimeseries );
             if( result )
             {
@@ -42583,7 +42583,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateView( Guid id, ref long rowVersion, string name, Guid latitudeTimeseries, Guid longitudeTimeseries, Guid zoomLevelTimeseries )
+        public bool UpdateView( Guid id, ref long rowVersion, string name, Guid? latitudeTimeseries, Guid? longitudeTimeseries, Guid? zoomLevelTimeseries )
         {
             bool result = false;
             try
@@ -42618,9 +42618,9 @@ namespace Barrelman.Data.Database
             Guid id = viewObject.Id;
             long rowVersion = viewObject.RowVersion;
             string name = viewObject.Name;
-            Guid latitudeTimeseries = viewObject.LatitudeTimeseries;
-            Guid longitudeTimeseries = viewObject.LongitudeTimeseries;
-            Guid zoomLevelTimeseries = viewObject.ZoomLevelTimeseries;
+            Guid? latitudeTimeseries = viewObject.LatitudeTimeseries;
+            Guid? longitudeTimeseries = viewObject.LongitudeTimeseries;
+            Guid? zoomLevelTimeseries = viewObject.ZoomLevelTimeseries;
             var result = UpdateView( id, ref rowVersion, name, latitudeTimeseries, longitudeTimeseries, zoomLevelTimeseries );
             if( result )
             {
@@ -42915,7 +42915,7 @@ namespace Barrelman.Data.Database
             var result = DeleteViewTrackerLink( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationCommand( ref Guid id, Guid weatherStation, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool InsertWeatherStationCommand( ref Guid id, Guid weatherStation, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -42952,7 +42952,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = weatherStationCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = weatherStationCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = weatherStationCommandObject.DeviceCommandSourceId;
-            Guid reply = weatherStationCommandObject.Reply;
+            Guid? reply = weatherStationCommandObject.Reply;
             var result = InsertWeatherStationCommand( ref id, weatherStation, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
@@ -42963,7 +42963,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationCommand( Guid id, ref long rowVersion, Guid weatherStation, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid reply )
+        public bool UpdateWeatherStationCommand( Guid id, ref long rowVersion, Guid weatherStation, DateTime timestamp, Types.DeviceCommandSourceType deviceCommandSourceType, Guid deviceCommandSourceId, Guid? reply )
         {
             bool result = false;
             try
@@ -43002,7 +43002,7 @@ namespace Barrelman.Data.Database
             DateTime timestamp = weatherStationCommandObject.Timestamp;
             Types.DeviceCommandSourceType deviceCommandSourceType = weatherStationCommandObject.DeviceCommandSourceType;
             Guid deviceCommandSourceId = weatherStationCommandObject.DeviceCommandSourceId;
-            Guid reply = weatherStationCommandObject.Reply;
+            Guid? reply = weatherStationCommandObject.Reply;
             var result = UpdateWeatherStationCommand( id, ref rowVersion, weatherStation, timestamp, deviceCommandSourceType, deviceCommandSourceId, reply );
             if( result )
             {
