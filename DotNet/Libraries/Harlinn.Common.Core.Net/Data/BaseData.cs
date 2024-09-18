@@ -33,7 +33,7 @@ namespace Harlinn.Common.Core.Net.Data
         ConcurrencyConflict
     }
 
-    public abstract class BaseData<TEnum> : IEquatable<BaseData<TEnum>> where TEnum : struct, System.Enum
+    public abstract class BaseData<TEnum> : IEquatable<BaseData<TEnum>>, IComparable<BaseData<TEnum>> where TEnum : struct, System.Enum
     {
         ObjectState objectState_ = ObjectState.Unknown;
 
@@ -100,6 +100,18 @@ namespace Harlinn.Common.Core.Net.Data
                 return GetObjectType().Equals( other.GetObjectType() );
             }
         }
+
+        public virtual int CompareTo(BaseData<TEnum>? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+            else
+            {
+                return GetObjectType().CompareTo(other.GetObjectType());
+            }
+        }
     }
 
     public abstract class BaseDataInt64<TEnum> : BaseData<TEnum> where TEnum : struct, System.Enum
@@ -151,6 +163,17 @@ namespace Harlinn.Common.Core.Net.Data
             }
             return false;
         }
+
+        public override int CompareTo(BaseData<TEnum>? other)
+        {
+            var result = base.CompareTo(other);
+            if(result == 0)
+            {
+                var obj = (BaseDataInt64<TEnum>)other;
+                result = _id.CompareTo(obj.Id);
+            }
+            return result;
+        }
     }
 
     public abstract class BaseDataGuid<TEnum> : BaseData<TEnum> where TEnum : struct, System.Enum
@@ -201,6 +224,17 @@ namespace Harlinn.Common.Core.Net.Data
                 return true;
             }
             return false;
+        }
+
+        public override int CompareTo(BaseData<TEnum>? other)
+        {
+            var result = base.CompareTo(other);
+            if (result == 0)
+            {
+                var obj = (BaseDataGuid<TEnum>)other;
+                result = _id.CompareTo(obj.Id);
+            }
+            return result;
         }
     }
 }

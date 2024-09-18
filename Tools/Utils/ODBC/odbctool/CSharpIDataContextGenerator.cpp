@@ -40,12 +40,8 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"namespace {}", nspace );
         WriteLine( L"{" );
 
-        WriteLine( L"    public interface IDataContext" );
+        WriteLine( L"    public interface IDataContext : IDataContextBase<Kind>" );
         WriteLine( L"    {" );
-        WriteLine( L"        bool Merge( BaseDataGuid<Kind> dataObject );" );
-        WriteLine( L"        bool Insert( BaseDataGuid<Kind> dataObject );" );
-        WriteLine( L"        bool Update( BaseDataGuid<Kind> dataObject );" );
-        WriteLine( L"        bool Delete( BaseDataGuid<Kind> dataObject );" );
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];

@@ -58,15 +58,17 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        ILoggerFactory _loggerFactory;" );
         WriteLine( L"        ILogger _logger;");
         WriteLine( L"        SqlConnection? _sqlConnection;");
+        WriteLine( L"        Guid _sessionId;" );
         WriteLine( L"        bool _ownsConnection;");
         WriteLine( L"        bool _isDisposed = false;");
         WriteLine( L"        StoredProcedures _storedProcedures;" );
         WriteLine( );
-        WriteLine( L"        public SqlServerDataContext( [DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlConnection sqlConnection, bool ownsConnection = true )");
+        WriteLine( L"        public SqlServerDataContext( [DisallowNull] ILoggerFactory loggerFactory, [DisallowNull] SqlConnection sqlConnection, Guid sessionId, bool ownsConnection = true )");
         WriteLine( L"        {");
         WriteLine( L"            _loggerFactory = loggerFactory;");
         WriteLine( L"            _logger = loggerFactory.CreateLogger<DataReaderWrapper>( );");
         WriteLine( L"            _sqlConnection = sqlConnection;");
+        WriteLine( L"            _sessionId = sessionId;" );
         WriteLine( L"            _ownsConnection = ownsConnection;");
         WriteLine( L"            _storedProcedures = new StoredProcedures( loggerFactory, sqlConnection );" );
         WriteLine( L"        }");
@@ -150,6 +152,11 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"            return _storedProcedures.Insert( dataObject );");
         WriteLine( L"        }");
         WriteLine( );
+        WriteLine( L"        public bool Update( UpdateData<Kind> updateData )" );
+        WriteLine( L"        {" );
+        WriteLine( L"            return false;" );
+        WriteLine( L"        }" );
+        WriteLine( );
         WriteLine( L"        public bool Update( BaseDataGuid<Kind> dataObject )");
         WriteLine( L"        {");
         WriteLine( L"            return _storedProcedures.Update( dataObject );");
@@ -159,6 +166,8 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        {");
         WriteLine( L"            return _storedProcedures.Delete( dataObject );");
         WriteLine( L"        }" );
+        WriteLine( );
+        WriteLine( L"        public Guid SessionId => _sessionId;" );
         WriteLine( );
         for ( size_t i = 0; i < classCount; i++ )
         {

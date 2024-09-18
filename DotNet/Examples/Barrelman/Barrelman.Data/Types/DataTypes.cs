@@ -47904,12 +47904,7 @@ namespace Barrelman.Data.Types
 
     }
 
-    public interface IDataObjectFactory
-    {
-        BaseDataGuid<Kind> Create( Kind kind );
-    }
-
-    public class DataObjectFactory : IDataObjectFactory
+    public class DataObjectFactory : IBaseDataFactory<Kind>
     {
         public BaseDataGuid<Kind> Create( Kind kind )
         {
@@ -49244,6 +49239,43 @@ namespace Barrelman.Data.Types
                     throw new ArgumentException( $"Cannot create an object for kind={kind}.", "kind" );
                 }
             }
+        }
+        public BaseDataGuid<Kind> ReadFrom(BinaryReader source)
+        {
+            var kind = (Kind)source.ReadInt32( );
+            var result = Create( kind );
+            result.ReadFrom( source );
+            return result;
+        }
+        public BaseDataGuid<Kind>? ReadNullableFrom(BinaryReader source)
+        {
+            var hasValue = source.ReadBoolean( );
+            if( hasValue )
+            {
+                return ReadFrom( source );
+            }
+            return null;
+        }
+        public IList<BaseDataGuid<Kind>> ReadStreamFrom(BinaryReader source)
+        {
+            var result = new List<BaseDataGuid<Kind>>( );
+            while( source.ReadBoolean( ) )
+            {
+                var dataObject = ReadFrom( source );
+                result.Add( dataObject );
+            }
+            return result;
+        }
+        public IList<BaseDataGuid<Kind>> ReadListFrom(BinaryReader source)
+        {
+            var count = source.ReadSize( );
+            var result = new List<BaseDataGuid<Kind>>( count );
+            for( int i = 0; i < count; i++ )
+            {
+                var dataObject = ReadFrom( source );
+                result.Add( dataObject );
+            }
+            return result;
         }
     }
 

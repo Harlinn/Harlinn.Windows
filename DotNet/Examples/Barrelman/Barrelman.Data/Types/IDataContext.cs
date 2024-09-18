@@ -7,12 +7,8 @@ using Harlinn.Common.Core.Net.Data;
 using Harlinn.Common.Core.Net.IO;
 namespace Barrelman.Data.Types
 {
-    public interface IDataContext
+    public interface IDataContext : IDataContextBase<Kind>
     {
-        bool Merge( BaseDataGuid<Kind> dataObject );
-        bool Insert( BaseDataGuid<Kind> dataObject );
-        bool Update( BaseDataGuid<Kind> dataObject );
-        bool Delete( BaseDataGuid<Kind> dataObject );
         // ---------------------------------------------------------------------
         // AircraftType queries
         // ---------------------------------------------------------------------
