@@ -816,12 +816,79 @@ namespace Harlinn::ODBC::Tool
     }
 
     
+    class CSharpEntitiesGenerator;
+    class CSharpEntityTypesGenerator : public CodeGenerator<CSharpEntitiesGenerator, CSharpEntityTypesOptions>
+    {
+    public:
+        using Base = CodeGenerator<CSharpEntitiesGenerator, CSharpEntityTypesOptions>;
+
+        inline CSharpEntityTypesGenerator( const CSharpEntitiesGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateEntityType( const ClassInfo& classInfo );
+        void CreateMember( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateBasicMember( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateReferenceMember( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateCollectionMember( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateTimeSeriesMember( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateFactory( );
+    };
+
+    class CSharpEntityContextGenerator : public CodeGenerator<CSharpEntitiesGenerator, CSharpEntityContextOptions>
+    {
+        std::set<WideString> functions_;
+    public:
+        using Base = CodeGenerator<CSharpEntitiesGenerator, CSharpEntityContextOptions>;
+
+        inline CSharpEntityContextGenerator( const CSharpEntitiesGenerator& owner );
+
+        void Run( );
+    private:
+        void CreateMembers( const ClassInfo& classInfo );
+        void CreateGetById( const ClassInfo& classInfo );
+        void CreateGetAll( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo );
+        void CreateGetByIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByNullableIndex( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexAt( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexFrom( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexUntil( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+        void CreateGetByIndexOver( const ClassInfo& classInfo, const IndexInfo& indexInfo, size_t indexMemberCount );
+    };
+
+    class CSharpEntitiesGenerator : public GeneratorContainer<CSharpGenerator, CSharpEntitiesOptions>
+    {
+        CSharpEntityTypesGenerator entityTypes_;
+        CSharpEntityContextGenerator entityContext_;
+    public:
+        using Base = GeneratorContainer<CSharpGenerator, CSharpEntitiesOptions>;
+
+        inline CSharpEntitiesGenerator( const CSharpGenerator& owner );
+
+        void Run( )
+        {
+            entityTypes_.Run( );
+            entityContext_.Run( );
+        }
+    };
+
+    inline CSharpEntityTypesGenerator::CSharpEntityTypesGenerator( const CSharpEntitiesGenerator& owner )
+        : Base( owner, owner.Options( ).EntityTypes( ) )
+    {
+    }
+
+    inline CSharpEntityContextGenerator::CSharpEntityContextGenerator( const CSharpEntitiesGenerator& owner )
+        : Base( owner, owner.Options( ).EntityContext( ) )
+    {
+    }
 
 
     class CSharpGenerator : public GeneratorContainer<Generator, CSharpOptions>
     {
         CSharpDataGenerator data_;
         CSharpSqlServerDatabaseGenerator database_;
+        CSharpEntitiesGenerator entities_;
     public:
         using Base = GeneratorContainer<Generator, CSharpOptions>;
 
@@ -831,6 +898,7 @@ namespace Harlinn::ODBC::Tool
         {
             data_.Run( );
             database_.Run( );
+            entities_.Run( );
         }
 
     };
@@ -843,6 +911,13 @@ namespace Harlinn::ODBC::Tool
     inline CSharpDataGenerator::CSharpDataGenerator( const CSharpGenerator& owner )
         : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this), dataContext_( *this )
     { }
+
+    inline CSharpEntitiesGenerator::CSharpEntitiesGenerator( const CSharpGenerator& owner )
+        : Base( owner, owner.Options( ).Entities( ) ), entityTypes_( *this ), entityContext_( *this )
+    {
+    }
+
+
 
 
 
@@ -895,7 +970,7 @@ namespace Harlinn::ODBC::Tool
     }
 
     inline CSharpGenerator::CSharpGenerator( const Generator& owner )
-        : Base( owner, owner.Options( ).CSharp( ) ), data_( *this ), database_( *this )
+        : Base( owner, owner.Options( ).CSharp( ) ), data_( *this ), database_( *this ), entities_( *this )
     {
     }
 

@@ -746,6 +746,52 @@ namespace Harlinn::ODBC::Tool
 
     };
 
+    class CSharpEntitiesOptions;
+    class CSharpEntityTypesOptions : public OptionsFile<CSharpEntitiesOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpEntitiesOptions>;
+        CSharpEntityTypesOptions( const CSharpEntitiesOptions& owner )
+            : Base( owner, L"EntityTypes.cs" )
+        {
+        }
+    };
+
+    class CSharpEntityContextOptions : public OptionsFile<CSharpEntitiesOptions>
+    {
+    public:
+        using Base = OptionsFile<CSharpEntitiesOptions>;
+        CSharpEntityContextOptions( const CSharpEntitiesOptions& owner )
+            : Base( owner, L"EntityContext.cs" )
+        {
+        }
+    };
+
+
+    class CSharpEntitiesOptions : public OptionsContainer<CSharpOptions>
+    {
+        CSharpEntityTypesOptions entityTypes_;
+        CSharpEntityContextOptions entityContext_;
+    public:
+        using Base = OptionsContainer<CSharpOptions>;
+
+        CSharpEntitiesOptions( const CSharpOptions& owner )
+            : Base( owner, L"Entities" ), entityTypes_( *this ), entityContext_( *this )
+        {
+        }
+
+        const CSharpEntityTypesOptions& EntityTypes( ) const
+        {
+            return entityTypes_;
+        }
+
+        const CSharpEntityContextOptions& EntityContext( ) const
+        {
+            return entityContext_;
+        }
+
+    };
+
 
     class CSharpOptions
     {
@@ -754,9 +800,10 @@ namespace Harlinn::ODBC::Tool
         WideString namespace_ = L"Barrelman";
         CSharpDataOptions data_;
         CSharpSqlServerDatabaseOptions sqlServerDatabase_;
+        CSharpEntitiesOptions entities_;
     public:
         CSharpOptions( const Options& owner )
-            : owner_( owner ), data_(*this), sqlServerDatabase_(*this )
+            : owner_( owner ), data_(*this), sqlServerDatabase_(*this ), entities_(*this)
         {
         }
 
@@ -785,6 +832,10 @@ namespace Harlinn::ODBC::Tool
             return sqlServerDatabase_;
         }
 
+        const CSharpEntitiesOptions& Entities( ) const
+        {
+            return entities_;
+        }
 
         void Load( const XmlElement& element );
 

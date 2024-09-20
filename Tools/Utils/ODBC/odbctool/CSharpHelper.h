@@ -32,6 +32,9 @@ namespace Harlinn::ODBC::Tool
         static WideString GetInputArgumentName( const MemberInfo& member );
         static WideString GetDataTypeBaseClassName( const ClassInfo& classInfo );
         static WideString GetDataType( const ClassInfo& classInfo );
+        static WideString GetEntityType( const ClassInfo& classInfo );
+        static WideString GetEntityTypeBaseClassName( const ClassInfo& classInfo );
+        static WideString GetEntityCollectionType( const ClassInfo& classInfo );
         static WideString GetDataTypeConstructorArguments( const ClassInfo& classInfo );
         static WideString GetDataTypeConstructorCallArguments( const ClassInfo& classInfo );
         static WideString GetDataTypeConstructorCallPropertiesArguments( const ClassInfo& classInfo );

@@ -590,6 +590,42 @@ namespace Harlinn::ODBC::Tool
         return Format( L"{}Object", classInfo.Name( ).FirstToUpper( ) );
     }
 
+    WideString CSharpHelper::GetEntityTypeBaseClassName( const ClassInfo& classInfo )
+    {
+        WideString result = L"<Unknown>";
+        if ( classInfo.IsTopLevel( ) )
+        {
+            auto primaryKey = classInfo.PrimaryKey( );
+            if ( primaryKey )
+            {
+                auto primaryKeyType = primaryKey->Type( );
+                switch ( primaryKeyType )
+                {
+                    case MemberInfoType::Int64:
+                        result = L"<not implemented>";
+                        break;
+                    case MemberInfoType::Guid:
+                        result = L"BaseEntity<Kind>";
+                        break;
+                }
+            }
+        }
+        else
+        {
+            auto baseClass = classInfo.BaseClass( );
+            result = GetEntityType( *baseClass );
+        }
+        return result;
+    }
+    WideString CSharpHelper::GetEntityType( const ClassInfo& classInfo )
+    {
+        return Format( L"{}Entity", classInfo.Name( ).FirstToUpper( ) );
+    }
+    WideString CSharpHelper::GetEntityCollectionType( const ClassInfo& classInfo )
+    {
+        return Format( L"{}EntityCollection", classInfo.Name( ).FirstToUpper( ) );
+    }
+
     WideString CSharpHelper::GetMemberFieldType( const MemberInfo& member )
     {
         WideString result = GetBaseType( member );

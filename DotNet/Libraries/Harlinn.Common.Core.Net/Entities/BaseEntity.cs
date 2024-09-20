@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 using Harlinn.Common.Core.Net.Data;
@@ -26,9 +27,9 @@ namespace Harlinn.Common.Core.Net.Entities
         BaseDataGuid<TKind> _data;
         BaseDataGuid<TKind>? _clone;
 
-        public BaseEntity(EntityContextBase<TKind> entityContext, BaseDataGuid<TKind> data)
+        public BaseEntity([DisallowNull] EntityContextBase<TKind> entityContext, [DisallowNull] BaseDataGuid<TKind> data)
         {
-            _entityContext = new WeakReference(entityContext ?? throw new ArgumentNullException(nameof(entityContext)));
+            _entityContext = new WeakReference(entityContext);
             _data = data;
         }
 
@@ -233,7 +234,7 @@ namespace Harlinn.Common.Core.Net.Entities
 
 
         [Browsable(false)]
-        protected internal EntityContextBase<TKind> _Context
+        protected internal EntityContextBase<TKind>? _Context
         {
             get
             {

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 using Harlinn.Common.Core.Net.Data;
+using System.ComponentModel;
 
 
 namespace Harlinn.Common.Core.Net.Entities
@@ -42,7 +43,9 @@ namespace Harlinn.Common.Core.Net.Entities
             _newEntities = new Dictionary<Guid, BaseEntity<TKind>>();
             _deletedEntities = new Dictionary<Guid, BaseEntity<TKind>>();
             _cachedEntities = new Dictionary<Guid, BaseEntity<TKind>>();
-            _dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+            _dataContext = dataContext;
+            _entityFactory = entityFactory;
+            _dataFactory = dataFactory;
             _sequenceNumber = 0;
             _ownsDataContext = ownsDataContext;
         }
@@ -97,7 +100,7 @@ namespace Harlinn.Common.Core.Net.Entities
             GC.SuppressFinalize(this);
         }
 
-        public IDataContextBase<TKind> DataContextBase
+        protected IDataContextBase<TKind> DataContextBase
         {
             get
             {
@@ -166,6 +169,28 @@ namespace Harlinn.Common.Core.Net.Entities
             return entity;
         }
 
+        protected BindingList<TEntity> ToEntityList<TEntity,TData>( [DisallowNull] IList<TData> dataItems ) where TEntity : BaseEntity<TKind> where TData : BaseDataGuid<TKind>
+        {
+            var count = dataItems.Count;
+            var result = new BindingList<TEntity>();
+
+            for (int i = 0; i < count; i++)
+            {
+                var dataItem = dataItems[i];
+                var entity = (TEntity?)GetEntityFromCache(dataItem.Id);
+                if(entity == null)
+                {
+                    entity = (TEntity)AddToContext(dataItem);
+                }
+                else
+                {
+                    entity.Update(dataItem);
+                }
+                result.Add(entity);
+            }
+            return result;
+        }
+
 
         void ClearGarbageCollectedEntries()
         {
@@ -184,7 +209,7 @@ namespace Harlinn.Common.Core.Net.Entities
             catch
             {
                 // Garbage collection may happen in another thread,
-                // and garbage colleced entities will try to remove
+                // and garbage collected entities will try to remove
                 // themselves from the entity context. This is not an
                 // error, so here we just ignore the exception.
 
@@ -200,7 +225,7 @@ namespace Harlinn.Common.Core.Net.Entities
             }
         }
 
-        internal BaseEntity<TKind> GetEntityFromCache(Guid id)
+        protected internal BaseEntity<TKind>? GetEntityFromCache(Guid id)
         {
             WeakReference weakReference;
             if (_entities.TryGetValue(id, out weakReference))
