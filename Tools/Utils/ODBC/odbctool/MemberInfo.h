@@ -373,6 +373,11 @@ namespace Harlinn::ODBC::Tool
     class ReferenceMemberInfo : public GuidMemberInfo
     {
         std::weak_ptr<ClassInfo> type_;
+        WideString member_;
+        mutable std::weak_ptr<CollectionMemberInfo> collectionMember_;
+        mutable std::weak_ptr<ReferenceMemberInfo> referencingMember_;
+        mutable std::optional<bool> isOneToMany_;
+        mutable std::optional<bool> isOneToOne_;
     public:
         using Base = GuidMemberInfo;
         ReferenceMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
@@ -385,7 +390,11 @@ namespace Harlinn::ODBC::Tool
             return type_.lock( );
         }
 
-        std::shared_ptr<CollectionMemberInfo> CollectionMember( ) const;
+        std::shared_ptr<CollectionMemberInfo> ReferencingCollectionMember( ) const;
+        std::shared_ptr<ReferenceMemberInfo> ReferencingReferenceMember( ) const;
+
+        bool IsOneToMany( ) const;
+        bool IsOneToOne( ) const;
 
 
         virtual void Load( const XmlElement& memberElement ) override;
@@ -417,8 +426,11 @@ namespace Harlinn::ODBC::Tool
     class CollectionMemberInfo : public MemberInfo
     {
         std::weak_ptr<ClassInfo> type_;
-        WideString referenceName_;
-        mutable std::weak_ptr<ReferenceMemberInfo> referencingMember_;
+        WideString member_;
+        mutable std::weak_ptr<ReferenceMemberInfo> referencingReferenceMember_;
+        mutable std::weak_ptr<CollectionMemberInfo> referencingCollectionMember_;
+        mutable std::optional<bool> isManyToMany_;
+        mutable std::optional<bool> isOneToMany_;
         bool aggregated_ = false;
     public:
         using Base = MemberInfo;
@@ -426,6 +438,12 @@ namespace Harlinn::ODBC::Tool
             : Base( owner, Tool::MemberInfoType::Collection, name, L"Guid", ODBC::NativeType::Guid, L"Guid", ODBC::SqlType::Guid, L"uniqueidentifier" )
         {
         }
+
+        std::shared_ptr<ClassInfo> ReferencedType( ) const
+        {
+            return type_.lock( );
+        }
+
         virtual bool Persistent( ) const override
         {
             return false;
@@ -436,7 +454,11 @@ namespace Harlinn::ODBC::Tool
             return aggregated_;
         }
 
-        std::shared_ptr<ReferenceMemberInfo> ReferencingMember( ) const;
+        std::shared_ptr<ReferenceMemberInfo> ReferencingReferenceMember( ) const;
+        std::shared_ptr<CollectionMemberInfo> ReferencingCollectionMember( ) const;
+
+        bool IsManyToMany( ) const;
+        bool IsOneToMany( ) const;
 
         virtual void Load( const XmlElement& memberElement ) override;
 

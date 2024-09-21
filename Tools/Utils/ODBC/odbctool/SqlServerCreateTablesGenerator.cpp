@@ -209,7 +209,7 @@ namespace Harlinn::ODBC::Tool
     {
         auto tableName = GetTableName( classInfo );
         
-        auto collectionMember = reference.CollectionMember( );
+        auto collectionMember = reference.ReferencingCollectionMember( );
 
         auto referencedClassInfo = reference.ReferencedType( );
         auto referencedPrimaryKey = referencedClassInfo->PrimaryKey( );

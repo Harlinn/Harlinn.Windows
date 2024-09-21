@@ -295,7 +295,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public AisDeviceCommandReplyEntity? GetAisDeviceCommandReplyByCommand( Guid command )
+        public AisDeviceCommandReplyEntity? GetAisDeviceCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetAisDeviceCommandReplyByCommand( command );
@@ -775,7 +775,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisMessageCollectionByMmsi( mmsi );
@@ -783,7 +783,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -791,7 +791,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -799,7 +799,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisMessageEntity> GetAisMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -936,7 +936,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAidToNavigationReportMessageCollectionByMmsi( mmsi );
@@ -944,7 +944,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAidToNavigationReportMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -952,7 +952,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAidToNavigationReportMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -960,7 +960,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AidToNavigationReportMessageEntity> GetAidToNavigationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAidToNavigationReportMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1097,7 +1097,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisAddressedSafetyRelatedMessageCollectionByMmsi( mmsi );
@@ -1105,7 +1105,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisAddressedSafetyRelatedMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1113,7 +1113,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisAddressedSafetyRelatedMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1121,7 +1121,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisAddressedSafetyRelatedMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1137,7 +1137,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByDestinationMmsi( Guid destinationMmsi )
+        public BindingList<AisAddressedSafetyRelatedMessageEntity> GetAisAddressedSafetyRelatedMessageCollectionByDestinationMmsi( Guid? destinationMmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisAddressedSafetyRelatedMessageCollectionByDestinationMmsi( destinationMmsi );
@@ -1266,7 +1266,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBaseStationReportMessageCollectionByMmsi( mmsi );
@@ -1274,7 +1274,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBaseStationReportMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1282,7 +1282,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBaseStationReportMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1290,7 +1290,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBaseStationReportMessageEntity> GetAisBaseStationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBaseStationReportMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1427,7 +1427,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAcknowledgeMessageCollectionByMmsi( mmsi );
@@ -1435,7 +1435,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAcknowledgeMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1443,7 +1443,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAcknowledgeMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1451,7 +1451,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryAcknowledgeMessageEntity> GetAisBinaryAcknowledgeMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAcknowledgeMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1588,7 +1588,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAddressedMessageCollectionByMmsi( mmsi );
@@ -1596,7 +1596,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAddressedMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1604,7 +1604,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAddressedMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1612,7 +1612,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAddressedMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1628,7 +1628,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByDestinationMmsi( Guid destinationMmsi )
+        public BindingList<AisBinaryAddressedMessageEntity> GetAisBinaryAddressedMessageCollectionByDestinationMmsi( Guid? destinationMmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryAddressedMessageCollectionByDestinationMmsi( destinationMmsi );
@@ -1757,7 +1757,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryBroadcastMessageCollectionByMmsi( mmsi );
@@ -1765,7 +1765,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryBroadcastMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1773,7 +1773,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryBroadcastMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1781,7 +1781,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisBinaryBroadcastMessageEntity> GetAisBinaryBroadcastMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisBinaryBroadcastMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1918,7 +1918,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisDataLinkManagementMessageCollectionByMmsi( mmsi );
@@ -1926,7 +1926,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisDataLinkManagementMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1934,7 +1934,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisDataLinkManagementMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -1942,7 +1942,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisDataLinkManagementMessageEntity> GetAisDataLinkManagementMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisDataLinkManagementMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2079,7 +2079,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisExtendedClassBCsPositionReportMessageCollectionByMmsi( mmsi );
@@ -2087,7 +2087,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2095,7 +2095,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2103,7 +2103,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2119,7 +2119,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByName( Guid name )
+        public BindingList<AisExtendedClassBCsPositionReportMessageEntity> GetAisExtendedClassBCsPositionReportMessageCollectionByName( Guid? name )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisExtendedClassBCsPositionReportMessageCollectionByName( name );
@@ -2248,7 +2248,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisInterrogationMessageCollectionByMmsi( mmsi );
@@ -2256,7 +2256,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2264,7 +2264,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2272,7 +2272,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisInterrogationMessageEntity> GetAisInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2409,7 +2409,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsi( Guid mmsi )
+        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageBaseCollectionByMmsi( mmsi );
@@ -2417,7 +2417,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageBaseCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2425,7 +2425,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageBaseCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2433,7 +2433,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAMessageBaseEntity> GetAisPositionReportClassAMessageBaseCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageBaseCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2570,7 +2570,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsi( mmsi );
@@ -2578,7 +2578,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2586,7 +2586,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2594,7 +2594,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAAssignedScheduleMessageEntity> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2731,7 +2731,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageCollectionByMmsi( mmsi );
@@ -2739,7 +2739,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2747,7 +2747,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2755,7 +2755,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAMessageEntity> GetAisPositionReportClassAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2892,7 +2892,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsi( mmsi );
@@ -2900,7 +2900,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2908,7 +2908,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -2916,7 +2916,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportClassAResponseToInterrogationMessageEntity> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3053,7 +3053,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsi( mmsi );
@@ -3061,7 +3061,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3069,7 +3069,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3077,7 +3077,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisPositionReportForLongRangeApplicationsMessageEntity> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3214,7 +3214,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsi( mmsi );
@@ -3222,7 +3222,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3230,7 +3230,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3238,7 +3238,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisSafetyRelatedAcknowledgmentMessageEntity> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3375,7 +3375,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardClassBCsPositionReportMessageCollectionByMmsi( mmsi );
@@ -3383,7 +3383,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3391,7 +3391,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3399,7 +3399,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStandardClassBCsPositionReportMessageEntity> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3536,7 +3536,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardSarAircraftPositionReportMessageCollectionByMmsi( mmsi );
@@ -3544,7 +3544,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3552,7 +3552,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3560,7 +3560,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStandardSarAircraftPositionReportMessageEntity> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3697,7 +3697,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsi( mmsi );
@@ -3705,7 +3705,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3713,7 +3713,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3721,7 +3721,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3737,7 +3737,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByImoNumber( Guid imoNumber )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByImoNumber( Guid? imoNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByImoNumber( imoNumber );
@@ -3745,7 +3745,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByCallsign( Guid callsign )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByCallsign( Guid? callsign )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByCallsign( callsign );
@@ -3753,7 +3753,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByShipName( Guid shipName )
+        public BindingList<AisStaticAndVoyageRelatedDataMessageEntity> GetAisStaticAndVoyageRelatedDataMessageCollectionByShipName( Guid? shipName )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticAndVoyageRelatedDataMessageCollectionByShipName( shipName );
@@ -3882,7 +3882,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportMessageCollectionByMmsi( mmsi );
@@ -3890,7 +3890,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3898,7 +3898,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -3906,7 +3906,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportMessageEntity> GetAisStaticDataReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4043,7 +4043,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartAMessageCollectionByMmsi( mmsi );
@@ -4051,7 +4051,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartAMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4059,7 +4059,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartAMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4067,7 +4067,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartAMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4083,7 +4083,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByShipName( Guid shipName )
+        public BindingList<AisStaticDataReportPartAMessageEntity> GetAisStaticDataReportPartAMessageCollectionByShipName( Guid? shipName )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartAMessageCollectionByShipName( shipName );
@@ -4212,7 +4212,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartBMessageCollectionByMmsi( mmsi );
@@ -4220,7 +4220,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartBMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4228,7 +4228,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartBMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4236,7 +4236,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartBMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4252,7 +4252,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByCallsign( Guid callsign )
+        public BindingList<AisStaticDataReportPartBMessageEntity> GetAisStaticDataReportPartBMessageCollectionByCallsign( Guid? callsign )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisStaticDataReportPartBMessageCollectionByCallsign( callsign );
@@ -4389,7 +4389,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateInquiryMessageCollectionByMmsi( mmsi );
@@ -4397,7 +4397,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateInquiryMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4405,7 +4405,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateInquiryMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4413,7 +4413,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisUtcAndDateInquiryMessageEntity> GetAisUtcAndDateInquiryMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateInquiryMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4550,7 +4550,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsi( Guid mmsi )
+        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsi( Guid? mmsi )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateResponseMessageCollectionByMmsi( mmsi );
@@ -4558,7 +4558,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateResponseMessageCollectionByMmsiAndMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4566,7 +4566,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateResponseMessageCollectionByMmsiFromMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -4574,7 +4574,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber )
+        public BindingList<AisUtcAndDateResponseMessageEntity> GetAisUtcAndDateResponseMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisUtcAndDateResponseMessageCollectionByMmsiUntilMessageSequenceNumber( mmsi, messageSequenceNumber );
@@ -7072,7 +7072,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public CameraCommandReplyEntity? GetCameraCommandReplyByCommand( Guid command )
+        public CameraCommandReplyEntity? GetCameraCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetCameraCommandReplyByCommand( command );
@@ -7476,7 +7476,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<CameraStatusEntity> GetCameraStatusCollectionByTrack( Guid track )
+        public BindingList<CameraStatusEntity> GetCameraStatusCollectionByTrack( Guid? track )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetCameraStatusCollectionByTrack( track );
@@ -7484,7 +7484,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public CameraStatusEntity? GetCameraStatusByTrackAndTimestamp( Guid track, DateTime timestamp )
+        public CameraStatusEntity? GetCameraStatusByTrackAndTimestamp( Guid? track, DateTime timestamp )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetCameraStatusByTrackAndTimestamp( track, timestamp );
@@ -7496,7 +7496,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public CameraStatusEntity? GetCameraStatusByTrackAtTimestamp( Guid track, DateTime timestamp )
+        public CameraStatusEntity? GetCameraStatusByTrackAtTimestamp( Guid? track, DateTime timestamp )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetCameraStatusByTrackAtTimestamp( track, timestamp );
@@ -7508,7 +7508,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<CameraStatusEntity> GetCameraStatusByTrackFromTimestamp( Guid track, DateTime timestamp )
+        public BindingList<CameraStatusEntity> GetCameraStatusByTrackFromTimestamp( Guid? track, DateTime timestamp )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetCameraStatusByTrackFromTimestamp( track, timestamp );
@@ -7516,7 +7516,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<CameraStatusEntity> GetCameraStatusByTrackUntilTimestamp( Guid track, DateTime timestamp )
+        public BindingList<CameraStatusEntity> GetCameraStatusByTrackUntilTimestamp( Guid? track, DateTime timestamp )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetCameraStatusByTrackUntilTimestamp( track, timestamp );
@@ -7977,7 +7977,7 @@ namespace Barrelman.Data.Entities
             var result = ToEntityList<CatalogElementEntity,CatalogElementObject>( dataItems );
             return result;
         }
-        public BindingList<CatalogElementEntity> GetCatalogElementCollectionByCatalog( Guid catalog )
+        public BindingList<CatalogElementEntity> GetCatalogElementCollectionByCatalog( Guid? catalog )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetCatalogElementCollectionByCatalog( catalog );
@@ -7985,7 +7985,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public CatalogElementEntity? GetCatalogElementByCatalogAndName( Guid catalog, string name )
+        public CatalogElementEntity? GetCatalogElementByCatalogAndName( Guid? catalog, string name )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetCatalogElementByCatalogAndName( catalog, name );
@@ -8022,7 +8022,7 @@ namespace Barrelman.Data.Entities
             var result = ToEntityList<CatalogEntity,CatalogObject>( dataItems );
             return result;
         }
-        public BindingList<CatalogEntity> GetCatalogCollectionByCatalog( Guid catalog )
+        public BindingList<CatalogEntity> GetCatalogCollectionByCatalog( Guid? catalog )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetCatalogCollectionByCatalog( catalog );
@@ -8030,7 +8030,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public CatalogEntity? GetCatalogByCatalogAndName( Guid catalog, string name )
+        public CatalogEntity? GetCatalogByCatalogAndName( Guid? catalog, string name )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetCatalogByCatalogAndName( catalog, name );
@@ -8067,7 +8067,7 @@ namespace Barrelman.Data.Entities
             var result = ToEntityList<ElementEntity,ElementObject>( dataItems );
             return result;
         }
-        public BindingList<ElementEntity> GetElementCollectionByCatalog( Guid catalog )
+        public BindingList<ElementEntity> GetElementCollectionByCatalog( Guid? catalog )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetElementCollectionByCatalog( catalog );
@@ -8075,7 +8075,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public ElementEntity? GetElementByCatalogAndName( Guid catalog, string name )
+        public ElementEntity? GetElementByCatalogAndName( Guid? catalog, string name )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetElementByCatalogAndName( catalog, name );
@@ -8087,7 +8087,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<ElementEntity> GetElementCollectionByElementType( Guid elementType )
+        public BindingList<ElementEntity> GetElementCollectionByElementType( Guid? elementType )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetElementCollectionByElementType( elementType );
@@ -9155,7 +9155,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public GNSSDeviceCommandReplyEntity? GetGNSSDeviceCommandReplyByCommand( Guid command )
+        public GNSSDeviceCommandReplyEntity? GetGNSSDeviceCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetGNSSDeviceCommandReplyByCommand( command );
@@ -9643,7 +9643,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public GyroDeviceCommandReplyEntity? GetGyroDeviceCommandReplyByCommand( Guid command )
+        public GyroDeviceCommandReplyEntity? GetGyroDeviceCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetGyroDeviceCommandReplyByCommand( command );
@@ -10422,7 +10422,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<BaseStationEntity> GetBaseStationCollectionByType( Guid type )
+        public BindingList<BaseStationEntity> GetBaseStationCollectionByType( Guid? type )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetBaseStationCollectionByType( type );
@@ -10610,7 +10610,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<GyroDeviceEntity> GetGyroDeviceCollectionByGNSSDevice( Guid gNSSDevice )
+        public BindingList<GyroDeviceEntity> GetGyroDeviceCollectionByGNSSDevice( Guid? gNSSDevice )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetGyroDeviceCollectionByGNSSDevice( gNSSDevice );
@@ -11002,7 +11002,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<WeatherStationDeviceEntity> GetWeatherStationDeviceCollectionByGyro( Guid gyro )
+        public BindingList<WeatherStationDeviceEntity> GetWeatherStationDeviceCollectionByGyro( Guid? gyro )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetWeatherStationDeviceCollectionByGyro( gyro );
@@ -11047,7 +11047,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<FacilityEntity> GetFacilityCollectionByType( Guid type )
+        public BindingList<FacilityEntity> GetFacilityCollectionByType( Guid? type )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetFacilityCollectionByType( type );
@@ -11113,7 +11113,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<AircraftEntity> GetAircraftCollectionByType( Guid type )
+        public BindingList<AircraftEntity> GetAircraftCollectionByType( Guid? type )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAircraftCollectionByType( type );
@@ -11158,7 +11158,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<AisAidToNavigationEntity> GetAisAidToNavigationCollectionByMMSI( Guid mMSI )
+        public BindingList<AisAidToNavigationEntity> GetAisAidToNavigationCollectionByMMSI( Guid? mMSI )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetAisAidToNavigationCollectionByMMSI( mMSI );
@@ -11203,7 +11203,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<VehicleEntity> GetVehicleCollectionByType( Guid type )
+        public BindingList<VehicleEntity> GetVehicleCollectionByType( Guid? type )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetVehicleCollectionByType( type );
@@ -11244,7 +11244,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<VesselEntity> GetVesselCollectionByType( Guid type )
+        public BindingList<VesselEntity> GetVesselCollectionByType( Guid? type )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetVesselCollectionByType( type );
@@ -11944,7 +11944,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public LineInputDeviceCommandReplyEntity? GetLineInputDeviceCommandReplyByCommand( Guid command )
+        public LineInputDeviceCommandReplyEntity? GetLineInputDeviceCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetLineInputDeviceCommandReplyByCommand( command );
@@ -12155,7 +12155,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public LineInputMessageRoutingDestinationEntity? GetLineInputMessageRoutingDestinationByRoutingAndListener( Guid routing, Guid listener )
+        public LineInputMessageRoutingDestinationEntity? GetLineInputMessageRoutingDestinationByRoutingAndListener( Guid routing, Guid? listener )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetLineInputMessageRoutingDestinationByRoutingAndListener( routing, listener );
@@ -12167,7 +12167,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<LineInputMessageRoutingDestinationEntity> GetLineInputMessageRoutingDestinationCollectionByListener( Guid listener )
+        public BindingList<LineInputMessageRoutingDestinationEntity> GetLineInputMessageRoutingDestinationCollectionByListener( Guid? listener )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetLineInputMessageRoutingDestinationCollectionByListener( listener );
@@ -12710,7 +12710,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<LogProcessEntity> GetLogProcessCollectionByHost( Guid host )
+        public BindingList<LogProcessEntity> GetLogProcessCollectionByHost( Guid? host )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetLogProcessCollectionByHost( host );
@@ -12718,7 +12718,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostAndStarted( Guid host, DateTime started )
+        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostAndStarted( Guid? host, DateTime started )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetLogProcessCollectionByHostAndStarted( host, started );
@@ -12726,7 +12726,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostAtStarted( Guid host, DateTime started )
+        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostAtStarted( Guid? host, DateTime started )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetLogProcessCollectionByHostAtStarted( host, started );
@@ -12734,7 +12734,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostFromStarted( Guid host, DateTime started )
+        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostFromStarted( Guid? host, DateTime started )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetLogProcessCollectionByHostFromStarted( host, started );
@@ -12742,7 +12742,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostUntilStarted( Guid host, DateTime started )
+        public BindingList<LogProcessEntity> GetLogProcessCollectionByHostUntilStarted( Guid? host, DateTime started )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetLogProcessCollectionByHostUntilStarted( host, started );
@@ -14188,7 +14188,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public OilSpillDetectorCommandReplyEntity? GetOilSpillDetectorCommandReplyByCommand( Guid command )
+        public OilSpillDetectorCommandReplyEntity? GetOilSpillDetectorCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetOilSpillDetectorCommandReplyByCommand( command );
@@ -14321,7 +14321,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<OilSpillDetectorConfigurationEntity> GetOilSpillDetectorConfigurationCollectionByTargetMMSI( Guid targetMMSI )
+        public BindingList<OilSpillDetectorConfigurationEntity> GetOilSpillDetectorConfigurationCollectionByTargetMMSI( Guid? targetMMSI )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetOilSpillDetectorConfigurationCollectionByTargetMMSI( targetMMSI );
@@ -15179,7 +15179,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<ReferencePropertyEntity> GetReferencePropertyCollectionByValue( Guid value__ )
+        public BindingList<ReferencePropertyEntity> GetReferencePropertyCollectionByValue( Guid? value__ )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetReferencePropertyCollectionByValue( value__ );
@@ -15452,7 +15452,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<BinaryTimeseriesPropertyEntity> GetBinaryTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<BinaryTimeseriesPropertyEntity> GetBinaryTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetBinaryTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15513,7 +15513,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<BooleanTimeseriesPropertyEntity> GetBooleanTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<BooleanTimeseriesPropertyEntity> GetBooleanTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetBooleanTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15574,7 +15574,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<ByteTimeseriesPropertyEntity> GetByteTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<ByteTimeseriesPropertyEntity> GetByteTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetByteTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15635,7 +15635,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<DateTimeTimeseriesPropertyEntity> GetDateTimeTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<DateTimeTimeseriesPropertyEntity> GetDateTimeTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetDateTimeTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15696,7 +15696,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<DoubleTimeseriesPropertyEntity> GetDoubleTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<DoubleTimeseriesPropertyEntity> GetDoubleTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetDoubleTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15757,7 +15757,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<GuidTimeseriesPropertyEntity> GetGuidTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<GuidTimeseriesPropertyEntity> GetGuidTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetGuidTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15818,7 +15818,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<Int16TimeseriesPropertyEntity> GetInt16TimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<Int16TimeseriesPropertyEntity> GetInt16TimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetInt16TimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15879,7 +15879,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<Int32TimeseriesPropertyEntity> GetInt32TimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<Int32TimeseriesPropertyEntity> GetInt32TimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetInt32TimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -15940,7 +15940,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<Int64TimeseriesPropertyEntity> GetInt64TimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<Int64TimeseriesPropertyEntity> GetInt64TimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetInt64TimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16001,7 +16001,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<ReferenceTimeseriesPropertyEntity> GetReferenceTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<ReferenceTimeseriesPropertyEntity> GetReferenceTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetReferenceTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16062,7 +16062,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<SByteTimeseriesPropertyEntity> GetSByteTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<SByteTimeseriesPropertyEntity> GetSByteTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetSByteTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16123,7 +16123,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<SingleTimeseriesPropertyEntity> GetSingleTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<SingleTimeseriesPropertyEntity> GetSingleTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetSingleTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16184,7 +16184,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<StringTimeseriesPropertyEntity> GetStringTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<StringTimeseriesPropertyEntity> GetStringTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetStringTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16245,7 +16245,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<TimeSpanTimeseriesPropertyEntity> GetTimeSpanTimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<TimeSpanTimeseriesPropertyEntity> GetTimeSpanTimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetTimeSpanTimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16306,7 +16306,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<UInt16TimeseriesPropertyEntity> GetUInt16TimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<UInt16TimeseriesPropertyEntity> GetUInt16TimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetUInt16TimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16367,7 +16367,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<UInt32TimeseriesPropertyEntity> GetUInt32TimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<UInt32TimeseriesPropertyEntity> GetUInt32TimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetUInt32TimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -16428,7 +16428,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<UInt64TimeseriesPropertyEntity> GetUInt64TimeseriesPropertyCollectionByTimeseries( Guid timeseries )
+        public BindingList<UInt64TimeseriesPropertyEntity> GetUInt64TimeseriesPropertyCollectionByTimeseries( Guid? timeseries )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetUInt64TimeseriesPropertyCollectionByTimeseries( timeseries );
@@ -17143,7 +17143,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<ReferencePropertyDefinitionEntity> GetReferencePropertyDefinitionCollectionByDefaultValue( Guid defaultValue )
+        public BindingList<ReferencePropertyDefinitionEntity> GetReferencePropertyDefinitionCollectionByDefaultValue( Guid? defaultValue )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetReferencePropertyDefinitionCollectionByDefaultValue( defaultValue );
@@ -17151,7 +17151,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public BindingList<ReferencePropertyDefinitionEntity> GetReferencePropertyDefinitionCollectionByReferencedElementType( Guid referencedElementType )
+        public BindingList<ReferencePropertyDefinitionEntity> GetReferencePropertyDefinitionCollectionByReferencedElementType( Guid? referencedElementType )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetReferencePropertyDefinitionCollectionByReferencedElementType( referencedElementType );
@@ -17789,7 +17789,7 @@ namespace Barrelman.Data.Entities
             return null;
         }
 
-        public BindingList<ReferenceTimeseriesPropertyDefinitionEntity> GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementType( Guid referencedElementType )
+        public BindingList<ReferenceTimeseriesPropertyDefinitionEntity> GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementType( Guid? referencedElementType )
         {
             var dataContext = DataContext;
             var dataItems = dataContext.GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementType( referencedElementType );
@@ -18768,7 +18768,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public RadarCommandReplyEntity? GetRadarCommandReplyByCommand( Guid command )
+        public RadarCommandReplyEntity? GetRadarCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetRadarCommandReplyByCommand( command );
@@ -18893,7 +18893,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public RadarCommandReplyGetStatusEntity? GetRadarCommandReplyGetStatusByCommand( Guid command )
+        public RadarCommandReplyGetStatusEntity? GetRadarCommandReplyGetStatusByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetRadarCommandReplyGetStatusByCommand( command );
@@ -19623,7 +19623,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public RadioCommandReplyEntity? GetRadioCommandReplyByCommand( Guid command )
+        public RadioCommandReplyEntity? GetRadioCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetRadioCommandReplyByCommand( command );
@@ -19990,7 +19990,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public RadomeCommandReplyEntity? GetRadomeCommandReplyByCommand( Guid command )
+        public RadomeCommandReplyEntity? GetRadomeCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetRadomeCommandReplyByCommand( command );
@@ -27722,7 +27722,7 @@ namespace Barrelman.Data.Entities
             return result;
         }
 
-        public WeatherStationCommandReplyEntity? GetWeatherStationCommandReplyByCommand( Guid command )
+        public WeatherStationCommandReplyEntity? GetWeatherStationCommandReplyByCommand( Guid? command )
         {
             var dataContext = DataContext;
             var dataObject = dataContext.GetWeatherStationCommandReplyByCommand( command );

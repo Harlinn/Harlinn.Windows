@@ -298,14 +298,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _aisDevice;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public AisDeviceCommandReplyObject( )
         {
         }
 
-        public AisDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public AisDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -417,7 +417,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -471,7 +471,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _aisDevice = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -1292,12 +1292,12 @@ namespace Barrelman.Data.Types
         DateTime _receivedTimestamp;
         long _messageSequenceNumber = 0;
         int _repeat = 0;
-        Guid _mmsi;
+        Guid? _mmsi;
         protected AisMessageObject( )
         {
         }
 
-        protected AisMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi )
+        protected AisMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -1423,7 +1423,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Mmsi
+        public Guid? Mmsi
         {
             get => _mmsi;
             set
@@ -1455,7 +1455,7 @@ namespace Barrelman.Data.Types
             _receivedTimestamp = source.ReadDateTime( );
             _messageSequenceNumber = source.ReadInt64( );
             _repeat = source.ReadInt32( );
-            _mmsi = source.ReadGuid( );
+            _mmsi = source.ReadNullableGuid( );
         }
 
     }
@@ -1484,7 +1484,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AidToNavigationReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
+        public AidToNavigationReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _navigationalAidType = navigationalAidType;
@@ -1900,7 +1900,7 @@ namespace Barrelman.Data.Types
     public class AisAddressedSafetyRelatedMessageObject : AisMessageObject
     {
         int _sequenceNumber = 0;
-        Guid _destinationMmsi;
+        Guid? _destinationMmsi;
         bool _retransmitFlag = false;
         int _spare = 0;
         string _text = string.Empty;
@@ -1908,7 +1908,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisAddressedSafetyRelatedMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, string text )
+        public AisAddressedSafetyRelatedMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int sequenceNumber, Guid? destinationMmsi, bool retransmitFlag, int spare, string text )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _sequenceNumber = sequenceNumber;
@@ -1990,7 +1990,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid DestinationMmsi
+        public Guid? DestinationMmsi
         {
             get => _destinationMmsi;
             set
@@ -2053,7 +2053,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _sequenceNumber = source.ReadInt32( );
-            _destinationMmsi = source.ReadGuid( );
+            _destinationMmsi = source.ReadNullableGuid( );
             _retransmitFlag = source.ReadBoolean( );
             _spare = source.ReadInt32( );
             _text = source.ReadString( );
@@ -2075,7 +2075,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisBaseStationReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
+        public AisBaseStationReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _timestamp = timestamp;
@@ -2292,7 +2292,7 @@ namespace Barrelman.Data.Types
     {
         int _spare = 0;
         int _sequenceNumber1 = 0;
-        Guid _mmsi1;
+        Guid? _mmsi1;
         int? _sequenceNumber2;
         Guid? _mmsi2;
         int? _sequenceNumber3;
@@ -2303,7 +2303,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisBinaryAcknowledgeMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
+        public AisBinaryAcknowledgeMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int sequenceNumber1, Guid? mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _spare = spare;
@@ -2421,7 +2421,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Mmsi1
+        public Guid? Mmsi1
         {
             get => _mmsi1;
             set
@@ -2525,7 +2525,7 @@ namespace Barrelman.Data.Types
             base.ReadFrom( source );
             _spare = source.ReadInt32( );
             _sequenceNumber1 = source.ReadInt32( );
-            _mmsi1 = source.ReadGuid( );
+            _mmsi1 = source.ReadNullableGuid( );
             _sequenceNumber2 = source.ReadNullableInt32( );
             _mmsi2 = source.ReadNullableGuid( );
             _sequenceNumber3 = source.ReadNullableInt32( );
@@ -2539,7 +2539,7 @@ namespace Barrelman.Data.Types
     public class AisBinaryAddressedMessageObject : AisMessageObject
     {
         int _sequenceNumber = 0;
-        Guid _destinationMmsi;
+        Guid? _destinationMmsi;
         bool _retransmitFlag = false;
         int _spare = 0;
         int _designatedAreaCode = 0;
@@ -2549,7 +2549,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisBinaryAddressedMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
+        public AisBinaryAddressedMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int sequenceNumber, Guid? destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _sequenceNumber = sequenceNumber;
@@ -2643,7 +2643,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid DestinationMmsi
+        public Guid? DestinationMmsi
         {
             get => _destinationMmsi;
             set
@@ -2732,7 +2732,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _sequenceNumber = source.ReadInt32( );
-            _destinationMmsi = source.ReadGuid( );
+            _destinationMmsi = source.ReadNullableGuid( );
             _retransmitFlag = source.ReadBoolean( );
             _spare = source.ReadInt32( );
             _designatedAreaCode = source.ReadInt32( );
@@ -2752,7 +2752,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisBinaryBroadcastMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int designatedAreaCode, int functionalId, string data )
+        public AisBinaryBroadcastMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int designatedAreaCode, int functionalId, string data )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _spare = spare;
@@ -2908,7 +2908,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisDataLinkManagementMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
+        public AisDataLinkManagementMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _spare = spare;
@@ -3312,7 +3312,7 @@ namespace Barrelman.Data.Types
         int? _trueHeading;
         int _timestamp = 0;
         int _regionalReserved = 0;
-        Guid _name;
+        Guid? _name;
         Types.ShipType _shipType = Types.ShipType.NotAvailable;
         int _dimensionToBow = 0;
         int _dimensionToStern = 0;
@@ -3327,7 +3327,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisExtendedClassBCsPositionReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
+        public AisExtendedClassBCsPositionReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid? name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _reserved = reserved;
@@ -3595,7 +3595,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Name
+        public Guid? Name
         {
             get => _name;
             set
@@ -3765,7 +3765,7 @@ namespace Barrelman.Data.Types
             _trueHeading = source.ReadNullableInt32( );
             _timestamp = source.ReadInt32( );
             _regionalReserved = source.ReadInt32( );
-            _name = source.ReadGuid( );
+            _name = source.ReadNullableGuid( );
             _shipType = source.ReadEnum<Types.ShipType>( );
             _dimensionToBow = source.ReadInt32( );
             _dimensionToStern = source.ReadInt32( );
@@ -3782,7 +3782,7 @@ namespace Barrelman.Data.Types
 
     public class AisInterrogationMessageObject : AisMessageObject
     {
-        Guid _interrogatedMmsi;
+        Guid? _interrogatedMmsi;
         Types.AisMessageType _firstMessageType = Types.AisMessageType.PositionReportClassA;
         int _firstSlotOffset = 0;
         Types.AisMessageType? _secondMessageType;
@@ -3794,7 +3794,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisInterrogationMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Guid interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
+        public AisInterrogationMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Guid? interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _interrogatedMmsi = interrogatedMmsi;
@@ -3882,7 +3882,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid InterrogatedMmsi
+        public Guid? InterrogatedMmsi
         {
             get => _interrogatedMmsi;
             set
@@ -3995,7 +3995,7 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _interrogatedMmsi = source.ReadGuid( );
+            _interrogatedMmsi = source.ReadNullableGuid( );
             _firstMessageType = source.ReadEnum<Types.AisMessageType>( );
             _firstSlotOffset = source.ReadInt32( );
             _secondMessageType = source.ReadNullableEnum<Types.AisMessageType>( );
@@ -4026,7 +4026,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        protected AisPositionReportClassAMessageBaseObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        protected AisPositionReportClassAMessageBaseObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _navigationStatus = navigationStatus;
@@ -4335,7 +4335,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisPositionReportClassAAssignedScheduleMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public AisPositionReportClassAAssignedScheduleMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, navigationStatus, rateOfTurn, speedOverGround, positionAccuracy, longitude, latitude, courseOverGround, trueHeading, timestamp, maneuverIndicator, spare, raim, radioStatus )
         {
         }
@@ -4367,7 +4367,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisPositionReportClassAMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public AisPositionReportClassAMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, navigationStatus, rateOfTurn, speedOverGround, positionAccuracy, longitude, latitude, courseOverGround, trueHeading, timestamp, maneuverIndicator, spare, raim, radioStatus )
         {
         }
@@ -4399,7 +4399,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public AisPositionReportClassAResponseToInterrogationMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, navigationStatus, rateOfTurn, speedOverGround, positionAccuracy, longitude, latitude, courseOverGround, trueHeading, timestamp, maneuverIndicator, spare, raim, radioStatus )
         {
         }
@@ -4440,7 +4440,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisPositionReportForLongRangeApplicationsMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
+        public AisPositionReportForLongRangeApplicationsMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _positionAccuracy = positionAccuracy;
@@ -4677,7 +4677,7 @@ namespace Barrelman.Data.Types
     {
         int _spare = 0;
         int _sequenceNumber1 = 0;
-        Guid _mmsi1;
+        Guid? _mmsi1;
         int? _sequenceNumber2;
         Guid? _mmsi2;
         int? _sequenceNumber3;
@@ -4688,7 +4688,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisSafetyRelatedAcknowledgmentMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
+        public AisSafetyRelatedAcknowledgmentMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int sequenceNumber1, Guid? mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _spare = spare;
@@ -4806,7 +4806,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Mmsi1
+        public Guid? Mmsi1
         {
             get => _mmsi1;
             set
@@ -4910,7 +4910,7 @@ namespace Barrelman.Data.Types
             base.ReadFrom( source );
             _spare = source.ReadInt32( );
             _sequenceNumber1 = source.ReadInt32( );
-            _mmsi1 = source.ReadGuid( );
+            _mmsi1 = source.ReadNullableGuid( );
             _sequenceNumber2 = source.ReadNullableInt32( );
             _mmsi2 = source.ReadNullableGuid( );
             _sequenceNumber3 = source.ReadNullableInt32( );
@@ -4944,7 +4944,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisStandardClassBCsPositionReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
+        public AisStandardClassBCsPositionReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _reserved = reserved;
@@ -5356,7 +5356,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisStandardSarAircraftPositionReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
+        public AisStandardSarAircraftPositionReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _altitude = altitude;
@@ -5672,9 +5672,9 @@ namespace Barrelman.Data.Types
     public class AisStaticAndVoyageRelatedDataMessageObject : AisMessageObject
     {
         int _aisVersion = 0;
-        Guid _imoNumber;
-        Guid _callsign;
-        Guid _shipName;
+        Guid? _imoNumber;
+        Guid? _callsign;
+        Guid? _shipName;
         Types.ShipType _shipType = Types.ShipType.NotAvailable;
         int _dimensionToBow = 0;
         int _dimensionToStern = 0;
@@ -5690,7 +5690,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisStaticAndVoyageRelatedDataMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int aisVersion, Guid imoNumber, Guid callsign, Guid shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
+        public AisStaticAndVoyageRelatedDataMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int aisVersion, Guid? imoNumber, Guid? callsign, Guid? shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _aisVersion = aisVersion;
@@ -5832,7 +5832,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid ImoNumber
+        public Guid? ImoNumber
         {
             get => _imoNumber;
             set
@@ -5844,7 +5844,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Callsign
+        public Guid? Callsign
         {
             get => _callsign;
             set
@@ -5856,7 +5856,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid ShipName
+        public Guid? ShipName
         {
             get => _shipName;
             set
@@ -6025,9 +6025,9 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _aisVersion = source.ReadInt32( );
-            _imoNumber = source.ReadGuid( );
-            _callsign = source.ReadGuid( );
-            _shipName = source.ReadGuid( );
+            _imoNumber = source.ReadNullableGuid( );
+            _callsign = source.ReadNullableGuid( );
+            _shipName = source.ReadNullableGuid( );
             _shipType = source.ReadEnum<Types.ShipType>( );
             _dimensionToBow = source.ReadInt32( );
             _dimensionToStern = source.ReadInt32( );
@@ -6050,7 +6050,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisStaticDataReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber )
+        public AisStaticDataReportMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _partNumber = partNumber;
@@ -6125,13 +6125,13 @@ namespace Barrelman.Data.Types
 
     public class AisStaticDataReportPartAMessageObject : AisStaticDataReportMessageObject
     {
-        Guid _shipName;
+        Guid? _shipName;
         int _spare = 0;
         public AisStaticDataReportPartAMessageObject( )
         {
         }
 
-        public AisStaticDataReportPartAMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Guid shipName, int spare )
+        public AisStaticDataReportPartAMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber, Guid? shipName, int spare )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber )
         {
             _shipName = shipName;
@@ -6183,7 +6183,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid ShipName
+        public Guid? ShipName
         {
             get => _shipName;
             set
@@ -6218,7 +6218,7 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _shipName = source.ReadGuid( );
+            _shipName = source.ReadNullableGuid( );
             _spare = source.ReadInt32( );
         }
 
@@ -6230,7 +6230,7 @@ namespace Barrelman.Data.Types
         string _vendorId = string.Empty;
         int _unitModelCode = 0;
         int _serialNumber = 0;
-        Guid _callsign;
+        Guid? _callsign;
         int _dimensionToBow = 0;
         int _dimensionToStern = 0;
         int _dimensionToPort = 0;
@@ -6242,7 +6242,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisStaticDataReportPartBMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
+        public AisStaticDataReportPartBMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid? callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber )
         {
             _shipType = shipType;
@@ -6402,7 +6402,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Callsign
+        public Guid? Callsign
         {
             get => _callsign;
             set
@@ -6523,7 +6523,7 @@ namespace Barrelman.Data.Types
             _vendorId = source.ReadString( );
             _unitModelCode = source.ReadInt32( );
             _serialNumber = source.ReadInt32( );
-            _callsign = source.ReadGuid( );
+            _callsign = source.ReadNullableGuid( );
             _dimensionToBow = source.ReadInt32( );
             _dimensionToStern = source.ReadInt32( );
             _dimensionToPort = source.ReadInt32( );
@@ -6538,13 +6538,13 @@ namespace Barrelman.Data.Types
     public class AisUtcAndDateInquiryMessageObject : AisMessageObject
     {
         int _spare1 = 0;
-        int _destinationMmsi = 0;
+        Guid? _destinationMmsi;
         int _spare2 = 0;
         public AisUtcAndDateInquiryMessageObject( )
         {
         }
 
-        public AisUtcAndDateInquiryMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare1, int destinationMmsi, int spare2 )
+        public AisUtcAndDateInquiryMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare1, Guid? destinationMmsi, int spare2 )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _spare1 = spare1;
@@ -6614,7 +6614,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public int DestinationMmsi
+        public Guid? DestinationMmsi
         {
             get => _destinationMmsi;
             set
@@ -6651,7 +6651,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _spare1 = source.ReadInt32( );
-            _destinationMmsi = source.ReadInt32( );
+            _destinationMmsi = source.ReadNullableGuid( );
             _spare2 = source.ReadInt32( );
         }
 
@@ -6671,7 +6671,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisUtcAndDateResponseMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
+        public AisUtcAndDateResponseMessageObject( ObjectState objectState, Guid id, long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
             : base( objectState, id, rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi )
         {
             _datetime = datetime;
@@ -9544,7 +9544,7 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _camera;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         double _panAngle = 0.0;
@@ -9554,7 +9554,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public CameraCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
+        public CameraCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid camera, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -9684,7 +9684,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -9777,7 +9777,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _camera = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
             _panAngle = source.ReadDouble( );
@@ -11375,7 +11375,7 @@ namespace Barrelman.Data.Types
     {
         long _rowVersion = 0;
         Guid _camera;
-        Guid _track;
+        Guid? _track;
         DateTime _timestamp;
         Types.CameraPanTiltMode _positionPanTiltMode = Types.CameraPanTiltMode.Unknown;
         double _panAngle = 0.0;
@@ -11395,7 +11395,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public CameraStatusObject( ObjectState objectState, Guid id, long rowVersion, Guid camera, Guid track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
+        public CameraStatusObject( ObjectState objectState, Guid id, long rowVersion, Guid camera, Guid? track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -11567,7 +11567,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Track
+        public Guid? Track
         {
             get => _track;
             set
@@ -11788,7 +11788,7 @@ namespace Barrelman.Data.Types
             base.ReadFrom( source );
             _rowVersion = source.ReadInt64( );
             _camera = source.ReadGuid( );
-            _track = source.ReadGuid( );
+            _track = source.ReadNullableGuid( );
             _timestamp = source.ReadDateTime( );
             _positionPanTiltMode = source.ReadEnum<Types.CameraPanTiltMode>( );
             _panAngle = source.ReadDouble( );
@@ -12341,13 +12341,13 @@ namespace Barrelman.Data.Types
     public abstract class CatalogElementObject : BaseDataGuid<Kind>
     {
         long _rowVersion = 0;
-        Guid _catalog;
+        Guid? _catalog;
         string _name = string.Empty;
         protected CatalogElementObject( )
         {
         }
 
-        protected CatalogElementObject( ObjectState objectState, Guid id, long rowVersion, Guid catalog, string name )
+        protected CatalogElementObject( ObjectState objectState, Guid id, long rowVersion, Guid? catalog, string name )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -12407,7 +12407,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Catalog
+        public Guid? Catalog
         {
             get => _catalog;
             set
@@ -12444,7 +12444,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _rowVersion = source.ReadInt64( );
-            _catalog = source.ReadGuid( );
+            _catalog = source.ReadNullableGuid( );
             _name = source.ReadString( );
         }
 
@@ -12456,7 +12456,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public CatalogObject( ObjectState objectState, Guid id, long rowVersion, Guid catalog, string name )
+        public CatalogObject( ObjectState objectState, Guid id, long rowVersion, Guid? catalog, string name )
             : base( objectState, id, rowVersion, catalog, name )
         {
         }
@@ -12484,12 +12484,12 @@ namespace Barrelman.Data.Types
 
     public class ElementObject : CatalogElementObject
     {
-        Guid _elementType;
+        Guid? _elementType;
         public ElementObject( )
         {
         }
 
-        public ElementObject( ObjectState objectState, Guid id, long rowVersion, Guid catalog, string name, Guid elementType )
+        public ElementObject( ObjectState objectState, Guid id, long rowVersion, Guid? catalog, string name, Guid? elementType )
             : base( objectState, id, rowVersion, catalog, name )
         {
             _elementType = elementType;
@@ -12535,7 +12535,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid ElementType
+        public Guid? ElementType
         {
             get => _elementType;
             set
@@ -12557,7 +12557,7 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _elementType = source.ReadGuid( );
+            _elementType = source.ReadNullableGuid( );
         }
 
     }
@@ -14140,14 +14140,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _gNSSDevice;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public GNSSDeviceCommandReplyObject( )
         {
         }
 
-        public GNSSDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid gNSSDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public GNSSDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid gNSSDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -14259,7 +14259,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -14313,7 +14313,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _gNSSDevice = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -14901,14 +14901,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _gyroDevice;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public GyroDeviceCommandReplyObject( )
         {
         }
 
-        public GyroDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid gyroDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public GyroDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid gyroDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -15020,7 +15020,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -15074,7 +15074,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _gyroDevice = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -16221,12 +16221,12 @@ namespace Barrelman.Data.Types
     public class BaseStationObject : ItemObject
     {
         string _name = string.Empty;
-        Guid _type;
+        Guid? _type;
         public BaseStationObject( )
         {
         }
 
-        public BaseStationObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid type )
+        public BaseStationObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid? type )
             : base( objectState, id, rowVersion )
         {
             _name = name;
@@ -16290,7 +16290,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get => _type;
             set
@@ -16314,7 +16314,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _name = source.ReadString( );
-            _type = source.ReadGuid( );
+            _type = source.ReadNullableGuid( );
         }
 
     }
@@ -16615,12 +16615,12 @@ namespace Barrelman.Data.Types
         Guid? _rollTimeseries;
         Guid? _courseTimeseries;
         Guid? _speedTimeseries;
-        Guid _gNSSDevice;
+        Guid? _gNSSDevice;
         public GyroDeviceObject( )
         {
         }
 
-        public GyroDeviceObject( ObjectState objectState, Guid id, long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid gNSSDevice )
+        public GyroDeviceObject( ObjectState objectState, Guid id, long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid? gNSSDevice )
             : base( objectState, id, rowVersion, host, name, description, enabledTimeseries )
         {
             _headingTrueNorthTimeseries = headingTrueNorthTimeseries;
@@ -16792,7 +16792,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid GNSSDevice
+        public Guid? GNSSDevice
         {
             get => _gNSSDevice;
             set
@@ -16828,7 +16828,7 @@ namespace Barrelman.Data.Types
             _rollTimeseries = source.ReadNullableGuid( );
             _courseTimeseries = source.ReadNullableGuid( );
             _speedTimeseries = source.ReadNullableGuid( );
-            _gNSSDevice = source.ReadGuid( );
+            _gNSSDevice = source.ReadNullableGuid( );
         }
 
     }
@@ -17699,12 +17699,12 @@ namespace Barrelman.Data.Types
         Guid? _dewPointTimeseries;
         Guid? _windDirectionTimeseries;
         Guid? _windSpeedTimeseries;
-        Guid _gyro;
+        Guid? _gyro;
         public WeatherStationDeviceObject( )
         {
         }
 
-        public WeatherStationDeviceObject( ObjectState objectState, Guid id, long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid gyro )
+        public WeatherStationDeviceObject( ObjectState objectState, Guid id, long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid? gyro )
             : base( objectState, id, rowVersion, host, name, description, enabledTimeseries )
         {
             _barometricPressureTimeseries = barometricPressureTimeseries;
@@ -17894,7 +17894,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Gyro
+        public Guid? Gyro
         {
             get => _gyro;
             set
@@ -17932,7 +17932,7 @@ namespace Barrelman.Data.Types
             _dewPointTimeseries = source.ReadNullableGuid( );
             _windDirectionTimeseries = source.ReadNullableGuid( );
             _windSpeedTimeseries = source.ReadNullableGuid( );
-            _gyro = source.ReadGuid( );
+            _gyro = source.ReadNullableGuid( );
         }
 
     }
@@ -17940,7 +17940,7 @@ namespace Barrelman.Data.Types
     public class FacilityObject : ItemObject
     {
         string _name = string.Empty;
-        Guid _type;
+        Guid? _type;
         double _longitude = 0.0;
         double _latitude = 0.0;
         double _altitude = 0.0;
@@ -17948,7 +17948,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public FacilityObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid type, double longitude, double latitude, double altitude )
+        public FacilityObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid? type, double longitude, double latitude, double altitude )
             : base( objectState, id, rowVersion )
         {
             _name = name;
@@ -18030,7 +18030,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get => _type;
             set
@@ -18093,7 +18093,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _name = source.ReadString( );
-            _type = source.ReadGuid( );
+            _type = source.ReadNullableGuid( );
             _longitude = source.ReadDouble( );
             _latitude = source.ReadDouble( );
             _altitude = source.ReadDouble( );
@@ -18126,12 +18126,12 @@ namespace Barrelman.Data.Types
     public class AircraftObject : TrackableItemObject
     {
         string _name = string.Empty;
-        Guid _type;
+        Guid? _type;
         public AircraftObject( )
         {
         }
 
-        public AircraftObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid type )
+        public AircraftObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid? type )
             : base( objectState, id, rowVersion )
         {
             _name = name;
@@ -18195,7 +18195,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get => _type;
             set
@@ -18219,7 +18219,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _name = source.ReadString( );
-            _type = source.ReadGuid( );
+            _type = source.ReadNullableGuid( );
         }
 
     }
@@ -18227,7 +18227,7 @@ namespace Barrelman.Data.Types
     public class AisAidToNavigationObject : TrackableItemObject
     {
         string _name = string.Empty;
-        Guid _mMSI;
+        Guid? _mMSI;
         Types.NavigationalAidType _navigationalAidType = Types.NavigationalAidType.NotSpecified;
         Guid? _position;
         bool _isVirtual = false;
@@ -18240,7 +18240,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public AisAidToNavigationObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
+        public AisAidToNavigationObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid? mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
             : base( objectState, id, rowVersion )
         {
             _name = name;
@@ -18352,7 +18352,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid MMSI
+        public Guid? MMSI
         {
             get => _mMSI;
             set
@@ -18480,7 +18480,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _name = source.ReadString( );
-            _mMSI = source.ReadGuid( );
+            _mMSI = source.ReadNullableGuid( );
             _navigationalAidType = source.ReadEnum<Types.NavigationalAidType>( );
             _position = source.ReadNullableGuid( );
             _isVirtual = source.ReadBoolean( );
@@ -18496,12 +18496,12 @@ namespace Barrelman.Data.Types
     public class VehicleObject : TrackableItemObject
     {
         string _name = string.Empty;
-        Guid _type;
+        Guid? _type;
         public VehicleObject( )
         {
         }
 
-        public VehicleObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid type )
+        public VehicleObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid? type )
             : base( objectState, id, rowVersion )
         {
             _name = name;
@@ -18565,7 +18565,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get => _type;
             set
@@ -18589,7 +18589,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _name = source.ReadString( );
-            _type = source.ReadGuid( );
+            _type = source.ReadNullableGuid( );
         }
 
     }
@@ -18597,7 +18597,7 @@ namespace Barrelman.Data.Types
     public class VesselObject : TrackableItemObject
     {
         string _name = string.Empty;
-        Guid _type;
+        Guid? _type;
         int _toBow = 0;
         int _toStern = 0;
         int _toPort = 0;
@@ -18608,7 +18608,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public VesselObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
+        public VesselObject( ObjectState objectState, Guid id, long rowVersion, string name, Guid? type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
             : base( objectState, id, rowVersion )
         {
             _name = name;
@@ -18708,7 +18708,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get => _type;
             set
@@ -18810,7 +18810,7 @@ namespace Barrelman.Data.Types
         {
             base.ReadFrom( source );
             _name = source.ReadString( );
-            _type = source.ReadGuid( );
+            _type = source.ReadNullableGuid( );
             _toBow = source.ReadInt32( );
             _toStern = source.ReadInt32( );
             _toPort = source.ReadInt32( );
@@ -19318,14 +19318,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _lineInputDevice;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public LineInputDeviceCommandReplyObject( )
         {
         }
 
-        public LineInputDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid lineInputDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public LineInputDeviceCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid lineInputDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -19437,7 +19437,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -19491,7 +19491,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _lineInputDevice = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -20439,12 +20439,12 @@ namespace Barrelman.Data.Types
     {
         long _rowVersion = 0;
         Guid _routing;
-        Guid _listener;
+        Guid? _listener;
         public LineInputMessageRoutingDestinationObject( )
         {
         }
 
-        public LineInputMessageRoutingDestinationObject( ObjectState objectState, Guid id, long rowVersion, Guid routing, Guid listener )
+        public LineInputMessageRoutingDestinationObject( ObjectState objectState, Guid id, long rowVersion, Guid routing, Guid? listener )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -20526,7 +20526,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Listener
+        public Guid? Listener
         {
             get => _listener;
             set
@@ -20552,7 +20552,7 @@ namespace Barrelman.Data.Types
             base.ReadFrom( source );
             _rowVersion = source.ReadInt64( );
             _routing = source.ReadGuid( );
-            _listener = source.ReadGuid( );
+            _listener = source.ReadNullableGuid( );
         }
 
     }
@@ -21881,7 +21881,7 @@ namespace Barrelman.Data.Types
     {
         long _rowVersion = 0;
         Guid _application;
-        Guid _host;
+        Guid? _host;
         DateTime _started;
         DateTime? _stopped;
         long _processId = 0;
@@ -21891,7 +21891,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public LogProcessObject( ObjectState objectState, Guid id, long rowVersion, Guid application, Guid host, DateTime started, DateTime? stopped, long processId, string path, string identity )
+        public LogProcessObject( ObjectState objectState, Guid id, long rowVersion, Guid application, Guid? host, DateTime started, DateTime? stopped, long processId, string path, string identity )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -22003,7 +22003,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Host
+        public Guid? Host
         {
             get => _host;
             set
@@ -22094,7 +22094,7 @@ namespace Barrelman.Data.Types
             base.ReadFrom( source );
             _rowVersion = source.ReadInt64( );
             _application = source.ReadGuid( );
-            _host = source.ReadGuid( );
+            _host = source.ReadNullableGuid( );
             _started = source.ReadDateTime( );
             _stopped = source.ReadNullableDateTime( );
             _processId = source.ReadInt64( );
@@ -25190,14 +25190,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _oilSpillDetector;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public OilSpillDetectorCommandReplyObject( )
         {
         }
 
-        public OilSpillDetectorCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public OilSpillDetectorCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -25309,7 +25309,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -25363,7 +25363,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _oilSpillDetector = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -25391,7 +25391,7 @@ namespace Barrelman.Data.Types
         bool _sendAsTarget = false;
         bool _writeLog = false;
         string _targetFilePrefix = string.Empty;
-        Guid _targetMMSI;
+        Guid? _targetMMSI;
         double _latitude = 0.0;
         double _longitude = 0.0;
         bool _testSourceEnabled = false;
@@ -25401,7 +25401,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public OilSpillDetectorConfigurationObject( ObjectState objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
+        public OilSpillDetectorConfigurationObject( ObjectState objectState, Guid id, long rowVersion, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid? targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -25819,7 +25819,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid TargetMMSI
+        public Guid? TargetMMSI
         {
             get => _targetMMSI;
             set
@@ -25944,7 +25944,7 @@ namespace Barrelman.Data.Types
             _sendAsTarget = source.ReadBoolean( );
             _writeLog = source.ReadBoolean( );
             _targetFilePrefix = source.ReadString( );
-            _targetMMSI = source.ReadGuid( );
+            _targetMMSI = source.ReadNullableGuid( );
             _latitude = source.ReadDouble( );
             _longitude = source.ReadDouble( );
             _testSourceEnabled = source.ReadBoolean( );
@@ -27259,12 +27259,12 @@ namespace Barrelman.Data.Types
 
     public class ReferencePropertyObject : PropertyObject
     {
-        Guid _value;
+        Guid? _value;
         public ReferencePropertyObject( )
         {
         }
 
-        public ReferencePropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid value__ )
+        public ReferencePropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? value__ )
             : base( objectState, id, rowVersion, element, definition )
         {
             _value = value__;
@@ -27310,7 +27310,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Value
+        public Guid? Value
         {
             get => _value;
             set
@@ -27332,7 +27332,7 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _value = source.ReadGuid( );
+            _value = source.ReadNullableGuid( );
         }
 
     }
@@ -27601,12 +27601,12 @@ namespace Barrelman.Data.Types
 
     public class BinaryTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public BinaryTimeseriesPropertyObject( )
         {
         }
 
-        public BinaryTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public BinaryTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -27652,7 +27652,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -27674,19 +27674,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class BooleanTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public BooleanTimeseriesPropertyObject( )
         {
         }
 
-        public BooleanTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public BooleanTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -27732,7 +27732,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -27754,19 +27754,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class ByteTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public ByteTimeseriesPropertyObject( )
         {
         }
 
-        public ByteTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public ByteTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -27812,7 +27812,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -27834,19 +27834,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class DateTimeTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public DateTimeTimeseriesPropertyObject( )
         {
         }
 
-        public DateTimeTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public DateTimeTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -27892,7 +27892,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -27914,19 +27914,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class DoubleTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public DoubleTimeseriesPropertyObject( )
         {
         }
 
-        public DoubleTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public DoubleTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -27972,7 +27972,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -27994,19 +27994,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class GuidTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public GuidTimeseriesPropertyObject( )
         {
         }
 
-        public GuidTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public GuidTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28052,7 +28052,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28074,19 +28074,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class Int16TimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public Int16TimeseriesPropertyObject( )
         {
         }
 
-        public Int16TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public Int16TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28132,7 +28132,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28154,19 +28154,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class Int32TimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public Int32TimeseriesPropertyObject( )
         {
         }
 
-        public Int32TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public Int32TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28212,7 +28212,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28234,19 +28234,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class Int64TimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public Int64TimeseriesPropertyObject( )
         {
         }
 
-        public Int64TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public Int64TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28292,7 +28292,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28314,19 +28314,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class ReferenceTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public ReferenceTimeseriesPropertyObject( )
         {
         }
 
-        public ReferenceTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public ReferenceTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28372,7 +28372,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28394,19 +28394,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class SByteTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public SByteTimeseriesPropertyObject( )
         {
         }
 
-        public SByteTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public SByteTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28452,7 +28452,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28474,19 +28474,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class SingleTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public SingleTimeseriesPropertyObject( )
         {
         }
 
-        public SingleTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public SingleTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28532,7 +28532,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28554,19 +28554,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class StringTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public StringTimeseriesPropertyObject( )
         {
         }
 
-        public StringTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public StringTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28612,7 +28612,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28634,19 +28634,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class TimeSpanTimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public TimeSpanTimeseriesPropertyObject( )
         {
         }
 
-        public TimeSpanTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public TimeSpanTimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28692,7 +28692,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28714,19 +28714,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class UInt16TimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public UInt16TimeseriesPropertyObject( )
         {
         }
 
-        public UInt16TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public UInt16TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28772,7 +28772,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28794,19 +28794,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class UInt32TimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public UInt32TimeseriesPropertyObject( )
         {
         }
 
-        public UInt32TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public UInt32TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28852,7 +28852,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28874,19 +28874,19 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
 
     public class UInt64TimeseriesPropertyObject : TimeseriesPropertyObject
     {
-        Guid _timeseries;
+        Guid? _timeseries;
         public UInt64TimeseriesPropertyObject( )
         {
         }
 
-        public UInt64TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public UInt64TimeseriesPropertyObject( ObjectState objectState, Guid id, long rowVersion, Guid element, Guid definition, Guid? timeseries )
             : base( objectState, id, rowVersion, element, definition )
         {
             _timeseries = timeseries;
@@ -28932,7 +28932,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get => _timeseries;
             set
@@ -28954,7 +28954,7 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _timeseries = source.ReadGuid( );
+            _timeseries = source.ReadNullableGuid( );
         }
 
     }
@@ -30386,13 +30386,13 @@ namespace Barrelman.Data.Types
 
     public class ReferencePropertyDefinitionObject : PropertyDefinitionObject
     {
-        Guid _defaultValue;
-        Guid _referencedElementType;
+        Guid? _defaultValue;
+        Guid? _referencedElementType;
         public ReferencePropertyDefinitionObject( )
         {
         }
 
-        public ReferencePropertyDefinitionObject( ObjectState objectState, Guid id, long rowVersion, Guid elementType, string name, string description, Guid defaultValue, Guid referencedElementType )
+        public ReferencePropertyDefinitionObject( ObjectState objectState, Guid id, long rowVersion, Guid elementType, string name, string description, Guid? defaultValue, Guid? referencedElementType )
             : base( objectState, id, rowVersion, elementType, name, description )
         {
             _defaultValue = defaultValue;
@@ -30444,7 +30444,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid DefaultValue
+        public Guid? DefaultValue
         {
             get => _defaultValue;
             set
@@ -30456,7 +30456,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid ReferencedElementType
+        public Guid? ReferencedElementType
         {
             get => _referencedElementType;
             set
@@ -30479,8 +30479,8 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _defaultValue = source.ReadGuid( );
-            _referencedElementType = source.ReadGuid( );
+            _defaultValue = source.ReadNullableGuid( );
+            _referencedElementType = source.ReadNullableGuid( );
         }
 
     }
@@ -31556,12 +31556,12 @@ namespace Barrelman.Data.Types
 
     public class ReferenceTimeseriesPropertyDefinitionObject : TimeseriesPropertyDefinitionObject
     {
-        Guid _referencedElementType;
+        Guid? _referencedElementType;
         public ReferenceTimeseriesPropertyDefinitionObject( )
         {
         }
 
-        public ReferenceTimeseriesPropertyDefinitionObject( ObjectState objectState, Guid id, long rowVersion, Guid elementType, string name, string description, Guid referencedElementType )
+        public ReferenceTimeseriesPropertyDefinitionObject( ObjectState objectState, Guid id, long rowVersion, Guid elementType, string name, string description, Guid? referencedElementType )
             : base( objectState, id, rowVersion, elementType, name, description )
         {
             _referencedElementType = referencedElementType;
@@ -31607,7 +31607,7 @@ namespace Barrelman.Data.Types
             return base.IsOfType( objectType );
         }
 
-        public Guid ReferencedElementType
+        public Guid? ReferencedElementType
         {
             get => _referencedElementType;
             set
@@ -31629,7 +31629,7 @@ namespace Barrelman.Data.Types
         public override void ReadFrom([DisallowNull] BinaryReader source)
         {
             base.ReadFrom( source );
-            _referencedElementType = source.ReadGuid( );
+            _referencedElementType = source.ReadNullableGuid( );
         }
 
     }
@@ -33173,14 +33173,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _radar;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public RadarCommandReplyObject( )
         {
         }
 
-        public RadarCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public RadarCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -33292,7 +33292,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -33346,7 +33346,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _radar = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -33364,7 +33364,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public RadarCommandReplyGetStatusObject( ObjectState objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
+        public RadarCommandReplyGetStatusObject( ObjectState objectState, Guid id, long rowVersion, Guid radar, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
             : base( objectState, id, rowVersion, radar, timestamp, command, status, message )
         {
             _azimuthCount = azimuthCount;
@@ -34972,14 +34972,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _radio;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public RadioCommandReplyObject( )
         {
         }
 
-        public RadioCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid radio, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public RadioCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid radio, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -35091,7 +35091,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -35145,7 +35145,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _radio = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -35611,14 +35611,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _radome;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public RadomeCommandReplyObject( )
         {
         }
 
-        public RadomeCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid radome, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public RadomeCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid radome, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -35730,7 +35730,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -35784,7 +35784,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _radome = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -46439,14 +46439,14 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _weatherStation;
         DateTime _timestamp;
-        Guid _command;
+        Guid? _command;
         Types.DeviceCommandReplyStatus _status = Types.DeviceCommandReplyStatus.Unknown;
         string _message = string.Empty;
         public WeatherStationCommandReplyObject( )
         {
         }
 
-        public WeatherStationCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid weatherStation, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public WeatherStationCommandReplyObject( ObjectState objectState, Guid id, long rowVersion, Guid weatherStation, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -46558,7 +46558,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get => _command;
             set
@@ -46612,7 +46612,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _weatherStation = source.ReadGuid( );
             _timestamp = source.ReadDateTime( );
-            _command = source.ReadGuid( );
+            _command = source.ReadNullableGuid( );
             _status = source.ReadEnum<Types.DeviceCommandReplyStatus>( );
             _message = source.ReadString( );
         }
@@ -47556,7 +47556,7 @@ namespace Barrelman.Data.Types
         long _rowVersion = 0;
         Guid _track;
         Guid _zone;
-        Guid _radarTrack;
+        Guid? _radarTrack;
         DateTime _timestamp;
         double _latitude = 0.0;
         double _longitude = 0.0;
@@ -47571,7 +47571,7 @@ namespace Barrelman.Data.Types
         {
         }
 
-        public ZoneTrackAlarmObject( ObjectState objectState, Guid id, long rowVersion, Guid track, Guid zone, Guid radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
+        public ZoneTrackAlarmObject( ObjectState objectState, Guid id, long rowVersion, Guid track, Guid zone, Guid? radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
             : base( objectState, id )
         {
             _rowVersion = rowVersion;
@@ -47731,7 +47731,7 @@ namespace Barrelman.Data.Types
                 }
             }
         }
-        public Guid RadarTrack
+        public Guid? RadarTrack
         {
             get => _radarTrack;
             set
@@ -47889,7 +47889,7 @@ namespace Barrelman.Data.Types
             _rowVersion = source.ReadInt64( );
             _track = source.ReadGuid( );
             _zone = source.ReadGuid( );
-            _radarTrack = source.ReadGuid( );
+            _radarTrack = source.ReadNullableGuid( );
             _timestamp = source.ReadDateTime( );
             _latitude = source.ReadDouble( );
             _longitude = source.ReadDouble( );

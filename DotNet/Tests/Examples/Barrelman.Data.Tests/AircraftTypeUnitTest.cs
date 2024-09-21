@@ -90,7 +90,7 @@ namespace Barrelman.Data.Tests
         {
             var loggerFactory = LoggerFactoryHelper.LoggerFactory;
             var connection = ConnectionHelper.Connection;
-            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection);
+            var dataContext = new Database.SqlServerDataContext(loggerFactory, connection, Guid.NewGuid());
 
             Guid id = new Guid("{E9D19608-ADEE-41B5-ADDF-E519AE336B0C}");
             string name1 = "Lockheed Martin F-35 Lightning II";

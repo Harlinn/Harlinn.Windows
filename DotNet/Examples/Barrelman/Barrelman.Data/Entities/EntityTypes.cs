@@ -97,6 +97,7 @@ namespace Barrelman.Data.Entities
                 if( data.AisDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AisDevice", false );
                     data = GetData( );
                     data.AisDevice = value;
                     OnPropertyChanged( );
@@ -123,6 +124,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _aisDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the AisDeviceEntity object identified by {data.AisDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -189,6 +195,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -268,6 +275,7 @@ namespace Barrelman.Data.Entities
                 if( data.AisDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AisDevice", false );
                     data = GetData( );
                     data.AisDevice = value;
                     OnPropertyChanged( );
@@ -295,6 +303,11 @@ namespace Barrelman.Data.Entities
                 {
                     _aisDeviceReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the AisDeviceEntity object identified by {data.AisDevice}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -319,7 +332,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -328,6 +341,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -336,7 +350,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public AisDeviceCommandEntity Command
+        public AisDeviceCommandEntity? Command
         {
             get
             {
@@ -350,16 +364,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetAisDeviceCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetAisDeviceCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -434,6 +452,7 @@ namespace Barrelman.Data.Entities
                 if( data.AisDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AisDevice", false );
                     data = GetData( );
                     data.AisDevice = value;
                     OnPropertyChanged( );
@@ -460,6 +479,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _aisDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the AisDeviceEntity object identified by {data.AisDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -812,6 +836,7 @@ namespace Barrelman.Data.Entities
                 if( data.AisDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AisDevice", false );
                     data = GetData( );
                     data.AisDevice = value;
                     OnPropertyChanged( );
@@ -838,6 +863,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _aisDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the AisDeviceEntity object identified by {data.AisDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -934,6 +964,7 @@ namespace Barrelman.Data.Entities
                 if( data.AisDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AisDevice", false );
                     data = GetData( );
                     data.AisDevice = value;
                     OnPropertyChanged( );
@@ -960,6 +991,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _aisDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the AisDeviceEntity object identified by {data.AisDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -1041,6 +1077,7 @@ namespace Barrelman.Data.Entities
                 if( data.AisDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AisDevice", false );
                     data = GetData( );
                     data.AisDevice = value;
                     OnPropertyChanged( );
@@ -1067,6 +1104,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _aisDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the AisDeviceEntity object identified by {data.AisDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -1124,7 +1166,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid MmsiId
+        public Guid? MmsiId
         {
             get => GetData( ).Mmsi;
             set
@@ -1133,6 +1175,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi", false );
                     data = GetData( );
                     data.Mmsi = value;
                     OnPropertyChanged( );
@@ -1141,7 +1184,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity Mmsi
+        public MaritimeMobileServiceIdentityEntity? Mmsi
         {
             get
             {
@@ -1155,16 +1198,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.Mmsi );
-                if( entity != null )
+                if( data.Mmsi is Guid mmsiId )
                 {
-                    _mmsiReference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( mmsiId );
+                    if( entity != null )
+                    {
+                        _mmsiReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                MmsiId = value != null? value.Id : Guid.Empty;
+                MmsiId = value != null? value.Id : null;
             }
         }
 
@@ -1501,7 +1548,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid DestinationMmsiId
+        public Guid? DestinationMmsiId
         {
             get => GetData( ).DestinationMmsi;
             set
@@ -1510,6 +1557,7 @@ namespace Barrelman.Data.Entities
                 if( data.DestinationMmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DestinationMmsi", false );
                     data = GetData( );
                     data.DestinationMmsi = value;
                     OnPropertyChanged( );
@@ -1518,7 +1566,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity DestinationMmsi
+        public MaritimeMobileServiceIdentityEntity? DestinationMmsi
         {
             get
             {
@@ -1532,16 +1580,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.DestinationMmsi );
-                if( entity != null )
+                if( data.DestinationMmsi is Guid destinationMmsiId )
                 {
-                    _destinationMmsiReference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( destinationMmsiId );
+                    if( entity != null )
+                    {
+                        _destinationMmsiReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                DestinationMmsiId = value != null? value.Id : Guid.Empty;
+                DestinationMmsiId = value != null? value.Id : null;
             }
         }
 
@@ -1785,7 +1837,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid Mmsi1Id
+        public Guid? Mmsi1Id
         {
             get => GetData( ).Mmsi1;
             set
@@ -1794,6 +1846,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi1 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi1", false );
                     data = GetData( );
                     data.Mmsi1 = value;
                     OnPropertyChanged( );
@@ -1802,7 +1855,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity Mmsi1
+        public MaritimeMobileServiceIdentityEntity? Mmsi1
         {
             get
             {
@@ -1816,16 +1869,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.Mmsi1 );
-                if( entity != null )
+                if( data.Mmsi1 is Guid mmsi1Id )
                 {
-                    _mmsi1Reference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( mmsi1Id );
+                    if( entity != null )
+                    {
+                        _mmsi1Reference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                Mmsi1Id = value != null? value.Id : Guid.Empty;
+                Mmsi1Id = value != null? value.Id : null;
             }
         }
 
@@ -1854,6 +1911,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi2 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi2", false );
                     data = GetData( );
                     data.Mmsi2 = value;
                     OnPropertyChanged( );
@@ -1918,6 +1976,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi3 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi3", false );
                     data = GetData( );
                     data.Mmsi3 = value;
                     OnPropertyChanged( );
@@ -1982,6 +2041,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi4 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi4", false );
                     data = GetData( );
                     data.Mmsi4 = value;
                     OnPropertyChanged( );
@@ -2052,7 +2112,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid DestinationMmsiId
+        public Guid? DestinationMmsiId
         {
             get => GetData( ).DestinationMmsi;
             set
@@ -2061,6 +2121,7 @@ namespace Barrelman.Data.Entities
                 if( data.DestinationMmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DestinationMmsi", false );
                     data = GetData( );
                     data.DestinationMmsi = value;
                     OnPropertyChanged( );
@@ -2069,7 +2130,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity DestinationMmsi
+        public MaritimeMobileServiceIdentityEntity? DestinationMmsi
         {
             get
             {
@@ -2083,16 +2144,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.DestinationMmsi );
-                if( entity != null )
+                if( data.DestinationMmsi is Guid destinationMmsiId )
                 {
-                    _destinationMmsiReference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( destinationMmsiId );
+                    if( entity != null )
+                    {
+                        _destinationMmsiReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                DestinationMmsiId = value != null? value.Id : Guid.Empty;
+                DestinationMmsiId = value != null? value.Id : null;
             }
         }
 
@@ -2699,7 +2764,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid NameId
+        public Guid? NameId
         {
             get => GetData( ).Name;
             set
@@ -2708,6 +2773,7 @@ namespace Barrelman.Data.Entities
                 if( data.Name != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Name", false );
                     data = GetData( );
                     data.Name = value;
                     OnPropertyChanged( );
@@ -2716,7 +2782,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public NameEntity Name
+        public NameEntity? Name
         {
             get
             {
@@ -2730,16 +2796,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetNameById( data.Name );
-                if( entity != null )
+                if( data.Name is Guid nameId )
                 {
-                    _nameReference = new WeakReference( entity );
+                    var entity = context.GetNameById( nameId );
+                    if( entity != null )
+                    {
+                        _nameReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                NameId = value != null? value.Id : Guid.Empty;
+                NameId = value != null? value.Id : null;
             }
         }
 
@@ -2919,7 +2989,7 @@ namespace Barrelman.Data.Entities
             return (AisInterrogationMessageObject)base._GetData( );
         }
 
-        public Guid InterrogatedMmsiId
+        public Guid? InterrogatedMmsiId
         {
             get => GetData( ).InterrogatedMmsi;
             set
@@ -2928,6 +2998,7 @@ namespace Barrelman.Data.Entities
                 if( data.InterrogatedMmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "InterrogatedMmsi", false );
                     data = GetData( );
                     data.InterrogatedMmsi = value;
                     OnPropertyChanged( );
@@ -2936,7 +3007,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity InterrogatedMmsi
+        public MaritimeMobileServiceIdentityEntity? InterrogatedMmsi
         {
             get
             {
@@ -2950,16 +3021,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.InterrogatedMmsi );
-                if( entity != null )
+                if( data.InterrogatedMmsi is Guid interrogatedMmsiId )
                 {
-                    _interrogatedMmsiReference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( interrogatedMmsiId );
+                    if( entity != null )
+                    {
+                        _interrogatedMmsiReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                InterrogatedMmsiId = value != null? value.Id : Guid.Empty;
+                InterrogatedMmsiId = value != null? value.Id : null;
             }
         }
 
@@ -3036,6 +3111,7 @@ namespace Barrelman.Data.Entities
                 if( data.SecondStationInterrogationMmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "SecondStationInterrogationMmsi", false );
                     data = GetData( );
                     data.SecondStationInterrogationMmsi = value;
                     OnPropertyChanged( );
@@ -3564,7 +3640,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid Mmsi1Id
+        public Guid? Mmsi1Id
         {
             get => GetData( ).Mmsi1;
             set
@@ -3573,6 +3649,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi1 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi1", false );
                     data = GetData( );
                     data.Mmsi1 = value;
                     OnPropertyChanged( );
@@ -3581,7 +3658,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity Mmsi1
+        public MaritimeMobileServiceIdentityEntity? Mmsi1
         {
             get
             {
@@ -3595,16 +3672,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.Mmsi1 );
-                if( entity != null )
+                if( data.Mmsi1 is Guid mmsi1Id )
                 {
-                    _mmsi1Reference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( mmsi1Id );
+                    if( entity != null )
+                    {
+                        _mmsi1Reference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                Mmsi1Id = value != null? value.Id : Guid.Empty;
+                Mmsi1Id = value != null? value.Id : null;
             }
         }
 
@@ -3633,6 +3714,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi2 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi2", false );
                     data = GetData( );
                     data.Mmsi2 = value;
                     OnPropertyChanged( );
@@ -3697,6 +3779,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi3 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi3", false );
                     data = GetData( );
                     data.Mmsi3 = value;
                     OnPropertyChanged( );
@@ -3761,6 +3844,7 @@ namespace Barrelman.Data.Entities
                 if( data.Mmsi4 != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Mmsi4", false );
                     data = GetData( );
                     data.Mmsi4 = value;
                     OnPropertyChanged( );
@@ -4341,7 +4425,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid ImoNumberId
+        public Guid? ImoNumberId
         {
             get => GetData( ).ImoNumber;
             set
@@ -4350,6 +4434,7 @@ namespace Barrelman.Data.Entities
                 if( data.ImoNumber != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ImoNumber", false );
                     data = GetData( );
                     data.ImoNumber = value;
                     OnPropertyChanged( );
@@ -4358,7 +4443,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public InternationalMaritimeOrganizationNumberEntity ImoNumber
+        public InternationalMaritimeOrganizationNumberEntity? ImoNumber
         {
             get
             {
@@ -4372,20 +4457,24 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetInternationalMaritimeOrganizationNumberById( data.ImoNumber );
-                if( entity != null )
+                if( data.ImoNumber is Guid imoNumberId )
                 {
-                    _imoNumberReference = new WeakReference( entity );
+                    var entity = context.GetInternationalMaritimeOrganizationNumberById( imoNumberId );
+                    if( entity != null )
+                    {
+                        _imoNumberReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ImoNumberId = value != null? value.Id : Guid.Empty;
+                ImoNumberId = value != null? value.Id : null;
             }
         }
 
-        public Guid CallsignId
+        public Guid? CallsignId
         {
             get => GetData( ).Callsign;
             set
@@ -4394,6 +4483,7 @@ namespace Barrelman.Data.Entities
                 if( data.Callsign != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Callsign", false );
                     data = GetData( );
                     data.Callsign = value;
                     OnPropertyChanged( );
@@ -4402,7 +4492,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public CallsignEntity Callsign
+        public CallsignEntity? Callsign
         {
             get
             {
@@ -4416,20 +4506,24 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetCallsignById( data.Callsign );
-                if( entity != null )
+                if( data.Callsign is Guid callsignId )
                 {
-                    _callsignReference = new WeakReference( entity );
+                    var entity = context.GetCallsignById( callsignId );
+                    if( entity != null )
+                    {
+                        _callsignReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CallsignId = value != null? value.Id : Guid.Empty;
+                CallsignId = value != null? value.Id : null;
             }
         }
 
-        public Guid ShipNameId
+        public Guid? ShipNameId
         {
             get => GetData( ).ShipName;
             set
@@ -4438,6 +4532,7 @@ namespace Barrelman.Data.Entities
                 if( data.ShipName != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ShipName", false );
                     data = GetData( );
                     data.ShipName = value;
                     OnPropertyChanged( );
@@ -4446,7 +4541,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public NameEntity ShipName
+        public NameEntity? ShipName
         {
             get
             {
@@ -4460,16 +4555,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetNameById( data.ShipName );
-                if( entity != null )
+                if( data.ShipName is Guid shipNameId )
                 {
-                    _shipNameReference = new WeakReference( entity );
+                    var entity = context.GetNameById( shipNameId );
+                    if( entity != null )
+                    {
+                        _shipNameReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ShipNameId = value != null? value.Id : Guid.Empty;
+                ShipNameId = value != null? value.Id : null;
             }
         }
 
@@ -4694,7 +4793,7 @@ namespace Barrelman.Data.Entities
             return (AisStaticDataReportPartAMessageObject)base._GetData( );
         }
 
-        public Guid ShipNameId
+        public Guid? ShipNameId
         {
             get => GetData( ).ShipName;
             set
@@ -4703,6 +4802,7 @@ namespace Barrelman.Data.Entities
                 if( data.ShipName != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ShipName", false );
                     data = GetData( );
                     data.ShipName = value;
                     OnPropertyChanged( );
@@ -4711,7 +4811,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public NameEntity ShipName
+        public NameEntity? ShipName
         {
             get
             {
@@ -4725,16 +4825,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetNameById( data.ShipName );
-                if( entity != null )
+                if( data.ShipName is Guid shipNameId )
                 {
-                    _shipNameReference = new WeakReference( entity );
+                    var entity = context.GetNameById( shipNameId );
+                    if( entity != null )
+                    {
+                        _shipNameReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ShipNameId = value != null? value.Id : Guid.Empty;
+                ShipNameId = value != null? value.Id : null;
             }
         }
 
@@ -4834,7 +4938,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CallsignId
+        public Guid? CallsignId
         {
             get => GetData( ).Callsign;
             set
@@ -4843,6 +4947,7 @@ namespace Barrelman.Data.Entities
                 if( data.Callsign != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Callsign", false );
                     data = GetData( );
                     data.Callsign = value;
                     OnPropertyChanged( );
@@ -4851,7 +4956,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public CallsignEntity Callsign
+        public CallsignEntity? Callsign
         {
             get
             {
@@ -4865,16 +4970,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetCallsignById( data.Callsign );
-                if( entity != null )
+                if( data.Callsign is Guid callsignId )
                 {
-                    _callsignReference = new WeakReference( entity );
+                    var entity = context.GetCallsignById( callsignId );
+                    if( entity != null )
+                    {
+                        _callsignReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CallsignId = value != null? value.Id : Guid.Empty;
+                CallsignId = value != null? value.Id : null;
             }
         }
 
@@ -4951,6 +5060,7 @@ namespace Barrelman.Data.Entities
                 if( data.MothershipMmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "MothershipMmsi", false );
                     data = GetData( );
                     data.MothershipMmsi = value;
                     OnPropertyChanged( );
@@ -5026,6 +5136,7 @@ namespace Barrelman.Data.Entities
 
     public class AisUtcAndDateInquiryMessageEntity : AisMessageEntity
     {
+        WeakReference? _destinationMmsiReference = null;
         public AisUtcAndDateInquiryMessageEntity( [DisallowNull] EntityContext entityContext, [DisallowNull] AisUtcAndDateInquiryMessageObject data )
             : base( entityContext, data )
         {
@@ -5052,7 +5163,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public int DestinationMmsi
+        public Guid? DestinationMmsiId
         {
             get => GetData( ).DestinationMmsi;
             set
@@ -5061,10 +5172,43 @@ namespace Barrelman.Data.Entities
                 if( data.DestinationMmsi != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DestinationMmsi", false );
                     data = GetData( );
                     data.DestinationMmsi = value;
                     OnPropertyChanged( );
+                    OnPropertyChanged( "DestinationMmsi" );
                 }
+            }
+        }
+
+        public MaritimeMobileServiceIdentityEntity? DestinationMmsi
+        {
+            get
+            {
+                if(_destinationMmsiReference != null)
+                {
+                    var result = (MaritimeMobileServiceIdentityEntity?)_destinationMmsiReference.Target;
+                    if( result != null )
+                    {
+                        return result;
+                    }
+                }
+                var data = GetData( );
+                var context = CheckedContext;
+                if( data.DestinationMmsi is Guid destinationMmsiId )
+                {
+                    var entity = context.GetMaritimeMobileServiceIdentityById( destinationMmsiId );
+                    if( entity != null )
+                    {
+                        _destinationMmsiReference = new WeakReference( entity );
+                    }
+                    return entity;
+                }
+                return null;
+            }
+            set
+            {
+                DestinationMmsiId = value != null? value.Id : null;
             }
         }
 
@@ -5265,6 +5409,7 @@ namespace Barrelman.Data.Entities
                 if( data.Alarm != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Alarm", false );
                     data = GetData( );
                     data.Alarm = value;
                     OnPropertyChanged( );
@@ -5291,6 +5436,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _alarmReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ZoneTrackAlarmEntity object identified by {data.Alarm}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -5416,6 +5566,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -5442,6 +5593,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the BinaryTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -5522,6 +5678,7 @@ namespace Barrelman.Data.Entities
                 if( data.View != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "View", false );
                     data = GetData( );
                     data.View = value;
                     OnPropertyChanged( );
@@ -5548,6 +5705,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _viewReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ViewEntity object identified by {data.View}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -5676,6 +5838,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -5702,6 +5865,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the BooleanTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -5782,6 +5950,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -5808,6 +5977,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ByteTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -5889,6 +6063,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -5915,6 +6090,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _cameraReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -5981,6 +6161,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -6870,6 +7051,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -6897,6 +7079,11 @@ namespace Barrelman.Data.Entities
                 {
                     _cameraReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -6921,7 +7108,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -6930,6 +7117,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -6938,7 +7126,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public CameraCommandEntity Command
+        public CameraCommandEntity? Command
         {
             get
             {
@@ -6952,16 +7140,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetCameraCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetCameraCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -7084,6 +7276,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -7110,6 +7303,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _cameraReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -8086,6 +8284,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -8112,6 +8311,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _cameraReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -8176,6 +8380,7 @@ namespace Barrelman.Data.Entities
                 if( data.PanCalibration != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "PanCalibration", false );
                     data = GetData( );
                     data.PanCalibration = value;
                     OnPropertyChanged( );
@@ -8202,6 +8407,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _panCalibrationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraPanCalibrationEntity object identified by {data.PanCalibration}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -8283,6 +8493,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -8310,6 +8521,11 @@ namespace Barrelman.Data.Entities
                 {
                     _cameraReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -8318,7 +8534,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TrackId
+        public Guid? TrackId
         {
             get => GetData( ).Track;
             set
@@ -8327,6 +8543,7 @@ namespace Barrelman.Data.Entities
                 if( data.Track != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Track", false );
                     data = GetData( );
                     data.Track = value;
                     OnPropertyChanged( );
@@ -8335,7 +8552,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public TrackBaseEntity Track
+        public TrackBaseEntity? Track
         {
             get
             {
@@ -8349,16 +8566,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetTrackBaseById( data.Track );
-                if( entity != null )
+                if( data.Track is Guid trackId )
                 {
-                    _trackReference = new WeakReference( entity );
+                    var entity = context.GetTrackBaseById( trackId );
+                    if( entity != null )
+                    {
+                        _trackReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TrackId = value != null? value.Id : Guid.Empty;
+                TrackId = value != null? value.Id : null;
             }
         }
 
@@ -8641,6 +8862,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -8667,6 +8889,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _cameraReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -8731,6 +8958,7 @@ namespace Barrelman.Data.Entities
                 if( data.TiltCalibration != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "TiltCalibration", false );
                     data = GetData( );
                     data.TiltCalibration = value;
                     OnPropertyChanged( );
@@ -8757,6 +8985,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _tiltCalibrationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraTiltCalibrationEntity object identified by {data.TiltCalibration}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -8837,6 +9070,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -8863,6 +9097,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _cameraReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -8927,6 +9166,7 @@ namespace Barrelman.Data.Entities
                 if( data.ZoomCalibration != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ZoomCalibration", false );
                     data = GetData( );
                     data.ZoomCalibration = value;
                     OnPropertyChanged( );
@@ -8953,6 +9193,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _zoomCalibrationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraZoomCalibrationEntity object identified by {data.ZoomCalibration}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -9024,7 +9269,7 @@ namespace Barrelman.Data.Entities
             return (CatalogElementObject)base._GetData( );
         }
 
-        public Guid CatalogId
+        public Guid? CatalogId
         {
             get => GetData( ).Catalog;
             set
@@ -9033,6 +9278,7 @@ namespace Barrelman.Data.Entities
                 if( data.Catalog != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Catalog", false );
                     data = GetData( );
                     data.Catalog = value;
                     OnPropertyChanged( );
@@ -9041,7 +9287,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public CatalogEntity Catalog
+        public CatalogEntity? Catalog
         {
             get
             {
@@ -9055,16 +9301,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetCatalogById( data.Catalog );
-                if( entity != null )
+                if( data.Catalog is Guid catalogId )
                 {
-                    _catalogReference = new WeakReference( entity );
+                    var entity = context.GetCatalogById( catalogId );
+                    if( entity != null )
+                    {
+                        _catalogReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CatalogId = value != null? value.Id : Guid.Empty;
+                CatalogId = value != null? value.Id : null;
             }
         }
 
@@ -9113,7 +9363,7 @@ namespace Barrelman.Data.Entities
             return (ElementObject)base._GetData( );
         }
 
-        public Guid ElementTypeId
+        public Guid? ElementTypeId
         {
             get => GetData( ).ElementType;
             set
@@ -9122,6 +9372,7 @@ namespace Barrelman.Data.Entities
                 if( data.ElementType != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ElementType", false );
                     data = GetData( );
                     data.ElementType = value;
                     OnPropertyChanged( );
@@ -9130,7 +9381,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ElementTypeEntity ElementType
+        public ElementTypeEntity? ElementType
         {
             get
             {
@@ -9144,16 +9395,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetElementTypeById( data.ElementType );
-                if( entity != null )
+                if( data.ElementType is Guid elementTypeId )
                 {
-                    _elementTypeReference = new WeakReference( entity );
+                    var entity = context.GetElementTypeById( elementTypeId );
+                    if( entity != null )
+                    {
+                        _elementTypeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ElementTypeId = value != null? value.Id : Guid.Empty;
+                ElementTypeId = value != null? value.Id : null;
             }
         }
 
@@ -9379,6 +9634,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -9405,6 +9661,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the DateTimeTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -9530,6 +9791,7 @@ namespace Barrelman.Data.Entities
                 if( data.Host != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Host", false );
                     data = GetData( );
                     data.Host = value;
                     OnPropertyChanged( );
@@ -9556,6 +9818,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _hostReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the DeviceHostEntity object identified by {data.Host}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -9668,6 +9935,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -9694,6 +9962,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the DoubleTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -9819,6 +10092,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -9845,6 +10119,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GeoPosition2DTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -9941,6 +10220,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -9967,6 +10247,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GeoPosition3DTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -10080,6 +10365,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -10106,6 +10392,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _gNSSDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GNSSDeviceEntity object identified by {data.GNSSDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -10172,6 +10463,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -10251,6 +10543,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -10278,6 +10571,11 @@ namespace Barrelman.Data.Entities
                 {
                     _gNSSDeviceReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the GNSSDeviceEntity object identified by {data.GNSSDevice}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -10302,7 +10600,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -10311,6 +10609,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -10319,7 +10618,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public GNSSDeviceCommandEntity Command
+        public GNSSDeviceCommandEntity? Command
         {
             get
             {
@@ -10333,16 +10632,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetGNSSDeviceCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetGNSSDeviceCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -10417,6 +10720,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -10443,6 +10747,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _gNSSDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GNSSDeviceEntity object identified by {data.GNSSDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -10603,6 +10912,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -10629,6 +10939,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GuidTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -10710,6 +11025,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -10736,6 +11052,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _gyroDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GyroDeviceEntity object identified by {data.GyroDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -10802,6 +11123,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -10881,6 +11203,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -10908,6 +11231,11 @@ namespace Barrelman.Data.Entities
                 {
                     _gyroDeviceReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the GyroDeviceEntity object identified by {data.GyroDevice}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -10932,7 +11260,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -10941,6 +11269,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -10949,7 +11278,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public GyroDeviceCommandEntity Command
+        public GyroDeviceCommandEntity? Command
         {
             get
             {
@@ -10963,16 +11292,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetGyroDeviceCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetGyroDeviceCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -11047,6 +11380,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -11073,6 +11407,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _gyroDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the GyroDeviceEntity object identified by {data.GyroDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -11382,6 +11721,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -11408,6 +11748,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the Int16TimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -11488,6 +11833,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -11514,6 +11860,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the Int32TimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -11594,6 +11945,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -11620,6 +11972,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the Int64TimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -11721,7 +12078,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TypeId
+        public Guid? TypeId
         {
             get => GetData( ).Type;
             set
@@ -11730,6 +12087,7 @@ namespace Barrelman.Data.Entities
                 if( data.Type != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Type", false );
                     data = GetData( );
                     data.Type = value;
                     OnPropertyChanged( );
@@ -11738,7 +12096,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public BaseStationTypeEntity Type
+        public BaseStationTypeEntity? Type
         {
             get
             {
@@ -11752,16 +12110,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetBaseStationTypeById( data.Type );
-                if( entity != null )
+                if( data.Type is Guid typeId )
                 {
-                    _typeReference = new WeakReference( entity );
+                    var entity = context.GetBaseStationTypeById( typeId );
+                    if( entity != null )
+                    {
+                        _typeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TypeId = value != null? value.Id : Guid.Empty;
+                TypeId = value != null? value.Id : null;
             }
         }
 
@@ -11790,6 +12152,7 @@ namespace Barrelman.Data.Entities
                 if( data.Host != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Host", false );
                     data = GetData( );
                     data.Host = value;
                     OnPropertyChanged( );
@@ -11816,6 +12179,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _hostReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the DeviceHostEntity object identified by {data.Host}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -11866,6 +12234,7 @@ namespace Barrelman.Data.Entities
                 if( data.EnabledTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "EnabledTimeseries", false );
                     data = GetData( );
                     data.EnabledTimeseries = value;
                     OnPropertyChanged( );
@@ -11945,6 +12314,7 @@ namespace Barrelman.Data.Entities
                 if( data.LatitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LatitudeTimeseries", false );
                     data = GetData( );
                     data.LatitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -11993,6 +12363,7 @@ namespace Barrelman.Data.Entities
                 if( data.LongitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LongitudeTimeseries", false );
                     data = GetData( );
                     data.LongitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -12041,6 +12412,7 @@ namespace Barrelman.Data.Entities
                 if( data.AltitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AltitudeTimeseries", false );
                     data = GetData( );
                     data.AltitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -12111,6 +12483,7 @@ namespace Barrelman.Data.Entities
                 if( data.HeadingTrueNorthTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "HeadingTrueNorthTimeseries", false );
                     data = GetData( );
                     data.HeadingTrueNorthTimeseries = value;
                     OnPropertyChanged( );
@@ -12159,6 +12532,7 @@ namespace Barrelman.Data.Entities
                 if( data.HeadingMagneticNorthTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "HeadingMagneticNorthTimeseries", false );
                     data = GetData( );
                     data.HeadingMagneticNorthTimeseries = value;
                     OnPropertyChanged( );
@@ -12207,6 +12581,7 @@ namespace Barrelman.Data.Entities
                 if( data.PitchTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "PitchTimeseries", false );
                     data = GetData( );
                     data.PitchTimeseries = value;
                     OnPropertyChanged( );
@@ -12255,6 +12630,7 @@ namespace Barrelman.Data.Entities
                 if( data.RateOfTurnTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "RateOfTurnTimeseries", false );
                     data = GetData( );
                     data.RateOfTurnTimeseries = value;
                     OnPropertyChanged( );
@@ -12303,6 +12679,7 @@ namespace Barrelman.Data.Entities
                 if( data.RollTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "RollTimeseries", false );
                     data = GetData( );
                     data.RollTimeseries = value;
                     OnPropertyChanged( );
@@ -12351,6 +12728,7 @@ namespace Barrelman.Data.Entities
                 if( data.CourseTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "CourseTimeseries", false );
                     data = GetData( );
                     data.CourseTimeseries = value;
                     OnPropertyChanged( );
@@ -12399,6 +12777,7 @@ namespace Barrelman.Data.Entities
                 if( data.SpeedTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "SpeedTimeseries", false );
                     data = GetData( );
                     data.SpeedTimeseries = value;
                     OnPropertyChanged( );
@@ -12438,7 +12817,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid GNSSDeviceId
+        public Guid? GNSSDeviceId
         {
             get => GetData( ).GNSSDevice;
             set
@@ -12447,6 +12826,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -12455,7 +12835,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public GNSSDeviceEntity GNSSDevice
+        public GNSSDeviceEntity? GNSSDevice
         {
             get
             {
@@ -12469,16 +12849,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetGNSSDeviceById( data.GNSSDevice );
-                if( entity != null )
+                if( data.GNSSDevice is Guid gNSSDeviceId )
                 {
-                    _gNSSDeviceReference = new WeakReference( entity );
+                    var entity = context.GetGNSSDeviceById( gNSSDeviceId );
+                    if( entity != null )
+                    {
+                        _gNSSDeviceReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                GNSSDeviceId = value != null? value.Id : Guid.Empty;
+                GNSSDeviceId = value != null? value.Id : null;
             }
         }
 
@@ -12552,6 +12936,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -12600,6 +12985,7 @@ namespace Barrelman.Data.Entities
                 if( data.PressureTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "PressureTimeseries", false );
                     data = GetData( );
                     data.PressureTimeseries = value;
                     OnPropertyChanged( );
@@ -12648,6 +13034,7 @@ namespace Barrelman.Data.Entities
                 if( data.TemperatureTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "TemperatureTimeseries", false );
                     data = GetData( );
                     data.TemperatureTimeseries = value;
                     OnPropertyChanged( );
@@ -12696,6 +13083,7 @@ namespace Barrelman.Data.Entities
                 if( data.DewPointTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DewPointTimeseries", false );
                     data = GetData( );
                     data.DewPointTimeseries = value;
                     OnPropertyChanged( );
@@ -12744,6 +13132,7 @@ namespace Barrelman.Data.Entities
                 if( data.StatusTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "StatusTimeseries", false );
                     data = GetData( );
                     data.StatusTimeseries = value;
                     OnPropertyChanged( );
@@ -12857,6 +13246,7 @@ namespace Barrelman.Data.Entities
                 if( data.SaveSettingsTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "SaveSettingsTimeseries", false );
                     data = GetData( );
                     data.SaveSettingsTimeseries = value;
                     OnPropertyChanged( );
@@ -12905,6 +13295,7 @@ namespace Barrelman.Data.Entities
                 if( data.PowerOnTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "PowerOnTimeseries", false );
                     data = GetData( );
                     data.PowerOnTimeseries = value;
                     OnPropertyChanged( );
@@ -12953,6 +13344,7 @@ namespace Barrelman.Data.Entities
                 if( data.TrackingOnTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "TrackingOnTimeseries", false );
                     data = GetData( );
                     data.TrackingOnTimeseries = value;
                     OnPropertyChanged( );
@@ -13001,6 +13393,7 @@ namespace Barrelman.Data.Entities
                 if( data.RadarPulseTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "RadarPulseTimeseries", false );
                     data = GetData( );
                     data.RadarPulseTimeseries = value;
                     OnPropertyChanged( );
@@ -13049,6 +13442,7 @@ namespace Barrelman.Data.Entities
                 if( data.TuningTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "TuningTimeseries", false );
                     data = GetData( );
                     data.TuningTimeseries = value;
                     OnPropertyChanged( );
@@ -13097,6 +13491,7 @@ namespace Barrelman.Data.Entities
                 if( data.BlankSector1Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "BlankSector1Timeseries", false );
                     data = GetData( );
                     data.BlankSector1Timeseries = value;
                     OnPropertyChanged( );
@@ -13145,6 +13540,7 @@ namespace Barrelman.Data.Entities
                 if( data.Sector1StartTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Sector1StartTimeseries", false );
                     data = GetData( );
                     data.Sector1StartTimeseries = value;
                     OnPropertyChanged( );
@@ -13193,6 +13589,7 @@ namespace Barrelman.Data.Entities
                 if( data.Sector1EndTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Sector1EndTimeseries", false );
                     data = GetData( );
                     data.Sector1EndTimeseries = value;
                     OnPropertyChanged( );
@@ -13241,6 +13638,7 @@ namespace Barrelman.Data.Entities
                 if( data.BlankSector2Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "BlankSector2Timeseries", false );
                     data = GetData( );
                     data.BlankSector2Timeseries = value;
                     OnPropertyChanged( );
@@ -13289,6 +13687,7 @@ namespace Barrelman.Data.Entities
                 if( data.Sector2StartTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Sector2StartTimeseries", false );
                     data = GetData( );
                     data.Sector2StartTimeseries = value;
                     OnPropertyChanged( );
@@ -13337,6 +13736,7 @@ namespace Barrelman.Data.Entities
                 if( data.Sector2EndTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Sector2EndTimeseries", false );
                     data = GetData( );
                     data.Sector2EndTimeseries = value;
                     OnPropertyChanged( );
@@ -13385,6 +13785,7 @@ namespace Barrelman.Data.Entities
                 if( data.EnableAutomaticFrequencyControlTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "EnableAutomaticFrequencyControlTimeseries", false );
                     data = GetData( );
                     data.EnableAutomaticFrequencyControlTimeseries = value;
                     OnPropertyChanged( );
@@ -13433,6 +13834,7 @@ namespace Barrelman.Data.Entities
                 if( data.AzimuthOffsetTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AzimuthOffsetTimeseries", false );
                     data = GetData( );
                     data.AzimuthOffsetTimeseries = value;
                     OnPropertyChanged( );
@@ -13481,6 +13883,7 @@ namespace Barrelman.Data.Entities
                 if( data.EnableSensitivityTimeControlTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "EnableSensitivityTimeControlTimeseries", false );
                     data = GetData( );
                     data.EnableSensitivityTimeControlTimeseries = value;
                     OnPropertyChanged( );
@@ -13529,6 +13932,7 @@ namespace Barrelman.Data.Entities
                 if( data.AutomaticSensitivityTimeControlTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AutomaticSensitivityTimeControlTimeseries", false );
                     data = GetData( );
                     data.AutomaticSensitivityTimeControlTimeseries = value;
                     OnPropertyChanged( );
@@ -13577,6 +13981,7 @@ namespace Barrelman.Data.Entities
                 if( data.SensitivityTimeControlLevelTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "SensitivityTimeControlLevelTimeseries", false );
                     data = GetData( );
                     data.SensitivityTimeControlLevelTimeseries = value;
                     OnPropertyChanged( );
@@ -13625,6 +14030,7 @@ namespace Barrelman.Data.Entities
                 if( data.EnableFastTimeConstantTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "EnableFastTimeConstantTimeseries", false );
                     data = GetData( );
                     data.EnableFastTimeConstantTimeseries = value;
                     OnPropertyChanged( );
@@ -13673,6 +14079,7 @@ namespace Barrelman.Data.Entities
                 if( data.FastTimeConstantLevelTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "FastTimeConstantLevelTimeseries", false );
                     data = GetData( );
                     data.FastTimeConstantLevelTimeseries = value;
                     OnPropertyChanged( );
@@ -13721,6 +14128,7 @@ namespace Barrelman.Data.Entities
                 if( data.FastTimeConstantModeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "FastTimeConstantModeTimeseries", false );
                     data = GetData( );
                     data.FastTimeConstantModeTimeseries = value;
                     OnPropertyChanged( );
@@ -13769,6 +14177,7 @@ namespace Barrelman.Data.Entities
                 if( data.LatitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LatitudeTimeseries", false );
                     data = GetData( );
                     data.LatitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -13817,6 +14226,7 @@ namespace Barrelman.Data.Entities
                 if( data.LongitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LongitudeTimeseries", false );
                     data = GetData( );
                     data.LongitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -13865,6 +14275,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -13913,6 +14324,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -13984,6 +14396,7 @@ namespace Barrelman.Data.Entities
                 if( data.BarometricPressureTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "BarometricPressureTimeseries", false );
                     data = GetData( );
                     data.BarometricPressureTimeseries = value;
                     OnPropertyChanged( );
@@ -14032,6 +14445,7 @@ namespace Barrelman.Data.Entities
                 if( data.AirTemperatureTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AirTemperatureTimeseries", false );
                     data = GetData( );
                     data.AirTemperatureTimeseries = value;
                     OnPropertyChanged( );
@@ -14080,6 +14494,7 @@ namespace Barrelman.Data.Entities
                 if( data.WaterTemperatureTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WaterTemperatureTimeseries", false );
                     data = GetData( );
                     data.WaterTemperatureTimeseries = value;
                     OnPropertyChanged( );
@@ -14128,6 +14543,7 @@ namespace Barrelman.Data.Entities
                 if( data.RelativeHumidityTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "RelativeHumidityTimeseries", false );
                     data = GetData( );
                     data.RelativeHumidityTimeseries = value;
                     OnPropertyChanged( );
@@ -14176,6 +14592,7 @@ namespace Barrelman.Data.Entities
                 if( data.AbsoluteHumidityTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AbsoluteHumidityTimeseries", false );
                     data = GetData( );
                     data.AbsoluteHumidityTimeseries = value;
                     OnPropertyChanged( );
@@ -14224,6 +14641,7 @@ namespace Barrelman.Data.Entities
                 if( data.DewPointTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DewPointTimeseries", false );
                     data = GetData( );
                     data.DewPointTimeseries = value;
                     OnPropertyChanged( );
@@ -14272,6 +14690,7 @@ namespace Barrelman.Data.Entities
                 if( data.WindDirectionTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WindDirectionTimeseries", false );
                     data = GetData( );
                     data.WindDirectionTimeseries = value;
                     OnPropertyChanged( );
@@ -14320,6 +14739,7 @@ namespace Barrelman.Data.Entities
                 if( data.WindSpeedTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WindSpeedTimeseries", false );
                     data = GetData( );
                     data.WindSpeedTimeseries = value;
                     OnPropertyChanged( );
@@ -14359,7 +14779,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid GyroId
+        public Guid? GyroId
         {
             get => GetData( ).Gyro;
             set
@@ -14368,6 +14788,7 @@ namespace Barrelman.Data.Entities
                 if( data.Gyro != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Gyro", false );
                     data = GetData( );
                     data.Gyro = value;
                     OnPropertyChanged( );
@@ -14376,7 +14797,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public GyroDeviceEntity Gyro
+        public GyroDeviceEntity? Gyro
         {
             get
             {
@@ -14390,16 +14811,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetGyroDeviceById( data.Gyro );
-                if( entity != null )
+                if( data.Gyro is Guid gyroId )
                 {
-                    _gyroReference = new WeakReference( entity );
+                    var entity = context.GetGyroDeviceById( gyroId );
+                    if( entity != null )
+                    {
+                        _gyroReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                GyroId = value != null? value.Id : Guid.Empty;
+                GyroId = value != null? value.Id : null;
             }
         }
 
@@ -14434,7 +14859,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TypeId
+        public Guid? TypeId
         {
             get => GetData( ).Type;
             set
@@ -14443,6 +14868,7 @@ namespace Barrelman.Data.Entities
                 if( data.Type != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Type", false );
                     data = GetData( );
                     data.Type = value;
                     OnPropertyChanged( );
@@ -14451,7 +14877,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public FacilityTypeEntity Type
+        public FacilityTypeEntity? Type
         {
             get
             {
@@ -14465,16 +14891,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetFacilityTypeById( data.Type );
-                if( entity != null )
+                if( data.Type is Guid typeId )
                 {
-                    _typeReference = new WeakReference( entity );
+                    var entity = context.GetFacilityTypeById( typeId );
+                    if( entity != null )
+                    {
+                        _typeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TypeId = value != null? value.Id : Guid.Empty;
+                TypeId = value != null? value.Id : null;
             }
         }
 
@@ -14535,6 +14965,11 @@ namespace Barrelman.Data.Entities
         {
         }
 
+        private TrackableItemObject GetData( ) 
+        {
+            return (TrackableItemObject)base._GetData( );
+        }
+
     }
 
     public class AircraftEntity : TrackableItemEntity
@@ -14566,7 +15001,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TypeId
+        public Guid? TypeId
         {
             get => GetData( ).Type;
             set
@@ -14575,6 +15010,7 @@ namespace Barrelman.Data.Entities
                 if( data.Type != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Type", false );
                     data = GetData( );
                     data.Type = value;
                     OnPropertyChanged( );
@@ -14583,7 +15019,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public AircraftTypeEntity Type
+        public AircraftTypeEntity? Type
         {
             get
             {
@@ -14597,16 +15033,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetAircraftTypeById( data.Type );
-                if( entity != null )
+                if( data.Type is Guid typeId )
                 {
-                    _typeReference = new WeakReference( entity );
+                    var entity = context.GetAircraftTypeById( typeId );
+                    if( entity != null )
+                    {
+                        _typeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TypeId = value != null? value.Id : Guid.Empty;
+                TypeId = value != null? value.Id : null;
             }
         }
 
@@ -14643,7 +15083,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid MMSIId
+        public Guid? MMSIId
         {
             get => GetData( ).MMSI;
             set
@@ -14652,6 +15092,7 @@ namespace Barrelman.Data.Entities
                 if( data.MMSI != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "MMSI", false );
                     data = GetData( );
                     data.MMSI = value;
                     OnPropertyChanged( );
@@ -14660,7 +15101,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity MMSI
+        public MaritimeMobileServiceIdentityEntity? MMSI
         {
             get
             {
@@ -14674,16 +15115,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.MMSI );
-                if( entity != null )
+                if( data.MMSI is Guid mMSIId )
                 {
-                    _mMSIReference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( mMSIId );
+                    if( entity != null )
+                    {
+                        _mMSIReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                MMSIId = value != null? value.Id : Guid.Empty;
+                MMSIId = value != null? value.Id : null;
             }
         }
 
@@ -14712,6 +15157,7 @@ namespace Barrelman.Data.Entities
                 if( data.Position != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Position", false );
                     data = GetData( );
                     data.Position = value;
                     OnPropertyChanged( );
@@ -14840,6 +15286,7 @@ namespace Barrelman.Data.Entities
                 if( data.OffPositionTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "OffPositionTimeseries", false );
                     data = GetData( );
                     data.OffPositionTimeseries = value;
                     OnPropertyChanged( );
@@ -14910,7 +15357,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TypeId
+        public Guid? TypeId
         {
             get => GetData( ).Type;
             set
@@ -14919,6 +15366,7 @@ namespace Barrelman.Data.Entities
                 if( data.Type != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Type", false );
                     data = GetData( );
                     data.Type = value;
                     OnPropertyChanged( );
@@ -14927,7 +15375,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public VehicleTypeEntity Type
+        public VehicleTypeEntity? Type
         {
             get
             {
@@ -14941,16 +15389,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetVehicleTypeById( data.Type );
-                if( entity != null )
+                if( data.Type is Guid typeId )
                 {
-                    _typeReference = new WeakReference( entity );
+                    var entity = context.GetVehicleTypeById( typeId );
+                    if( entity != null )
+                    {
+                        _typeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TypeId = value != null? value.Id : Guid.Empty;
+                TypeId = value != null? value.Id : null;
             }
         }
 
@@ -14987,7 +15439,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TypeId
+        public Guid? TypeId
         {
             get => GetData( ).Type;
             set
@@ -14996,6 +15448,7 @@ namespace Barrelman.Data.Entities
                 if( data.Type != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Type", false );
                     data = GetData( );
                     data.Type = value;
                     OnPropertyChanged( );
@@ -15004,7 +15457,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public VesselTypeEntity Type
+        public VesselTypeEntity? Type
         {
             get
             {
@@ -15018,16 +15471,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetVesselTypeById( data.Type );
-                if( entity != null )
+                if( data.Type is Guid typeId )
                 {
-                    _typeReference = new WeakReference( entity );
+                    var entity = context.GetVesselTypeById( typeId );
+                    if( entity != null )
+                    {
+                        _typeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TypeId = value != null? value.Id : Guid.Empty;
+                TypeId = value != null? value.Id : null;
             }
         }
 
@@ -15104,6 +15561,7 @@ namespace Barrelman.Data.Entities
                 if( data.DraughtTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DraughtTimeseries", false );
                     data = GetData( );
                     data.DraughtTimeseries = value;
                     OnPropertyChanged( );
@@ -15152,6 +15610,7 @@ namespace Barrelman.Data.Entities
                 if( data.PersonsOnBoardTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "PersonsOnBoardTimeseries", false );
                     data = GetData( );
                     data.PersonsOnBoardTimeseries = value;
                     OnPropertyChanged( );
@@ -15231,6 +15690,7 @@ namespace Barrelman.Data.Entities
                 if( data.Item != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Item", false );
                     data = GetData( );
                     data.Item = value;
                     OnPropertyChanged( );
@@ -15258,6 +15718,11 @@ namespace Barrelman.Data.Entities
                 {
                     _itemReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ItemEntity object identified by {data.Item}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -15275,6 +15740,7 @@ namespace Barrelman.Data.Entities
                 if( data.Identity != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Identity", false );
                     data = GetData( );
                     data.Identity = value;
                     OnPropertyChanged( );
@@ -15301,6 +15767,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _identityReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the IdentityEntity object identified by {data.Identity}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -15382,6 +15853,7 @@ namespace Barrelman.Data.Entities
                 if( data.Parent != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Parent", false );
                     data = GetData( );
                     data.Parent = value;
                     OnPropertyChanged( );
@@ -15409,6 +15881,11 @@ namespace Barrelman.Data.Entities
                 {
                     _parentReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ItemEntity object identified by {data.Parent}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -15426,6 +15903,7 @@ namespace Barrelman.Data.Entities
                 if( data.Child != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Child", false );
                     data = GetData( );
                     data.Child = value;
                     OnPropertyChanged( );
@@ -15452,6 +15930,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _childReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ItemEntity object identified by {data.Child}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -15517,6 +16000,7 @@ namespace Barrelman.Data.Entities
                 if( data.LineInputDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LineInputDevice", false );
                     data = GetData( );
                     data.LineInputDevice = value;
                     OnPropertyChanged( );
@@ -15543,6 +16027,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _lineInputDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LineInputDeviceEntity object identified by {data.LineInputDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -15609,6 +16098,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -15688,6 +16178,7 @@ namespace Barrelman.Data.Entities
                 if( data.LineInputDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LineInputDevice", false );
                     data = GetData( );
                     data.LineInputDevice = value;
                     OnPropertyChanged( );
@@ -15715,6 +16206,11 @@ namespace Barrelman.Data.Entities
                 {
                     _lineInputDeviceReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the LineInputDeviceEntity object identified by {data.LineInputDevice}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -15739,7 +16235,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -15748,6 +16244,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -15756,7 +16253,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public LineInputDeviceCommandEntity Command
+        public LineInputDeviceCommandEntity? Command
         {
             get
             {
@@ -15770,16 +16267,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetLineInputDeviceCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetLineInputDeviceCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -15854,6 +16355,7 @@ namespace Barrelman.Data.Entities
                 if( data.LineInputDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LineInputDevice", false );
                     data = GetData( );
                     data.LineInputDevice = value;
                     OnPropertyChanged( );
@@ -15880,6 +16382,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _lineInputDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LineInputDeviceEntity object identified by {data.LineInputDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -16472,6 +16979,7 @@ namespace Barrelman.Data.Entities
                 if( data.LineInputDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LineInputDevice", false );
                     data = GetData( );
                     data.LineInputDevice = value;
                     OnPropertyChanged( );
@@ -16498,6 +17006,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _lineInputDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LineInputDeviceEntity object identified by {data.LineInputDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -16563,6 +17076,7 @@ namespace Barrelman.Data.Entities
                 if( data.Routing != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Routing", false );
                     data = GetData( );
                     data.Routing = value;
                     OnPropertyChanged( );
@@ -16590,6 +17104,11 @@ namespace Barrelman.Data.Entities
                 {
                     _routingReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the LineInputMessageRoutingEntity object identified by {data.Routing}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -16598,7 +17117,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid ListenerId
+        public Guid? ListenerId
         {
             get => GetData( ).Listener;
             set
@@ -16607,6 +17126,7 @@ namespace Barrelman.Data.Entities
                 if( data.Listener != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Listener", false );
                     data = GetData( );
                     data.Listener = value;
                     OnPropertyChanged( );
@@ -16615,7 +17135,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public DeviceEntity Listener
+        public DeviceEntity? Listener
         {
             get
             {
@@ -16629,16 +17149,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetDeviceById( data.Listener );
-                if( entity != null )
+                if( data.Listener is Guid listenerId )
                 {
-                    _listenerReference = new WeakReference( entity );
+                    var entity = context.GetDeviceById( listenerId );
+                    if( entity != null )
+                    {
+                        _listenerReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ListenerId = value != null? value.Id : Guid.Empty;
+                ListenerId = value != null? value.Id : null;
             }
         }
 
@@ -16681,6 +17205,7 @@ namespace Barrelman.Data.Entities
                 if( data.LineInputDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LineInputDevice", false );
                     data = GetData( );
                     data.LineInputDevice = value;
                     OnPropertyChanged( );
@@ -16707,6 +17232,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _lineInputDeviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LineInputDeviceEntity object identified by {data.LineInputDevice}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -16848,6 +17378,7 @@ namespace Barrelman.Data.Entities
                 if( data.Application != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Application", false );
                     data = GetData( );
                     data.Application = value;
                     OnPropertyChanged( );
@@ -16874,6 +17405,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _applicationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogApplicationEntity object identified by {data.Application}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -17191,6 +17727,7 @@ namespace Barrelman.Data.Entities
                 if( data.Host != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Host", false );
                     data = GetData( );
                     data.Host = value;
                     OnPropertyChanged( );
@@ -17217,6 +17754,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _hostReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogHostEntity object identified by {data.Host}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -17583,6 +18125,7 @@ namespace Barrelman.Data.Entities
                 if( data.Application != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Application", false );
                     data = GetData( );
                     data.Application = value;
                     OnPropertyChanged( );
@@ -17610,6 +18153,11 @@ namespace Barrelman.Data.Entities
                 {
                     _applicationReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the LogApplicationEntity object identified by {data.Application}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -17618,7 +18166,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid HostId
+        public Guid? HostId
         {
             get => GetData( ).Host;
             set
@@ -17627,6 +18175,7 @@ namespace Barrelman.Data.Entities
                 if( data.Host != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Host", false );
                     data = GetData( );
                     data.Host = value;
                     OnPropertyChanged( );
@@ -17635,7 +18184,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public LogHostEntity Host
+        public LogHostEntity? Host
         {
             get
             {
@@ -17649,16 +18198,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetLogHostById( data.Host );
-                if( entity != null )
+                if( data.Host is Guid hostId )
                 {
-                    _hostReference = new WeakReference( entity );
+                    var entity = context.GetLogHostById( hostId );
+                    if( entity != null )
+                    {
+                        _hostReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                HostId = value != null? value.Id : Guid.Empty;
+                HostId = value != null? value.Id : null;
             }
         }
 
@@ -17782,6 +18335,7 @@ namespace Barrelman.Data.Entities
                 if( data.Thread != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Thread", false );
                     data = GetData( );
                     data.Thread = value;
                     OnPropertyChanged( );
@@ -17808,6 +18362,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _threadReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogThreadEntity object identified by {data.Thread}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -17890,6 +18449,7 @@ namespace Barrelman.Data.Entities
                 if( data.Location != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Location", false );
                     data = GetData( );
                     data.Location = value;
                     OnPropertyChanged( );
@@ -17916,6 +18476,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _locationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogLocationEntity object identified by {data.Location}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -18012,6 +18577,7 @@ namespace Barrelman.Data.Entities
                 if( data.Process != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Process", false );
                     data = GetData( );
                     data.Process = value;
                     OnPropertyChanged( );
@@ -18038,6 +18604,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _processReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogProcessEntity object identified by {data.Process}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -18151,6 +18722,7 @@ namespace Barrelman.Data.Entities
                 if( data.Thread != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Thread", false );
                     data = GetData( );
                     data.Thread = value;
                     OnPropertyChanged( );
@@ -18177,6 +18749,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _threadReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogThreadEntity object identified by {data.Thread}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -18211,6 +18788,7 @@ namespace Barrelman.Data.Entities
                 if( data.Location != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Location", false );
                     data = GetData( );
                     data.Location = value;
                     OnPropertyChanged( );
@@ -18237,6 +18815,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _locationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the LogLocationEntity object identified by {data.Location}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -18333,6 +18916,7 @@ namespace Barrelman.Data.Entities
                 if( data.Item != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Item", false );
                     data = GetData( );
                     data.Item = value;
                     OnPropertyChanged( );
@@ -18359,6 +18943,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _itemReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ItemEntity object identified by {data.Item}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -18881,6 +19470,7 @@ namespace Barrelman.Data.Entities
                 if( data.Country != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Country", false );
                     data = GetData( );
                     data.Country = value;
                     OnPropertyChanged( );
@@ -18907,6 +19497,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _countryReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CountryEntity object identified by {data.Country}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -18956,6 +19551,7 @@ namespace Barrelman.Data.Entities
                 if( data.Service != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Service", false );
                     data = GetData( );
                     data.Service = value;
                     OnPropertyChanged( );
@@ -18982,6 +19578,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _serviceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the MediaServiceEntity object identified by {data.Service}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -19016,6 +19617,7 @@ namespace Barrelman.Data.Entities
                 if( data.EnabledTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "EnabledTimeseries", false );
                     data = GetData( );
                     data.EnabledTimeseries = value;
                     OnPropertyChanged( );
@@ -19094,6 +19696,7 @@ namespace Barrelman.Data.Entities
                 if( data.ProxySession != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ProxySession", false );
                     data = GetData( );
                     data.ProxySession = value;
                     OnPropertyChanged( );
@@ -19120,6 +19723,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _proxySessionReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the MediaProxySessionEntity object identified by {data.ProxySession}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -19200,6 +19808,7 @@ namespace Barrelman.Data.Entities
                 if( data.ProxySession != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ProxySession", false );
                     data = GetData( );
                     data.ProxySession = value;
                     OnPropertyChanged( );
@@ -19226,6 +19835,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _proxySessionReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the MediaProxySessionEntity object identified by {data.ProxySession}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -19466,6 +20080,7 @@ namespace Barrelman.Data.Entities
                 if( data.EnabledTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "EnabledTimeseries", false );
                     data = GetData( );
                     data.EnabledTimeseries = value;
                     OnPropertyChanged( );
@@ -19544,6 +20159,7 @@ namespace Barrelman.Data.Entities
                 if( data.MediaService != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "MediaService", false );
                     data = GetData( );
                     data.MediaService = value;
                     OnPropertyChanged( );
@@ -19570,6 +20186,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _mediaServiceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the MediaServiceEntity object identified by {data.MediaService}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -19666,6 +20287,7 @@ namespace Barrelman.Data.Entities
                 if( data.Namespace != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Namespace", false );
                     data = GetData( );
                     data.Namespace = value;
                     OnPropertyChanged( );
@@ -19692,6 +20314,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _namespaceReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the NamespaceEntity object identified by {data.Namespace}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -19800,6 +20427,7 @@ namespace Barrelman.Data.Entities
                 if( data.OilSpillDetector != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "OilSpillDetector", false );
                     data = GetData( );
                     data.OilSpillDetector = value;
                     OnPropertyChanged( );
@@ -19826,6 +20454,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _oilSpillDetectorReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the OilSpillDetectorDeviceEntity object identified by {data.OilSpillDetector}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -19971,6 +20604,7 @@ namespace Barrelman.Data.Entities
                 if( data.OilSpillDetector != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "OilSpillDetector", false );
                     data = GetData( );
                     data.OilSpillDetector = value;
                     OnPropertyChanged( );
@@ -19997,6 +20631,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _oilSpillDetectorReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the OilSpillDetectorDeviceEntity object identified by {data.OilSpillDetector}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -20063,6 +20702,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -20142,6 +20782,7 @@ namespace Barrelman.Data.Entities
                 if( data.OilSpillDetector != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "OilSpillDetector", false );
                     data = GetData( );
                     data.OilSpillDetector = value;
                     OnPropertyChanged( );
@@ -20169,6 +20810,11 @@ namespace Barrelman.Data.Entities
                 {
                     _oilSpillDetectorReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the OilSpillDetectorDeviceEntity object identified by {data.OilSpillDetector}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -20193,7 +20839,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -20202,6 +20848,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -20210,7 +20857,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public OilSpillDetectorCommandEntity Command
+        public OilSpillDetectorCommandEntity? Command
         {
             get
             {
@@ -20224,16 +20871,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetOilSpillDetectorCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetOilSpillDetectorCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -20309,6 +20960,7 @@ namespace Barrelman.Data.Entities
                 if( data.OilSpillDetector != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "OilSpillDetector", false );
                     data = GetData( );
                     data.OilSpillDetector = value;
                     OnPropertyChanged( );
@@ -20335,6 +20987,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _oilSpillDetectorReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the OilSpillDetectorDeviceEntity object identified by {data.OilSpillDetector}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -20616,7 +21273,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid TargetMMSIId
+        public Guid? TargetMMSIId
         {
             get => GetData( ).TargetMMSI;
             set
@@ -20625,6 +21282,7 @@ namespace Barrelman.Data.Entities
                 if( data.TargetMMSI != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "TargetMMSI", false );
                     data = GetData( );
                     data.TargetMMSI = value;
                     OnPropertyChanged( );
@@ -20633,7 +21291,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public MaritimeMobileServiceIdentityEntity TargetMMSI
+        public MaritimeMobileServiceIdentityEntity? TargetMMSI
         {
             get
             {
@@ -20647,16 +21305,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetMaritimeMobileServiceIdentityById( data.TargetMMSI );
-                if( entity != null )
+                if( data.TargetMMSI is Guid targetMMSIId )
                 {
-                    _targetMMSIReference = new WeakReference( entity );
+                    var entity = context.GetMaritimeMobileServiceIdentityById( targetMMSIId );
+                    if( entity != null )
+                    {
+                        _targetMMSIReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TargetMMSIId = value != null? value.Id : Guid.Empty;
+                TargetMMSIId = value != null? value.Id : null;
             }
         }
 
@@ -20779,6 +21441,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -20805,6 +21468,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the Position2DTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -20901,6 +21569,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -20927,6 +21596,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the Position3DTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -21101,6 +21775,7 @@ namespace Barrelman.Data.Entities
                 if( data.Element != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Element", false );
                     data = GetData( );
                     data.Element = value;
                     OnPropertyChanged( );
@@ -21128,6 +21803,11 @@ namespace Barrelman.Data.Entities
                 {
                     _elementReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ElementEntity object identified by {data.Element}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -21145,6 +21825,7 @@ namespace Barrelman.Data.Entities
                 if( data.Definition != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Definition", false );
                     data = GetData( );
                     data.Definition = value;
                     OnPropertyChanged( );
@@ -21171,6 +21852,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _definitionReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the PropertyDefinitionEntity object identified by {data.Definition}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -21465,7 +22151,7 @@ namespace Barrelman.Data.Entities
             return (ReferencePropertyObject)base._GetData( );
         }
 
-        public Guid ValueId
+        public Guid? ValueId
         {
             get => GetData( ).Value;
             set
@@ -21474,6 +22160,7 @@ namespace Barrelman.Data.Entities
                 if( data.Value != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Value", false );
                     data = GetData( );
                     data.Value = value;
                     OnPropertyChanged( );
@@ -21482,7 +22169,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ElementEntity Value
+        public ElementEntity? Value
         {
             get
             {
@@ -21496,16 +22183,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetElementById( data.Value );
-                if( entity != null )
+                if( data.Value is Guid valueId )
                 {
-                    _valueReference = new WeakReference( entity );
+                    var entity = context.GetElementById( valueId );
+                    if( entity != null )
+                    {
+                        _valueReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ValueId = value != null? value.Id : Guid.Empty;
+                ValueId = value != null? value.Id : null;
             }
         }
 
@@ -21623,7 +22314,7 @@ namespace Barrelman.Data.Entities
             return (BinaryTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21632,6 +22323,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21640,7 +22332,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public BinaryTimeseriesEntity Timeseries
+        public BinaryTimeseriesEntity? Timeseries
         {
             get
             {
@@ -21654,16 +22346,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetBinaryTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetBinaryTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -21682,7 +22378,7 @@ namespace Barrelman.Data.Entities
             return (BooleanTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21691,6 +22387,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21699,7 +22396,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public BooleanTimeseriesEntity Timeseries
+        public BooleanTimeseriesEntity? Timeseries
         {
             get
             {
@@ -21713,16 +22410,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetBooleanTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetBooleanTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -21741,7 +22442,7 @@ namespace Barrelman.Data.Entities
             return (ByteTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21750,6 +22451,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21758,7 +22460,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ByteTimeseriesEntity Timeseries
+        public ByteTimeseriesEntity? Timeseries
         {
             get
             {
@@ -21772,16 +22474,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetByteTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetByteTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -21800,7 +22506,7 @@ namespace Barrelman.Data.Entities
             return (DateTimeTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21809,6 +22515,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21817,7 +22524,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public DateTimeTimeseriesEntity Timeseries
+        public DateTimeTimeseriesEntity? Timeseries
         {
             get
             {
@@ -21831,16 +22538,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetDateTimeTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetDateTimeTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -21859,7 +22570,7 @@ namespace Barrelman.Data.Entities
             return (DoubleTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21868,6 +22579,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21876,7 +22588,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public DoubleTimeseriesEntity Timeseries
+        public DoubleTimeseriesEntity? Timeseries
         {
             get
             {
@@ -21890,16 +22602,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetDoubleTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetDoubleTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -21918,7 +22634,7 @@ namespace Barrelman.Data.Entities
             return (GuidTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21927,6 +22643,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21935,7 +22652,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public GuidTimeseriesEntity Timeseries
+        public GuidTimeseriesEntity? Timeseries
         {
             get
             {
@@ -21949,16 +22666,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetGuidTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetGuidTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -21977,7 +22698,7 @@ namespace Barrelman.Data.Entities
             return (Int16TimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -21986,6 +22707,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -21994,7 +22716,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Int16TimeseriesEntity Timeseries
+        public Int16TimeseriesEntity? Timeseries
         {
             get
             {
@@ -22008,16 +22730,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetInt16TimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetInt16TimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22036,7 +22762,7 @@ namespace Barrelman.Data.Entities
             return (Int32TimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22045,6 +22771,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22053,7 +22780,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Int32TimeseriesEntity Timeseries
+        public Int32TimeseriesEntity? Timeseries
         {
             get
             {
@@ -22067,16 +22794,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetInt32TimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetInt32TimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22095,7 +22826,7 @@ namespace Barrelman.Data.Entities
             return (Int64TimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22104,6 +22835,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22112,7 +22844,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Int64TimeseriesEntity Timeseries
+        public Int64TimeseriesEntity? Timeseries
         {
             get
             {
@@ -22126,16 +22858,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetInt64TimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetInt64TimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22154,7 +22890,7 @@ namespace Barrelman.Data.Entities
             return (ReferenceTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22163,6 +22899,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22171,7 +22908,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ReferenceTimeseriesEntity Timeseries
+        public ReferenceTimeseriesEntity? Timeseries
         {
             get
             {
@@ -22185,16 +22922,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetReferenceTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetReferenceTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22213,7 +22954,7 @@ namespace Barrelman.Data.Entities
             return (SByteTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22222,6 +22963,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22230,7 +22972,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public SByteTimeseriesEntity Timeseries
+        public SByteTimeseriesEntity? Timeseries
         {
             get
             {
@@ -22244,16 +22986,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetSByteTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetSByteTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22272,7 +23018,7 @@ namespace Barrelman.Data.Entities
             return (SingleTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22281,6 +23027,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22289,7 +23036,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public SingleTimeseriesEntity Timeseries
+        public SingleTimeseriesEntity? Timeseries
         {
             get
             {
@@ -22303,16 +23050,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetSingleTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetSingleTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22331,7 +23082,7 @@ namespace Barrelman.Data.Entities
             return (StringTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22340,6 +23091,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22348,7 +23100,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public StringTimeseriesEntity Timeseries
+        public StringTimeseriesEntity? Timeseries
         {
             get
             {
@@ -22362,16 +23114,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetStringTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetStringTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22390,7 +23146,7 @@ namespace Barrelman.Data.Entities
             return (TimeSpanTimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22399,6 +23155,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22407,7 +23164,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public TimeSpanTimeseriesEntity Timeseries
+        public TimeSpanTimeseriesEntity? Timeseries
         {
             get
             {
@@ -22421,16 +23178,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetTimeSpanTimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetTimeSpanTimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22449,7 +23210,7 @@ namespace Barrelman.Data.Entities
             return (UInt16TimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22458,6 +23219,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22466,7 +23228,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public UInt16TimeseriesEntity Timeseries
+        public UInt16TimeseriesEntity? Timeseries
         {
             get
             {
@@ -22480,16 +23242,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetUInt16TimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetUInt16TimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22508,7 +23274,7 @@ namespace Barrelman.Data.Entities
             return (UInt32TimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22517,6 +23283,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22525,7 +23292,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public UInt32TimeseriesEntity Timeseries
+        public UInt32TimeseriesEntity? Timeseries
         {
             get
             {
@@ -22539,16 +23306,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetUInt32TimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetUInt32TimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22567,7 +23338,7 @@ namespace Barrelman.Data.Entities
             return (UInt64TimeseriesPropertyObject)base._GetData( );
         }
 
-        public Guid TimeseriesId
+        public Guid? TimeseriesId
         {
             get => GetData( ).Timeseries;
             set
@@ -22576,6 +23347,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -22584,7 +23356,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public UInt64TimeseriesEntity Timeseries
+        public UInt64TimeseriesEntity? Timeseries
         {
             get
             {
@@ -22598,16 +23370,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetUInt64TimeseriesById( data.Timeseries );
-                if( entity != null )
+                if( data.Timeseries is Guid timeseriesId )
                 {
-                    _timeseriesReference = new WeakReference( entity );
+                    var entity = context.GetUInt64TimeseriesById( timeseriesId );
+                    if( entity != null )
+                    {
+                        _timeseriesReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                TimeseriesId = value != null? value.Id : Guid.Empty;
+                TimeseriesId = value != null? value.Id : null;
             }
         }
 
@@ -22770,6 +23546,7 @@ namespace Barrelman.Data.Entities
                 if( data.ElementType != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ElementType", false );
                     data = GetData( );
                     data.ElementType = value;
                     OnPropertyChanged( );
@@ -22796,6 +23573,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _elementTypeReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ElementTypeEntity object identified by {data.ElementType}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -23315,7 +24097,7 @@ namespace Barrelman.Data.Entities
             return (ReferencePropertyDefinitionObject)base._GetData( );
         }
 
-        public Guid DefaultValueId
+        public Guid? DefaultValueId
         {
             get => GetData( ).DefaultValue;
             set
@@ -23324,6 +24106,7 @@ namespace Barrelman.Data.Entities
                 if( data.DefaultValue != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "DefaultValue", false );
                     data = GetData( );
                     data.DefaultValue = value;
                     OnPropertyChanged( );
@@ -23332,7 +24115,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ElementEntity DefaultValue
+        public ElementEntity? DefaultValue
         {
             get
             {
@@ -23346,20 +24129,24 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetElementById( data.DefaultValue );
-                if( entity != null )
+                if( data.DefaultValue is Guid defaultValueId )
                 {
-                    _defaultValueReference = new WeakReference( entity );
+                    var entity = context.GetElementById( defaultValueId );
+                    if( entity != null )
+                    {
+                        _defaultValueReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                DefaultValueId = value != null? value.Id : Guid.Empty;
+                DefaultValueId = value != null? value.Id : null;
             }
         }
 
-        public Guid ReferencedElementTypeId
+        public Guid? ReferencedElementTypeId
         {
             get => GetData( ).ReferencedElementType;
             set
@@ -23368,6 +24155,7 @@ namespace Barrelman.Data.Entities
                 if( data.ReferencedElementType != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ReferencedElementType", false );
                     data = GetData( );
                     data.ReferencedElementType = value;
                     OnPropertyChanged( );
@@ -23376,7 +24164,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ElementTypeEntity ReferencedElementType
+        public ElementTypeEntity? ReferencedElementType
         {
             get
             {
@@ -23390,16 +24178,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetElementTypeById( data.ReferencedElementType );
-                if( entity != null )
+                if( data.ReferencedElementType is Guid referencedElementTypeId )
                 {
-                    _referencedElementTypeReference = new WeakReference( entity );
+                    var entity = context.GetElementTypeById( referencedElementTypeId );
+                    if( entity != null )
+                    {
+                        _referencedElementTypeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ReferencedElementTypeId = value != null? value.Id : Guid.Empty;
+                ReferencedElementTypeId = value != null? value.Id : null;
             }
         }
 
@@ -23900,7 +24692,7 @@ namespace Barrelman.Data.Entities
             return (ReferenceTimeseriesPropertyDefinitionObject)base._GetData( );
         }
 
-        public Guid ReferencedElementTypeId
+        public Guid? ReferencedElementTypeId
         {
             get => GetData( ).ReferencedElementType;
             set
@@ -23909,6 +24701,7 @@ namespace Barrelman.Data.Entities
                 if( data.ReferencedElementType != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ReferencedElementType", false );
                     data = GetData( );
                     data.ReferencedElementType = value;
                     OnPropertyChanged( );
@@ -23917,7 +24710,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public ElementTypeEntity ReferencedElementType
+        public ElementTypeEntity? ReferencedElementType
         {
             get
             {
@@ -23931,16 +24724,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetElementTypeById( data.ReferencedElementType );
-                if( entity != null )
+                if( data.ReferencedElementType is Guid referencedElementTypeId )
                 {
-                    _referencedElementTypeReference = new WeakReference( entity );
+                    var entity = context.GetElementTypeById( referencedElementTypeId );
+                    if( entity != null )
+                    {
+                        _referencedElementTypeReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                ReferencedElementTypeId = value != null? value.Id : Guid.Empty;
+                ReferencedElementTypeId = value != null? value.Id : null;
             }
         }
 
@@ -24537,6 +25334,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -24563,6 +25361,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radarReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -24644,6 +25447,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -24670,6 +25474,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radarReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -24736,6 +25545,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -24824,6 +25634,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -24851,6 +25662,11 @@ namespace Barrelman.Data.Entities
                 {
                     _radarReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -24875,7 +25691,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -24884,6 +25700,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -24892,7 +25709,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public RadarCommandEntity Command
+        public RadarCommandEntity? Command
         {
             get
             {
@@ -24906,16 +25723,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetRadarCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetRadarCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -25084,6 +25905,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -25110,6 +25932,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radarReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -25574,6 +26401,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -25600,6 +26428,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radarReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -25728,6 +26561,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -25754,6 +26588,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radarReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -25850,6 +26689,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -25876,6 +26716,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radarReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadarDeviceEntity object identified by {data.Radar}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -26037,6 +26882,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radio != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radio", false );
                     data = GetData( );
                     data.Radio = value;
                     OnPropertyChanged( );
@@ -26063,6 +26909,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radioReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadioDeviceEntity object identified by {data.Radio}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -26129,6 +26980,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -26208,6 +27060,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radio != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radio", false );
                     data = GetData( );
                     data.Radio = value;
                     OnPropertyChanged( );
@@ -26235,6 +27088,11 @@ namespace Barrelman.Data.Entities
                 {
                     _radioReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the RadioDeviceEntity object identified by {data.Radio}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -26259,7 +27117,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -26268,6 +27126,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -26276,7 +27135,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public RadioCommandEntity Command
+        public RadioCommandEntity? Command
         {
             get
             {
@@ -26290,16 +27149,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetRadioCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetRadioCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -26374,6 +27237,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radio != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radio", false );
                     data = GetData( );
                     data.Radio = value;
                     OnPropertyChanged( );
@@ -26400,6 +27264,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radioReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadioDeviceEntity object identified by {data.Radio}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -26577,6 +27446,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -26603,6 +27473,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radomeReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadomeDeviceEntity object identified by {data.Radome}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -26669,6 +27544,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -26748,6 +27624,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -26775,6 +27652,11 @@ namespace Barrelman.Data.Entities
                 {
                     _radomeReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the RadomeDeviceEntity object identified by {data.Radome}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -26799,7 +27681,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -26808,6 +27690,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -26816,7 +27699,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public RadomeCommandEntity Command
+        public RadomeCommandEntity? Command
         {
             get
             {
@@ -26830,16 +27713,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetRadomeCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetRadomeCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -26914,6 +27801,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -26940,6 +27828,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _radomeReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the RadomeDeviceEntity object identified by {data.Radome}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27085,6 +27978,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -27111,6 +28005,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ReferenceTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27145,6 +28044,7 @@ namespace Barrelman.Data.Entities
                 if( data.Value != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Value", false );
                     data = GetData( );
                     data.Value = value;
                     OnPropertyChanged( );
@@ -27171,6 +28071,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _valueReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ElementEntity object identified by {data.Value}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27219,6 +28124,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -27245,6 +28151,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the SByteTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27386,6 +28297,7 @@ namespace Barrelman.Data.Entities
                 if( data.Domain != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Domain", false );
                     data = GetData( );
                     data.Domain = value;
                     OnPropertyChanged( );
@@ -27412,6 +28324,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _domainReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the SecurityDomainEntity object identified by {data.Domain}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27537,6 +28454,7 @@ namespace Barrelman.Data.Entities
                 if( data.Member != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Member", false );
                     data = GetData( );
                     data.Member = value;
                     OnPropertyChanged( );
@@ -27564,6 +28482,11 @@ namespace Barrelman.Data.Entities
                 {
                     _memberReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the SecurityIdentifierEntity object identified by {data.Member}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -27581,6 +28504,7 @@ namespace Barrelman.Data.Entities
                 if( data.Role != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Role", false );
                     data = GetData( );
                     data.Role = value;
                     OnPropertyChanged( );
@@ -27607,6 +28531,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _roleReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the SecurityRoleEntity object identified by {data.Role}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27687,6 +28616,7 @@ namespace Barrelman.Data.Entities
                 if( data.Login != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Login", false );
                     data = GetData( );
                     data.Login = value;
                     OnPropertyChanged( );
@@ -27713,6 +28643,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _loginReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the SecurityLoginEntity object identified by {data.Login}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -27841,6 +28776,7 @@ namespace Barrelman.Data.Entities
                 if( data.Identifier != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Identifier", false );
                     data = GetData( );
                     data.Identifier = value;
                     OnPropertyChanged( );
@@ -27867,6 +28803,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _identifierReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the SecurityIdentifierEntity object identified by {data.Identifier}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -28011,6 +28952,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -28037,6 +28979,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the SingleTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -28117,6 +29064,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -28143,6 +29091,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the StringTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -28223,6 +29176,7 @@ namespace Barrelman.Data.Entities
                 if( data.Catalog != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Catalog", false );
                     data = GetData( );
                     data.Catalog = value;
                     OnPropertyChanged( );
@@ -28360,6 +29314,7 @@ namespace Barrelman.Data.Entities
                 if( data.AidToNavigation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AidToNavigation", false );
                     data = GetData( );
                     data.AidToNavigation = value;
                     OnPropertyChanged( );
@@ -28423,6 +29378,7 @@ namespace Barrelman.Data.Entities
                 if( data.Device != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Device", false );
                     data = GetData( );
                     data.Device = value;
                     OnPropertyChanged( );
@@ -28486,6 +29442,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28549,6 +29506,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28612,6 +29570,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28675,6 +29634,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28738,6 +29698,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28801,6 +29762,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28864,6 +29826,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28927,6 +29890,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -28990,6 +29954,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -29053,6 +30018,7 @@ namespace Barrelman.Data.Entities
                 if( data.ProxySession != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ProxySession", false );
                     data = GetData( );
                     data.ProxySession = value;
                     OnPropertyChanged( );
@@ -29116,6 +30082,7 @@ namespace Barrelman.Data.Entities
                 if( data.Service != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Service", false );
                     data = GetData( );
                     data.Service = value;
                     OnPropertyChanged( );
@@ -29221,6 +30188,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -29284,6 +30252,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -29347,6 +30316,7 @@ namespace Barrelman.Data.Entities
                 if( data.GNSSDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GNSSDevice", false );
                     data = GetData( );
                     data.GNSSDevice = value;
                     OnPropertyChanged( );
@@ -29410,6 +30380,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29473,6 +30444,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29536,6 +30508,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29599,6 +30572,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29662,6 +30636,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29725,6 +30700,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29788,6 +30764,7 @@ namespace Barrelman.Data.Entities
                 if( data.GyroDevice != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "GyroDevice", false );
                     data = GetData( );
                     data.GyroDevice = value;
                     OnPropertyChanged( );
@@ -29851,6 +30828,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -29914,6 +30892,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -29977,6 +30956,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -30040,6 +31020,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -30103,6 +31084,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -30166,6 +31148,7 @@ namespace Barrelman.Data.Entities
                 if( data.Vessel != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Vessel", false );
                     data = GetData( );
                     data.Vessel = value;
                     OnPropertyChanged( );
@@ -30229,6 +31212,7 @@ namespace Barrelman.Data.Entities
                 if( data.View != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "View", false );
                     data = GetData( );
                     data.View = value;
                     OnPropertyChanged( );
@@ -30292,6 +31276,7 @@ namespace Barrelman.Data.Entities
                 if( data.View != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "View", false );
                     data = GetData( );
                     data.View = value;
                     OnPropertyChanged( );
@@ -30355,6 +31340,7 @@ namespace Barrelman.Data.Entities
                 if( data.View != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "View", false );
                     data = GetData( );
                     data.View = value;
                     OnPropertyChanged( );
@@ -30418,6 +31404,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30481,6 +31468,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30544,6 +31532,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30607,6 +31596,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30670,6 +31660,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30733,6 +31724,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30796,6 +31788,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30859,6 +31852,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -30936,6 +31930,7 @@ namespace Barrelman.Data.Entities
                 if( data.AidToNavigation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "AidToNavigation", false );
                     data = GetData( );
                     data.AidToNavigation = value;
                     OnPropertyChanged( );
@@ -31055,6 +32050,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31118,6 +32114,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31181,6 +32178,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31244,6 +32242,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31307,6 +32306,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31370,6 +32370,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31433,6 +32434,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31496,6 +32498,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31559,6 +32562,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31622,6 +32626,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radar != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radar", false );
                     data = GetData( );
                     data.Radar = value;
                     OnPropertyChanged( );
@@ -31685,6 +32690,7 @@ namespace Barrelman.Data.Entities
                 if( data.Vessel != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Vessel", false );
                     data = GetData( );
                     data.Vessel = value;
                     OnPropertyChanged( );
@@ -31888,6 +32894,7 @@ namespace Barrelman.Data.Entities
                 if( data.Radome != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Radome", false );
                     data = GetData( );
                     data.Radome = value;
                     OnPropertyChanged( );
@@ -32071,6 +33078,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -32097,6 +33105,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TimeSpanTimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -32178,6 +33191,7 @@ namespace Barrelman.Data.Entities
                 if( data.Item != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Item", false );
                     data = GetData( );
                     data.Item = value;
                     OnPropertyChanged( );
@@ -32205,6 +33219,11 @@ namespace Barrelman.Data.Entities
                 {
                     _itemReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the TrackableItemEntity object identified by {data.Item}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -32222,6 +33241,7 @@ namespace Barrelman.Data.Entities
                 if( data.Track != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Track", false );
                     data = GetData( );
                     data.Track = value;
                     OnPropertyChanged( );
@@ -32248,6 +33268,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _trackReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackBaseEntity object identified by {data.Track}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -32328,6 +33353,7 @@ namespace Barrelman.Data.Entities
                 if( data.Tracker != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Tracker", false );
                     data = GetData( );
                     data.Tracker = value;
                     OnPropertyChanged( );
@@ -32354,6 +33380,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _trackerReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackerDeviceEntity object identified by {data.Tracker}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -32462,6 +33493,7 @@ namespace Barrelman.Data.Entities
                 if( data.Tracker != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Tracker", false );
                     data = GetData( );
                     data.Tracker = value;
                     OnPropertyChanged( );
@@ -32488,6 +33520,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _trackerReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackerDeviceEntity object identified by {data.Tracker}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -32552,6 +33589,7 @@ namespace Barrelman.Data.Entities
                 if( data.Parameters != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Parameters", false );
                     data = GetData( );
                     data.Parameters = value;
                     OnPropertyChanged( );
@@ -32578,6 +33616,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _parametersReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackerFilterParametersEntity object identified by {data.Parameters}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -33197,6 +34240,7 @@ namespace Barrelman.Data.Entities
                 if( data.Primary != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Primary", false );
                     data = GetData( );
                     data.Primary = value;
                     OnPropertyChanged( );
@@ -33224,6 +34268,11 @@ namespace Barrelman.Data.Entities
                 {
                     _primaryReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the TrackBaseEntity object identified by {data.Primary}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -33241,6 +34290,7 @@ namespace Barrelman.Data.Entities
                 if( data.Secondary != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Secondary", false );
                     data = GetData( );
                     data.Secondary = value;
                     OnPropertyChanged( );
@@ -33267,6 +34317,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _secondaryReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackBaseEntity object identified by {data.Secondary}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -33347,6 +34402,7 @@ namespace Barrelman.Data.Entities
                 if( data.Track != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Track", false );
                     data = GetData( );
                     data.Track = value;
                     OnPropertyChanged( );
@@ -33373,6 +34429,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _trackReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackEntity object identified by {data.Track}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -33549,6 +34610,7 @@ namespace Barrelman.Data.Entities
                 if( data.Track != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Track", false );
                     data = GetData( );
                     data.Track = value;
                     OnPropertyChanged( );
@@ -33575,6 +34637,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _trackReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the Track3DEntity object identified by {data.Track}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -33767,6 +34834,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -33793,6 +34861,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the UInt16TimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -33873,6 +34946,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -33899,6 +34973,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the UInt32TimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -33979,6 +35058,7 @@ namespace Barrelman.Data.Entities
                 if( data.Timeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Timeseries", false );
                     data = GetData( );
                     data.Timeseries = value;
                     OnPropertyChanged( );
@@ -34005,6 +35085,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _timeseriesReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the UInt64TimeseriesEntity object identified by {data.Timeseries}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -34209,6 +35294,7 @@ namespace Barrelman.Data.Entities
                 if( data.LatitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LatitudeTimeseries", false );
                     data = GetData( );
                     data.LatitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -34257,6 +35343,7 @@ namespace Barrelman.Data.Entities
                 if( data.LongitudeTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "LongitudeTimeseries", false );
                     data = GetData( );
                     data.LongitudeTimeseries = value;
                     OnPropertyChanged( );
@@ -34305,6 +35392,7 @@ namespace Barrelman.Data.Entities
                 if( data.ZoomLevelTimeseries != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ZoomLevelTimeseries", false );
                     data = GetData( );
                     data.ZoomLevelTimeseries = value;
                     OnPropertyChanged( );
@@ -34384,6 +35472,7 @@ namespace Barrelman.Data.Entities
                 if( data.View != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "View", false );
                     data = GetData( );
                     data.View = value;
                     OnPropertyChanged( );
@@ -34411,6 +35500,11 @@ namespace Barrelman.Data.Entities
                 {
                     _viewReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ViewEntity object identified by {data.View}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -34428,6 +35522,7 @@ namespace Barrelman.Data.Entities
                 if( data.Camera != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Camera", false );
                     data = GetData( );
                     data.Camera = value;
                     OnPropertyChanged( );
@@ -34454,6 +35549,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _cameraReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the CameraDeviceEntity object identified by {data.Camera}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -34535,6 +35635,7 @@ namespace Barrelman.Data.Entities
                 if( data.View != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "View", false );
                     data = GetData( );
                     data.View = value;
                     OnPropertyChanged( );
@@ -34562,6 +35663,11 @@ namespace Barrelman.Data.Entities
                 {
                     _viewReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ViewEntity object identified by {data.View}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -34579,6 +35685,7 @@ namespace Barrelman.Data.Entities
                 if( data.Tracker != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Tracker", false );
                     data = GetData( );
                     data.Tracker = value;
                     OnPropertyChanged( );
@@ -34605,6 +35712,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _trackerReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the TrackerDeviceEntity object identified by {data.Tracker}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -34686,6 +35798,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -34712,6 +35825,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _weatherStationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the WeatherStationDeviceEntity object identified by {data.WeatherStation}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -34778,6 +35896,7 @@ namespace Barrelman.Data.Entities
                 if( data.Reply != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Reply", false );
                     data = GetData( );
                     data.Reply = value;
                     OnPropertyChanged( );
@@ -34857,6 +35976,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -34884,6 +36004,11 @@ namespace Barrelman.Data.Entities
                 {
                     _weatherStationReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the WeatherStationDeviceEntity object identified by {data.WeatherStation}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -34908,7 +36033,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid CommandId
+        public Guid? CommandId
         {
             get => GetData( ).Command;
             set
@@ -34917,6 +36042,7 @@ namespace Barrelman.Data.Entities
                 if( data.Command != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Command", false );
                     data = GetData( );
                     data.Command = value;
                     OnPropertyChanged( );
@@ -34925,7 +36051,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public WeatherStationCommandEntity Command
+        public WeatherStationCommandEntity? Command
         {
             get
             {
@@ -34939,16 +36065,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetWeatherStationCommandById( data.Command );
-                if( entity != null )
+                if( data.Command is Guid commandId )
                 {
-                    _commandReference = new WeakReference( entity );
+                    var entity = context.GetWeatherStationCommandById( commandId );
+                    if( entity != null )
+                    {
+                        _commandReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                CommandId = value != null? value.Id : Guid.Empty;
+                CommandId = value != null? value.Id : null;
             }
         }
 
@@ -35023,6 +36153,7 @@ namespace Barrelman.Data.Entities
                 if( data.WeatherStation != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "WeatherStation", false );
                     data = GetData( );
                     data.WeatherStation = value;
                     OnPropertyChanged( );
@@ -35049,6 +36180,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _weatherStationReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the WeatherStationDeviceEntity object identified by {data.WeatherStation}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -35458,6 +36594,7 @@ namespace Barrelman.Data.Entities
                 if( data.Zone != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Zone", false );
                     data = GetData( );
                     data.Zone = value;
                     OnPropertyChanged( );
@@ -35484,6 +36621,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _zoneReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the ZoneEntity object identified by {data.Zone}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -35549,6 +36691,7 @@ namespace Barrelman.Data.Entities
                 if( data.ZoneExceptions != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "ZoneExceptions", false );
                     data = GetData( );
                     data.ZoneExceptions = value;
                     OnPropertyChanged( );
@@ -35576,6 +36719,11 @@ namespace Barrelman.Data.Entities
                 {
                     _zoneExceptionsReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ZoneExceptionsEntity object identified by {data.ZoneExceptions}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -35593,6 +36741,7 @@ namespace Barrelman.Data.Entities
                 if( data.Vessel != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Vessel", false );
                     data = GetData( );
                     data.Vessel = value;
                     OnPropertyChanged( );
@@ -35619,6 +36768,11 @@ namespace Barrelman.Data.Entities
                 if( entity != null )
                 {
                     _vesselReference = new WeakReference( entity );
+                }
+                else
+                {
+                    var message = $"Cannot find the VesselEntity object identified by {data.Vessel}";
+                    throw new Exception( message );
                 }
                 return entity;
             }
@@ -35669,6 +36823,7 @@ namespace Barrelman.Data.Entities
                 if( data.Track != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Track", false );
                     data = GetData( );
                     data.Track = value;
                     OnPropertyChanged( );
@@ -35696,6 +36851,11 @@ namespace Barrelman.Data.Entities
                 {
                     _trackReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the TrackEntity object identified by {data.Track}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -35713,6 +36873,7 @@ namespace Barrelman.Data.Entities
                 if( data.Zone != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "Zone", false );
                     data = GetData( );
                     data.Zone = value;
                     OnPropertyChanged( );
@@ -35740,6 +36901,11 @@ namespace Barrelman.Data.Entities
                 {
                     _zoneReference = new WeakReference( entity );
                 }
+                else
+                {
+                    var message = $"Cannot find the ZoneEntity object identified by {data.Zone}";
+                    throw new Exception( message );
+                }
                 return entity;
             }
             set
@@ -35748,7 +36914,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public Guid RadarTrackId
+        public Guid? RadarTrackId
         {
             get => GetData( ).RadarTrack;
             set
@@ -35757,6 +36923,7 @@ namespace Barrelman.Data.Entities
                 if( data.RadarTrack != value )
                 {
                     OnPropertyChanging( );
+                    OnPropertyChanging( "RadarTrack", false );
                     data = GetData( );
                     data.RadarTrack = value;
                     OnPropertyChanged( );
@@ -35765,7 +36932,7 @@ namespace Barrelman.Data.Entities
             }
         }
 
-        public TrackEntity RadarTrack
+        public TrackEntity? RadarTrack
         {
             get
             {
@@ -35779,16 +36946,20 @@ namespace Barrelman.Data.Entities
                 }
                 var data = GetData( );
                 var context = CheckedContext;
-                var entity = context.GetTrackById( data.RadarTrack );
-                if( entity != null )
+                if( data.RadarTrack is Guid radarTrackId )
                 {
-                    _radarTrackReference = new WeakReference( entity );
+                    var entity = context.GetTrackById( radarTrackId );
+                    if( entity != null )
+                    {
+                        _radarTrackReference = new WeakReference( entity );
+                    }
+                    return entity;
                 }
-                return entity;
+                return null;
             }
             set
             {
-                RadarTrackId = value != null? value.Id : Guid.Empty;
+                RadarTrackId = value != null? value.Id : null;
             }
         }
 

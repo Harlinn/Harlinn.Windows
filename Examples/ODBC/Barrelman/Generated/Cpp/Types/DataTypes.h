@@ -246,7 +246,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid aisDevice_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -259,7 +259,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(aisDevice_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -270,7 +270,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(aisDevice_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -352,11 +352,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -986,7 +986,7 @@ namespace Barrelman::Types
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
-        Guid mmsi_;
+        DBGuid mmsi_;
     public:
         AisMessageObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -998,7 +998,7 @@ namespace Barrelman::Types
             destination.Write(receivedTimestamp_);
             destination.Write(messageSequenceNumber_);
             destination.Write(repeat_);
-            destination.Write(mmsi_);
+            mmsi_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -1009,7 +1009,7 @@ namespace Barrelman::Types
             source.Read(receivedTimestamp_);
             source.Read(messageSequenceNumber_);
             source.Read(repeat_);
-            source.Read(mmsi_);
+            mmsi_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -1105,11 +1105,11 @@ namespace Barrelman::Types
         {
             repeat_ = repeat;
         }
-        const Guid& Mmsi( ) const
+        const DBGuid& Mmsi( ) const
         {
             return mmsi_;
         }
-        void SetMmsi( const Guid& mmsi )
+        void SetMmsi( const DBGuid& mmsi )
         {
             mmsi_ = mmsi;
         }
@@ -1440,7 +1440,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::AisAddressedSafetyRelatedMessage;
     private:
         Int32 sequenceNumber_ = 0;
-        Guid destinationMmsi_;
+        DBGuid destinationMmsi_;
         bool retransmitFlag_ = false;
         Int32 spare_ = 0;
         FixedDBWideString<127> text_;
@@ -1451,7 +1451,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             destination.Write(sequenceNumber_);
-            destination.Write(destinationMmsi_);
+            destinationMmsi_.WriteTo( destination );
             destination.Write(retransmitFlag_);
             destination.Write(spare_);
             text_.WriteTo( destination );
@@ -1461,7 +1461,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             source.Read(sequenceNumber_);
-            source.Read(destinationMmsi_);
+            destinationMmsi_.ReadFrom( source );
             source.Read(retransmitFlag_);
             source.Read(spare_);
             text_.ReadFrom( source );
@@ -1524,11 +1524,11 @@ namespace Barrelman::Types
         {
             sequenceNumber_ = sequenceNumber;
         }
-        const Guid& DestinationMmsi( ) const
+        const DBGuid& DestinationMmsi( ) const
         {
             return destinationMmsi_;
         }
-        void SetDestinationMmsi( const Guid& destinationMmsi )
+        void SetDestinationMmsi( const DBGuid& destinationMmsi )
         {
             destinationMmsi_ = destinationMmsi;
         }
@@ -1734,7 +1734,7 @@ namespace Barrelman::Types
     private:
         Int32 spare_ = 0;
         Int32 sequenceNumber1_ = 0;
-        Guid mmsi1_;
+        DBGuid mmsi1_;
         DBInt32 sequenceNumber2_;
         DBGuid mmsi2_;
         DBInt32 sequenceNumber3_;
@@ -1749,7 +1749,7 @@ namespace Barrelman::Types
             Base::WriteTo( destination );
             destination.Write(spare_);
             destination.Write(sequenceNumber1_);
-            destination.Write(mmsi1_);
+            mmsi1_.WriteTo( destination );
             sequenceNumber2_.WriteTo( destination );
             mmsi2_.WriteTo( destination );
             sequenceNumber3_.WriteTo( destination );
@@ -1763,7 +1763,7 @@ namespace Barrelman::Types
             Base::ReadFrom( source );
             source.Read(spare_);
             source.Read(sequenceNumber1_);
-            source.Read(mmsi1_);
+            mmsi1_.ReadFrom( source );
             sequenceNumber2_.ReadFrom( source );
             mmsi2_.ReadFrom( source );
             sequenceNumber3_.ReadFrom( source );
@@ -1853,11 +1853,11 @@ namespace Barrelman::Types
         {
             sequenceNumber1_ = sequenceNumber1;
         }
-        const Guid& Mmsi1( ) const
+        const DBGuid& Mmsi1( ) const
         {
             return mmsi1_;
         }
-        void SetMmsi1( const Guid& mmsi1 )
+        void SetMmsi1( const DBGuid& mmsi1 )
         {
             mmsi1_ = mmsi1;
         }
@@ -1917,7 +1917,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::AisBinaryAddressedMessage;
     private:
         Int32 sequenceNumber_ = 0;
-        Guid destinationMmsi_;
+        DBGuid destinationMmsi_;
         bool retransmitFlag_ = false;
         Int32 spare_ = 0;
         Int32 designatedAreaCode_ = 0;
@@ -1931,7 +1931,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             destination.Write(sequenceNumber_);
-            destination.Write(destinationMmsi_);
+            destinationMmsi_.WriteTo( destination );
             destination.Write(retransmitFlag_);
             destination.Write(spare_);
             destination.Write(designatedAreaCode_);
@@ -1943,7 +1943,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             source.Read(sequenceNumber_);
-            source.Read(destinationMmsi_);
+            destinationMmsi_.ReadFrom( source );
             source.Read(retransmitFlag_);
             source.Read(spare_);
             source.Read(designatedAreaCode_);
@@ -2016,11 +2016,11 @@ namespace Barrelman::Types
         {
             sequenceNumber_ = sequenceNumber;
         }
-        const Guid& DestinationMmsi( ) const
+        const DBGuid& DestinationMmsi( ) const
         {
             return destinationMmsi_;
         }
-        void SetDestinationMmsi( const Guid& destinationMmsi )
+        void SetDestinationMmsi( const DBGuid& destinationMmsi )
         {
             destinationMmsi_ = destinationMmsi;
         }
@@ -2494,7 +2494,7 @@ namespace Barrelman::Types
         DBInt32 trueHeading_;
         Int32 timestamp_ = 0;
         Int32 regionalReserved_ = 0;
-        Guid name_;
+        DBGuid name_;
         Types::ShipType shipType_ = Types::ShipType::NotAvailable;
         Int32 dimensionToBow_ = 0;
         Int32 dimensionToStern_ = 0;
@@ -2520,7 +2520,7 @@ namespace Barrelman::Types
             trueHeading_.WriteTo( destination );
             destination.Write(timestamp_);
             destination.Write(regionalReserved_);
-            destination.Write(name_);
+            name_.WriteTo( destination );
             destination.Write(shipType_);
             destination.Write(dimensionToBow_);
             destination.Write(dimensionToStern_);
@@ -2545,7 +2545,7 @@ namespace Barrelman::Types
             trueHeading_.ReadFrom( source );
             source.Read(timestamp_);
             source.Read(regionalReserved_);
-            source.Read(name_);
+            name_.ReadFrom( source );
             source.Read(shipType_);
             source.Read(dimensionToBow_);
             source.Read(dimensionToStern_);
@@ -2739,11 +2739,11 @@ namespace Barrelman::Types
         {
             regionalReserved_ = regionalReserved;
         }
-        const Guid& Name( ) const
+        const DBGuid& Name( ) const
         {
             return name_;
         }
-        void SetName( const Guid& name )
+        void SetName( const DBGuid& name )
         {
             name_ = name;
         }
@@ -2834,7 +2834,7 @@ namespace Barrelman::Types
         using Base = AisMessageObject;
         static constexpr Kind KIND = Kind::AisInterrogationMessage;
     private:
-        Guid interrogatedMmsi_;
+        DBGuid interrogatedMmsi_;
         Types::AisMessageType firstMessageType_ = Types::AisMessageType::PositionReportClassA;
         Int32 firstSlotOffset_ = 0;
         DBEnum<Types::AisMessageType> secondMessageType_;
@@ -2848,7 +2848,7 @@ namespace Barrelman::Types
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(interrogatedMmsi_);
+            interrogatedMmsi_.WriteTo( destination );
             destination.Write(firstMessageType_);
             destination.Write(firstSlotOffset_);
             secondMessageType_.WriteTo( destination );
@@ -2861,7 +2861,7 @@ namespace Barrelman::Types
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(interrogatedMmsi_);
+            interrogatedMmsi_.ReadFrom( source );
             source.Read(firstMessageType_);
             source.Read(firstSlotOffset_);
             secondMessageType_.ReadFrom( source );
@@ -2932,11 +2932,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& InterrogatedMmsi( ) const
+        const DBGuid& InterrogatedMmsi( ) const
         {
             return interrogatedMmsi_;
         }
-        void SetInterrogatedMmsi( const Guid& interrogatedMmsi )
+        void SetInterrogatedMmsi( const DBGuid& interrogatedMmsi )
         {
             interrogatedMmsi_ = interrogatedMmsi;
         }
@@ -3580,7 +3580,7 @@ namespace Barrelman::Types
     private:
         Int32 spare_ = 0;
         Int32 sequenceNumber1_ = 0;
-        Guid mmsi1_;
+        DBGuid mmsi1_;
         DBInt32 sequenceNumber2_;
         DBGuid mmsi2_;
         DBInt32 sequenceNumber3_;
@@ -3595,7 +3595,7 @@ namespace Barrelman::Types
             Base::WriteTo( destination );
             destination.Write(spare_);
             destination.Write(sequenceNumber1_);
-            destination.Write(mmsi1_);
+            mmsi1_.WriteTo( destination );
             sequenceNumber2_.WriteTo( destination );
             mmsi2_.WriteTo( destination );
             sequenceNumber3_.WriteTo( destination );
@@ -3609,7 +3609,7 @@ namespace Barrelman::Types
             Base::ReadFrom( source );
             source.Read(spare_);
             source.Read(sequenceNumber1_);
-            source.Read(mmsi1_);
+            mmsi1_.ReadFrom( source );
             sequenceNumber2_.ReadFrom( source );
             mmsi2_.ReadFrom( source );
             sequenceNumber3_.ReadFrom( source );
@@ -3699,11 +3699,11 @@ namespace Barrelman::Types
         {
             sequenceNumber1_ = sequenceNumber1;
         }
-        const Guid& Mmsi1( ) const
+        const DBGuid& Mmsi1( ) const
         {
             return mmsi1_;
         }
-        void SetMmsi1( const Guid& mmsi1 )
+        void SetMmsi1( const DBGuid& mmsi1 )
         {
             mmsi1_ = mmsi1;
         }
@@ -4311,9 +4311,9 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::AisStaticAndVoyageRelatedDataMessage;
     private:
         Int32 aisVersion_ = 0;
-        Guid imoNumber_;
-        Guid callsign_;
-        Guid shipName_;
+        DBGuid imoNumber_;
+        DBGuid callsign_;
+        DBGuid shipName_;
         Types::ShipType shipType_ = Types::ShipType::NotAvailable;
         Int32 dimensionToBow_ = 0;
         Int32 dimensionToStern_ = 0;
@@ -4332,9 +4332,9 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             destination.Write(aisVersion_);
-            destination.Write(imoNumber_);
-            destination.Write(callsign_);
-            destination.Write(shipName_);
+            imoNumber_.WriteTo( destination );
+            callsign_.WriteTo( destination );
+            shipName_.WriteTo( destination );
             destination.Write(shipType_);
             destination.Write(dimensionToBow_);
             destination.Write(dimensionToStern_);
@@ -4352,9 +4352,9 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             source.Read(aisVersion_);
-            source.Read(imoNumber_);
-            source.Read(callsign_);
-            source.Read(shipName_);
+            imoNumber_.ReadFrom( source );
+            callsign_.ReadFrom( source );
+            shipName_.ReadFrom( source );
             source.Read(shipType_);
             source.Read(dimensionToBow_);
             source.Read(dimensionToStern_);
@@ -4465,27 +4465,27 @@ namespace Barrelman::Types
         {
             aisVersion_ = aisVersion;
         }
-        const Guid& ImoNumber( ) const
+        const DBGuid& ImoNumber( ) const
         {
             return imoNumber_;
         }
-        void SetImoNumber( const Guid& imoNumber )
+        void SetImoNumber( const DBGuid& imoNumber )
         {
             imoNumber_ = imoNumber;
         }
-        const Guid& Callsign( ) const
+        const DBGuid& Callsign( ) const
         {
             return callsign_;
         }
-        void SetCallsign( const Guid& callsign )
+        void SetCallsign( const DBGuid& callsign )
         {
             callsign_ = callsign;
         }
-        const Guid& ShipName( ) const
+        const DBGuid& ShipName( ) const
         {
             return shipName_;
         }
-        void SetShipName( const Guid& shipName )
+        void SetShipName( const DBGuid& shipName )
         {
             shipName_ = shipName;
         }
@@ -4648,7 +4648,7 @@ namespace Barrelman::Types
         using Base = AisStaticDataReportMessageObject;
         static constexpr Kind KIND = Kind::AisStaticDataReportPartAMessage;
     private:
-        Guid shipName_;
+        DBGuid shipName_;
         Int32 spare_ = 0;
     public:
         AisStaticDataReportPartAMessageObject( ) = default;
@@ -4656,14 +4656,14 @@ namespace Barrelman::Types
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(shipName_);
+            shipName_.WriteTo( destination );
             destination.Write(spare_);
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(shipName_);
+            shipName_.ReadFrom( source );
             source.Read(spare_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
@@ -4704,11 +4704,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& ShipName( ) const
+        const DBGuid& ShipName( ) const
         {
             return shipName_;
         }
-        void SetShipName( const Guid& shipName )
+        void SetShipName( const DBGuid& shipName )
         {
             shipName_ = shipName;
         }
@@ -4731,7 +4731,7 @@ namespace Barrelman::Types
         FixedDBWideString<127> vendorId_;
         Int32 unitModelCode_ = 0;
         Int32 serialNumber_ = 0;
-        Guid callsign_;
+        DBGuid callsign_;
         Int32 dimensionToBow_ = 0;
         Int32 dimensionToStern_ = 0;
         Int32 dimensionToPort_ = 0;
@@ -4749,7 +4749,7 @@ namespace Barrelman::Types
             vendorId_.WriteTo( destination );
             destination.Write(unitModelCode_);
             destination.Write(serialNumber_);
-            destination.Write(callsign_);
+            callsign_.WriteTo( destination );
             destination.Write(dimensionToBow_);
             destination.Write(dimensionToStern_);
             destination.Write(dimensionToPort_);
@@ -4766,7 +4766,7 @@ namespace Barrelman::Types
             vendorId_.ReadFrom( source );
             source.Read(unitModelCode_);
             source.Read(serialNumber_);
-            source.Read(callsign_);
+            callsign_.ReadFrom( source );
             source.Read(dimensionToBow_);
             source.Read(dimensionToStern_);
             source.Read(dimensionToPort_);
@@ -4885,11 +4885,11 @@ namespace Barrelman::Types
         {
             serialNumber_ = serialNumber;
         }
-        const Guid& Callsign( ) const
+        const DBGuid& Callsign( ) const
         {
             return callsign_;
         }
-        void SetCallsign( const Guid& callsign )
+        void SetCallsign( const DBGuid& callsign )
         {
             callsign_ = callsign;
         }
@@ -4957,7 +4957,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::AisUtcAndDateInquiryMessage;
     private:
         Int32 spare1_ = 0;
-        Int32 destinationMmsi_ = 0;
+        DBGuid destinationMmsi_;
         Int32 spare2_ = 0;
     public:
         AisUtcAndDateInquiryMessageObject( ) = default;
@@ -4966,7 +4966,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             destination.Write(spare1_);
-            destination.Write(destinationMmsi_);
+            destinationMmsi_.WriteTo( destination );
             destination.Write(spare2_);
         }
         template<IO::StreamReader StreamT>
@@ -4974,7 +4974,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             source.Read(spare1_);
-            source.Read(destinationMmsi_);
+            destinationMmsi_.ReadFrom( source );
             source.Read(spare2_);
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
@@ -5027,11 +5027,11 @@ namespace Barrelman::Types
         {
             spare1_ = spare1;
         }
-        Int32 DestinationMmsi( ) const
+        const DBGuid& DestinationMmsi( ) const
         {
             return destinationMmsi_;
         }
-        void SetDestinationMmsi( Int32 destinationMmsi )
+        void SetDestinationMmsi( const DBGuid& destinationMmsi )
         {
             destinationMmsi_ = destinationMmsi;
         }
@@ -7302,7 +7302,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid camera_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -7318,7 +7318,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(camera_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
             destination.Write(panAngle_);
@@ -7332,7 +7332,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(camera_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
             source.Read(panAngle_);
@@ -7429,11 +7429,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -8638,7 +8638,7 @@ namespace Barrelman::Types
     private:
         Int64 rowVersion_ = 0;
         Guid camera_;
-        Guid track_;
+        DBGuid track_;
         DateTime timestamp_;
         Types::CameraPanTiltMode positionPanTiltMode_ = Types::CameraPanTiltMode::Unknown;
         double panAngle_ = 0.0;
@@ -8663,7 +8663,7 @@ namespace Barrelman::Types
             Base::WriteTo( destination );
             destination.Write(rowVersion_);
             destination.Write(camera_);
-            destination.Write(track_);
+            track_.WriteTo( destination );
             destination.Write(timestamp_);
             destination.Write(positionPanTiltMode_);
             destination.Write(panAngle_);
@@ -8686,7 +8686,7 @@ namespace Barrelman::Types
             Base::ReadFrom( source );
             source.Read(rowVersion_);
             source.Read(camera_);
-            source.Read(track_);
+            track_.ReadFrom( source );
             source.Read(timestamp_);
             source.Read(positionPanTiltMode_);
             source.Read(panAngle_);
@@ -8821,11 +8821,11 @@ namespace Barrelman::Types
         {
             camera_ = camera;
         }
-        const Guid& Track( ) const
+        const DBGuid& Track( ) const
         {
             return track_;
         }
-        void SetTrack( const Guid& track )
+        void SetTrack( const DBGuid& track )
         {
             track_ = track;
         }
@@ -9363,7 +9363,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::CatalogElement;
     private:
         Int64 rowVersion_ = 0;
-        Guid catalog_;
+        DBGuid catalog_;
         FixedDBWideString<127> name_;
     public:
         CatalogElementObject( ) = default;
@@ -9372,7 +9372,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             destination.Write(rowVersion_);
-            destination.Write(catalog_);
+            catalog_.WriteTo( destination );
             name_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
@@ -9380,7 +9380,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             source.Read(rowVersion_);
-            source.Read(catalog_);
+            catalog_.ReadFrom( source );
             name_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
@@ -9433,11 +9433,11 @@ namespace Barrelman::Types
         {
             rowVersion_ = rowVersion;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
-        void SetCatalog( const Guid& catalog )
+        void SetCatalog( const DBGuid& catalog )
         {
             catalog_ = catalog;
         }
@@ -9505,20 +9505,20 @@ namespace Barrelman::Types
         using Base = CatalogElementObject;
         static constexpr Kind KIND = Kind::Element;
     private:
-        Guid elementType_;
+        DBGuid elementType_;
     public:
         ElementObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(elementType_);
+            elementType_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(elementType_);
+            elementType_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -9554,11 +9554,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& ElementType( ) const
+        const DBGuid& ElementType( ) const
         {
             return elementType_;
         }
-        void SetElementType( const Guid& elementType )
+        void SetElementType( const DBGuid& elementType )
         {
             elementType_ = elementType;
         }
@@ -10771,7 +10771,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid gNSSDevice_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -10784,7 +10784,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(gNSSDevice_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -10795,7 +10795,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(gNSSDevice_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -10877,11 +10877,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -11343,7 +11343,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid gyroDevice_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -11356,7 +11356,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(gyroDevice_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -11367,7 +11367,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(gyroDevice_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -11449,11 +11449,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -12376,7 +12376,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::BaseStation;
     private:
         FixedDBWideString<127> name_;
-        Guid type_;
+        DBGuid type_;
     public:
         BaseStationObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -12384,14 +12384,14 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             name_.WriteTo( destination );
-            destination.Write(type_);
+            type_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
             name_.ReadFrom( source );
-            source.Read(type_);
+            type_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -12439,11 +12439,11 @@ namespace Barrelman::Types
         {
             name_ = name;
         }
-        const Guid& Type( ) const
+        const DBGuid& Type( ) const
         {
             return type_;
         }
-        void SetType( const Guid& type )
+        void SetType( const DBGuid& type )
         {
             type_ = type;
         }
@@ -12714,7 +12714,7 @@ namespace Barrelman::Types
         DBGuid rollTimeseries_;
         DBGuid courseTimeseries_;
         DBGuid speedTimeseries_;
-        Guid gNSSDevice_;
+        DBGuid gNSSDevice_;
     public:
         GyroDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -12728,7 +12728,7 @@ namespace Barrelman::Types
             rollTimeseries_.WriteTo( destination );
             courseTimeseries_.WriteTo( destination );
             speedTimeseries_.WriteTo( destination );
-            destination.Write(gNSSDevice_);
+            gNSSDevice_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -12741,7 +12741,7 @@ namespace Barrelman::Types
             rollTimeseries_.ReadFrom( source );
             courseTimeseries_.ReadFrom( source );
             speedTimeseries_.ReadFrom( source );
-            source.Read(gNSSDevice_);
+            gNSSDevice_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -12861,11 +12861,11 @@ namespace Barrelman::Types
         {
             speedTimeseries_ = speedTimeseries;
         }
-        const Guid& GNSSDevice( ) const
+        const DBGuid& GNSSDevice( ) const
         {
             return gNSSDevice_;
         }
-        void SetGNSSDevice( const Guid& gNSSDevice )
+        void SetGNSSDevice( const DBGuid& gNSSDevice )
         {
             gNSSDevice_ = gNSSDevice;
         }
@@ -13647,7 +13647,7 @@ namespace Barrelman::Types
         DBGuid dewPointTimeseries_;
         DBGuid windDirectionTimeseries_;
         DBGuid windSpeedTimeseries_;
-        Guid gyro_;
+        DBGuid gyro_;
     public:
         WeatherStationDeviceObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -13662,7 +13662,7 @@ namespace Barrelman::Types
             dewPointTimeseries_.WriteTo( destination );
             windDirectionTimeseries_.WriteTo( destination );
             windSpeedTimeseries_.WriteTo( destination );
-            destination.Write(gyro_);
+            gyro_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -13676,7 +13676,7 @@ namespace Barrelman::Types
             dewPointTimeseries_.ReadFrom( source );
             windDirectionTimeseries_.ReadFrom( source );
             windSpeedTimeseries_.ReadFrom( source );
-            source.Read(gyro_);
+            gyro_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -13808,11 +13808,11 @@ namespace Barrelman::Types
         {
             windSpeedTimeseries_ = windSpeedTimeseries;
         }
-        const Guid& Gyro( ) const
+        const DBGuid& Gyro( ) const
         {
             return gyro_;
         }
-        void SetGyro( const Guid& gyro )
+        void SetGyro( const DBGuid& gyro )
         {
             gyro_ = gyro;
         }
@@ -13824,7 +13824,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::Facility;
     private:
         FixedDBWideString<127> name_;
-        Guid type_;
+        DBGuid type_;
         double longitude_ = 0.0;
         double latitude_ = 0.0;
         double altitude_ = 0.0;
@@ -13835,7 +13835,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             name_.WriteTo( destination );
-            destination.Write(type_);
+            type_.WriteTo( destination );
             destination.Write(longitude_);
             destination.Write(latitude_);
             destination.Write(altitude_);
@@ -13845,7 +13845,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             name_.ReadFrom( source );
-            source.Read(type_);
+            type_.ReadFrom( source );
             source.Read(longitude_);
             source.Read(latitude_);
             source.Read(altitude_);
@@ -13908,11 +13908,11 @@ namespace Barrelman::Types
         {
             name_ = name;
         }
-        const Guid& Type( ) const
+        const DBGuid& Type( ) const
         {
             return type_;
         }
-        void SetType( const Guid& type )
+        void SetType( const DBGuid& type )
         {
             type_ = type;
         }
@@ -13997,7 +13997,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::Aircraft;
     private:
         FixedDBWideString<127> name_;
-        Guid type_;
+        DBGuid type_;
     public:
         AircraftObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -14005,14 +14005,14 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             name_.WriteTo( destination );
-            destination.Write(type_);
+            type_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
             name_.ReadFrom( source );
-            source.Read(type_);
+            type_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -14060,11 +14060,11 @@ namespace Barrelman::Types
         {
             name_ = name;
         }
-        const Guid& Type( ) const
+        const DBGuid& Type( ) const
         {
             return type_;
         }
-        void SetType( const Guid& type )
+        void SetType( const DBGuid& type )
         {
             type_ = type;
         }
@@ -14076,7 +14076,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::AisAidToNavigation;
     private:
         FixedDBWideString<127> name_;
-        Guid mMSI_;
+        DBGuid mMSI_;
         Types::NavigationalAidType navigationalAidType_ = Types::NavigationalAidType::NotSpecified;
         DBGuid position_;
         bool isVirtual_ = false;
@@ -14092,7 +14092,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             name_.WriteTo( destination );
-            destination.Write(mMSI_);
+            mMSI_.WriteTo( destination );
             destination.Write(navigationalAidType_);
             position_.WriteTo( destination );
             destination.Write(isVirtual_);
@@ -14107,7 +14107,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             name_.ReadFrom( source );
-            source.Read(mMSI_);
+            mMSI_.ReadFrom( source );
             source.Read(navigationalAidType_);
             position_.ReadFrom( source );
             source.Read(isVirtual_);
@@ -14195,11 +14195,11 @@ namespace Barrelman::Types
         {
             name_ = name;
         }
-        const Guid& MMSI( ) const
+        const DBGuid& MMSI( ) const
         {
             return mMSI_;
         }
-        void SetMMSI( const Guid& mMSI )
+        void SetMMSI( const DBGuid& mMSI )
         {
             mMSI_ = mMSI;
         }
@@ -14275,7 +14275,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::Vehicle;
     private:
         FixedDBWideString<127> name_;
-        Guid type_;
+        DBGuid type_;
     public:
         VehicleObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -14283,14 +14283,14 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             name_.WriteTo( destination );
-            destination.Write(type_);
+            type_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
             name_.ReadFrom( source );
-            source.Read(type_);
+            type_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -14338,11 +14338,11 @@ namespace Barrelman::Types
         {
             name_ = name;
         }
-        const Guid& Type( ) const
+        const DBGuid& Type( ) const
         {
             return type_;
         }
-        void SetType( const Guid& type )
+        void SetType( const DBGuid& type )
         {
             type_ = type;
         }
@@ -14354,7 +14354,7 @@ namespace Barrelman::Types
         static constexpr Kind KIND = Kind::Vessel;
     private:
         FixedDBWideString<127> name_;
-        Guid type_;
+        DBGuid type_;
         Int32 toBow_ = 0;
         Int32 toStern_ = 0;
         Int32 toPort_ = 0;
@@ -14368,7 +14368,7 @@ namespace Barrelman::Types
         {
             Base::WriteTo( destination );
             name_.WriteTo( destination );
-            destination.Write(type_);
+            type_.WriteTo( destination );
             destination.Write(toBow_);
             destination.Write(toStern_);
             destination.Write(toPort_);
@@ -14381,7 +14381,7 @@ namespace Barrelman::Types
         {
             Base::ReadFrom( source );
             name_.ReadFrom( source );
-            source.Read(type_);
+            type_.ReadFrom( source );
             source.Read(toBow_);
             source.Read(toStern_);
             source.Read(toPort_);
@@ -14459,11 +14459,11 @@ namespace Barrelman::Types
         {
             name_ = name;
         }
-        const Guid& Type( ) const
+        const DBGuid& Type( ) const
         {
             return type_;
         }
-        void SetType( const Guid& type )
+        void SetType( const DBGuid& type )
         {
             type_ = type;
         }
@@ -14897,7 +14897,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid lineInputDevice_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -14910,7 +14910,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(lineInputDevice_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -14921,7 +14921,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(lineInputDevice_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -15003,11 +15003,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -15719,7 +15719,7 @@ namespace Barrelman::Types
     private:
         Int64 rowVersion_ = 0;
         Guid routing_;
-        Guid listener_;
+        DBGuid listener_;
     public:
         LineInputMessageRoutingDestinationObject( ) = default;
         template<IO::StreamWriter StreamT>
@@ -15728,7 +15728,7 @@ namespace Barrelman::Types
             Base::WriteTo( destination );
             destination.Write(rowVersion_);
             destination.Write(routing_);
-            destination.Write(listener_);
+            listener_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
@@ -15736,7 +15736,7 @@ namespace Barrelman::Types
             Base::ReadFrom( source );
             source.Read(rowVersion_);
             source.Read(routing_);
-            source.Read(listener_);
+            listener_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -15796,11 +15796,11 @@ namespace Barrelman::Types
         {
             routing_ = routing;
         }
-        const Guid& Listener( ) const
+        const DBGuid& Listener( ) const
         {
             return listener_;
         }
-        void SetListener( const Guid& listener )
+        void SetListener( const DBGuid& listener )
         {
             listener_ = listener;
         }
@@ -16801,7 +16801,7 @@ namespace Barrelman::Types
     private:
         Int64 rowVersion_ = 0;
         Guid application_;
-        Guid host_;
+        DBGuid host_;
         DateTime started_;
         DBDateTime stopped_;
         Int64 processId_ = 0;
@@ -16816,7 +16816,7 @@ namespace Barrelman::Types
             Base::WriteTo( destination );
             destination.Write(rowVersion_);
             destination.Write(application_);
-            destination.Write(host_);
+            host_.WriteTo( destination );
             destination.Write(started_);
             stopped_.WriteTo( destination );
             destination.Write(processId_);
@@ -16829,7 +16829,7 @@ namespace Barrelman::Types
             Base::ReadFrom( source );
             source.Read(rowVersion_);
             source.Read(application_);
-            source.Read(host_);
+            host_.ReadFrom( source );
             source.Read(started_);
             stopped_.ReadFrom( source );
             source.Read(processId_);
@@ -16914,11 +16914,11 @@ namespace Barrelman::Types
         {
             application_ = application;
         }
-        const Guid& Host( ) const
+        const DBGuid& Host( ) const
         {
             return host_;
         }
-        void SetHost( const Guid& host )
+        void SetHost( const DBGuid& host )
         {
             host_ = host;
         }
@@ -19345,7 +19345,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid oilSpillDetector_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -19358,7 +19358,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(oilSpillDetector_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -19369,7 +19369,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(oilSpillDetector_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -19451,11 +19451,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -19502,7 +19502,7 @@ namespace Barrelman::Types
         bool sendAsTarget_ = false;
         bool writeLog_ = false;
         FixedDBWideString<127> targetFilePrefix_;
-        Guid targetMMSI_;
+        DBGuid targetMMSI_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
         bool testSourceEnabled_ = false;
@@ -19533,7 +19533,7 @@ namespace Barrelman::Types
             destination.Write(sendAsTarget_);
             destination.Write(writeLog_);
             targetFilePrefix_.WriteTo( destination );
-            destination.Write(targetMMSI_);
+            targetMMSI_.WriteTo( destination );
             destination.Write(latitude_);
             destination.Write(longitude_);
             destination.Write(testSourceEnabled_);
@@ -19563,7 +19563,7 @@ namespace Barrelman::Types
             source.Read(sendAsTarget_);
             source.Read(writeLog_);
             targetFilePrefix_.ReadFrom( source );
-            source.Read(targetMMSI_);
+            targetMMSI_.ReadFrom( source );
             source.Read(latitude_);
             source.Read(longitude_);
             source.Read(testSourceEnabled_);
@@ -19852,11 +19852,11 @@ namespace Barrelman::Types
         {
             targetFilePrefix_ = targetFilePrefix;
         }
-        const Guid& TargetMMSI( ) const
+        const DBGuid& TargetMMSI( ) const
         {
             return targetMMSI_;
         }
-        void SetTargetMMSI( const Guid& targetMMSI )
+        void SetTargetMMSI( const DBGuid& targetMMSI )
         {
             targetMMSI_ = targetMMSI;
         }
@@ -20935,20 +20935,20 @@ namespace Barrelman::Types
         using Base = PropertyObject;
         static constexpr Kind KIND = Kind::ReferenceProperty;
     private:
-        Guid value_;
+        DBGuid value_;
     public:
         ReferencePropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(value_);
+            value_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(value_);
+            value_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -20984,11 +20984,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Value( ) const
+        const DBGuid& Value( ) const
         {
             return value_;
         }
-        void SetValue( const Guid& value )
+        void SetValue( const DBGuid& value )
         {
             value_ = value;
         }
@@ -21240,20 +21240,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::BinaryTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         BinaryTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21289,11 +21289,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21304,20 +21304,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::BooleanTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         BooleanTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21353,11 +21353,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21368,20 +21368,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::ByteTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         ByteTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21417,11 +21417,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21432,20 +21432,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::DateTimeTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         DateTimeTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21481,11 +21481,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21496,20 +21496,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::DoubleTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         DoubleTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21545,11 +21545,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21560,20 +21560,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::GuidTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         GuidTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21609,11 +21609,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21624,20 +21624,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::Int16TimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         Int16TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21673,11 +21673,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21688,20 +21688,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::Int32TimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         Int32TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21737,11 +21737,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21752,20 +21752,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::Int64TimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         Int64TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21801,11 +21801,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21816,20 +21816,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::ReferenceTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         ReferenceTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21865,11 +21865,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21880,20 +21880,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::SByteTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         SByteTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21929,11 +21929,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -21944,20 +21944,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::SingleTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         SingleTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -21993,11 +21993,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -22008,20 +22008,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::StringTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         StringTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -22057,11 +22057,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -22072,20 +22072,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::TimeSpanTimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         TimeSpanTimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -22121,11 +22121,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -22136,20 +22136,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::UInt16TimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         UInt16TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -22185,11 +22185,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -22200,20 +22200,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::UInt32TimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         UInt32TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -22249,11 +22249,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -22264,20 +22264,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyObject;
         static constexpr Kind KIND = Kind::UInt64TimeseriesProperty;
     private:
-        Guid timeseries_;
+        DBGuid timeseries_;
     public:
         UInt64TimeseriesPropertyObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(timeseries_);
+            timeseries_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(timeseries_);
+            timeseries_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -22313,11 +22313,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& Timeseries( ) const
+        const DBGuid& Timeseries( ) const
         {
             return timeseries_;
         }
-        void SetTimeseries( const Guid& timeseries )
+        void SetTimeseries( const DBGuid& timeseries )
         {
             timeseries_ = timeseries;
         }
@@ -23451,23 +23451,23 @@ namespace Barrelman::Types
         using Base = PropertyDefinitionObject;
         static constexpr Kind KIND = Kind::ReferencePropertyDefinition;
     private:
-        Guid defaultValue_;
-        Guid referencedElementType_;
+        DBGuid defaultValue_;
+        DBGuid referencedElementType_;
     public:
         ReferencePropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(defaultValue_);
-            destination.Write(referencedElementType_);
+            defaultValue_.WriteTo( destination );
+            referencedElementType_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(defaultValue_);
-            source.Read(referencedElementType_);
+            defaultValue_.ReadFrom( source );
+            referencedElementType_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -23507,19 +23507,19 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& DefaultValue( ) const
+        const DBGuid& DefaultValue( ) const
         {
             return defaultValue_;
         }
-        void SetDefaultValue( const Guid& defaultValue )
+        void SetDefaultValue( const DBGuid& defaultValue )
         {
             defaultValue_ = defaultValue;
         }
-        const Guid& ReferencedElementType( ) const
+        const DBGuid& ReferencedElementType( ) const
         {
             return referencedElementType_;
         }
-        void SetReferencedElementType( const Guid& referencedElementType )
+        void SetReferencedElementType( const DBGuid& referencedElementType )
         {
             referencedElementType_ = referencedElementType;
         }
@@ -24467,20 +24467,20 @@ namespace Barrelman::Types
         using Base = TimeseriesPropertyDefinitionObject;
         static constexpr Kind KIND = Kind::ReferenceTimeseriesPropertyDefinition;
     private:
-        Guid referencedElementType_;
+        DBGuid referencedElementType_;
     public:
         ReferenceTimeseriesPropertyDefinitionObject( ) = default;
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
             Base::WriteTo( destination );
-            destination.Write(referencedElementType_);
+            referencedElementType_.WriteTo( destination );
         }
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
             Base::ReadFrom( source );
-            source.Read(referencedElementType_);
+            referencedElementType_.ReadFrom( source );
         }
         virtual [[nodiscard]] ObjectType GetObjectType( ) const noexcept override
         {
@@ -24516,11 +24516,11 @@ namespace Barrelman::Types
             }
             return false;
         }
-        const Guid& ReferencedElementType( ) const
+        const DBGuid& ReferencedElementType( ) const
         {
             return referencedElementType_;
         }
-        void SetReferencedElementType( const Guid& referencedElementType )
+        void SetReferencedElementType( const DBGuid& referencedElementType )
         {
             referencedElementType_ = referencedElementType;
         }
@@ -25745,7 +25745,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -25758,7 +25758,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(radar_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -25769,7 +25769,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(radar_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -25851,11 +25851,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -27081,7 +27081,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid radio_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -27094,7 +27094,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(radio_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -27105,7 +27105,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(radio_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -27187,11 +27187,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -27559,7 +27559,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid radome_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -27572,7 +27572,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(radome_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -27583,7 +27583,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(radome_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -27665,11 +27665,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -36576,7 +36576,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid weatherStation_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -36589,7 +36589,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(weatherStation_);
             destination.Write(timestamp_);
-            destination.Write(command_);
+            command_.WriteTo( destination );
             destination.Write(status_);
             destination.Write(message_);
         }
@@ -36600,7 +36600,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(weatherStation_);
             source.Read(timestamp_);
-            source.Read(command_);
+            command_.ReadFrom( source );
             source.Read(status_);
             source.Read(message_);
         }
@@ -36682,11 +36682,11 @@ namespace Barrelman::Types
         {
             timestamp_ = timestamp;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }
-        void SetCommand( const Guid& command )
+        void SetCommand( const DBGuid& command )
         {
             command_ = command;
         }
@@ -37431,7 +37431,7 @@ namespace Barrelman::Types
         Int64 rowVersion_ = 0;
         Guid track_;
         Guid zone_;
-        Guid radarTrack_;
+        DBGuid radarTrack_;
         DateTime timestamp_;
         double latitude_ = 0.0;
         double longitude_ = 0.0;
@@ -37451,7 +37451,7 @@ namespace Barrelman::Types
             destination.Write(rowVersion_);
             destination.Write(track_);
             destination.Write(zone_);
-            destination.Write(radarTrack_);
+            radarTrack_.WriteTo( destination );
             destination.Write(timestamp_);
             destination.Write(latitude_);
             destination.Write(longitude_);
@@ -37470,7 +37470,7 @@ namespace Barrelman::Types
             source.Read(rowVersion_);
             source.Read(track_);
             source.Read(zone_);
-            source.Read(radarTrack_);
+            radarTrack_.ReadFrom( source );
             source.Read(timestamp_);
             source.Read(latitude_);
             source.Read(longitude_);
@@ -37592,11 +37592,11 @@ namespace Barrelman::Types
         {
             zone_ = zone;
         }
-        const Guid& RadarTrack( ) const
+        const DBGuid& RadarTrack( ) const
         {
             return radarTrack_;
         }
-        void SetRadarTrack( const Guid& radarTrack )
+        void SetRadarTrack( const DBGuid& radarTrack )
         {
             radarTrack_ = radarTrack;
         }

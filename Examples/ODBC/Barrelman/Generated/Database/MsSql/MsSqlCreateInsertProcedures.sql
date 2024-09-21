@@ -3681,7 +3681,7 @@ CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageInsert]
   @Repeat [int],
   @Mmsi [uniqueidentifier],
   @Spare1 [int],
-  @DestinationMmsi [int],
+  @DestinationMmsi [uniqueidentifier],
   @Spare2 [int]
 AS
   BEGIN
@@ -3753,7 +3753,7 @@ INSTEAD OF INSERT AS
     DECLARE @Repeat [int]
     DECLARE @Mmsi [uniqueidentifier]
     DECLARE @Spare1 [int]
-    DECLARE @DestinationMmsi [int]
+    DECLARE @DestinationMmsi [uniqueidentifier]
     DECLARE @Spare2 [int]
     FETCH NEXT FROM @cur INTO
         @Id,

@@ -17,17 +17,17 @@
 
 namespace Harlinn::ODBC::Tool
 {
-    std::shared_ptr<ReferenceMemberInfo> CollectionMemberInfo::ReferencingMember( ) const
+    std::shared_ptr<ReferenceMemberInfo> CollectionMemberInfo::ReferencingReferenceMember( ) const
     {
-        auto referencingMember = referencingMember_.lock( );
-        if ( referencingMember == nullptr )
+        auto referencingReferenceMember = referencingReferenceMember_.lock( );
+        if ( referencingReferenceMember == nullptr )
         {
             auto referencingType = type_.lock( );
             if ( referencingType )
             {
-                if ( referenceName_.Length( ) )
+                if ( member_.Length( ) )
                 {
-                    referencingMember = std::dynamic_pointer_cast< ReferenceMemberInfo >( referencingType->FindOwnPersistentMember( referenceName_ ) );
+                    referencingReferenceMember = std::dynamic_pointer_cast< ReferenceMemberInfo >( referencingType->FindOwnPersistentMember( member_ ) );
                 }
                 else
                 {
@@ -45,20 +45,85 @@ namespace Harlinn::ODBC::Tool
                             {
                                 if ( Owner( )->Id( ) == referencedType->Id( ) )
                                 {
-                                    referencingMember = referenceMemberInfo;
+                                    referencingReferenceMember = referenceMemberInfo;
                                 }
                             }
                         }
                     }
                 }
-                if ( referencingMember )
+                if ( referencingReferenceMember )
                 {
-                    referencingMember_ = referencingMember;
+                    referencingReferenceMember_ = referencingReferenceMember;
                 }
             }
         }
-        return referencingMember;
+        return referencingReferenceMember;
     }
+
+    std::shared_ptr<CollectionMemberInfo> CollectionMemberInfo::ReferencingCollectionMember( ) const
+    {
+        auto referencingCollectionMember = referencingCollectionMember_.lock( );
+        if ( referencingCollectionMember == nullptr )
+        {
+            auto referencingType = type_.lock( );
+            if ( referencingType )
+            {
+                if ( member_.Length( ) )
+                {
+                    referencingCollectionMember = std::dynamic_pointer_cast< CollectionMemberInfo >( referencingType->FindOwnPersistentMember( member_ ) );
+                }
+                else
+                {
+                    const auto& referencingTypeMembers = referencingType->OwnPersistentMembers( );
+                    const auto count = referencingTypeMembers.size( );
+                    for ( size_t i = 0; i < count; i++ )
+                    {
+                        const auto& referencingTypeMember = referencingTypeMembers[ i ];
+                        auto referencingTypeMemberType = referencingTypeMember->Type( );
+                        if ( referencingTypeMemberType == MemberInfoType::Collection )
+                        {
+                            auto collectionMemberInfo = std::dynamic_pointer_cast< CollectionMemberInfo >( referencingTypeMember );
+                            auto referencedType = collectionMemberInfo->ReferencedType( );
+                            if ( referencedType )
+                            {
+                                if ( Owner( )->Id( ) == referencedType->Id( ) )
+                                {
+                                    referencingCollectionMember = collectionMemberInfo;
+                                }
+                            }
+                        }
+                    }
+                }
+                if ( referencingCollectionMember )
+                {
+                    referencingCollectionMember_ = referencingCollectionMember;
+                }
+            }
+        }
+        return referencingCollectionMember;
+    }
+
+    bool CollectionMemberInfo::IsManyToMany( ) const
+    {
+        if ( isManyToMany_.has_value( ) )
+        {
+            return isManyToMany_.value( );
+        }
+        auto result = ReferencingCollectionMember( ) != nullptr;
+        isManyToMany_ = result;
+        return result;
+    }
+    bool CollectionMemberInfo::IsOneToMany( ) const
+    {
+        if ( isOneToMany_.has_value( ) )
+        {
+            return isOneToMany_.value( );
+        }
+        auto result = ReferencingReferenceMember( ) != nullptr;
+        isOneToMany_ = result;
+        return result;
+    }
+
 
     void CollectionMemberInfo::Load( const XmlElement& memberElement )
     {
@@ -71,9 +136,9 @@ namespace Harlinn::ODBC::Tool
             type_ = type;
         }
 
-        if ( memberElement.HasAttribute( L"reference" ) )
+        if ( memberElement.HasAttribute( L"member" ) )
         {
-            referenceName_ = memberElement.Read<WideString>( L"reference" );
+            member_ = memberElement.Read<WideString>( L"member" );
         }
         if ( memberElement.HasAttribute( L"aggregated" ) )
         {
@@ -83,13 +148,17 @@ namespace Harlinn::ODBC::Tool
 
     void CollectionMemberInfo::Validate( ) const
     {
-        auto referencingMember = ReferencingMember( );
-        if ( referencingMember == nullptr )
+        auto referencingReferenceMember = ReferencingReferenceMember( );
+        if ( referencingReferenceMember == nullptr )
         {
-            auto ownerName = Owner( )->Name( );
-            auto name = Name( );
-            auto message = Format( L"Unknown referencing member for {}.{}.", ownerName, name );
-            throw Exception( message );
+            auto referencingCollectionMember = ReferencingCollectionMember( );
+            if ( referencingCollectionMember == nullptr )
+            {
+                auto ownerName = Owner( )->Name( );
+                auto name = Name( );
+                auto message = Format( L"Unknown referencing member for {}.{}.", ownerName, name );
+                throw Exception( message );
+            }
         }
     }
 

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using Harlinn.Common.Core.Net.Data;
 using System.ComponentModel;
+using System.Reflection;
 
 
 namespace Harlinn.Common.Core.Net.Entities
@@ -119,6 +120,16 @@ namespace Harlinn.Common.Core.Net.Entities
             }
         }
 
+        public BaseEntity<TKind> AddNew( TKind kind )
+        {
+            var result = _entityFactory.Create(this, kind);
+            var data = result._GetData();
+            data.Id = Guid.NewGuid();
+            data.ObjectState = ObjectState.New;
+            AddToContext(result);
+            return result;
+        }
+
 
         /// <summary>
         /// <para>
@@ -172,7 +183,7 @@ namespace Harlinn.Common.Core.Net.Entities
         protected BindingList<TEntity> ToEntityList<TEntity,TData>( [DisallowNull] IList<TData> dataItems ) where TEntity : BaseEntity<TKind> where TData : BaseDataGuid<TKind>
         {
             var count = dataItems.Count;
-            var result = new BindingList<TEntity>();
+            var list = new List<TEntity>(count);
 
             for (int i = 0; i < count; i++)
             {
@@ -186,8 +197,9 @@ namespace Harlinn.Common.Core.Net.Entities
                 {
                     entity.Update(dataItem);
                 }
-                result.Add(entity);
+                list.Add(entity);
             }
+            var result = new BindingList<TEntity>(list);
             return result;
         }
 

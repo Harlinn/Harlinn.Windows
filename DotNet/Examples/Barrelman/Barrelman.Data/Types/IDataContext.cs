@@ -49,7 +49,8 @@ namespace Barrelman.Data.Types
         IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        AisDeviceCommandReplyObject? GetAisDeviceCommandReplyByCommand( Guid command );
+        AisDeviceCommandReplyObject? GetAisDeviceCommandReplyByCommand( Guid? command );
+        IList<AisDeviceCommandReplyObject> GetAisDeviceCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // AisDeviceConfiguration queries
         // ---------------------------------------------------------------------
@@ -114,10 +115,12 @@ namespace Barrelman.Data.Types
         IList<AisMessageObject> GetAisMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisMessageObject> GetAisMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisMessageObject> GetAisMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisMessageObject> GetAisMessageCollectionByMmsi( Guid mmsi );
-        IList<AisMessageObject> GetAisMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisMessageObject> GetAisMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisMessageObject> GetAisMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisMessageObject> GetAisMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisMessageObject> GetAisMessageCollectionByMmsiIsNull(  );
+        IList<AisMessageObject> GetAisMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisMessageObject> GetAisMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisMessageObject> GetAisMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisMessageObject> GetAisMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisMessageObject> GetAisMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AidToNavigationReportMessage queries
@@ -135,10 +138,12 @@ namespace Barrelman.Data.Types
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsi( Guid mmsi );
-        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsi( Guid? mmsi );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiIsNull(  );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AidToNavigationReportMessageObject> GetAidToNavigationReportMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisAddressedSafetyRelatedMessage queries
@@ -156,12 +161,15 @@ namespace Barrelman.Data.Types
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsi( Guid mmsi );
-        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiIsNull(  );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
-        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByDestinationMmsi( Guid destinationMmsi );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByDestinationMmsi( Guid? destinationMmsi );
+        IList<AisAddressedSafetyRelatedMessageObject> GetAisAddressedSafetyRelatedMessageCollectionByDestinationMmsiIsNull(  );
         // ---------------------------------------------------------------------
         // AisBaseStationReportMessage queries
         // ---------------------------------------------------------------------
@@ -178,10 +186,12 @@ namespace Barrelman.Data.Types
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsi( Guid mmsi );
-        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiIsNull(  );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisBaseStationReportMessageObject> GetAisBaseStationReportMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisBinaryAcknowledgeMessage queries
@@ -199,10 +209,12 @@ namespace Barrelman.Data.Types
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsi( Guid mmsi );
-        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiIsNull(  );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisBinaryAcknowledgeMessageObject> GetAisBinaryAcknowledgeMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisBinaryAddressedMessage queries
@@ -220,12 +232,15 @@ namespace Barrelman.Data.Types
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsi( Guid mmsi );
-        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiIsNull(  );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
-        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByDestinationMmsi( Guid destinationMmsi );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByDestinationMmsi( Guid? destinationMmsi );
+        IList<AisBinaryAddressedMessageObject> GetAisBinaryAddressedMessageCollectionByDestinationMmsiIsNull(  );
         // ---------------------------------------------------------------------
         // AisBinaryBroadcastMessage queries
         // ---------------------------------------------------------------------
@@ -242,10 +257,12 @@ namespace Barrelman.Data.Types
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsi( Guid mmsi );
-        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiIsNull(  );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisBinaryBroadcastMessageObject> GetAisBinaryBroadcastMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisDataLinkManagementMessage queries
@@ -263,10 +280,12 @@ namespace Barrelman.Data.Types
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsi( Guid mmsi );
-        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiIsNull(  );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisDataLinkManagementMessageObject> GetAisDataLinkManagementMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisExtendedClassBCsPositionReportMessage queries
@@ -284,12 +303,15 @@ namespace Barrelman.Data.Types
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsi( Guid mmsi );
-        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiIsNull(  );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
-        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByName( Guid name );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByName( Guid? name );
+        IList<AisExtendedClassBCsPositionReportMessageObject> GetAisExtendedClassBCsPositionReportMessageCollectionByNameIsNull(  );
         // ---------------------------------------------------------------------
         // AisInterrogationMessage queries
         // ---------------------------------------------------------------------
@@ -306,10 +328,12 @@ namespace Barrelman.Data.Types
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsi( Guid mmsi );
-        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiIsNull(  );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisInterrogationMessageObject> GetAisInterrogationMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisPositionReportClassAMessageBase queries
@@ -327,10 +351,12 @@ namespace Barrelman.Data.Types
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsi( Guid mmsi );
-        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsi( Guid? mmsi );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiIsNull(  );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisPositionReportClassAMessageBaseObject> GetAisPositionReportClassAMessageBaseCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisPositionReportClassAAssignedScheduleMessage queries
@@ -348,10 +374,12 @@ namespace Barrelman.Data.Types
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsi( Guid mmsi );
-        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiIsNull(  );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisPositionReportClassAAssignedScheduleMessageObject> GetAisPositionReportClassAAssignedScheduleMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisPositionReportClassAMessage queries
@@ -369,10 +397,12 @@ namespace Barrelman.Data.Types
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsi( Guid mmsi );
-        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiIsNull(  );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisPositionReportClassAMessageObject> GetAisPositionReportClassAMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisPositionReportClassAResponseToInterrogationMessage queries
@@ -390,10 +420,12 @@ namespace Barrelman.Data.Types
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsi( Guid mmsi );
-        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiIsNull(  );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisPositionReportClassAResponseToInterrogationMessageObject> GetAisPositionReportClassAResponseToInterrogationMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisPositionReportForLongRangeApplicationsMessage queries
@@ -411,10 +443,12 @@ namespace Barrelman.Data.Types
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsi( Guid mmsi );
-        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiIsNull(  );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisPositionReportForLongRangeApplicationsMessageObject> GetAisPositionReportForLongRangeApplicationsMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisSafetyRelatedAcknowledgmentMessage queries
@@ -432,10 +466,12 @@ namespace Barrelman.Data.Types
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsi( Guid mmsi );
-        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiIsNull(  );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisSafetyRelatedAcknowledgmentMessageObject> GetAisSafetyRelatedAcknowledgmentMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisStandardClassBCsPositionReportMessage queries
@@ -453,10 +489,12 @@ namespace Barrelman.Data.Types
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsi( Guid mmsi );
-        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiIsNull(  );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisStandardClassBCsPositionReportMessageObject> GetAisStandardClassBCsPositionReportMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisStandardSarAircraftPositionReportMessage queries
@@ -474,10 +512,12 @@ namespace Barrelman.Data.Types
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsi( Guid mmsi );
-        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiIsNull(  );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisStandardSarAircraftPositionReportMessageObject> GetAisStandardSarAircraftPositionReportMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisStaticAndVoyageRelatedDataMessage queries
@@ -495,14 +535,19 @@ namespace Barrelman.Data.Types
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsi( Guid mmsi );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiIsNull(  );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByImoNumber( Guid imoNumber );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByCallsign( Guid callsign );
-        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByShipName( Guid shipName );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByImoNumber( Guid? imoNumber );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByImoNumberIsNull(  );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByCallsign( Guid? callsign );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByCallsignIsNull(  );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByShipName( Guid? shipName );
+        IList<AisStaticAndVoyageRelatedDataMessageObject> GetAisStaticAndVoyageRelatedDataMessageCollectionByShipNameIsNull(  );
         // ---------------------------------------------------------------------
         // AisStaticDataReportMessage queries
         // ---------------------------------------------------------------------
@@ -519,10 +564,12 @@ namespace Barrelman.Data.Types
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsi( Guid mmsi );
-        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiIsNull(  );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisStaticDataReportMessageObject> GetAisStaticDataReportMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisStaticDataReportPartAMessage queries
@@ -540,12 +587,15 @@ namespace Barrelman.Data.Types
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsi( Guid mmsi );
-        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiIsNull(  );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
-        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByShipName( Guid shipName );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByShipName( Guid? shipName );
+        IList<AisStaticDataReportPartAMessageObject> GetAisStaticDataReportPartAMessageCollectionByShipNameIsNull(  );
         // ---------------------------------------------------------------------
         // AisStaticDataReportPartBMessage queries
         // ---------------------------------------------------------------------
@@ -562,12 +612,15 @@ namespace Barrelman.Data.Types
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsi( Guid mmsi );
-        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiIsNull(  );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
-        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByCallsign( Guid callsign );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByCallsign( Guid? callsign );
+        IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByCallsignIsNull(  );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMothershipMmsi( Guid? mothershipMmsi );
         IList<AisStaticDataReportPartBMessageObject> GetAisStaticDataReportPartBMessageCollectionByMothershipMmsiIsNull(  );
         // ---------------------------------------------------------------------
@@ -586,10 +639,12 @@ namespace Barrelman.Data.Types
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsi( Guid mmsi );
-        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiIsNull(  );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisUtcAndDateInquiryMessageObject> GetAisUtcAndDateInquiryMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AisUtcAndDateResponseMessage queries
@@ -607,10 +662,12 @@ namespace Barrelman.Data.Types
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionFromReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionUntilReceivedTimestamp( DateTime receivedTimestamp );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionOverReceivedTimestamp( DateTime fromReceivedTimestamp, DateTime untilReceivedTimestamp );
-        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsi( Guid mmsi );
-        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiAndMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiFromMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
-        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiUntilMessageSequenceNumber( Guid mmsi, long messageSequenceNumber );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsi( Guid? mmsi );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiIsNull(  );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiAndMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiIsNullAndMessageSequenceNumber( long messageSequenceNumber );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiFromMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
+        IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiUntilMessageSequenceNumber( Guid? mmsi, long messageSequenceNumber );
         IList<AisUtcAndDateResponseMessageObject> GetAisUtcAndDateResponseMessageCollectionByMmsiOverMessageSequenceNumber( Guid mmsi, long fromMessageSequenceNumber, long untilMessageSequenceNumber );
         // ---------------------------------------------------------------------
         // AlarmStateChange queries
@@ -974,7 +1031,8 @@ namespace Barrelman.Data.Types
         IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        CameraCommandReplyObject? GetCameraCommandReplyByCommand( Guid command );
+        CameraCommandReplyObject? GetCameraCommandReplyByCommand( Guid? command );
+        IList<CameraCommandReplyObject> GetCameraCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // CameraConfiguration queries
         // ---------------------------------------------------------------------
@@ -1028,11 +1086,13 @@ namespace Barrelman.Data.Types
         IList<CameraStatusObject> GetCameraStatusByCameraFromTimestamp( Guid camera, DateTime timestamp );
         IList<CameraStatusObject> GetCameraStatusByCameraUntilTimestamp( Guid camera, DateTime timestamp );
         IList<CameraStatusObject> GetCameraStatusByCameraOverTimestamp( Guid camera, DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<CameraStatusObject> GetCameraStatusCollectionByTrack( Guid track );
-        CameraStatusObject? GetCameraStatusByTrackAndTimestamp( Guid track, DateTime timestamp );
-        CameraStatusObject? GetCameraStatusByTrackAtTimestamp( Guid track, DateTime timestamp );
-        IList<CameraStatusObject> GetCameraStatusByTrackFromTimestamp( Guid track, DateTime timestamp );
-        IList<CameraStatusObject> GetCameraStatusByTrackUntilTimestamp( Guid track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusCollectionByTrack( Guid? track );
+        IList<CameraStatusObject> GetCameraStatusCollectionByTrackIsNull(  );
+        CameraStatusObject? GetCameraStatusByTrackAndTimestamp( Guid? track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusCollectionByTrackIsNullAndTimestamp( DateTime timestamp );
+        CameraStatusObject? GetCameraStatusByTrackAtTimestamp( Guid? track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByTrackFromTimestamp( Guid? track, DateTime timestamp );
+        IList<CameraStatusObject> GetCameraStatusByTrackUntilTimestamp( Guid? track, DateTime timestamp );
         IList<CameraStatusObject> GetCameraStatusByTrackOverTimestamp( Guid track, DateTime fromTimestamp, DateTime untilTimestamp );
         IList<CameraStatusObject> GetCameraStatusCollectionByTimestamp( DateTime timestamp );
         IList<CameraStatusObject> GetCameraStatusCollectionAtTimestamp( DateTime timestamp );
@@ -1096,23 +1156,30 @@ namespace Barrelman.Data.Types
         // ---------------------------------------------------------------------
         CatalogElementObject? GetCatalogElementById( Guid id );
         IList<CatalogElementObject> GetCatalogElementCollection( );
-        IList<CatalogElementObject> GetCatalogElementCollectionByCatalog( Guid catalog );
-        CatalogElementObject? GetCatalogElementByCatalogAndName( Guid catalog, string name );
+        IList<CatalogElementObject> GetCatalogElementCollectionByCatalog( Guid? catalog );
+        IList<CatalogElementObject> GetCatalogElementCollectionByCatalogIsNull(  );
+        CatalogElementObject? GetCatalogElementByCatalogAndName( Guid? catalog, string name );
+        IList<CatalogElementObject> GetCatalogElementCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Catalog queries
         // ---------------------------------------------------------------------
         CatalogObject? GetCatalogById( Guid id );
         IList<CatalogObject> GetCatalogCollection( );
-        IList<CatalogObject> GetCatalogCollectionByCatalog( Guid catalog );
-        CatalogObject? GetCatalogByCatalogAndName( Guid catalog, string name );
+        IList<CatalogObject> GetCatalogCollectionByCatalog( Guid? catalog );
+        IList<CatalogObject> GetCatalogCollectionByCatalogIsNull(  );
+        CatalogObject? GetCatalogByCatalogAndName( Guid? catalog, string name );
+        IList<CatalogObject> GetCatalogCollectionByCatalogIsNullAndName( string name );
         // ---------------------------------------------------------------------
         // Element queries
         // ---------------------------------------------------------------------
         ElementObject? GetElementById( Guid id );
         IList<ElementObject> GetElementCollection( );
-        IList<ElementObject> GetElementCollectionByCatalog( Guid catalog );
-        ElementObject? GetElementByCatalogAndName( Guid catalog, string name );
-        IList<ElementObject> GetElementCollectionByElementType( Guid elementType );
+        IList<ElementObject> GetElementCollectionByCatalog( Guid? catalog );
+        IList<ElementObject> GetElementCollectionByCatalogIsNull(  );
+        ElementObject? GetElementByCatalogAndName( Guid? catalog, string name );
+        IList<ElementObject> GetElementCollectionByCatalogIsNullAndName( string name );
+        IList<ElementObject> GetElementCollectionByElementType( Guid? elementType );
+        IList<ElementObject> GetElementCollectionByElementTypeIsNull(  );
         // ---------------------------------------------------------------------
         // CollectionInfo queries
         // ---------------------------------------------------------------------
@@ -1261,7 +1328,8 @@ namespace Barrelman.Data.Types
         IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        GNSSDeviceCommandReplyObject? GetGNSSDeviceCommandReplyByCommand( Guid command );
+        GNSSDeviceCommandReplyObject? GetGNSSDeviceCommandReplyByCommand( Guid? command );
+        IList<GNSSDeviceCommandReplyObject> GetGNSSDeviceCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // GNSSDeviceConfiguration queries
         // ---------------------------------------------------------------------
@@ -1328,7 +1396,8 @@ namespace Barrelman.Data.Types
         IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        GyroDeviceCommandReplyObject? GetGyroDeviceCommandReplyByCommand( Guid command );
+        GyroDeviceCommandReplyObject? GetGyroDeviceCommandReplyByCommand( Guid? command );
+        IList<GyroDeviceCommandReplyObject> GetGyroDeviceCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // GyroDeviceConfiguration queries
         // ---------------------------------------------------------------------
@@ -1439,7 +1508,8 @@ namespace Barrelman.Data.Types
         BaseStationObject? GetBaseStationById( Guid id );
         IList<BaseStationObject> GetBaseStationCollection( );
         BaseStationObject? GetBaseStationByName( string name );
-        IList<BaseStationObject> GetBaseStationCollectionByType( Guid type );
+        IList<BaseStationObject> GetBaseStationCollectionByType( Guid? type );
+        IList<BaseStationObject> GetBaseStationCollectionByTypeIsNull(  );
         // ---------------------------------------------------------------------
         // Device queries
         // ---------------------------------------------------------------------
@@ -1468,7 +1538,8 @@ namespace Barrelman.Data.Types
         IList<GyroDeviceObject> GetGyroDeviceCollection( );
         IList<GyroDeviceObject> GetGyroDeviceCollectionByHost( Guid host );
         GyroDeviceObject? GetGyroDeviceByName( string name );
-        IList<GyroDeviceObject> GetGyroDeviceCollectionByGNSSDevice( Guid gNSSDevice );
+        IList<GyroDeviceObject> GetGyroDeviceCollectionByGNSSDevice( Guid? gNSSDevice );
+        IList<GyroDeviceObject> GetGyroDeviceCollectionByGNSSDeviceIsNull(  );
         // ---------------------------------------------------------------------
         // LineInputDevice queries
         // ---------------------------------------------------------------------
@@ -1531,14 +1602,16 @@ namespace Barrelman.Data.Types
         IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollection( );
         IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollectionByHost( Guid host );
         WeatherStationDeviceObject? GetWeatherStationDeviceByName( string name );
-        IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollectionByGyro( Guid gyro );
+        IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollectionByGyro( Guid? gyro );
+        IList<WeatherStationDeviceObject> GetWeatherStationDeviceCollectionByGyroIsNull(  );
         // ---------------------------------------------------------------------
         // Facility queries
         // ---------------------------------------------------------------------
         FacilityObject? GetFacilityById( Guid id );
         IList<FacilityObject> GetFacilityCollection( );
         FacilityObject? GetFacilityByName( string name );
-        IList<FacilityObject> GetFacilityCollectionByType( Guid type );
+        IList<FacilityObject> GetFacilityCollectionByType( Guid? type );
+        IList<FacilityObject> GetFacilityCollectionByTypeIsNull(  );
         // ---------------------------------------------------------------------
         // TrackableItem queries
         // ---------------------------------------------------------------------
@@ -1550,28 +1623,32 @@ namespace Barrelman.Data.Types
         AircraftObject? GetAircraftById( Guid id );
         IList<AircraftObject> GetAircraftCollection( );
         IList<AircraftObject> GetAircraftCollectionByName( string name );
-        IList<AircraftObject> GetAircraftCollectionByType( Guid type );
+        IList<AircraftObject> GetAircraftCollectionByType( Guid? type );
+        IList<AircraftObject> GetAircraftCollectionByTypeIsNull(  );
         // ---------------------------------------------------------------------
         // AisAidToNavigation queries
         // ---------------------------------------------------------------------
         AisAidToNavigationObject? GetAisAidToNavigationById( Guid id );
         IList<AisAidToNavigationObject> GetAisAidToNavigationCollection( );
         AisAidToNavigationObject? GetAisAidToNavigationByName( string name );
-        IList<AisAidToNavigationObject> GetAisAidToNavigationCollectionByMMSI( Guid mMSI );
+        IList<AisAidToNavigationObject> GetAisAidToNavigationCollectionByMMSI( Guid? mMSI );
+        IList<AisAidToNavigationObject> GetAisAidToNavigationCollectionByMMSIIsNull(  );
         // ---------------------------------------------------------------------
         // Vehicle queries
         // ---------------------------------------------------------------------
         VehicleObject? GetVehicleById( Guid id );
         IList<VehicleObject> GetVehicleCollection( );
         VehicleObject? GetVehicleByName( string name );
-        IList<VehicleObject> GetVehicleCollectionByType( Guid type );
+        IList<VehicleObject> GetVehicleCollectionByType( Guid? type );
+        IList<VehicleObject> GetVehicleCollectionByTypeIsNull(  );
         // ---------------------------------------------------------------------
         // Vessel queries
         // ---------------------------------------------------------------------
         VesselObject? GetVesselById( Guid id );
         IList<VesselObject> GetVesselCollection( );
         IList<VesselObject> GetVesselCollectionByName( string name );
-        IList<VesselObject> GetVesselCollectionByType( Guid type );
+        IList<VesselObject> GetVesselCollectionByType( Guid? type );
+        IList<VesselObject> GetVesselCollectionByTypeIsNull(  );
         // ---------------------------------------------------------------------
         // ItemIdentityLink queries
         // ---------------------------------------------------------------------
@@ -1668,7 +1745,8 @@ namespace Barrelman.Data.Types
         IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        LineInputDeviceCommandReplyObject? GetLineInputDeviceCommandReplyByCommand( Guid command );
+        LineInputDeviceCommandReplyObject? GetLineInputDeviceCommandReplyByCommand( Guid? command );
+        IList<LineInputDeviceCommandReplyObject> GetLineInputDeviceCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // LineInputDeviceConfiguration queries
         // ---------------------------------------------------------------------
@@ -1698,8 +1776,10 @@ namespace Barrelman.Data.Types
         LineInputMessageRoutingDestinationObject? GetLineInputMessageRoutingDestinationById( Guid id );
         IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollection( );
         IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByRouting( Guid routing );
-        LineInputMessageRoutingDestinationObject? GetLineInputMessageRoutingDestinationByRoutingAndListener( Guid routing, Guid listener );
-        IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByListener( Guid listener );
+        LineInputMessageRoutingDestinationObject? GetLineInputMessageRoutingDestinationByRoutingAndListener( Guid routing, Guid? listener );
+        IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByRoutingAndListenerIsNull( Guid routing );
+        IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByListener( Guid? listener );
+        IList<LineInputMessageRoutingDestinationObject> GetLineInputMessageRoutingDestinationCollectionByListenerIsNull(  );
         // ---------------------------------------------------------------------
         // LineInputWhiteListEntry queries
         // ---------------------------------------------------------------------
@@ -1776,11 +1856,13 @@ namespace Barrelman.Data.Types
         IList<LogProcessObject> GetLogProcessCollectionByApplicationFromStarted( Guid application, DateTime started );
         IList<LogProcessObject> GetLogProcessCollectionByApplicationUntilStarted( Guid application, DateTime started );
         IList<LogProcessObject> GetLogProcessCollectionByApplicationOverStarted( Guid application, DateTime fromStarted, DateTime untilStarted );
-        IList<LogProcessObject> GetLogProcessCollectionByHost( Guid host );
-        IList<LogProcessObject> GetLogProcessCollectionByHostAndStarted( Guid host, DateTime started );
-        IList<LogProcessObject> GetLogProcessCollectionByHostAtStarted( Guid host, DateTime started );
-        IList<LogProcessObject> GetLogProcessCollectionByHostFromStarted( Guid host, DateTime started );
-        IList<LogProcessObject> GetLogProcessCollectionByHostUntilStarted( Guid host, DateTime started );
+        IList<LogProcessObject> GetLogProcessCollectionByHost( Guid? host );
+        IList<LogProcessObject> GetLogProcessCollectionByHostIsNull(  );
+        IList<LogProcessObject> GetLogProcessCollectionByHostAndStarted( Guid? host, DateTime started );
+        IList<LogProcessObject> GetLogProcessCollectionByHostIsNullAndStarted( DateTime started );
+        IList<LogProcessObject> GetLogProcessCollectionByHostAtStarted( Guid? host, DateTime started );
+        IList<LogProcessObject> GetLogProcessCollectionByHostFromStarted( Guid? host, DateTime started );
+        IList<LogProcessObject> GetLogProcessCollectionByHostUntilStarted( Guid? host, DateTime started );
         IList<LogProcessObject> GetLogProcessCollectionByHostOverStarted( Guid host, DateTime fromStarted, DateTime untilStarted );
         IList<LogProcessObject> GetLogProcessCollectionByStarted( DateTime started );
         IList<LogProcessObject> GetLogProcessCollectionAtStarted( DateTime started );
@@ -1989,7 +2071,8 @@ namespace Barrelman.Data.Types
         IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        OilSpillDetectorCommandReplyObject? GetOilSpillDetectorCommandReplyByCommand( Guid command );
+        OilSpillDetectorCommandReplyObject? GetOilSpillDetectorCommandReplyByCommand( Guid? command );
+        IList<OilSpillDetectorCommandReplyObject> GetOilSpillDetectorCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // OilSpillDetectorConfiguration queries
         // ---------------------------------------------------------------------
@@ -2006,7 +2089,8 @@ namespace Barrelman.Data.Types
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionFromTimestamp( DateTime timestamp );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionUntilTimestamp( DateTime timestamp );
         IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionByTargetMMSI( Guid targetMMSI );
+        IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionByTargetMMSI( Guid? targetMMSI );
+        IList<OilSpillDetectorConfigurationObject> GetOilSpillDetectorConfigurationCollectionByTargetMMSIIsNull(  );
         // ---------------------------------------------------------------------
         // Position2DTimeseriesValue queries
         // ---------------------------------------------------------------------
@@ -2132,7 +2216,8 @@ namespace Barrelman.Data.Types
         IList<ReferencePropertyObject> GetReferencePropertyCollectionByElement( Guid element );
         ReferencePropertyObject? GetReferencePropertyByElementAndDefinition( Guid element, Guid definition );
         IList<ReferencePropertyObject> GetReferencePropertyCollectionByDefinition( Guid definition );
-        IList<ReferencePropertyObject> GetReferencePropertyCollectionByValue( Guid value__ );
+        IList<ReferencePropertyObject> GetReferencePropertyCollectionByValue( Guid? value__ );
+        IList<ReferencePropertyObject> GetReferencePropertyCollectionByValueIsNull(  );
         // ---------------------------------------------------------------------
         // SByteProperty queries
         // ---------------------------------------------------------------------
@@ -2173,7 +2258,8 @@ namespace Barrelman.Data.Types
         IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByElement( Guid element );
         BinaryTimeseriesPropertyObject? GetBinaryTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<BinaryTimeseriesPropertyObject> GetBinaryTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // BooleanTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2182,7 +2268,8 @@ namespace Barrelman.Data.Types
         IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByElement( Guid element );
         BooleanTimeseriesPropertyObject? GetBooleanTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<BooleanTimeseriesPropertyObject> GetBooleanTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // ByteTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2191,7 +2278,8 @@ namespace Barrelman.Data.Types
         IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByElement( Guid element );
         ByteTimeseriesPropertyObject? GetByteTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<ByteTimeseriesPropertyObject> GetByteTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // DateTimeTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2200,7 +2288,8 @@ namespace Barrelman.Data.Types
         IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByElement( Guid element );
         DateTimeTimeseriesPropertyObject? GetDateTimeTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<DateTimeTimeseriesPropertyObject> GetDateTimeTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // DoubleTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2209,7 +2298,8 @@ namespace Barrelman.Data.Types
         IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByElement( Guid element );
         DoubleTimeseriesPropertyObject? GetDoubleTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<DoubleTimeseriesPropertyObject> GetDoubleTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // GuidTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2218,7 +2308,8 @@ namespace Barrelman.Data.Types
         IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByElement( Guid element );
         GuidTimeseriesPropertyObject? GetGuidTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<GuidTimeseriesPropertyObject> GetGuidTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // Int16TimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2227,7 +2318,8 @@ namespace Barrelman.Data.Types
         IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByElement( Guid element );
         Int16TimeseriesPropertyObject? GetInt16TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<Int16TimeseriesPropertyObject> GetInt16TimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // Int32TimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2236,7 +2328,8 @@ namespace Barrelman.Data.Types
         IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByElement( Guid element );
         Int32TimeseriesPropertyObject? GetInt32TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<Int32TimeseriesPropertyObject> GetInt32TimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // Int64TimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2245,7 +2338,8 @@ namespace Barrelman.Data.Types
         IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByElement( Guid element );
         Int64TimeseriesPropertyObject? GetInt64TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<Int64TimeseriesPropertyObject> GetInt64TimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // ReferenceTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2254,7 +2348,8 @@ namespace Barrelman.Data.Types
         IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByElement( Guid element );
         ReferenceTimeseriesPropertyObject? GetReferenceTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<ReferenceTimeseriesPropertyObject> GetReferenceTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // SByteTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2263,7 +2358,8 @@ namespace Barrelman.Data.Types
         IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByElement( Guid element );
         SByteTimeseriesPropertyObject? GetSByteTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<SByteTimeseriesPropertyObject> GetSByteTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // SingleTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2272,7 +2368,8 @@ namespace Barrelman.Data.Types
         IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByElement( Guid element );
         SingleTimeseriesPropertyObject? GetSingleTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<SingleTimeseriesPropertyObject> GetSingleTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // StringTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2281,7 +2378,8 @@ namespace Barrelman.Data.Types
         IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByElement( Guid element );
         StringTimeseriesPropertyObject? GetStringTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<StringTimeseriesPropertyObject> GetStringTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // TimeSpanTimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2290,7 +2388,8 @@ namespace Barrelman.Data.Types
         IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByElement( Guid element );
         TimeSpanTimeseriesPropertyObject? GetTimeSpanTimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<TimeSpanTimeseriesPropertyObject> GetTimeSpanTimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // UInt16TimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2299,7 +2398,8 @@ namespace Barrelman.Data.Types
         IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByElement( Guid element );
         UInt16TimeseriesPropertyObject? GetUInt16TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<UInt16TimeseriesPropertyObject> GetUInt16TimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // UInt32TimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2308,7 +2408,8 @@ namespace Barrelman.Data.Types
         IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByElement( Guid element );
         UInt32TimeseriesPropertyObject? GetUInt32TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<UInt32TimeseriesPropertyObject> GetUInt32TimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // UInt64TimeseriesProperty queries
         // ---------------------------------------------------------------------
@@ -2317,7 +2418,8 @@ namespace Barrelman.Data.Types
         IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByElement( Guid element );
         UInt64TimeseriesPropertyObject? GetUInt64TimeseriesPropertyByElementAndDefinition( Guid element, Guid definition );
         IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByDefinition( Guid definition );
-        IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByTimeseries( Guid timeseries );
+        IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByTimeseries( Guid? timeseries );
+        IList<UInt64TimeseriesPropertyObject> GetUInt64TimeseriesPropertyCollectionByTimeseriesIsNull(  );
         // ---------------------------------------------------------------------
         // TimeSpanProperty queries
         // ---------------------------------------------------------------------
@@ -2427,8 +2529,10 @@ namespace Barrelman.Data.Types
         IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollection( );
         IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByElementType( Guid elementType );
         ReferencePropertyDefinitionObject? GetReferencePropertyDefinitionByElementTypeAndName( Guid elementType, string name );
-        IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByDefaultValue( Guid defaultValue );
-        IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByReferencedElementType( Guid referencedElementType );
+        IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByDefaultValue( Guid? defaultValue );
+        IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByDefaultValueIsNull(  );
+        IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByReferencedElementType( Guid? referencedElementType );
+        IList<ReferencePropertyDefinitionObject> GetReferencePropertyDefinitionCollectionByReferencedElementTypeIsNull(  );
         // ---------------------------------------------------------------------
         // SBytePropertyDefinition queries
         // ---------------------------------------------------------------------
@@ -2527,7 +2631,8 @@ namespace Barrelman.Data.Types
         IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollection( );
         IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollectionByElementType( Guid elementType );
         ReferenceTimeseriesPropertyDefinitionObject? GetReferenceTimeseriesPropertyDefinitionByElementTypeAndName( Guid elementType, string name );
-        IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementType( Guid referencedElementType );
+        IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementType( Guid? referencedElementType );
+        IList<ReferenceTimeseriesPropertyDefinitionObject> GetReferenceTimeseriesPropertyDefinitionCollectionByReferencedElementTypeIsNull(  );
         // ---------------------------------------------------------------------
         // SByteTimeseriesPropertyDefinition queries
         // ---------------------------------------------------------------------
@@ -2673,7 +2778,8 @@ namespace Barrelman.Data.Types
         IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadarCommandReplyObject? GetRadarCommandReplyByCommand( Guid command );
+        RadarCommandReplyObject? GetRadarCommandReplyByCommand( Guid? command );
+        IList<RadarCommandReplyObject> GetRadarCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // RadarCommandReplyGetStatus queries
         // ---------------------------------------------------------------------
@@ -2690,7 +2796,8 @@ namespace Barrelman.Data.Types
         IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionFromTimestamp( DateTime timestamp );
         IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionUntilTimestamp( DateTime timestamp );
         IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadarCommandReplyGetStatusObject? GetRadarCommandReplyGetStatusByCommand( Guid command );
+        RadarCommandReplyGetStatusObject? GetRadarCommandReplyGetStatusByCommand( Guid? command );
+        IList<RadarCommandReplyGetStatusObject> GetRadarCommandReplyGetStatusCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // RadarConfiguration queries
         // ---------------------------------------------------------------------
@@ -2789,7 +2896,8 @@ namespace Barrelman.Data.Types
         IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadioCommandReplyObject? GetRadioCommandReplyByCommand( Guid command );
+        RadioCommandReplyObject? GetRadioCommandReplyByCommand( Guid? command );
+        IList<RadioCommandReplyObject> GetRadioCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // RadioConfiguration queries
         // ---------------------------------------------------------------------
@@ -2840,7 +2948,8 @@ namespace Barrelman.Data.Types
         IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        RadomeCommandReplyObject? GetRadomeCommandReplyByCommand( Guid command );
+        RadomeCommandReplyObject? GetRadomeCommandReplyByCommand( Guid? command );
+        IList<RadomeCommandReplyObject> GetRadomeCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // RadomeConfiguration queries
         // ---------------------------------------------------------------------
@@ -4115,7 +4224,8 @@ namespace Barrelman.Data.Types
         IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionFromTimestamp( DateTime timestamp );
         IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionUntilTimestamp( DateTime timestamp );
         IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionOverTimestamp( DateTime fromTimestamp, DateTime untilTimestamp );
-        WeatherStationCommandReplyObject? GetWeatherStationCommandReplyByCommand( Guid command );
+        WeatherStationCommandReplyObject? GetWeatherStationCommandReplyByCommand( Guid? command );
+        IList<WeatherStationCommandReplyObject> GetWeatherStationCommandReplyCollectionByCommandIsNull(  );
         // ---------------------------------------------------------------------
         // WeatherStationConfiguration queries
         // ---------------------------------------------------------------------

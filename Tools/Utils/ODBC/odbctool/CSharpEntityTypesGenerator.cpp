@@ -214,6 +214,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"                if( data.{} != value )", propertyName );
         WriteLine( L"                {" );
         WriteLine( L"                    OnPropertyChanging( );" );
+        WriteLine( L"                    OnPropertyChanging( \"{}\", false );", propertyName );
         WriteLine( L"                    data = GetData( );" );
         WriteLine( L"                    data.{} = value;", propertyName );
         WriteLine( L"                    OnPropertyChanged( );" );
@@ -262,6 +263,11 @@ namespace Harlinn::ODBC::Tool
             WriteLine( L"                if( entity != null )" );
             WriteLine( L"                {" );
             WriteLine( L"                    {} = new WeakReference( entity );", weakReferenceName );
+            WriteLine( L"                }" );
+            WriteLine( L"                else" );
+            WriteLine( L"                {" );
+            WriteLine( L"                    var message = $\"Cannot find the {} object identified by {{data.{}}}\";", referencedEntityClassName, propertyName );
+            WriteLine( L"                    throw new Exception( message );" );
             WriteLine( L"                }" );
             WriteLine( L"                return entity;" );
         }

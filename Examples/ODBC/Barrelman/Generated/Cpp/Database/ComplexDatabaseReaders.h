@@ -20,7 +20,7 @@ namespace Barrelman::Database
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
-        Guid mmsi_;
+        DBGuid mmsi_;
         DBEnum<Types::NavigationalAidType> atnrmNavigationalAidType_;
         FixedDBWideString<127> atnrmName_;
         DBEnum<Types::PositionAccuracy> atnrmPositionAccuracy_;
@@ -209,7 +209,7 @@ namespace Barrelman::Database
         DBEnum<Types::PositionFixType> asdrpbPositionFixType_;
         DBInt32 asdrpbSpare_;
         DBInt32 auadimSpare1_;
-        DBInt32 auadimDestinationMmsi_;
+        DBGuid auadimDestinationMmsi_;
         DBInt32 auadimSpare2_;
         DBDateTime auadrmDatetime_;
         DBEnum<Types::PositionAccuracy> auadrmPositionAccuracy_;
@@ -467,7 +467,7 @@ namespace Barrelman::Database
         {
             return repeat_;
         }
-        const Guid& Mmsi( ) const
+        const DBGuid& Mmsi( ) const
         {
             return mmsi_;
         }
@@ -1223,7 +1223,7 @@ namespace Barrelman::Database
         {
             return auadimSpare1_;
         }
-        DBInt32 AisUtcAndDateInquiryMessageDestinationMmsi( ) const
+        const DBGuid& AisUtcAndDateInquiryMessageDestinationMmsi( ) const
         {
             return auadimDestinationMmsi_;
         }
@@ -1605,7 +1605,7 @@ namespace Barrelman::Database
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
-        Guid mmsi_;
+        DBGuid mmsi_;
         Types::NavigationStatus navigationStatus_ = Types::NavigationStatus::UnderWayUsingEngine;
         DBInt32 rateOfTurn_;
         double speedOverGround_ = 0.0;
@@ -1681,7 +1681,7 @@ namespace Barrelman::Database
         {
             return repeat_;
         }
-        const Guid& Mmsi( ) const
+        const DBGuid& Mmsi( ) const
         {
             return mmsi_;
         }
@@ -1775,7 +1775,7 @@ namespace Barrelman::Database
         DateTime receivedTimestamp_;
         Int64 messageSequenceNumber_ = 0;
         Int32 repeat_ = 0;
-        Guid mmsi_;
+        DBGuid mmsi_;
         Int32 partNumber_ = 0;
         DBGuid asdrpaShipName_;
         DBInt32 asdrpaSpare_;
@@ -1855,7 +1855,7 @@ namespace Barrelman::Database
         {
             return repeat_;
         }
-        const Guid& Mmsi( ) const
+        const DBGuid& Mmsi( ) const
         {
             return mmsi_;
         }
@@ -2369,7 +2369,7 @@ namespace Barrelman::Database
         Guid id_;
         Types::Kind kind_ = Types::Kind::Unknown;
         Int64 rowVersion_ = 0;
-        Guid catalog_;
+        DBGuid catalog_;
         FixedDBWideString<127> name_;
         DBGuid eElementType_;
     public:
@@ -2403,7 +2403,7 @@ namespace Barrelman::Database
         {
             return rowVersion_;
         }
-        const Guid& Catalog( ) const
+        const DBGuid& Catalog( ) const
         {
             return catalog_;
         }
@@ -5956,7 +5956,7 @@ namespace Barrelman::Database
         Int64 rowVersion_ = 0;
         Guid radar_;
         DateTime timestamp_;
-        Guid command_;
+        DBGuid command_;
         Types::DeviceCommandReplyStatus status_ = Types::DeviceCommandReplyStatus::Unknown;
         WideString message_;
         SQLLEN messageLength_ = SQL_NULL_DATA;
@@ -6012,7 +6012,7 @@ namespace Barrelman::Database
         {
             return timestamp_;
         }
-        const Guid& Command( ) const
+        const DBGuid& Command( ) const
         {
             return command_;
         }

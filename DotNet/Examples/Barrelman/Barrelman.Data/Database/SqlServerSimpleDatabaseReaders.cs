@@ -244,11 +244,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -815,11 +815,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( REPEAT_FIELD_ID );
             }
         }
-        public Guid Mmsi
+        public Guid? Mmsi
         {
             get
             {
-                return GetGuid( MMSI_FIELD_ID );
+                return GetNullableGuid( MMSI_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -1102,11 +1102,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( SEQUENCENUMBER_FIELD_ID );
             }
         }
-        public Guid DestinationMmsi
+        public Guid? DestinationMmsi
         {
             get
             {
-                return GetGuid( DESTINATIONMMSI_FIELD_ID );
+                return GetNullableGuid( DESTINATIONMMSI_FIELD_ID );
             }
         }
         public bool RetransmitFlag
@@ -1315,11 +1315,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( SEQUENCENUMBER1_FIELD_ID );
             }
         }
-        public Guid Mmsi1
+        public Guid? Mmsi1
         {
             get
             {
-                return GetGuid( MMSI1_FIELD_ID );
+                return GetNullableGuid( MMSI1_FIELD_ID );
             }
         }
         public int? SequenceNumber2
@@ -1428,11 +1428,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( SEQUENCENUMBER_FIELD_ID );
             }
         }
-        public Guid DestinationMmsi
+        public Guid? DestinationMmsi
         {
             get
             {
-                return GetGuid( DESTINATIONMMSI_FIELD_ID );
+                return GetNullableGuid( DESTINATIONMMSI_FIELD_ID );
             }
         }
         public bool RetransmitFlag
@@ -1892,11 +1892,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( REGIONALRESERVED_FIELD_ID );
             }
         }
-        public Guid Name
+        public Guid? Name
         {
             get
             {
-                return GetGuid( NAME_FIELD_ID );
+                return GetNullableGuid( NAME_FIELD_ID );
             }
         }
         public Types.ShipType ShipType
@@ -2039,11 +2039,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid InterrogatedMmsi
+        public Guid? InterrogatedMmsi
         {
             get
             {
-                return GetGuid( INTERROGATEDMMSI_FIELD_ID );
+                return GetNullableGuid( INTERROGATEDMMSI_FIELD_ID );
             }
         }
         public Types.AisMessageType FirstMessageType
@@ -2590,11 +2590,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( SEQUENCENUMBER1_FIELD_ID );
             }
         }
-        public Guid Mmsi1
+        public Guid? Mmsi1
         {
             get
             {
-                return GetGuid( MMSI1_FIELD_ID );
+                return GetNullableGuid( MMSI1_FIELD_ID );
             }
         }
         public int? SequenceNumber2
@@ -3087,25 +3087,25 @@ namespace Barrelman.Data.Database
                 return GetInt32( AISVERSION_FIELD_ID );
             }
         }
-        public Guid ImoNumber
+        public Guid? ImoNumber
         {
             get
             {
-                return GetGuid( IMONUMBER_FIELD_ID );
+                return GetNullableGuid( IMONUMBER_FIELD_ID );
             }
         }
-        public Guid Callsign
+        public Guid? Callsign
         {
             get
             {
-                return GetGuid( CALLSIGN_FIELD_ID );
+                return GetNullableGuid( CALLSIGN_FIELD_ID );
             }
         }
-        public Guid ShipName
+        public Guid? ShipName
         {
             get
             {
-                return GetGuid( SHIPNAME_FIELD_ID );
+                return GetNullableGuid( SHIPNAME_FIELD_ID );
             }
         }
         public Types.ShipType ShipType
@@ -3288,11 +3288,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid ShipName
+        public Guid? ShipName
         {
             get
             {
-                return GetGuid( SHIPNAME_FIELD_ID );
+                return GetNullableGuid( SHIPNAME_FIELD_ID );
             }
         }
         public int Spare
@@ -3391,11 +3391,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( SERIALNUMBER_FIELD_ID );
             }
         }
-        public Guid Callsign
+        public Guid? Callsign
         {
             get
             {
-                return GetGuid( CALLSIGN_FIELD_ID );
+                return GetNullableGuid( CALLSIGN_FIELD_ID );
             }
         }
         public int DimensionToBow
@@ -3506,11 +3506,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( SPARE1_FIELD_ID );
             }
         }
-        public int DestinationMmsi
+        public Guid? DestinationMmsi
         {
             get
             {
-                return GetInt32( DESTINATIONMMSI_FIELD_ID );
+                return GetNullableGuid( DESTINATIONMMSI_FIELD_ID );
             }
         }
         public int Spare2
@@ -5233,11 +5233,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -6192,11 +6192,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( CAMERA_FIELD_ID );
             }
         }
-        public Guid Track
+        public Guid? Track
         {
             get
             {
-                return GetGuid( TRACK_FIELD_ID );
+                return GetNullableGuid( TRACK_FIELD_ID );
             }
         }
         public DateTime Timestamp
@@ -6719,11 +6719,11 @@ namespace Barrelman.Data.Database
                 return GetInt64( ROWVERSION_FIELD_ID );
             }
         }
-        public Guid Catalog
+        public Guid? Catalog
         {
             get
             {
-                return GetGuid( CATALOG_FIELD_ID );
+                return GetNullableGuid( CATALOG_FIELD_ID );
             }
         }
         public string Name
@@ -6808,11 +6808,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid ElementType
+        public Guid? ElementType
         {
             get
             {
-                return GetGuid( ELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( ELEMENTTYPE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -7846,11 +7846,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -8284,11 +8284,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -9043,11 +9043,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get
             {
-                return GetGuid( TYPE_FIELD_ID );
+                return GetNullableGuid( TYPE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9309,11 +9309,11 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( SPEEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GNSSDevice
+        public Guid? GNSSDevice
         {
             get
             {
-                return GetGuid( GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GNSSDEVICE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9932,11 +9932,11 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( WINDSPEEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid Gyro
+        public Guid? Gyro
         {
             get
             {
-                return GetGuid( GYRO_FIELD_ID );
+                return GetNullableGuid( GYRO_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -9994,11 +9994,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get
             {
-                return GetGuid( TYPE_FIELD_ID );
+                return GetNullableGuid( TYPE_FIELD_ID );
             }
         }
         public double Longitude
@@ -10090,11 +10090,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get
             {
-                return GetGuid( TYPE_FIELD_ID );
+                return GetNullableGuid( TYPE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -10155,11 +10155,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid MMSI
+        public Guid? MMSI
         {
             get
             {
-                return GetGuid( MMSI_FIELD_ID );
+                return GetNullableGuid( MMSI_FIELD_ID );
             }
         }
         public Types.NavigationalAidType NavigationalAidType
@@ -10268,11 +10268,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get
             {
-                return GetGuid( TYPE_FIELD_ID );
+                return GetNullableGuid( TYPE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -10329,11 +10329,11 @@ namespace Barrelman.Data.Database
                 return GetString( NAME_FIELD_ID );
             }
         }
-        public Guid Type
+        public Guid? Type
         {
             get
             {
-                return GetGuid( TYPE_FIELD_ID );
+                return GetNullableGuid( TYPE_FIELD_ID );
             }
         }
         public int ToBow
@@ -10750,11 +10750,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -11328,11 +11328,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( ROUTING_FIELD_ID );
             }
         }
-        public Guid Listener
+        public Guid? Listener
         {
             get
             {
-                return GetGuid( LISTENER_FIELD_ID );
+                return GetNullableGuid( LISTENER_FIELD_ID );
             }
         }
         public virtual void WriteTo([DisallowNull] BinaryWriter destination)
@@ -12157,11 +12157,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( APPLICATION_FIELD_ID );
             }
         }
-        public Guid Host
+        public Guid? Host
         {
             get
             {
-                return GetGuid( HOST_FIELD_ID );
+                return GetNullableGuid( HOST_FIELD_ID );
             }
         }
         public DateTime Started
@@ -14095,11 +14095,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -14352,11 +14352,11 @@ namespace Barrelman.Data.Database
                 return GetString( TARGETFILEPREFIX_FIELD_ID );
             }
         }
-        public Guid TargetMMSI
+        public Guid? TargetMMSI
         {
             get
             {
-                return GetGuid( TARGETMMSI_FIELD_ID );
+                return GetNullableGuid( TARGETMMSI_FIELD_ID );
             }
         }
         public double Latitude
@@ -15197,11 +15197,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Value
+        public Guid? Value
         {
             get
             {
-                return GetGuid( VALUE_FIELD_ID );
+                return GetNullableGuid( VALUE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15386,11 +15386,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15427,11 +15427,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15468,11 +15468,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15509,11 +15509,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15550,11 +15550,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15591,11 +15591,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15632,11 +15632,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15673,11 +15673,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15714,11 +15714,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15755,11 +15755,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15796,11 +15796,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15837,11 +15837,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15878,11 +15878,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15919,11 +15919,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -15960,11 +15960,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -16001,11 +16001,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -16042,11 +16042,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid Timeseries
+        public Guid? Timeseries
         {
             get
             {
-                return GetGuid( TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TIMESERIES_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -16841,18 +16841,18 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid DefaultValue
+        public Guid? DefaultValue
         {
             get
             {
-                return GetGuid( DEFAULTVALUE_FIELD_ID );
+                return GetNullableGuid( DEFAULTVALUE_FIELD_ID );
             }
         }
-        public Guid ReferencedElementType
+        public Guid? ReferencedElementType
         {
             get
             {
-                return GetGuid( REFERENCEDELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -17498,11 +17498,11 @@ namespace Barrelman.Data.Database
         {
         }
 
-        public Guid ReferencedElementType
+        public Guid? ReferencedElementType
         {
             get
             {
-                return GetGuid( REFERENCEDELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
         public override void WriteTo([DisallowNull] BinaryWriter destination)
@@ -18421,11 +18421,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -19397,11 +19397,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -19758,11 +19758,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -26213,11 +26213,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( COMMAND_FIELD_ID );
+                return GetNullableGuid( COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status
@@ -26886,11 +26886,11 @@ namespace Barrelman.Data.Database
                 return GetGuid( ZONE_FIELD_ID );
             }
         }
-        public Guid RadarTrack
+        public Guid? RadarTrack
         {
             get
             {
-                return GetGuid( RADARTRACK_FIELD_ID );
+                return GetNullableGuid( RADARTRACK_FIELD_ID );
             }
         }
         public DateTime Timestamp

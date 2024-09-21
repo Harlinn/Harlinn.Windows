@@ -762,7 +762,7 @@ CREATE TABLE [dbo].[AisDeviceCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [AisDevice] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_AisDeviceCommandReply] PRIMARY KEY([Id])
@@ -878,7 +878,7 @@ CREATE TABLE [dbo].[AisMessage]
   [ReceivedTimestamp] [bigint] NOT NULL,
   [MessageSequenceNumber] [bigint] NOT NULL,
   [Repeat] [int] NOT NULL,
-  [Mmsi] [uniqueidentifier] NOT NULL,
+  [Mmsi] [uniqueidentifier] NULL,
   CONSTRAINT [FK_AisMessage_EntityType] FOREIGN KEY([EntityType]) REFERENCES [dbo].[EntityTypes]([Id]),
   CONSTRAINT [PK_AisMessage] PRIMARY KEY([Id])
 )
@@ -944,7 +944,7 @@ CREATE TABLE [dbo].[AisAddressedSafetyRelatedMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [SequenceNumber] [int] NOT NULL,
-  [DestinationMmsi] [uniqueidentifier] NOT NULL,
+  [DestinationMmsi] [uniqueidentifier] NULL,
   [RetransmitFlag] [bit] NOT NULL,
   [Spare] [int] NOT NULL,
   [Text] [nvarchar](127) NOT NULL,
@@ -997,7 +997,7 @@ CREATE TABLE [dbo].[AisBinaryAcknowledgeMessage]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Spare] [int] NOT NULL,
   [SequenceNumber1] [int] NOT NULL,
-  [Mmsi1] [uniqueidentifier] NOT NULL,
+  [Mmsi1] [uniqueidentifier] NULL,
   [SequenceNumber2] [int] NULL,
   [Mmsi2] [uniqueidentifier] NULL,
   [SequenceNumber3] [int] NULL,
@@ -1023,7 +1023,7 @@ CREATE TABLE [dbo].[AisBinaryAddressedMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [SequenceNumber] [int] NOT NULL,
-  [DestinationMmsi] [uniqueidentifier] NOT NULL,
+  [DestinationMmsi] [uniqueidentifier] NULL,
   [RetransmitFlag] [bit] NOT NULL,
   [Spare] [int] NOT NULL,
   [DesignatedAreaCode] [int] NOT NULL,
@@ -1116,7 +1116,7 @@ CREATE TABLE [dbo].[AisExtendedClassBCsPositionReportMessage]
   [TrueHeading] [int] NULL,
   [Timestamp] [int] NOT NULL,
   [RegionalReserved] [int] NOT NULL,
-  [Name] [uniqueidentifier] NOT NULL,
+  [Name] [uniqueidentifier] NULL,
   [ShipType] [int] NOT NULL,
   [DimensionToBow] [int] NOT NULL,
   [DimensionToStern] [int] NOT NULL,
@@ -1148,7 +1148,7 @@ go
 CREATE TABLE [dbo].[AisInterrogationMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [InterrogatedMmsi] [uniqueidentifier] NOT NULL,
+  [InterrogatedMmsi] [uniqueidentifier] NULL,
   [FirstMessageType] [int] NOT NULL,
   [FirstSlotOffset] [int] NOT NULL,
   [SecondMessageType] [int] NULL,
@@ -1288,7 +1288,7 @@ CREATE TABLE [dbo].[AisSafetyRelatedAcknowledgmentMessage]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Spare] [int] NOT NULL,
   [SequenceNumber1] [int] NOT NULL,
-  [Mmsi1] [uniqueidentifier] NOT NULL,
+  [Mmsi1] [uniqueidentifier] NULL,
   [SequenceNumber2] [int] NULL,
   [Mmsi2] [uniqueidentifier] NULL,
   [SequenceNumber3] [int] NULL,
@@ -1380,9 +1380,9 @@ CREATE TABLE [dbo].[AisStaticAndVoyageRelatedDataMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [AisVersion] [int] NOT NULL,
-  [ImoNumber] [uniqueidentifier] NOT NULL,
-  [Callsign] [uniqueidentifier] NOT NULL,
-  [ShipName] [uniqueidentifier] NOT NULL,
+  [ImoNumber] [uniqueidentifier] NULL,
+  [Callsign] [uniqueidentifier] NULL,
+  [ShipName] [uniqueidentifier] NULL,
   [ShipType] [int] NOT NULL,
   [DimensionToBow] [int] NOT NULL,
   [DimensionToStern] [int] NOT NULL,
@@ -1440,7 +1440,7 @@ go
 CREATE TABLE [dbo].[AisStaticDataReportPartAMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [ShipName] [uniqueidentifier] NOT NULL,
+  [ShipName] [uniqueidentifier] NULL,
   [Spare] [int] NOT NULL,
   CONSTRAINT [FK_AisStaticDataReportPartAMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisStaticDataReportMessage]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_AisStaticDataReportPartAMessage] PRIMARY KEY([Id])
@@ -1467,7 +1467,7 @@ CREATE TABLE [dbo].[AisStaticDataReportPartBMessage]
   [VendorId] [nvarchar](127) NOT NULL,
   [UnitModelCode] [int] NOT NULL,
   [SerialNumber] [int] NOT NULL,
-  [Callsign] [uniqueidentifier] NOT NULL,
+  [Callsign] [uniqueidentifier] NULL,
   [DimensionToBow] [int] NOT NULL,
   [DimensionToStern] [int] NOT NULL,
   [DimensionToPort] [int] NOT NULL,
@@ -1500,7 +1500,7 @@ CREATE TABLE [dbo].[AisUtcAndDateInquiryMessage]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Spare1] [int] NOT NULL,
-  [DestinationMmsi] [int] NOT NULL,
+  [DestinationMmsi] [uniqueidentifier] NULL,
   [Spare2] [int] NOT NULL,
   CONSTRAINT [FK_AisUtcAndDateInquiryMessage_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[AisMessage]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_AisUtcAndDateInquiryMessage] PRIMARY KEY([Id])
@@ -1992,7 +1992,7 @@ CREATE TABLE [dbo].[CameraCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [Camera] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   [PanAngle] [float](53) NOT NULL,
@@ -2139,7 +2139,7 @@ CREATE TABLE [dbo].[CameraStatus]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
   [Camera] [uniqueidentifier] NOT NULL,
-  [Track] [uniqueidentifier] NOT NULL,
+  [Track] [uniqueidentifier] NULL,
   [Timestamp] [bigint] NOT NULL,
   [PositionPanTiltMode] [int] NOT NULL,
   [PanAngle] [float](53) NOT NULL,
@@ -2263,7 +2263,7 @@ CREATE TABLE [dbo].[CatalogElement]
    */
   [EntityType] [int] NOT NULL,
   [RowVersion] [bigint] NOT NULL,
-  [Catalog] [uniqueidentifier] NOT NULL,
+  [Catalog] [uniqueidentifier] NULL,
   [Name] [nvarchar](127) NOT NULL,
   CONSTRAINT [FK_CatalogElement_EntityType] FOREIGN KEY([EntityType]) REFERENCES [dbo].[EntityTypes]([Id]),
   CONSTRAINT [PK_CatalogElement] PRIMARY KEY([Id])
@@ -2305,7 +2305,7 @@ go
 CREATE TABLE [dbo].[Element]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [ElementType] [uniqueidentifier] NOT NULL,
+  [ElementType] [uniqueidentifier] NULL,
   CONSTRAINT [FK_Element_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[CatalogElement]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_Element] PRIMARY KEY([Id])
 )
@@ -2563,7 +2563,7 @@ CREATE TABLE [dbo].[GNSSDeviceCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [GNSSDevice] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_GNSSDeviceCommandReply] PRIMARY KEY([Id])
@@ -2665,7 +2665,7 @@ CREATE TABLE [dbo].[GyroDeviceCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [GyroDevice] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_GyroDeviceCommandReply] PRIMARY KEY([Id])
@@ -2932,7 +2932,7 @@ CREATE TABLE [dbo].[BaseStation]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Name] [nvarchar](127) NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
+  [Type] [uniqueidentifier] NULL,
   CONSTRAINT [FK_BaseStation_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_BaseStation] PRIMARY KEY([Id])
 )
@@ -3033,7 +3033,7 @@ CREATE TABLE [dbo].[GyroDevice]
   [RollTimeseries] [uniqueidentifier] NULL,
   [CourseTimeseries] [uniqueidentifier] NULL,
   [SpeedTimeseries] [uniqueidentifier] NULL,
-  [GNSSDevice] [uniqueidentifier] NOT NULL,
+  [GNSSDevice] [uniqueidentifier] NULL,
   CONSTRAINT [FK_GyroDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_GyroDevice] PRIMARY KEY([Id])
 )
@@ -3241,7 +3241,7 @@ CREATE TABLE [dbo].[WeatherStationDevice]
   [DewPointTimeseries] [uniqueidentifier] NULL,
   [WindDirectionTimeseries] [uniqueidentifier] NULL,
   [WindSpeedTimeseries] [uniqueidentifier] NULL,
-  [Gyro] [uniqueidentifier] NOT NULL,
+  [Gyro] [uniqueidentifier] NULL,
   CONSTRAINT [FK_WeatherStationDevice_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Device]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_WeatherStationDevice] PRIMARY KEY([Id])
 )
@@ -3264,7 +3264,7 @@ CREATE TABLE [dbo].[Facility]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Name] [nvarchar](127) NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
+  [Type] [uniqueidentifier] NULL,
   [Longitude] [float](53) NOT NULL,
   [Latitude] [float](53) NOT NULL,
   [Altitude] [float](53) NOT NULL,
@@ -3312,7 +3312,7 @@ CREATE TABLE [dbo].[Aircraft]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Name] [nvarchar](127) NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
+  [Type] [uniqueidentifier] NULL,
   CONSTRAINT [FK_Aircraft_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TrackableItem]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_Aircraft] PRIMARY KEY([Id])
 )
@@ -3338,7 +3338,7 @@ CREATE TABLE [dbo].[AisAidToNavigation]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Name] [nvarchar](127) NOT NULL,
-  [MMSI] [uniqueidentifier] NOT NULL,
+  [MMSI] [uniqueidentifier] NULL,
   [NavigationalAidType] [int] NOT NULL,
   [Position] [uniqueidentifier] NULL,
   [IsVirtual] [bit] NOT NULL,
@@ -3373,7 +3373,7 @@ CREATE TABLE [dbo].[Vehicle]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Name] [nvarchar](127) NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
+  [Type] [uniqueidentifier] NULL,
   CONSTRAINT [FK_Vehicle_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TrackableItem]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_Vehicle] PRIMARY KEY([Id])
 )
@@ -3400,7 +3400,7 @@ CREATE TABLE [dbo].[Vessel]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [Name] [nvarchar](127) NOT NULL,
-  [Type] [uniqueidentifier] NOT NULL,
+  [Type] [uniqueidentifier] NULL,
   [ToBow] [int] NOT NULL,
   [ToStern] [int] NOT NULL,
   [ToPort] [int] NOT NULL,
@@ -3514,7 +3514,7 @@ CREATE TABLE [dbo].[LineInputDeviceCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [LineInputDevice] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_LineInputDeviceCommandReply] PRIMARY KEY([Id])
@@ -3720,7 +3720,7 @@ CREATE TABLE [dbo].[LineInputMessageRoutingDestination]
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
   [RowVersion] [bigint] NOT NULL,
   [Routing] [uniqueidentifier] NOT NULL,
-  [Listener] [uniqueidentifier] NOT NULL,
+  [Listener] [uniqueidentifier] NULL,
   CONSTRAINT [PK_LineInputMessageRoutingDestination] PRIMARY KEY([Id])
 )
 go
@@ -4018,7 +4018,7 @@ CREATE TABLE [dbo].[LogProcess]
   /*
    * Information about a process that emits log entries.
    */
-  [Host] [uniqueidentifier] NOT NULL,
+  [Host] [uniqueidentifier] NULL,
   /*
    * Information about a process that emits log entries.
    */
@@ -4483,7 +4483,7 @@ CREATE TABLE [dbo].[OilSpillDetectorCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [OilSpillDetector] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_OilSpillDetectorCommandReply] PRIMARY KEY([Id])
@@ -4526,7 +4526,7 @@ CREATE TABLE [dbo].[OilSpillDetectorConfiguration]
   [SendAsTarget] [bit] NOT NULL,
   [WriteLog] [bit] NOT NULL,
   [TargetFilePrefix] [nvarchar](127) NOT NULL,
-  [TargetMMSI] [uniqueidentifier] NOT NULL,
+  [TargetMMSI] [uniqueidentifier] NULL,
   [Latitude] [float](53) NOT NULL,
   [Longitude] [float](53) NOT NULL,
   [TestSourceEnabled] [bit] NOT NULL,
@@ -4818,7 +4818,7 @@ go
 CREATE TABLE [dbo].[ReferenceProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Value] [uniqueidentifier] NOT NULL,
+  [Value] [uniqueidentifier] NULL,
   CONSTRAINT [FK_ReferenceProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[Property]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_ReferenceProperty] PRIMARY KEY([Id])
 )
@@ -4915,7 +4915,7 @@ go
 CREATE TABLE [dbo].[BinaryTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_BinaryTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_BinaryTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -4937,7 +4937,7 @@ go
 CREATE TABLE [dbo].[BooleanTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_BooleanTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_BooleanTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -4959,7 +4959,7 @@ go
 CREATE TABLE [dbo].[ByteTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_ByteTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_ByteTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -4981,7 +4981,7 @@ go
 CREATE TABLE [dbo].[DateTimeTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_DateTimeTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_DateTimeTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5003,7 +5003,7 @@ go
 CREATE TABLE [dbo].[DoubleTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_DoubleTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_DoubleTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5025,7 +5025,7 @@ go
 CREATE TABLE [dbo].[GuidTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_GuidTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_GuidTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5047,7 +5047,7 @@ go
 CREATE TABLE [dbo].[Int16TimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_Int16TimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_Int16TimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5069,7 +5069,7 @@ go
 CREATE TABLE [dbo].[Int32TimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_Int32TimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_Int32TimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5091,7 +5091,7 @@ go
 CREATE TABLE [dbo].[Int64TimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_Int64TimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_Int64TimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5113,7 +5113,7 @@ go
 CREATE TABLE [dbo].[ReferenceTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_ReferenceTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_ReferenceTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5135,7 +5135,7 @@ go
 CREATE TABLE [dbo].[SByteTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_SByteTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_SByteTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5157,7 +5157,7 @@ go
 CREATE TABLE [dbo].[SingleTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_SingleTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_SingleTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5179,7 +5179,7 @@ go
 CREATE TABLE [dbo].[StringTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_StringTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_StringTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5201,7 +5201,7 @@ go
 CREATE TABLE [dbo].[TimeSpanTimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_TimeSpanTimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_TimeSpanTimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5223,7 +5223,7 @@ go
 CREATE TABLE [dbo].[UInt16TimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_UInt16TimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_UInt16TimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5245,7 +5245,7 @@ go
 CREATE TABLE [dbo].[UInt32TimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_UInt32TimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_UInt32TimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5267,7 +5267,7 @@ go
 CREATE TABLE [dbo].[UInt64TimeseriesProperty]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [Timeseries] [uniqueidentifier] NOT NULL,
+  [Timeseries] [uniqueidentifier] NULL,
   CONSTRAINT [FK_UInt64TimeseriesProperty_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesProperty]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_UInt64TimeseriesProperty] PRIMARY KEY([Id])
 )
@@ -5573,8 +5573,8 @@ go
 CREATE TABLE [dbo].[ReferencePropertyDefinition]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [DefaultValue] [uniqueidentifier] NOT NULL,
-  [ReferencedElementType] [uniqueidentifier] NOT NULL,
+  [DefaultValue] [uniqueidentifier] NULL,
+  [ReferencedElementType] [uniqueidentifier] NULL,
   CONSTRAINT [FK_ReferencePropertyDefinition_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[PropertyDefinition]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_ReferencePropertyDefinition] PRIMARY KEY([Id])
 )
@@ -5853,7 +5853,7 @@ go
 CREATE TABLE [dbo].[ReferenceTimeseriesPropertyDefinition]
 (
   [Id] [uniqueidentifier] ROWGUIDCOL NOT NULL,
-  [ReferencedElementType] [uniqueidentifier] NOT NULL,
+  [ReferencedElementType] [uniqueidentifier] NULL,
   CONSTRAINT [FK_ReferenceTimeseriesPropertyDefinition_Id] FOREIGN KEY([Id]) REFERENCES [dbo].[TimeseriesPropertyDefinition]([Id]) ON DELETE CASCADE,
   CONSTRAINT [PK_ReferenceTimeseriesPropertyDefinition] PRIMARY KEY([Id])
 )
@@ -6172,7 +6172,7 @@ CREATE TABLE [dbo].[RadarCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [Radar] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [FK_RadarCommandReply_EntityType] FOREIGN KEY([EntityType]) REFERENCES [dbo].[EntityTypes]([Id]),
@@ -6370,7 +6370,7 @@ CREATE TABLE [dbo].[RadioCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [Radio] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_RadioCommandReply] PRIMARY KEY([Id])
@@ -6451,7 +6451,7 @@ CREATE TABLE [dbo].[RadomeCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [Radome] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_RadomeCommandReply] PRIMARY KEY([Id])
@@ -8896,7 +8896,7 @@ CREATE TABLE [dbo].[WeatherStationCommandReply]
   [RowVersion] [bigint] NOT NULL,
   [WeatherStation] [uniqueidentifier] NOT NULL,
   [Timestamp] [bigint] NOT NULL,
-  [Command] [uniqueidentifier] NOT NULL,
+  [Command] [uniqueidentifier] NULL,
   [Status] [int] NOT NULL,
   [Message] [nvarchar](max) NOT NULL,
   CONSTRAINT [PK_WeatherStationCommandReply] PRIMARY KEY([Id])
@@ -9062,7 +9062,7 @@ CREATE TABLE [dbo].[ZoneTrackAlarm]
   [RowVersion] [bigint] NOT NULL,
   [Track] [uniqueidentifier] NOT NULL,
   [Zone] [uniqueidentifier] NOT NULL,
-  [RadarTrack] [uniqueidentifier] NOT NULL,
+  [RadarTrack] [uniqueidentifier] NULL,
   [Timestamp] [bigint] NOT NULL,
   [Latitude] [float](53) NOT NULL,
   [Longitude] [float](53) NOT NULL,
@@ -9200,6 +9200,10 @@ ALTER TABLE [dbo].[AisStaticDataReportPartBMessage]
   ADD CONSTRAINT [FK_AisStaticDataReportPartBMessage_MothershipMmsi] FOREIGN KEY([MothershipMmsi]) REFERENCES [dbo].[MaritimeMobileServiceIdentity]([Id])
 go
 
+ALTER TABLE [dbo].[AisUtcAndDateInquiryMessage]
+  ADD CONSTRAINT [FK_AisUtcAndDateInquiryMessage_DestinationMmsi] FOREIGN KEY([DestinationMmsi]) REFERENCES [dbo].[MaritimeMobileServiceIdentity]([Id])
+go
+
 ALTER TABLE [dbo].[AlarmStateChange]
   ADD CONSTRAINT [FK_AlarmStateChange_Alarm] FOREIGN KEY([Alarm]) REFERENCES [dbo].[ZoneTrackAlarm]([Id]) ON DELETE CASCADE
 go
@@ -9209,7 +9213,7 @@ ALTER TABLE [dbo].[BinaryTimeseriesValue]
 go
 
 ALTER TABLE [dbo].[Bookmark]
-  ADD CONSTRAINT [FK_Bookmark_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id])
+  ADD CONSTRAINT [FK_Bookmark_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[BooleanTimeseriesValue]
@@ -9277,7 +9281,7 @@ ALTER TABLE [dbo].[CatalogElement]
 go
 
 ALTER TABLE [dbo].[Element]
-  ADD CONSTRAINT [FK_Element_ElementType] FOREIGN KEY([ElementType]) REFERENCES [dbo].[ElementType]([Id])
+  ADD CONSTRAINT [FK_Element_ElementType] FOREIGN KEY([ElementType]) REFERENCES [dbo].[ElementType]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[DateTimeTimeseriesValue]
@@ -9597,19 +9601,19 @@ ALTER TABLE [dbo].[Vessel]
 go
 
 ALTER TABLE [dbo].[ItemIdentityLink]
-  ADD CONSTRAINT [FK_ItemIdentityLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[Item]([Id])
+  ADD CONSTRAINT [FK_ItemIdentityLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ItemIdentityLink]
-  ADD CONSTRAINT [FK_ItemIdentityLink_Identity] FOREIGN KEY([Identity]) REFERENCES [dbo].[Identity]([Id])
+  ADD CONSTRAINT [FK_ItemIdentityLink_Identity] FOREIGN KEY([Identity]) REFERENCES [dbo].[Identity]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ItemParentChildLink]
-  ADD CONSTRAINT [FK_ItemParentChildLink_Parent] FOREIGN KEY([Parent]) REFERENCES [dbo].[Item]([Id])
+  ADD CONSTRAINT [FK_ItemParentChildLink_Parent] FOREIGN KEY([Parent]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ItemParentChildLink]
-  ADD CONSTRAINT [FK_ItemParentChildLink_Child] FOREIGN KEY([Child]) REFERENCES [dbo].[Item]([Id])
+  ADD CONSTRAINT [FK_ItemParentChildLink_Child] FOREIGN KEY([Child]) REFERENCES [dbo].[Item]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[LineInputDeviceCommand]
@@ -9669,7 +9673,7 @@ ALTER TABLE [dbo].[LogRecord]
 go
 
 ALTER TABLE [dbo].[LogRecord]
-  ADD CONSTRAINT [FK_LogRecord_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id])
+  ADD CONSTRAINT [FK_LogRecord_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[LogThread]
@@ -9681,7 +9685,7 @@ ALTER TABLE [dbo].[LogTraceEntry]
 go
 
 ALTER TABLE [dbo].[LogTraceEntry]
-  ADD CONSTRAINT [FK_LogTraceEntry_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id])
+  ADD CONSTRAINT [FK_LogTraceEntry_Location] FOREIGN KEY([Location]) REFERENCES [dbo].[LogLocation]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[MapElement]
@@ -9689,7 +9693,7 @@ ALTER TABLE [dbo].[MapElement]
 go
 
 ALTER TABLE [dbo].[MaritimeIdentificationDigits]
-  ADD CONSTRAINT [FK_MaritimeIdentificationDigits_Country] FOREIGN KEY([Country]) REFERENCES [dbo].[Country]([Id])
+  ADD CONSTRAINT [FK_MaritimeIdentificationDigits_Country] FOREIGN KEY([Country]) REFERENCES [dbo].[Country]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[MediaProxySession]
@@ -9761,7 +9765,7 @@ ALTER TABLE [dbo].[Property]
 go
 
 ALTER TABLE [dbo].[Property]
-  ADD CONSTRAINT [FK_Property_Definition] FOREIGN KEY([Definition]) REFERENCES [dbo].[PropertyDefinition]([Id])
+  ADD CONSTRAINT [FK_Property_Definition] FOREIGN KEY([Definition]) REFERENCES [dbo].[PropertyDefinition]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ReferenceProperty]
@@ -9853,7 +9857,7 @@ ALTER TABLE [dbo].[ReferenceTimeseriesPropertyDefinition]
 go
 
 ALTER TABLE [dbo].[RadarAlarmStatus]
-  ADD CONSTRAINT [FK_RadarAlarmStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id])
+  ADD CONSTRAINT [FK_RadarAlarmStatus_Radar] FOREIGN KEY([Radar]) REFERENCES [dbo].[RadarDevice]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[RadarCommand]
@@ -9933,7 +9937,7 @@ ALTER TABLE [dbo].[ReferenceTimeseriesValue]
 go
 
 ALTER TABLE [dbo].[ReferenceTimeseriesValue]
-  ADD CONSTRAINT [FK_ReferenceTimeseriesValue_Value] FOREIGN KEY([Value]) REFERENCES [dbo].[Element]([Id])
+  ADD CONSTRAINT [FK_ReferenceTimeseriesValue_Value] FOREIGN KEY([Value]) REFERENCES [dbo].[Element]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[SByteTimeseriesValue]
@@ -9945,11 +9949,11 @@ ALTER TABLE [dbo].[SecurityIdentifier]
 go
 
 ALTER TABLE [dbo].[SecurityIdentifierRoleLink]
-  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Member] FOREIGN KEY([Member]) REFERENCES [dbo].[SecurityIdentifier]([Id])
+  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Member] FOREIGN KEY([Member]) REFERENCES [dbo].[SecurityIdentifier]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[SecurityIdentifierRoleLink]
-  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Role] FOREIGN KEY([Role]) REFERENCES [dbo].[SecurityRole]([Id])
+  ADD CONSTRAINT [FK_SecurityIdentifierRoleLink_Role] FOREIGN KEY([Role]) REFERENCES [dbo].[SecurityRole]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[SecurityLoginSession]
@@ -10189,15 +10193,15 @@ ALTER TABLE [dbo].[TimeSpanTimeseriesValue]
 go
 
 ALTER TABLE [dbo].[TrackableItemTrackLink]
-  ADD CONSTRAINT [FK_TrackableItemTrackLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[TrackableItem]([Id])
+  ADD CONSTRAINT [FK_TrackableItemTrackLink_Item] FOREIGN KEY([Item]) REFERENCES [dbo].[TrackableItem]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[TrackableItemTrackLink]
-  ADD CONSTRAINT [FK_TrackableItemTrackLink_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[TrackBase]([Id])
+  ADD CONSTRAINT [FK_TrackableItemTrackLink_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[TrackBase]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[TrackBase]
-  ADD CONSTRAINT [FK_TrackBase_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
+  ADD CONSTRAINT [FK_TrackBase_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[TrackerFilterParameters]
@@ -10209,11 +10213,11 @@ ALTER TABLE [dbo].[TrackerFilterParametersConfiguration]
 go
 
 ALTER TABLE [dbo].[TrackLink]
-  ADD CONSTRAINT [FK_TrackLink_Primary] FOREIGN KEY([Primary]) REFERENCES [dbo].[TrackBase]([Id])
+  ADD CONSTRAINT [FK_TrackLink_Primary] FOREIGN KEY([Primary]) REFERENCES [dbo].[TrackBase]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[TrackLink]
-  ADD CONSTRAINT [FK_TrackLink_Secondary] FOREIGN KEY([Secondary]) REFERENCES [dbo].[TrackBase]([Id])
+  ADD CONSTRAINT [FK_TrackLink_Secondary] FOREIGN KEY([Secondary]) REFERENCES [dbo].[TrackBase]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[TrackValue]
@@ -10249,19 +10253,19 @@ ALTER TABLE [dbo].[View]
 go
 
 ALTER TABLE [dbo].[ViewCameraLink]
-  ADD CONSTRAINT [FK_ViewCameraLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id])
+  ADD CONSTRAINT [FK_ViewCameraLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ViewCameraLink]
-  ADD CONSTRAINT [FK_ViewCameraLink_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id])
+  ADD CONSTRAINT [FK_ViewCameraLink_Camera] FOREIGN KEY([Camera]) REFERENCES [dbo].[CameraDevice]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ViewTrackerLink]
-  ADD CONSTRAINT [FK_ViewTrackerLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id])
+  ADD CONSTRAINT [FK_ViewTrackerLink_View] FOREIGN KEY([View]) REFERENCES [dbo].[View]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ViewTrackerLink]
-  ADD CONSTRAINT [FK_ViewTrackerLink_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id])
+  ADD CONSTRAINT [FK_ViewTrackerLink_Tracker] FOREIGN KEY([Tracker]) REFERENCES [dbo].[TrackerDevice]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[WeatherStationCommand]
@@ -10289,15 +10293,15 @@ ALTER TABLE [dbo].[ZoneExceptions]
 go
 
 ALTER TABLE [dbo].[ZoneExceptionsVesselLink]
-  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_ZoneExceptions] FOREIGN KEY([ZoneExceptions]) REFERENCES [dbo].[ZoneExceptions]([Id])
+  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_ZoneExceptions] FOREIGN KEY([ZoneExceptions]) REFERENCES [dbo].[ZoneExceptions]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ZoneExceptionsVesselLink]
-  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_Vessel] FOREIGN KEY([Vessel]) REFERENCES [dbo].[Vessel]([Id])
+  ADD CONSTRAINT [FK_ZoneExceptionsVesselLink_Vessel] FOREIGN KEY([Vessel]) REFERENCES [dbo].[Vessel]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ZoneTrackAlarm]
-  ADD CONSTRAINT [FK_ZoneTrackAlarm_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track]([Id])
+  ADD CONSTRAINT [FK_ZoneTrackAlarm_Track] FOREIGN KEY([Track]) REFERENCES [dbo].[Track]([Id]) ON DELETE CASCADE
 go
 
 ALTER TABLE [dbo].[ZoneTrackAlarm]

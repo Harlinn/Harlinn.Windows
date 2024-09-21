@@ -511,11 +511,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AM_REPEAT_FIELD_ID );
             }
         }
-        public Guid Mmsi
+        public Guid? Mmsi
         {
             get
             {
-                return GetGuid( AM_MMSI_FIELD_ID );
+                return GetNullableGuid( AM_MMSI_FIELD_ID );
             }
         }
         public Types.NavigationalAidType AidToNavigationReportMessageNavigationalAidType
@@ -651,11 +651,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AASRM_SEQUENCENUMBER_FIELD_ID );
             }
         }
-        public Guid AisAddressedSafetyRelatedMessageDestinationMmsi
+        public Guid? AisAddressedSafetyRelatedMessageDestinationMmsi
         {
             get
             {
-                return GetGuid( AASRM_DESTINATIONMMSI_FIELD_ID );
+                return GetNullableGuid( AASRM_DESTINATIONMMSI_FIELD_ID );
             }
         }
         public bool AisAddressedSafetyRelatedMessageRetransmitFlag
@@ -749,11 +749,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ABAC_SEQUENCENUMBER1_FIELD_ID );
             }
         }
-        public Guid AisBinaryAcknowledgeMessageMmsi1
+        public Guid? AisBinaryAcknowledgeMessageMmsi1
         {
             get
             {
-                return GetGuid( ABAC_MMSI1_FIELD_ID );
+                return GetNullableGuid( ABAC_MMSI1_FIELD_ID );
             }
         }
         public int? AisBinaryAcknowledgeMessageSequenceNumber2
@@ -805,11 +805,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ABAM_SEQUENCENUMBER_FIELD_ID );
             }
         }
-        public Guid AisBinaryAddressedMessageDestinationMmsi
+        public Guid? AisBinaryAddressedMessageDestinationMmsi
         {
             get
             {
-                return GetGuid( ABAM_DESTINATIONMMSI_FIELD_ID );
+                return GetNullableGuid( ABAM_DESTINATIONMMSI_FIELD_ID );
             }
         }
         public bool AisBinaryAddressedMessageRetransmitFlag
@@ -1057,11 +1057,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AECBPRM_REGIONALRESERVED_FIELD_ID );
             }
         }
-        public Guid AisExtendedClassBCsPositionReportMessageName
+        public Guid? AisExtendedClassBCsPositionReportMessageName
         {
             get
             {
-                return GetGuid( AECBPRM_NAME_FIELD_ID );
+                return GetNullableGuid( AECBPRM_NAME_FIELD_ID );
             }
         }
         public Types.ShipType AisExtendedClassBCsPositionReportMessageShipType
@@ -1134,11 +1134,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AECBPRM_SPARE_FIELD_ID );
             }
         }
-        public Guid AisInterrogationMessageInterrogatedMmsi
+        public Guid? AisInterrogationMessageInterrogatedMmsi
         {
             get
             {
-                return GetGuid( AIM_INTERROGATEDMMSI_FIELD_ID );
+                return GetNullableGuid( AIM_INTERROGATEDMMSI_FIELD_ID );
             }
         }
         public Types.AisMessageType AisInterrogationMessageFirstMessageType
@@ -1358,11 +1358,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASRAM_SEQUENCENUMBER1_FIELD_ID );
             }
         }
-        public Guid AisSafetyRelatedAcknowledgmentMessageMmsi1
+        public Guid? AisSafetyRelatedAcknowledgmentMessageMmsi1
         {
             get
             {
-                return GetGuid( ASRAM_MMSI1_FIELD_ID );
+                return GetNullableGuid( ASRAM_MMSI1_FIELD_ID );
             }
         }
         public int? AisSafetyRelatedAcknowledgmentMessageSequenceNumber2
@@ -1624,25 +1624,25 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASAVRDM_AISVERSION_FIELD_ID );
             }
         }
-        public Guid AisStaticAndVoyageRelatedDataMessageImoNumber
+        public Guid? AisStaticAndVoyageRelatedDataMessageImoNumber
         {
             get
             {
-                return GetGuid( ASAVRDM_IMONUMBER_FIELD_ID );
+                return GetNullableGuid( ASAVRDM_IMONUMBER_FIELD_ID );
             }
         }
-        public Guid AisStaticAndVoyageRelatedDataMessageCallsign
+        public Guid? AisStaticAndVoyageRelatedDataMessageCallsign
         {
             get
             {
-                return GetGuid( ASAVRDM_CALLSIGN_FIELD_ID );
+                return GetNullableGuid( ASAVRDM_CALLSIGN_FIELD_ID );
             }
         }
-        public Guid AisStaticAndVoyageRelatedDataMessageShipName
+        public Guid? AisStaticAndVoyageRelatedDataMessageShipName
         {
             get
             {
-                return GetGuid( ASAVRDM_SHIPNAME_FIELD_ID );
+                return GetNullableGuid( ASAVRDM_SHIPNAME_FIELD_ID );
             }
         }
         public Types.ShipType AisStaticAndVoyageRelatedDataMessageShipType
@@ -1734,11 +1734,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRM_PARTNUMBER_FIELD_ID );
             }
         }
-        public Guid AisStaticDataReportPartAMessageShipName
+        public Guid? AisStaticDataReportPartAMessageShipName
         {
             get
             {
-                return GetGuid( ASDRPA_SHIPNAME_FIELD_ID );
+                return GetNullableGuid( ASDRPA_SHIPNAME_FIELD_ID );
             }
         }
         public int AisStaticDataReportPartAMessageSpare
@@ -1776,11 +1776,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRPB_SERIALNUMBER_FIELD_ID );
             }
         }
-        public Guid AisStaticDataReportPartBMessageCallsign
+        public Guid? AisStaticDataReportPartBMessageCallsign
         {
             get
             {
-                return GetGuid( ASDRPB_CALLSIGN_FIELD_ID );
+                return GetNullableGuid( ASDRPB_CALLSIGN_FIELD_ID );
             }
         }
         public int AisStaticDataReportPartBMessageDimensionToBow
@@ -1839,11 +1839,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( AUADIM_SPARE1_FIELD_ID );
             }
         }
-        public int AisUtcAndDateInquiryMessageDestinationMmsi
+        public Guid? AisUtcAndDateInquiryMessageDestinationMmsi
         {
             get
             {
-                return GetInt32( AUADIM_DESTINATIONMMSI_FIELD_ID );
+                return GetNullableGuid( AUADIM_DESTINATIONMMSI_FIELD_ID );
             }
         }
         public int AisUtcAndDateInquiryMessageSpare2
@@ -2656,11 +2656,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( APRCAB_REPEAT_FIELD_ID );
             }
         }
-        public Guid Mmsi
+        public Guid? Mmsi
         {
             get
             {
-                return GetGuid( APRCAB_MMSI_FIELD_ID );
+                return GetNullableGuid( APRCAB_MMSI_FIELD_ID );
             }
         }
         public Types.NavigationStatus NavigationStatus
@@ -2994,11 +2994,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRM_REPEAT_FIELD_ID );
             }
         }
-        public Guid Mmsi
+        public Guid? Mmsi
         {
             get
             {
-                return GetGuid( ASDRM_MMSI_FIELD_ID );
+                return GetNullableGuid( ASDRM_MMSI_FIELD_ID );
             }
         }
         public int PartNumber
@@ -3008,11 +3008,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRM_PARTNUMBER_FIELD_ID );
             }
         }
-        public Guid AisStaticDataReportPartAMessageShipName
+        public Guid? AisStaticDataReportPartAMessageShipName
         {
             get
             {
-                return GetGuid( ASDRPA_SHIPNAME_FIELD_ID );
+                return GetNullableGuid( ASDRPA_SHIPNAME_FIELD_ID );
             }
         }
         public int AisStaticDataReportPartAMessageSpare
@@ -3050,11 +3050,11 @@ namespace Barrelman.Data.Database
                 return GetInt32( ASDRPB_SERIALNUMBER_FIELD_ID );
             }
         }
-        public Guid AisStaticDataReportPartBMessageCallsign
+        public Guid? AisStaticDataReportPartBMessageCallsign
         {
             get
             {
-                return GetGuid( ASDRPB_CALLSIGN_FIELD_ID );
+                return GetNullableGuid( ASDRPB_CALLSIGN_FIELD_ID );
             }
         }
         public int AisStaticDataReportPartBMessageDimensionToBow
@@ -4051,11 +4051,11 @@ namespace Barrelman.Data.Database
                 return GetInt64( CE_ROWVERSION_FIELD_ID );
             }
         }
-        public Guid Catalog
+        public Guid? Catalog
         {
             get
             {
-                return GetGuid( CE_CATALOG_FIELD_ID );
+                return GetNullableGuid( CE_CATALOG_FIELD_ID );
             }
         }
         public string Name
@@ -4065,11 +4065,11 @@ namespace Barrelman.Data.Database
                 return GetString( CE_NAME_FIELD_ID );
             }
         }
-        public Guid ElementElementType
+        public Guid? ElementElementType
         {
             get
             {
-                return GetGuid( E_ELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( E_ELEMENTTYPE_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -4541,11 +4541,11 @@ namespace Barrelman.Data.Database
                 return GetString( BS_NAME_FIELD_ID );
             }
         }
-        public Guid BaseStationType
+        public Guid? BaseStationType
         {
             get
             {
-                return GetGuid( BS_TYPE_FIELD_ID );
+                return GetNullableGuid( BS_TYPE_FIELD_ID );
             }
         }
         public Guid DeviceHost
@@ -4646,11 +4646,11 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( GD_SPEEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceGNSSDevice
+        public Guid? GyroDeviceGNSSDevice
         {
             get
             {
-                return GetGuid( GD_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GD_GNSSDEVICE_FIELD_ID );
             }
         }
         public Guid? RadomeDeviceRadar
@@ -4905,11 +4905,11 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( WSD_WINDSPEEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceGyro
+        public Guid? WeatherStationDeviceGyro
         {
             get
             {
-                return GetGuid( WSD_GYRO_FIELD_ID );
+                return GetNullableGuid( WSD_GYRO_FIELD_ID );
             }
         }
         public string FacilityName
@@ -4919,11 +4919,11 @@ namespace Barrelman.Data.Database
                 return GetString( F_NAME_FIELD_ID );
             }
         }
-        public Guid FacilityType
+        public Guid? FacilityType
         {
             get
             {
-                return GetGuid( F_TYPE_FIELD_ID );
+                return GetNullableGuid( F_TYPE_FIELD_ID );
             }
         }
         public double FacilityLongitude
@@ -4954,11 +4954,11 @@ namespace Barrelman.Data.Database
                 return GetString( A_NAME_FIELD_ID );
             }
         }
-        public Guid AircraftType
+        public Guid? AircraftType
         {
             get
             {
-                return GetGuid( A_TYPE_FIELD_ID );
+                return GetNullableGuid( A_TYPE_FIELD_ID );
             }
         }
         public string AisAidToNavigationName
@@ -4968,11 +4968,11 @@ namespace Barrelman.Data.Database
                 return GetString( AATN_NAME_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationMMSI
+        public Guid? AisAidToNavigationMMSI
         {
             get
             {
-                return GetGuid( AATN_MMSI_FIELD_ID );
+                return GetNullableGuid( AATN_MMSI_FIELD_ID );
             }
         }
         public Types.NavigationalAidType AisAidToNavigationNavigationalAidType
@@ -5038,11 +5038,11 @@ namespace Barrelman.Data.Database
                 return GetString( V_NAME_FIELD_ID );
             }
         }
-        public Guid VehicleType
+        public Guid? VehicleType
         {
             get
             {
-                return GetGuid( V_TYPE_FIELD_ID );
+                return GetNullableGuid( V_TYPE_FIELD_ID );
             }
         }
         public string VesselName
@@ -5052,11 +5052,11 @@ namespace Barrelman.Data.Database
                 return GetString( VSL_NAME_FIELD_ID );
             }
         }
-        public Guid VesselType
+        public Guid? VesselType
         {
             get
             {
-                return GetGuid( VSL_TYPE_FIELD_ID );
+                return GetNullableGuid( VSL_TYPE_FIELD_ID );
             }
         }
         public int VesselToBow
@@ -5703,11 +5703,11 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( GD_SPEEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid GyroDeviceGNSSDevice
+        public Guid? GyroDeviceGNSSDevice
         {
             get
             {
-                return GetGuid( GD_GNSSDEVICE_FIELD_ID );
+                return GetNullableGuid( GD_GNSSDEVICE_FIELD_ID );
             }
         }
         public Guid? RadomeDeviceRadar
@@ -5962,11 +5962,11 @@ namespace Barrelman.Data.Database
                 return GetNullableGuid( WSD_WINDSPEEDTIMESERIES_FIELD_ID );
             }
         }
-        public Guid WeatherStationDeviceGyro
+        public Guid? WeatherStationDeviceGyro
         {
             get
             {
-                return GetGuid( WSD_GYRO_FIELD_ID );
+                return GetNullableGuid( WSD_GYRO_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -6692,11 +6692,11 @@ namespace Barrelman.Data.Database
                 return GetString( A_NAME_FIELD_ID );
             }
         }
-        public Guid AircraftType
+        public Guid? AircraftType
         {
             get
             {
-                return GetGuid( A_TYPE_FIELD_ID );
+                return GetNullableGuid( A_TYPE_FIELD_ID );
             }
         }
         public string AisAidToNavigationName
@@ -6706,11 +6706,11 @@ namespace Barrelman.Data.Database
                 return GetString( AATN_NAME_FIELD_ID );
             }
         }
-        public Guid AisAidToNavigationMMSI
+        public Guid? AisAidToNavigationMMSI
         {
             get
             {
-                return GetGuid( AATN_MMSI_FIELD_ID );
+                return GetNullableGuid( AATN_MMSI_FIELD_ID );
             }
         }
         public Types.NavigationalAidType AisAidToNavigationNavigationalAidType
@@ -6776,11 +6776,11 @@ namespace Barrelman.Data.Database
                 return GetString( V_NAME_FIELD_ID );
             }
         }
-        public Guid VehicleType
+        public Guid? VehicleType
         {
             get
             {
-                return GetGuid( V_TYPE_FIELD_ID );
+                return GetNullableGuid( V_TYPE_FIELD_ID );
             }
         }
         public string VesselName
@@ -6790,11 +6790,11 @@ namespace Barrelman.Data.Database
                 return GetString( VSL_NAME_FIELD_ID );
             }
         }
-        public Guid VesselType
+        public Guid? VesselType
         {
             get
             {
-                return GetGuid( VSL_TYPE_FIELD_ID );
+                return GetNullableGuid( VSL_TYPE_FIELD_ID );
             }
         }
         public int VesselToBow
@@ -7312,11 +7312,11 @@ namespace Barrelman.Data.Database
                 return GetInt64( I64P_VALUE_FIELD_ID );
             }
         }
-        public Guid ReferencePropertyValue
+        public Guid? ReferencePropertyValue
         {
             get
             {
-                return GetGuid( RP_VALUE_FIELD_ID );
+                return GetNullableGuid( RP_VALUE_FIELD_ID );
             }
         }
         public sbyte SBytePropertyValue
@@ -7340,123 +7340,123 @@ namespace Barrelman.Data.Database
                 return GetString( STP_VALUE_FIELD_ID );
             }
         }
-        public Guid BinaryTimeseriesPropertyTimeseries
+        public Guid? BinaryTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( BTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid BooleanTimeseriesPropertyTimeseries
+        public Guid? BooleanTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( BOTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BOTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid ByteTimeseriesPropertyTimeseries
+        public Guid? ByteTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( BYTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BYTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid DateTimeTimeseriesPropertyTimeseries
+        public Guid? DateTimeTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( DTTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( DTTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid DoubleTimeseriesPropertyTimeseries
+        public Guid? DoubleTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( DOTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( DOTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid GuidTimeseriesPropertyTimeseries
+        public Guid? GuidTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( GTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( GTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Int16TimeseriesPropertyTimeseries
+        public Guid? Int16TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( I16TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( I16TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Int32TimeseriesPropertyTimeseries
+        public Guid? Int32TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( I32TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( I32TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Int64TimeseriesPropertyTimeseries
+        public Guid? Int64TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( I64TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( I64TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid ReferenceTimeseriesPropertyTimeseries
+        public Guid? ReferenceTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( RTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid SByteTimeseriesPropertyTimeseries
+        public Guid? SByteTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( SBTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( SBTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid SingleTimeseriesPropertyTimeseries
+        public Guid? SingleTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( SITP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( SITP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid StringTimeseriesPropertyTimeseries
+        public Guid? StringTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( STTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( STTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid TimeSpanTimeseriesPropertyTimeseries
+        public Guid? TimeSpanTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( TSTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TSTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid UInt16TimeseriesPropertyTimeseries
+        public Guid? UInt16TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( U16TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( U16TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid UInt32TimeseriesPropertyTimeseries
+        public Guid? UInt32TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( U32TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( U32TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid UInt64TimeseriesPropertyTimeseries
+        public Guid? UInt64TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( U64TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( U64TP_TIMESERIES_FIELD_ID );
             }
         }
         public TimeSpan TimeSpanPropertyValue
@@ -8146,123 +8146,123 @@ namespace Barrelman.Data.Database
                 return GetGuid( TP_DEFINITION_FIELD_ID );
             }
         }
-        public Guid BinaryTimeseriesPropertyTimeseries
+        public Guid? BinaryTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( BTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid BooleanTimeseriesPropertyTimeseries
+        public Guid? BooleanTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( BOTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BOTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid ByteTimeseriesPropertyTimeseries
+        public Guid? ByteTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( BYTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( BYTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid DateTimeTimeseriesPropertyTimeseries
+        public Guid? DateTimeTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( DTTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( DTTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid DoubleTimeseriesPropertyTimeseries
+        public Guid? DoubleTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( DOTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( DOTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid GuidTimeseriesPropertyTimeseries
+        public Guid? GuidTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( GTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( GTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Int16TimeseriesPropertyTimeseries
+        public Guid? Int16TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( I16TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( I16TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Int32TimeseriesPropertyTimeseries
+        public Guid? Int32TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( I32TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( I32TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid Int64TimeseriesPropertyTimeseries
+        public Guid? Int64TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( I64TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( I64TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid ReferenceTimeseriesPropertyTimeseries
+        public Guid? ReferenceTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( RTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( RTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid SByteTimeseriesPropertyTimeseries
+        public Guid? SByteTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( SBTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( SBTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid SingleTimeseriesPropertyTimeseries
+        public Guid? SingleTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( SITP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( SITP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid StringTimeseriesPropertyTimeseries
+        public Guid? StringTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( STTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( STTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid TimeSpanTimeseriesPropertyTimeseries
+        public Guid? TimeSpanTimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( TSTP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( TSTP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid UInt16TimeseriesPropertyTimeseries
+        public Guid? UInt16TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( U16TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( U16TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid UInt32TimeseriesPropertyTimeseries
+        public Guid? UInt32TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( U32TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( U32TP_TIMESERIES_FIELD_ID );
             }
         }
-        public Guid UInt64TimeseriesPropertyTimeseries
+        public Guid? UInt64TimeseriesPropertyTimeseries
         {
             get
             {
-                return GetGuid( U64TP_TIMESERIES_FIELD_ID );
+                return GetNullableGuid( U64TP_TIMESERIES_FIELD_ID );
             }
         }
         public void WriteTo([DisallowNull] BinaryWriter destination )
@@ -8947,18 +8947,18 @@ namespace Barrelman.Data.Database
                 return GetInt64( I64PD_MAXVALUE_FIELD_ID );
             }
         }
-        public Guid ReferencePropertyDefinitionDefaultValue
+        public Guid? ReferencePropertyDefinitionDefaultValue
         {
             get
             {
-                return GetGuid( RPD_DEFAULTVALUE_FIELD_ID );
+                return GetNullableGuid( RPD_DEFAULTVALUE_FIELD_ID );
             }
         }
-        public Guid ReferencePropertyDefinitionReferencedElementType
+        public Guid? ReferencePropertyDefinitionReferencedElementType
         {
             get
             {
-                return GetGuid( RPD_REFERENCEDELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( RPD_REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
         public sbyte SBytePropertyDefinitionDefaultValue
@@ -9101,11 +9101,11 @@ namespace Barrelman.Data.Database
                 return GetInt64( I64TPD_MAXVALUE_FIELD_ID );
             }
         }
-        public Guid ReferenceTimeseriesPropertyDefinitionReferencedElementType
+        public Guid? ReferenceTimeseriesPropertyDefinitionReferencedElementType
         {
             get
             {
-                return GetGuid( RTPD_REFERENCEDELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( RTPD_REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
         public sbyte SByteTimeseriesPropertyDefinitionMinValue
@@ -10122,11 +10122,11 @@ namespace Barrelman.Data.Database
                 return GetInt64( I64TPD_MAXVALUE_FIELD_ID );
             }
         }
-        public Guid ReferenceTimeseriesPropertyDefinitionReferencedElementType
+        public Guid? ReferenceTimeseriesPropertyDefinitionReferencedElementType
         {
             get
             {
-                return GetGuid( RTPD_REFERENCEDELEMENTTYPE_FIELD_ID );
+                return GetNullableGuid( RTPD_REFERENCEDELEMENTTYPE_FIELD_ID );
             }
         }
         public sbyte SByteTimeseriesPropertyDefinitionMinValue
@@ -10776,11 +10776,11 @@ namespace Barrelman.Data.Database
                 return new DateTime( GetInt64( RCR_TIMESTAMP_FIELD_ID ), DateTimeKind.Utc );
             }
         }
-        public Guid Command
+        public Guid? Command
         {
             get
             {
-                return GetGuid( RCR_COMMAND_FIELD_ID );
+                return GetNullableGuid( RCR_COMMAND_FIELD_ID );
             }
         }
         public Types.DeviceCommandReplyStatus Status

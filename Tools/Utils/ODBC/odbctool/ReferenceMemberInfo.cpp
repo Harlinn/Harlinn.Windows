@@ -27,37 +27,142 @@ namespace Harlinn::ODBC::Tool
             auto type = model->FindClass( typeName );
             type_ = type;
         }
+        if ( memberElement.HasAttribute( L"member" ) )
+        {
+            member_ = memberElement.Read<WideString>( L"member" );
+        }
     }
 
     void ReferenceMemberInfo::Validate( ) const
     {
-        auto referencedType = ReferencedType( );
-        if ( referencedType == nullptr )
+        Base::Validate( );
+        auto referencingReferenceMember = ReferencingReferenceMember( );
+        if ( referencingReferenceMember == nullptr )
         {
-            auto ownerName = Owner( )->Name( );
-            auto name = Name( );
-            auto message = Format( L"Unknown referenced type for {}.{}.", ownerName, name );
-            throw Exception( message );
+            auto referencingCollectionMember = ReferencingCollectionMember( );
+            if ( referencingCollectionMember == nullptr )
+            {
+                auto ownerName = Owner( )->Name( );
+                auto name = Name( );
+                auto message = Format( L"Unknown referenced type for {}.{}.", ownerName, name );
+                throw Exception( message );
+            }
+            else
+            {
+                if ( Nullable( ) == false )
+                {
+                    if ( referencingCollectionMember->Aggregated( ) == false )
+                    {
+                        auto ownerName = Owner( )->Name( );
+                        auto name = Name( );
+                        auto message = Format( L"{}.{} must be nullable.", ownerName, name );
+                        throw Exception( message );
+                    }
+                }
+            }
+        }
+        else
+        {
+            if ( Nullable( ) == false )
+            {
+                auto ownerName = Owner( )->Name( );
+                auto name = Name( );
+                auto message = Format( L"{}.{} must be nullable.", ownerName, name );
+                throw Exception( message );
+            }
         }
     }
 
-    std::shared_ptr<CollectionMemberInfo> ReferenceMemberInfo::CollectionMember( ) const
+    std::shared_ptr<CollectionMemberInfo> ReferenceMemberInfo::ReferencingCollectionMember( ) const
     {
-        auto referencedType = ReferencedType( );
-        const auto& referencedTypeMembers = referencedType->OwnMembers( );
-        for ( const auto& referencedTypeMember : referencedTypeMembers )
+        auto result = collectionMember_.lock( );
+        if ( result )
         {
-            if ( referencedTypeMember->Type( ) == MemberInfoType::Collection )
+            return result;
+        }
+        auto referencedType = ReferencedType( );
+        if ( member_.Length( ) )
+        {
+            result = std::dynamic_pointer_cast< CollectionMemberInfo >( referencedType->FindOwnPersistentMember( member_ ) );
+            return result;
+        }
+        else
+        {
+            const auto& referencedTypeMembers = referencedType->OwnMembers( );
+            for ( const auto& referencedTypeMember : referencedTypeMembers )
             {
-                auto collectionMember = std::static_pointer_cast<const CollectionMemberInfo>( referencedTypeMember );
-                const auto referencingMember = collectionMember->ReferencingMember( );
-                if ( referencingMember.get( ) == this )
+                if ( referencedTypeMember->Type( ) == MemberInfoType::Collection )
                 {
-                    return std::const_pointer_cast< CollectionMemberInfo >( collectionMember );
+                    auto collectionMember = std::static_pointer_cast< const CollectionMemberInfo >( referencedTypeMember );
+                    const auto referencingMember = collectionMember->ReferencingReferenceMember( );
+                    if ( referencingMember.get( ) == this )
+                    {
+                        result = std::const_pointer_cast< CollectionMemberInfo >( collectionMember );
+                        collectionMember_ = result;
+                        return result;
+                    }
                 }
             }
         }
         return {};
+    }
+    std::shared_ptr<ReferenceMemberInfo> ReferenceMemberInfo::ReferencingReferenceMember( ) const
+    {
+        if ( member_ )
+        {
+            auto result = referencingMember_.lock( );
+            if ( result )
+            {
+                return result;
+            }
+            auto referencedType = ReferencedType( );
+            if ( member_.Length( ) )
+            {
+                result = std::dynamic_pointer_cast< ReferenceMemberInfo >( referencedType->FindOwnPersistentMember( member_ ) );
+                return result;
+            }
+            else
+            {
+                const auto& referencedTypeMembers = referencedType->OwnMembers( );
+                for ( const auto& referencedTypeMember : referencedTypeMembers )
+                {
+                    auto referencedTypeMemberType = referencedTypeMember->Type( );
+                    if ( referencedTypeMemberType == MemberInfoType::Reference || referencedTypeMemberType == MemberInfoType::TimeSeries )
+                    {
+                        auto referenceMember = std::static_pointer_cast< const ReferenceMemberInfo >( referencedTypeMember );
+
+                        if ( referenceMember->Name( ) == member_ )
+                        {
+                            result = std::const_pointer_cast< ReferenceMemberInfo >( referenceMember );
+                            referencingMember_ = result;
+                            return result;
+                        }
+                    }
+                }
+            }
+        }
+        return {};
+    }
+
+    bool ReferenceMemberInfo::IsOneToMany( ) const
+    {
+        if ( isOneToMany_.has_value( ) )
+        {
+            return isOneToMany_.value( );
+        }
+        auto result = ReferencingCollectionMember( ) != nullptr;
+        isOneToMany_ = result;
+        return result;
+    }
+    bool ReferenceMemberInfo::IsOneToOne( ) const
+    {
+        if ( isOneToOne_.has_value( ) )
+        {
+            return isOneToOne_.value( );
+        }
+        auto result = ReferencingReferenceMember( ) != nullptr;
+        isOneToOne_ = result;
+        return result;
     }
 
 }

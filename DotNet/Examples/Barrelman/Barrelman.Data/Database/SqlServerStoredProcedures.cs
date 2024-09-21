@@ -285,7 +285,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisDeviceCommand( id, rowVersion );
             return result;
         }
-        public bool InsertAisDeviceCommandReply( ref Guid id, Guid aisDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertAisDeviceCommandReply( ref Guid id, Guid aisDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -320,7 +320,7 @@ namespace Barrelman.Data.Database
             Guid id = aisDeviceCommandReplyObject.Id;
             Guid aisDevice = aisDeviceCommandReplyObject.AisDevice;
             DateTime timestamp = aisDeviceCommandReplyObject.Timestamp;
-            Guid command = aisDeviceCommandReplyObject.Command;
+            Guid? command = aisDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = aisDeviceCommandReplyObject.Status;
             string message = aisDeviceCommandReplyObject.Message;
             var result = InsertAisDeviceCommandReply( ref id, aisDevice, timestamp, command, status, message );
@@ -333,7 +333,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisDeviceCommandReply( Guid id, ref long rowVersion, Guid aisDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateAisDeviceCommandReply( Guid id, ref long rowVersion, Guid aisDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -370,7 +370,7 @@ namespace Barrelman.Data.Database
             long rowVersion = aisDeviceCommandReplyObject.RowVersion;
             Guid aisDevice = aisDeviceCommandReplyObject.AisDevice;
             DateTime timestamp = aisDeviceCommandReplyObject.Timestamp;
-            Guid command = aisDeviceCommandReplyObject.Command;
+            Guid? command = aisDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = aisDeviceCommandReplyObject.Status;
             string message = aisDeviceCommandReplyObject.Message;
             var result = UpdateAisDeviceCommandReply( id, ref rowVersion, aisDevice, timestamp, command, status, message );
@@ -853,7 +853,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisDeviceRawSentence( id, rowVersion );
             return result;
         }
-        public bool InsertAidToNavigationReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
+        public bool InsertAidToNavigationReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
         {
             bool result = false;
             try
@@ -908,7 +908,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aidToNavigationReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aidToNavigationReportMessageObject.MessageSequenceNumber;
             int repeat = aidToNavigationReportMessageObject.Repeat;
-            Guid mmsi = aidToNavigationReportMessageObject.Mmsi;
+            Guid? mmsi = aidToNavigationReportMessageObject.Mmsi;
             Types.NavigationalAidType navigationalAidType = aidToNavigationReportMessageObject.NavigationalAidType;
             string name = aidToNavigationReportMessageObject.Name;
             Types.PositionAccuracy positionAccuracy = aidToNavigationReportMessageObject.PositionAccuracy;
@@ -937,7 +937,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAidToNavigationReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
+        public bool UpdateAidToNavigationReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationalAidType navigationalAidType, string name, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, int timestamp, bool offPosition, int regionalReserved, Types.Raim raim, bool virtualAid, bool assigned, int spare, string nameExtension )
         {
             bool result = false;
             try
@@ -994,7 +994,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aidToNavigationReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aidToNavigationReportMessageObject.MessageSequenceNumber;
             int repeat = aidToNavigationReportMessageObject.Repeat;
-            Guid mmsi = aidToNavigationReportMessageObject.Mmsi;
+            Guid? mmsi = aidToNavigationReportMessageObject.Mmsi;
             Types.NavigationalAidType navigationalAidType = aidToNavigationReportMessageObject.NavigationalAidType;
             string name = aidToNavigationReportMessageObject.Name;
             Types.PositionAccuracy positionAccuracy = aidToNavigationReportMessageObject.PositionAccuracy;
@@ -1055,7 +1055,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAidToNavigationReportMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisAddressedSafetyRelatedMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, string text )
+        public bool InsertAisAddressedSafetyRelatedMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int sequenceNumber, Guid? destinationMmsi, bool retransmitFlag, int spare, string text )
         {
             bool result = false;
             try
@@ -1097,9 +1097,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisAddressedSafetyRelatedMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisAddressedSafetyRelatedMessageObject.MessageSequenceNumber;
             int repeat = aisAddressedSafetyRelatedMessageObject.Repeat;
-            Guid mmsi = aisAddressedSafetyRelatedMessageObject.Mmsi;
+            Guid? mmsi = aisAddressedSafetyRelatedMessageObject.Mmsi;
             int sequenceNumber = aisAddressedSafetyRelatedMessageObject.SequenceNumber;
-            Guid destinationMmsi = aisAddressedSafetyRelatedMessageObject.DestinationMmsi;
+            Guid? destinationMmsi = aisAddressedSafetyRelatedMessageObject.DestinationMmsi;
             bool retransmitFlag = aisAddressedSafetyRelatedMessageObject.RetransmitFlag;
             int spare = aisAddressedSafetyRelatedMessageObject.Spare;
             string text = aisAddressedSafetyRelatedMessageObject.Text;
@@ -1113,7 +1113,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisAddressedSafetyRelatedMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, string text )
+        public bool UpdateAisAddressedSafetyRelatedMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int sequenceNumber, Guid? destinationMmsi, bool retransmitFlag, int spare, string text )
         {
             bool result = false;
             try
@@ -1157,9 +1157,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisAddressedSafetyRelatedMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisAddressedSafetyRelatedMessageObject.MessageSequenceNumber;
             int repeat = aisAddressedSafetyRelatedMessageObject.Repeat;
-            Guid mmsi = aisAddressedSafetyRelatedMessageObject.Mmsi;
+            Guid? mmsi = aisAddressedSafetyRelatedMessageObject.Mmsi;
             int sequenceNumber = aisAddressedSafetyRelatedMessageObject.SequenceNumber;
-            Guid destinationMmsi = aisAddressedSafetyRelatedMessageObject.DestinationMmsi;
+            Guid? destinationMmsi = aisAddressedSafetyRelatedMessageObject.DestinationMmsi;
             bool retransmitFlag = aisAddressedSafetyRelatedMessageObject.RetransmitFlag;
             int spare = aisAddressedSafetyRelatedMessageObject.Spare;
             string text = aisAddressedSafetyRelatedMessageObject.Text;
@@ -1205,7 +1205,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisAddressedSafetyRelatedMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisBaseStationReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
+        public bool InsertAisBaseStationReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -1250,7 +1250,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBaseStationReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBaseStationReportMessageObject.MessageSequenceNumber;
             int repeat = aisBaseStationReportMessageObject.Repeat;
-            Guid mmsi = aisBaseStationReportMessageObject.Mmsi;
+            Guid? mmsi = aisBaseStationReportMessageObject.Mmsi;
             DateTime timestamp = aisBaseStationReportMessageObject.Timestamp;
             Types.PositionAccuracy positionAccuracy = aisBaseStationReportMessageObject.PositionAccuracy;
             double longitude = aisBaseStationReportMessageObject.Longitude;
@@ -1269,7 +1269,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisBaseStationReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
+        public bool UpdateAisBaseStationReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, DateTime timestamp, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -1316,7 +1316,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBaseStationReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBaseStationReportMessageObject.MessageSequenceNumber;
             int repeat = aisBaseStationReportMessageObject.Repeat;
-            Guid mmsi = aisBaseStationReportMessageObject.Mmsi;
+            Guid? mmsi = aisBaseStationReportMessageObject.Mmsi;
             DateTime timestamp = aisBaseStationReportMessageObject.Timestamp;
             Types.PositionAccuracy positionAccuracy = aisBaseStationReportMessageObject.PositionAccuracy;
             double longitude = aisBaseStationReportMessageObject.Longitude;
@@ -1367,7 +1367,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisBaseStationReportMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisBinaryAcknowledgeMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
+        public bool InsertAisBinaryAcknowledgeMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int sequenceNumber1, Guid? mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
         {
             bool result = false;
             try
@@ -1413,10 +1413,10 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBinaryAcknowledgeMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBinaryAcknowledgeMessageObject.MessageSequenceNumber;
             int repeat = aisBinaryAcknowledgeMessageObject.Repeat;
-            Guid mmsi = aisBinaryAcknowledgeMessageObject.Mmsi;
+            Guid? mmsi = aisBinaryAcknowledgeMessageObject.Mmsi;
             int spare = aisBinaryAcknowledgeMessageObject.Spare;
             int sequenceNumber1 = aisBinaryAcknowledgeMessageObject.SequenceNumber1;
-            Guid mmsi1 = aisBinaryAcknowledgeMessageObject.Mmsi1;
+            Guid? mmsi1 = aisBinaryAcknowledgeMessageObject.Mmsi1;
             int? sequenceNumber2 = aisBinaryAcknowledgeMessageObject.SequenceNumber2;
             Guid? mmsi2 = aisBinaryAcknowledgeMessageObject.Mmsi2;
             int? sequenceNumber3 = aisBinaryAcknowledgeMessageObject.SequenceNumber3;
@@ -1433,7 +1433,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisBinaryAcknowledgeMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
+        public bool UpdateAisBinaryAcknowledgeMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int sequenceNumber1, Guid? mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
         {
             bool result = false;
             try
@@ -1481,10 +1481,10 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBinaryAcknowledgeMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBinaryAcknowledgeMessageObject.MessageSequenceNumber;
             int repeat = aisBinaryAcknowledgeMessageObject.Repeat;
-            Guid mmsi = aisBinaryAcknowledgeMessageObject.Mmsi;
+            Guid? mmsi = aisBinaryAcknowledgeMessageObject.Mmsi;
             int spare = aisBinaryAcknowledgeMessageObject.Spare;
             int sequenceNumber1 = aisBinaryAcknowledgeMessageObject.SequenceNumber1;
-            Guid mmsi1 = aisBinaryAcknowledgeMessageObject.Mmsi1;
+            Guid? mmsi1 = aisBinaryAcknowledgeMessageObject.Mmsi1;
             int? sequenceNumber2 = aisBinaryAcknowledgeMessageObject.SequenceNumber2;
             Guid? mmsi2 = aisBinaryAcknowledgeMessageObject.Mmsi2;
             int? sequenceNumber3 = aisBinaryAcknowledgeMessageObject.SequenceNumber3;
@@ -1533,7 +1533,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisBinaryAcknowledgeMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisBinaryAddressedMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
+        public bool InsertAisBinaryAddressedMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int sequenceNumber, Guid? destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
         {
             bool result = false;
             try
@@ -1577,9 +1577,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBinaryAddressedMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBinaryAddressedMessageObject.MessageSequenceNumber;
             int repeat = aisBinaryAddressedMessageObject.Repeat;
-            Guid mmsi = aisBinaryAddressedMessageObject.Mmsi;
+            Guid? mmsi = aisBinaryAddressedMessageObject.Mmsi;
             int sequenceNumber = aisBinaryAddressedMessageObject.SequenceNumber;
-            Guid destinationMmsi = aisBinaryAddressedMessageObject.DestinationMmsi;
+            Guid? destinationMmsi = aisBinaryAddressedMessageObject.DestinationMmsi;
             bool retransmitFlag = aisBinaryAddressedMessageObject.RetransmitFlag;
             int spare = aisBinaryAddressedMessageObject.Spare;
             int designatedAreaCode = aisBinaryAddressedMessageObject.DesignatedAreaCode;
@@ -1595,7 +1595,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisBinaryAddressedMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int sequenceNumber, Guid destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
+        public bool UpdateAisBinaryAddressedMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int sequenceNumber, Guid? destinationMmsi, bool retransmitFlag, int spare, int designatedAreaCode, int functionalId, string data )
         {
             bool result = false;
             try
@@ -1641,9 +1641,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBinaryAddressedMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBinaryAddressedMessageObject.MessageSequenceNumber;
             int repeat = aisBinaryAddressedMessageObject.Repeat;
-            Guid mmsi = aisBinaryAddressedMessageObject.Mmsi;
+            Guid? mmsi = aisBinaryAddressedMessageObject.Mmsi;
             int sequenceNumber = aisBinaryAddressedMessageObject.SequenceNumber;
-            Guid destinationMmsi = aisBinaryAddressedMessageObject.DestinationMmsi;
+            Guid? destinationMmsi = aisBinaryAddressedMessageObject.DestinationMmsi;
             bool retransmitFlag = aisBinaryAddressedMessageObject.RetransmitFlag;
             int spare = aisBinaryAddressedMessageObject.Spare;
             int designatedAreaCode = aisBinaryAddressedMessageObject.DesignatedAreaCode;
@@ -1691,7 +1691,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisBinaryAddressedMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisBinaryBroadcastMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int designatedAreaCode, int functionalId, string data )
+        public bool InsertAisBinaryBroadcastMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int designatedAreaCode, int functionalId, string data )
         {
             bool result = false;
             try
@@ -1732,7 +1732,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBinaryBroadcastMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBinaryBroadcastMessageObject.MessageSequenceNumber;
             int repeat = aisBinaryBroadcastMessageObject.Repeat;
-            Guid mmsi = aisBinaryBroadcastMessageObject.Mmsi;
+            Guid? mmsi = aisBinaryBroadcastMessageObject.Mmsi;
             int spare = aisBinaryBroadcastMessageObject.Spare;
             int designatedAreaCode = aisBinaryBroadcastMessageObject.DesignatedAreaCode;
             int functionalId = aisBinaryBroadcastMessageObject.FunctionalId;
@@ -1747,7 +1747,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisBinaryBroadcastMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int designatedAreaCode, int functionalId, string data )
+        public bool UpdateAisBinaryBroadcastMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int designatedAreaCode, int functionalId, string data )
         {
             bool result = false;
             try
@@ -1790,7 +1790,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisBinaryBroadcastMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisBinaryBroadcastMessageObject.MessageSequenceNumber;
             int repeat = aisBinaryBroadcastMessageObject.Repeat;
-            Guid mmsi = aisBinaryBroadcastMessageObject.Mmsi;
+            Guid? mmsi = aisBinaryBroadcastMessageObject.Mmsi;
             int spare = aisBinaryBroadcastMessageObject.Spare;
             int designatedAreaCode = aisBinaryBroadcastMessageObject.DesignatedAreaCode;
             int functionalId = aisBinaryBroadcastMessageObject.FunctionalId;
@@ -1837,7 +1837,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisBinaryBroadcastMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisDataLinkManagementMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
+        public bool InsertAisDataLinkManagementMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
         {
             bool result = false;
             try
@@ -1891,7 +1891,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisDataLinkManagementMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisDataLinkManagementMessageObject.MessageSequenceNumber;
             int repeat = aisDataLinkManagementMessageObject.Repeat;
-            Guid mmsi = aisDataLinkManagementMessageObject.Mmsi;
+            Guid? mmsi = aisDataLinkManagementMessageObject.Mmsi;
             int spare = aisDataLinkManagementMessageObject.Spare;
             int offset1 = aisDataLinkManagementMessageObject.Offset1;
             int reservedSlots1 = aisDataLinkManagementMessageObject.ReservedSlots1;
@@ -1919,7 +1919,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisDataLinkManagementMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
+        public bool UpdateAisDataLinkManagementMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int offset1, int reservedSlots1, int timeout1, int increment1, int? offset2, int? reservedSlots2, int? timeout2, int? increment2, int? offset3, int? reservedSlots3, int? timeout3, int? increment3, int? offset4, int? reservedSlots4, int? timeout4, int? increment4 )
         {
             bool result = false;
             try
@@ -1975,7 +1975,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisDataLinkManagementMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisDataLinkManagementMessageObject.MessageSequenceNumber;
             int repeat = aisDataLinkManagementMessageObject.Repeat;
-            Guid mmsi = aisDataLinkManagementMessageObject.Mmsi;
+            Guid? mmsi = aisDataLinkManagementMessageObject.Mmsi;
             int spare = aisDataLinkManagementMessageObject.Spare;
             int offset1 = aisDataLinkManagementMessageObject.Offset1;
             int reservedSlots1 = aisDataLinkManagementMessageObject.ReservedSlots1;
@@ -2035,7 +2035,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisDataLinkManagementMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisExtendedClassBCsPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
+        public bool InsertAisExtendedClassBCsPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid? name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
         {
             bool result = false;
             try
@@ -2092,7 +2092,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisExtendedClassBCsPositionReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisExtendedClassBCsPositionReportMessageObject.MessageSequenceNumber;
             int repeat = aisExtendedClassBCsPositionReportMessageObject.Repeat;
-            Guid mmsi = aisExtendedClassBCsPositionReportMessageObject.Mmsi;
+            Guid? mmsi = aisExtendedClassBCsPositionReportMessageObject.Mmsi;
             int reserved = aisExtendedClassBCsPositionReportMessageObject.Reserved;
             double speedOverGround = aisExtendedClassBCsPositionReportMessageObject.SpeedOverGround;
             Types.PositionAccuracy positionAccuracy = aisExtendedClassBCsPositionReportMessageObject.PositionAccuracy;
@@ -2102,7 +2102,7 @@ namespace Barrelman.Data.Database
             int? trueHeading = aisExtendedClassBCsPositionReportMessageObject.TrueHeading;
             int timestamp = aisExtendedClassBCsPositionReportMessageObject.Timestamp;
             int regionalReserved = aisExtendedClassBCsPositionReportMessageObject.RegionalReserved;
-            Guid name = aisExtendedClassBCsPositionReportMessageObject.Name;
+            Guid? name = aisExtendedClassBCsPositionReportMessageObject.Name;
             Types.ShipType shipType = aisExtendedClassBCsPositionReportMessageObject.ShipType;
             int dimensionToBow = aisExtendedClassBCsPositionReportMessageObject.DimensionToBow;
             int dimensionToStern = aisExtendedClassBCsPositionReportMessageObject.DimensionToStern;
@@ -2123,7 +2123,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisExtendedClassBCsPositionReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
+        public bool UpdateAisExtendedClassBCsPositionReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, Guid? name, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, Types.Raim raim, bool dataTerminalReady, bool assigned, int spare )
         {
             bool result = false;
             try
@@ -2182,7 +2182,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisExtendedClassBCsPositionReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisExtendedClassBCsPositionReportMessageObject.MessageSequenceNumber;
             int repeat = aisExtendedClassBCsPositionReportMessageObject.Repeat;
-            Guid mmsi = aisExtendedClassBCsPositionReportMessageObject.Mmsi;
+            Guid? mmsi = aisExtendedClassBCsPositionReportMessageObject.Mmsi;
             int reserved = aisExtendedClassBCsPositionReportMessageObject.Reserved;
             double speedOverGround = aisExtendedClassBCsPositionReportMessageObject.SpeedOverGround;
             Types.PositionAccuracy positionAccuracy = aisExtendedClassBCsPositionReportMessageObject.PositionAccuracy;
@@ -2192,7 +2192,7 @@ namespace Barrelman.Data.Database
             int? trueHeading = aisExtendedClassBCsPositionReportMessageObject.TrueHeading;
             int timestamp = aisExtendedClassBCsPositionReportMessageObject.Timestamp;
             int regionalReserved = aisExtendedClassBCsPositionReportMessageObject.RegionalReserved;
-            Guid name = aisExtendedClassBCsPositionReportMessageObject.Name;
+            Guid? name = aisExtendedClassBCsPositionReportMessageObject.Name;
             Types.ShipType shipType = aisExtendedClassBCsPositionReportMessageObject.ShipType;
             int dimensionToBow = aisExtendedClassBCsPositionReportMessageObject.DimensionToBow;
             int dimensionToStern = aisExtendedClassBCsPositionReportMessageObject.DimensionToStern;
@@ -2245,7 +2245,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisExtendedClassBCsPositionReportMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisInterrogationMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Guid interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
+        public bool InsertAisInterrogationMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Guid? interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
         {
             bool result = false;
             try
@@ -2290,8 +2290,8 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisInterrogationMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisInterrogationMessageObject.MessageSequenceNumber;
             int repeat = aisInterrogationMessageObject.Repeat;
-            Guid mmsi = aisInterrogationMessageObject.Mmsi;
-            Guid interrogatedMmsi = aisInterrogationMessageObject.InterrogatedMmsi;
+            Guid? mmsi = aisInterrogationMessageObject.Mmsi;
+            Guid? interrogatedMmsi = aisInterrogationMessageObject.InterrogatedMmsi;
             Types.AisMessageType firstMessageType = aisInterrogationMessageObject.FirstMessageType;
             int firstSlotOffset = aisInterrogationMessageObject.FirstSlotOffset;
             Types.AisMessageType? secondMessageType = aisInterrogationMessageObject.SecondMessageType;
@@ -2309,7 +2309,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisInterrogationMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Guid interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
+        public bool UpdateAisInterrogationMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Guid? interrogatedMmsi, Types.AisMessageType firstMessageType, int firstSlotOffset, Types.AisMessageType? secondMessageType, int? secondSlotOffset, Guid? secondStationInterrogationMmsi, Types.AisMessageType? secondStationFirstMessageType, int? secondStationFirstSlotOffset )
         {
             bool result = false;
             try
@@ -2356,8 +2356,8 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisInterrogationMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisInterrogationMessageObject.MessageSequenceNumber;
             int repeat = aisInterrogationMessageObject.Repeat;
-            Guid mmsi = aisInterrogationMessageObject.Mmsi;
-            Guid interrogatedMmsi = aisInterrogationMessageObject.InterrogatedMmsi;
+            Guid? mmsi = aisInterrogationMessageObject.Mmsi;
+            Guid? interrogatedMmsi = aisInterrogationMessageObject.InterrogatedMmsi;
             Types.AisMessageType firstMessageType = aisInterrogationMessageObject.FirstMessageType;
             int firstSlotOffset = aisInterrogationMessageObject.FirstSlotOffset;
             Types.AisMessageType? secondMessageType = aisInterrogationMessageObject.SecondMessageType;
@@ -2407,7 +2407,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisInterrogationMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisPositionReportClassAAssignedScheduleMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public bool InsertAisPositionReportClassAAssignedScheduleMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -2457,7 +2457,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportClassAAssignedScheduleMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportClassAAssignedScheduleMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportClassAAssignedScheduleMessageObject.Repeat;
-            Guid mmsi = aisPositionReportClassAAssignedScheduleMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportClassAAssignedScheduleMessageObject.Mmsi;
             Types.NavigationStatus navigationStatus = aisPositionReportClassAAssignedScheduleMessageObject.NavigationStatus;
             int? rateOfTurn = aisPositionReportClassAAssignedScheduleMessageObject.RateOfTurn;
             double speedOverGround = aisPositionReportClassAAssignedScheduleMessageObject.SpeedOverGround;
@@ -2481,7 +2481,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisPositionReportClassAAssignedScheduleMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public bool UpdateAisPositionReportClassAAssignedScheduleMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -2533,7 +2533,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportClassAAssignedScheduleMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportClassAAssignedScheduleMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportClassAAssignedScheduleMessageObject.Repeat;
-            Guid mmsi = aisPositionReportClassAAssignedScheduleMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportClassAAssignedScheduleMessageObject.Mmsi;
             Types.NavigationStatus navigationStatus = aisPositionReportClassAAssignedScheduleMessageObject.NavigationStatus;
             int? rateOfTurn = aisPositionReportClassAAssignedScheduleMessageObject.RateOfTurn;
             double speedOverGround = aisPositionReportClassAAssignedScheduleMessageObject.SpeedOverGround;
@@ -2589,7 +2589,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisPositionReportClassAAssignedScheduleMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisPositionReportClassAMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public bool InsertAisPositionReportClassAMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -2639,7 +2639,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportClassAMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportClassAMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportClassAMessageObject.Repeat;
-            Guid mmsi = aisPositionReportClassAMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportClassAMessageObject.Mmsi;
             Types.NavigationStatus navigationStatus = aisPositionReportClassAMessageObject.NavigationStatus;
             int? rateOfTurn = aisPositionReportClassAMessageObject.RateOfTurn;
             double speedOverGround = aisPositionReportClassAMessageObject.SpeedOverGround;
@@ -2663,7 +2663,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisPositionReportClassAMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public bool UpdateAisPositionReportClassAMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -2715,7 +2715,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportClassAMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportClassAMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportClassAMessageObject.Repeat;
-            Guid mmsi = aisPositionReportClassAMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportClassAMessageObject.Mmsi;
             Types.NavigationStatus navigationStatus = aisPositionReportClassAMessageObject.NavigationStatus;
             int? rateOfTurn = aisPositionReportClassAMessageObject.RateOfTurn;
             double speedOverGround = aisPositionReportClassAMessageObject.SpeedOverGround;
@@ -2771,7 +2771,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisPositionReportClassAMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisPositionReportClassAResponseToInterrogationMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public bool InsertAisPositionReportClassAResponseToInterrogationMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -2821,7 +2821,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportClassAResponseToInterrogationMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportClassAResponseToInterrogationMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportClassAResponseToInterrogationMessageObject.Repeat;
-            Guid mmsi = aisPositionReportClassAResponseToInterrogationMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportClassAResponseToInterrogationMessageObject.Mmsi;
             Types.NavigationStatus navigationStatus = aisPositionReportClassAResponseToInterrogationMessageObject.NavigationStatus;
             int? rateOfTurn = aisPositionReportClassAResponseToInterrogationMessageObject.RateOfTurn;
             double speedOverGround = aisPositionReportClassAResponseToInterrogationMessageObject.SpeedOverGround;
@@ -2845,7 +2845,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisPositionReportClassAResponseToInterrogationMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
+        public bool UpdateAisPositionReportClassAResponseToInterrogationMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.NavigationStatus navigationStatus, int? rateOfTurn, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, Types.ManeuverIndicator maneuverIndicator, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -2897,7 +2897,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportClassAResponseToInterrogationMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportClassAResponseToInterrogationMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportClassAResponseToInterrogationMessageObject.Repeat;
-            Guid mmsi = aisPositionReportClassAResponseToInterrogationMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportClassAResponseToInterrogationMessageObject.Mmsi;
             Types.NavigationStatus navigationStatus = aisPositionReportClassAResponseToInterrogationMessageObject.NavigationStatus;
             int? rateOfTurn = aisPositionReportClassAResponseToInterrogationMessageObject.RateOfTurn;
             double speedOverGround = aisPositionReportClassAResponseToInterrogationMessageObject.SpeedOverGround;
@@ -2953,7 +2953,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisPositionReportClassAResponseToInterrogationMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisPositionReportForLongRangeApplicationsMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
+        public bool InsertAisPositionReportForLongRangeApplicationsMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
         {
             bool result = false;
             try
@@ -2999,7 +2999,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportForLongRangeApplicationsMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportForLongRangeApplicationsMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportForLongRangeApplicationsMessageObject.Repeat;
-            Guid mmsi = aisPositionReportForLongRangeApplicationsMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportForLongRangeApplicationsMessageObject.Mmsi;
             Types.PositionAccuracy positionAccuracy = aisPositionReportForLongRangeApplicationsMessageObject.PositionAccuracy;
             Types.Raim raim = aisPositionReportForLongRangeApplicationsMessageObject.Raim;
             Types.NavigationStatus navigationStatus = aisPositionReportForLongRangeApplicationsMessageObject.NavigationStatus;
@@ -3019,7 +3019,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisPositionReportForLongRangeApplicationsMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
+        public bool UpdateAisPositionReportForLongRangeApplicationsMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, Types.PositionAccuracy positionAccuracy, Types.Raim raim, Types.NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types.GnssPositionStatus gnssPositionStatus, int spare )
         {
             bool result = false;
             try
@@ -3067,7 +3067,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisPositionReportForLongRangeApplicationsMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisPositionReportForLongRangeApplicationsMessageObject.MessageSequenceNumber;
             int repeat = aisPositionReportForLongRangeApplicationsMessageObject.Repeat;
-            Guid mmsi = aisPositionReportForLongRangeApplicationsMessageObject.Mmsi;
+            Guid? mmsi = aisPositionReportForLongRangeApplicationsMessageObject.Mmsi;
             Types.PositionAccuracy positionAccuracy = aisPositionReportForLongRangeApplicationsMessageObject.PositionAccuracy;
             Types.Raim raim = aisPositionReportForLongRangeApplicationsMessageObject.Raim;
             Types.NavigationStatus navigationStatus = aisPositionReportForLongRangeApplicationsMessageObject.NavigationStatus;
@@ -3119,7 +3119,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisPositionReportForLongRangeApplicationsMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisSafetyRelatedAcknowledgmentMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
+        public bool InsertAisSafetyRelatedAcknowledgmentMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int sequenceNumber1, Guid? mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
         {
             bool result = false;
             try
@@ -3165,10 +3165,10 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisSafetyRelatedAcknowledgmentMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisSafetyRelatedAcknowledgmentMessageObject.MessageSequenceNumber;
             int repeat = aisSafetyRelatedAcknowledgmentMessageObject.Repeat;
-            Guid mmsi = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi;
+            Guid? mmsi = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi;
             int spare = aisSafetyRelatedAcknowledgmentMessageObject.Spare;
             int sequenceNumber1 = aisSafetyRelatedAcknowledgmentMessageObject.SequenceNumber1;
-            Guid mmsi1 = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi1;
+            Guid? mmsi1 = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi1;
             int? sequenceNumber2 = aisSafetyRelatedAcknowledgmentMessageObject.SequenceNumber2;
             Guid? mmsi2 = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi2;
             int? sequenceNumber3 = aisSafetyRelatedAcknowledgmentMessageObject.SequenceNumber3;
@@ -3185,7 +3185,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisSafetyRelatedAcknowledgmentMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare, int sequenceNumber1, Guid mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
+        public bool UpdateAisSafetyRelatedAcknowledgmentMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare, int sequenceNumber1, Guid? mmsi1, int? sequenceNumber2, Guid? mmsi2, int? sequenceNumber3, Guid? mmsi3, int? sequenceNumber4, Guid? mmsi4 )
         {
             bool result = false;
             try
@@ -3233,10 +3233,10 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisSafetyRelatedAcknowledgmentMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisSafetyRelatedAcknowledgmentMessageObject.MessageSequenceNumber;
             int repeat = aisSafetyRelatedAcknowledgmentMessageObject.Repeat;
-            Guid mmsi = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi;
+            Guid? mmsi = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi;
             int spare = aisSafetyRelatedAcknowledgmentMessageObject.Spare;
             int sequenceNumber1 = aisSafetyRelatedAcknowledgmentMessageObject.SequenceNumber1;
-            Guid mmsi1 = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi1;
+            Guid? mmsi1 = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi1;
             int? sequenceNumber2 = aisSafetyRelatedAcknowledgmentMessageObject.SequenceNumber2;
             Guid? mmsi2 = aisSafetyRelatedAcknowledgmentMessageObject.Mmsi2;
             int? sequenceNumber3 = aisSafetyRelatedAcknowledgmentMessageObject.SequenceNumber3;
@@ -3285,7 +3285,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisSafetyRelatedAcknowledgmentMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisStandardClassBCsPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
+        public bool InsertAisStandardClassBCsPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -3339,7 +3339,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStandardClassBCsPositionReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStandardClassBCsPositionReportMessageObject.MessageSequenceNumber;
             int repeat = aisStandardClassBCsPositionReportMessageObject.Repeat;
-            Guid mmsi = aisStandardClassBCsPositionReportMessageObject.Mmsi;
+            Guid? mmsi = aisStandardClassBCsPositionReportMessageObject.Mmsi;
             int reserved = aisStandardClassBCsPositionReportMessageObject.Reserved;
             double speedOverGround = aisStandardClassBCsPositionReportMessageObject.SpeedOverGround;
             Types.PositionAccuracy positionAccuracy = aisStandardClassBCsPositionReportMessageObject.PositionAccuracy;
@@ -3367,7 +3367,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisStandardClassBCsPositionReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
+        public bool UpdateAisStandardClassBCsPositionReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int reserved, double speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int? trueHeading, int timestamp, int regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -3423,7 +3423,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStandardClassBCsPositionReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStandardClassBCsPositionReportMessageObject.MessageSequenceNumber;
             int repeat = aisStandardClassBCsPositionReportMessageObject.Repeat;
-            Guid mmsi = aisStandardClassBCsPositionReportMessageObject.Mmsi;
+            Guid? mmsi = aisStandardClassBCsPositionReportMessageObject.Mmsi;
             int reserved = aisStandardClassBCsPositionReportMessageObject.Reserved;
             double speedOverGround = aisStandardClassBCsPositionReportMessageObject.SpeedOverGround;
             Types.PositionAccuracy positionAccuracy = aisStandardClassBCsPositionReportMessageObject.PositionAccuracy;
@@ -3483,7 +3483,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisStandardClassBCsPositionReportMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisStandardSarAircraftPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
+        public bool InsertAisStandardSarAircraftPositionReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -3533,7 +3533,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStandardSarAircraftPositionReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStandardSarAircraftPositionReportMessageObject.MessageSequenceNumber;
             int repeat = aisStandardSarAircraftPositionReportMessageObject.Repeat;
-            Guid mmsi = aisStandardSarAircraftPositionReportMessageObject.Mmsi;
+            Guid? mmsi = aisStandardSarAircraftPositionReportMessageObject.Mmsi;
             int altitude = aisStandardSarAircraftPositionReportMessageObject.Altitude;
             int speedOverGround = aisStandardSarAircraftPositionReportMessageObject.SpeedOverGround;
             Types.PositionAccuracy positionAccuracy = aisStandardSarAircraftPositionReportMessageObject.PositionAccuracy;
@@ -3557,7 +3557,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisStandardSarAircraftPositionReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
+        public bool UpdateAisStandardSarAircraftPositionReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int altitude, int speedOverGround, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, int timestamp, int reserved, bool dataTerminalReady, int spare, bool assigned, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -3609,7 +3609,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStandardSarAircraftPositionReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStandardSarAircraftPositionReportMessageObject.MessageSequenceNumber;
             int repeat = aisStandardSarAircraftPositionReportMessageObject.Repeat;
-            Guid mmsi = aisStandardSarAircraftPositionReportMessageObject.Mmsi;
+            Guid? mmsi = aisStandardSarAircraftPositionReportMessageObject.Mmsi;
             int altitude = aisStandardSarAircraftPositionReportMessageObject.Altitude;
             int speedOverGround = aisStandardSarAircraftPositionReportMessageObject.SpeedOverGround;
             Types.PositionAccuracy positionAccuracy = aisStandardSarAircraftPositionReportMessageObject.PositionAccuracy;
@@ -3665,7 +3665,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisStandardSarAircraftPositionReportMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisStaticAndVoyageRelatedDataMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int aisVersion, Guid imoNumber, Guid callsign, Guid shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
+        public bool InsertAisStaticAndVoyageRelatedDataMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int aisVersion, Guid? imoNumber, Guid? callsign, Guid? shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
         {
             bool result = false;
             try
@@ -3717,11 +3717,11 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticAndVoyageRelatedDataMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticAndVoyageRelatedDataMessageObject.MessageSequenceNumber;
             int repeat = aisStaticAndVoyageRelatedDataMessageObject.Repeat;
-            Guid mmsi = aisStaticAndVoyageRelatedDataMessageObject.Mmsi;
+            Guid? mmsi = aisStaticAndVoyageRelatedDataMessageObject.Mmsi;
             int aisVersion = aisStaticAndVoyageRelatedDataMessageObject.AisVersion;
-            Guid imoNumber = aisStaticAndVoyageRelatedDataMessageObject.ImoNumber;
-            Guid callsign = aisStaticAndVoyageRelatedDataMessageObject.Callsign;
-            Guid shipName = aisStaticAndVoyageRelatedDataMessageObject.ShipName;
+            Guid? imoNumber = aisStaticAndVoyageRelatedDataMessageObject.ImoNumber;
+            Guid? callsign = aisStaticAndVoyageRelatedDataMessageObject.Callsign;
+            Guid? shipName = aisStaticAndVoyageRelatedDataMessageObject.ShipName;
             Types.ShipType shipType = aisStaticAndVoyageRelatedDataMessageObject.ShipType;
             int dimensionToBow = aisStaticAndVoyageRelatedDataMessageObject.DimensionToBow;
             int dimensionToStern = aisStaticAndVoyageRelatedDataMessageObject.DimensionToStern;
@@ -3743,7 +3743,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisStaticAndVoyageRelatedDataMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int aisVersion, Guid imoNumber, Guid callsign, Guid shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
+        public bool UpdateAisStaticAndVoyageRelatedDataMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int aisVersion, Guid? imoNumber, Guid? callsign, Guid? shipName, Types.ShipType shipType, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Types.PositionFixType positionFixType, DateTime? estimatedTimeOfArrival, double draught, string destination, bool dataTerminalReady, int spare )
         {
             bool result = false;
             try
@@ -3797,11 +3797,11 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticAndVoyageRelatedDataMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticAndVoyageRelatedDataMessageObject.MessageSequenceNumber;
             int repeat = aisStaticAndVoyageRelatedDataMessageObject.Repeat;
-            Guid mmsi = aisStaticAndVoyageRelatedDataMessageObject.Mmsi;
+            Guid? mmsi = aisStaticAndVoyageRelatedDataMessageObject.Mmsi;
             int aisVersion = aisStaticAndVoyageRelatedDataMessageObject.AisVersion;
-            Guid imoNumber = aisStaticAndVoyageRelatedDataMessageObject.ImoNumber;
-            Guid callsign = aisStaticAndVoyageRelatedDataMessageObject.Callsign;
-            Guid shipName = aisStaticAndVoyageRelatedDataMessageObject.ShipName;
+            Guid? imoNumber = aisStaticAndVoyageRelatedDataMessageObject.ImoNumber;
+            Guid? callsign = aisStaticAndVoyageRelatedDataMessageObject.Callsign;
+            Guid? shipName = aisStaticAndVoyageRelatedDataMessageObject.ShipName;
             Types.ShipType shipType = aisStaticAndVoyageRelatedDataMessageObject.ShipType;
             int dimensionToBow = aisStaticAndVoyageRelatedDataMessageObject.DimensionToBow;
             int dimensionToStern = aisStaticAndVoyageRelatedDataMessageObject.DimensionToStern;
@@ -3855,7 +3855,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisStaticAndVoyageRelatedDataMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisStaticDataReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber )
+        public bool InsertAisStaticDataReportMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber )
         {
             bool result = false;
             try
@@ -3893,7 +3893,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticDataReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticDataReportMessageObject.MessageSequenceNumber;
             int repeat = aisStaticDataReportMessageObject.Repeat;
-            Guid mmsi = aisStaticDataReportMessageObject.Mmsi;
+            Guid? mmsi = aisStaticDataReportMessageObject.Mmsi;
             int partNumber = aisStaticDataReportMessageObject.PartNumber;
             var result = InsertAisStaticDataReportMessage( ref id, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber );
             if( result )
@@ -3905,7 +3905,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisStaticDataReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber )
+        public bool UpdateAisStaticDataReportMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber )
         {
             bool result = false;
             try
@@ -3945,7 +3945,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticDataReportMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticDataReportMessageObject.MessageSequenceNumber;
             int repeat = aisStaticDataReportMessageObject.Repeat;
-            Guid mmsi = aisStaticDataReportMessageObject.Mmsi;
+            Guid? mmsi = aisStaticDataReportMessageObject.Mmsi;
             int partNumber = aisStaticDataReportMessageObject.PartNumber;
             var result = UpdateAisStaticDataReportMessage( id, ref rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber );
             if( result )
@@ -3989,7 +3989,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisStaticDataReportMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisStaticDataReportPartAMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Guid shipName, int spare )
+        public bool InsertAisStaticDataReportPartAMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber, Guid? shipName, int spare )
         {
             bool result = false;
             try
@@ -4029,9 +4029,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticDataReportPartAMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticDataReportPartAMessageObject.MessageSequenceNumber;
             int repeat = aisStaticDataReportPartAMessageObject.Repeat;
-            Guid mmsi = aisStaticDataReportPartAMessageObject.Mmsi;
+            Guid? mmsi = aisStaticDataReportPartAMessageObject.Mmsi;
             int partNumber = aisStaticDataReportPartAMessageObject.PartNumber;
-            Guid shipName = aisStaticDataReportPartAMessageObject.ShipName;
+            Guid? shipName = aisStaticDataReportPartAMessageObject.ShipName;
             int spare = aisStaticDataReportPartAMessageObject.Spare;
             var result = InsertAisStaticDataReportPartAMessage( ref id, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber, shipName, spare );
             if( result )
@@ -4043,7 +4043,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisStaticDataReportPartAMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Guid shipName, int spare )
+        public bool UpdateAisStaticDataReportPartAMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber, Guid? shipName, int spare )
         {
             bool result = false;
             try
@@ -4085,9 +4085,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticDataReportPartAMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticDataReportPartAMessageObject.MessageSequenceNumber;
             int repeat = aisStaticDataReportPartAMessageObject.Repeat;
-            Guid mmsi = aisStaticDataReportPartAMessageObject.Mmsi;
+            Guid? mmsi = aisStaticDataReportPartAMessageObject.Mmsi;
             int partNumber = aisStaticDataReportPartAMessageObject.PartNumber;
-            Guid shipName = aisStaticDataReportPartAMessageObject.ShipName;
+            Guid? shipName = aisStaticDataReportPartAMessageObject.ShipName;
             int spare = aisStaticDataReportPartAMessageObject.Spare;
             var result = UpdateAisStaticDataReportPartAMessage( id, ref rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, partNumber, shipName, spare );
             if( result )
@@ -4131,7 +4131,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisStaticDataReportPartAMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisStaticDataReportPartBMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
+        public bool InsertAisStaticDataReportPartBMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid? callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
         {
             bool result = false;
             try
@@ -4181,13 +4181,13 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticDataReportPartBMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticDataReportPartBMessageObject.MessageSequenceNumber;
             int repeat = aisStaticDataReportPartBMessageObject.Repeat;
-            Guid mmsi = aisStaticDataReportPartBMessageObject.Mmsi;
+            Guid? mmsi = aisStaticDataReportPartBMessageObject.Mmsi;
             int partNumber = aisStaticDataReportPartBMessageObject.PartNumber;
             Types.ShipType shipType = aisStaticDataReportPartBMessageObject.ShipType;
             string vendorId = aisStaticDataReportPartBMessageObject.VendorId;
             int unitModelCode = aisStaticDataReportPartBMessageObject.UnitModelCode;
             int serialNumber = aisStaticDataReportPartBMessageObject.SerialNumber;
-            Guid callsign = aisStaticDataReportPartBMessageObject.Callsign;
+            Guid? callsign = aisStaticDataReportPartBMessageObject.Callsign;
             int dimensionToBow = aisStaticDataReportPartBMessageObject.DimensionToBow;
             int dimensionToStern = aisStaticDataReportPartBMessageObject.DimensionToStern;
             int dimensionToPort = aisStaticDataReportPartBMessageObject.DimensionToPort;
@@ -4205,7 +4205,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisStaticDataReportPartBMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
+        public bool UpdateAisStaticDataReportPartBMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int partNumber, Types.ShipType shipType, string vendorId, int unitModelCode, int serialNumber, Guid? callsign, int dimensionToBow, int dimensionToStern, int dimensionToPort, int dimensionToStarboard, Guid? mothershipMmsi, Types.PositionFixType positionFixType, int spare )
         {
             bool result = false;
             try
@@ -4257,13 +4257,13 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisStaticDataReportPartBMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisStaticDataReportPartBMessageObject.MessageSequenceNumber;
             int repeat = aisStaticDataReportPartBMessageObject.Repeat;
-            Guid mmsi = aisStaticDataReportPartBMessageObject.Mmsi;
+            Guid? mmsi = aisStaticDataReportPartBMessageObject.Mmsi;
             int partNumber = aisStaticDataReportPartBMessageObject.PartNumber;
             Types.ShipType shipType = aisStaticDataReportPartBMessageObject.ShipType;
             string vendorId = aisStaticDataReportPartBMessageObject.VendorId;
             int unitModelCode = aisStaticDataReportPartBMessageObject.UnitModelCode;
             int serialNumber = aisStaticDataReportPartBMessageObject.SerialNumber;
-            Guid callsign = aisStaticDataReportPartBMessageObject.Callsign;
+            Guid? callsign = aisStaticDataReportPartBMessageObject.Callsign;
             int dimensionToBow = aisStaticDataReportPartBMessageObject.DimensionToBow;
             int dimensionToStern = aisStaticDataReportPartBMessageObject.DimensionToStern;
             int dimensionToPort = aisStaticDataReportPartBMessageObject.DimensionToPort;
@@ -4313,7 +4313,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisStaticDataReportPartBMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisUtcAndDateInquiryMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare1, int destinationMmsi, int spare2 )
+        public bool InsertAisUtcAndDateInquiryMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare1, Guid? destinationMmsi, int spare2 )
         {
             bool result = false;
             try
@@ -4329,7 +4329,7 @@ namespace Barrelman.Data.Database
                 var repeatParameter = sqlCommandParameters.AddInt32( "@Repeat", repeat );
                 var mmsiParameter = sqlCommandParameters.AddReference( "@Mmsi", mmsi );
                 var spare1Parameter = sqlCommandParameters.AddInt32( "@Spare1", spare1 );
-                var destinationMmsiParameter = sqlCommandParameters.AddInt32( "@DestinationMmsi", destinationMmsi );
+                var destinationMmsiParameter = sqlCommandParameters.AddReference( "@DestinationMmsi", destinationMmsi );
                 var spare2Parameter = sqlCommandParameters.AddInt32( "@Spare2", spare2 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -4353,9 +4353,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisUtcAndDateInquiryMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisUtcAndDateInquiryMessageObject.MessageSequenceNumber;
             int repeat = aisUtcAndDateInquiryMessageObject.Repeat;
-            Guid mmsi = aisUtcAndDateInquiryMessageObject.Mmsi;
+            Guid? mmsi = aisUtcAndDateInquiryMessageObject.Mmsi;
             int spare1 = aisUtcAndDateInquiryMessageObject.Spare1;
-            int destinationMmsi = aisUtcAndDateInquiryMessageObject.DestinationMmsi;
+            Guid? destinationMmsi = aisUtcAndDateInquiryMessageObject.DestinationMmsi;
             int spare2 = aisUtcAndDateInquiryMessageObject.Spare2;
             var result = InsertAisUtcAndDateInquiryMessage( ref id, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, spare1, destinationMmsi, spare2 );
             if( result )
@@ -4367,7 +4367,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisUtcAndDateInquiryMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, int spare1, int destinationMmsi, int spare2 )
+        public bool UpdateAisUtcAndDateInquiryMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, int spare1, Guid? destinationMmsi, int spare2 )
         {
             bool result = false;
             try
@@ -4384,7 +4384,7 @@ namespace Barrelman.Data.Database
                 var repeatParameter = sqlCommandParameters.AddInt32( "@Repeat", repeat );
                 var mmsiParameter = sqlCommandParameters.AddReference( "@Mmsi", mmsi );
                 var spare1Parameter = sqlCommandParameters.AddInt32( "@Spare1", spare1 );
-                var destinationMmsiParameter = sqlCommandParameters.AddInt32( "@DestinationMmsi", destinationMmsi );
+                var destinationMmsiParameter = sqlCommandParameters.AddReference( "@DestinationMmsi", destinationMmsi );
                 var spare2Parameter = sqlCommandParameters.AddInt32( "@Spare2", spare2 );
                 int rowsAffected = sqlCommand.ExecuteNonQuery( );
                 if(rowsAffected > 0)
@@ -4409,9 +4409,9 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisUtcAndDateInquiryMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisUtcAndDateInquiryMessageObject.MessageSequenceNumber;
             int repeat = aisUtcAndDateInquiryMessageObject.Repeat;
-            Guid mmsi = aisUtcAndDateInquiryMessageObject.Mmsi;
+            Guid? mmsi = aisUtcAndDateInquiryMessageObject.Mmsi;
             int spare1 = aisUtcAndDateInquiryMessageObject.Spare1;
-            int destinationMmsi = aisUtcAndDateInquiryMessageObject.DestinationMmsi;
+            Guid? destinationMmsi = aisUtcAndDateInquiryMessageObject.DestinationMmsi;
             int spare2 = aisUtcAndDateInquiryMessageObject.Spare2;
             var result = UpdateAisUtcAndDateInquiryMessage( id, ref rowVersion, aisDevice, receivedTimestamp, messageSequenceNumber, repeat, mmsi, spare1, destinationMmsi, spare2 );
             if( result )
@@ -4455,7 +4455,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisUtcAndDateInquiryMessage( id, rowVersion );
             return result;
         }
-        public bool InsertAisUtcAndDateResponseMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
+        public bool InsertAisUtcAndDateResponseMessage( ref Guid id, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -4500,7 +4500,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisUtcAndDateResponseMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisUtcAndDateResponseMessageObject.MessageSequenceNumber;
             int repeat = aisUtcAndDateResponseMessageObject.Repeat;
-            Guid mmsi = aisUtcAndDateResponseMessageObject.Mmsi;
+            Guid? mmsi = aisUtcAndDateResponseMessageObject.Mmsi;
             DateTime datetime = aisUtcAndDateResponseMessageObject.Datetime;
             Types.PositionAccuracy positionAccuracy = aisUtcAndDateResponseMessageObject.PositionAccuracy;
             double longitude = aisUtcAndDateResponseMessageObject.Longitude;
@@ -4519,7 +4519,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisUtcAndDateResponseMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
+        public bool UpdateAisUtcAndDateResponseMessage( Guid id, ref long rowVersion, Guid aisDevice, DateTime receivedTimestamp, long messageSequenceNumber, int repeat, Guid? mmsi, DateTime datetime, Types.PositionAccuracy positionAccuracy, double longitude, double latitude, Types.PositionFixType positionFixType, int spare, Types.Raim raim, int radioStatus )
         {
             bool result = false;
             try
@@ -4566,7 +4566,7 @@ namespace Barrelman.Data.Database
             DateTime receivedTimestamp = aisUtcAndDateResponseMessageObject.ReceivedTimestamp;
             long messageSequenceNumber = aisUtcAndDateResponseMessageObject.MessageSequenceNumber;
             int repeat = aisUtcAndDateResponseMessageObject.Repeat;
-            Guid mmsi = aisUtcAndDateResponseMessageObject.Mmsi;
+            Guid? mmsi = aisUtcAndDateResponseMessageObject.Mmsi;
             DateTime datetime = aisUtcAndDateResponseMessageObject.Datetime;
             Types.PositionAccuracy positionAccuracy = aisUtcAndDateResponseMessageObject.PositionAccuracy;
             double longitude = aisUtcAndDateResponseMessageObject.Longitude;
@@ -7459,7 +7459,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraCommandStop( id, rowVersion );
             return result;
         }
-        public bool InsertCameraCommandReply( ref Guid id, Guid camera, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
+        public bool InsertCameraCommandReply( ref Guid id, Guid camera, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
         {
             bool result = false;
             try
@@ -7497,7 +7497,7 @@ namespace Barrelman.Data.Database
             Guid id = cameraCommandReplyObject.Id;
             Guid camera = cameraCommandReplyObject.Camera;
             DateTime timestamp = cameraCommandReplyObject.Timestamp;
-            Guid command = cameraCommandReplyObject.Command;
+            Guid? command = cameraCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = cameraCommandReplyObject.Status;
             string message = cameraCommandReplyObject.Message;
             double panAngle = cameraCommandReplyObject.PanAngle;
@@ -7513,7 +7513,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraCommandReply( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
+        public bool UpdateCameraCommandReply( Guid id, ref long rowVersion, Guid camera, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message, double panAngle, double tiltAngle, double focalLength )
         {
             bool result = false;
             try
@@ -7553,7 +7553,7 @@ namespace Barrelman.Data.Database
             long rowVersion = cameraCommandReplyObject.RowVersion;
             Guid camera = cameraCommandReplyObject.Camera;
             DateTime timestamp = cameraCommandReplyObject.Timestamp;
-            Guid command = cameraCommandReplyObject.Command;
+            Guid? command = cameraCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = cameraCommandReplyObject.Status;
             string message = cameraCommandReplyObject.Message;
             double panAngle = cameraCommandReplyObject.PanAngle;
@@ -8187,7 +8187,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraPanCalibrationValue( id, rowVersion );
             return result;
         }
-        public bool InsertCameraStatus( ref Guid id, Guid camera, Guid track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
+        public bool InsertCameraStatus( ref Guid id, Guid camera, Guid? track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
         {
             bool result = false;
             try
@@ -8233,7 +8233,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = cameraStatusObject.Id;
             Guid camera = cameraStatusObject.Camera;
-            Guid track = cameraStatusObject.Track;
+            Guid? track = cameraStatusObject.Track;
             DateTime timestamp = cameraStatusObject.Timestamp;
             Types.CameraPanTiltMode positionPanTiltMode = cameraStatusObject.PositionPanTiltMode;
             double panAngle = cameraStatusObject.PanAngle;
@@ -8259,7 +8259,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCameraStatus( Guid id, ref long rowVersion, Guid camera, Guid track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
+        public bool UpdateCameraStatus( Guid id, ref long rowVersion, Guid camera, Guid? track, DateTime timestamp, Types.CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types.CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types.CameraMoveStatus panTiltMoveStatus, Types.CameraMoveStatus zoomMoveStatus, Types.CameraPanTiltMode velocityPanTiltMode, double? panVelocity, double? tiltVelocity, Types.CameraFocalLengthMode velocityFocalLengthMode, double? zoomVelocity, Types.CameraFeatures activeFeatures, string error )
         {
             bool result = false;
             try
@@ -8307,7 +8307,7 @@ namespace Barrelman.Data.Database
             Guid id = cameraStatusObject.Id;
             long rowVersion = cameraStatusObject.RowVersion;
             Guid camera = cameraStatusObject.Camera;
-            Guid track = cameraStatusObject.Track;
+            Guid? track = cameraStatusObject.Track;
             DateTime timestamp = cameraStatusObject.Timestamp;
             Types.CameraPanTiltMode positionPanTiltMode = cameraStatusObject.PositionPanTiltMode;
             double panAngle = cameraStatusObject.PanAngle;
@@ -8845,7 +8845,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCameraZoomCalibrationValue( id, rowVersion );
             return result;
         }
-        public bool InsertCatalog( ref Guid id, Guid catalog, string name )
+        public bool InsertCatalog( ref Guid id, Guid? catalog, string name )
         {
             bool result = false;
             try
@@ -8875,7 +8875,7 @@ namespace Barrelman.Data.Database
         public bool InsertCatalog( CatalogObject catalogObject )
         {
             Guid id = catalogObject.Id;
-            Guid catalog = catalogObject.Catalog;
+            Guid? catalog = catalogObject.Catalog;
             string name = catalogObject.Name;
             var result = InsertCatalog( ref id, catalog, name );
             if( result )
@@ -8887,7 +8887,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateCatalog( Guid id, ref long rowVersion, Guid catalog, string name )
+        public bool UpdateCatalog( Guid id, ref long rowVersion, Guid? catalog, string name )
         {
             bool result = false;
             try
@@ -8919,7 +8919,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = catalogObject.Id;
             long rowVersion = catalogObject.RowVersion;
-            Guid catalog = catalogObject.Catalog;
+            Guid? catalog = catalogObject.Catalog;
             string name = catalogObject.Name;
             var result = UpdateCatalog( id, ref rowVersion, catalog, name );
             if( result )
@@ -8963,7 +8963,7 @@ namespace Barrelman.Data.Database
             var result = DeleteCatalog( id, rowVersion );
             return result;
         }
-        public bool InsertElement( ref Guid id, Guid catalog, string name, Guid elementType )
+        public bool InsertElement( ref Guid id, Guid? catalog, string name, Guid? elementType )
         {
             bool result = false;
             try
@@ -8994,9 +8994,9 @@ namespace Barrelman.Data.Database
         public bool InsertElement( ElementObject elementObject )
         {
             Guid id = elementObject.Id;
-            Guid catalog = elementObject.Catalog;
+            Guid? catalog = elementObject.Catalog;
             string name = elementObject.Name;
-            Guid elementType = elementObject.ElementType;
+            Guid? elementType = elementObject.ElementType;
             var result = InsertElement( ref id, catalog, name, elementType );
             if( result )
             {
@@ -9007,7 +9007,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateElement( Guid id, ref long rowVersion, Guid catalog, string name, Guid elementType )
+        public bool UpdateElement( Guid id, ref long rowVersion, Guid? catalog, string name, Guid? elementType )
         {
             bool result = false;
             try
@@ -9040,9 +9040,9 @@ namespace Barrelman.Data.Database
         {
             Guid id = elementObject.Id;
             long rowVersion = elementObject.RowVersion;
-            Guid catalog = elementObject.Catalog;
+            Guid? catalog = elementObject.Catalog;
             string name = elementObject.Name;
-            Guid elementType = elementObject.ElementType;
+            Guid? elementType = elementObject.ElementType;
             var result = UpdateElement( id, ref rowVersion, catalog, name, elementType );
             if( result )
             {
@@ -10427,7 +10427,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGNSSDeviceCommand( id, rowVersion );
             return result;
         }
-        public bool InsertGNSSDeviceCommandReply( ref Guid id, Guid gNSSDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertGNSSDeviceCommandReply( ref Guid id, Guid gNSSDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -10462,7 +10462,7 @@ namespace Barrelman.Data.Database
             Guid id = gNSSDeviceCommandReplyObject.Id;
             Guid gNSSDevice = gNSSDeviceCommandReplyObject.GNSSDevice;
             DateTime timestamp = gNSSDeviceCommandReplyObject.Timestamp;
-            Guid command = gNSSDeviceCommandReplyObject.Command;
+            Guid? command = gNSSDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = gNSSDeviceCommandReplyObject.Status;
             string message = gNSSDeviceCommandReplyObject.Message;
             var result = InsertGNSSDeviceCommandReply( ref id, gNSSDevice, timestamp, command, status, message );
@@ -10475,7 +10475,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGNSSDeviceCommandReply( Guid id, ref long rowVersion, Guid gNSSDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateGNSSDeviceCommandReply( Guid id, ref long rowVersion, Guid gNSSDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -10512,7 +10512,7 @@ namespace Barrelman.Data.Database
             long rowVersion = gNSSDeviceCommandReplyObject.RowVersion;
             Guid gNSSDevice = gNSSDeviceCommandReplyObject.GNSSDevice;
             DateTime timestamp = gNSSDeviceCommandReplyObject.Timestamp;
-            Guid command = gNSSDeviceCommandReplyObject.Command;
+            Guid? command = gNSSDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = gNSSDeviceCommandReplyObject.Status;
             string message = gNSSDeviceCommandReplyObject.Message;
             var result = UpdateGNSSDeviceCommandReply( id, ref rowVersion, gNSSDevice, timestamp, command, status, message );
@@ -10951,7 +10951,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGyroDeviceCommand( id, rowVersion );
             return result;
         }
-        public bool InsertGyroDeviceCommandReply( ref Guid id, Guid gyroDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertGyroDeviceCommandReply( ref Guid id, Guid gyroDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -10986,7 +10986,7 @@ namespace Barrelman.Data.Database
             Guid id = gyroDeviceCommandReplyObject.Id;
             Guid gyroDevice = gyroDeviceCommandReplyObject.GyroDevice;
             DateTime timestamp = gyroDeviceCommandReplyObject.Timestamp;
-            Guid command = gyroDeviceCommandReplyObject.Command;
+            Guid? command = gyroDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = gyroDeviceCommandReplyObject.Status;
             string message = gyroDeviceCommandReplyObject.Message;
             var result = InsertGyroDeviceCommandReply( ref id, gyroDevice, timestamp, command, status, message );
@@ -10999,7 +10999,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroDeviceCommandReply( Guid id, ref long rowVersion, Guid gyroDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateGyroDeviceCommandReply( Guid id, ref long rowVersion, Guid gyroDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -11036,7 +11036,7 @@ namespace Barrelman.Data.Database
             long rowVersion = gyroDeviceCommandReplyObject.RowVersion;
             Guid gyroDevice = gyroDeviceCommandReplyObject.GyroDevice;
             DateTime timestamp = gyroDeviceCommandReplyObject.Timestamp;
-            Guid command = gyroDeviceCommandReplyObject.Command;
+            Guid? command = gyroDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = gyroDeviceCommandReplyObject.Status;
             string message = gyroDeviceCommandReplyObject.Message;
             var result = UpdateGyroDeviceCommandReply( id, ref rowVersion, gyroDevice, timestamp, command, status, message );
@@ -12045,7 +12045,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt64TimeseriesValue( id, rowVersion );
             return result;
         }
-        public bool InsertBaseStation( ref Guid id, string name, Guid type )
+        public bool InsertBaseStation( ref Guid id, string name, Guid? type )
         {
             bool result = false;
             try
@@ -12076,7 +12076,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = baseStationObject.Id;
             string name = baseStationObject.Name;
-            Guid type = baseStationObject.Type;
+            Guid? type = baseStationObject.Type;
             var result = InsertBaseStation( ref id, name, type );
             if( result )
             {
@@ -12087,7 +12087,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateBaseStation( Guid id, ref long rowVersion, string name, Guid type )
+        public bool UpdateBaseStation( Guid id, ref long rowVersion, string name, Guid? type )
         {
             bool result = false;
             try
@@ -12120,7 +12120,7 @@ namespace Barrelman.Data.Database
             Guid id = baseStationObject.Id;
             long rowVersion = baseStationObject.RowVersion;
             string name = baseStationObject.Name;
-            Guid type = baseStationObject.Type;
+            Guid? type = baseStationObject.Type;
             var result = UpdateBaseStation( id, ref rowVersion, name, type );
             if( result )
             {
@@ -12427,7 +12427,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGNSSDevice( id, rowVersion );
             return result;
         }
-        public bool InsertGyroDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid gNSSDevice )
+        public bool InsertGyroDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -12478,7 +12478,7 @@ namespace Barrelman.Data.Database
             Guid? rollTimeseries = gyroDeviceObject.RollTimeseries;
             Guid? courseTimeseries = gyroDeviceObject.CourseTimeseries;
             Guid? speedTimeseries = gyroDeviceObject.SpeedTimeseries;
-            Guid gNSSDevice = gyroDeviceObject.GNSSDevice;
+            Guid? gNSSDevice = gyroDeviceObject.GNSSDevice;
             var result = InsertGyroDevice( ref id, host, name, description, enabledTimeseries, headingTrueNorthTimeseries, headingMagneticNorthTimeseries, pitchTimeseries, rateOfTurnTimeseries, rollTimeseries, courseTimeseries, speedTimeseries, gNSSDevice );
             if( result )
             {
@@ -12489,7 +12489,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGyroDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid gNSSDevice )
+        public bool UpdateGyroDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? headingTrueNorthTimeseries, Guid? headingMagneticNorthTimeseries, Guid? pitchTimeseries, Guid? rateOfTurnTimeseries, Guid? rollTimeseries, Guid? courseTimeseries, Guid? speedTimeseries, Guid? gNSSDevice )
         {
             bool result = false;
             try
@@ -12542,7 +12542,7 @@ namespace Barrelman.Data.Database
             Guid? rollTimeseries = gyroDeviceObject.RollTimeseries;
             Guid? courseTimeseries = gyroDeviceObject.CourseTimeseries;
             Guid? speedTimeseries = gyroDeviceObject.SpeedTimeseries;
-            Guid gNSSDevice = gyroDeviceObject.GNSSDevice;
+            Guid? gNSSDevice = gyroDeviceObject.GNSSDevice;
             var result = UpdateGyroDevice( id, ref rowVersion, host, name, description, enabledTimeseries, headingTrueNorthTimeseries, headingMagneticNorthTimeseries, pitchTimeseries, rateOfTurnTimeseries, rollTimeseries, courseTimeseries, speedTimeseries, gNSSDevice );
             if( result )
             {
@@ -13453,7 +13453,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarDevice( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid gyro )
+        public bool InsertWeatherStationDevice( ref Guid id, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid? gyro )
         {
             bool result = false;
             try
@@ -13506,7 +13506,7 @@ namespace Barrelman.Data.Database
             Guid? dewPointTimeseries = weatherStationDeviceObject.DewPointTimeseries;
             Guid? windDirectionTimeseries = weatherStationDeviceObject.WindDirectionTimeseries;
             Guid? windSpeedTimeseries = weatherStationDeviceObject.WindSpeedTimeseries;
-            Guid gyro = weatherStationDeviceObject.Gyro;
+            Guid? gyro = weatherStationDeviceObject.Gyro;
             var result = InsertWeatherStationDevice( ref id, host, name, description, enabledTimeseries, barometricPressureTimeseries, airTemperatureTimeseries, waterTemperatureTimeseries, relativeHumidityTimeseries, absoluteHumidityTimeseries, dewPointTimeseries, windDirectionTimeseries, windSpeedTimeseries, gyro );
             if( result )
             {
@@ -13517,7 +13517,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid gyro )
+        public bool UpdateWeatherStationDevice( Guid id, ref long rowVersion, Guid host, string name, string description, Guid? enabledTimeseries, Guid? barometricPressureTimeseries, Guid? airTemperatureTimeseries, Guid? waterTemperatureTimeseries, Guid? relativeHumidityTimeseries, Guid? absoluteHumidityTimeseries, Guid? dewPointTimeseries, Guid? windDirectionTimeseries, Guid? windSpeedTimeseries, Guid? gyro )
         {
             bool result = false;
             try
@@ -13572,7 +13572,7 @@ namespace Barrelman.Data.Database
             Guid? dewPointTimeseries = weatherStationDeviceObject.DewPointTimeseries;
             Guid? windDirectionTimeseries = weatherStationDeviceObject.WindDirectionTimeseries;
             Guid? windSpeedTimeseries = weatherStationDeviceObject.WindSpeedTimeseries;
-            Guid gyro = weatherStationDeviceObject.Gyro;
+            Guid? gyro = weatherStationDeviceObject.Gyro;
             var result = UpdateWeatherStationDevice( id, ref rowVersion, host, name, description, enabledTimeseries, barometricPressureTimeseries, airTemperatureTimeseries, waterTemperatureTimeseries, relativeHumidityTimeseries, absoluteHumidityTimeseries, dewPointTimeseries, windDirectionTimeseries, windSpeedTimeseries, gyro );
             if( result )
             {
@@ -13615,7 +13615,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationDevice( id, rowVersion );
             return result;
         }
-        public bool InsertFacility( ref Guid id, string name, Guid type, double longitude, double latitude, double altitude )
+        public bool InsertFacility( ref Guid id, string name, Guid? type, double longitude, double latitude, double altitude )
         {
             bool result = false;
             try
@@ -13649,7 +13649,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = facilityObject.Id;
             string name = facilityObject.Name;
-            Guid type = facilityObject.Type;
+            Guid? type = facilityObject.Type;
             double longitude = facilityObject.Longitude;
             double latitude = facilityObject.Latitude;
             double altitude = facilityObject.Altitude;
@@ -13663,7 +13663,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateFacility( Guid id, ref long rowVersion, string name, Guid type, double longitude, double latitude, double altitude )
+        public bool UpdateFacility( Guid id, ref long rowVersion, string name, Guid? type, double longitude, double latitude, double altitude )
         {
             bool result = false;
             try
@@ -13699,7 +13699,7 @@ namespace Barrelman.Data.Database
             Guid id = facilityObject.Id;
             long rowVersion = facilityObject.RowVersion;
             string name = facilityObject.Name;
-            Guid type = facilityObject.Type;
+            Guid? type = facilityObject.Type;
             double longitude = facilityObject.Longitude;
             double latitude = facilityObject.Latitude;
             double altitude = facilityObject.Altitude;
@@ -13745,7 +13745,7 @@ namespace Barrelman.Data.Database
             var result = DeleteFacility( id, rowVersion );
             return result;
         }
-        public bool InsertAircraft( ref Guid id, string name, Guid type )
+        public bool InsertAircraft( ref Guid id, string name, Guid? type )
         {
             bool result = false;
             try
@@ -13776,7 +13776,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = aircraftObject.Id;
             string name = aircraftObject.Name;
-            Guid type = aircraftObject.Type;
+            Guid? type = aircraftObject.Type;
             var result = InsertAircraft( ref id, name, type );
             if( result )
             {
@@ -13787,7 +13787,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAircraft( Guid id, ref long rowVersion, string name, Guid type )
+        public bool UpdateAircraft( Guid id, ref long rowVersion, string name, Guid? type )
         {
             bool result = false;
             try
@@ -13820,7 +13820,7 @@ namespace Barrelman.Data.Database
             Guid id = aircraftObject.Id;
             long rowVersion = aircraftObject.RowVersion;
             string name = aircraftObject.Name;
-            Guid type = aircraftObject.Type;
+            Guid? type = aircraftObject.Type;
             var result = UpdateAircraft( id, ref rowVersion, name, type );
             if( result )
             {
@@ -13863,7 +13863,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAircraft( id, rowVersion );
             return result;
         }
-        public bool InsertAisAidToNavigation( ref Guid id, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
+        public bool InsertAisAidToNavigation( ref Guid id, string name, Guid? mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
         {
             bool result = false;
             try
@@ -13902,7 +13902,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = aisAidToNavigationObject.Id;
             string name = aisAidToNavigationObject.Name;
-            Guid mMSI = aisAidToNavigationObject.MMSI;
+            Guid? mMSI = aisAidToNavigationObject.MMSI;
             Types.NavigationalAidType navigationalAidType = aisAidToNavigationObject.NavigationalAidType;
             Guid? position = aisAidToNavigationObject.Position;
             bool isVirtual = aisAidToNavigationObject.IsVirtual;
@@ -13921,7 +13921,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateAisAidToNavigation( Guid id, ref long rowVersion, string name, Guid mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
+        public bool UpdateAisAidToNavigation( Guid id, ref long rowVersion, string name, Guid? mMSI, Types.NavigationalAidType navigationalAidType, Guid? position, bool isVirtual, int toBow, int toStern, int toPort, int toStarboard, Guid? offPositionTimeseries )
         {
             bool result = false;
             try
@@ -13962,7 +13962,7 @@ namespace Barrelman.Data.Database
             Guid id = aisAidToNavigationObject.Id;
             long rowVersion = aisAidToNavigationObject.RowVersion;
             string name = aisAidToNavigationObject.Name;
-            Guid mMSI = aisAidToNavigationObject.MMSI;
+            Guid? mMSI = aisAidToNavigationObject.MMSI;
             Types.NavigationalAidType navigationalAidType = aisAidToNavigationObject.NavigationalAidType;
             Guid? position = aisAidToNavigationObject.Position;
             bool isVirtual = aisAidToNavigationObject.IsVirtual;
@@ -14013,7 +14013,7 @@ namespace Barrelman.Data.Database
             var result = DeleteAisAidToNavigation( id, rowVersion );
             return result;
         }
-        public bool InsertVehicle( ref Guid id, string name, Guid type )
+        public bool InsertVehicle( ref Guid id, string name, Guid? type )
         {
             bool result = false;
             try
@@ -14044,7 +14044,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = vehicleObject.Id;
             string name = vehicleObject.Name;
-            Guid type = vehicleObject.Type;
+            Guid? type = vehicleObject.Type;
             var result = InsertVehicle( ref id, name, type );
             if( result )
             {
@@ -14055,7 +14055,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateVehicle( Guid id, ref long rowVersion, string name, Guid type )
+        public bool UpdateVehicle( Guid id, ref long rowVersion, string name, Guid? type )
         {
             bool result = false;
             try
@@ -14088,7 +14088,7 @@ namespace Barrelman.Data.Database
             Guid id = vehicleObject.Id;
             long rowVersion = vehicleObject.RowVersion;
             string name = vehicleObject.Name;
-            Guid type = vehicleObject.Type;
+            Guid? type = vehicleObject.Type;
             var result = UpdateVehicle( id, ref rowVersion, name, type );
             if( result )
             {
@@ -14131,7 +14131,7 @@ namespace Barrelman.Data.Database
             var result = DeleteVehicle( id, rowVersion );
             return result;
         }
-        public bool InsertVessel( ref Guid id, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
+        public bool InsertVessel( ref Guid id, string name, Guid? type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
         {
             bool result = false;
             try
@@ -14168,7 +14168,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = vesselObject.Id;
             string name = vesselObject.Name;
-            Guid type = vesselObject.Type;
+            Guid? type = vesselObject.Type;
             int toBow = vesselObject.ToBow;
             int toStern = vesselObject.ToStern;
             int toPort = vesselObject.ToPort;
@@ -14185,7 +14185,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateVessel( Guid id, ref long rowVersion, string name, Guid type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
+        public bool UpdateVessel( Guid id, ref long rowVersion, string name, Guid? type, int toBow, int toStern, int toPort, int toStarboard, Guid? draughtTimeseries, Guid? personsOnBoardTimeseries )
         {
             bool result = false;
             try
@@ -14224,7 +14224,7 @@ namespace Barrelman.Data.Database
             Guid id = vesselObject.Id;
             long rowVersion = vesselObject.RowVersion;
             string name = vesselObject.Name;
-            Guid type = vesselObject.Type;
+            Guid? type = vesselObject.Type;
             int toBow = vesselObject.ToBow;
             int toStern = vesselObject.ToStern;
             int toPort = vesselObject.ToPort;
@@ -14651,7 +14651,7 @@ namespace Barrelman.Data.Database
             var result = DeleteLineInputDeviceCommand( id, rowVersion );
             return result;
         }
-        public bool InsertLineInputDeviceCommandReply( ref Guid id, Guid lineInputDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertLineInputDeviceCommandReply( ref Guid id, Guid lineInputDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -14686,7 +14686,7 @@ namespace Barrelman.Data.Database
             Guid id = lineInputDeviceCommandReplyObject.Id;
             Guid lineInputDevice = lineInputDeviceCommandReplyObject.LineInputDevice;
             DateTime timestamp = lineInputDeviceCommandReplyObject.Timestamp;
-            Guid command = lineInputDeviceCommandReplyObject.Command;
+            Guid? command = lineInputDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = lineInputDeviceCommandReplyObject.Status;
             string message = lineInputDeviceCommandReplyObject.Message;
             var result = InsertLineInputDeviceCommandReply( ref id, lineInputDevice, timestamp, command, status, message );
@@ -14699,7 +14699,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateLineInputDeviceCommandReply( Guid id, ref long rowVersion, Guid lineInputDevice, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateLineInputDeviceCommandReply( Guid id, ref long rowVersion, Guid lineInputDevice, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -14736,7 +14736,7 @@ namespace Barrelman.Data.Database
             long rowVersion = lineInputDeviceCommandReplyObject.RowVersion;
             Guid lineInputDevice = lineInputDeviceCommandReplyObject.LineInputDevice;
             DateTime timestamp = lineInputDeviceCommandReplyObject.Timestamp;
-            Guid command = lineInputDeviceCommandReplyObject.Command;
+            Guid? command = lineInputDeviceCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = lineInputDeviceCommandReplyObject.Status;
             string message = lineInputDeviceCommandReplyObject.Message;
             var result = UpdateLineInputDeviceCommandReply( id, ref rowVersion, lineInputDevice, timestamp, command, status, message );
@@ -15149,7 +15149,7 @@ namespace Barrelman.Data.Database
             var result = DeleteLineInputMessageRouting( id, rowVersion );
             return result;
         }
-        public bool InsertLineInputMessageRoutingDestination( ref Guid id, Guid routing, Guid listener )
+        public bool InsertLineInputMessageRoutingDestination( ref Guid id, Guid routing, Guid? listener )
         {
             bool result = false;
             try
@@ -15180,7 +15180,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = lineInputMessageRoutingDestinationObject.Id;
             Guid routing = lineInputMessageRoutingDestinationObject.Routing;
-            Guid listener = lineInputMessageRoutingDestinationObject.Listener;
+            Guid? listener = lineInputMessageRoutingDestinationObject.Listener;
             var result = InsertLineInputMessageRoutingDestination( ref id, routing, listener );
             if( result )
             {
@@ -15191,7 +15191,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateLineInputMessageRoutingDestination( Guid id, ref long rowVersion, Guid routing, Guid listener )
+        public bool UpdateLineInputMessageRoutingDestination( Guid id, ref long rowVersion, Guid routing, Guid? listener )
         {
             bool result = false;
             try
@@ -15224,7 +15224,7 @@ namespace Barrelman.Data.Database
             Guid id = lineInputMessageRoutingDestinationObject.Id;
             long rowVersion = lineInputMessageRoutingDestinationObject.RowVersion;
             Guid routing = lineInputMessageRoutingDestinationObject.Routing;
-            Guid listener = lineInputMessageRoutingDestinationObject.Listener;
+            Guid? listener = lineInputMessageRoutingDestinationObject.Listener;
             var result = UpdateLineInputMessageRoutingDestination( id, ref rowVersion, routing, listener );
             if( result )
             {
@@ -16087,7 +16087,7 @@ namespace Barrelman.Data.Database
             var result = DeleteLogLocation( id, rowVersion );
             return result;
         }
-        public bool InsertLogProcess( ref Guid id, Guid application, Guid host, DateTime started, DateTime? stopped, long processId, string path, string identity )
+        public bool InsertLogProcess( ref Guid id, Guid application, Guid? host, DateTime started, DateTime? stopped, long processId, string path, string identity )
         {
             bool result = false;
             try
@@ -16123,7 +16123,7 @@ namespace Barrelman.Data.Database
         {
             Guid id = logProcessObject.Id;
             Guid application = logProcessObject.Application;
-            Guid host = logProcessObject.Host;
+            Guid? host = logProcessObject.Host;
             DateTime started = logProcessObject.Started;
             DateTime? stopped = logProcessObject.Stopped;
             long processId = logProcessObject.ProcessId;
@@ -16139,7 +16139,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateLogProcess( Guid id, ref long rowVersion, Guid application, Guid host, DateTime started, DateTime? stopped, long processId, string path, string identity )
+        public bool UpdateLogProcess( Guid id, ref long rowVersion, Guid application, Guid? host, DateTime started, DateTime? stopped, long processId, string path, string identity )
         {
             bool result = false;
             try
@@ -16177,7 +16177,7 @@ namespace Barrelman.Data.Database
             Guid id = logProcessObject.Id;
             long rowVersion = logProcessObject.RowVersion;
             Guid application = logProcessObject.Application;
-            Guid host = logProcessObject.Host;
+            Guid? host = logProcessObject.Host;
             DateTime started = logProcessObject.Started;
             DateTime? stopped = logProcessObject.Stopped;
             long processId = logProcessObject.ProcessId;
@@ -18345,7 +18345,7 @@ namespace Barrelman.Data.Database
             var result = DeleteOilSpillDetectorCommand( id, rowVersion );
             return result;
         }
-        public bool InsertOilSpillDetectorCommandReply( ref Guid id, Guid oilSpillDetector, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertOilSpillDetectorCommandReply( ref Guid id, Guid oilSpillDetector, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -18380,7 +18380,7 @@ namespace Barrelman.Data.Database
             Guid id = oilSpillDetectorCommandReplyObject.Id;
             Guid oilSpillDetector = oilSpillDetectorCommandReplyObject.OilSpillDetector;
             DateTime timestamp = oilSpillDetectorCommandReplyObject.Timestamp;
-            Guid command = oilSpillDetectorCommandReplyObject.Command;
+            Guid? command = oilSpillDetectorCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = oilSpillDetectorCommandReplyObject.Status;
             string message = oilSpillDetectorCommandReplyObject.Message;
             var result = InsertOilSpillDetectorCommandReply( ref id, oilSpillDetector, timestamp, command, status, message );
@@ -18393,7 +18393,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateOilSpillDetectorCommandReply( Guid id, ref long rowVersion, Guid oilSpillDetector, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateOilSpillDetectorCommandReply( Guid id, ref long rowVersion, Guid oilSpillDetector, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -18430,7 +18430,7 @@ namespace Barrelman.Data.Database
             long rowVersion = oilSpillDetectorCommandReplyObject.RowVersion;
             Guid oilSpillDetector = oilSpillDetectorCommandReplyObject.OilSpillDetector;
             DateTime timestamp = oilSpillDetectorCommandReplyObject.Timestamp;
-            Guid command = oilSpillDetectorCommandReplyObject.Command;
+            Guid? command = oilSpillDetectorCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = oilSpillDetectorCommandReplyObject.Status;
             string message = oilSpillDetectorCommandReplyObject.Message;
             var result = UpdateOilSpillDetectorCommandReply( id, ref rowVersion, oilSpillDetector, timestamp, command, status, message );
@@ -18475,7 +18475,7 @@ namespace Barrelman.Data.Database
             var result = DeleteOilSpillDetectorCommandReply( id, rowVersion );
             return result;
         }
-        public bool InsertOilSpillDetectorConfiguration( ref Guid id, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
+        public bool InsertOilSpillDetectorConfiguration( ref Guid id, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid? targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
         {
             bool result = false;
             try
@@ -18545,7 +18545,7 @@ namespace Barrelman.Data.Database
             bool sendAsTarget = oilSpillDetectorConfigurationObject.SendAsTarget;
             bool writeLog = oilSpillDetectorConfigurationObject.WriteLog;
             string targetFilePrefix = oilSpillDetectorConfigurationObject.TargetFilePrefix;
-            Guid targetMMSI = oilSpillDetectorConfigurationObject.TargetMMSI;
+            Guid? targetMMSI = oilSpillDetectorConfigurationObject.TargetMMSI;
             double latitude = oilSpillDetectorConfigurationObject.Latitude;
             double longitude = oilSpillDetectorConfigurationObject.Longitude;
             bool testSourceEnabled = oilSpillDetectorConfigurationObject.TestSourceEnabled;
@@ -18561,7 +18561,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateOilSpillDetectorConfiguration( Guid id, ref long rowVersion, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
+        public bool UpdateOilSpillDetectorConfiguration( Guid id, ref long rowVersion, Guid oilSpillDetector, DateTime timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, int updateRate, TimeSpan statusSendTime, bool drawBorder, byte[] colors, bool sendToServer, string directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, string targetFilePrefix, Guid? targetMMSI, double latitude, double longitude, bool testSourceEnabled, string proxyServer, bool useProxyServer )
         {
             bool result = false;
             try
@@ -18633,7 +18633,7 @@ namespace Barrelman.Data.Database
             bool sendAsTarget = oilSpillDetectorConfigurationObject.SendAsTarget;
             bool writeLog = oilSpillDetectorConfigurationObject.WriteLog;
             string targetFilePrefix = oilSpillDetectorConfigurationObject.TargetFilePrefix;
-            Guid targetMMSI = oilSpillDetectorConfigurationObject.TargetMMSI;
+            Guid? targetMMSI = oilSpillDetectorConfigurationObject.TargetMMSI;
             double latitude = oilSpillDetectorConfigurationObject.Latitude;
             double longitude = oilSpillDetectorConfigurationObject.Longitude;
             bool testSourceEnabled = oilSpillDetectorConfigurationObject.TestSourceEnabled;
@@ -20153,7 +20153,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt64Property( id, rowVersion );
             return result;
         }
-        public bool InsertReferenceProperty( ref Guid id, Guid element, Guid definition, Guid value__ )
+        public bool InsertReferenceProperty( ref Guid id, Guid element, Guid definition, Guid? value__ )
         {
             bool result = false;
             try
@@ -20186,7 +20186,7 @@ namespace Barrelman.Data.Database
             Guid id = referencePropertyObject.Id;
             Guid element = referencePropertyObject.Element;
             Guid definition = referencePropertyObject.Definition;
-            Guid value__ = referencePropertyObject.Value;
+            Guid? value__ = referencePropertyObject.Value;
             var result = InsertReferenceProperty( ref id, element, definition, value__ );
             if( result )
             {
@@ -20197,7 +20197,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateReferenceProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid value__ )
+        public bool UpdateReferenceProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? value__ )
         {
             bool result = false;
             try
@@ -20232,7 +20232,7 @@ namespace Barrelman.Data.Database
             long rowVersion = referencePropertyObject.RowVersion;
             Guid element = referencePropertyObject.Element;
             Guid definition = referencePropertyObject.Definition;
-            Guid value__ = referencePropertyObject.Value;
+            Guid? value__ = referencePropertyObject.Value;
             var result = UpdateReferenceProperty( id, ref rowVersion, element, definition, value__ );
             if( result )
             {
@@ -20641,7 +20641,7 @@ namespace Barrelman.Data.Database
             var result = DeleteStringProperty( id, rowVersion );
             return result;
         }
-        public bool InsertBinaryTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertBinaryTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -20674,7 +20674,7 @@ namespace Barrelman.Data.Database
             Guid id = binaryTimeseriesPropertyObject.Id;
             Guid element = binaryTimeseriesPropertyObject.Element;
             Guid definition = binaryTimeseriesPropertyObject.Definition;
-            Guid timeseries = binaryTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = binaryTimeseriesPropertyObject.Timeseries;
             var result = InsertBinaryTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -20685,7 +20685,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateBinaryTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateBinaryTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -20720,7 +20720,7 @@ namespace Barrelman.Data.Database
             long rowVersion = binaryTimeseriesPropertyObject.RowVersion;
             Guid element = binaryTimeseriesPropertyObject.Element;
             Guid definition = binaryTimeseriesPropertyObject.Definition;
-            Guid timeseries = binaryTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = binaryTimeseriesPropertyObject.Timeseries;
             var result = UpdateBinaryTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -20763,7 +20763,7 @@ namespace Barrelman.Data.Database
             var result = DeleteBinaryTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertBooleanTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertBooleanTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -20796,7 +20796,7 @@ namespace Barrelman.Data.Database
             Guid id = booleanTimeseriesPropertyObject.Id;
             Guid element = booleanTimeseriesPropertyObject.Element;
             Guid definition = booleanTimeseriesPropertyObject.Definition;
-            Guid timeseries = booleanTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = booleanTimeseriesPropertyObject.Timeseries;
             var result = InsertBooleanTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -20807,7 +20807,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateBooleanTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateBooleanTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -20842,7 +20842,7 @@ namespace Barrelman.Data.Database
             long rowVersion = booleanTimeseriesPropertyObject.RowVersion;
             Guid element = booleanTimeseriesPropertyObject.Element;
             Guid definition = booleanTimeseriesPropertyObject.Definition;
-            Guid timeseries = booleanTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = booleanTimeseriesPropertyObject.Timeseries;
             var result = UpdateBooleanTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -20885,7 +20885,7 @@ namespace Barrelman.Data.Database
             var result = DeleteBooleanTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertByteTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertByteTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -20918,7 +20918,7 @@ namespace Barrelman.Data.Database
             Guid id = byteTimeseriesPropertyObject.Id;
             Guid element = byteTimeseriesPropertyObject.Element;
             Guid definition = byteTimeseriesPropertyObject.Definition;
-            Guid timeseries = byteTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = byteTimeseriesPropertyObject.Timeseries;
             var result = InsertByteTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -20929,7 +20929,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateByteTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateByteTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -20964,7 +20964,7 @@ namespace Barrelman.Data.Database
             long rowVersion = byteTimeseriesPropertyObject.RowVersion;
             Guid element = byteTimeseriesPropertyObject.Element;
             Guid definition = byteTimeseriesPropertyObject.Definition;
-            Guid timeseries = byteTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = byteTimeseriesPropertyObject.Timeseries;
             var result = UpdateByteTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21007,7 +21007,7 @@ namespace Barrelman.Data.Database
             var result = DeleteByteTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertDateTimeTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertDateTimeTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21040,7 +21040,7 @@ namespace Barrelman.Data.Database
             Guid id = dateTimeTimeseriesPropertyObject.Id;
             Guid element = dateTimeTimeseriesPropertyObject.Element;
             Guid definition = dateTimeTimeseriesPropertyObject.Definition;
-            Guid timeseries = dateTimeTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = dateTimeTimeseriesPropertyObject.Timeseries;
             var result = InsertDateTimeTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21051,7 +21051,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateDateTimeTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateDateTimeTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21086,7 +21086,7 @@ namespace Barrelman.Data.Database
             long rowVersion = dateTimeTimeseriesPropertyObject.RowVersion;
             Guid element = dateTimeTimeseriesPropertyObject.Element;
             Guid definition = dateTimeTimeseriesPropertyObject.Definition;
-            Guid timeseries = dateTimeTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = dateTimeTimeseriesPropertyObject.Timeseries;
             var result = UpdateDateTimeTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21129,7 +21129,7 @@ namespace Barrelman.Data.Database
             var result = DeleteDateTimeTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertDoubleTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertDoubleTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21162,7 +21162,7 @@ namespace Barrelman.Data.Database
             Guid id = doubleTimeseriesPropertyObject.Id;
             Guid element = doubleTimeseriesPropertyObject.Element;
             Guid definition = doubleTimeseriesPropertyObject.Definition;
-            Guid timeseries = doubleTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = doubleTimeseriesPropertyObject.Timeseries;
             var result = InsertDoubleTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21173,7 +21173,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateDoubleTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateDoubleTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21208,7 +21208,7 @@ namespace Barrelman.Data.Database
             long rowVersion = doubleTimeseriesPropertyObject.RowVersion;
             Guid element = doubleTimeseriesPropertyObject.Element;
             Guid definition = doubleTimeseriesPropertyObject.Definition;
-            Guid timeseries = doubleTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = doubleTimeseriesPropertyObject.Timeseries;
             var result = UpdateDoubleTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21251,7 +21251,7 @@ namespace Barrelman.Data.Database
             var result = DeleteDoubleTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertGuidTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertGuidTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21284,7 +21284,7 @@ namespace Barrelman.Data.Database
             Guid id = guidTimeseriesPropertyObject.Id;
             Guid element = guidTimeseriesPropertyObject.Element;
             Guid definition = guidTimeseriesPropertyObject.Definition;
-            Guid timeseries = guidTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = guidTimeseriesPropertyObject.Timeseries;
             var result = InsertGuidTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21295,7 +21295,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateGuidTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateGuidTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21330,7 +21330,7 @@ namespace Barrelman.Data.Database
             long rowVersion = guidTimeseriesPropertyObject.RowVersion;
             Guid element = guidTimeseriesPropertyObject.Element;
             Guid definition = guidTimeseriesPropertyObject.Definition;
-            Guid timeseries = guidTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = guidTimeseriesPropertyObject.Timeseries;
             var result = UpdateGuidTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21373,7 +21373,7 @@ namespace Barrelman.Data.Database
             var result = DeleteGuidTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertInt16TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertInt16TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21406,7 +21406,7 @@ namespace Barrelman.Data.Database
             Guid id = int16TimeseriesPropertyObject.Id;
             Guid element = int16TimeseriesPropertyObject.Element;
             Guid definition = int16TimeseriesPropertyObject.Definition;
-            Guid timeseries = int16TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = int16TimeseriesPropertyObject.Timeseries;
             var result = InsertInt16TimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21417,7 +21417,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateInt16TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateInt16TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21452,7 +21452,7 @@ namespace Barrelman.Data.Database
             long rowVersion = int16TimeseriesPropertyObject.RowVersion;
             Guid element = int16TimeseriesPropertyObject.Element;
             Guid definition = int16TimeseriesPropertyObject.Definition;
-            Guid timeseries = int16TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = int16TimeseriesPropertyObject.Timeseries;
             var result = UpdateInt16TimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21495,7 +21495,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt16TimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertInt32TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertInt32TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21528,7 +21528,7 @@ namespace Barrelman.Data.Database
             Guid id = int32TimeseriesPropertyObject.Id;
             Guid element = int32TimeseriesPropertyObject.Element;
             Guid definition = int32TimeseriesPropertyObject.Definition;
-            Guid timeseries = int32TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = int32TimeseriesPropertyObject.Timeseries;
             var result = InsertInt32TimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21539,7 +21539,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateInt32TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateInt32TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21574,7 +21574,7 @@ namespace Barrelman.Data.Database
             long rowVersion = int32TimeseriesPropertyObject.RowVersion;
             Guid element = int32TimeseriesPropertyObject.Element;
             Guid definition = int32TimeseriesPropertyObject.Definition;
-            Guid timeseries = int32TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = int32TimeseriesPropertyObject.Timeseries;
             var result = UpdateInt32TimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21617,7 +21617,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt32TimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertInt64TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertInt64TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21650,7 +21650,7 @@ namespace Barrelman.Data.Database
             Guid id = int64TimeseriesPropertyObject.Id;
             Guid element = int64TimeseriesPropertyObject.Element;
             Guid definition = int64TimeseriesPropertyObject.Definition;
-            Guid timeseries = int64TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = int64TimeseriesPropertyObject.Timeseries;
             var result = InsertInt64TimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21661,7 +21661,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateInt64TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateInt64TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21696,7 +21696,7 @@ namespace Barrelman.Data.Database
             long rowVersion = int64TimeseriesPropertyObject.RowVersion;
             Guid element = int64TimeseriesPropertyObject.Element;
             Guid definition = int64TimeseriesPropertyObject.Definition;
-            Guid timeseries = int64TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = int64TimeseriesPropertyObject.Timeseries;
             var result = UpdateInt64TimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21739,7 +21739,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt64TimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertReferenceTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertReferenceTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21772,7 +21772,7 @@ namespace Barrelman.Data.Database
             Guid id = referenceTimeseriesPropertyObject.Id;
             Guid element = referenceTimeseriesPropertyObject.Element;
             Guid definition = referenceTimeseriesPropertyObject.Definition;
-            Guid timeseries = referenceTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = referenceTimeseriesPropertyObject.Timeseries;
             var result = InsertReferenceTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21783,7 +21783,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateReferenceTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateReferenceTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21818,7 +21818,7 @@ namespace Barrelman.Data.Database
             long rowVersion = referenceTimeseriesPropertyObject.RowVersion;
             Guid element = referenceTimeseriesPropertyObject.Element;
             Guid definition = referenceTimeseriesPropertyObject.Definition;
-            Guid timeseries = referenceTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = referenceTimeseriesPropertyObject.Timeseries;
             var result = UpdateReferenceTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21861,7 +21861,7 @@ namespace Barrelman.Data.Database
             var result = DeleteReferenceTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertSByteTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertSByteTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21894,7 +21894,7 @@ namespace Barrelman.Data.Database
             Guid id = sByteTimeseriesPropertyObject.Id;
             Guid element = sByteTimeseriesPropertyObject.Element;
             Guid definition = sByteTimeseriesPropertyObject.Definition;
-            Guid timeseries = sByteTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = sByteTimeseriesPropertyObject.Timeseries;
             var result = InsertSByteTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -21905,7 +21905,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateSByteTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateSByteTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -21940,7 +21940,7 @@ namespace Barrelman.Data.Database
             long rowVersion = sByteTimeseriesPropertyObject.RowVersion;
             Guid element = sByteTimeseriesPropertyObject.Element;
             Guid definition = sByteTimeseriesPropertyObject.Definition;
-            Guid timeseries = sByteTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = sByteTimeseriesPropertyObject.Timeseries;
             var result = UpdateSByteTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -21983,7 +21983,7 @@ namespace Barrelman.Data.Database
             var result = DeleteSByteTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertSingleTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertSingleTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22016,7 +22016,7 @@ namespace Barrelman.Data.Database
             Guid id = singleTimeseriesPropertyObject.Id;
             Guid element = singleTimeseriesPropertyObject.Element;
             Guid definition = singleTimeseriesPropertyObject.Definition;
-            Guid timeseries = singleTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = singleTimeseriesPropertyObject.Timeseries;
             var result = InsertSingleTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -22027,7 +22027,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateSingleTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateSingleTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22062,7 +22062,7 @@ namespace Barrelman.Data.Database
             long rowVersion = singleTimeseriesPropertyObject.RowVersion;
             Guid element = singleTimeseriesPropertyObject.Element;
             Guid definition = singleTimeseriesPropertyObject.Definition;
-            Guid timeseries = singleTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = singleTimeseriesPropertyObject.Timeseries;
             var result = UpdateSingleTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -22105,7 +22105,7 @@ namespace Barrelman.Data.Database
             var result = DeleteSingleTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertStringTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertStringTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22138,7 +22138,7 @@ namespace Barrelman.Data.Database
             Guid id = stringTimeseriesPropertyObject.Id;
             Guid element = stringTimeseriesPropertyObject.Element;
             Guid definition = stringTimeseriesPropertyObject.Definition;
-            Guid timeseries = stringTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = stringTimeseriesPropertyObject.Timeseries;
             var result = InsertStringTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -22149,7 +22149,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateStringTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateStringTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22184,7 +22184,7 @@ namespace Barrelman.Data.Database
             long rowVersion = stringTimeseriesPropertyObject.RowVersion;
             Guid element = stringTimeseriesPropertyObject.Element;
             Guid definition = stringTimeseriesPropertyObject.Definition;
-            Guid timeseries = stringTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = stringTimeseriesPropertyObject.Timeseries;
             var result = UpdateStringTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -22227,7 +22227,7 @@ namespace Barrelman.Data.Database
             var result = DeleteStringTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertTimeSpanTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertTimeSpanTimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22260,7 +22260,7 @@ namespace Barrelman.Data.Database
             Guid id = timeSpanTimeseriesPropertyObject.Id;
             Guid element = timeSpanTimeseriesPropertyObject.Element;
             Guid definition = timeSpanTimeseriesPropertyObject.Definition;
-            Guid timeseries = timeSpanTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = timeSpanTimeseriesPropertyObject.Timeseries;
             var result = InsertTimeSpanTimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -22271,7 +22271,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateTimeSpanTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateTimeSpanTimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22306,7 +22306,7 @@ namespace Barrelman.Data.Database
             long rowVersion = timeSpanTimeseriesPropertyObject.RowVersion;
             Guid element = timeSpanTimeseriesPropertyObject.Element;
             Guid definition = timeSpanTimeseriesPropertyObject.Definition;
-            Guid timeseries = timeSpanTimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = timeSpanTimeseriesPropertyObject.Timeseries;
             var result = UpdateTimeSpanTimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -22349,7 +22349,7 @@ namespace Barrelman.Data.Database
             var result = DeleteTimeSpanTimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertUInt16TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertUInt16TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22382,7 +22382,7 @@ namespace Barrelman.Data.Database
             Guid id = uInt16TimeseriesPropertyObject.Id;
             Guid element = uInt16TimeseriesPropertyObject.Element;
             Guid definition = uInt16TimeseriesPropertyObject.Definition;
-            Guid timeseries = uInt16TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = uInt16TimeseriesPropertyObject.Timeseries;
             var result = InsertUInt16TimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -22393,7 +22393,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateUInt16TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateUInt16TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22428,7 +22428,7 @@ namespace Barrelman.Data.Database
             long rowVersion = uInt16TimeseriesPropertyObject.RowVersion;
             Guid element = uInt16TimeseriesPropertyObject.Element;
             Guid definition = uInt16TimeseriesPropertyObject.Definition;
-            Guid timeseries = uInt16TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = uInt16TimeseriesPropertyObject.Timeseries;
             var result = UpdateUInt16TimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -22471,7 +22471,7 @@ namespace Barrelman.Data.Database
             var result = DeleteUInt16TimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertUInt32TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertUInt32TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22504,7 +22504,7 @@ namespace Barrelman.Data.Database
             Guid id = uInt32TimeseriesPropertyObject.Id;
             Guid element = uInt32TimeseriesPropertyObject.Element;
             Guid definition = uInt32TimeseriesPropertyObject.Definition;
-            Guid timeseries = uInt32TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = uInt32TimeseriesPropertyObject.Timeseries;
             var result = InsertUInt32TimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -22515,7 +22515,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateUInt32TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateUInt32TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22550,7 +22550,7 @@ namespace Barrelman.Data.Database
             long rowVersion = uInt32TimeseriesPropertyObject.RowVersion;
             Guid element = uInt32TimeseriesPropertyObject.Element;
             Guid definition = uInt32TimeseriesPropertyObject.Definition;
-            Guid timeseries = uInt32TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = uInt32TimeseriesPropertyObject.Timeseries;
             var result = UpdateUInt32TimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -22593,7 +22593,7 @@ namespace Barrelman.Data.Database
             var result = DeleteUInt32TimeseriesProperty( id, rowVersion );
             return result;
         }
-        public bool InsertUInt64TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid timeseries )
+        public bool InsertUInt64TimeseriesProperty( ref Guid id, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22626,7 +22626,7 @@ namespace Barrelman.Data.Database
             Guid id = uInt64TimeseriesPropertyObject.Id;
             Guid element = uInt64TimeseriesPropertyObject.Element;
             Guid definition = uInt64TimeseriesPropertyObject.Definition;
-            Guid timeseries = uInt64TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = uInt64TimeseriesPropertyObject.Timeseries;
             var result = InsertUInt64TimeseriesProperty( ref id, element, definition, timeseries );
             if( result )
             {
@@ -22637,7 +22637,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateUInt64TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid timeseries )
+        public bool UpdateUInt64TimeseriesProperty( Guid id, ref long rowVersion, Guid element, Guid definition, Guid? timeseries )
         {
             bool result = false;
             try
@@ -22672,7 +22672,7 @@ namespace Barrelman.Data.Database
             long rowVersion = uInt64TimeseriesPropertyObject.RowVersion;
             Guid element = uInt64TimeseriesPropertyObject.Element;
             Guid definition = uInt64TimeseriesPropertyObject.Definition;
-            Guid timeseries = uInt64TimeseriesPropertyObject.Timeseries;
+            Guid? timeseries = uInt64TimeseriesPropertyObject.Timeseries;
             var result = UpdateUInt64TimeseriesProperty( id, ref rowVersion, element, definition, timeseries );
             if( result )
             {
@@ -24385,7 +24385,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt64PropertyDefinition( id, rowVersion );
             return result;
         }
-        public bool InsertReferencePropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid defaultValue, Guid referencedElementType )
+        public bool InsertReferencePropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid? defaultValue, Guid? referencedElementType )
         {
             bool result = false;
             try
@@ -24421,8 +24421,8 @@ namespace Barrelman.Data.Database
             Guid elementType = referencePropertyDefinitionObject.ElementType;
             string name = referencePropertyDefinitionObject.Name;
             string description = referencePropertyDefinitionObject.Description;
-            Guid defaultValue = referencePropertyDefinitionObject.DefaultValue;
-            Guid referencedElementType = referencePropertyDefinitionObject.ReferencedElementType;
+            Guid? defaultValue = referencePropertyDefinitionObject.DefaultValue;
+            Guid? referencedElementType = referencePropertyDefinitionObject.ReferencedElementType;
             var result = InsertReferencePropertyDefinition( ref id, elementType, name, description, defaultValue, referencedElementType );
             if( result )
             {
@@ -24433,7 +24433,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateReferencePropertyDefinition( Guid id, ref long rowVersion, Guid elementType, string name, string description, Guid defaultValue, Guid referencedElementType )
+        public bool UpdateReferencePropertyDefinition( Guid id, ref long rowVersion, Guid elementType, string name, string description, Guid? defaultValue, Guid? referencedElementType )
         {
             bool result = false;
             try
@@ -24471,8 +24471,8 @@ namespace Barrelman.Data.Database
             Guid elementType = referencePropertyDefinitionObject.ElementType;
             string name = referencePropertyDefinitionObject.Name;
             string description = referencePropertyDefinitionObject.Description;
-            Guid defaultValue = referencePropertyDefinitionObject.DefaultValue;
-            Guid referencedElementType = referencePropertyDefinitionObject.ReferencedElementType;
+            Guid? defaultValue = referencePropertyDefinitionObject.DefaultValue;
+            Guid? referencedElementType = referencePropertyDefinitionObject.ReferencedElementType;
             var result = UpdateReferencePropertyDefinition( id, ref rowVersion, elementType, name, description, defaultValue, referencedElementType );
             if( result )
             {
@@ -26059,7 +26059,7 @@ namespace Barrelman.Data.Database
             var result = DeleteInt64TimeseriesPropertyDefinition( id, rowVersion );
             return result;
         }
-        public bool InsertReferenceTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid referencedElementType )
+        public bool InsertReferenceTimeseriesPropertyDefinition( ref Guid id, Guid elementType, string name, string description, Guid? referencedElementType )
         {
             bool result = false;
             try
@@ -26094,7 +26094,7 @@ namespace Barrelman.Data.Database
             Guid elementType = referenceTimeseriesPropertyDefinitionObject.ElementType;
             string name = referenceTimeseriesPropertyDefinitionObject.Name;
             string description = referenceTimeseriesPropertyDefinitionObject.Description;
-            Guid referencedElementType = referenceTimeseriesPropertyDefinitionObject.ReferencedElementType;
+            Guid? referencedElementType = referenceTimeseriesPropertyDefinitionObject.ReferencedElementType;
             var result = InsertReferenceTimeseriesPropertyDefinition( ref id, elementType, name, description, referencedElementType );
             if( result )
             {
@@ -26105,7 +26105,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateReferenceTimeseriesPropertyDefinition( Guid id, ref long rowVersion, Guid elementType, string name, string description, Guid referencedElementType )
+        public bool UpdateReferenceTimeseriesPropertyDefinition( Guid id, ref long rowVersion, Guid elementType, string name, string description, Guid? referencedElementType )
         {
             bool result = false;
             try
@@ -26142,7 +26142,7 @@ namespace Barrelman.Data.Database
             Guid elementType = referenceTimeseriesPropertyDefinitionObject.ElementType;
             string name = referenceTimeseriesPropertyDefinitionObject.Name;
             string description = referenceTimeseriesPropertyDefinitionObject.Description;
-            Guid referencedElementType = referenceTimeseriesPropertyDefinitionObject.ReferencedElementType;
+            Guid? referencedElementType = referenceTimeseriesPropertyDefinitionObject.ReferencedElementType;
             var result = UpdateReferenceTimeseriesPropertyDefinition( id, ref rowVersion, elementType, name, description, referencedElementType );
             if( result )
             {
@@ -28009,7 +28009,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarCommandGetStatus( id, rowVersion );
             return result;
         }
-        public bool InsertRadarCommandReply( ref Guid id, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertRadarCommandReply( ref Guid id, Guid radar, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -28044,7 +28044,7 @@ namespace Barrelman.Data.Database
             Guid id = radarCommandReplyObject.Id;
             Guid radar = radarCommandReplyObject.Radar;
             DateTime timestamp = radarCommandReplyObject.Timestamp;
-            Guid command = radarCommandReplyObject.Command;
+            Guid? command = radarCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = radarCommandReplyObject.Status;
             string message = radarCommandReplyObject.Message;
             var result = InsertRadarCommandReply( ref id, radar, timestamp, command, status, message );
@@ -28057,7 +28057,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarCommandReply( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateRadarCommandReply( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -28094,7 +28094,7 @@ namespace Barrelman.Data.Database
             long rowVersion = radarCommandReplyObject.RowVersion;
             Guid radar = radarCommandReplyObject.Radar;
             DateTime timestamp = radarCommandReplyObject.Timestamp;
-            Guid command = radarCommandReplyObject.Command;
+            Guid? command = radarCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = radarCommandReplyObject.Status;
             string message = radarCommandReplyObject.Message;
             var result = UpdateRadarCommandReply( id, ref rowVersion, radar, timestamp, command, status, message );
@@ -28139,7 +28139,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadarCommandReply( id, rowVersion );
             return result;
         }
-        public bool InsertRadarCommandReplyGetStatus( ref Guid id, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
+        public bool InsertRadarCommandReplyGetStatus( ref Guid id, Guid radar, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
         {
             bool result = false;
             try
@@ -28179,7 +28179,7 @@ namespace Barrelman.Data.Database
             Guid id = radarCommandReplyGetStatusObject.Id;
             Guid radar = radarCommandReplyGetStatusObject.Radar;
             DateTime timestamp = radarCommandReplyGetStatusObject.Timestamp;
-            Guid command = radarCommandReplyGetStatusObject.Command;
+            Guid? command = radarCommandReplyGetStatusObject.Command;
             Types.DeviceCommandReplyStatus status = radarCommandReplyGetStatusObject.Status;
             string message = radarCommandReplyGetStatusObject.Message;
             int azimuthCount = radarCommandReplyGetStatusObject.AzimuthCount;
@@ -28197,7 +28197,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadarCommandReplyGetStatus( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
+        public bool UpdateRadarCommandReplyGetStatus( Guid id, ref long rowVersion, Guid radar, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message, int azimuthCount, int triggerCount, TimeSpan rotationCount, Types.RadarPulse pulse, bool tx )
         {
             bool result = false;
             try
@@ -28239,7 +28239,7 @@ namespace Barrelman.Data.Database
             long rowVersion = radarCommandReplyGetStatusObject.RowVersion;
             Guid radar = radarCommandReplyGetStatusObject.Radar;
             DateTime timestamp = radarCommandReplyGetStatusObject.Timestamp;
-            Guid command = radarCommandReplyGetStatusObject.Command;
+            Guid? command = radarCommandReplyGetStatusObject.Command;
             Types.DeviceCommandReplyStatus status = radarCommandReplyGetStatusObject.Status;
             string message = radarCommandReplyGetStatusObject.Message;
             int azimuthCount = radarCommandReplyGetStatusObject.AzimuthCount;
@@ -29039,7 +29039,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadioCommand( id, rowVersion );
             return result;
         }
-        public bool InsertRadioCommandReply( ref Guid id, Guid radio, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertRadioCommandReply( ref Guid id, Guid radio, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -29074,7 +29074,7 @@ namespace Barrelman.Data.Database
             Guid id = radioCommandReplyObject.Id;
             Guid radio = radioCommandReplyObject.Radio;
             DateTime timestamp = radioCommandReplyObject.Timestamp;
-            Guid command = radioCommandReplyObject.Command;
+            Guid? command = radioCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = radioCommandReplyObject.Status;
             string message = radioCommandReplyObject.Message;
             var result = InsertRadioCommandReply( ref id, radio, timestamp, command, status, message );
@@ -29087,7 +29087,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadioCommandReply( Guid id, ref long rowVersion, Guid radio, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateRadioCommandReply( Guid id, ref long rowVersion, Guid radio, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -29124,7 +29124,7 @@ namespace Barrelman.Data.Database
             long rowVersion = radioCommandReplyObject.RowVersion;
             Guid radio = radioCommandReplyObject.Radio;
             DateTime timestamp = radioCommandReplyObject.Timestamp;
-            Guid command = radioCommandReplyObject.Command;
+            Guid? command = radioCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = radioCommandReplyObject.Status;
             string message = radioCommandReplyObject.Message;
             var result = UpdateRadioCommandReply( id, ref rowVersion, radio, timestamp, command, status, message );
@@ -29445,7 +29445,7 @@ namespace Barrelman.Data.Database
             var result = DeleteRadomeCommand( id, rowVersion );
             return result;
         }
-        public bool InsertRadomeCommandReply( ref Guid id, Guid radome, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertRadomeCommandReply( ref Guid id, Guid radome, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -29480,7 +29480,7 @@ namespace Barrelman.Data.Database
             Guid id = radomeCommandReplyObject.Id;
             Guid radome = radomeCommandReplyObject.Radome;
             DateTime timestamp = radomeCommandReplyObject.Timestamp;
-            Guid command = radomeCommandReplyObject.Command;
+            Guid? command = radomeCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = radomeCommandReplyObject.Status;
             string message = radomeCommandReplyObject.Message;
             var result = InsertRadomeCommandReply( ref id, radome, timestamp, command, status, message );
@@ -29493,7 +29493,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateRadomeCommandReply( Guid id, ref long rowVersion, Guid radome, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateRadomeCommandReply( Guid id, ref long rowVersion, Guid radome, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -29530,7 +29530,7 @@ namespace Barrelman.Data.Database
             long rowVersion = radomeCommandReplyObject.RowVersion;
             Guid radome = radomeCommandReplyObject.Radome;
             DateTime timestamp = radomeCommandReplyObject.Timestamp;
-            Guid command = radomeCommandReplyObject.Command;
+            Guid? command = radomeCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = radomeCommandReplyObject.Status;
             string message = radomeCommandReplyObject.Message;
             var result = UpdateRadomeCommandReply( id, ref rowVersion, radome, timestamp, command, status, message );
@@ -43045,7 +43045,7 @@ namespace Barrelman.Data.Database
             var result = DeleteWeatherStationCommand( id, rowVersion );
             return result;
         }
-        public bool InsertWeatherStationCommandReply( ref Guid id, Guid weatherStation, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool InsertWeatherStationCommandReply( ref Guid id, Guid weatherStation, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -43080,7 +43080,7 @@ namespace Barrelman.Data.Database
             Guid id = weatherStationCommandReplyObject.Id;
             Guid weatherStation = weatherStationCommandReplyObject.WeatherStation;
             DateTime timestamp = weatherStationCommandReplyObject.Timestamp;
-            Guid command = weatherStationCommandReplyObject.Command;
+            Guid? command = weatherStationCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = weatherStationCommandReplyObject.Status;
             string message = weatherStationCommandReplyObject.Message;
             var result = InsertWeatherStationCommandReply( ref id, weatherStation, timestamp, command, status, message );
@@ -43093,7 +43093,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateWeatherStationCommandReply( Guid id, ref long rowVersion, Guid weatherStation, DateTime timestamp, Guid command, Types.DeviceCommandReplyStatus status, string message )
+        public bool UpdateWeatherStationCommandReply( Guid id, ref long rowVersion, Guid weatherStation, DateTime timestamp, Guid? command, Types.DeviceCommandReplyStatus status, string message )
         {
             bool result = false;
             try
@@ -43130,7 +43130,7 @@ namespace Barrelman.Data.Database
             long rowVersion = weatherStationCommandReplyObject.RowVersion;
             Guid weatherStation = weatherStationCommandReplyObject.WeatherStation;
             DateTime timestamp = weatherStationCommandReplyObject.Timestamp;
-            Guid command = weatherStationCommandReplyObject.Command;
+            Guid? command = weatherStationCommandReplyObject.Command;
             Types.DeviceCommandReplyStatus status = weatherStationCommandReplyObject.Status;
             string message = weatherStationCommandReplyObject.Message;
             var result = UpdateWeatherStationCommandReply( id, ref rowVersion, weatherStation, timestamp, command, status, message );
@@ -43857,7 +43857,7 @@ namespace Barrelman.Data.Database
             var result = DeleteZoneExceptionsVesselLink( id, rowVersion );
             return result;
         }
-        public bool InsertZoneTrackAlarm( ref Guid id, Guid track, Guid zone, Guid radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
+        public bool InsertZoneTrackAlarm( ref Guid id, Guid track, Guid zone, Guid? radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
         {
             bool result = false;
             try
@@ -43900,7 +43900,7 @@ namespace Barrelman.Data.Database
             Guid id = zoneTrackAlarmObject.Id;
             Guid track = zoneTrackAlarmObject.Track;
             Guid zone = zoneTrackAlarmObject.Zone;
-            Guid radarTrack = zoneTrackAlarmObject.RadarTrack;
+            Guid? radarTrack = zoneTrackAlarmObject.RadarTrack;
             DateTime timestamp = zoneTrackAlarmObject.Timestamp;
             double latitude = zoneTrackAlarmObject.Latitude;
             double longitude = zoneTrackAlarmObject.Longitude;
@@ -43921,7 +43921,7 @@ namespace Barrelman.Data.Database
             return result;
         }
 
-        public bool UpdateZoneTrackAlarm( Guid id, ref long rowVersion, Guid track, Guid zone, Guid radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
+        public bool UpdateZoneTrackAlarm( Guid id, ref long rowVersion, Guid track, Guid zone, Guid? radarTrack, DateTime timestamp, double latitude, double longitude, double speed, double? course, double? heading, double enterLatitude, double enterLongitude, double? leaveLatitude, double? leaveLongitude )
         {
             bool result = false;
             try
@@ -43966,7 +43966,7 @@ namespace Barrelman.Data.Database
             long rowVersion = zoneTrackAlarmObject.RowVersion;
             Guid track = zoneTrackAlarmObject.Track;
             Guid zone = zoneTrackAlarmObject.Zone;
-            Guid radarTrack = zoneTrackAlarmObject.RadarTrack;
+            Guid? radarTrack = zoneTrackAlarmObject.RadarTrack;
             DateTime timestamp = zoneTrackAlarmObject.Timestamp;
             double latitude = zoneTrackAlarmObject.Latitude;
             double longitude = zoneTrackAlarmObject.Longitude;

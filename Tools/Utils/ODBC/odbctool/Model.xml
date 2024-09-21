@@ -454,7 +454,7 @@
       <datetime name="ReceivedTimestamp"/>
       <int64 name="MessageSequenceNumber"/>
       <int32 name="Repeat" description="The Repeat Indicator is a directive to an AIS transceiver that this message should be rebroadcast. This was intended as a way of getting AIS messages around hills and other obstructions in coastal waters, but is little used as base station coverage is more effective. It is intended that the bit be incremented on each retransmission, to a maximum of three hops. A value of 3 indicates &apos;Do not repeat&apos;."/>
-      <reference name="Mmsi" type="MaritimeMobileServiceIdentity" description="The MMSI of the original sender."/>
+      <reference name="Mmsi" type="MaritimeMobileServiceIdentity" nullable="true" description="The MMSI of the original sender."/>
     </members>
     <index name="AisDevice_ReceivedTimestamp" fields="AisDevice;ReceivedTimestamp" range="true" unique="true"/>
     <index name="ReceivedTimestamp" fields="ReceivedTimestamp" range="true"/>
@@ -485,7 +485,7 @@
   <class name="AisAddressedSafetyRelatedMessage" base="AisMessage">
     <members>
       <int32 name="SequenceNumber"/>
-      <reference name="DestinationMmsi" type="MaritimeMobileServiceIdentity"/>
+      <reference name="DestinationMmsi" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <boolean name="RetransmitFlag"/>
       <int32 name="Spare"/>
       <string name="Text" size="127"/>
@@ -508,7 +508,7 @@
     <members>
       <int32 name="Spare"/>
       <int32 name="SequenceNumber1"/>
-      <reference name="Mmsi1" type="MaritimeMobileServiceIdentity"/>
+      <reference name="Mmsi1" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <int32 name="SequenceNumber2" nullable="true"/>
       <reference name="Mmsi2" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <int32 name="SequenceNumber3" nullable="true"/>
@@ -520,7 +520,7 @@
   <class name="AisBinaryAddressedMessage" base="AisMessage">
     <members>
       <int32 name="SequenceNumber"/>
-      <reference name="DestinationMmsi" type="MaritimeMobileServiceIdentity"/>
+      <reference name="DestinationMmsi" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <boolean name="RetransmitFlag"/>
       <int32 name="Spare"/>
       <int32 name="DesignatedAreaCode"/>
@@ -569,7 +569,7 @@
       <int32 name="TrueHeading" nullable="true"/>
       <int32 name="Timestamp"/>
       <int32 name="RegionalReserved"/>
-      <reference name="Name" type="Name"/>
+      <reference name="Name" type="Name" nullable="true"/>
       <enum name="ShipType" type="ShipType"/>
       <int32 name="DimensionToBow"/>
       <int32 name="DimensionToStern"/>
@@ -585,7 +585,7 @@
   </class>
   <class name="AisInterrogationMessage" base="AisMessage">
     <members>
-      <reference name="InterrogatedMmsi" type="MaritimeMobileServiceIdentity"/>
+      <reference name="InterrogatedMmsi" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <enum name="FirstMessageType" type="AisMessageType"/>
       <int32 name="FirstSlotOffset"/>
       <enum name="SecondMessageType" type="AisMessageType" nullable="true"/>
@@ -641,7 +641,7 @@
     <members>
       <int32 name="Spare"/>
       <int32 name="SequenceNumber1"/>
-      <reference name="Mmsi1" type="MaritimeMobileServiceIdentity"/>
+      <reference name="Mmsi1" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <int32 name="SequenceNumber2" nullable="true"/>
       <reference name="Mmsi2" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <int32 name="SequenceNumber3" nullable="true"/>
@@ -691,9 +691,9 @@
   <class name="AisStaticAndVoyageRelatedDataMessage" base="AisMessage">
     <members>
       <int32 name="AisVersion"/>
-      <reference name="ImoNumber" type="InternationalMaritimeOrganizationNumber"/>
-      <reference name="Callsign" type="Callsign"/>
-      <reference name="ShipName" type="Name"/>
+      <reference name="ImoNumber" type="InternationalMaritimeOrganizationNumber" nullable="true"/>
+      <reference name="Callsign" type="Callsign" nullable="true"/>
+      <reference name="ShipName" type="Name" nullable="true"/>
       <enum name="ShipType" type="ShipType"/>
       <int32 name="DimensionToBow"/>
       <int32 name="DimensionToStern"/>
@@ -717,7 +717,7 @@
   </class>
   <class name="AisStaticDataReportPartAMessage" base="AisStaticDataReportMessage">
     <members>
-      <reference name="ShipName" type="Name"/>
+      <reference name="ShipName" type="Name" nullable="true"/>
       <int32 name="Spare"/>
     </members>
     <index name="ShipName" fields="ShipName"/>
@@ -728,7 +728,7 @@
       <string name="VendorId" size="127"/>
       <int32 name="UnitModelCode"/>
       <int32 name="SerialNumber"/>
-      <reference name="Callsign" type="Callsign"/>
+      <reference name="Callsign" type="Callsign" nullable="true"/>
       <int32 name="DimensionToBow"/>
       <int32 name="DimensionToStern"/>
       <int32 name="DimensionToPort"/>
@@ -743,7 +743,7 @@
   <class name="AisUtcAndDateInquiryMessage" base="AisMessage">
     <members>
       <int32 name="Spare1"/>
-      <int32 name="DestinationMmsi"/>
+      <reference name="DestinationMmsi" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <int32 name="Spare2"/>
     </members>
   </class>
@@ -779,7 +779,7 @@
       <rowversion name="RowVersion"/>
       <reference name="AisDevice" type="AisDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="AisDeviceCommand" member="Reply"/>
+      <reference name="Command" type="AisDeviceCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -1019,7 +1019,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Camera" type="CameraDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="CameraCommand" member="Reply" />
+      <reference name="Command" type="CameraCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
       <double name="PanAngle" category="Aim"/>
@@ -1123,7 +1123,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="Camera" type="CameraDevice" browsable="false"/>
-      <reference name="Track" type="TrackBase" browsable="false"/>
+      <reference name="Track" type="TrackBase" nullable="true" browsable="false"/>
       <datetime name="Timestamp"/>
       <enum name="PositionPanTiltMode" type="CameraPanTiltMode" category="Position"/>
       <double name="PanAngle" category="Position"/>
@@ -1190,7 +1190,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Catalog" type="Catalog"/>
+      <reference name="Catalog" type="Catalog" nullable="true"/>
       <string name="Name" size="127"/>
     </members>
     <index name="Catalog_Name" fields="Catalog;Name" unique="true"/>
@@ -1202,11 +1202,11 @@
   </class>
   <class name="Element" base="CatalogElement">
     <members>
-      <reference name="ElementType" type="ElementType"/>
+      <reference name="ElementType" type="ElementType" nullable="true"/>
       <collection name="Properties" type="Property" member="Element" aggregated="true"/>
       <collection name="References" type="ReferenceProperty" member="Value"/>
       <collection name="ReferencePropertyDefinitions" type="ReferencePropertyDefinition" member="DefaultValue"/>
-      <collection name="TimeseriesReferences" type="ReferenceTimeseriesValue" member="Value"/>
+      <collection name="TimeseriesReferences" type="ReferenceTimeseriesValue" member="Value" aggregated="true"/>
     </members>
     <index name="ElementType" fields="ElementType"/>
   </class>
@@ -1225,7 +1225,7 @@
       <int32 name="Code"/>
       <string name="Alpha2" size="2"/>
       <string name="Alpha3" size="3"/>
-      <collection name="MaritimeIdentificationDigits" type="MaritimeIdentificationDigits" member="Country"/>
+      <collection name="MaritimeIdentificationDigits" type="MaritimeIdentificationDigits" member="Country" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
     <index name="Code" fields="Code" unique="true"/>
@@ -1338,7 +1338,7 @@
       <rowversion name="RowVersion"/>
       <reference name="GNSSDevice" type="GNSSDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="GNSSDeviceCommand" member="Reply" />
+      <reference name="Command" type="GNSSDeviceCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -1393,7 +1393,7 @@
       <rowversion name="RowVersion"/>
       <reference name="GyroDevice" type="GyroDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="GyroDeviceCommand" member="Reply" />
+      <reference name="Command" type="GyroDeviceCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -1421,6 +1421,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
+      <collection name="ItemIdentityLinks" type="ItemIdentityLink" member="Identity" aggregated="true"/>
     </members>
   </class>
   <class name="Callsign" base="Identity" displayname="Call Sign" description="Identity base">
@@ -1441,12 +1442,23 @@
   <class name="MaritimeMobileServiceIdentity" base="Identity" description="Identity base">
     <members>
       <int64 name="Identifier"/>
-      <collection name="SentAisMessages" type="AisMessage" member="Mmsi"/>
+      <collection name="AisMessagesBySender" type="AisMessage" member="Mmsi"/>
       <collection name="AisAddressedSafetyRelatedMessages" type="AisAddressedSafetyRelatedMessage" member="DestinationMmsi"/>
+      <collection name="AisBinaryAcknowledgeMessagesByMmsi1" type="AisBinaryAcknowledgeMessage" member="Mmsi1" />
+      <collection name="AisBinaryAcknowledgeMessagesByMmsi2" type="AisBinaryAcknowledgeMessage" member="Mmsi2" />
+      <collection name="AisBinaryAcknowledgeMessagesByMmsi3" type="AisBinaryAcknowledgeMessage" member="Mmsi3" />
+      <collection name="AisBinaryAcknowledgeMessagesByMmsi4" type="AisBinaryAcknowledgeMessage" member="Mmsi4" />
       <collection name="AisBinaryAddressedMessages" type="AisBinaryAddressedMessage" member="DestinationMmsi"/>
+      <collection name="AisInterrogationMessagesByInterrogatedMmsi" type="AisInterrogationMessage" member="InterrogatedMmsi"/>
+      <collection name="AisInterrogationMessagesBySecondStationInterrogationMmsi" type="AisInterrogationMessage" member="SecondStationInterrogationMmsi"/>
+      <collection name="AisSafetyRelatedAcknowledgmentMessagesByMmsi1" type="AisSafetyRelatedAcknowledgmentMessage" member="Mmsi1" />
+      <collection name="AisSafetyRelatedAcknowledgmentMessagesByMmsi2" type="AisSafetyRelatedAcknowledgmentMessage" member="Mmsi2" />
+      <collection name="AisSafetyRelatedAcknowledgmentMessagesByMmsi3" type="AisSafetyRelatedAcknowledgmentMessage" member="Mmsi3" />
+      <collection name="AisSafetyRelatedAcknowledgmentMessagesByMmsi4" type="AisSafetyRelatedAcknowledgmentMessage" member="Mmsi4" />
       <collection name="AisStaticDataReportPartBMessages" type="AisStaticDataReportPartBMessage" member="MothershipMmsi"/>
+      <collection name="AisUtcAndDateInquiryMessages" type="AisUtcAndDateInquiryMessage" member="DestinationMmsi"/>
       <collection name="AidsToNavigation" type="AisAidToNavigation" member="MMSI"/>
-      <collection name="OilSpillDetectorConfiguration" type="OilSpillDetectorConfiguration" member="TargetMMSI"/>
+      <collection name="OilSpillDetectorConfigurations" type="OilSpillDetectorConfiguration" member="TargetMMSI"/>
     </members>
     <index name="Identifier" fields="Identifier" unique="true"/>
   </class>
@@ -1497,12 +1509,15 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <collection name="MapElements" type="MapElement" member="Item" aggregated="true"/>
+      <collection name="ItemIdentityLinks" type="ItemIdentityLink" member="Item" aggregated="true"/>
+      <collection name="ChildLinks" type="ItemParentChildLink" member="Parent" aggregated="true"/>
+      <collection name="ParentLinks" type="ItemParentChildLink" member="Child" aggregated="true"/>
     </members>
   </class>
   <class name="BaseStation" base="Item">
     <members>
       <string name="Name" size="127" description="A name that uniquely identifies this `BaseStation`"/>
-      <reference name="Type" type="BaseStationType"/>
+      <reference name="Type" type="BaseStationType" nullable="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
     <index name="Type" fields="Type"/>
@@ -1527,6 +1542,7 @@
       <collection name="PanCalibration" type="CameraPanCalibration" member="Camera" browsable="false" aggregated="true"/>
       <collection name="TiltCalibration" type="CameraTiltCalibration" member="Camera" browsable="false" aggregated="true"/>
       <collection name="ZoomCalibration" type="CameraZoomCalibration" member="Camera" browsable="false" aggregated="true"/>
+      <collection name="ViewLinks" type="ViewCameraLink" member="Camera" aggregated="true"/>
     </members>
   </class>
   <class name="GNSSDevice" base="Device">
@@ -1550,7 +1566,7 @@
       <timeseries name="RollTimeseries" type="GyroRollTimeseries" member="GyroDevice" nullable="true" propertyname="Roll" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="CourseTimeseries" type="GyroCourseTimeseries" member="GyroDevice" nullable="true" propertyname="Course" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="SpeedTimeseries" type="GyroSpeedTimeseries" member="GyroDevice" nullable="true" propertyname="Speed" propertytype="Double" propertynullable="true" browsable="false"/>
-      <reference name="GNSSDevice" type="GNSSDevice" browsable="false"/>
+      <reference name="GNSSDevice" type="GNSSDevice" nullable="true" browsable="false"/>
       <collection name="Commands" type="GyroDeviceCommand" member="GyroDevice" aggregated="true"/>
       <collection name="CommandReplies" type="GyroDeviceCommandReply" member="GyroDevice" aggregated="true"/>
       <collection name="Configuration" type="GyroDeviceConfiguration" member="GyroDevice" aggregated="true"/>
@@ -1597,8 +1613,9 @@
   </class>
   <class name="TrackerDevice" base="Device" abstract="true">
     <members>
-      <collection name="Tracks" type="TrackBase" member="Tracker" browsable="false"/>
+      <collection name="Tracks" type="TrackBase" member="Tracker" aggregated="true" browsable="false"/>
       <collection name="FilterParameters" type="TrackerFilterParameters" member="Tracker" browsable="false" aggregated="true"/>
+      <collection name="ViewLinks" type="ViewTrackerLink" member="Tracker" browsable="false" aggregated="true"/>
     </members>
   </class>
   <class name="AisDevice" base="TrackerDevice" displayname="AIS Device">
@@ -1642,7 +1659,7 @@
       <collection name="CommandReplies" type="RadarCommandReply" member="Radar" browsable="false" aggregated="true"/>
       <collection name="Configuration" type="RadarConfiguration" member="Radar" browsable="false" aggregated="true"/>
       <collection name="Statuses" type="RadarStatus" member="Radar" browsable="false" aggregated="true"/>
-      <collection name="AlarmStatuses" type="RadarAlarmStatus" member="Radar" browsable="false"/>
+      <collection name="AlarmStatuses" type="RadarAlarmStatus" member="Radar" browsable="false" aggregated="true"/>
     </members>
     <index name="Radome" fields="Radome"/>
     <index name="GNSSDevice" fields="GNSSDevice"/>
@@ -1660,14 +1677,14 @@
       <timeseries name="DewPointTimeseries" type="WeatherStationDewPointTimeseries" member="WeatherStation" nullable="true" propertyname="DewPoint" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="WindDirectionTimeseries" type="WeatherStationWindDirectionTimeseries" member="WeatherStation" nullable="true" propertyname="WindDirection" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="WindSpeedTimeseries" type="WeatherStationWindSpeedTimeseries" member="WeatherStation" nullable="true" propertyname="WindSpeed" propertytype="Double" propertynullable="true" browsable="false"/>
-      <reference name="Gyro" type="GyroDevice" browsable="false"/>
+      <reference name="Gyro" type="GyroDevice" nullable="true" browsable="false"/>
     </members>
     <index name="Gyro" fields="Gyro"/>
   </class>
   <class name="Facility" base="Item">
     <members>
       <string name="Name" size="127" description="A name that uniquely identifies this `Facility`"/>
-      <reference name="Type" type="FacilityType"/>
+      <reference name="Type" type="FacilityType" nullable="true" />
       <double name="Longitude"/>
       <double name="Latitude"/>
       <double name="Altitude"/>
@@ -1677,12 +1694,13 @@
   </class>
   <class name="TrackableItem" base="Item" abstract="true">
     <members>
+      <collection name="TrackLinks" type="TrackableItemTrackLink" member="Item" browsable="false" aggregated="true"/>
     </members>
   </class>
   <class name="Aircraft" base="TrackableItem">
     <members>
       <string name="Name" size="127"/>
-      <reference name="Type" type="AircraftType"/>
+      <reference name="Type" type="AircraftType" nullable="true"/>
     </members>
     <index name="Name" fields="Name"/>
     <index name="Type" fields="Type"/>
@@ -1690,7 +1708,7 @@
   <class name="AisAidToNavigation" base="TrackableItem" displayname="Trackable Item">
     <members>
       <string name="Name" size="127"/>
-      <reference name="MMSI" type="MaritimeMobileServiceIdentity"/>
+      <reference name="MMSI" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <enum name="NavigationalAidType" type="NavigationalAidType"/>
       <timeseries name="Position" type="AisAidToNavigationPositionTimeseries" member="AidToNavigation" nullable="true" propertyname="PositionValue" propertytype="GeoPoint"/>
       <boolean name="IsVirtual"/>
@@ -1706,7 +1724,7 @@
   <class name="Vehicle" base="TrackableItem">
     <members>
       <string name="Name" size="127"/>
-      <reference name="Type" type="VehicleType"/>
+      <reference name="Type" type="VehicleType" nullable="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
     <index name="Type" fields="Type"/>
@@ -1714,13 +1732,14 @@
   <class name="Vessel" base="TrackableItem" shortname="VSL">
     <members>
       <string name="Name" size="127"/>
-      <reference name="Type" type="VesselType"/>
+      <reference name="Type" type="VesselType" nullable="true"/>
       <int32 name="ToBow" description="Dimension to Bow in meters"/>
       <int32 name="ToStern" description="Dimension to Stern in meters"/>
       <int32 name="ToPort" description="Dimension to Port in meters"/>
       <int32 name="ToStarboard" description="Dimension to Starboard in meters"/>
       <timeseries name="DraughtTimeseries" type="VesselDraughtTimeseries" member="Vessel" nullable="true" propertyname="Draught" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="PersonsOnBoardTimeseries" type="VesselPersonsOnBoardTimeseries" member="Vessel" nullable="true" propertyname="PersonsOnBoard" propertytype="Int32" propertynullable="true" browsable="false"/>
+      <collection name="ZoneExceptionsLinks" type="ZoneExceptionsVesselLink" member="Vessel" aggregated="true"/>
     </members>
     <index name="Name" fields="Name"/>
     <index name="Type" fields="Type"/>
@@ -1773,7 +1792,7 @@
       <rowversion name="RowVersion"/>
       <reference name="LineInputDevice" type="LineInputDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="LineInputDeviceCommand" member="Reply" />
+      <reference name="Command" type="LineInputDeviceCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -1839,7 +1858,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="Routing" type="LineInputMessageRouting"/>
-      <reference name="Listener" type="Device"/>
+      <reference name="Listener" type="Device" nullable="true"/>
     </members>
     <index name="Routing_Listener" fields="Routing;Listener" unique="true"/>
     <index name="Listener" fields="Listener"/>
@@ -1929,8 +1948,8 @@
       <string name="Namespace" size="512"/>
       <string name="ClassName" size="512"/>
       <string name="MethodName" size="255"/>
-      <collection name="Records" type="LogRecord" member="Location"/>
-      <collection name="TraceEntries" type="LogTraceEntry" member="Location"/>
+      <collection name="Records" type="LogRecord" member="Location" aggregated="true"/>
+      <collection name="TraceEntries" type="LogTraceEntry" member="Location" aggregated="true"/>
     </members>
     <index name="FileName_LineNumber" fields="FileName;LineNumber" unique="true"/>
   </class>
@@ -1939,7 +1958,7 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <reference name="Application" type="LogApplication"/>
-      <reference name="Host" type="LogHost"/>
+      <reference name="Host" type="LogHost" nullable="true"/>
       <datetime name="Started" description="Start time of the process."/>
       <datetime name="Stopped" nullable="true" description="Stop time of the process."/>
       <int64 name="ProcessId" description="The system process id."/>
@@ -2003,7 +2022,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <reference name="Item" type="Item"/>
+      <reference name="Item" type="Item" />
       <enum name="ElementType" type="MapElementType"/>
       <double name="Latitude"/>
       <double name="Longitude"/>
@@ -2130,7 +2149,7 @@
   <class name="ElementType" base="NamespaceElement">
     <members>
       <collection name="Definitions" type="PropertyDefinition" member="ElementType" aggregated="true"/>
-      <collection name="Elements" type="Element" member="ElementType"/>
+      <collection name="Elements" type="Element" member="ElementType" aggregated="true"/>
       <collection name="ReferencePropertyDefinitions" type="ReferencePropertyDefinition" member="ReferencedElementType"/>
       <collection name="ReferenceTimeseriesPropertyDefinitions" type="ReferenceTimeseriesPropertyDefinition" member="ReferencedElementType"/>
     </members>
@@ -2175,7 +2194,7 @@
       <rowversion name="RowVersion"/>
       <reference name="OilSpillDetector" type="OilSpillDetectorDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="OilSpillDetectorCommand" member="Reply" />
+      <reference name="Command" type="OilSpillDetectorCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2205,7 +2224,7 @@
       <boolean name="SendAsTarget"/>
       <boolean name="WriteLog"/>
       <string name="TargetFilePrefix" size="127"/>
-      <reference name="TargetMMSI" type="MaritimeMobileServiceIdentity"/>
+      <reference name="TargetMMSI" type="MaritimeMobileServiceIdentity" nullable="true"/>
       <double name="Latitude"/>
       <double name="Longitude"/>
       <boolean name="TestSourceEnabled"/>
@@ -2306,7 +2325,7 @@
   </class>
   <class name="ReferenceProperty" base="Property">
     <members>
-      <reference name="Value" type="Element"/>
+      <reference name="Value" type="Element" nullable="true"/>
     </members>
     <index name="Value" fields="Value"/>
   </class>
@@ -2331,103 +2350,103 @@
   </class>
   <class name="BinaryTimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="BinaryTimeseries"/>
+      <reference name="Timeseries" type="BinaryTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
-  <class name="BooleanTimeseriesProperty" base="TimeseriesProperty" shortname="BOTP">
+  <class name="BooleanTimeseriesProperty" base="TimeseriesProperty" nullable="true" shortname="BOTP">
     <members>
-      <reference name="Timeseries" type="BooleanTimeseries"/>
+      <reference name="Timeseries" type="BooleanTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="ByteTimeseriesProperty" base="TimeseriesProperty" shortname="BYTP">
     <members>
-      <reference name="Timeseries" type="ByteTimeseries"/>
+      <reference name="Timeseries" type="ByteTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="DateTimeTimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="DateTimeTimeseries"/>
+      <reference name="Timeseries" type="DateTimeTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="DoubleTimeseriesProperty" base="TimeseriesProperty" shortname="DOTP">
     <members>
-      <reference name="Timeseries" type="DoubleTimeseries"/>
+      <reference name="Timeseries" type="DoubleTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="GuidTimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="GuidTimeseries"/>
+      <reference name="Timeseries" type="GuidTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="Int16TimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="Int16Timeseries"/>
+      <reference name="Timeseries" type="Int16Timeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="Int32TimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="Int32Timeseries"/>
+      <reference name="Timeseries" type="Int32Timeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="Int64TimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="Int64Timeseries"/>
+      <reference name="Timeseries" type="Int64Timeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="ReferenceTimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="ReferenceTimeseries"/>
+      <reference name="Timeseries" type="ReferenceTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="SByteTimeseriesProperty" base="TimeseriesProperty" shortname="SBTP">
     <members>
-      <reference name="Timeseries" type="SByteTimeseries"/>
+      <reference name="Timeseries" type="SByteTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="SingleTimeseriesProperty" base="TimeseriesProperty" shortname="SITP">
     <members>
-      <reference name="Timeseries" type="SingleTimeseries"/>
+      <reference name="Timeseries" type="SingleTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="StringTimeseriesProperty" base="TimeseriesProperty" shortname="STTP">
     <members>
-      <reference name="Timeseries" type="StringTimeseries"/>
+      <reference name="Timeseries" type="StringTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="TimeSpanTimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="TimeSpanTimeseries"/>
+      <reference name="Timeseries" type="TimeSpanTimeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="UInt16TimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="UInt16Timeseries"/>
+      <reference name="Timeseries" type="UInt16Timeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="UInt32TimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="UInt32Timeseries"/>
+      <reference name="Timeseries" type="UInt32Timeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
   <class name="UInt64TimeseriesProperty" base="TimeseriesProperty">
     <members>
-      <reference name="Timeseries" type="UInt64Timeseries"/>
+      <reference name="Timeseries" type="UInt64Timeseries" nullable="true"/>
     </members>
     <index name="Timeseries" fields="Timeseries"/>
   </class>
@@ -2458,7 +2477,7 @@
       <reference name="ElementType" type="ElementType"/>
       <string name="Name" size="127"/>
       <string name="Description" size="unlimited"/>
-      <collection name="Properties" type="Property" member="Definition"/>
+      <collection name="Properties" type="Property" member="Definition" aggregated="true"/>
     </members>
     <index name="ElementType_Name" fields="ElementType;Name" unique="true"/>
   </class>
@@ -2521,8 +2540,8 @@
   </class>
   <class name="ReferencePropertyDefinition" base="PropertyDefinition">
     <members>
-      <reference name="DefaultValue" type="Element"/>
-      <reference name="ReferencedElementType" type="ElementType"/>
+      <reference name="DefaultValue" type="Element" nullable="true"/>
+      <reference name="ReferencedElementType" type="ElementType" nullable="true"/>
     </members>
     <index name="DefaultValue" fields="DefaultValue"/>
     <index name="ReferencedElementType" fields="ReferencedElementType"/>
@@ -2601,7 +2620,7 @@
   </class>
   <class name="ReferenceTimeseriesPropertyDefinition" base="TimeseriesPropertyDefinition">
     <members>
-      <reference name="ReferencedElementType" type="ElementType"/>
+      <reference name="ReferencedElementType" type="ElementType" nullable="true"/>
     </members>
     <index name="ReferencedElementType" fields="ReferencedElementType"/>
   </class>
@@ -2709,7 +2728,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Radar" type="RadarDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="RadarCommand" member="Reply"/>
+      <reference name="Command" type="RadarCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2823,7 +2842,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Radio" type="RadioDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="RadioCommand" member="Reply"/>
+      <reference name="Command" type="RadioCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2868,7 +2887,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Radome" type="RadomeDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="RadomeCommand" member="Reply"/>
+      <reference name="Command" type="RadomeCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -2932,6 +2951,7 @@
       <string name="Identity" size="255" description="Name of user or role"/>
       <string name="Description" size="unlimited"/>
       <collection name="Permissions" type="SecurityPermission" member="Identifier" aggregated="true"/>
+      <collection name="RoleLinks" type="SecurityIdentifierRoleLink" member="Member" aggregated="true"/>
     </members>
     <index name="Domain_Identity" fields="Domain;Identity" unique="true"/>
   </class>
@@ -2943,6 +2963,7 @@
   <class name="SecurityRole" base="SecurityIdentifier" displayname="Security Identifier" description="Base class for SecurityLogin and SecurityRole. Tracks the granted permissions in the system.">
     <members>
       <string name="Name" size="127"/>
+      <collection name="SecurityIdentifierLinks" type="SecurityIdentifierRoleLink" member="Role" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
@@ -3475,6 +3496,9 @@
       <int64 name="TrackNumber"/>
       <datetime name="Timestamp"/>
       <collection name="Status" type="CameraStatus" member="Track" browsable="false"/>
+      <collection name="TrackableItemLinks" type="TrackableItemTrackLink" member="Track" aggregated="true" browsable="false"/>
+      <collection name="PrimaryTrackLinks" type="TrackLink" member="Secondary" aggregated="true" browsable="false"/>
+      <collection name="SecondaryTrackLinks" type="TrackLink" member="Primary" aggregated="true" browsable="false"/>
     </members>
     <index name="Tracker_TrackNumber_Timestamp" fields="Tracker;TrackNumber;Timestamp" unique="true"/>
     <index name="Tracker_Timestamp" fields="Tracker;Timestamp" range="true"/>
@@ -3484,7 +3508,8 @@
   <class name="Track" base="TrackBase">
     <members>
       <collection name="Values" type="TrackValue" member="Track" aggregated="true"/>
-      <collection name="Alarms" type="ZoneTrackAlarm" member="Track"/>
+      <collection name="Alarms" type="ZoneTrackAlarm" member="Track" aggregated="true"/>
+      <collection name="Alarms" type="ZoneTrackAlarm" member="RadarTrack" />
     </members>
   </class>
   <class name="Track3D" base="TrackBase">
@@ -3665,7 +3690,9 @@
       <timeseries name="LatitudeTimeseries" type="ViewLatitudeTimeseries" member="View" nullable="true" propertyname="Latitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="LongitudeTimeseries" type="ViewLongitudeTimeseries" member="View" nullable="true" propertyname="Longitude" propertytype="Double" propertynullable="true" browsable="false"/>
       <timeseries name="ZoomLevelTimeseries" type="ViewZoomLevelTimeseries" member="View" nullable="true" propertyname="ZoomLevel" propertytype="Double" propertynullable="true" browsable="false"/>
-      <collection name="Bookmarks" type="Bookmark" member="View"/>
+      <collection name="Bookmarks" type="Bookmark" member="View" aggregated="true"/>
+      <collection name="CameraLinks" type="ViewCameraLink" member="View" aggregated="true"/>
+      <collection name="TrackerLinks" type="ViewTrackerLink" member="View" aggregated="true"/>
     </members>
     <index name="Name" fields="Name" unique="true"/>
   </class>
@@ -3715,7 +3742,7 @@
       <rowversion name="RowVersion"/>
       <reference name="WeatherStation" type="WeatherStationDevice"/>
       <datetime name="Timestamp"/>
-      <reference name="Command" type="WeatherStationCommand"/>
+      <reference name="Command" type="WeatherStationCommand" member="Reply" nullable="true"/>
       <enum name="Status" type="DeviceCommandReplyStatus"/>
       <string name="Message" size="unlimited"/>
     </members>
@@ -3774,6 +3801,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Zone" type="Zone"/>
       <datetime name="Timestamp"/>
+      <collection name="VesselLinks" type="ZoneExceptionsVesselLink" member="ZoneExceptions" aggregated="true"/>
     </members>
     <index name="Zone_Timestamp" fields="Zone;Timestamp" range="true" unique="true"/>
     <index name="Timestamp" fields="Timestamp" range="true"/>
@@ -3794,7 +3822,7 @@
       <rowversion name="RowVersion"/>
       <reference name="Track" type="Track"/>
       <reference name="Zone" type="Zone"/>
-      <reference name="RadarTrack" type="Track"/>
+      <reference name="RadarTrack" type="Track" nullable="true"/>
       <datetime name="Timestamp"/>
       <double name="Latitude"/>
       <double name="Longitude"/>

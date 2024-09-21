@@ -1784,7 +1784,7 @@ CREATE OR ALTER PROCEDURE [AisUtcAndDateInquiryMessageUpdate]
   @Repeat [int],
   @Mmsi [uniqueidentifier],
   @Spare1 [int],
-  @DestinationMmsi [int],
+  @DestinationMmsi [uniqueidentifier],
   @Spare2 [int]
 
 AS

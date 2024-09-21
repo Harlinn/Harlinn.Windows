@@ -90,21 +90,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertAisDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisDeviceCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &aisDevice );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateAisDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisDeviceCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -112,7 +112,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &aisDevice );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -298,7 +298,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAidToNavigationReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationalAidType navigationalAidType, const FixedDBWideString<127>& name, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Int32 timestamp, bool offPosition, Int32 regionalReserved, Types::Raim raim, bool virtualAid, bool assigned, Int32 spare, const FixedDBWideString<127>& nameExtension )
+    BARRELMAN_EXPORT bool InsertAidToNavigationReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationalAidType navigationalAidType, const FixedDBWideString<127>& name, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Int32 timestamp, bool offPosition, Int32 regionalReserved, Types::Raim raim, bool virtualAid, bool assigned, Int32 spare, const FixedDBWideString<127>& nameExtension )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AidToNavigationReportMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -307,7 +307,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindEnumParameter( 7, &navigationalAidType );
         statement.BindFixedDBWideStringParameter( 8, name );
         statement.BindEnumParameter( 9, &positionAccuracy );
@@ -330,7 +330,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAidToNavigationReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationalAidType navigationalAidType, const FixedDBWideString<127>& name, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Int32 timestamp, bool offPosition, Int32 regionalReserved, Types::Raim raim, bool virtualAid, bool assigned, Int32 spare, const FixedDBWideString<127>& nameExtension )
+    BARRELMAN_EXPORT bool UpdateAidToNavigationReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationalAidType navigationalAidType, const FixedDBWideString<127>& name, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Int32 timestamp, bool offPosition, Int32 regionalReserved, Types::Raim raim, bool virtualAid, bool assigned, Int32 spare, const FixedDBWideString<127>& nameExtension )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AidToNavigationReportMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -340,7 +340,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindEnumParameter( 8, &navigationalAidType );
         statement.BindFixedDBWideStringParameter( 9, name );
         statement.BindEnumParameter( 10, &positionAccuracy );
@@ -380,7 +380,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisAddressedSafetyRelatedMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 sequenceNumber, const Guid& destinationMmsi, bool retransmitFlag, Int32 spare, const FixedDBWideString<127>& text )
+    BARRELMAN_EXPORT bool InsertAisAddressedSafetyRelatedMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 sequenceNumber, const DBGuid& destinationMmsi, bool retransmitFlag, Int32 spare, const FixedDBWideString<127>& text )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisAddressedSafetyRelatedMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -389,9 +389,9 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &sequenceNumber );
-        statement.BindGuidParameter( 8, &destinationMmsi );
+        statement.BindGuidParameter( 8, destinationMmsi );
         statement.BindBooleanParameter( 9, &retransmitFlag );
         statement.BindInt32Parameter( 10, &spare );
         statement.BindFixedDBWideStringParameter( 11, text );
@@ -399,7 +399,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisAddressedSafetyRelatedMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 sequenceNumber, const Guid& destinationMmsi, bool retransmitFlag, Int32 spare, const FixedDBWideString<127>& text )
+    BARRELMAN_EXPORT bool UpdateAisAddressedSafetyRelatedMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 sequenceNumber, const DBGuid& destinationMmsi, bool retransmitFlag, Int32 spare, const FixedDBWideString<127>& text )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisAddressedSafetyRelatedMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -409,9 +409,9 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &sequenceNumber );
-        statement.BindGuidParameter( 9, &destinationMmsi );
+        statement.BindGuidParameter( 9, destinationMmsi );
         statement.BindBooleanParameter( 10, &retransmitFlag );
         statement.BindInt32Parameter( 11, &spare );
         statement.BindFixedDBWideStringParameter( 12, text );
@@ -436,7 +436,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisBaseStationReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, const DateTime& timestamp, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisBaseStationReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, const DateTime& timestamp, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBaseStationReportMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -445,7 +445,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindDateTimeParameter( 7, timestamp );
         statement.BindEnumParameter( 8, &positionAccuracy );
         statement.BindDoubleParameter( 9, &longitude );
@@ -458,7 +458,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisBaseStationReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, const DateTime& timestamp, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisBaseStationReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, const DateTime& timestamp, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBaseStationReportMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -468,7 +468,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindDateTimeParameter( 8, timestamp );
         statement.BindEnumParameter( 9, &positionAccuracy );
         statement.BindDoubleParameter( 10, &longitude );
@@ -498,7 +498,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisBinaryAcknowledgeMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 sequenceNumber1, const Guid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
+    BARRELMAN_EXPORT bool InsertAisBinaryAcknowledgeMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 sequenceNumber1, const DBGuid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBinaryAcknowledgeMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -507,10 +507,10 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &spare );
         statement.BindInt32Parameter( 8, &sequenceNumber1 );
-        statement.BindGuidParameter( 9, &mmsi1 );
+        statement.BindGuidParameter( 9, mmsi1 );
         statement.BindInt32Parameter( 10, sequenceNumber2 );
         statement.BindGuidParameter( 11, mmsi2 );
         statement.BindInt32Parameter( 12, sequenceNumber3 );
@@ -521,7 +521,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisBinaryAcknowledgeMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 sequenceNumber1, const Guid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
+    BARRELMAN_EXPORT bool UpdateAisBinaryAcknowledgeMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 sequenceNumber1, const DBGuid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBinaryAcknowledgeMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -531,10 +531,10 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &spare );
         statement.BindInt32Parameter( 9, &sequenceNumber1 );
-        statement.BindGuidParameter( 10, &mmsi1 );
+        statement.BindGuidParameter( 10, mmsi1 );
         statement.BindInt32Parameter( 11, sequenceNumber2 );
         statement.BindGuidParameter( 12, mmsi2 );
         statement.BindInt32Parameter( 13, sequenceNumber3 );
@@ -562,7 +562,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisBinaryAddressedMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 sequenceNumber, const Guid& destinationMmsi, bool retransmitFlag, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
+    BARRELMAN_EXPORT bool InsertAisBinaryAddressedMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 sequenceNumber, const DBGuid& destinationMmsi, bool retransmitFlag, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBinaryAddressedMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -571,9 +571,9 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &sequenceNumber );
-        statement.BindGuidParameter( 8, &destinationMmsi );
+        statement.BindGuidParameter( 8, destinationMmsi );
         statement.BindBooleanParameter( 9, &retransmitFlag );
         statement.BindInt32Parameter( 10, &spare );
         statement.BindInt32Parameter( 11, &designatedAreaCode );
@@ -583,7 +583,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisBinaryAddressedMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 sequenceNumber, const Guid& destinationMmsi, bool retransmitFlag, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
+    BARRELMAN_EXPORT bool UpdateAisBinaryAddressedMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 sequenceNumber, const DBGuid& destinationMmsi, bool retransmitFlag, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBinaryAddressedMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -593,9 +593,9 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &sequenceNumber );
-        statement.BindGuidParameter( 9, &destinationMmsi );
+        statement.BindGuidParameter( 9, destinationMmsi );
         statement.BindBooleanParameter( 10, &retransmitFlag );
         statement.BindInt32Parameter( 11, &spare );
         statement.BindInt32Parameter( 12, &designatedAreaCode );
@@ -622,7 +622,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisBinaryBroadcastMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
+    BARRELMAN_EXPORT bool InsertAisBinaryBroadcastMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBinaryBroadcastMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -631,7 +631,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &spare );
         statement.BindInt32Parameter( 8, &designatedAreaCode );
         statement.BindInt32Parameter( 9, &functionalId );
@@ -640,7 +640,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisBinaryBroadcastMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
+    BARRELMAN_EXPORT bool UpdateAisBinaryBroadcastMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 designatedAreaCode, Int32 functionalId, const WideString& data )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisBinaryBroadcastMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -650,7 +650,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &spare );
         statement.BindInt32Parameter( 9, &designatedAreaCode );
         statement.BindInt32Parameter( 10, &functionalId );
@@ -676,7 +676,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisDataLinkManagementMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 offset1, Int32 reservedSlots1, Int32 timeout1, Int32 increment1, const DBInt32& offset2, const DBInt32& reservedSlots2, const DBInt32& timeout2, const DBInt32& increment2, const DBInt32& offset3, const DBInt32& reservedSlots3, const DBInt32& timeout3, const DBInt32& increment3, const DBInt32& offset4, const DBInt32& reservedSlots4, const DBInt32& timeout4, const DBInt32& increment4 )
+    BARRELMAN_EXPORT bool InsertAisDataLinkManagementMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 offset1, Int32 reservedSlots1, Int32 timeout1, Int32 increment1, const DBInt32& offset2, const DBInt32& reservedSlots2, const DBInt32& timeout2, const DBInt32& increment2, const DBInt32& offset3, const DBInt32& reservedSlots3, const DBInt32& timeout3, const DBInt32& increment3, const DBInt32& offset4, const DBInt32& reservedSlots4, const DBInt32& timeout4, const DBInt32& increment4 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisDataLinkManagementMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -685,7 +685,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &spare );
         statement.BindInt32Parameter( 8, &offset1 );
         statement.BindInt32Parameter( 9, &reservedSlots1 );
@@ -707,7 +707,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisDataLinkManagementMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 offset1, Int32 reservedSlots1, Int32 timeout1, Int32 increment1, const DBInt32& offset2, const DBInt32& reservedSlots2, const DBInt32& timeout2, const DBInt32& increment2, const DBInt32& offset3, const DBInt32& reservedSlots3, const DBInt32& timeout3, const DBInt32& increment3, const DBInt32& offset4, const DBInt32& reservedSlots4, const DBInt32& timeout4, const DBInt32& increment4 )
+    BARRELMAN_EXPORT bool UpdateAisDataLinkManagementMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 offset1, Int32 reservedSlots1, Int32 timeout1, Int32 increment1, const DBInt32& offset2, const DBInt32& reservedSlots2, const DBInt32& timeout2, const DBInt32& increment2, const DBInt32& offset3, const DBInt32& reservedSlots3, const DBInt32& timeout3, const DBInt32& increment3, const DBInt32& offset4, const DBInt32& reservedSlots4, const DBInt32& timeout4, const DBInt32& increment4 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisDataLinkManagementMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -717,7 +717,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &spare );
         statement.BindInt32Parameter( 9, &offset1 );
         statement.BindInt32Parameter( 10, &reservedSlots1 );
@@ -756,7 +756,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisExtendedClassBCsPositionReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, const Guid& name, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Types::Raim raim, bool dataTerminalReady, bool assigned, Int32 spare )
+    BARRELMAN_EXPORT bool InsertAisExtendedClassBCsPositionReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, const DBGuid& name, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Types::Raim raim, bool dataTerminalReady, bool assigned, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisExtendedClassBCsPositionReportMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -765,7 +765,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &reserved );
         statement.BindDoubleParameter( 8, &speedOverGround );
         statement.BindEnumParameter( 9, &positionAccuracy );
@@ -775,7 +775,7 @@ namespace Barrelman::Database
         statement.BindInt32Parameter( 13, trueHeading );
         statement.BindInt32Parameter( 14, &timestamp );
         statement.BindInt32Parameter( 15, &regionalReserved );
-        statement.BindGuidParameter( 16, &name );
+        statement.BindGuidParameter( 16, name );
         statement.BindEnumParameter( 17, &shipType );
         statement.BindInt32Parameter( 18, &dimensionToBow );
         statement.BindInt32Parameter( 19, &dimensionToStern );
@@ -790,7 +790,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisExtendedClassBCsPositionReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, const Guid& name, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Types::Raim raim, bool dataTerminalReady, bool assigned, Int32 spare )
+    BARRELMAN_EXPORT bool UpdateAisExtendedClassBCsPositionReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, const DBGuid& name, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, Types::Raim raim, bool dataTerminalReady, bool assigned, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisExtendedClassBCsPositionReportMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -800,7 +800,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &reserved );
         statement.BindDoubleParameter( 9, &speedOverGround );
         statement.BindEnumParameter( 10, &positionAccuracy );
@@ -810,7 +810,7 @@ namespace Barrelman::Database
         statement.BindInt32Parameter( 14, trueHeading );
         statement.BindInt32Parameter( 15, &timestamp );
         statement.BindInt32Parameter( 16, &regionalReserved );
-        statement.BindGuidParameter( 17, &name );
+        statement.BindGuidParameter( 17, name );
         statement.BindEnumParameter( 18, &shipType );
         statement.BindInt32Parameter( 19, &dimensionToBow );
         statement.BindInt32Parameter( 20, &dimensionToStern );
@@ -842,7 +842,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisInterrogationMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, const Guid& interrogatedMmsi, Types::AisMessageType firstMessageType, Int32 firstSlotOffset, const DBEnum<Types::AisMessageType>& secondMessageType, const DBInt32& secondSlotOffset, const DBGuid& secondStationInterrogationMmsi, const DBEnum<Types::AisMessageType>& secondStationFirstMessageType, const DBInt32& secondStationFirstSlotOffset )
+    BARRELMAN_EXPORT bool InsertAisInterrogationMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, const DBGuid& interrogatedMmsi, Types::AisMessageType firstMessageType, Int32 firstSlotOffset, const DBEnum<Types::AisMessageType>& secondMessageType, const DBInt32& secondSlotOffset, const DBGuid& secondStationInterrogationMmsi, const DBEnum<Types::AisMessageType>& secondStationFirstMessageType, const DBInt32& secondStationFirstSlotOffset )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisInterrogationMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -851,8 +851,8 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
-        statement.BindGuidParameter( 7, &interrogatedMmsi );
+        statement.BindGuidParameter( 6, mmsi );
+        statement.BindGuidParameter( 7, interrogatedMmsi );
         statement.BindEnumParameter( 8, &firstMessageType );
         statement.BindInt32Parameter( 9, &firstSlotOffset );
         statement.BindEnumParameter( 10, secondMessageType );
@@ -864,7 +864,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisInterrogationMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, const Guid& interrogatedMmsi, Types::AisMessageType firstMessageType, Int32 firstSlotOffset, const DBEnum<Types::AisMessageType>& secondMessageType, const DBInt32& secondSlotOffset, const DBGuid& secondStationInterrogationMmsi, const DBEnum<Types::AisMessageType>& secondStationFirstMessageType, const DBInt32& secondStationFirstSlotOffset )
+    BARRELMAN_EXPORT bool UpdateAisInterrogationMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, const DBGuid& interrogatedMmsi, Types::AisMessageType firstMessageType, Int32 firstSlotOffset, const DBEnum<Types::AisMessageType>& secondMessageType, const DBInt32& secondSlotOffset, const DBGuid& secondStationInterrogationMmsi, const DBEnum<Types::AisMessageType>& secondStationFirstMessageType, const DBInt32& secondStationFirstSlotOffset )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisInterrogationMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -874,8 +874,8 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
-        statement.BindGuidParameter( 8, &interrogatedMmsi );
+        statement.BindGuidParameter( 7, mmsi );
+        statement.BindGuidParameter( 8, interrogatedMmsi );
         statement.BindEnumParameter( 9, &firstMessageType );
         statement.BindInt32Parameter( 10, &firstSlotOffset );
         statement.BindEnumParameter( 11, secondMessageType );
@@ -904,7 +904,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisPositionReportClassAAssignedScheduleMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisPositionReportClassAAssignedScheduleMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportClassAAssignedScheduleMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -913,7 +913,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindEnumParameter( 7, &navigationStatus );
         statement.BindInt32Parameter( 8, rateOfTurn );
         statement.BindDoubleParameter( 9, &speedOverGround );
@@ -931,7 +931,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisPositionReportClassAAssignedScheduleMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisPositionReportClassAAssignedScheduleMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportClassAAssignedScheduleMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -941,7 +941,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindEnumParameter( 8, &navigationStatus );
         statement.BindInt32Parameter( 9, rateOfTurn );
         statement.BindDoubleParameter( 10, &speedOverGround );
@@ -976,7 +976,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisPositionReportClassAMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisPositionReportClassAMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportClassAMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -985,7 +985,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindEnumParameter( 7, &navigationStatus );
         statement.BindInt32Parameter( 8, rateOfTurn );
         statement.BindDoubleParameter( 9, &speedOverGround );
@@ -1003,7 +1003,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisPositionReportClassAMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisPositionReportClassAMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportClassAMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1013,7 +1013,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindEnumParameter( 8, &navigationStatus );
         statement.BindInt32Parameter( 9, rateOfTurn );
         statement.BindDoubleParameter( 10, &speedOverGround );
@@ -1048,7 +1048,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisPositionReportClassAResponseToInterrogationMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisPositionReportClassAResponseToInterrogationMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportClassAResponseToInterrogationMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1057,7 +1057,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindEnumParameter( 7, &navigationStatus );
         statement.BindInt32Parameter( 8, rateOfTurn );
         statement.BindDoubleParameter( 9, &speedOverGround );
@@ -1075,7 +1075,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisPositionReportClassAResponseToInterrogationMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisPositionReportClassAResponseToInterrogationMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::NavigationStatus navigationStatus, const DBInt32& rateOfTurn, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Types::ManeuverIndicator maneuverIndicator, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportClassAResponseToInterrogationMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1085,7 +1085,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindEnumParameter( 8, &navigationStatus );
         statement.BindInt32Parameter( 9, rateOfTurn );
         statement.BindDoubleParameter( 10, &speedOverGround );
@@ -1120,7 +1120,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisPositionReportForLongRangeApplicationsMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::PositionAccuracy positionAccuracy, Types::Raim raim, Types::NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types::GnssPositionStatus gnssPositionStatus, Int32 spare )
+    BARRELMAN_EXPORT bool InsertAisPositionReportForLongRangeApplicationsMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::PositionAccuracy positionAccuracy, Types::Raim raim, Types::NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types::GnssPositionStatus gnssPositionStatus, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportForLongRangeApplicationsMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1129,7 +1129,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindEnumParameter( 7, &positionAccuracy );
         statement.BindEnumParameter( 8, &raim );
         statement.BindEnumParameter( 9, &navigationStatus );
@@ -1143,7 +1143,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisPositionReportForLongRangeApplicationsMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Types::PositionAccuracy positionAccuracy, Types::Raim raim, Types::NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types::GnssPositionStatus gnssPositionStatus, Int32 spare )
+    BARRELMAN_EXPORT bool UpdateAisPositionReportForLongRangeApplicationsMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Types::PositionAccuracy positionAccuracy, Types::Raim raim, Types::NavigationStatus navigationStatus, double longitude, double latitude, double speedOverGround, double courseOverGround, Types::GnssPositionStatus gnssPositionStatus, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisPositionReportForLongRangeApplicationsMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1153,7 +1153,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindEnumParameter( 8, &positionAccuracy );
         statement.BindEnumParameter( 9, &raim );
         statement.BindEnumParameter( 10, &navigationStatus );
@@ -1184,7 +1184,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisSafetyRelatedAcknowledgmentMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 sequenceNumber1, const Guid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
+    BARRELMAN_EXPORT bool InsertAisSafetyRelatedAcknowledgmentMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 sequenceNumber1, const DBGuid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisSafetyRelatedAcknowledgmentMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1193,10 +1193,10 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &spare );
         statement.BindInt32Parameter( 8, &sequenceNumber1 );
-        statement.BindGuidParameter( 9, &mmsi1 );
+        statement.BindGuidParameter( 9, mmsi1 );
         statement.BindInt32Parameter( 10, sequenceNumber2 );
         statement.BindGuidParameter( 11, mmsi2 );
         statement.BindInt32Parameter( 12, sequenceNumber3 );
@@ -1207,7 +1207,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisSafetyRelatedAcknowledgmentMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare, Int32 sequenceNumber1, const Guid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
+    BARRELMAN_EXPORT bool UpdateAisSafetyRelatedAcknowledgmentMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare, Int32 sequenceNumber1, const DBGuid& mmsi1, const DBInt32& sequenceNumber2, const DBGuid& mmsi2, const DBInt32& sequenceNumber3, const DBGuid& mmsi3, const DBInt32& sequenceNumber4, const DBGuid& mmsi4 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisSafetyRelatedAcknowledgmentMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1217,10 +1217,10 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &spare );
         statement.BindInt32Parameter( 9, &sequenceNumber1 );
-        statement.BindGuidParameter( 10, &mmsi1 );
+        statement.BindGuidParameter( 10, mmsi1 );
         statement.BindInt32Parameter( 11, sequenceNumber2 );
         statement.BindGuidParameter( 12, mmsi2 );
         statement.BindInt32Parameter( 13, sequenceNumber3 );
@@ -1248,7 +1248,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisStandardClassBCsPositionReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisStandardClassBCsPositionReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStandardClassBCsPositionReportMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1257,7 +1257,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &reserved );
         statement.BindDoubleParameter( 8, &speedOverGround );
         statement.BindEnumParameter( 9, &positionAccuracy );
@@ -1279,7 +1279,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisStandardClassBCsPositionReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisStandardClassBCsPositionReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 reserved, double speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, const DBInt32& trueHeading, Int32 timestamp, Int32 regionalReserved, bool isCsUnit, bool hasDisplay, bool hasDscCapability, bool band, bool canAcceptMessage22, bool assigned, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStandardClassBCsPositionReportMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1289,7 +1289,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &reserved );
         statement.BindDoubleParameter( 9, &speedOverGround );
         statement.BindEnumParameter( 10, &positionAccuracy );
@@ -1328,7 +1328,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisStandardSarAircraftPositionReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 altitude, Int32 speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, Int32 timestamp, Int32 reserved, bool dataTerminalReady, Int32 spare, bool assigned, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisStandardSarAircraftPositionReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 altitude, Int32 speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, Int32 timestamp, Int32 reserved, bool dataTerminalReady, Int32 spare, bool assigned, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStandardSarAircraftPositionReportMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1337,7 +1337,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &altitude );
         statement.BindInt32Parameter( 8, &speedOverGround );
         statement.BindEnumParameter( 9, &positionAccuracy );
@@ -1355,7 +1355,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisStandardSarAircraftPositionReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 altitude, Int32 speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, Int32 timestamp, Int32 reserved, bool dataTerminalReady, Int32 spare, bool assigned, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisStandardSarAircraftPositionReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 altitude, Int32 speedOverGround, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, double courseOverGround, Int32 timestamp, Int32 reserved, bool dataTerminalReady, Int32 spare, bool assigned, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStandardSarAircraftPositionReportMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1365,7 +1365,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &altitude );
         statement.BindInt32Parameter( 9, &speedOverGround );
         statement.BindEnumParameter( 10, &positionAccuracy );
@@ -1400,7 +1400,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisStaticAndVoyageRelatedDataMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 aisVersion, const Guid& imoNumber, const Guid& callsign, const Guid& shipName, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, const DBDateTime& estimatedTimeOfArrival, double draught, const FixedDBWideString<127>& destination, bool dataTerminalReady, Int32 spare )
+    BARRELMAN_EXPORT bool InsertAisStaticAndVoyageRelatedDataMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 aisVersion, const DBGuid& imoNumber, const DBGuid& callsign, const DBGuid& shipName, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, const DBDateTime& estimatedTimeOfArrival, double draught, const FixedDBWideString<127>& destination, bool dataTerminalReady, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticAndVoyageRelatedDataMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1409,11 +1409,11 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &aisVersion );
-        statement.BindGuidParameter( 8, &imoNumber );
-        statement.BindGuidParameter( 9, &callsign );
-        statement.BindGuidParameter( 10, &shipName );
+        statement.BindGuidParameter( 8, imoNumber );
+        statement.BindGuidParameter( 9, callsign );
+        statement.BindGuidParameter( 10, shipName );
         statement.BindEnumParameter( 11, &shipType );
         statement.BindInt32Parameter( 12, &dimensionToBow );
         statement.BindInt32Parameter( 13, &dimensionToStern );
@@ -1429,7 +1429,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisStaticAndVoyageRelatedDataMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 aisVersion, const Guid& imoNumber, const Guid& callsign, const Guid& shipName, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, const DBDateTime& estimatedTimeOfArrival, double draught, const FixedDBWideString<127>& destination, bool dataTerminalReady, Int32 spare )
+    BARRELMAN_EXPORT bool UpdateAisStaticAndVoyageRelatedDataMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 aisVersion, const DBGuid& imoNumber, const DBGuid& callsign, const DBGuid& shipName, Types::ShipType shipType, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, Types::PositionFixType positionFixType, const DBDateTime& estimatedTimeOfArrival, double draught, const FixedDBWideString<127>& destination, bool dataTerminalReady, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticAndVoyageRelatedDataMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1439,11 +1439,11 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &aisVersion );
-        statement.BindGuidParameter( 9, &imoNumber );
-        statement.BindGuidParameter( 10, &callsign );
-        statement.BindGuidParameter( 11, &shipName );
+        statement.BindGuidParameter( 9, imoNumber );
+        statement.BindGuidParameter( 10, callsign );
+        statement.BindGuidParameter( 11, shipName );
         statement.BindEnumParameter( 12, &shipType );
         statement.BindInt32Parameter( 13, &dimensionToBow );
         statement.BindInt32Parameter( 14, &dimensionToStern );
@@ -1476,7 +1476,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisStaticDataReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 partNumber )
+    BARRELMAN_EXPORT bool InsertAisStaticDataReportMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 partNumber )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticDataReportMessageInsert]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1485,13 +1485,13 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &partNumber );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisStaticDataReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 partNumber )
+    BARRELMAN_EXPORT bool UpdateAisStaticDataReportMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 partNumber )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticDataReportMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1501,7 +1501,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &partNumber );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -1524,7 +1524,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisStaticDataReportPartAMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 partNumber, const Guid& shipName, Int32 spare )
+    BARRELMAN_EXPORT bool InsertAisStaticDataReportPartAMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 partNumber, const DBGuid& shipName, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticDataReportPartAMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1533,15 +1533,15 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &partNumber );
-        statement.BindGuidParameter( 8, &shipName );
+        statement.BindGuidParameter( 8, shipName );
         statement.BindInt32Parameter( 9, &spare );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisStaticDataReportPartAMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 partNumber, const Guid& shipName, Int32 spare )
+    BARRELMAN_EXPORT bool UpdateAisStaticDataReportPartAMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 partNumber, const DBGuid& shipName, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticDataReportPartAMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1551,9 +1551,9 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &partNumber );
-        statement.BindGuidParameter( 9, &shipName );
+        statement.BindGuidParameter( 9, shipName );
         statement.BindInt32Parameter( 10, &spare );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -1576,7 +1576,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisStaticDataReportPartBMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 partNumber, Types::ShipType shipType, const FixedDBWideString<127>& vendorId, Int32 unitModelCode, Int32 serialNumber, const Guid& callsign, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, const DBGuid& mothershipMmsi, Types::PositionFixType positionFixType, Int32 spare )
+    BARRELMAN_EXPORT bool InsertAisStaticDataReportPartBMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 partNumber, Types::ShipType shipType, const FixedDBWideString<127>& vendorId, Int32 unitModelCode, Int32 serialNumber, const DBGuid& callsign, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, const DBGuid& mothershipMmsi, Types::PositionFixType positionFixType, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticDataReportPartBMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1585,13 +1585,13 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &partNumber );
         statement.BindEnumParameter( 8, &shipType );
         statement.BindFixedDBWideStringParameter( 9, vendorId );
         statement.BindInt32Parameter( 10, &unitModelCode );
         statement.BindInt32Parameter( 11, &serialNumber );
-        statement.BindGuidParameter( 12, &callsign );
+        statement.BindGuidParameter( 12, callsign );
         statement.BindInt32Parameter( 13, &dimensionToBow );
         statement.BindInt32Parameter( 14, &dimensionToStern );
         statement.BindInt32Parameter( 15, &dimensionToPort );
@@ -1603,7 +1603,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisStaticDataReportPartBMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 partNumber, Types::ShipType shipType, const FixedDBWideString<127>& vendorId, Int32 unitModelCode, Int32 serialNumber, const Guid& callsign, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, const DBGuid& mothershipMmsi, Types::PositionFixType positionFixType, Int32 spare )
+    BARRELMAN_EXPORT bool UpdateAisStaticDataReportPartBMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 partNumber, Types::ShipType shipType, const FixedDBWideString<127>& vendorId, Int32 unitModelCode, Int32 serialNumber, const DBGuid& callsign, Int32 dimensionToBow, Int32 dimensionToStern, Int32 dimensionToPort, Int32 dimensionToStarboard, const DBGuid& mothershipMmsi, Types::PositionFixType positionFixType, Int32 spare )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisStaticDataReportPartBMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1613,13 +1613,13 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &partNumber );
         statement.BindEnumParameter( 9, &shipType );
         statement.BindFixedDBWideStringParameter( 10, vendorId );
         statement.BindInt32Parameter( 11, &unitModelCode );
         statement.BindInt32Parameter( 12, &serialNumber );
-        statement.BindGuidParameter( 13, &callsign );
+        statement.BindGuidParameter( 13, callsign );
         statement.BindInt32Parameter( 14, &dimensionToBow );
         statement.BindInt32Parameter( 15, &dimensionToStern );
         statement.BindInt32Parameter( 16, &dimensionToPort );
@@ -1648,7 +1648,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisUtcAndDateInquiryMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare1, Int32 destinationMmsi, Int32 spare2 )
+    BARRELMAN_EXPORT bool InsertAisUtcAndDateInquiryMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare1, const DBGuid& destinationMmsi, Int32 spare2 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisUtcAndDateInquiryMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1657,15 +1657,15 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindInt32Parameter( 7, &spare1 );
-        statement.BindInt32Parameter( 8, &destinationMmsi );
+        statement.BindGuidParameter( 8, destinationMmsi );
         statement.BindInt32Parameter( 9, &spare2 );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisUtcAndDateInquiryMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, Int32 spare1, Int32 destinationMmsi, Int32 spare2 )
+    BARRELMAN_EXPORT bool UpdateAisUtcAndDateInquiryMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, Int32 spare1, const DBGuid& destinationMmsi, Int32 spare2 )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisUtcAndDateInquiryMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1675,9 +1675,9 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindInt32Parameter( 8, &spare1 );
-        statement.BindInt32Parameter( 9, &destinationMmsi );
+        statement.BindGuidParameter( 9, destinationMmsi );
         statement.BindInt32Parameter( 10, &spare2 );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -1700,7 +1700,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisUtcAndDateResponseMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, const DateTime& datetime, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool InsertAisUtcAndDateResponseMessage( const ODBC::Connection& connection, Guid& id, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, const DateTime& datetime, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisUtcAndDateResponseMessageInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1709,7 +1709,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 3, receivedTimestamp );
         statement.BindInt64Parameter( 4, &messageSequenceNumber );
         statement.BindInt32Parameter( 5, &repeat );
-        statement.BindGuidParameter( 6, &mmsi );
+        statement.BindGuidParameter( 6, mmsi );
         statement.BindDateTimeParameter( 7, datetime );
         statement.BindEnumParameter( 8, &positionAccuracy );
         statement.BindDoubleParameter( 9, &longitude );
@@ -1722,7 +1722,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisUtcAndDateResponseMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const Guid& mmsi, const DateTime& datetime, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
+    BARRELMAN_EXPORT bool UpdateAisUtcAndDateResponseMessage( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& aisDevice, const DateTime& receivedTimestamp, Int64 messageSequenceNumber, Int32 repeat, const DBGuid& mmsi, const DateTime& datetime, Types::PositionAccuracy positionAccuracy, double longitude, double latitude, Types::PositionFixType positionFixType, Int32 spare, Types::Raim raim, Int32 radioStatus )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisUtcAndDateResponseMessageUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -1732,7 +1732,7 @@ namespace Barrelman::Database
         statement.BindDateTimeParameter( 4, receivedTimestamp );
         statement.BindInt64Parameter( 5, &messageSequenceNumber );
         statement.BindInt32Parameter( 6, &repeat );
-        statement.BindGuidParameter( 7, &mmsi );
+        statement.BindGuidParameter( 7, mmsi );
         statement.BindDateTimeParameter( 8, datetime );
         statement.BindEnumParameter( 9, &positionAccuracy );
         statement.BindDoubleParameter( 10, &longitude );
@@ -2784,14 +2784,14 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertCameraCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message, double panAngle, double tiltAngle, double focalLength )
+    BARRELMAN_EXPORT bool InsertCameraCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message, double panAngle, double tiltAngle, double focalLength )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [CameraCommandReplyInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &camera );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.BindDoubleParameter( 7, &panAngle );
@@ -2801,7 +2801,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateCameraCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message, double panAngle, double tiltAngle, double focalLength )
+    BARRELMAN_EXPORT bool UpdateCameraCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message, double panAngle, double tiltAngle, double focalLength )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [CameraCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -2809,7 +2809,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &camera );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.BindDoubleParameter( 8, &panAngle );
@@ -3072,13 +3072,13 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertCameraStatus( const ODBC::Connection& connection, Guid& id, const Guid& camera, const Guid& track, const DateTime& timestamp, Types::CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types::CameraMoveStatus panTiltMoveStatus, Types::CameraMoveStatus zoomMoveStatus, Types::CameraPanTiltMode velocityPanTiltMode, const DBDouble& panVelocity, const DBDouble& tiltVelocity, Types::CameraFocalLengthMode velocityFocalLengthMode, const DBDouble& zoomVelocity, Types::CameraFeatures activeFeatures, const WideString& error )
+    BARRELMAN_EXPORT bool InsertCameraStatus( const ODBC::Connection& connection, Guid& id, const Guid& camera, const DBGuid& track, const DateTime& timestamp, Types::CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types::CameraMoveStatus panTiltMoveStatus, Types::CameraMoveStatus zoomMoveStatus, Types::CameraPanTiltMode velocityPanTiltMode, const DBDouble& panVelocity, const DBDouble& tiltVelocity, Types::CameraFocalLengthMode velocityFocalLengthMode, const DBDouble& zoomVelocity, Types::CameraFeatures activeFeatures, const WideString& error )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [CameraStatusInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &camera );
-        statement.BindGuidParameter( 3, &track );
+        statement.BindGuidParameter( 3, track );
         statement.BindDateTimeParameter( 4, timestamp );
         statement.BindEnumParameter( 5, &positionPanTiltMode );
         statement.BindDoubleParameter( 6, &panAngle );
@@ -3098,14 +3098,14 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateCameraStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const Guid& track, const DateTime& timestamp, Types::CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types::CameraMoveStatus panTiltMoveStatus, Types::CameraMoveStatus zoomMoveStatus, Types::CameraPanTiltMode velocityPanTiltMode, const DBDouble& panVelocity, const DBDouble& tiltVelocity, Types::CameraFocalLengthMode velocityFocalLengthMode, const DBDouble& zoomVelocity, Types::CameraFeatures activeFeatures, const WideString& error )
+    BARRELMAN_EXPORT bool UpdateCameraStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& camera, const DBGuid& track, const DateTime& timestamp, Types::CameraPanTiltMode positionPanTiltMode, double panAngle, double tiltAngle, Types::CameraFocalLengthMode positionFocalLengthMode, double focalLength, Types::CameraMoveStatus panTiltMoveStatus, Types::CameraMoveStatus zoomMoveStatus, Types::CameraPanTiltMode velocityPanTiltMode, const DBDouble& panVelocity, const DBDouble& tiltVelocity, Types::CameraFocalLengthMode velocityFocalLengthMode, const DBDouble& zoomVelocity, Types::CameraFeatures activeFeatures, const WideString& error )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [CameraStatusUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &camera );
-        statement.BindGuidParameter( 4, &track );
+        statement.BindGuidParameter( 4, track );
         statement.BindDateTimeParameter( 5, timestamp );
         statement.BindEnumParameter( 6, &positionPanTiltMode );
         statement.BindDoubleParameter( 7, &panAngle );
@@ -3306,24 +3306,24 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertCatalog( const ODBC::Connection& connection, Guid& id, const Guid& catalog, const FixedDBWideString<127>& name )
+    BARRELMAN_EXPORT bool InsertCatalog( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [CatalogInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
-        statement.BindGuidParameter( 2, &catalog );
+        statement.BindGuidParameter( 2, catalog );
         statement.BindFixedDBWideStringParameter( 3, name );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateCatalog( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& catalog, const FixedDBWideString<127>& name )
+    BARRELMAN_EXPORT bool UpdateCatalog( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [CatalogUpdate]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
-        statement.BindGuidParameter( 3, &catalog );
+        statement.BindGuidParameter( 3, catalog );
         statement.BindFixedDBWideStringParameter( 4, name );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
@@ -3346,27 +3346,27 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertElement( const ODBC::Connection& connection, Guid& id, const Guid& catalog, const FixedDBWideString<127>& name, const Guid& elementType )
+    BARRELMAN_EXPORT bool InsertElement( const ODBC::Connection& connection, Guid& id, const DBGuid& catalog, const FixedDBWideString<127>& name, const DBGuid& elementType )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ElementInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
-        statement.BindGuidParameter( 2, &catalog );
+        statement.BindGuidParameter( 2, catalog );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &elementType );
+        statement.BindGuidParameter( 4, elementType );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateElement( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& catalog, const FixedDBWideString<127>& name, const Guid& elementType )
+    BARRELMAN_EXPORT bool UpdateElement( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const DBGuid& catalog, const FixedDBWideString<127>& name, const DBGuid& elementType )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ElementUpdate]( ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
-        statement.BindGuidParameter( 3, &catalog );
+        statement.BindGuidParameter( 3, catalog );
         statement.BindFixedDBWideStringParameter( 4, name );
-        statement.BindGuidParameter( 5, &elementType );
+        statement.BindGuidParameter( 5, elementType );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -3850,21 +3850,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertGNSSDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& gNSSDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertGNSSDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& gNSSDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GNSSDeviceCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &gNSSDevice );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateGNSSDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gNSSDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateGNSSDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gNSSDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GNSSDeviceCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -3872,7 +3872,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &gNSSDevice );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -4036,21 +4036,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertGyroDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& gyroDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertGyroDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& gyroDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GyroDeviceCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &gyroDevice );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateGyroDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gyroDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateGyroDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& gyroDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GyroDeviceCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -4058,7 +4058,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &gyroDevice );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -4412,25 +4412,25 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertBaseStation( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type )
+    BARRELMAN_EXPORT bool InsertBaseStation( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& type )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [BaseStationInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindGuidParameter( 3, &type );
+        statement.BindGuidParameter( 3, type );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateBaseStation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type )
+    BARRELMAN_EXPORT bool UpdateBaseStation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& type )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [BaseStationUpdate]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &type );
+        statement.BindGuidParameter( 4, type );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -4546,7 +4546,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertGyroDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& headingTrueNorthTimeseries, const DBGuid& headingMagneticNorthTimeseries, const DBGuid& pitchTimeseries, const DBGuid& rateOfTurnTimeseries, const DBGuid& rollTimeseries, const DBGuid& courseTimeseries, const DBGuid& speedTimeseries, const Guid& gNSSDevice )
+    BARRELMAN_EXPORT bool InsertGyroDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& headingTrueNorthTimeseries, const DBGuid& headingMagneticNorthTimeseries, const DBGuid& pitchTimeseries, const DBGuid& rateOfTurnTimeseries, const DBGuid& rollTimeseries, const DBGuid& courseTimeseries, const DBGuid& speedTimeseries, const DBGuid& gNSSDevice )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GyroDeviceInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -4562,12 +4562,12 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 10, rollTimeseries );
         statement.BindGuidParameter( 11, courseTimeseries );
         statement.BindGuidParameter( 12, speedTimeseries );
-        statement.BindGuidParameter( 13, &gNSSDevice );
+        statement.BindGuidParameter( 13, gNSSDevice );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateGyroDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& headingTrueNorthTimeseries, const DBGuid& headingMagneticNorthTimeseries, const DBGuid& pitchTimeseries, const DBGuid& rateOfTurnTimeseries, const DBGuid& rollTimeseries, const DBGuid& courseTimeseries, const DBGuid& speedTimeseries, const Guid& gNSSDevice )
+    BARRELMAN_EXPORT bool UpdateGyroDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& headingTrueNorthTimeseries, const DBGuid& headingMagneticNorthTimeseries, const DBGuid& pitchTimeseries, const DBGuid& rateOfTurnTimeseries, const DBGuid& rollTimeseries, const DBGuid& courseTimeseries, const DBGuid& speedTimeseries, const DBGuid& gNSSDevice )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GyroDeviceUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -4584,7 +4584,7 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 11, rollTimeseries );
         statement.BindGuidParameter( 12, courseTimeseries );
         statement.BindGuidParameter( 13, speedTimeseries );
-        statement.BindGuidParameter( 14, &gNSSDevice );
+        statement.BindGuidParameter( 14, gNSSDevice );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -4926,7 +4926,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertWeatherStationDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& barometricPressureTimeseries, const DBGuid& airTemperatureTimeseries, const DBGuid& waterTemperatureTimeseries, const DBGuid& relativeHumidityTimeseries, const DBGuid& absoluteHumidityTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& windDirectionTimeseries, const DBGuid& windSpeedTimeseries, const Guid& gyro )
+    BARRELMAN_EXPORT bool InsertWeatherStationDevice( const ODBC::Connection& connection, Guid& id, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& barometricPressureTimeseries, const DBGuid& airTemperatureTimeseries, const DBGuid& waterTemperatureTimeseries, const DBGuid& relativeHumidityTimeseries, const DBGuid& absoluteHumidityTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& windDirectionTimeseries, const DBGuid& windSpeedTimeseries, const DBGuid& gyro )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [WeatherStationDeviceInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -4943,12 +4943,12 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 11, dewPointTimeseries );
         statement.BindGuidParameter( 12, windDirectionTimeseries );
         statement.BindGuidParameter( 13, windSpeedTimeseries );
-        statement.BindGuidParameter( 14, &gyro );
+        statement.BindGuidParameter( 14, gyro );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateWeatherStationDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& barometricPressureTimeseries, const DBGuid& airTemperatureTimeseries, const DBGuid& waterTemperatureTimeseries, const DBGuid& relativeHumidityTimeseries, const DBGuid& absoluteHumidityTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& windDirectionTimeseries, const DBGuid& windSpeedTimeseries, const Guid& gyro )
+    BARRELMAN_EXPORT bool UpdateWeatherStationDevice( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& host, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& enabledTimeseries, const DBGuid& barometricPressureTimeseries, const DBGuid& airTemperatureTimeseries, const DBGuid& waterTemperatureTimeseries, const DBGuid& relativeHumidityTimeseries, const DBGuid& absoluteHumidityTimeseries, const DBGuid& dewPointTimeseries, const DBGuid& windDirectionTimeseries, const DBGuid& windSpeedTimeseries, const DBGuid& gyro )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [WeatherStationDeviceUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -4966,7 +4966,7 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 12, dewPointTimeseries );
         statement.BindGuidParameter( 13, windDirectionTimeseries );
         statement.BindGuidParameter( 14, windSpeedTimeseries );
-        statement.BindGuidParameter( 15, &gyro );
+        statement.BindGuidParameter( 15, gyro );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -4988,13 +4988,13 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertFacility( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type, double longitude, double latitude, double altitude )
+    BARRELMAN_EXPORT bool InsertFacility( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& type, double longitude, double latitude, double altitude )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [FacilityInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindGuidParameter( 3, &type );
+        statement.BindGuidParameter( 3, type );
         statement.BindDoubleParameter( 4, &longitude );
         statement.BindDoubleParameter( 5, &latitude );
         statement.BindDoubleParameter( 6, &altitude );
@@ -5002,14 +5002,14 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateFacility( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type, double longitude, double latitude, double altitude )
+    BARRELMAN_EXPORT bool UpdateFacility( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& type, double longitude, double latitude, double altitude )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [FacilityUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &type );
+        statement.BindGuidParameter( 4, type );
         statement.BindDoubleParameter( 5, &longitude );
         statement.BindDoubleParameter( 6, &latitude );
         statement.BindDoubleParameter( 7, &altitude );
@@ -5034,25 +5034,25 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAircraft( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type )
+    BARRELMAN_EXPORT bool InsertAircraft( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& type )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AircraftInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindGuidParameter( 3, &type );
+        statement.BindGuidParameter( 3, type );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAircraft( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type )
+    BARRELMAN_EXPORT bool UpdateAircraft( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& type )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AircraftUpdate]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &type );
+        statement.BindGuidParameter( 4, type );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -5074,13 +5074,13 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertAisAidToNavigation( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& mMSI, Types::NavigationalAidType navigationalAidType, const DBGuid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& offPositionTimeseries )
+    BARRELMAN_EXPORT bool InsertAisAidToNavigation( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& mMSI, Types::NavigationalAidType navigationalAidType, const DBGuid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& offPositionTimeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisAidToNavigationInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindGuidParameter( 3, &mMSI );
+        statement.BindGuidParameter( 3, mMSI );
         statement.BindEnumParameter( 4, &navigationalAidType );
         statement.BindGuidParameter( 5, position );
         statement.BindBooleanParameter( 6, &isVirtual );
@@ -5093,14 +5093,14 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateAisAidToNavigation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& mMSI, Types::NavigationalAidType navigationalAidType, const DBGuid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& offPositionTimeseries )
+    BARRELMAN_EXPORT bool UpdateAisAidToNavigation( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& mMSI, Types::NavigationalAidType navigationalAidType, const DBGuid& position, bool isVirtual, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& offPositionTimeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [AisAidToNavigationUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &mMSI );
+        statement.BindGuidParameter( 4, mMSI );
         statement.BindEnumParameter( 5, &navigationalAidType );
         statement.BindGuidParameter( 6, position );
         statement.BindBooleanParameter( 7, &isVirtual );
@@ -5130,25 +5130,25 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertVehicle( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type )
+    BARRELMAN_EXPORT bool InsertVehicle( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& type )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [VehicleInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindGuidParameter( 3, &type );
+        statement.BindGuidParameter( 3, type );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateVehicle( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type )
+    BARRELMAN_EXPORT bool UpdateVehicle( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& type )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [VehicleUpdate]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &type );
+        statement.BindGuidParameter( 4, type );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -5170,13 +5170,13 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertVessel( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const Guid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& draughtTimeseries, const DBGuid& personsOnBoardTimeseries )
+    BARRELMAN_EXPORT bool InsertVessel( const ODBC::Connection& connection, Guid& id, const FixedDBWideString<127>& name, const DBGuid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& draughtTimeseries, const DBGuid& personsOnBoardTimeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [VesselInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindFixedDBWideStringParameter( 2, name );
-        statement.BindGuidParameter( 3, &type );
+        statement.BindGuidParameter( 3, type );
         statement.BindInt32Parameter( 4, &toBow );
         statement.BindInt32Parameter( 5, &toStern );
         statement.BindInt32Parameter( 6, &toPort );
@@ -5187,14 +5187,14 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateVessel( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const Guid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& draughtTimeseries, const DBGuid& personsOnBoardTimeseries )
+    BARRELMAN_EXPORT bool UpdateVessel( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const FixedDBWideString<127>& name, const DBGuid& type, Int32 toBow, Int32 toStern, Int32 toPort, Int32 toStarboard, const DBGuid& draughtTimeseries, const DBGuid& personsOnBoardTimeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [VesselUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindFixedDBWideStringParameter( 3, name );
-        statement.BindGuidParameter( 4, &type );
+        statement.BindGuidParameter( 4, type );
         statement.BindInt32Parameter( 5, &toBow );
         statement.BindInt32Parameter( 6, &toStern );
         statement.BindInt32Parameter( 7, &toPort );
@@ -5354,21 +5354,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertLineInputDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& lineInputDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertLineInputDeviceCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& lineInputDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [LineInputDeviceCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &lineInputDevice );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateLineInputDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& lineInputDevice, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateLineInputDeviceCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& lineInputDevice, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [LineInputDeviceCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -5376,7 +5376,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &lineInputDevice );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -5546,25 +5546,25 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertLineInputMessageRoutingDestination( const ODBC::Connection& connection, Guid& id, const Guid& routing, const Guid& listener )
+    BARRELMAN_EXPORT bool InsertLineInputMessageRoutingDestination( const ODBC::Connection& connection, Guid& id, const Guid& routing, const DBGuid& listener )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [LineInputMessageRoutingDestinationInsert]( ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &routing );
-        statement.BindGuidParameter( 3, &listener );
+        statement.BindGuidParameter( 3, listener );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateLineInputMessageRoutingDestination( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& routing, const Guid& listener )
+    BARRELMAN_EXPORT bool UpdateLineInputMessageRoutingDestination( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& routing, const DBGuid& listener )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [LineInputMessageRoutingDestinationUpdate]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &routing );
-        statement.BindGuidParameter( 4, &listener );
+        statement.BindGuidParameter( 4, listener );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -5882,13 +5882,13 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertLogProcess( const ODBC::Connection& connection, Guid& id, const Guid& application, const Guid& host, const DateTime& started, const DBDateTime& stopped, Int64 processId, const WideString& path, const FixedDBWideString<127>& identity )
+    BARRELMAN_EXPORT bool InsertLogProcess( const ODBC::Connection& connection, Guid& id, const Guid& application, const DBGuid& host, const DateTime& started, const DBDateTime& stopped, Int64 processId, const WideString& path, const FixedDBWideString<127>& identity )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [LogProcessInsert]( ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &application );
-        statement.BindGuidParameter( 3, &host );
+        statement.BindGuidParameter( 3, host );
         statement.BindDateTimeParameter( 4, started );
         statement.BindDateTimeParameter( 5, stopped );
         statement.BindInt64Parameter( 6, &processId );
@@ -5898,14 +5898,14 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateLogProcess( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& application, const Guid& host, const DateTime& started, const DBDateTime& stopped, Int64 processId, const WideString& path, const FixedDBWideString<127>& identity )
+    BARRELMAN_EXPORT bool UpdateLogProcess( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& application, const DBGuid& host, const DateTime& started, const DBDateTime& stopped, Int64 processId, const WideString& path, const FixedDBWideString<127>& identity )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [LogProcessUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &application );
-        statement.BindGuidParameter( 4, &host );
+        statement.BindGuidParameter( 4, host );
         statement.BindDateTimeParameter( 5, started );
         statement.BindDateTimeParameter( 6, stopped );
         statement.BindInt64Parameter( 7, &processId );
@@ -6688,21 +6688,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertOilSpillDetectorCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertOilSpillDetectorCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [OilSpillDetectorCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &oilSpillDetector );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateOilSpillDetectorCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateOilSpillDetectorCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [OilSpillDetectorCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -6710,7 +6710,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &oilSpillDetector );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -6734,7 +6734,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertOilSpillDetectorConfiguration( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, Int32 updateRate, const TimeSpan& statusSendTime, bool drawBorder, const Binary& colors, bool sendToServer, const FixedDBWideString<260>& directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, const FixedDBWideString<127>& targetFilePrefix, const Guid& targetMMSI, double latitude, double longitude, bool testSourceEnabled, const FixedDBWideString<127>& proxyServer, bool useProxyServer )
+    BARRELMAN_EXPORT bool InsertOilSpillDetectorConfiguration( const ODBC::Connection& connection, Guid& id, const Guid& oilSpillDetector, const DateTime& timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, Int32 updateRate, const TimeSpan& statusSendTime, bool drawBorder, const Binary& colors, bool sendToServer, const FixedDBWideString<260>& directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, const FixedDBWideString<127>& targetFilePrefix, const DBGuid& targetMMSI, double latitude, double longitude, bool testSourceEnabled, const FixedDBWideString<127>& proxyServer, bool useProxyServer )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [OilSpillDetectorConfigurationInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -6757,7 +6757,7 @@ namespace Barrelman::Database
         statement.BindBooleanParameter( 17, &sendAsTarget );
         statement.BindBooleanParameter( 18, &writeLog );
         statement.BindFixedDBWideStringParameter( 19, targetFilePrefix );
-        statement.BindGuidParameter( 20, &targetMMSI );
+        statement.BindGuidParameter( 20, targetMMSI );
         statement.BindDoubleParameter( 21, &latitude );
         statement.BindDoubleParameter( 22, &longitude );
         statement.BindBooleanParameter( 23, &testSourceEnabled );
@@ -6767,7 +6767,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateOilSpillDetectorConfiguration( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, Int32 updateRate, const TimeSpan& statusSendTime, bool drawBorder, const Binary& colors, bool sendToServer, const FixedDBWideString<260>& directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, const FixedDBWideString<127>& targetFilePrefix, const Guid& targetMMSI, double latitude, double longitude, bool testSourceEnabled, const FixedDBWideString<127>& proxyServer, bool useProxyServer )
+    BARRELMAN_EXPORT bool UpdateOilSpillDetectorConfiguration( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& oilSpillDetector, const DateTime& timestamp, double range, double startAngle, double endAngle, double startRange, double endRange, Int32 updateRate, const TimeSpan& statusSendTime, bool drawBorder, const Binary& colors, bool sendToServer, const FixedDBWideString<260>& directory, bool transparentWater, bool savePictures, bool sendAsTarget, bool writeLog, const FixedDBWideString<127>& targetFilePrefix, const DBGuid& targetMMSI, double latitude, double longitude, bool testSourceEnabled, const FixedDBWideString<127>& proxyServer, bool useProxyServer )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [OilSpillDetectorConfigurationUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -6791,7 +6791,7 @@ namespace Barrelman::Database
         statement.BindBooleanParameter( 18, &sendAsTarget );
         statement.BindBooleanParameter( 19, &writeLog );
         statement.BindFixedDBWideStringParameter( 20, targetFilePrefix );
-        statement.BindGuidParameter( 21, &targetMMSI );
+        statement.BindGuidParameter( 21, targetMMSI );
         statement.BindDoubleParameter( 22, &latitude );
         statement.BindDoubleParameter( 23, &longitude );
         statement.BindBooleanParameter( 24, &testSourceEnabled );
@@ -7326,19 +7326,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertReferenceProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& value )
+    BARRELMAN_EXPORT bool InsertReferenceProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& value )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferencePropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &value );
+        statement.BindGuidParameter( 4, value );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateReferenceProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& value )
+    BARRELMAN_EXPORT bool UpdateReferenceProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& value )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferencePropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7346,7 +7346,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &value );
+        statement.BindGuidParameter( 5, value );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7494,19 +7494,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertBinaryTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertBinaryTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [BinaryTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateBinaryTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateBinaryTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [BinaryTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7514,7 +7514,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7536,19 +7536,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertBooleanTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertBooleanTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [BooleanTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateBooleanTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateBooleanTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [BooleanTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7556,7 +7556,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7578,19 +7578,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertByteTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertByteTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ByteTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateByteTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateByteTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ByteTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7598,7 +7598,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7620,19 +7620,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertDateTimeTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertDateTimeTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [DateTimeTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateDateTimeTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateDateTimeTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [DateTimeTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7640,7 +7640,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7662,19 +7662,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertDoubleTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertDoubleTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [DoubleTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateDoubleTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateDoubleTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [DoubleTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7682,7 +7682,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7704,19 +7704,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertGuidTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertGuidTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GuidTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateGuidTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateGuidTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [GuidTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7724,7 +7724,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7746,19 +7746,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertInt16TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertInt16TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [Int16TimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateInt16TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateInt16TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [Int16TimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7766,7 +7766,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7788,19 +7788,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertInt32TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertInt32TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [Int32TimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateInt32TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateInt32TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [Int32TimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7808,7 +7808,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7830,19 +7830,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertInt64TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertInt64TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [Int64TimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateInt64TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateInt64TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [Int64TimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7850,7 +7850,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7872,19 +7872,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertReferenceTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertReferenceTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferenceTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateReferenceTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateReferenceTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferenceTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7892,7 +7892,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7914,19 +7914,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertSByteTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertSByteTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [SByteTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateSByteTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateSByteTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [SByteTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7934,7 +7934,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7956,19 +7956,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertSingleTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertSingleTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [SingleTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateSingleTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateSingleTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [SingleTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -7976,7 +7976,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -7998,19 +7998,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertStringTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertStringTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [StringTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateStringTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateStringTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [StringTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -8018,7 +8018,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -8040,19 +8040,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertTimeSpanTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertTimeSpanTimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [TimeSpanTimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateTimeSpanTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateTimeSpanTimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [TimeSpanTimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -8060,7 +8060,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -8082,19 +8082,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertUInt16TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertUInt16TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [UInt16TimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateUInt16TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateUInt16TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [UInt16TimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -8102,7 +8102,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -8124,19 +8124,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertUInt32TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertUInt32TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [UInt32TimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateUInt32TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateUInt32TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [UInt32TimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -8144,7 +8144,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -8166,19 +8166,19 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertUInt64TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool InsertUInt64TimeseriesProperty( const ODBC::Connection& connection, Guid& id, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [UInt64TimeseriesPropertyInsert]( ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &element );
         statement.BindGuidParameter( 3, &definition );
-        statement.BindGuidParameter( 4, &timeseries );
+        statement.BindGuidParameter( 4, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateUInt64TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const Guid& timeseries )
+    BARRELMAN_EXPORT bool UpdateUInt64TimeseriesProperty( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& element, const Guid& definition, const DBGuid& timeseries )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [UInt64TimeseriesPropertyUpdate]( ?, ?, ?, ?, ? ) }" );
@@ -8186,7 +8186,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &element );
         statement.BindGuidParameter( 4, &definition );
-        statement.BindGuidParameter( 5, &timeseries );
+        statement.BindGuidParameter( 5, timeseries );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -8796,7 +8796,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertReferencePropertyDefinition( const ODBC::Connection& connection, Guid& id, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const Guid& defaultValue, const Guid& referencedElementType )
+    BARRELMAN_EXPORT bool InsertReferencePropertyDefinition( const ODBC::Connection& connection, Guid& id, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& defaultValue, const DBGuid& referencedElementType )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferencePropertyDefinitionInsert]( ?, ?, ?, ?, ?, ? ) }" );
@@ -8804,13 +8804,13 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
         statement.BindWideStringParameter( 4, description );
-        statement.BindGuidParameter( 5, &defaultValue );
-        statement.BindGuidParameter( 6, &referencedElementType );
+        statement.BindGuidParameter( 5, defaultValue );
+        statement.BindGuidParameter( 6, referencedElementType );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateReferencePropertyDefinition( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const Guid& defaultValue, const Guid& referencedElementType )
+    BARRELMAN_EXPORT bool UpdateReferencePropertyDefinition( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& defaultValue, const DBGuid& referencedElementType )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferencePropertyDefinitionUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -8819,8 +8819,8 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
         statement.BindWideStringParameter( 5, description );
-        statement.BindGuidParameter( 6, &defaultValue );
-        statement.BindGuidParameter( 7, &referencedElementType );
+        statement.BindGuidParameter( 6, defaultValue );
+        statement.BindGuidParameter( 7, referencedElementType );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -9386,7 +9386,7 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertReferenceTimeseriesPropertyDefinition( const ODBC::Connection& connection, Guid& id, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const Guid& referencedElementType )
+    BARRELMAN_EXPORT bool InsertReferenceTimeseriesPropertyDefinition( const ODBC::Connection& connection, Guid& id, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& referencedElementType )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferenceTimeseriesPropertyDefinitionInsert]( ?, ?, ?, ?, ? ) }" );
@@ -9394,12 +9394,12 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 2, &elementType );
         statement.BindFixedDBWideStringParameter( 3, name );
         statement.BindWideStringParameter( 4, description );
-        statement.BindGuidParameter( 5, &referencedElementType );
+        statement.BindGuidParameter( 5, referencedElementType );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateReferenceTimeseriesPropertyDefinition( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const Guid& referencedElementType )
+    BARRELMAN_EXPORT bool UpdateReferenceTimeseriesPropertyDefinition( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& elementType, const FixedDBWideString<127>& name, const WideString& description, const DBGuid& referencedElementType )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ReferenceTimeseriesPropertyDefinitionUpdate]( ?, ?, ?, ?, ?, ? ) }" );
@@ -9408,7 +9408,7 @@ namespace Barrelman::Database
         statement.BindGuidParameter( 3, &elementType );
         statement.BindFixedDBWideStringParameter( 4, name );
         statement.BindWideStringParameter( 5, description );
-        statement.BindGuidParameter( 6, &referencedElementType );
+        statement.BindGuidParameter( 6, referencedElementType );
         statement.Execute( );
         SQLLEN numberOfRowsUpdated = statement.RowCount( );
         if( numberOfRowsUpdated )
@@ -10076,21 +10076,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertRadarCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertRadarCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadarCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &radar );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateRadarCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateRadarCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadarCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -10098,7 +10098,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &radar );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -10122,14 +10122,14 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertRadarCommandReplyGetStatus( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message, Int32 azimuthCount, Int32 triggerCount, const TimeSpan& rotationCount, Types::RadarPulse pulse, bool tx )
+    BARRELMAN_EXPORT bool InsertRadarCommandReplyGetStatus( const ODBC::Connection& connection, Guid& id, const Guid& radar, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message, Int32 azimuthCount, Int32 triggerCount, const TimeSpan& rotationCount, Types::RadarPulse pulse, bool tx )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadarCommandReplyGetStatusInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &radar );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.BindInt32Parameter( 7, &azimuthCount );
@@ -10141,7 +10141,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateRadarCommandReplyGetStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message, Int32 azimuthCount, Int32 triggerCount, const TimeSpan& rotationCount, Types::RadarPulse pulse, bool tx )
+    BARRELMAN_EXPORT bool UpdateRadarCommandReplyGetStatus( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radar, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message, Int32 azimuthCount, Int32 triggerCount, const TimeSpan& rotationCount, Types::RadarPulse pulse, bool tx )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadarCommandReplyGetStatusUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -10149,7 +10149,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &radar );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.BindInt32Parameter( 8, &azimuthCount );
@@ -10458,21 +10458,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertRadioCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radio, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertRadioCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radio, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadioCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &radio );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateRadioCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radio, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateRadioCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radio, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadioCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -10480,7 +10480,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &radio );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -10604,21 +10604,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertRadomeCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radome, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertRadomeCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& radome, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadomeCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &radome );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateRadomeCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radome, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateRadomeCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& radome, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [RadomeCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -10626,7 +10626,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &radome );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -15352,21 +15352,21 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertWeatherStationCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& weatherStation, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool InsertWeatherStationCommandReply( const ODBC::Connection& connection, Guid& id, const Guid& weatherStation, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [WeatherStationCommandReplyInsert]( ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &weatherStation );
         statement.BindDateTimeParameter( 3, timestamp );
-        statement.BindGuidParameter( 4, &command );
+        statement.BindGuidParameter( 4, command );
         statement.BindEnumParameter( 5, &status );
         statement.BindWideStringParameter( 6, message );
         statement.Execute( );
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateWeatherStationCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& weatherStation, const DateTime& timestamp, const Guid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
+    BARRELMAN_EXPORT bool UpdateWeatherStationCommandReply( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& weatherStation, const DateTime& timestamp, const DBGuid& command, Types::DeviceCommandReplyStatus status, const WideString& message )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [WeatherStationCommandReplyUpdate]( ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -15374,7 +15374,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &weatherStation );
         statement.BindDateTimeParameter( 4, timestamp );
-        statement.BindGuidParameter( 5, &command );
+        statement.BindGuidParameter( 5, command );
         statement.BindEnumParameter( 6, &status );
         statement.BindWideStringParameter( 7, message );
         statement.Execute( );
@@ -15644,14 +15644,14 @@ namespace Barrelman::Database
         return numberOfRowsDeleted > 0;
     }
 
-    BARRELMAN_EXPORT bool InsertZoneTrackAlarm( const ODBC::Connection& connection, Guid& id, const Guid& track, const Guid& zone, const Guid& radarTrack, const DateTime& timestamp, double latitude, double longitude, double speed, const DBDouble& course, const DBDouble& heading, double enterLatitude, double enterLongitude, const DBDouble& leaveLatitude, const DBDouble& leaveLongitude )
+    BARRELMAN_EXPORT bool InsertZoneTrackAlarm( const ODBC::Connection& connection, Guid& id, const Guid& track, const Guid& zone, const DBGuid& radarTrack, const DateTime& timestamp, double latitude, double longitude, double speed, const DBDouble& course, const DBDouble& heading, double enterLatitude, double enterLongitude, const DBDouble& leaveLatitude, const DBDouble& leaveLongitude )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ZoneTrackAlarmInsert]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
         statement.BindGuidParameter( 1, &id );
         statement.BindGuidParameter( 2, &track );
         statement.BindGuidParameter( 3, &zone );
-        statement.BindGuidParameter( 4, &radarTrack );
+        statement.BindGuidParameter( 4, radarTrack );
         statement.BindDateTimeParameter( 5, timestamp );
         statement.BindDoubleParameter( 6, &latitude );
         statement.BindDoubleParameter( 7, &longitude );
@@ -15666,7 +15666,7 @@ namespace Barrelman::Database
         SQLLEN numberOfRowsInserted = statement.RowCount( );
         return numberOfRowsInserted > 0;
     }
-    BARRELMAN_EXPORT bool UpdateZoneTrackAlarm( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& track, const Guid& zone, const Guid& radarTrack, const DateTime& timestamp, double latitude, double longitude, double speed, const DBDouble& course, const DBDouble& heading, double enterLatitude, double enterLongitude, const DBDouble& leaveLatitude, const DBDouble& leaveLongitude )
+    BARRELMAN_EXPORT bool UpdateZoneTrackAlarm( const ODBC::Connection& connection, const Guid& id, Int64& rowVersion, const Guid& track, const Guid& zone, const DBGuid& radarTrack, const DateTime& timestamp, double latitude, double longitude, double speed, const DBDouble& course, const DBDouble& heading, double enterLatitude, double enterLongitude, const DBDouble& leaveLatitude, const DBDouble& leaveLongitude )
     {
         auto statement = connection.CreateStatement( );
         statement.Prepare( L"{ CALL [ZoneTrackAlarmUpdate]( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }" );
@@ -15674,7 +15674,7 @@ namespace Barrelman::Database
         statement.BindInt64Parameter( 2, &rowVersion );
         statement.BindGuidParameter( 3, &track );
         statement.BindGuidParameter( 4, &zone );
-        statement.BindGuidParameter( 5, &radarTrack );
+        statement.BindGuidParameter( 5, radarTrack );
         statement.BindDateTimeParameter( 6, timestamp );
         statement.BindDoubleParameter( 7, &latitude );
         statement.BindDoubleParameter( 8, &longitude );
